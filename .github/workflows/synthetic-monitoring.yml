@@ -1,0 +1,83 @@
+name: Synthetic Monitoring
+
+on:
+  push:
+    branches:
+      - '**' # Run on all branches during dev
+  schedule:
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # Allow manual trigger
+
+env:
+  PRODUCTION_URL: ${{ secrets.PRODUCTION_URL }}
+
+jobs:
+  health-check:
+    if: github.event_name == 'workflow_dispatch' || (secrets.PRODUCTION_URL != null && secrets.PRODUCTION_URL != '')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      - name: Health Endpoint Check
+        id: health
+        run: |
+          if [ -z "${{ env.PRODUCTION_URL }}" ]; then
+            echo "::warning::PRODUCTION_URL is not set. Skipping checks."
+            exit 0
+          fi
+          
+          response=$(curl -sf -w "%{http_code}" -o response.json "${{ env.PRODUCTION_URL }}/health" || echo "000")
+          echo "status_code=$response" >> $GITHUB_OUTPUT
+          
+          if [ "$response" != "200" ]; then
+            echo "::error::Health check failed with status code: $response"
+            exit 1
+          fi
+          
+          echo "✅ Health check passed"
+          cat response.json
+
+      - name: API Docs Check
+        run: |
+          response=$(curl -sf -w "%{http_code}" -o /dev/null "${{ env.PRODUCTION_URL }}/api-docs")
+          if [ "$response" != "200" ]; then
+            echo "::error::API docs check failed with status code: $response"
+            exit 1
+          fi
+          echo "✅ API docs accessible"
+
+      - name: Homepage SSR Check
+        run: |
+          response=$(curl -sf -w "%{http_code}" -o /dev/null "${{ env.PRODUCTION_URL }}/")
+          if [ "$response" != "200" ]; then
+            echo "::error::Homepage check failed with status code: $response"
+            exit 1
+          fi
+          echo "✅ Homepage SSR working"
+
+      - name: Products Page Check
+        run: |
+          response=$(curl -sf -w "%{http_code}" -o /dev/null "${{ env.PRODUCTION_URL }}/products")
+          if [ "$response" != "200" ]; then
+            echo "::error::Products page check failed with status code: $response"
+            exit 1
+          fi
+          echo "✅ Products page working"
+
+  notify-on-failure:
+    needs: health-check
+    if: failure()
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Send Alert
+        run: |
+          echo "::error::Synthetic monitoring detected service issues!"
+          echo "Time: $(date -u)"
+          echo "Check the health-check job for details."
+          
+          # Uncomment and configure if using Slack notifications
+          # curl -X POST -H 'Content-type: application/json' \
+          #   --data '{"text":"🚨 RUN Apparel synthetic monitoring detected issues!"}' \
+          #   ${{ secrets.SLACK_WEBHOOK_URL }}

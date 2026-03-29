@@ -1,0 +1,10 @@
+{
+  "moderate": true,
+  "allowlist": [
+    "GHSA-4hjh-wcwx-xvwj",
+    "GHSA-67mh-4wv8-2f99",
+    "GHSA-8hc4-vh64-cxmj",
+    "GHSA-jr5f-v2jv-69x6"
+  ],
+  "retry-count": 3
+}

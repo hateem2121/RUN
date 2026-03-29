@@ -1,0 +1,179 @@
+import { removeUndefined } from "../../utils.js";
+
+/**
+ * TECHNOLOGY EQUIPMENT RESOURCE ROUTER
+ *
+ * Modular Express Router for Technology Equipment management
+ * Handles full CRUD + reorder operations for technology equipment
+ *
+ * Routes:
+ * - GET    /api/v1/technology-equipment           - List all equipment
+ * - GET    /api/v1/technology-equipment/:id       - Get single equipment
+ * - POST   /api/v1/technology-equipment           - Create new equipment
+ * - PATCH  /api/v1/technology-equipment/:id       - Update equipment
+ * - DELETE /api/v1/technology-equipment/:id       - Delete equipment
+ * - PATCH  /api/v1/technology-equipment/reorder   - Reorder equipment
+ */
+
+import { Router } from "express";
+import { z } from "zod";
+import { insertTechnologyEquipmentSchema } from "../../../shared/index.js";
+import { CacheOperations } from "../../lib/cache/cache-strategies.js";
+import { pageContentRepository } from "../../lib/db/repositories/index.js";
+import { logger } from "../../lib/monitoring/logger.js";
+import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { authService } from "../../services/auth-service.js";
+
+const router = Router();
+
+const idParamSchema = z.object({
+  id: z.string().transform(Number).pipe(z.number().int().positive()),
+});
+
+const reorderSchema = z.object({
+  equipment: z.array(
+    z.object({
+      id: z.number().int().positive(),
+      position: z.number().int().min(0),
+    }),
+  ),
+});
+
+router.get("/", async (_req, res) => {
+  const equipment = await withTimeout(
+    pageContentRepository.getTechnologyEquipment(),
+    10000,
+    "Get technology equipment",
+  );
+
+  logger.info(`[TechnologyEquipment] Retrieved ${equipment.length} equipment items`);
+  return res.json(equipment);
+});
+
+router.get("/:id", async (req, res) => {
+  const { id } = idParamSchema.parse(req.params);
+
+  const item = await withTimeout(
+    pageContentRepository.getTechnologyEquipmentItem(id),
+    10000,
+    "Get technology equipment item",
+  );
+
+  if (!item) {
+    return res.status(404).json({ error: "Equipment not found" });
+  }
+
+  logger.info(`[TechnologyEquipment] Retrieved equipment ${id}`);
+  return res.json(item);
+});
+
+router.post("/", authService.requireAdmin, async (req, res) => {
+  const validation = insertTechnologyEquipmentSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    logger.warn("[TechnologyEquipment] Validation failed:", validation.error);
+    return res.status(400).json({
+      error: "Validation failed",
+      details: validation.error.issues,
+    });
+  }
+
+  const newEquipment = await withTimeout(
+    pageContentRepository.createTechnologyEquipment(removeUndefined(validation.data)),
+    10000,
+    "Create technology equipment",
+  );
+
+  CacheOperations.invalidateTechnology()
+    .then(() => logger.info("[TechnologyEquipment] ✅ Cache invalidated after creation"))
+    .catch((cacheError) =>
+      logger.error("[TechnologyEquipment] ❌ Cache invalidation failed:", cacheError),
+    );
+
+  logger.info(`[TechnologyEquipment] Created equipment ${newEquipment.id}`);
+  return res.status(201).json(newEquipment);
+});
+
+router.patch("/:id", authService.requireAdmin, async (req, res) => {
+  const { id } = idParamSchema.parse(req.params);
+  const validation = insertTechnologyEquipmentSchema.partial().safeParse(req.body);
+
+  if (!validation.success) {
+    logger.warn("[TechnologyEquipment] Validation failed:", validation.error);
+    return res.status(400).json({
+      error: "Validation failed",
+      details: validation.error.issues,
+    });
+  }
+
+  const updated = await withTimeout(
+    pageContentRepository.updateTechnologyEquipment(id, removeUndefined(validation.data)),
+    10000,
+    "Update technology equipment",
+  );
+
+  if (!updated) {
+    return res.status(404).json({ error: "Equipment not found" });
+  }
+
+  CacheOperations.invalidateTechnology()
+    .then(() => logger.info("[TechnologyEquipment] ✅ Cache invalidated after update"))
+    .catch((cacheError) =>
+      logger.error("[TechnologyEquipment] ❌ Cache invalidation failed:", cacheError),
+    );
+
+  logger.info(`[TechnologyEquipment] Updated equipment ${id}`);
+  return res.json(updated);
+});
+
+router.delete("/:id", authService.requireAdmin, async (req, res) => {
+  const { id } = idParamSchema.parse(req.params);
+
+  const deleted = await withTimeout(
+    pageContentRepository.deleteTechnologyEquipment(id),
+    10000,
+    "Delete technology equipment",
+  );
+
+  if (!deleted) {
+    return res.status(404).json({ error: "Equipment not found" });
+  }
+
+  CacheOperations.invalidateTechnology()
+    .then(() => logger.info("[TechnologyEquipment] ✅ Cache invalidated after deletion"))
+    .catch((cacheError) =>
+      logger.error("[TechnologyEquipment] ❌ Cache invalidation failed:", cacheError),
+    );
+
+  logger.info(`[TechnologyEquipment] Deleted equipment ${id}`);
+  return res.status(204).send();
+});
+
+router.patch("/reorder", authService.requireAdmin, async (req, res) => {
+  const validation = reorderSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    logger.warn("[TechnologyEquipment] Reorder validation failed:", validation.error);
+    return res.status(400).json({
+      error: "Validation failed",
+      details: validation.error.issues,
+    });
+  }
+
+  const updates = await Promise.all(
+    removeUndefined(validation.data).equipment.map(({ id, position }) =>
+      pageContentRepository.updateTechnologyEquipment(id, { sortOrder: position }),
+    ),
+  );
+
+  CacheOperations.invalidateTechnology()
+    .then(() => logger.info("[TechnologyEquipment] ✅ Cache invalidated after reorder"))
+    .catch((cacheError) =>
+      logger.error("[TechnologyEquipment] ❌ Cache invalidation failed:", cacheError),
+    );
+
+  logger.info(`[TechnologyEquipment] Reordered ${updates.length} equipment items`);
+  return res.json({ success: true, updated: updates.length });
+});
+
+export default router;

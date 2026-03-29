@@ -1,0 +1,92 @@
+# Update Visual Baselines
+#
+# Manual workflow to update Playwright visual baselines.
+# Uploads updated snapshots as artifacts for review - does NOT auto-commit.
+#
+# Usage:
+# 1. Trigger this workflow manually from Actions tab
+# 2. Download the 'updated-baselines' artifact
+# 3. Review the screenshots for correctness
+# 4. Commit the approved screenshots to your branch
+
+name: Update Visual Baselines
+
+on:
+  workflow_dispatch:
+    inputs:
+      routes_filter:
+        description: 'Test filter (grep pattern, e.g. "Admin" or "Public")'
+        type: string
+        default: ""
+      confirm_update:
+        description: 'Confirm baseline update (type "yes" to proceed)'
+        type: string
+        required: true
+
+env:
+  NODE_VERSION: "24"
+
+jobs:
+  update-baselines:
+    name: Update Playwright Baselines
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    if: ${{ github.event.inputs.confirm_update == 'yes' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build application
+        run: npm run build
+
+      - name: Start server
+        run: |
+          npm run start &
+          sleep 10
+        env:
+          NODE_ENV: production
+          PORT: 5001
+
+      - name: Update Baselines
+        run: |
+          if [ -n "${{ github.event.inputs.routes_filter }}" ]; then
+            npx playwright test e2e/visual-regression-audit.spec.ts --update-snapshots --grep "${{ github.event.inputs.routes_filter }}"
+          else
+            npx playwright test e2e/visual-regression-audit.spec.ts --update-snapshots
+          fi
+        env:
+          BASE_URL: http://localhost:5001
+
+      - name: Upload Updated Baselines
+        uses: actions/upload-artifact@v4
+        with:
+          name: updated-baselines
+          path: |
+            e2e/**/*.png
+            **/*-snapshots/**/*.png
+          retention-days: 30
+
+      - name: Summary
+        run: |
+          echo "## Baseline Update Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Download the 'updated-baselines' artifact and review the screenshots." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "If correct, commit them to your branch:" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "git add e2e/" >> $GITHUB_STEP_SUMMARY
+          echo 'git commit -m "chore: update visual baselines"' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

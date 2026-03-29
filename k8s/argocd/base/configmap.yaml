@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: run-remix-config
+data:
+  LOG_LEVEL: "info"
+  CACHE_TTL: "300"

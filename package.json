@@ -1,0 +1,121 @@
+{
+  "name": "run-remix-monorepo",
+  "version": "3.0.0",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "packageManager": "npm@10.9.2",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "client",
+    "server",
+    "shared",
+    "packages/sdk"
+  ],
+  "scripts": {
+    "dev:server": "PORT=5002 npm run --workspace=@run-remix/server dev",
+    "dev:client": "npm run --workspace=@run-remix/client dev",
+    "start": "PORT=5002 npm run --workspace=@run-remix/server start",
+    "build:client": "npm run build --workspace=@run-remix/client",
+    "build:server": "npm run build --workspace=@run-remix/server",
+    "migrate:deploy": "npm run --workspace=@run-remix/server db:migrate",
+    "db:push": "npm run --workspace=@run-remix/server db:push",
+    "dev": "npm run dev:server",
+    "build": "turbo run build",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:ci": "vitest run --coverage --reporter=json --outputFile=test-results.json",
+    "test:e2e": "playwright test",
+    "test:integration": "vitest run tests/integration",
+    "test:db:up": "docker-compose -f docker-compose.test.yml up -d",
+    "test:db:down": "docker-compose -f docker-compose.test.yml down",
+    "test:integration:full": "npm run test:db:up && sleep 5 && TEST_REAL_DB=true DATABASE_URL=postgres://test_user:test_password@localhost:5433/test_db npm run --workspace=@run-remix/server db:push -- --force && TEST_REAL_DB=true DATABASE_URL=postgres://test_user:test_password@localhost:5433/test_db vitest run tests/integration && npm run test:db:down",
+    "test:mutation": "npx stryker run",
+    "lint": "biome check .",
+    "lint:html": "npm run --workspace=@run-remix/client lint:html",
+    "check": "npm run typecheck && npm run lint",
+    "check:apply": "biome check --write .",
+    "check:audit": "audit-ci --config .audit-ci.json",
+    "check:bundle": "node scripts/check-bundle-size.mjs",
+    "check:links": "tsx scripts/verify-routes.ts",
+    "check:secrets": "./scripts/security/check-secrets.sh",
+    "check:docs": "find . -name '*.md' -not -path '*/node_modules/*' -not -path '*/.gemini/*' -print0 | xargs -0 markdown-link-check -c .markdown-link-check.json",
+    "build:analyze": "npm run --workspace=@run-remix/client build:analyze",
+    "typecheck": "tsc --noEmit -p client/tsconfig.json && tsc --noEmit -p server/tsconfig.json",
+    "build:ssr": "npm run --workspace=@run-remix/server build:ssr",
+    "verify:ssr": "vitest run tests/unit/ssr/invariants.test.ts",
+    "verify:tech-integrity": "tsx scripts/verify-tech-integrity.ts",
+    "verify:docs-versions": "tsx scripts/utils/verify-docs-versions.ts",
+    "verify:docs-structure": "tsx scripts/validators/verify-docs-structure.ts",
+    "ci:checks": "npm run verify:tech-integrity && npm run verify:docs-structure",
+    "verify:build": "npm run build && npm run check:bundle",
+    "verify-port": "node scripts/verify-port-5002.js",
+    "kill:all": "pkill -f 'RUN-Remix' || echo 'No processes found'",
+    "lhci": "lhci autorun",
+    "verify:connect": "npm run verify-port && tsx scripts/verify-neon.ts && tsx scripts/verify-upstash.ts && tsx scripts/verify-email.ts",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
+    "@biomejs/biome": "2.3.10",
+    "@playwright/test": "^1.57.0",
+    "@size-limit/preset-app": "^12.0.0",
+    "@stryker-mutator/core": "^9.5.1",
+    "@stryker-mutator/vitest-runner": "^9.4.0",
+    "@tanstack/react-virtual": "^3.13.18",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/react": "^16.3.1",
+    "@types/node": "^24.10.0",
+    "@types/node-fetch": "^2.6.13",
+    "@types/yargs": "^17.0.35",
+    "@vitest/coverage-v8": "^4.0.6",
+    "audit-ci": "^7.1.0",
+    "cheerio": "^1.1.2",
+    "depcheck": "^1.4.7",
+    "drizzle-kit": "^0.31.4",
+    "husky": "^9.1.7",
+    "knip": "^5.75.2",
+    "lint-staged": "^16.2.7",
+    "markdown-link-check": "^3.14.2",
+    "node-fetch": "^3.3.2",
+    "playwright-core": "^1.57.0",
+    "svgo": "^4.0.0",
+    "turbo": "^2.7.2",
+    "typescript": "^5.9.3",
+    "vite-bundle-visualizer": "^1.2.1",
+    "vitest": "^4.0.6",
+    "vitest-axe": "^0.1.0",
+    "web-vitals": "^5.1.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "biome check --write"
+    ],
+    "*.{js,json,md}": [
+      "biome check --write"
+    ]
+  },
+  "dependencies": {
+    "@gsap/react": "^2.1.2",
+    "@react-router/dev": "^7.12.0",
+    "@react-router/express": "^7.12.0",
+    "@react-router/node": "^7.12.0",
+    "chalk": "^5.6.2",
+    "gsap": "^3.14.2",
+    "locomotive-scroll": "^5.0.1",
+    "react-router": "^7.12.0",
+    "react-router-dom": "^7.12.0",
+    "yargs": "^18.0.0"
+  },
+  "overrides": {
+    "axios": "^1.13.5",
+    "react-helmet-async": {
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0"
+    },
+    "fast-xml-parser": "^5.3.4",
+    "lodash-es": "^4.17.21",
+    "esbuild": "^0.25.0"
+  }
+}

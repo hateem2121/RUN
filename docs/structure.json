@@ -1,0 +1,36 @@
+{
+  "version": "2.0",
+  "basePath": "docs/",
+  "categories": {
+    "core": {
+      "path": "core/",
+      "files": {
+        "tech_stack": "tech-stack.md",
+        "standards": "../CODING_STANDARDS.md",
+        "workflow": "../DEVELOPMENT_WORKFLOW.md",
+        "agent_instructions": "../AGENT_INSTRUCTIONS.md"
+      }
+    },
+    "api": {
+      "path": "api/",
+      "files": {
+        "endpoints": "endpoints.md",
+        "error_spec": "API_ERROR_SPEC.md",
+        "schema": "schema-reference.md"
+      }
+    },
+    "operations": {
+      "path": "operations/",
+      "files": {
+        "optimization": "local-development-optimization.md",
+        "troubleshooting": "../TROUBLESHOOTING.md"
+      }
+    },
+    "adr": {
+      "path": "adr/",
+      "files": {
+        "readme": "README.md"
+      }
+    }
+  }
+}

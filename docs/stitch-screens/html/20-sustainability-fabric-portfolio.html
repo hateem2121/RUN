@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Guided Portfolio Builder - Sustainability Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "admin-bg": "#0A0A0A",
+                        "admin-sidebar": "#111111",
+                        "admin-primary": "#3B82F6",
+                        "admin-destructive": "#EF4444",
+                        "admin-warning": "#D4A853",
+                        "admin-success": "#00C97B",
+                        "text-main": "#FFFFFF",
+                        "text-secondary": "#E3DFD6",
+                        "text-muted": "#68869A",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .glass-card {
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.125);
+        }
+        .active-nav {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 2px solid #3B82F6;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A0A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #262626;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-admin-bg font-display text-text-main antialiased min-h-screen">
+<div class="flex h-screen overflow-hidden">
+<aside class="w-64 bg-admin-sidebar border-r border-white/5 flex flex-col justify-between shrink-0">
+<div class="flex flex-col gap-8 p-6">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-cover bg-center border border-white/10" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB9IBsFGITXmszxgIz7XgVyvZMhlgy3yp5SceQ-bfsAw10WLm73vuSjb9Q18mx_NnkyLpi8pAVI_vpmU77LOHZpDYG4m0XorV4rG24aCewG1PfLWZCjo4suTAI5056pwC9OPzYl8EbBJzKcc7JNwlxIQmQ76NrBSV3CPAZuagFu04nFybM12d2PNcC1pFfoqaAPxaqipwrn7xcSt7dCRxZ-JwedOEuOTYPPI9Z25xwkYzYYX6N7rk_OIVLlyafJltunVJKK_5luv4A')"></div>
+<div class="flex flex-col">
+<h1 class="text-sm font-semibold text-text-main">Alex Rivera</h1>
+<p class="text-[11px] text-text-muted">Sustainability Manager</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1.5">
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-text-muted hover:text-text-main hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined text-[18px]">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-admin-primary active-nav" href="#">
+<span class="material-symbols-outlined text-[18px]">factory</span>
+<span class="text-sm font-medium">Fabric Portfolio</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-text-muted hover:text-text-main hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined text-[18px]">local_shipping</span>
+<span class="text-sm font-medium">Supply Chain</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-text-muted hover:text-text-main hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined text-[18px]">eco</span>
+<span class="text-sm font-medium">Emissions</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-text-muted hover:text-text-main hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined text-[18px]">bar_chart</span>
+<span class="text-sm font-medium">Reports</span>
+</a>
+</nav>
+</div>
+<div class="p-6">
+<button class="w-full bg-admin-primary hover:bg-blue-600 text-white text-[13px] font-semibold py-2.5 rounded-md flex items-center justify-center gap-2 transition-all shadow-lg shadow-admin-primary/20">
+<span class="material-symbols-outlined text-[16px]">ios_share</span>
+                Export Report
+            </button>
+</div>
+</aside>
+<main class="flex-1 flex flex-col overflow-y-auto">
+<header class="h-14 border-b border-white/5 flex items-center justify-between px-8 bg-admin-bg/80 backdrop-blur-md sticky top-0 z-20">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 text-admin-success">
+<span class="material-symbols-outlined font-bold text-[20px]">database</span>
+<h2 class="text-sm font-bold tracking-tight uppercase">Sustainability Management</h2>
+</div>
+<div class="h-3 w-px bg-white/10"></div>
+<nav class="flex gap-6">
+<a class="text-xs text-text-muted hover:text-text-main transition-colors" href="#">Portfolio</a>
+<a class="text-xs text-text-muted hover:text-text-main transition-colors" href="#">Impact</a>
+<a class="text-xs text-text-muted hover:text-text-main transition-colors" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-admin-primary text-[18px]">search</span>
+<input class="bg-white/5 border-white/10 text-xs rounded-md pl-9 pr-4 py-1.5 w-56 focus:ring-1 focus:ring-admin-primary focus:border-admin-primary placeholder:text-text-muted text-text-main" placeholder="Search fabrics..." type="text"/>
+</div>
+<button class="p-1.5 text-text-muted hover:text-text-main bg-white/5 border border-white/10 rounded-md">
+<span class="material-symbols-outlined text-[18px]">notifications</span>
+</button>
+</div>
+</header>
+<div class="p-10 max-w-[1440px] mx-auto w-full">
+<div class="mb-12">
+<div class="flex items-center gap-2 text-[10px] text-text-muted uppercase tracking-[0.2em] font-bold mb-4">
+<span class="flex items-center justify-center w-5 h-5 rounded-full bg-admin-success text-admin-bg mr-1 text-[10px]">1</span>
+<span class="text-admin-success">Selection</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="flex items-center justify-center w-5 h-5 rounded-full border border-text-muted mr-1 text-[10px]">2</span>
+<span>Review</span>
+</div>
+<h1 class="text-3xl font-bold text-text-main mb-3 tracking-tight">Fabric Portfolio Builder</h1>
+<p class="text-text-secondary text-sm flex items-center gap-2 max-w-2xl">
+<span class="material-symbols-outlined text-admin-primary text-[18px]">info</span>
+                    These fabrics appear in the Sustainability page portfolio section. Choose the materials that define your sustainable collection.
+                </p>
+</div>
+<section class="mb-12">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-sm font-semibold text-text-secondary uppercase tracking-wider">Step 1: Select Sustainable Fabrics</h3>
+<span class="text-xs text-text-muted">4 fabrics selected</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<label class="glass-card group cursor-pointer relative p-6 rounded-xl hover:border-admin-primary/50 transition-all block ring-1 ring-inset ring-white/5">
+<input checked="" class="absolute top-4 right-4 w-5 h-5 rounded-full border-white/20 bg-admin-bg text-admin-primary focus:ring-admin-primary" type="checkbox"/>
+<div class="mb-6">
+<div class="w-12 h-12 rounded-full border-2 border-white/10 mb-4" style="background-color: #E6D5C3;"></div>
+<h4 class="text-base font-bold text-text-main mb-1">Organic Cotton Jersey</h4>
+<p class="text-xs text-text-muted">100% GOTS Certified</p>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-[10px] font-mono text-admin-primary bg-admin-primary/10 px-2 py-0.5 rounded border border-admin-primary/20">124 Items</span>
+<span class="material-symbols-outlined text-text-muted group-hover:text-admin-primary text-[18px] transition-colors">check_circle</span>
+</div>
+</label>
+<label class="glass-card group cursor-pointer relative p-6 rounded-xl hover:border-admin-primary/50 transition-all block ring-1 ring-inset ring-white/5">
+<input checked="" class="absolute top-4 right-4 w-5 h-5 rounded-full border-white/20 bg-admin-bg text-admin-primary focus:ring-admin-primary" type="checkbox"/>
+<div class="mb-6">
+<div class="w-12 h-12 rounded-full border-2 border-white/10 mb-4" style="background-color: #2D3E50;"></div>
+<h4 class="text-base font-bold text-text-main mb-1">Recycled Polyester Blend</h4>
+<p class="text-xs text-text-muted">60% Post-consumer Plastic</p>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-[10px] font-mono text-text-muted bg-white/5 px-2 py-0.5 rounded border border-white/10">86 Items</span>
+<span class="material-symbols-outlined text-text-muted group-hover:text-admin-primary text-[18px] transition-colors">check_circle</span>
+</div>
+</label>
+<label class="glass-card group cursor-pointer relative p-6 rounded-xl hover:border-admin-primary/50 transition-all block ring-1 ring-inset ring-white/5">
+<input checked="" class="absolute top-4 right-4 w-5 h-5 rounded-full border-white/20 bg-admin-bg text-admin-primary focus:ring-admin-primary" type="checkbox"/>
+<div class="mb-6">
+<div class="w-12 h-12 rounded-full border-2 border-white/10 mb-4" style="background-color: #F8F9FA;"></div>
+<h4 class="text-base font-bold text-text-main mb-1">Bamboo Lyocell</h4>
+<p class="text-xs text-text-muted">Biodegradable Fiber</p>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-[10px] font-mono text-text-muted bg-white/5 px-2 py-0.5 rounded border border-white/10">42 Items</span>
+<span class="material-symbols-outlined text-text-muted group-hover:text-admin-primary text-[18px] transition-colors">check_circle</span>
+</div>
+</label>
+<label class="glass-card group cursor-pointer relative p-6 rounded-xl hover:border-admin-primary/50 transition-all block ring-1 ring-inset ring-white/5">
+<input checked="" class="absolute top-4 right-4 w-5 h-5 rounded-full border-white/20 bg-admin-bg text-admin-primary focus:ring-admin-primary" type="checkbox"/>
+<div class="mb-6">
+<div class="w-12 h-12 rounded-full border-2 border-white/10 mb-4" style="background-color: #8C7C6D;"></div>
+<h4 class="text-base font-bold text-text-main mb-1">Hemp Canvas</h4>
+<p class="text-xs text-text-muted">Zero Pesticide Growth</p>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-[10px] font-mono text-text-muted bg-white/5 px-2 py-0.5 rounded border border-white/10">19 Items</span>
+<span class="material-symbols-outlined text-text-muted group-hover:text-admin-primary text-[18px] transition-colors">check_circle</span>
+</div>
+</label>
+</div>
+<div class="mt-8 flex items-center justify-center">
+<button class="bg-admin-primary hover:bg-blue-600 text-white font-bold py-4 px-12 rounded-full flex items-center gap-3 transition-all shadow-xl shadow-admin-primary/20 text-sm tracking-wide">
+                        Confirm Selection
+                        <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</section>
+<div class="grid grid-cols-12 gap-10">
+<div class="col-span-12 lg:col-span-3 space-y-6">
+<div class="glass-card rounded-xl p-5 border-admin-success/30 bg-admin-success/5">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-admin-success text-sm">verified_user</span>
+<h4 class="text-xs font-bold text-admin-success uppercase tracking-widest">Sustainable Impact</h4>
+</div>
+<p class="text-xs text-text-secondary leading-relaxed">
+                            Your current portfolio uses materials that reduce carbon emissions by an average of <span class="text-admin-success font-bold">34.2%</span> compared to conventional fabrics.
+                        </p>
+</div>
+<div class="glass-card rounded-xl p-5">
+<h4 class="text-xs font-bold text-text-muted uppercase tracking-widest mb-4">Quick Stats</h4>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-[11px] text-text-muted">Total Active</span>
+<span class="text-xs font-bold text-text-main">4 Materials</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[11px] text-text-muted">Certification</span>
+<span class="text-xs font-bold text-text-main">GOTS, Oeko-Tex</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[11px] text-text-muted">Diversity</span>
+<span class="text-xs font-bold text-text-main">High</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-9">
+<div class="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
+<div>
+<h3 class="text-xl font-bold text-text-main">Live Portfolio Preview</h3>
+<p class="text-xs text-text-muted mt-1 italic">Preview how your selected fabrics will appear to stakeholders.</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 bg-white/10 rounded-md text-text-main">
+<span class="material-symbols-outlined text-[18px]">grid_view</span>
+</button>
+<button class="p-2 bg-white/5 rounded-md text-text-muted hover:text-text-main">
+<span class="material-symbols-outlined text-[18px]">list</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="glass-card rounded-xl p-6 relative group overflow-hidden border-white/10 hover:border-admin-primary/40 transition-all">
+<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-text-muted hover:text-admin-destructive cursor-pointer text-[18px]">close</span>
+</div>
+<div class="flex items-center gap-5 mb-6">
+<div class="w-14 h-14 rounded-full border-4 border-admin-bg ring-1 ring-white/10 shrink-0" style="background-color: #E6D5C3;"></div>
+<div>
+<h4 class="text-base font-bold text-text-main mb-0.5">Organic Cotton Jersey</h4>
+<p class="text-[11px] text-text-muted uppercase tracking-tighter">100% GOTS Certified</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="text-[9px] bg-admin-success/10 text-admin-success px-2 py-0.5 rounded border border-admin-success/20 font-bold uppercase tracking-widest">Carbon Low</span>
+<span class="text-[9px] bg-admin-primary/10 text-admin-primary px-2 py-0.5 rounded border border-admin-primary/20 font-bold uppercase tracking-widest">Water Saved</span>
+</div>
+</div>
+<div class="glass-card rounded-xl p-6 relative group overflow-hidden border-white/10 hover:border-admin-primary/40 transition-all">
+<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-text-muted hover:text-admin-destructive cursor-pointer text-[18px]">close</span>
+</div>
+<div class="flex items-center gap-5 mb-6">
+<div class="w-14 h-14 rounded-full border-4 border-admin-bg ring-1 ring-white/10 shrink-0" style="background-color: #2D3E50;"></div>
+<div>
+<h4 class="text-base font-bold text-text-main mb-0.5">Recycled Polyester</h4>
+<p class="text-[11px] text-text-muted uppercase tracking-tighter">Post-consumer Plastic</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="text-[9px] bg-admin-success/10 text-admin-success px-2 py-0.5 rounded border border-admin-success/20 font-bold uppercase tracking-widest">Recycled</span>
+<span class="text-[9px] bg-admin-warning/10 text-admin-warning px-2 py-0.5 rounded border border-admin-warning/20 font-bold uppercase tracking-widest">Durable</span>
+</div>
+</div>
+<div class="glass-card rounded-xl p-6 relative group overflow-hidden border-white/10 hover:border-admin-primary/40 transition-all">
+<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-text-muted hover:text-admin-destructive cursor-pointer text-[18px]">close</span>
+</div>
+<div class="flex items-center gap-5 mb-6">
+<div class="w-14 h-14 rounded-full border-4 border-admin-bg ring-1 ring-white/10 shrink-0" style="background-color: #F8F9FA;"></div>
+<div>
+<h4 class="text-base font-bold text-text-main mb-0.5">Bamboo Lyocell</h4>
+<p class="text-[11px] text-text-muted uppercase tracking-tighter">Biodegradable Fiber</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="text-[9px] bg-admin-success/10 text-admin-success px-2 py-0.5 rounded border border-admin-success/20 font-bold uppercase tracking-widest">Bio-based</span>
+<span class="text-[9px] text-[#A855F7] bg-[#A855F7]/10 px-2 py-0.5 rounded border border-[#A855F7]/20 font-bold uppercase tracking-widest">Breathable</span>
+</div>
+</div>
+<div class="glass-card rounded-xl p-6 relative group overflow-hidden border-white/10 hover:border-admin-primary/40 transition-all">
+<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-text-muted hover:text-admin-destructive cursor-pointer text-[18px]">close</span>
+</div>
+<div class="flex items-center gap-5 mb-6">
+<div class="w-14 h-14 rounded-full border-4 border-admin-bg ring-1 ring-white/10 shrink-0" style="background-color: #8C7C6D;"></div>
+<div>
+<h4 class="text-base font-bold text-text-main mb-0.5">Hemp Canvas</h4>
+<p class="text-[11px] text-text-muted uppercase tracking-tighter">Zero Pesticide</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="text-[9px] bg-admin-success/10 text-admin-success px-2 py-0.5 rounded border border-admin-success/20 font-bold uppercase tracking-widest">Eco-friendly</span>
+<span class="text-[9px] text-[#F97316] bg-[#F97316]/10 px-2 py-0.5 rounded border border-[#F97316]/20 font-bold uppercase tracking-widest">Heavy Duty</span>
+</div>
+</div>
+</div>
+<div class="mt-8 border border-dashed border-white/10 rounded-xl p-10 flex flex-col items-center justify-center gap-4 hover:border-admin-primary/40 transition-colors cursor-pointer group bg-white/[0.02]">
+<div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-text-muted group-hover:text-admin-primary group-hover:bg-admin-primary/10 transition-all">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</div>
+<div class="text-center">
+<h5 class="text-text-secondary font-bold text-sm">Add more fabrics</h5>
+<p class="text-[11px] text-text-muted mt-1">Browse the global catalog for new materials</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

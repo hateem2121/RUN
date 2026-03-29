@@ -1,0 +1,454 @@
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: oklch(0.65 0.25 285);
+    --primary-foreground: oklch(0.98 0.01 240);
+    --secondary: oklch(0.96 0.01 240);
+    --secondary-foreground: oklch(0.15 0.02 240);
+    --muted: oklch(0.96 0.01 240);
+    --muted-foreground: oklch(0.45 0.02 240);
+    --accent: oklch(0.96 0.01 240);
+    --accent-foreground: oklch(0.15 0.02 240);
+    --destructive: oklch(0.6 0.2 25);
+    --destructive-foreground: oklch(0.98 0.01 240);
+    --border: oklch(0.9 0.01 240);
+    --input: oklch(0.9 0.01 240);
+    --ring: oklch(0.65 0.25 285);
+    --radius: 0.5rem;
+    --background-alt: hsl(0 0% 98%);
+
+    /* Stacking Card Section Colors - Light Mode */
+    --color-card-manufacturing: 210 20% 96%;
+    --color-card-innovation: 215 25% 94%;
+    --color-card-sustainability: 142 25% 94%;
+    --color-card-quality: 270 20% 95%;
+    --color-card-global: 262 20% 95%;
+
+    /* Standardized Surface & Brand Colors */
+    --color-surface-light: #ffffff;
+    --color-surface-gray: #f5f5f5;
+    --color-brand-purple-light: #ff9ffc;
+    --color-brand-lime: #b3e600;
+
+    /* Glass Tokens - Light Mode */
+    --glass-bg-start: rgba(255, 255, 255, 0.75);
+    --glass-bg-end: rgba(255, 255, 255, 0.45);
+    --mesh-gradient-1:
+      radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+      radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: oklch(0.7 0.25 285);
+    --primary-foreground: oklch(0.98 0.01 240);
+    --secondary: oklch(0.25 0.02 240);
+    --secondary-foreground: oklch(0.98 0.01 240);
+    --muted: oklch(0.25 0.02 240);
+    --muted-foreground: oklch(0.65 0.02 240);
+    --accent: oklch(0.25 0.02 240);
+    --accent-foreground: oklch(0.98 0.01 240);
+    --destructive: oklch(0.4 0.15 25);
+    --destructive-foreground: oklch(0.98 0.01 240);
+    --border: oklch(0.25 0.02 240);
+    --input: oklch(0.25 0.02 240);
+    --ring: oklch(0.7 0.25 285);
+    --background-alt: hsl(240 3.7% 15.9%);
+
+    /* Stacking Card Section Colors - Dark Mode */
+    --color-card-manufacturing: 220 13% 18%;
+    --color-card-innovation: 222 47% 11%;
+    --color-card-sustainability: 143 64% 15%;
+    --color-card-quality: 270 40% 15%;
+    --color-card-global: 262 40% 18%;
+
+    /* Standardized Surface & Brand Colors */
+    --color-surface-light: #050505;
+    --color-surface-gray: #1a1a1a;
+
+    /* Glass Tokens - Dark Mode */
+    --glass-bg-start: rgba(255, 255, 255, 0.12);
+    --glass-bg-end: rgba(255, 255, 255, 0.05);
+
+    /* Mesh Gradients - Dark Mode Luxury */
+    --mesh-gradient-1:
+      radial-gradient(at 27% 37%, hsla(215, 98%, 61%, 0.15) 0px, transparent 0%),
+      radial-gradient(at 97% 21%, hsla(125, 98%, 72%, 0.15) 0px, transparent 50%),
+      radial-gradient(at 52% 99%, hsla(354, 98%, 61%, 0.1) 0px, transparent 50%),
+      radial-gradient(at 10% 29%, hsla(256, 96%, 67%, 0.15) 0px, transparent 50%),
+      radial-gradient(at 97% 96%, hsla(38, 60%, 74%, 0.1) 0px, transparent 50%),
+      radial-gradient(at 33% 50%, hsla(222, 67%, 73%, 0.15) 0px, transparent 50%),
+      radial-gradient(at 79% 53%, hsla(343, 68%, 79%, 0.1) 0px, transparent 50%);
+
+    /* Feature Gradients - Dark Mode */
+  }
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* =========================================
+     Design Tokens
+     Phase 3.3: Design Token Consolidation
+     ========================================= */
+
+  /* =========================================
+     Missing Tokens Added (Tailwind v4 Migration Fix)
+     ========================================= */
+
+  /* Font Families - Custom Brand Fonts */
+  --font-neue-stance: "Neue Stance", "Inter", system-ui, sans-serif;
+  --font-futura: "Futura BT", "Helvetica Neue", sans-serif;
+  --font-helvetica: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  /* Luxury Color Palette */
+  --color-luxury-charcoal: #1a1a2e;
+  --color-luxury-heading: #16213e;
+  --color-luxury-gold: #b8860b;
+  --color-brand-manufacturing: #d4a853;
+
+  /* Glass Effects */
+  --color-glass: rgba(255, 255, 255, 0.1);
+  --color-glass-dark: rgba(0, 0, 0, 0.2);
+
+  /* Semantic Colors */
+  --color-success: #ccff00;
+  --color-brand-lime: #ccff00;
+  --color-warning: #ffd700;
+  --color-background-alt: var(--background-alt);
+  --color-surface-black: #0a0a0a;
+  --color-brand-accent: #3300ff;
+
+  /* Legacy Colors (To be migrated) */
+  --color-brand-purple-light: #ff9ffc;
+  --color-surface-dark: #050505;
+
+  /* Feature-Specific Gradients */
+  --gradient-manufacturing-hero: linear-gradient(to bottom right, #0a0a0a, #121212);
+
+  /* =========================================
+     Surface & Text Scale (Phase 1 Token Foundation)
+     Semantic replacements for raw gray-* colors
+     ========================================= */
+
+  /* Surface Scale */
+  --color-surface-subtle: hsl(240 5% 96%);
+  --color-surface-muted: hsl(240 5% 90%);
+  --color-surface-emphasis: hsl(240 5% 75%);
+
+  /* Text Scale */
+  --color-text-subtle: hsl(240 5% 55%);
+  --color-text-muted: hsl(240 5% 45%);
+  --color-text-disabled: hsl(240 5% 38%);
+
+  /* Status Semantic Colors */
+  --color-status-success: hsl(142 76% 36%);
+  --color-status-success-muted: hsl(142 76% 90%);
+  --color-status-warning: hsl(45 93% 47%);
+  --color-status-warning-muted: hsl(45 93% 90%);
+  --color-status-info: hsl(217 91% 60%);
+  --color-status-info-muted: hsl(217 91% 90%);
+  --color-status-inactive: hsl(240 5% 50%);
+  --color-status-inactive-muted: hsl(240 5% 92%);
+
+  --color-status-purple-muted: hsl(270 60% 90%);
+
+  /* Neutral Color Scale (for mobile menu and general UI) */
+  --color-neutral-100: hsl(240 5% 96%);
+  --color-neutral-200: hsl(240 5% 90%);
+  --color-neutral-300: hsl(240 5% 84%);
+  --color-neutral-400: hsl(240 5% 65%);
+  --color-neutral-500: hsl(240 5% 46%);
+
+  /* Shadcn/UI Mappings (Linked to CSS Variables) */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Typography */
+  --font-sans: "Helvetica Neue", "Inter", system-ui, sans-serif;
+  --font-futura: "Futura BT", "Helvetica Neue", sans-serif;
+  --font-helvetica: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Spacing & Radius */
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --spacing-container: 1280px;
+  --container-2xl: 1600px;
+  --width-sidebar: 140px;
+  --width-dock-item: 140px;
+
+  /* Height Tokens (for arbitrary value replacement) */
+  --height-tab: 48px;
+  --height-modal-sm: 500px;
+  --height-modal-md: 600px;
+  --height-modal-lg: 85vh;
+  --height-modal-full: 95vh;
+  --height-thumbnail: 80px;
+  --height-thumbnail-lg: 96px;
+  --min-height-section: 300px;
+  --min-height-hero: 400px;
+  --min-height-textarea: 100px;
+  --min-height-card: 300px;
+  --height-icon-sm: 1.2rem;
+  --height-loading-center: 60vh;
+  --height-loading-content: 50vh;
+  --min-height-value-card: 400px;
+  --min-height-process-card: 60vh;
+
+  /* Width Tokens (for arbitrary value replacement) */
+  --width-sidebar-collapsed: 60px;
+  --width-sidebar-expanded: 300px;
+  --width-sheet-sm: 320px;
+  --width-sheet-md: 400px;
+  --width-sheet-lg: 540px;
+  --max-width-toast: 420px;
+  --width-icon-sm: 1.2rem;
+  --min-width-thumbnail: 80px;
+  --min-width-label: 140px;
+
+  /* Tracking Tokens */
+  --tracking-premium: 0.08em;
+  --tracking-premium-lg: 0.12em;
+
+  /* Display Typography Scale (responsive via clamp) */
+  --font-size-display-xs: clamp(1.5rem, 4vw, 2rem);
+  --font-size-display-sm: clamp(2rem, 6vw, 3rem);
+  --font-size-display-md: clamp(3rem, 8vw, 5rem);
+  --font-size-display-lg: clamp(4rem, 10vw, 7rem);
+  --font-size-display-xl: clamp(5rem, 14vw, 10rem);
+
+  /* Semantic Radius Tokens */
+  --radius-button: calc(var(--radius) - 2px);
+  --radius-card: var(--radius);
+  --radius-modal: calc(var(--radius) + 4px);
+  --radius-pill: 9999px;
+
+  /* Semantic Shadow Tokens */
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-popup: 0 10px 30px rgba(0, 0, 0, 0.15);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+  /* Glow Shadows */
+  --shadow-glow-sm: 0 0 10px 2px rgba(139, 92, 246, 0.15);
+  --shadow-glow-md: 0 0 20px 4px rgba(139, 92, 246, 0.2);
+  --shadow-glow-lg: 0 0 30px 8px rgba(139, 92, 246, 0.25);
+  --shadow-glow-lg-desktop: 0 0 40px 12px rgba(139, 92, 246, 0.3);
+  --shadow-glow-primary: 0 0 20px 4px hsl(var(--primary) / 0.3);
+  --shadow-glow-orange: 0 0 20px 4px rgba(251, 146, 60, 0.3);
+
+  /* Luxury Shadows */
+  --shadow-luxury-sm: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-luxury-md: 0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-luxury-lg: 0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+
+  /* Map/Leaflet Overrides */
+  --color-map-popup-bg: var(--color-card);
+  --color-map-popup-border: var(--color-border);
+  --color-map-popup-text: var(--color-foreground);
+
+  /* Z-Index Layers (v4 convention: --z-index-*) */
+  --z-index-behind: -1;
+  --z-index-base: 0;
+  --z-index-default: 1;
+  --z-index-elevated: 10;
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1050;
+  --z-index-dock: 1100; /* Must be > Leaflet controls (1000) */
+  --z-index-modal-backdrop: 1200;
+  --z-index-modal: 1300;
+  --z-index-modal-nested: 1350;
+  --z-index-modal-nested-2: 1360;
+  --z-index-modal-nested-3: 1370;
+  --z-index-modal-overlay-1: 1210;
+  --z-index-modal-overlay-2: 1220;
+  --z-index-modal-overlay-3: 1230;
+  --z-index-popover: 1400;
+  --z-index-tooltip: 1450;
+  --z-index-toast: 1500;
+  --z-index-cursor: 1600;
+  --z-index-max: 9999;
+
+  /* Glass Effects */
+  --glass-premium: linear-gradient(135deg, var(--glass-bg-start), var(--glass-bg-end));
+
+  /* Animations */
+  --animate-marker-bounce: markerBounce 0.6s ease-in-out;
+  --animate-marker-shadow-grow: markerShadowGrow 0.6s ease-in-out;
+  --animate-notification-shrink: notificationShrink linear;
+
+  /* Widget & Micro-Interaction Tokens */
+  --width-widget-track: 200px;
+  --height-widget-track: 100px;
+  --size-particle: 50px;
+  --font-size-xxs: 10px;
+
+  /* Animation Tokens */
+  --animate-particle-scale: particleScale 3s linear infinite;
+  --animate-particle-scale-fast: particleScale 2s linear infinite;
+
+  @keyframes particleScale {
+    0% {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.2);
+      opacity: 0;
+    }
+  }
+
+  @keyframes shadow-sm-pulse {
+    0%,
+    24%,
+    46%,
+    73%,
+    96% {
+      --white-shadow: 0.5;
+    }
+    12%,
+    28%,
+    41%,
+    63%,
+    75%,
+    82%,
+    98% {
+      --white-shadow: 2.5;
+    }
+    6%,
+    32%,
+    57% {
+      --white-shadow: 1.3;
+    }
+    18%,
+    52%,
+    88% {
+      --white-shadow: 3.5;
+    }
+  }
+
+  @keyframes rotate-bg {
+    0% {
+      --bg-x: 0;
+      --bg-y: 0;
+    }
+    25% {
+      --bg-x: 100;
+      --bg-y: 0;
+    }
+    50% {
+      --bg-x: 100;
+      --bg-y: 100;
+    }
+    75% {
+      --bg-x: 0;
+      --bg-y: 100;
+    }
+    100% {
+      --bg-x: 0;
+      --bg-y: 0;
+    }
+  }
+
+  @keyframes custom-rotate {
+    from {
+      --custom-rotate: -70;
+      --glow-translate-y: -65;
+    }
+    25% {
+      --glow-translate-y: -65;
+    }
+    50% {
+      --glow-translate-y: -65;
+    }
+    60%,
+    75% {
+      --glow-translate-y: -65;
+    }
+    85% {
+      --glow-translate-y: -65;
+    }
+    to {
+      --custom-rotate: calc(360 - 70);
+      --glow-translate-y: -65;
+    }
+  }
+
+  @keyframes hue-animation {
+    0% {
+      --hue: 0;
+    }
+    100% {
+      --hue: 360;
+    }
+  }
+
+  /* Marquee Animations */
+  --animate-marquee: marquee 30s linear infinite;
+  --animate-marquee-reverse: marquee-reverse 30s linear infinite;
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes marquee-reverse {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+}
+
+/* Utilities */
+@utility h-hero-mobile {
+  height: 70vh;
+}

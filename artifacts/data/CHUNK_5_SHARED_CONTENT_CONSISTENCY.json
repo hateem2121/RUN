@@ -1,0 +1,402 @@
+{
+  "investigation_date": "2025-10-14",
+  "shared_content_inventory": {
+    "navigation_items": {
+      "total_records": 0,
+      "status": "EMPTY - No navigation configured",
+      "expected_usage": "Global navigation menu across all pages",
+      "current_implementation": "Hardcoded navigation in components",
+      "impact": "Navigation cannot be managed via CMS"
+    },
+    "fabrics": {
+      "total_records": 4,
+      "active_records": 4,
+      "used_on_pages": ["Sustainability"],
+      "data_samples": [
+        { "id": 1, "name": "Performance Jersey", "type": "Single Jersey" },
+        { "id": 2, "name": "Tech Fleece", "type": "French Terry" },
+        { "id": 3, "name": "Moisture-Wicking Mesh", "type": "Knit" },
+        { "id": 4, "name": "Compression Fabric", "type": "Spandex Blend" }
+      ]
+    },
+    "fibers": {
+      "total_records": 1,
+      "active_records": 1,
+      "used_on_pages": [],
+      "status": "CONFIGURED but not displayed on any frontend page",
+      "note": "Single fiber record exists but no page references it"
+    },
+    "certificates": {
+      "total_records": 0,
+      "status": "EMPTY - No certificates configured",
+      "expected_usage": "Display certifications on about/manufacturing pages",
+      "current_implementation": "Not displayed anywhere",
+      "impact": "Cannot showcase quality certifications"
+    },
+    "size_charts": {
+      "total_records": 0,
+      "status": "EMPTY - No size charts configured",
+      "expected_usage": "Product pages should display sizing information",
+      "current_implementation": "Not displayed anywhere",
+      "impact": "No sizing guidance for B2B customers"
+    },
+    "accessories": {
+      "total_records": 0,
+      "status": "EMPTY - No accessories configured",
+      "expected_usage": "Complementary products for main offerings",
+      "current_implementation": "Not displayed anywhere",
+      "impact": "Cannot showcase accessory products"
+    },
+    "products": {
+      "total_records": 4,
+      "active_records": 4,
+      "used_on_pages": ["Homepage"],
+      "loading_strategy": "Via homepage-batch endpoint",
+      "display_context": "Featured products section"
+    },
+    "categories": {
+      "total_records": 6,
+      "active_records": 6,
+      "used_on_pages": ["Homepage"],
+      "loading_strategy": "Via homepage-batch endpoint",
+      "display_context": "Product filtering/navigation"
+    },
+    "media_assets": {
+      "total_records": 61,
+      "referenced_records": 2,
+      "orphaned_records": 59,
+      "used_on_pages": ["Homepage (2 files)", "About (0 files)", "Others (0 files)"],
+      "critical_issue": "96.7% of media files unused despite being uploaded"
+    }
+  },
+  "cross_page_consistency_analysis": {
+    "fabrics": {
+      "sustainability_page": {
+        "loading_strategy": "Query /api/fabrics + /api/sustainability-fabric-portfolio",
+        "filtering": "Shows selected fabrics from portfolio settings (or first 6 if no selection)",
+        "display_format": "Grid cards with image, name, description, fabric type, composition",
+        "data_transformation": "Maps visualSwatchId to media assets for images",
+        "current_display": "Shows 4 active fabrics (all available)"
+      },
+      "other_pages": {
+        "homepage": "NOT DISPLAYED",
+        "about": "NOT DISPLAYED",
+        "manufacturing": "NOT DISPLAYED",
+        "technology": "NOT DISPLAYED",
+        "contact": "NOT DISPLAYED"
+      },
+      "consistency_status": "N/A - Only used on one page",
+      "potential_issue": "Fabrics should also appear on Manufacturing page to showcase materials"
+    },
+    "fibers": {
+      "all_pages": "NOT DISPLAYED ANYWHERE",
+      "database_status": "1 active fiber configured",
+      "admin_panel": "Fiber management exists at /admin/fibers",
+      "frontend_implementation": "NO COMPONENT USES FIBER DATA",
+      "critical_finding": "Orphaned feature - admin can configure but frontend never displays",
+      "recommendation": "Either remove fiber functionality or add to Sustainability/Manufacturing pages"
+    },
+    "products": {
+      "homepage": {
+        "loading": "Via homepage-batch endpoint",
+        "display_format": "Featured products grid",
+        "data_used": "4 products loaded",
+        "media_references": "Expects primary_image_id but likely NULL",
+        "formatting": "Product cards with name, description, image (if available)"
+      },
+      "product_page": {
+        "status": "DOES NOT EXIST",
+        "expected_route": "/products or /products/:id",
+        "current_implementation": "No dedicated product pages",
+        "impact": "Products shown on homepage only, no detailed view"
+      },
+      "other_pages": "NOT DISPLAYED",
+      "consistency_status": "SINGLE PAGE ONLY - no consistency issues but limited usage"
+    },
+    "categories": {
+      "homepage": {
+        "loading": "Via homepage-batch endpoint",
+        "display_format": "Category filter/navigation",
+        "data_used": "6 categories loaded",
+        "image_handling": "Uses image_url string (not media_id FK)",
+        "formatting": "Category tiles/links"
+      },
+      "other_pages": "NOT DISPLAYED",
+      "schema_issue": "Categories use image_url (varchar) instead of media_id (integer FK)",
+      "orphaned_media": "5 category SVG icons (IDs 166-170) uploaded but not linked",
+      "consistency_status": "N/A - Only used on homepage"
+    },
+    "navigation": {
+      "all_pages": {
+        "implementation": "HARDCODED in layout/header components",
+        "cannot_be_managed": "Navigation items table is empty, not used by frontend",
+        "current_navigation": [
+          "Homepage",
+          "About",
+          "Sustainability",
+          "Manufacturing",
+          "Technology",
+          "Contact"
+        ],
+        "admin_panel": "Exists at /admin/navigation but disconnected from frontend",
+        "critical_finding": "Navigation CMS is non-functional - frontend ignores database"
+      },
+      "consistency_status": "CONSISTENT (hardcoded same everywhere) but not CMS-driven",
+      "recommendation": "Either remove navigation admin panel or connect frontend to database"
+    }
+  },
+  "content_version_conflicts": {
+    "identified_conflicts": [],
+    "reason": "Most shared content used on single page only, no version conflicts possible",
+    "potential_future_conflicts": {
+      "fabrics": {
+        "risk": "LOW",
+        "reason": "Only displayed on Sustainability page",
+        "future_risk": "If added to Manufacturing page with different filtering/formatting"
+      },
+      "products": {
+        "risk": "LOW",
+        "reason": "Only displayed on Homepage",
+        "future_risk": "If product detail pages added with different data structure"
+      }
+    }
+  },
+  "formatting_variations": {
+    "fabrics": {
+      "sustainability_page": {
+        "layout": "Grid (1 col mobile, 2 cols md, 3 cols lg)",
+        "card_structure": "Image (h-48) + padding p-6 + text content",
+        "image_source": "mediaAssets.find(asset => asset.id === fabric.visualSwatchId)",
+        "fallback": "No image shown if visualSwatchId is null",
+        "styling": "bg-white rounded-xl shadow-lg border border-stone-200"
+      },
+      "other_pages": "N/A - not displayed",
+      "consistency": "N/A - single implementation"
+    },
+    "products": {
+      "homepage": {
+        "layout": "Grid or carousel (implementation varies)",
+        "card_structure": "Image + name + description + CTA",
+        "image_source": "product.primary_image_id (likely NULL based on investigation)",
+        "fallback": "Placeholder or no image",
+        "styling": "Varies by homepage design"
+      },
+      "consistency": "N/A - single page implementation"
+    },
+    "categories": {
+      "homepage": {
+        "layout": "Horizontal scroll or grid",
+        "display_format": "Category tiles with icon + name",
+        "image_source": "category.image_url (string URL)",
+        "issue": "Should use media_id FK instead of string URL",
+        "styling": "Category-specific design"
+      }
+    }
+  },
+  "missing_shared_content": {
+    "completely_missing_features": [
+      {
+        "feature": "Navigation Items",
+        "table": "navigation_items",
+        "records": 0,
+        "admin_panel": "EXISTS at /admin/navigation",
+        "frontend_implementation": "NOT CONNECTED - uses hardcoded nav",
+        "impact": "CRITICAL - Admin cannot manage navigation",
+        "user_story": "Admin wants to add/remove/reorder nav items but changes have no effect"
+      },
+      {
+        "feature": "Certificates",
+        "table": "certificates",
+        "records": 0,
+        "admin_panel": "EXISTS at /admin/certificates",
+        "frontend_implementation": "NO DISPLAY COMPONENT",
+        "impact": "HIGH - Cannot showcase quality certifications",
+        "expected_pages": ["About", "Manufacturing", "Sustainability"]
+      },
+      {
+        "feature": "Size Charts",
+        "table": "size_charts",
+        "records": 0,
+        "admin_panel": "EXISTS at /admin/size-charts",
+        "frontend_implementation": "NO DISPLAY COMPONENT",
+        "impact": "MEDIUM - No sizing guidance for B2B customers",
+        "expected_pages": ["Products (if implemented)"]
+      },
+      {
+        "feature": "Accessories",
+        "table": "accessories",
+        "records": 0,
+        "admin_panel": "EXISTS at /admin/accessories",
+        "frontend_implementation": "NO DISPLAY COMPONENT",
+        "impact": "MEDIUM - Cannot showcase complementary products",
+        "expected_pages": ["Homepage", "Products"]
+      },
+      {
+        "feature": "Fibers",
+        "table": "fibers",
+        "records": 1,
+        "admin_panel": "EXISTS at /admin/fibers",
+        "frontend_implementation": "NO DISPLAY COMPONENT",
+        "impact": "LOW - Admin configured 1 fiber but it's never displayed",
+        "expected_pages": ["Sustainability", "Manufacturing"]
+      }
+    ],
+    "partial_implementations": [
+      {
+        "feature": "Fabrics",
+        "status": "WORKING on Sustainability page only",
+        "missing_on": ["Manufacturing", "Technology"],
+        "recommendation": "Add fabric showcase to Manufacturing page to highlight materials"
+      },
+      {
+        "feature": "Products",
+        "status": "WORKING on Homepage only",
+        "missing": "No product detail pages (/products/:id)",
+        "recommendation": "Create product detail pages for comprehensive B2B catalog"
+      },
+      {
+        "feature": "Categories",
+        "status": "WORKING on Homepage only",
+        "missing": "No category browse pages",
+        "schema_issue": "Uses image_url string instead of media_id FK"
+      }
+    ]
+  },
+  "data_integrity_issues": {
+    "orphaned_admin_features": [
+      {
+        "feature": "Navigation Items",
+        "issue": "Admin panel exists but frontend doesn't use database",
+        "admin_changes": "Have no effect on frontend navigation",
+        "root_cause": "Frontend uses hardcoded nav instead of querying navigation_items table",
+        "fix_required": "Connect frontend to navigation_items table or remove admin panel"
+      },
+      {
+        "feature": "Contact Page Configuration",
+        "issue": "contact_page_configurations table has data but frontend is hardcoded",
+        "admin_changes": "Database has address/phone/email but frontend uses different values",
+        "data_mismatch": "DB email: contact@runapparel.com, Frontend: info@runapparel.com",
+        "fix_required": "Connect frontend to database or delete deprecated table"
+      },
+      {
+        "feature": "Fibers",
+        "issue": "Admin can create fibers but no frontend component displays them",
+        "admin_confusion": "Admin adds fiber data, sees it in admin panel, but never appears on site",
+        "fix_required": "Add fiber display component or remove fiber admin panel"
+      }
+    ],
+    "schema_inconsistencies": [
+      {
+        "table": "categories",
+        "issue": "Uses image_url (varchar) instead of media_id (integer FK)",
+        "impact": "Cannot leverage Object Storage for category images",
+        "orphaned_files": "5 category SVG icons (166-170) uploaded but unusable",
+        "fix_required": "Migrate to media_id FK, link existing uploaded icons"
+      },
+      {
+        "table": "media_assets",
+        "issue": "No FK constraints on referencing tables",
+        "impact": "Allows orphaned files, broken references, no cascade delete",
+        "fix_required": "Add explicit FK constraints with onDelete: 'SET NULL'"
+      }
+    ]
+  },
+  "critical_findings": {
+    "non_functional_cms_features": [
+      "Navigation management (admin panel exists but frontend ignores it)",
+      "Contact page configuration (database has data but frontend uses hardcoded values)",
+      "Fibers (admin can configure but frontend never displays)",
+      "Certificates (admin panel exists but no frontend display)",
+      "Size Charts (admin panel exists but no frontend display)",
+      "Accessories (admin panel exists but no frontend display)"
+    ],
+    "limited_shared_content_usage": [
+      "Fabrics only on Sustainability (should be on Manufacturing too)",
+      "Products only on Homepage (need detail pages)",
+      "Categories only on Homepage (need browse pages)",
+      "Media barely used (2 of 61 files, 96.7% orphan rate)"
+    ],
+    "consistency_status": {
+      "good": "No version conflicts identified (shared content used on single page only)",
+      "bad": "Multiple admin features completely disconnected from frontend",
+      "ugly": "Admin can manage content that never appears anywhere on site"
+    }
+  },
+  "recommendations": {
+    "immediate_fixes": [
+      {
+        "priority": "CRITICAL",
+        "action": "Audit and disable non-functional admin panels",
+        "panels_to_review": [
+          "/admin/navigation (frontend uses hardcoded nav)",
+          "/admin/contact (frontend uses hardcoded values)",
+          "/admin/fibers (frontend never displays)",
+          "/admin/certificates (no frontend component)",
+          "/admin/size-charts (no frontend component)",
+          "/admin/accessories (no frontend component)"
+        ],
+        "options": [
+          "Option A: Connect frontend to these admin panels (implement display components)",
+          "Option B: Remove/hide admin panels that aren't connected to frontend"
+        ],
+        "benefit": "Prevent admin confusion, clarify what is/isn't CMS-driven"
+      },
+      {
+        "priority": "HIGH",
+        "action": "Fix Contact page - connect to database or remove config table",
+        "implementation": "Either query contact_page_configurations or delete table and keep hardcoded",
+        "benefit": "Admin changes to contact info actually work"
+      },
+      {
+        "priority": "HIGH",
+        "action": "Migrate categories.image_url to media_id FK",
+        "steps": [
+          "Add categories.media_id column (integer FK)",
+          "Link existing category SVG icons (166-170)",
+          "Update frontend to use media_id instead of image_url",
+          "Deprecate image_url column"
+        ],
+        "benefit": "Categories leverage Object Storage, consistent media management"
+      }
+    ],
+    "content_expansion": [
+      {
+        "priority": "MEDIUM",
+        "action": "Add fabric display to Manufacturing page",
+        "reason": "Fabrics are manufacturing materials, should be showcased there too",
+        "benefit": "Better content reuse, comprehensive material information"
+      },
+      {
+        "priority": "MEDIUM",
+        "action": "Implement product detail pages",
+        "route": "/products/:id",
+        "benefit": "Complete B2B product catalog with detailed specifications"
+      },
+      {
+        "priority": "LOW",
+        "action": "Add fiber display component or remove fiber admin",
+        "decision": "Either implement fiber showcase on Sustainability/Manufacturing or remove feature",
+        "benefit": "Eliminate orphaned feature, clarify admin capabilities"
+      }
+    ],
+    "admin_clarity": [
+      {
+        "priority": "HIGH",
+        "action": "Add 'Live on Frontend' indicator to admin panels",
+        "implementation": "Show badge/icon indicating if admin changes actually affect frontend",
+        "examples": [
+          "Homepage Hero: ✅ Live on Frontend",
+          "Navigation Items: ❌ Not Connected",
+          "Fibers: ⚠️ No Display Component"
+        ],
+        "benefit": "Admin knows which panels are functional vs decorative"
+      },
+      {
+        "priority": "MEDIUM",
+        "action": "Add preview functionality to admin",
+        "implementation": "Preview button to see how content appears on frontend",
+        "benefit": "Admin can verify changes before publishing"
+      }
+    ]
+  }
+}

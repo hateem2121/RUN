@@ -1,0 +1,98 @@
+import type { NextFunction, Request, Response } from "express";
+import { ZodError, type z } from "zod";
+import { ValidationError } from "../errors/AppError.js";
+
+interface HttpValidationError extends Error {
+  statusCode: number;
+  details: Array<{ field: string; message: string }>;
+}
+
+// Validation wrapper for Request Body
+export const validateBody =
+  (schema: z.ZodSchema) => async (req: Request, _res: Response, next: NextFunction) => {
+    try {
+      // Use parseAsync to handle both sync and async schemas uniformly
+      const data = await schema.parseAsync(req.body);
+      // Replace body with parsed data (handles transformations)
+      req.body = data;
+      next();
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const details: Record<string, string[]> = {};
+        error.issues.forEach((issue) => {
+          const key = issue.path.join(".");
+          if (!details[key]) {
+            details[key] = [];
+          }
+          details[key].push(issue.message);
+        });
+        next(new ValidationError("Validation Failed", details));
+      } else {
+        next(error);
+      }
+    }
+  };
+
+// Validation wrapper for Request Params
+export const validateParams =
+  (schema: z.ZodSchema) => async (req: Request, _res: Response, next: NextFunction) => {
+    try {
+      if (schema) {
+        // Use parseAsync to handle both sync and async schemas uniformly
+        const result = await schema.safeParseAsync({
+          body: req.body,
+          query: req.query,
+          params: req.params,
+        });
+
+        if (!result.success) {
+          const errorMessages = result.error.issues.map(
+            (issue) => `${issue.path.join(".")}: ${issue.message}`,
+          );
+          throw new Error(`Validation failed: ${errorMessages.join(", ")}`);
+        }
+        Object.assign(req, result.data);
+      }
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
+
+// Validation wrapper for Request Query
+export const validateQuery =
+  (schema: z.ZodSchema) => async (req: Request, _res: Response, next: NextFunction) => {
+    try {
+      // Use parseAsync to handle both sync and async schemas uniformly
+      const parsed = await schema.parseAsync(req.query);
+
+      // Fix: req.query might be a getter-only property in some environments
+      try {
+        req.query = parsed as Record<string, string>;
+      } catch (_e) {
+        Object.defineProperty(req, "query", {
+          value: parsed,
+          writable: true,
+          configurable: true,
+        });
+      }
+      next();
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const errorMessages = error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
+        }));
+
+        const validationError = new Error("Validation Failed") as HttpValidationError;
+        validationError.statusCode = 400;
+        validationError.details = errorMessages;
+        next(validationError);
+      } else {
+        next(error);
+      }
+    }
+  };
+
+// Alias for generic usage (defaults to body validation)
+export const validate = validateBody;

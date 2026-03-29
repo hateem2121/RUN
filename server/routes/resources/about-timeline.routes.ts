@@ -1,0 +1,181 @@
+import { removeUndefined } from "../../utils.js";
+
+/**
+ * ABOUT TIMELINE RESOURCE ROUTER
+ *
+ * Modular Express Router for About Timeline management
+ * Handles full CRUD + reorder operations for timeline entries
+ *
+ * Routes:
+ * - GET    /api/about-timeline           - List all timeline entries
+ * - GET    /api/about-timeline/:id       - Get single entry
+ * - POST   /api/about-timeline           - Create new entry
+ * - PATCH  /api/about-timeline/:id       - Update entry
+ * - DELETE /api/about-timeline/:id       - Delete entry
+ * - PATCH  /api/about-timeline/reorder   - Reorder entries
+ */
+
+import { Router } from "express";
+import { z } from "zod";
+import { insertAboutTimelineEntrySchema } from "../../../shared/index.js";
+import { logger } from "../../lib/monitoring/logger.js";
+import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { aboutService } from "../../services/about.service.js";
+import { authService } from "../../services/auth-service.js";
+
+const router = Router();
+
+// Param validation schema
+const idParamSchema = z.object({
+  id: z.string().transform(Number).pipe(z.number().int().positive()),
+});
+
+// Reorder validation schema
+const reorderSchema = z.object({
+  entries: z.array(
+    z.object({
+      id: z.number().int().positive(),
+      position: z.number().int().min(0),
+    }),
+  ),
+});
+
+/**
+ * GET /api/v1/about-timeline
+ * Retrieve all timeline entries
+ */
+router.get("/", async (_req, res) => {
+  const entries = await withTimeout(aboutService.getTimeline(), 10000, "Get timeline entries");
+
+  logger.info(`[AboutTimeline] Retrieved ${entries.length} entries`);
+  return res.json(entries);
+});
+
+/**
+ * GET /api/v1/about-timeline/:id
+ * Retrieve single timeline entry
+ */
+router.get("/:id", async (req, res) => {
+  const { id } = idParamSchema.parse(req.params);
+
+  const entry = await withTimeout(aboutService.getTimelineEntry(id), 10000, "Get timeline entry");
+
+  if (!entry) {
+    return res.status(404).json({ error: "Timeline entry not found" });
+  }
+
+  logger.info(`[AboutTimeline] Retrieved entry ${id}`);
+  return res.json(entry);
+});
+
+/**
+ * POST /api/v1/about-timeline
+ * Create new timeline entry
+ */
+router.post("/", authService.requireAdmin, async (req, res) => {
+  const validation = insertAboutTimelineEntrySchema.safeParse(req.body);
+
+  if (!validation.success) {
+    logger.warn("[AboutTimeline] Validation failed:", validation.error);
+    return res.status(400).json({
+      error: "Validation failed",
+      details: validation.error.issues,
+    });
+  }
+
+  const newEntry = await withTimeout(
+    aboutService.createTimelineEntry(removeUndefined(validation.data)),
+    10000,
+    "Create timeline entry",
+  );
+
+  if (!newEntry) {
+    throw new Error("Failed to create timeline entry");
+  }
+
+  // Invalidation handled by service layer
+  logger.info(`[AboutTimeline] Created entry ${newEntry.id}`);
+  return res.status(201).json(newEntry);
+});
+
+/**
+ * PATCH /api/v1/about-timeline/:id
+ * Update timeline entry
+ */
+router.patch("/:id", authService.requireAdmin, async (req, res) => {
+  const { id } = idParamSchema.parse(req.params);
+  const validation = insertAboutTimelineEntrySchema.partial().safeParse(req.body);
+
+  if (!validation.success) {
+    logger.warn("[AboutTimeline] Validation failed:", validation.error);
+    return res.status(400).json({
+      error: "Validation failed",
+      details: validation.error.issues,
+    });
+  }
+
+  const updatedEntry = await withTimeout(
+    aboutService.updateTimelineEntry(id, removeUndefined(validation.data)),
+    10000,
+    "Update timeline entry",
+  );
+
+  if (!updatedEntry) {
+    return res.status(404).json({ error: "Timeline entry not found" });
+  }
+
+  // Invalidation handled by service layer
+  logger.info(`[AboutTimeline] Updated entry ${id}`);
+  return res.json(updatedEntry);
+});
+
+/**
+ * DELETE /api/v1/about-timeline/:id
+ * Delete timeline entry
+ */
+router.delete("/:id", authService.requireAdmin, async (req, res) => {
+  const { id } = idParamSchema.parse(req.params);
+
+  const deleted = await withTimeout(
+    aboutService.deleteTimelineEntry(id),
+    10000,
+    "Delete timeline entry",
+  );
+
+  if (!deleted) {
+    return res.status(404).json({ error: "Timeline entry not found" });
+  }
+
+  // Invalidation handled by service layer
+  logger.info(`[AboutTimeline] Deleted entry ${id}`);
+  return res.status(204).send();
+});
+
+/**
+ * PATCH /api/v1/about-timeline/reorder
+ * Reorder timeline entries
+ */
+router.patch("/reorder", authService.requireAdmin, async (req, res) => {
+  const validation = reorderSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    logger.warn("[AboutTimeline] Reorder validation failed:", validation.error);
+    return res.status(400).json({
+      error: "Validation failed",
+      details: validation.error.issues,
+    });
+  }
+
+  // Update positions for each entry
+  const updates = await Promise.all(
+    removeUndefined(validation.data).entries.map(({ id, position }) =>
+      aboutService.updateTimelineEntry(id, { sortOrder: position }),
+    ),
+  );
+
+  // Invalidation handled by service layer
+  logger.info(`[AboutTimeline] Reordered ${updates.length} entries`);
+  return res.json({ success: true, updated: updates.length });
+});
+
+export default router;

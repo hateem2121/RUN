@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--ssr-styles-->
+    <script>
+      (() => {
+        try {
+          const storageKey = "theme";
+          const className = "dark";
+          const d = document.documentElement;
+          const localStorageTheme = localStorage.getItem(storageKey);
+          const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          
+          if (localStorageTheme === "dark" || (!localStorageTheme && systemTheme)) {
+            d.classList.add(className);
+          } else {
+            d.classList.remove(className);
+          }
+        } catch (_e) {}
+      })();
+    </script>
+    <!--app-head-->
+    <title>Run Apparel</title>
+  </head>
+  <body>
+    <div id="root"><!--app-html--></div>
+    <script type="module" src="/app/entry.client.tsx"></script>
+  </body>
+</html>

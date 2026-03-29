@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Run Apparel CMS Shell - Loading State</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3B82F6",
+                        "background-light": "#F9FAFB",
+                        "background-dark": "#0A0A0A",
+                        sidebar: "#111111",
+                        "text-main": "#FFFFFF",
+                        "text-body": "#E3DFD6",
+                        "text-muted": "#68869A",
+                        "amber-warning": "#D4A853"
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-gray-900 dark:text-text-main h-screen flex overflow-hidden antialiased">
+<aside class="w-[240px] bg-white dark:bg-sidebar border-r border-gray-200 dark:border-white/10 flex flex-col transition-colors duration-200 flex-shrink-0">
+<div class="h-16 flex items-center px-6 border-b border-gray-200 dark:border-white/10 flex-shrink-0">
+<h1 class="text-base font-bold tracking-widest text-gray-900 dark:text-text-main">RUN APPAREL</h1>
+</div>
+<nav class="flex-1 overflow-y-auto py-6 px-4 space-y-6">
+<div>
+<h2 class="px-3 text-xs font-semibold tracking-wider text-text-muted uppercase mb-2">Content</h2>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 border-l-2 border-primary bg-gray-100 dark:bg-primary/10 text-primary font-medium transition-colors text-sm" href="#">
+<span class="material-icons-outlined text-[20px]">dashboard</span>
+                        Dashboard
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">home</span>
+                        Homepage
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">info</span>
+                        About Us
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">eco</span>
+                        Sustainability
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">precision_manufacturing</span>
+                        Manufacturing
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">memory</span>
+                        Technology
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">article</span>
+                        Blog
+                    </a>
+</div>
+</div>
+<div>
+<h2 class="px-3 text-xs font-semibold tracking-wider text-text-muted uppercase mb-2">Catalog</h2>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">category</span>
+                        Categories
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">inventory_2</span>
+                        Products
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">texture</span>
+                        Fabrics
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">join_inner</span>
+                        Fibers
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">workspace_premium</span>
+                        Certificates
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">straighten</span>
+                        Size Charts
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">watch</span>
+                        Accessories
+                    </a>
+</div>
+</div>
+<div>
+<h2 class="px-3 text-xs font-semibold tracking-wider text-text-muted uppercase mb-2">System</h2>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">photo_library</span>
+                        Media Library
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">storage</span>
+                        Storage
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">menu</span>
+                        Navigation
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">contacts</span>
+                        Contact
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<span class="material-icons-outlined text-[20px]">vertical_align_bottom</span>
+                        Footer
+                    </a>
+<a class="flex items-center justify-between px-3 py-2 rounded-md text-gray-600 dark:text-text-muted hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-text-main font-medium transition-colors text-sm border-l-2 border-transparent" href="#">
+<div class="flex items-center gap-3">
+<span class="material-icons-outlined text-[20px]">mail</span>
+                            Inquiries
+                        </div>
+<span class="bg-red-500/10 text-red-500 text-[10px] px-2 py-0.5 rounded-full font-semibold tracking-wide">3 NEW</span>
+</a>
+</div>
+</div>
+</nav>
+<div class="p-4 border-t border-gray-200 dark:border-white/10 flex-shrink-0">
+<div class="flex items-center justify-between cursor-pointer group rounded-md hover:bg-gray-50 dark:hover:bg-white/5 p-2 transition-colors">
+<div class="flex items-center gap-3">
+<img alt="Alex Rivera" class="w-8 h-8 rounded-full border border-gray-200 dark:border-white/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgytzmtwB540MtRMZSzCXxAS-YcB5lSBIR15qo8-vIzt4GfRFfwFcVgJACoiJ1LvE26C4UC5JHya22vXgaOwCtStjpkNwr0EgEmZc6hOrEWVkVwg3huaiT3KNVYRn2L3IQiGZekcR759Kk4IjWp8YrexxbrxSBh0mcWem7UzwIy7h2hRzABOlxY0NFbRnDtFquoW7UMMiJtUM1FXET4dSOD_hCzQ0FnJQtUJnvBueiy1UDIy_EJEqlWEXB-Hkdk0Y47CsK1NGZig"/>
+<div>
+<p class="text-sm font-medium text-gray-900 dark:text-text-main">Alex Rivera</p>
+<p class="text-xs text-text-muted">Admin</p>
+</div>
+</div>
+<span class="material-icons-outlined text-text-muted group-hover:text-gray-900 dark:group-hover:text-text-main transition-colors text-[20px]">logout</span>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col min-w-0">
+<header class="h-[56px] flex items-center justify-between px-6 border-b border-[#ffffff14] bg-[#0A0A0A] flex-shrink-0">
+<div class="flex items-center gap-2 text-sm text-text-muted flex-1">
+<span class="material-symbols-outlined text-[18px]">home</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span>Dashboard</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-text-main font-medium">Overview</span>
+</div>
+<div class="flex-1 max-w-md mx-auto">
+<div class="relative flex items-center w-full h-8 rounded-md bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-text-muted absolute left-2.5 text-[18px]">search</span>
+<input class="w-full bg-transparent border-none text-sm text-text-main placeholder-text-muted focus:ring-0 pl-9 pr-12 py-1" placeholder="Search modules..." type="text"/>
+<span class="absolute right-2.5 text-xs text-text-muted font-medium bg-white/10 px-1.5 py-0.5 rounded border border-white/10">⌘K</span>
+</div>
+</div>
+<div class="flex items-center justify-end gap-4 flex-1">
+<div class="flex items-center gap-2 bg-[#D4A853]/10 border border-[#D4A853]/20 px-2.5 py-1 rounded-md text-[#D4A853] text-xs font-medium">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+<span>Unsaved changes</span>
+</div>
+<button class="text-text-muted hover:text-text-main transition-colors relative">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full border border-background-dark"></span>
+</button>
+<div class="w-px h-6 bg-white/10"></div>
+<button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm font-medium text-text-main border border-white/10 hover:bg-white/20 transition-colors">
+                    AR
+                </button>
+</div>
+</header>
+<div class="flex-1 p-8 overflow-y-auto relative">
+<div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background-dark/80 backdrop-blur-sm">
+<svg class="animate-spin h-8 w-8 text-primary mb-4" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+</svg>
+<p class="text-text-muted text-sm font-medium">Loading module...</p>
+</div>
+<div class="max-w-6xl mx-auto space-y-6 opacity-40 pointer-events-none">
+<div class="w-full h-[240px] bg-white/5 rounded-xl border border-white/10 animate-pulse"></div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="bg-white/5 rounded-xl border border-white/10 p-6 space-y-4 h-[160px] animate-pulse">
+<div class="w-10 h-10 rounded-full bg-white/10"></div>
+<div class="h-4 bg-white/10 rounded w-3/4"></div>
+<div class="h-3 bg-white/10 rounded w-1/2"></div>
+</div>
+<div class="bg-white/5 rounded-xl border border-white/10 p-6 space-y-4 h-[160px] animate-pulse">
+<div class="w-10 h-10 rounded-full bg-white/10"></div>
+<div class="h-4 bg-white/10 rounded w-3/4"></div>
+<div class="h-3 bg-white/10 rounded w-1/2"></div>
+</div>
+<div class="bg-white/5 rounded-xl border border-white/10 p-6 space-y-4 h-[160px] animate-pulse">
+<div class="w-10 h-10 rounded-full bg-white/10"></div>
+<div class="h-4 bg-white/10 rounded w-3/4"></div>
+<div class="h-3 bg-white/10 rounded w-1/2"></div>
+</div>
+<div class="bg-white/5 rounded-xl border border-white/10 p-6 space-y-4 h-[160px] animate-pulse">
+<div class="w-10 h-10 rounded-full bg-white/10"></div>
+<div class="h-4 bg-white/10 rounded w-3/4"></div>
+<div class="h-3 bg-white/10 rounded w-1/2"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+</body></html>

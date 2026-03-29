@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00D4FF",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#0a0a0a",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .kanban-column { min-height: calc(100vh - 300px); }
+        .glass-search { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 border-r border-slate-200 dark:border-slate-800 flex flex-col bg-white dark:bg-[#111111]">
+<div class="p-6 flex items-center gap-3 border-b border-slate-200 dark:border-slate-800">
+<div class="w-10 h-10 rounded-full bg-cover bg-center border-2 border-primary" data-alt="Alex Rivera profile portrait" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuChpHdlrfBPLwQ-y8NIwjx7kpUVEGRSoSefRXev_k1cF9CcBZg27YJKQwMCE7zD0ISHcHUuDbf5pUrcNS08HYq_0KRj68Q_faOCqju9f0mE-9HHxh803g2uEnaJY8LlFu-76ZXv7vnGa5QEgcZ_eqIqnkiceMCO3poWKbAtNMy4Tz0u7IAwqeN0LVV13viKad5kXQPCgvvihxjRyOwQ_IsSslkoJAAx5tJm9qbPdBrO4Q5IohNECpN1DmKWpVcyQ-dMnsCmEn8UUI4')"></div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-900 dark:text-slate-100">Alex Rivera</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Admin</span>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto p-4 space-y-6">
+<div>
+<p class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">General</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+</div>
+</div>
+<div>
+<p class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Content</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined text-[20px]">description</span>
+<span class="text-sm font-medium">Pages</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined text-[20px]">imagesmode</span>
+<span class="text-sm font-medium">Media Assets</span>
+</a>
+</div>
+</div>
+<div>
+<p class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Catalog</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined text-[20px]">inventory_2</span>
+<span class="text-sm font-medium">Products</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined text-[20px]">category</span>
+<span class="text-sm font-medium">Collections</span>
+</a>
+</div>
+</div>
+<div>
+<p class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">System</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary" href="#">
+<span class="material-symbols-outlined text-[20px]">memory</span>
+<span class="text-sm font-bold">Technology</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined text-[20px]">bar_chart</span>
+<span class="text-sm font-medium">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-sm font-medium">Configuration</span>
+</a>
+</div>
+</div>
+</nav>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<button class="w-full flex items-center justify-center gap-2 bg-primary text-slate-900 font-bold py-2 rounded-xl text-sm mb-4">
+<span class="material-symbols-outlined">add</span>
+                New Project
+            </button>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="text-sm font-medium">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-red-500" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span class="text-sm font-medium">Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col overflow-hidden bg-background-light dark:bg-background-dark">
+<!-- Header -->
+<header class="h-16 flex items-center justify-between px-8 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-black/20 backdrop-blur-md">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-3xl font-bold">bolt</span>
+<h1 class="text-lg font-black tracking-tight dark:text-white uppercase">Run Apparel <span class="text-primary/80">CMS</span></h1>
+</div>
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+<input class="w-full pl-10 pr-4 py-2 rounded-xl border-none glass-search text-sm focus:ring-2 focus:ring-primary/50 text-slate-100" placeholder="Search roadmap, innovations, or tags..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-primary/20 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-8 w-px bg-slate-200 dark:bg-slate-800"></div>
+<div class="flex items-center gap-2">
+<div class="size-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-xl">settings</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Module Header & Tabs -->
+<div class="px-8 pt-8">
+<div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+<div>
+<h2 class="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Technology Management</h2>
+<p class="text-slate-500 dark:text-slate-400 mt-1">Innovation lifecycle and R&amp;D pipelines</p>
+</div>
+<button class="flex items-center gap-2 px-6 py-3 bg-primary text-slate-900 font-bold rounded-xl hover:shadow-[0_0_20px_rgba(0,212,255,0.4)] transition-all">
+<span class="material-symbols-outlined">rocket_launch</span>
+                    Add to Roadmap
+                </button>
+</div>
+<div class="flex border-b border-slate-200 dark:border-slate-800 gap-8">
+<a class="pb-4 text-sm font-bold text-slate-500 border-b-2 border-transparent hover:text-slate-700 dark:hover:text-slate-300" href="#">Overview</a>
+<a class="pb-4 text-sm font-bold text-primary border-b-2 border-primary flex items-center gap-2" href="#">
+                    Roadmap
+                    <span class="px-1.5 py-0.5 rounded-full bg-primary/20 text-[10px]">12</span>
+</a>
+<a class="pb-4 text-sm font-bold text-slate-500 border-b-2 border-transparent hover:text-slate-700 dark:hover:text-slate-300" href="#">Performance</a>
+<a class="pb-4 text-sm font-bold text-slate-500 border-b-2 border-transparent hover:text-slate-700 dark:hover:text-slate-300" href="#">Resources</a>
+</div>
+</div>
+<!-- Kanban Board -->
+<div class="flex-1 overflow-x-auto p-8 bg-background-light dark:bg-background-dark">
+<div class="flex gap-6 min-w-[1200px] h-full">
+<!-- Column: Research -->
+<div class="flex-1 flex flex-col gap-4">
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-slate-400"></span>
+<h3 class="text-sm font-bold uppercase tracking-widest text-slate-400">Research</h3>
+<span class="text-xs font-medium text-slate-500 ml-1">4</span>
+</div>
+<button class="text-slate-500 hover:text-slate-300"><span class="material-symbols-outlined text-sm">more_horiz</span></button>
+</div>
+<div class="kanban-column bg-slate-200/50 dark:bg-slate-900/40 rounded-xl p-3 flex flex-col gap-3 border border-slate-200 dark:border-slate-800/50">
+<!-- Card 1 -->
+<div class="group bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-primary/50 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors cursor-grab">drag_indicator</span>
+<span class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase tracking-tight">Digital</span>
+</div>
+<h4 class="text-sm font-bold mb-3 leading-snug">AI Demand Forecasting v3.0</h4>
+<div class="flex items-center gap-2 mt-4 text-slate-400">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-[11px] font-medium">Q3 2024</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-primary/50 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors cursor-grab">drag_indicator</span>
+<span class="px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 text-[10px] font-bold uppercase tracking-tight">Materials</span>
+</div>
+<h4 class="text-sm font-bold mb-3 leading-snug">Biodegradable Polymer Threading</h4>
+<div class="flex items-center gap-2 mt-4 text-slate-400">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-[11px] font-medium">Q4 2024</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Column: Development -->
+<div class="flex-1 flex flex-col gap-4">
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-amber-500"></span>
+<h3 class="text-sm font-bold uppercase tracking-widest text-amber-500">Development</h3>
+<span class="text-xs font-medium text-slate-500 ml-1">5</span>
+</div>
+<button class="text-slate-500 hover:text-slate-300"><span class="material-symbols-outlined text-sm">more_horiz</span></button>
+</div>
+<div class="kanban-column bg-amber-500/5 dark:bg-amber-500/5 rounded-xl p-3 flex flex-col gap-3 border border-amber-500/20">
+<!-- Card 3 -->
+<div class="group bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-amber-500/50 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-amber-500 transition-colors cursor-grab">drag_indicator</span>
+<span class="px-2 py-0.5 rounded bg-orange-500/10 text-orange-400 text-[10px] font-bold uppercase tracking-tight">Process</span>
+</div>
+<h4 class="text-sm font-bold mb-3 leading-snug">Zero-Waste Pattern Cutting</h4>
+<div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-4 overflow-hidden">
+<div class="bg-amber-500 h-full w-[65%]"></div>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="text-[10px] text-slate-500">Dev Progress</span>
+<span class="text-[10px] font-bold text-amber-500">65%</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-amber-500/50 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-amber-500 transition-colors cursor-grab">drag_indicator</span>
+<span class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase tracking-tight">Digital</span>
+</div>
+<h4 class="text-sm font-bold mb-3 leading-snug">Blockchain Supply Traceability</h4>
+<div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-4 overflow-hidden">
+<div class="bg-amber-500 h-full w-[30%]"></div>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="text-[10px] text-slate-500">Dev Progress</span>
+<span class="text-[10px] font-bold text-amber-500">30%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Column: Production -->
+<div class="flex-1 flex flex-col gap-4">
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<h3 class="text-sm font-bold uppercase tracking-widest text-emerald-500">Production</h3>
+<span class="text-xs font-medium text-slate-500 ml-1">3</span>
+</div>
+<button class="text-slate-500 hover:text-slate-300"><span class="material-symbols-outlined text-sm">more_horiz</span></button>
+</div>
+<div class="kanban-column bg-emerald-500/5 dark:bg-emerald-500/5 rounded-xl p-3 flex flex-col gap-3 border border-emerald-500/20">
+<!-- Card 5 -->
+<div class="group bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-emerald-500/50 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-emerald-500 transition-colors cursor-grab">drag_indicator</span>
+<span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 text-[10px] font-bold uppercase tracking-tight">Automation</span>
+</div>
+<h4 class="text-sm font-bold mb-3 leading-snug">Robotic Sorting Arm v1</h4>
+<div class="flex items-center gap-2 mt-4 text-emerald-500">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+<span class="text-[11px] font-bold uppercase">Active in Warehouse A</span>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="group bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-emerald-500/50 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-emerald-500 transition-colors cursor-grab">drag_indicator</span>
+<span class="px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 text-[10px] font-bold uppercase tracking-tight">Materials</span>
+</div>
+<h4 class="text-sm font-bold mb-3 leading-snug">Eco-Friendly Recycled Nylon</h4>
+<div class="flex items-center gap-2 mt-4 text-emerald-500">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+<span class="text-[11px] font-bold uppercase">Standardized</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

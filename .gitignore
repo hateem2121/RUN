@@ -1,0 +1,80 @@
+node_modules
+dist
+.DS_Store
+server/public
+vite.config.ts.*
+*.tar.gz
+
+# Environment variables and secrets
+.env
+.env.local
+.env.*.local
+
+# Google Cloud credentials
+gcs-service-account-key.json
+*-service-account-key.json
+
+# Ignore compiled TypeScript outputs in source directories
+server/**/*.js
+server/**/*.js.map
+server/**/*.d.ts
+server/**/*.d.ts.map
+shared/**/*.js
+shared/**/*.js.map
+shared/**/*.d.ts
+shared/**/*.d.ts.map
+client/src/**/*.js
+client/src/**/*.js.map
+*.tsbuildinfo
+
+# Temporary optimization files
+temp_gltf_optimization/
+trivy
+
+# Client Build Artifacts
+client/build
+client/.react-router/
+
+# Debug/Test Artifacts (prevent accidental commits)
+*.log
+*_debug*.txt
+*_output*.txt
+biome_errors*.txt
+crash_*.txt
+slow_query_output*.txt
+proxy_debug*.txt
+cookies.txt
+curl_debug.txt
+FINAL_REMEDIATION_PROMPT.txt
+.turbo
+playwright-report/
+test-results/
+openapi-spec.json
+# Temporary audit and log files
+audit.json
+biome-report.txt
+biome_full_v2.txt
+coverage/
+duplication_report.md
+e2e/__snapshots__/
+lint.txt
+test-db-*.ts
+test-neon-http.ts
+typecheck*.txt
+
+# Compiled utility outputs
+utils/**/*.js
+utils/**/*.d.ts
+utils/**/*.d.ts.map
+
+# Legacy worktrees
+legacy/worktrees/
+
+# IDE/tool-specific
+.kilocodemodes
+.config/
+
+# One-off debug artifacts
+test-bind.ts
+shell_metadata.csv
+FULL_SYSTEM_CONTEXT.json

@@ -1,0 +1,71 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build outputs
+dist/
+client/build/
+client/.react-router/
+server/**/*.js
+server/**/*.js.map
+server/**/*.d.ts
+shared/**/*.js
+shared/**/*.d.ts
+*.tsbuildinfo
+.turbo/
+
+# Test artifacts
+coverage/
+playwright-report/
+test-results/
+e2e/__snapshots__/
+e2e/test-results/
+
+# Secrets and credentials — never read these
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+gcs-service-account-key.json
+*-service-account-key.json
+secrets/
+
+# Logs and debug artifacts
+*.log
+*.log.*
+logs/
+audit/
+*.txt
+biome_*.txt
+typecheck*.txt
+crash_*.txt
+
+# Temp and cache
+.DS_Store
+temp_gltf_optimization/
+.cache/
+
+# Large binary / media assets (read source, not binaries)
+public/models/
+client/public/models/
+**/*.glb
+**/*.gltf
+**/*.hdr
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.webp
+**/*.mp4
+**/*.woff
+**/*.woff2
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Legacy
+legacy/worktrees/

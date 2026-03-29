@@ -1,0 +1,134 @@
+# Visual Regression & Guardrails CI
+#
+# Runs on PRs to main/develop branches.
+# - Validates Tailwind v4 CSS import order
+# - Validates SSR CSS injection (informational)
+# - Runs full visual regression suite (168 configurations)
+# - Uploads artifacts on failure for debugging
+
+name: Visual Regression
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      strict_preload:
+        description: "Run SSR preload check in strict mode"
+        type: boolean
+        default: false
+
+env:
+  NODE_VERSION: "24"
+
+jobs:
+  guardrails:
+    name: Tailwind v4 Guardrails
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: CSS Import Order Lint
+        run: npx tsx scripts/lint-css-import-order.ts
+
+      - name: SSR Preload Check (Informational)
+        run: npx tsx scripts/check-ssr-preload.ts
+        env:
+          SSR_PRELOAD_STRICT: ${{ github.event.inputs.strict_preload == 'true' && '1' || '' }}
+        continue-on-error: true
+
+  visual-regression:
+    name: Visual Regression Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: guardrails
+
+    services:
+      # The app server - started manually via npm run start in steps
+      app:
+        image: node:24
+        options: --network=host
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright deps only
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Build application
+        run: npm run build
+
+      - name: Start server
+        run: |
+          npm run start &
+          sleep 10
+        env:
+          NODE_ENV: production
+          PORT: 5002
+
+      - name: Run Visual Regression Tests
+        run: npx playwright test e2e/visual-regression-audit.spec.ts
+        env:
+          BASE_URL: http://localhost:5002
+
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 30
+
+      - name: Upload Screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: screenshots-diff
+          path: |
+            e2e/**/*.png
+            test-results/**/*.png
+          retention-days: 30

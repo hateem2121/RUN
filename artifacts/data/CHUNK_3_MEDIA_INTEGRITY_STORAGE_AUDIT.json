@@ -1,0 +1,447 @@
+{
+  "investigation_date": "2025-10-14",
+  "object_storage_configuration": {
+    "provider": "Replit Object Storage",
+    "bucket_id": "replit-objstore-2436cf8b-8132-4f53-a980-803c1b411db6",
+    "public_directories": ["replit-objstore-2436cf8b-8132-4f53-a980-803c1b411db6"],
+    "private_directory": "replit-objstore-2436cf8b-8132-4f53-a980-803c1b411db6",
+    "status": "ACTIVE - Object storage configured and operational"
+  },
+  "media_assets_summary": {
+    "total_files": 61,
+    "id_range": "166-226 (no gaps in sequence)",
+    "by_type": {
+      "images": {
+        "count": 59,
+        "total_size_mb": 214.76,
+        "percentage": "96.7%"
+      },
+      "videos": {
+        "count": 1,
+        "total_size_mb": 5.36,
+        "percentage": "1.6%"
+      },
+      "models": {
+        "count": 1,
+        "total_size_mb": 62.28,
+        "percentage": "1.6%"
+      }
+    },
+    "total_storage_used_mb": 282.4,
+    "all_files_active": true,
+    "no_soft_deletes": "All 61 files have deleted_at = NULL"
+  },
+  "database_references_analysis": {
+    "total_referenced_files": 2,
+    "orphaned_files": 59,
+    "orphan_rate_percentage": 96.7,
+    "referenced_media": [
+      {
+        "media_id": 200,
+        "filename": "image-27.png",
+        "type": "image",
+        "storage_path": "public/media/images/2025/10/1760287327510-image-27.png",
+        "url": "/api/media/public/media/images/2025/10/1760287327510-image-27.png",
+        "referenced_by": "homepage_hero.background_image_id",
+        "usage": "Homepage hero section background image",
+        "status": "ACTIVE - FILE EXISTS AND REFERENCED"
+      },
+      {
+        "media_id": 223,
+        "filename": "shorts.png",
+        "type": "image",
+        "storage_path": "public/media/images/2025/10/1760287574835-shorts.png",
+        "url": "/api/media/public/media/images/2025/10/1760287574835-shorts.png",
+        "referenced_by": "homepage_process_cards.icon_media_id",
+        "usage": "Homepage process card icon (only 1 of 4 cards has icon)",
+        "status": "ACTIVE - FILE EXISTS AND REFERENCED"
+      }
+    ]
+  },
+  "orphaned_files_detailed": {
+    "total_orphaned": 59,
+    "orphaned_storage_mb": 274.76,
+    "storage_waste_percentage": 97.3,
+    "notable_orphaned_files": [
+      {
+        "id": 172,
+        "filename": "activewear-animation.mp4",
+        "type": "video",
+        "size_mb": 5.36,
+        "note": "Only video file in system - uploaded but never linked"
+      },
+      {
+        "id": 173,
+        "filename": "leather-jacket-colorway-1.gltf",
+        "type": "model",
+        "size_mb": 62.28,
+        "note": "Only 3D model in system - uploaded but never linked (largest file)"
+      },
+      {
+        "category": "Category/Product Icons",
+        "files": [
+          "run-updated.svg (166)",
+          "casual-wear-logo.svg (167)",
+          "outerwear.svg (168)",
+          "compression-wear.svg (169)",
+          "teamwear.svg (170)"
+        ],
+        "note": "SVG icons uploaded but categories use image_url (string) instead of media_id references"
+      },
+      {
+        "category": "Product Images",
+        "files": [
+          "activewear.png (174)",
+          "hoddies.png (178)",
+          "jacket.png (206)",
+          "rain-jacket.png (218)",
+          "running.png (221)"
+        ],
+        "note": "Product images uploaded but products table doesn't reference them"
+      },
+      {
+        "category": "Manufacturing/Factory Images",
+        "files": [
+          "cutting-machine.png (175)",
+          "factory-image.png (177)",
+          "factory-img.png (179)",
+          "stitching.png (226)"
+        ],
+        "note": "Uploaded for manufacturing page but manufacturing_processes.media_ids is NULL"
+      },
+      {
+        "category": "Fabric Swatches",
+        "files": ["interlock-knit.png (204)", "interlock1.png (205)", "single-jersey.png (225)"],
+        "note": "Fabric texture images but fabrics.visual_swatch_id is not linked"
+      }
+    ],
+    "complete_orphan_list": [
+      166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184,
+      185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 201, 202, 203, 204,
+      205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 224,
+      225, 226
+    ]
+  },
+  "storage_path_analysis": {
+    "pattern": "public/media/{type}s/2025/10/{timestamp}-{filename}",
+    "url_pattern": "/api/media/public/media/{type}s/2025/10/{timestamp}-{filename}",
+    "consistency": "CONSISTENT - All files follow same path pattern",
+    "bucket_consistency": "CONSISTENT - All files in same bucket",
+    "path_examples": [
+      {
+        "type": "image",
+        "storage_path": "public/media/images/2025/10/1760287327510-image-27.png",
+        "url": "/api/media/public/media/images/2025/10/1760287327510-image-27.png"
+      },
+      {
+        "type": "video",
+        "storage_path": "public/media/videos/2025/10/1760286450613-activewear-animation.mp4",
+        "url": "/api/media/public/media/videos/2025/10/1760286450613-activewear-animation.mp4"
+      },
+      {
+        "type": "model",
+        "storage_path": "public/media/models/2025/10/1760286550815-leather-jacket-colorway-1.gltf",
+        "url": "/api/media/public/media/models/2025/10/1760286550815-leather-jacket-colorway-1.gltf"
+      }
+    ]
+  },
+  "missing_references_analysis": {
+    "expected_but_missing": [
+      {
+        "location": "homepage_hero.primary_image_id",
+        "admin_status": "NULL in record 1",
+        "expected_usage": "Primary hero image",
+        "impact": "Hero using background_image_id (200) as fallback"
+      },
+      {
+        "location": "homepage_process_cards.icon_media_id",
+        "admin_status": "NULL for cards 2, 3, 4 (only card 1 has ID 223)",
+        "expected_usage": "Icons for all 4 process cards",
+        "impact": "3 process cards display without icons"
+      },
+      {
+        "location": "homepage_sections.media_ids",
+        "admin_status": "NULL for all 3 sections",
+        "expected_usage": "Media arrays for sections (manufacturing, sustainability, products)",
+        "impact": "Sections render text-only without visual content"
+      },
+      {
+        "location": "about_timeline_entries.image_id",
+        "admin_status": "NULL for all 5 timeline entries",
+        "expected_usage": "Historical photos for timeline milestones",
+        "impact": "Timeline displays text-only"
+      },
+      {
+        "location": "about_hero (all media fields)",
+        "admin_status": "headline, subheadline, image_id, video_id, background_media_id all NULL",
+        "expected_usage": "Hero media for about page",
+        "impact": "About page uses hardcoded fallback text"
+      },
+      {
+        "location": "sustainability_hero.image_id / video_id",
+        "admin_status": "Both NULL",
+        "expected_usage": "Hero background media",
+        "impact": "Sustainability hero renders without background"
+      },
+      {
+        "location": "manufacturing_hero media fields",
+        "admin_status": "image_id, video_id, background_media_id all NULL",
+        "expected_usage": "Hero background for manufacturing page",
+        "impact": "Manufacturing hero lacks visual content"
+      },
+      {
+        "location": "manufacturing_processes.media_ids",
+        "admin_status": "NULL for all 3 processes",
+        "expected_usage": "Process step images/videos",
+        "impact": "Manufacturing processes display text-only",
+        "orphaned_files_available": "Factory images (175, 177, 179, 226) uploaded but not linked"
+      },
+      {
+        "location": "technology_hero media fields",
+        "admin_status": "All NULL",
+        "expected_usage": "Technology page hero background",
+        "impact": "Technology hero renders without media"
+      },
+      {
+        "location": "technology_innovations.image_id",
+        "admin_status": "NULL for all 3 innovations",
+        "expected_usage": "Innovation showcase images",
+        "impact": "Innovations display text-only"
+      },
+      {
+        "location": "fabrics.visual_swatch_id / texture_map_id",
+        "admin_status": "Not checked - likely NULL",
+        "expected_usage": "Fabric texture visuals",
+        "impact": "Fabric display may lack visual swatches",
+        "orphaned_files_available": "Fabric images (204, 205, 225) uploaded but not linked"
+      },
+      {
+        "location": "products.primary_image_id",
+        "admin_status": "Not checked - likely NULL",
+        "expected_usage": "Product showcase images",
+        "impact": "Products may display without images",
+        "orphaned_files_available": "Product images (174, 178, 206, 218, 221) uploaded but not linked"
+      },
+      {
+        "location": "categories.image_id",
+        "admin_status": "Categories use image_url (string) instead of media_id (integer)",
+        "expected_usage": "Category icon references",
+        "impact": "Categories store URL strings instead of Object Storage references",
+        "orphaned_files_available": "Category SVG icons (166-170) uploaded but not linked",
+        "schema_issue": "Categories should use media_id foreign key instead of image_url string"
+      }
+    ]
+  },
+  "url_accessibility_analysis": {
+    "url_pattern": "/api/media/public/media/{type}s/2025/10/{timestamp}-{filename}",
+    "tested_referenced_urls": {
+      "homepage_hero_background": {
+        "media_id": 200,
+        "url": "/api/media/public/media/images/2025/10/1760287327510-image-27.png",
+        "storage_exists": "YES",
+        "frontend_accessible": "ASSUMED YES (needs browser test)",
+        "status": "SHOULD WORK"
+      },
+      "process_card_icon": {
+        "media_id": 223,
+        "url": "/api/media/public/media/images/2025/10/1760287574835-shorts.png",
+        "storage_exists": "YES",
+        "frontend_accessible": "ASSUMED YES (needs browser test)",
+        "status": "SHOULD WORK"
+      }
+    },
+    "api_endpoint_pattern": "GET /api/media/:path where path includes bucket and file path",
+    "media_resolution_methods": {
+      "direct_url": "Uses media.url field from database",
+      "fallback_api": "If url is null, constructs /api/media/{id}/content",
+      "optimization": "Some pages use useReplitOptimizedMedia hook for image variants"
+    }
+  },
+  "frontend_media_loading_verification": {
+    "homepage": {
+      "extraction_logic": "extractedMediaIds useMemo collects IDs from hero, processCards, sections",
+      "hero_background": {
+        "database_field": "hero.backgroundImageId",
+        "extracted_id": 200,
+        "file_status": "EXISTS",
+        "rendering": "WORKING"
+      },
+      "process_card_icons": {
+        "database_field": "card.iconMediaId",
+        "extracted_ids": [223],
+        "missing_count": 3,
+        "rendering": "PARTIAL - only 1 of 4 cards has icon"
+      },
+      "sections_media": {
+        "database_field": "section.mediaIds",
+        "extracted_ids": [],
+        "status": "EMPTY - no media linked to sections"
+      }
+    },
+    "about": {
+      "batch_endpoint": "/api/about-batch includes mediaAssets array",
+      "media_loading": "Pre-loads media in batch response",
+      "media_resolver": "useMediaResolver hook for URL generation",
+      "status": "INFRASTRUCTURE WORKING but content missing"
+    },
+    "sustainability": {
+      "media_loading": "Loads ALL 61 media files via /api/media?all=true",
+      "efficiency_issue": "INEFFICIENT - loads 59 orphaned files unnecessarily",
+      "actual_need": "Only needs ~5-10 files for sustainability content",
+      "recommendation": "Switch to targeted loading like Manufacturing page"
+    },
+    "manufacturing": {
+      "media_loading": "OPTIMIZED - Collects required IDs first, then POST /api/media/batch",
+      "batch_request": "Specific IDs only",
+      "current_ids_requested": "None (all media fields NULL)",
+      "status": "EFFICIENT PATTERN but no content to load"
+    },
+    "technology": {
+      "media_loading": "Separate queries per entity type",
+      "view_model_normalization": "Complex mapping layer",
+      "status": "WORKING but no media content configured"
+    }
+  },
+  "shared_media_mapping": {
+    "media_200_image-27.png": {
+      "used_on_pages": ["Homepage"],
+      "usage_context": "Hero section background image",
+      "is_shared": false,
+      "importance": "CRITICAL - only homepage hero image"
+    },
+    "media_223_shorts.png": {
+      "used_on_pages": ["Homepage"],
+      "usage_context": "Process card #1 icon",
+      "is_shared": false,
+      "importance": "MEDIUM - decorative icon for one process card"
+    },
+    "orphaned_files": {
+      "potential_reuse": [
+        "Factory images (175, 177, 179, 226) - should be linked to manufacturing_processes",
+        "Product images (174, 178, 206, 218, 221) - should be linked to products table",
+        "Fabric swatches (204, 205, 225) - should be linked to fabrics table",
+        "Category icons (166-170) - should replace image_url strings in categories",
+        "Video (172) - could be used for hero backgrounds or process demonstrations",
+        "3D Model (173) - could be used for product visualization"
+      ]
+    }
+  },
+  "critical_findings": {
+    "storage_waste": {
+      "severity": "HIGH",
+      "issue": "59 out of 61 files (96.7%) are orphaned",
+      "storage_wasted": "274.76 MB of 282.4 MB total",
+      "impact": "Unnecessary storage costs, admin confusion, performance overhead",
+      "root_cause": "Files uploaded via admin media manager but never linked to content"
+    },
+    "missing_critical_media": {
+      "severity": "CRITICAL",
+      "issue": "Major frontend sections lack media despite files being available",
+      "examples": [
+        "Homepage: 3 process cards without icons (files uploaded but not linked)",
+        "Manufacturing: All processes text-only (factory images available as IDs 175, 177, 179, 226)",
+        "About: Timeline text-only (no images linked to 5 entries)",
+        "All hero sections: Missing background media across multiple pages"
+      ],
+      "impact": "Poor visual experience, content appears incomplete"
+    },
+    "schema_inconsistency": {
+      "severity": "MEDIUM",
+      "issue": "Categories table uses image_url (string) instead of media_id (integer FK)",
+      "impact": "Categories can't leverage Object Storage, URLs may break",
+      "uploaded_but_unused": "5 SVG category icons (IDs 166-170) uploaded but unusable",
+      "recommendation": "Migrate categories to use media_id foreign key"
+    },
+    "inefficient_media_loading": {
+      "severity": "MEDIUM",
+      "issue": "Sustainability page loads all 61 files when only ~5-10 needed",
+      "impact": "Slow page load, wasted bandwidth, poor performance",
+      "recommendation": "Implement targeted media loading like Manufacturing page"
+    }
+  },
+  "recommendations": {
+    "immediate_actions": [
+      {
+        "priority": "CRITICAL",
+        "action": "Link existing orphaned files to content",
+        "details": "Connect factory images (175, 177, 179, 226) to manufacturing_processes.media_ids",
+        "benefit": "Instantly improves visual content without new uploads"
+      },
+      {
+        "priority": "CRITICAL",
+        "action": "Add process card icons",
+        "details": "Upload 3 more icons or link existing images to homepage_process_cards records 2, 3, 4",
+        "benefit": "Complete visual consistency on homepage"
+      },
+      {
+        "priority": "HIGH",
+        "action": "Link product images to products table",
+        "details": "Update products.primary_image_id for 4 products using orphaned images (174, 178, 206, 218, 221)",
+        "benefit": "Products display with images instead of placeholders"
+      },
+      {
+        "priority": "HIGH",
+        "action": "Link fabric swatches",
+        "details": "Update fabrics.visual_swatch_id using orphaned swatch images (204, 205, 225)",
+        "benefit": "Fabric display becomes visual instead of text-only"
+      },
+      {
+        "priority": "MEDIUM",
+        "action": "Optimize Sustainability media loading",
+        "details": "Change from /api/media?all=true to targeted loading like Manufacturing",
+        "benefit": "Faster page load, reduced bandwidth"
+      }
+    ],
+    "schema_improvements": [
+      {
+        "priority": "HIGH",
+        "action": "Migrate categories.image_url to categories.media_id",
+        "details": "Change schema from varchar to integer FK referencing media_assets",
+        "migration_steps": [
+          "1. Add new column categories.media_id",
+          "2. Upload category SVG icons (166-170) to correct media records",
+          "3. Update categories to reference media_id",
+          "4. Deprecate image_url column",
+          "5. Run npm run db:push to sync schema"
+        ],
+        "benefit": "Categories leverage Object Storage, consistent media management"
+      }
+    ],
+    "cleanup_operations": [
+      {
+        "priority": "LOW",
+        "action": "Orphan file audit",
+        "details": "Review all 59 orphaned files - either link to content or delete",
+        "benefit": "Reduce storage costs, clean up admin media library",
+        "caution": "Verify files are truly unused before deletion"
+      },
+      {
+        "priority": "LOW",
+        "action": "Implement media usage tracking",
+        "details": "Add referenced_count column to track how many times each media file is used",
+        "benefit": "Easy identification of orphaned files in future"
+      }
+    ],
+    "admin_validation": [
+      {
+        "priority": "MEDIUM",
+        "action": "Add media link validation in admin",
+        "details": "Warn admin when uploading media without linking to content",
+        "benefit": "Prevent future orphan files"
+      },
+      {
+        "priority": "MEDIUM",
+        "action": "Add 'unused media' admin view",
+        "details": "Show orphaned files in admin with options to link or delete",
+        "benefit": "Help admin manage media library effectively"
+      }
+    ]
+  },
+  "media_file_inventory": {
+    "note": "Complete list of all 61 media files with status",
+    "referenced_files": 2,
+    "orphaned_files": 59,
+    "total_files": 61,
+    "storage_health": "POOR - 96.7% orphan rate indicates broken media management workflow"
+  }
+}

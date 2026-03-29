@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Full Stack Dev Server",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:server"],
+      "port": 5002
+    },
+    {
+      "name": "Client Dev (Vite Only)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:client"],
+      "port": 5002
+    },
+    {
+      "name": "Server Dev (Mock DB)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "--workspace=@run-remix/server", "dev:mock"],
+      "port": 5002
+    }
+  ]
+}

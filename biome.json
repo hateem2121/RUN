@@ -1,0 +1,83 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/.gemini",
+      "!**/coverage",
+      "!**/routeTree.gen.ts",
+      "!**/.ds_store",
+      "!**/.env",
+      "!attached_assets",
+      "!**/.react-router",
+      "!client/.react-router",
+      "!**/playwright-report",
+      "!**/test-results",
+      "!**/openapi-spec.json",
+      "!audit"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": { "level": "on", "options": {} }
+      }
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "nursery": {
+        "useSortedClasses": "off"
+      },
+      "a11y": {
+        "recommended": false
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "warn"
+      },
+      "correctness": {
+        "noEmptyPattern": "off",
+        "useExhaustiveDependencies": "warn"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "off",
+        "noConsole": "off",
+        "noExplicitAny": "error",
+        "noImplicitAnyLet": "error",
+        "useAwait": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off",
+        "useBlockStatements": "off",
+        "noUnusedTemplateLiteral": "off"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double"
+    }
+  },
+  "css": {
+    "parser": { "cssModules": false, "tailwindDirectives": true },
+    "linter": { "enabled": true },
+    "formatter": { "enabled": true, "indentStyle": "space" }
+  }
+}

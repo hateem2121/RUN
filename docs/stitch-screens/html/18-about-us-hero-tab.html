@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Run Apparel Admin - About Us Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3c83f6",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0A0A0A",
+                        "sidebar-dark": "#111111",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(60, 131, 246, 0.3);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-64 flex-shrink-0 bg-sidebar-dark border-r border-white/5 flex flex-col">
+<div class="p-6 flex items-center gap-3 border-b border-white/5">
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+<div>
+<h1 class="text-sm font-bold tracking-tight uppercase">Run Apparel</h1>
+<p class="text-[10px] text-slate-500 font-medium">Enterprise Admin</p>
+</div>
+</div>
+<nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto custom-scrollbar">
+<div class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors cursor-pointer">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors cursor-pointer">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="text-sm font-medium">Products</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors cursor-pointer">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-sm font-medium">Orders</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 bg-primary/10 text-primary rounded-lg transition-colors cursor-pointer">
+<span class="material-symbols-outlined">info</span>
+<span class="text-sm font-medium font-bold">About Us</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors cursor-pointer">
+<span class="material-symbols-outlined">group</span>
+<span class="text-sm font-medium">Customers</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors cursor-pointer">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</div>
+</nav>
+<div class="p-4 border-t border-white/5">
+<div class="flex items-center gap-3 p-2 rounded-xl glass-card">
+<img class="size-10 rounded-lg object-cover" data-alt="Professional portrait of Alex Rivera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrU3iZZEDaGNsidAo8MoZGX28Ck7VyoqkRn5DGbHCr-pCNzS2qdXYDAGJCIDsp-WyNV7ESafiQWtACjgu10FjhjXCKwI0UXhvIgJu3F_xs4ze473ZUzwyRaxLZzDYgBtw7X--SJmranUryqo0VVp6acbfzaI9WkpDWlHWxUkif_vNHdw3GgQKGX_e9xxPlQ163to3OmwiSaqxhY_5uKwoQxbU0OiOhNHTAvRn0Vx8MiuGx9ynni6WyLe-YbT4VzAiHBD50oCJEa3E"/>
+<div class="flex-1 min-w-0">
+<p class="text-xs font-bold truncate">Alex Rivera</p>
+<p class="text-[10px] text-slate-500 truncate">Senior Administrator</p>
+</div>
+<button class="text-slate-500 hover:text-white">
+<span class="material-symbols-outlined text-lg">logout</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto bg-[#0A0A0A] custom-scrollbar">
+<!-- Header -->
+<header class="sticky top-0 z-10 glass-card border-x-0 border-t-0 px-8 py-6 flex items-center justify-between">
+<div>
+<h2 class="text-2xl font-black tracking-tight">About Us Management</h2>
+<p class="text-sm text-slate-500">Manage brand identity, company history, and team profile sections.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 text-sm font-bold text-slate-400 hover:text-white transition-colors">Discard</button>
+<button class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg text-sm font-bold shadow-lg shadow-primary/20 transition-all">Publish Changes</button>
+</div>
+</header>
+<div class="max-w-6xl mx-auto px-8 py-8">
+<!-- Tabs -->
+<div class="flex border-b border-white/5 mb-8 overflow-x-auto no-scrollbar">
+<button class="px-6 py-4 text-sm font-bold border-b-2 border-primary text-primary whitespace-nowrap">Hero Section</button>
+<button class="px-6 py-4 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-300 transition-colors whitespace-nowrap">Statistics</button>
+<button class="px-6 py-4 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-300 transition-colors whitespace-nowrap">Team Message</button>
+<button class="px-6 py-4 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-300 transition-colors whitespace-nowrap">Locations</button>
+<button class="px-6 py-4 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-300 transition-colors whitespace-nowrap">Other Sections</button>
+</div>
+<!-- Hero Tab Content -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+<div class="lg:col-span-2 space-y-6">
+<div class="glass-card p-6 rounded-xl">
+<h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">edit_note</span> Content Configuration
+                            </h3>
+<div class="space-y-6">
+<div>
+<label class="block text-xs font-bold text-slate-500 uppercase mb-2">Main Headline</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none" type="text" value="Innovating the Future of Precision"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 uppercase mb-2">Subheadline</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none" type="text" value="Building tools for creators who define the next generation of performance apparel."/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 uppercase mb-2">Body Paragraph</label>
+<textarea class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none resize-none" rows="6">Our journey started with a simple idea: that performance gear should be as intelligent as the athletes who wear it. Over the past decade, we've transitioned from a boutique lab to a global leader in precision-engineered textiles. We believe in the power of movement and the relentless pursuit of perfection in every stitch.</textarea>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-6">
+<div class="glass-card p-6 rounded-xl flex flex-col items-center">
+<h3 class="w-full text-xs font-bold text-slate-500 uppercase mb-4">Hero Media</h3>
+<div class="grid grid-cols-2 gap-3 w-full">
+<div class="relative group cursor-pointer">
+<div class="aspect-[4/5] rounded-lg overflow-hidden border border-white/10 bg-white/5">
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined text-white">upload</span>
+</div>
+<img class="w-full h-full object-cover" data-alt="High-fashion model wearing athletic apparel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC14I5qz0RODFk3GaY6ZMTfun8G1qmEuOQ9eI53e5qolpgVUy5DO4b3bUnPdBWryVeBb4PDi_RjKJ-wrZ7FqihIKWkQRAKcuPBpI67rgCtuomle-UITADQQ57PMENOdXqMxA4m-Kb6Lc44nkmD1rrjkwYLOTEfD8gBqV73BM7Ip6clofIe7bAPrQa9UZi_HfQzDx9ZYedT6btz1IXx9sPUqBIp_9JdDEWgDl5rH8AcmbwXXawtTzRVX-Jm1s2zcHISTBJ0bATCtHhg"/>
+</div>
+<p class="text-[10px] text-center mt-2 font-bold text-slate-400">Hero Image</p>
+</div>
+<div class="relative group cursor-pointer">
+<div class="aspect-[4/5] rounded-lg overflow-hidden border border-white/10 bg-white/5">
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined text-white">upload</span>
+</div>
+<div class="w-full h-full bg-gradient-to-br from-slate-900 to-primary/20"></div>
+</div>
+<p class="text-[10px] text-center mt-2 font-bold text-slate-400">Background</p>
+</div>
+</div>
+<button class="w-full mt-4 py-2 border border-white/10 hover:bg-white/5 rounded-lg text-xs font-bold transition-all">Manage Assets</button>
+</div>
+<div class="glass-card p-6 rounded-xl">
+<h3 class="text-xs font-bold text-slate-500 uppercase mb-4">Quick Stats</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/5">
+<span class="text-xs font-medium text-slate-400">Visibility</span>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/20 text-green-400 uppercase">Public</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/5">
+<span class="text-xs font-medium text-slate-400">Last Modified</span>
+<span class="text-[10px] font-bold text-slate-300 uppercase">2 hours ago</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Collapsed Accordion Sections -->
+<div class="space-y-4">
+<!-- Statistics Section -->
+<div class="glass-card rounded-xl overflow-hidden border border-white/5">
+<div class="px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-500">query_stats</span>
+<span class="font-bold">Animated Statistics</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xs text-slate-500">4 active stats</span>
+<span class="material-symbols-outlined text-slate-500">expand_more</span>
+</div>
+</div>
+<!-- Mock content for layout context -->
+<div class="hidden border-t border-white/5 p-6 bg-white/5">
+<div class="flex items-center justify-between p-4 glass-card rounded-lg mb-2">
+<div class="flex gap-8">
+<div><p class="text-[10px] uppercase text-slate-500 font-bold mb-1">Value</p><p class="font-bold">10k+</p></div>
+<div><p class="text-[10px] uppercase text-slate-500 font-bold mb-1">Label</p><p class="font-bold">Happy Clients</p></div>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-10 h-5 bg-primary rounded-full relative"><div class="absolute right-1 top-1 size-3 bg-white rounded-full"></div></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Team Message Section -->
+<div class="glass-card rounded-xl overflow-hidden border border-white/5">
+<div class="px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-500">format_quote</span>
+<span class="font-bold">Team Message</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xs text-slate-500">Updated Jan 12</span>
+<span class="material-symbols-outlined text-slate-500">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Locations Section -->
+<div class="glass-card rounded-xl overflow-hidden border border-white/5">
+<div class="px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-500">location_on</span>
+<span class="font-bold">Global Locations</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex -space-x-2">
+<div class="size-6 rounded-full border-2 border-[#111] bg-blue-500 flex items-center justify-center text-[8px] font-bold">NY</div>
+<div class="size-6 rounded-full border-2 border-[#111] bg-indigo-500 flex items-center justify-center text-[8px] font-bold">LDN</div>
+<div class="size-6 rounded-full border-2 border-[#111] bg-slate-700 flex items-center justify-center text-[8px] font-bold">TKO</div>
+</div>
+<span class="material-symbols-outlined text-slate-500">expand_more</span>
+</div>
+</div>
+<!-- List view for locations when expanded -->
+<div class="hidden border-t border-white/5 p-6 space-y-3">
+<div class="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary"><span class="material-symbols-outlined">corporate_fare</span></div>
+<div><p class="font-bold text-sm">New York Global HQ</p><p class="text-xs text-slate-500">Manhattan, NY</p></div>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-black bg-primary/20 text-primary uppercase">HQ</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-slate-800 rounded-lg flex items-center justify-center text-slate-400"><span class="material-symbols-outlined">factory</span></div>
+<div><p class="font-bold text-sm">Precision Textiles Lab</p><p class="text-xs text-slate-500">Kyoto, JP</p></div>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-black bg-slate-700 text-slate-300 uppercase">Factory</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="mt-12 pt-8 border-t border-white/5 flex items-center justify-between">
+<p class="text-xs text-slate-600 font-medium italic">All changes are staged locally until published.</p>
+<div class="flex gap-4">
+<button class="flex items-center gap-2 px-4 py-2 border border-white/10 rounded-lg text-xs font-bold hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined text-sm">visibility</span> Live Preview
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

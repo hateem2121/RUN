@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Storage Optimization - Admin CMS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3c83f6",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0A0A0A",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-64 flex-shrink-0 border-r border-white/10 bg-background-dark flex flex-col">
+<div class="p-6">
+<h1 class="text-white text-lg font-bold tracking-tight">Run Apparel CMS</h1>
+<p class="text-slate-500 text-xs uppercase tracking-wider font-semibold mt-1">Admin Console</p>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="text-sm font-medium">Content</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-sm font-medium">Catalog</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-primary/10 text-primary border border-primary/20 rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">System</span>
+</a>
+<div class="pt-4 pb-2 px-3 text-[10px] font-bold text-slate-600 uppercase tracking-widest">Analytics</div>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-sm font-medium">Performance</span>
+</a>
+</nav>
+<div class="p-4 border-t border-white/10">
+<div class="flex items-center gap-3 px-2">
+<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40">
+<span class="text-xs font-bold text-primary">JD</span>
+</div>
+<div class="overflow-hidden">
+<p class="text-xs font-medium text-white truncate">John Doe</p>
+<p class="text-[10px] text-slate-500 truncate">Super Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto bg-[#0D0D0D]">
+<div class="max-w-[1200px] mx-auto p-8">
+<!-- Header Section -->
+<header class="flex flex-wrap justify-between items-end gap-4 mb-8">
+<div>
+<h2 class="text-3xl font-black text-white tracking-tight">Storage Optimization</h2>
+<p class="text-slate-500 text-sm mt-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">schedule</span>
+                            Last scanned: 2 minutes ago
+                        </p>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-lg text-sm font-bold transition-all flex items-center gap-2 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg">lock</span>
+                        Scan Now
+                    </button>
+</header>
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+<div class="glass-card p-5 rounded-xl">
+<p class="text-slate-400 text-sm font-medium">Total Storage Used</p>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-2xl font-bold text-white">2.4 GB</span>
+<span class="text-slate-500 text-sm">/ 10 GB</span>
+</div>
+<div class="mt-4 w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 24%"></div>
+</div>
+<p class="text-xs text-slate-500 mt-2">24% capacity used</p>
+</div>
+<div class="glass-card p-5 rounded-xl border-amber-500/30">
+<p class="text-slate-400 text-sm font-medium">Orphaned Files</p>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-2xl font-bold text-amber-500">47 files</span>
+</div>
+<p class="text-sm text-amber-500/80 mt-1 font-medium">890 MB total waste</p>
+<div class="mt-3 flex items-center gap-1 text-[10px] font-bold text-amber-500 uppercase tracking-tighter">
+<span class="material-symbols-outlined text-sm">warning</span>
+                            Warning
+                        </div>
+</div>
+<div class="glass-card p-5 rounded-xl">
+<p class="text-slate-400 text-sm font-medium">Optimized Assets</p>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-2xl font-bold text-white">376</span>
+<span class="text-slate-500 text-sm">/ 423</span>
+</div>
+<p class="text-sm text-emerald-500 mt-1 font-medium">89% completion</p>
+<div class="mt-3 flex items-center gap-1 text-[10px] font-bold text-emerald-500 uppercase tracking-tighter">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+                            Healthy
+                        </div>
+</div>
+<div class="glass-card p-5 rounded-xl">
+<p class="text-slate-400 text-sm font-medium">Pending Optimization</p>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-2xl font-bold text-white">12 files</span>
+</div>
+<p class="text-sm text-slate-500 mt-1 font-medium">Processing queued</p>
+<div class="mt-3 flex items-center gap-1 text-[10px] font-bold text-slate-500 uppercase tracking-tighter">
+<span class="material-symbols-outlined text-sm">pending</span>
+                            Pending
+                        </div>
+</div>
+</div>
+<!-- Panels Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Left Panel: Storage Breakdown -->
+<div class="lg:col-span-4 glass-card rounded-xl p-6">
+<h3 class="text-lg font-bold text-white mb-6">Storage Breakdown</h3>
+<div class="relative w-48 h-48 mx-auto mb-8">
+<!-- SVG Donut Chart Mockup -->
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="rgba(255,255,255,0.05)" stroke-width="3.5"></circle>
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="#3c83f6" stroke-dasharray="45 55" stroke-dashoffset="0" stroke-width="3.5"></circle>
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="#a855f7" stroke-dasharray="35 65" stroke-dashoffset="-45" stroke-width="3.5"></circle>
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="#f59e0b" stroke-dasharray="10 90" stroke-dashoffset="-80" stroke-width="3.5"></circle>
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="#10b981" stroke-dasharray="10 90" stroke-dashoffset="-90" stroke-width="3.5"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-2xl font-bold text-white tracking-tighter">2.4</span>
+<span class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">GB Total</span>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-sm bg-primary"></div>
+<span class="text-slate-300">Images</span>
+</div>
+<span class="font-bold text-white">45%</span>
+</div>
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-sm bg-purple-500"></div>
+<span class="text-slate-300">Videos</span>
+</div>
+<span class="font-bold text-white">35%</span>
+</div>
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-sm bg-amber-500"></div>
+<span class="text-slate-300">3D Models</span>
+</div>
+<span class="font-bold text-white">10%</span>
+</div>
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-sm bg-emerald-500"></div>
+<span class="text-slate-300">Documents</span>
+</div>
+<span class="font-bold text-white">10%</span>
+</div>
+</div>
+</div>
+<!-- Right Panel: Orphaned Files Table -->
+<div class="lg:col-span-8 glass-card rounded-xl p-6 flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-bold text-white">Orphaned Files</h3>
+<span class="text-xs bg-amber-500/10 text-amber-500 px-2 py-1 rounded font-bold uppercase">47 Issues Found</span>
+</div>
+<div class="flex-1 overflow-x-auto">
+<table class="w-full text-left">
+<thead class="border-b border-white/5 text-slate-500 text-xs uppercase tracking-wider">
+<tr>
+<th class="pb-3 font-semibold">Filename</th>
+<th class="pb-3 font-semibold">Type</th>
+<th class="pb-3 font-semibold">Size</th>
+<th class="pb-3 font-semibold">Last Modified</th>
+<th class="pb-3 text-right font-semibold">Action</th>
+</tr>
+</thead>
+<tbody class="text-sm">
+<tr class="border-b border-white/5 group hover:bg-white/[0.02]">
+<td class="py-4 font-medium text-slate-200">hero_banner_fallback.webp</td>
+<td class="py-4">
+<span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 text-[10px] font-bold">IMAGE</span>
+</td>
+<td class="py-4 text-slate-400">12.4 MB</td>
+<td class="py-4 text-slate-400">Oct 12, 2023</td>
+<td class="py-4 text-right">
+<button class="text-slate-500 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</td>
+</tr>
+<tr class="border-b border-white/5 group hover:bg-white/[0.02]">
+<td class="py-4 font-medium text-slate-200">summer_campaign_v4.mp4</td>
+<td class="py-4">
+<span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 text-[10px] font-bold">VIDEO</span>
+</td>
+<td class="py-4 text-slate-400">442.1 MB</td>
+<td class="py-4 text-slate-400">Sep 28, 2023</td>
+<td class="py-4 text-right">
+<button class="text-slate-500 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</td>
+</tr>
+<tr class="border-b border-white/5 group hover:bg-white/[0.02]">
+<td class="py-4 font-medium text-slate-200">temp_product_render_01.glb</td>
+<td class="py-4">
+<span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 text-[10px] font-bold">3D MODEL</span>
+</td>
+<td class="py-4 text-slate-400">88.5 MB</td>
+<td class="py-4 text-slate-400">Nov 04, 2023</td>
+<td class="py-4 text-right">
+<button class="text-slate-500 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</td>
+</tr>
+<tr class="border-b border-white/5 group hover:bg-white/[0.02]">
+<td class="py-4 font-medium text-slate-200">draft_specs_archive.pdf</td>
+<td class="py-4">
+<span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 text-[10px] font-bold">DOC</span>
+</td>
+<td class="py-4 text-slate-400">4.2 MB</td>
+<td class="py-4 text-slate-400">Aug 15, 2023</td>
+<td class="py-4 text-right">
+<button class="text-slate-500 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Panel Actions -->
+<div class="mt-8 flex flex-wrap gap-4 pt-6 border-t border-white/5">
+<button class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all">
+<span class="material-symbols-outlined text-lg">auto_fix_high</span>
+                                Optimize All Assets
+                            </button>
+<button class="bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 px-5 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all">
+<span class="material-symbols-outlined text-lg">delete_sweep</span>
+                                Delete All Orphaned
+                            </button>
+<div class="flex-1"></div>
+<div class="flex items-center gap-1 text-slate-500 text-xs">
+<span class="material-symbols-outlined text-sm">info</span>
+                                Deleting orphaned files cannot be undone.
+                            </div>
+</div>
+</div>
+</div>
+<!-- Recent Activities Section (Additional) -->
+<div class="mt-8 glass-card rounded-xl p-6">
+<h3 class="text-lg font-bold text-white mb-4">Optimization History</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="flex gap-4 items-start">
+<div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-emerald-500">compress</span>
+</div>
+<div>
+<p class="text-sm font-bold text-white">Bulk Compression</p>
+<p class="text-xs text-slate-500">Reduced 45 images by 1.2 GB</p>
+<p class="text-[10px] text-slate-600 mt-1 uppercase font-bold tracking-tighter">Yesterday, 4:30 PM</p>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary">auto_delete</span>
+</div>
+<div>
+<p class="text-sm font-bold text-white">Auto-Cleanup</p>
+<p class="text-xs text-slate-500">Removed 12 temporary cache files</p>
+<p class="text-[10px] text-slate-600 mt-1 uppercase font-bold tracking-tighter">2 days ago</p>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-purple-500">video_settings</span>
+</div>
+<div>
+<p class="text-sm font-bold text-white">Video Transcoding</p>
+<p class="text-xs text-slate-500">H.265 optimization for 3 files</p>
+<p class="text-[10px] text-slate-600 mt-1 uppercase font-bold tracking-tighter">Nov 12, 2023</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

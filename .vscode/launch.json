@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Express Server",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/server/index.ts",
+      "runtimeArgs": ["--loader", "tsx"],
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "5001"
+      },
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Debug Client (Chrome)",
+      "url": "http://localhost:5001",
+      "webRoot": "${workspaceFolder}/client"
+    }
+  ]
+}

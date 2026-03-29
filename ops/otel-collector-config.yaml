@@ -1,0 +1,29 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+processors:
+  batch:
+    timeout: 10s
+    send_batch_size: 1024
+
+exporters:
+  googlecloud:
+    # Google Cloud Trace
+    project: ${env:GOOGLE_CLOUD_PROJECT}
+    trace:
+      attribute_mappings:
+        - key: http.route
+          replacement: \/api\/.*
+
+  logging:
+    loglevel: info
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [googlecloud, logging]

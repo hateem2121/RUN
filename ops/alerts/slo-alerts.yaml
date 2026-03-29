@@ -1,0 +1,159 @@
+# SLO Alert Policies for Cloud Monitoring
+# Phase 2: Observability & SLO Foundation
+#
+# Deploy with: gcloud monitoring policies create --policy-from-file=slo-alerts.yaml
+
+---
+# Availability SLO Alert - Page Level (14.4x burn rate)
+displayName: "[SLO] Availability - Critical Burn Rate"
+documentation:
+  content: |
+    Error budget is being consumed at 14.4x normal rate.
+    This means the 99.9% availability SLO will be breached within 1 hour.
+
+    **Immediate Actions:**
+    1. Check Cloud Run error logs
+    2. Review recent deployments
+    3. Check database connectivity
+    4. Escalate if not resolved in 15 minutes
+
+    **Runbook:** docs/runbooks/incident-response.md
+  mimeType: text/markdown
+conditions:
+  - displayName: "High Error Rate (5xx > 0.1% over 5 min)"
+    conditionThreshold:
+      filter: |
+        resource.type = "cloud_run_revision"
+        AND resource.labels.service_name = "run-remix"
+        AND metric.type = "run.googleapis.com/request_count"
+        AND metric.labels.response_code_class = "5xx"
+      aggregations:
+        - alignmentPeriod: "300s"
+          crossSeriesReducer: "REDUCE_SUM"
+          perSeriesAligner: "ALIGN_RATE"
+      comparison: "COMPARISON_GT"
+      duration: "60s"
+      thresholdValue: 0.001 # 0.1% threshold
+      trigger:
+        count: 1
+combiner: "OR"
+alertStrategy:
+  autoClose: "604800s" # 7 days
+notificationChannels:
+  - "projects/<PROJECT_ID>/notificationChannels/<PAGERDUTY_CHANNEL_ID>"
+
+---
+# Latency SLO Alert - P95 Threshold
+displayName: "[SLO] Latency P95 - Warning"
+documentation:
+  content: |
+    P95 latency has exceeded 200ms threshold.
+
+    **Actions:**
+    1. Check cache hit rates
+    2. Review slow database queries
+    3. Check for resource exhaustion
+
+    **Dashboard:** Cloud Run → Metrics → Latency
+  mimeType: text/markdown
+conditions:
+  - displayName: "P95 Latency > 200ms"
+    conditionThreshold:
+      filter: |
+        resource.type = "cloud_run_revision"
+        AND resource.labels.service_name = "run-remix"
+        AND metric.type = "run.googleapis.com/request_latencies"
+      aggregations:
+        - alignmentPeriod: "300s"
+          crossSeriesReducer: "REDUCE_PERCENTILE_95"
+          perSeriesAligner: "ALIGN_DELTA"
+      comparison: "COMPARISON_GT"
+      duration: "300s" # 5 minutes
+      thresholdValue: 200 # 200ms
+      trigger:
+        count: 1
+combiner: "OR"
+alertStrategy:
+  autoClose: "86400s" # 1 day
+notificationChannels:
+  - "projects/<PROJECT_ID>/notificationChannels/<SLACK_CHANNEL_ID>"
+
+---
+# Error Budget Alert - 50% Consumed
+displayName: "[SLO] Error Budget - 50% Consumed"
+documentation:
+  content: |
+    Error budget is 50% consumed for this month.
+
+    **Policy:**
+    - Increase monitoring
+    - Avoid risky deployments
+    - Review reliability improvements
+
+    **Reference:** docs/operations/slo-definitions.md
+  mimeType: text/markdown
+conditions:
+  - displayName: "Monthly error budget 50% consumed"
+    conditionThreshold:
+      filter: |
+        resource.type = "cloud_run_revision"
+        AND resource.labels.service_name = "run-remix"
+        AND metric.type = "run.googleapis.com/request_count"
+        AND metric.labels.response_code_class = "5xx"
+      aggregations:
+        - alignmentPeriod: "86400s" # 1 day
+          crossSeriesReducer: "REDUCE_SUM"
+          perSeriesAligner: "ALIGN_SUM"
+      comparison: "COMPARISON_GT"
+      duration: "0s"
+      # 43.2 min/month budget = 2592 seconds
+      # 50% = 1296 seconds of downtime allowed
+      # This translates to cumulative error count threshold
+      thresholdValue: 1000 # Adjust based on traffic volume
+      trigger:
+        count: 1
+combiner: "OR"
+alertStrategy:
+  autoClose: "2592000s" # 30 days
+notificationChannels:
+  - "projects/<PROJECT_ID>/notificationChannels/<EMAIL_CHANNEL_ID>"
+
+---
+# Cache Health Alert
+displayName: "[Infra] Cache Hit Rate Low"
+documentation:
+  content: |
+    Cache hit rate has dropped below 50%.
+
+    **Possible Causes:**
+    - Cache invalidation storm
+    - Memory pressure (check L1 limits)
+    - Redis connectivity issues
+
+    **Actions:**
+    1. Check unified cache health endpoint
+    2. Review cache key patterns
+    3. Consider cache warmup
+  mimeType: text/markdown
+conditions:
+  - displayName: "Cache hit rate < 50%"
+    conditionMonitoredResource:
+      type: "generic_task"
+      labels:
+        project_id: "<PROJECT_ID>"
+        location: "us-central1"
+        namespace: "run-remix"
+        job: "api-server"
+        task_id: "cache-metrics"
+    conditionThreshold:
+      filter: 'metric.type = "custom.googleapis.com/cache/hit_rate"'
+      comparison: "COMPARISON_LT"
+      thresholdValue: 50
+      duration: "600s" # 10 minutes
+      trigger:
+        count: 1
+combiner: "OR"
+alertStrategy:
+  autoClose: "86400s"
+notificationChannels:
+  - "projects/<PROJECT_ID>/notificationChannels/<SLACK_CHANNEL_ID>"

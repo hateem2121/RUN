@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Object Storage Lifecycle Policy Configuration",
+  "description": "Lifecycle rules for Replit Object Storage - Application-level implementation",
+  "version": "1.0",
+  "bucket": "${REPLIT_OBJSTORE_BUCKET_ID}",
+
+  "rules": [
+    {
+      "id": "temp-uploads-cleanup",
+      "description": "Automatically delete temporary upload chunks older than 24 hours",
+      "status": "enabled",
+      "filter": {
+        "prefix": "media/temp/uploads/",
+        "comment": "Matches: media/temp/uploads/{uploadId}/chunk-*"
+      },
+      "action": {
+        "type": "delete"
+      },
+      "condition": {
+        "age_days": 1,
+        "age_hours": 24,
+        "age_seconds": 86400
+      },
+      "implementation": "application",
+      "module": "server/lib/storage-lifecycle-scheduler.ts",
+      "impact": {
+        "description": "Prevents storage bloat from abandoned uploads",
+        "benefits": [
+          "Automatic cleanup of failed/incomplete chunked uploads",
+          "No manual intervention required",
+          "Estimated savings: 5-10% of total storage for high-upload workloads"
+        ]
+      }
+    },
+    {
+      "id": "cold-storage-transition",
+      "description": "Move media files older than 180 days to cold storage tier",
+      "status": "disabled",
+      "comment": "Enable when cold storage tier is available",
+      "filter": {
+        "prefix": "media/",
+        "exclude": ["media/temp/", "media/thumbnails/"],
+        "comment": "Matches: media/images/*, media/videos/*, media/models/*, media/documents/*"
+      },
+      "action": {
+        "type": "transition",
+        "storage_class": "COLDLINE",
+        "alternatives": {
+          "NEARLINE": "30-day minimum access",
+          "ARCHIVE": "365-day minimum access"
+        }
+      },
+      "condition": {
+        "age_days": 180,
+        "age_months": 6
+      },
+      "implementation": "native",
+      "implementation_notes": "Requires native GCS lifecycle support - currently disabled",
+      "cost_impact": {
+        "coldline_cost_per_gb_month": "$0.004",
+        "standard_cost_per_gb_month": "$0.020",
+        "retrieval_cost_per_gb": "$0.01",
+        "best_for": ["Archived products", "Historical media", "Compliance retention"]
+      }
+    },
+    {
+      "id": "orphaned-thumbnails-cleanup",
+      "description": "Delete thumbnails for media that no longer exists",
+      "status": "disabled",
+      "comment": "Currently using dynamic thumbnail generation",
+      "filter": {
+        "prefix": "media/thumbnails/"
+      },
+      "action": {
+        "type": "delete",
+        "condition": "parent_missing"
+      },
+      "condition": {
+        "age_days": 7,
+        "requires_validation": true
+      },
+      "implementation": "application",
+      "note": "Thumbnails are generated dynamically on-demand. Enable if switching to stored thumbnails."
+    }
+  ],
+
+  "cleanup_schedule": {
+    "interval": "1h",
+    "timezone": "UTC",
+    "enabled": true,
+    "batch_size": 100,
+    "retry_failures": true,
+    "retry_delay": "5m",
+    "max_retries": 3,
+    "log_level": "info",
+    "metrics_enabled": true,
+    "max_deletions_per_run": 1000,
+    "dry_run": false
+  },
+
+  "monitoring": {
+    "metrics": [
+      {
+        "name": "cleanup_files_deleted",
+        "type": "counter"
+      },
+      {
+        "name": "cleanup_storage_freed",
+        "type": "gauge",
+        "unit": "bytes"
+      },
+      {
+        "name": "cleanup_duration",
+        "type": "histogram",
+        "unit": "milliseconds"
+      },
+      {
+        "name": "cleanup_errors",
+        "type": "counter"
+      }
+    ],
+    "alerts": [
+      {
+        "name": "high_temp_storage",
+        "condition": "temp_storage_size > 1GB",
+        "severity": "warning",
+        "description": "Temporary storage exceeds 1GB - may indicate cleanup failures"
+      },
+      {
+        "name": "cleanup_failures",
+        "condition": "cleanup_errors > 10 in 1h",
+        "severity": "error",
+        "description": "Multiple cleanup failures detected"
+      }
+    ]
+  },
+
+  "reference": {
+    "comment": "GCS-compatible lifecycle policy format for future native support",
+    "gcs_lifecycle_format": {
+      "lifecycle": {
+        "rule": [
+          {
+            "action": {
+              "type": "Delete"
+            },
+            "condition": {
+              "age": 1,
+              "matchesPrefix": ["media/temp/uploads/"]
+            }
+          },
+          {
+            "action": {
+              "type": "SetStorageClass",
+              "storageClass": "COLDLINE"
+            },
+            "condition": {
+              "age": 180,
+              "matchesPrefix": [
+                "media/images/",
+                "media/videos/",
+                "media/models/",
+                "media/documents/"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "cli_command": "gcloud storage buckets update gs://${BUCKET_NAME} --lifecycle-file=storage-lifecycle-policy.json"
+  }
+}

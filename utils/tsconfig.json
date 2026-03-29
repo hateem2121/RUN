@@ -1,0 +1,21 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "../dist/utils",
+    "tsBuildInfoFile": "../dist/utils/.tsbuildinfo",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "paths": {
+      "@shared/*": ["../shared/*"]
+    }
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts", "node_modules", "../dist"],
+  "references": [{ "path": "../shared" }]
+}

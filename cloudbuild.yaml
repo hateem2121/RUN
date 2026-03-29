@@ -1,0 +1,145 @@
+steps:
+  # Install dependencies (required before any tsx-dependent scripts)
+  - name: "node:24"
+    id: "install"
+    entrypoint: npm
+    args: ["ci"]
+
+  # Verify Technical Integrity
+  - name: "node:24"
+    id: "tech-integrity"
+    entrypoint: npm
+    args: ["run", "verify:tech-integrity"]
+
+  # Check Documentation Alignment
+  - name: "node:24"
+    id: "docs-alignment"
+    entrypoint: npm
+    args: ["run", "check:docs"]
+  # Build the container image
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/run-remix:$SHORT_SHA", "."]
+
+  # Push the container image to Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/$PROJECT_ID/run-remix:$SHORT_SHA"]
+
+  # Upload static assets to GCS for CDN
+  - name: "gcr.io/cloud-builders/gsutil"
+    args: ["-m", "rsync", "-r", "-c", "dist/public", "gs://$PROJECT_ID-assets"]
+
+  # Deploy canary revision (no traffic initially)
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: "deploy-canary"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "run-remix"
+      - "--image"
+      - "gcr.io/$PROJECT_ID/run-remix:$SHORT_SHA"
+      - "--region"
+      - "us-central1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+      - "--tag"
+      - "canary"
+      - "--no-traffic"
+      - "--min-instances"
+      - "1"
+      - "--max-instances"
+      - "10"
+      - "--memory"
+      - "1Gi"
+      - "--cpu"
+      - "1"
+      - "--set-env-vars"
+      - "NODE_ENV=production"
+
+  # Health check on canary
+  - name: "gcr.io/cloud-builders/curl"
+    id: "health-check"
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        CANARY_URL=$(gcloud run services describe run-remix --region=us-central1 --format='value(status.traffic[0].url)' 2>/dev/null || echo "")
+        if [ -z "$CANARY_URL" ]; then
+          echo "Could not get canary URL, proceeding..."
+          exit 0
+        fi
+        echo "Health checking canary at: $CANARY_URL/health"
+        for i in 1 2 3 4 5; do
+          if curl -sf "$CANARY_URL/health" > /dev/null; then
+            echo "Health check passed!"
+            exit 0
+          fi
+          echo "Attempt $i failed, retrying..."
+          sleep 5
+        done
+        echo "Health check failed after 5 attempts"
+        exit 1
+
+  # Shift 10% traffic to canary
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: "traffic-10"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "services"
+      - "update-traffic"
+      - "run-remix"
+      - "--region"
+      - "us-central1"
+      - "--to-tags"
+      - "canary=10"
+
+  # Wait and verify (30 seconds)
+  - name: "gcr.io/cloud-builders/curl"
+    id: "verify-10"
+    entrypoint: bash
+    args:
+      - "-c"
+      - "echo 'Monitoring canary at 10%...' && sleep 30"
+
+  # Shift 50% traffic to canary
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: "traffic-50"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "services"
+      - "update-traffic"
+      - "run-remix"
+      - "--region"
+      - "us-central1"
+      - "--to-tags"
+      - "canary=50"
+
+  # Wait and verify (30 seconds)
+  - name: "gcr.io/cloud-builders/curl"
+    id: "verify-50"
+    entrypoint: bash
+    args:
+      - "-c"
+      - "echo 'Monitoring canary at 50%...' && sleep 30"
+
+  # Full rollout - migrate all traffic to new revision
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: "full-rollout"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "services"
+      - "update-traffic"
+      - "run-remix"
+      - "--region"
+      - "us-central1"
+      - "--to-latest"
+
+images:
+  - "gcr.io/$PROJECT_ID/run-remix:$SHORT_SHA"
+
+options:
+  logging: CLOUD_LOGGING_ONLY

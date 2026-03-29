@@ -1,0 +1,163 @@
+import { sql } from "drizzle-orm";
+import {
+  boolean,
+  index,
+  integer,
+  jsonb,
+  serial,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
+import { pgTable } from "./common";
+
+/**
+ * Folders Table - Media Organization Structure
+ */
+export const folders = pgTable("folders", {
+  id: serial("id").primaryKey(),
+  name: varchar({ length: 255 }).notNull(),
+  description: text(),
+  parentId: integer(),
+  path: varchar({ length: 500 }),
+  level: integer().default(0),
+  isActive: boolean().default(true),
+  sortOrder: integer().default(0),
+  createdAt: timestamp({
+    mode: "date",
+    precision: 3,
+  }).defaultNow(),
+  updatedAt: timestamp({
+    mode: "date",
+    precision: 3,
+  }).defaultNow(),
+
+  // Soft delete support
+  deletedAt: timestamp({ mode: "date", precision: 3 }),
+});
+
+/**
+ * Media Assets Table - Centralized Asset Library
+ */
+export const mediaAssets = pgTable(
+  "media_assets",
+  {
+    id: serial("id").primaryKey(),
+    filename: varchar({ length: 255 }).notNull(),
+    originalName: varchar("original_name", { length: 255 }),
+    fileSize: integer("file_size"),
+    size: integer(), // Alias for fileSize for compatibility
+    mimeType: varchar("mime_type", { length: 100 }).notNull(), // REQUIRED for proper file handling
+
+    // File organization
+    type: varchar({ length: 50 }).notNull(), // 'image', 'video', 'model', 'document'
+    url: text().notNull(),
+    thumbnailUrl: text("thumbnail_url"),
+    thumbnailFilename: varchar("thumbnail_filename", { length: 255 }), // For thumbnail reference
+    thumbnailStoragePath: text("thumbnail_storage_path"), // Thumbnail storage path in GCS
+    imageVariants: jsonb("image_variants").$type<{
+      thumbnail?: string; // 200px - for cards/grids (<50KB)
+      medium?: string; // 800px - for product pages (<200KB)
+      large?: string; // 1600px - for lightbox/detail (<500KB)
+      original?: string; // Compressed original (<500KB)
+    }>(),
+
+    // Storage information
+    storagePath: text("storage_path").notNull(),
+    bucketName: varchar("bucket_name", { length: 100 }).notNull(),
+
+    // Organization
+    folderId: integer("folder_id").references(() => folders.id, {
+      onDelete: "set null",
+    }),
+    tags: jsonb().$type<string[]>(),
+
+    // Enhanced metadata
+    altText: text("alt_text"),
+    caption: text(),
+    metadata: jsonb().$type<Record<string, unknown>>().notNull().default(sql`'{}'::jsonb`),
+
+    uploadedAt: timestamp({
+      mode: "date",
+      precision: 3,
+    }).defaultNow(), // For upload timestamp
+
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp({
+      mode: "date",
+      precision: 3,
+    }).defaultNow(),
+    updatedAt: timestamp({
+      mode: "date",
+      precision: 3,
+    }).defaultNow(),
+
+    // Soft delete support
+    deletedAt: timestamp({ mode: "date", precision: 3 }),
+  },
+  (table) => [
+    index("media_type_active_idx").on(table.type, table.isActive),
+    index("media_folder_id_idx").on(table.folderId),
+    index("media_created_at_idx").on(table.createdAt.desc()),
+    index("media_active_created_idx").on(table.isActive, table.createdAt.desc()),
+    index("media_mime_type_idx").on(table.mimeType),
+    index("media_hot_query_idx").on(table.deletedAt, table.isActive, table.createdAt.desc()),
+    index("media_id_active_idx").on(table.id, table.isActive, table.deletedAt),
+    index("media_original_name_idx").on(table.originalName),
+    index("media_uploaded_at_idx").on(table.uploadedAt.desc()),
+  ],
+);
+
+// Types
+export type MediaAsset = typeof mediaAssets.$inferSelect;
+export type InsertMediaAsset = typeof mediaAssets.$inferInsert;
+
+export type MediaAssetDetail = Pick<
+  MediaAsset,
+  | "id"
+  | "filename"
+  | "originalName"
+  | "fileSize"
+  | "size"
+  | "mimeType"
+  | "type"
+  | "url"
+  | "thumbnailUrl"
+  | "thumbnailFilename"
+  | "thumbnailStoragePath"
+  | "imageVariants"
+  | "storagePath"
+  | "bucketName"
+  | "folderId"
+  | "tags"
+  | "altText"
+  | "caption"
+  | "metadata"
+  | "isActive"
+  | "deletedAt"
+  | "createdAt"
+  | "updatedAt"
+  | "uploadedAt"
+>;
+
+export type MediaAssetSummary = MediaAssetDetail;
+
+export type Folder = typeof folders.$inferSelect;
+export type InsertFolder = typeof folders.$inferInsert;
+
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+
+// Zod Schemas
+export const selectMediaAssetSchema = createSelectSchema(mediaAssets);
+export const insertMediaAssetSchema = createInsertSchema(mediaAssets, {
+  filename: (s) => s.min(1),
+  type: (s) => s.min(1),
+  mimeType: (s) => s.min(1),
+  storagePath: (s) => s.min(1),
+  bucketName: (s) => s.min(1),
+});
+
+export const selectFolderSchema = createSelectSchema(folders);
+export const insertFolderSchema = createInsertSchema(folders, {
+  name: (s) => s.min(1),
+});

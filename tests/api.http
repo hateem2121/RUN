@@ -1,0 +1,15 @@
+@baseUrl = http://localhost:5002
+
+### Health Check
+GET {{baseUrl}}/health
+
+### System Metrics
+GET {{baseUrl}}/api/metrics
+# Authorization: Bearer {{token}}
+
+### Application User (Protected)
+GET {{baseUrl}}/api/user
+Authorization: Bearer YOUR_TEST_TOKEN_HERE
+
+### Detailed Health
+GET {{baseUrl}}/health/detailed

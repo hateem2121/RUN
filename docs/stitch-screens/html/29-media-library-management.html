@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Run Apparel - Media Library - Asset Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3B82F6",
+                        "background-light": "#F8FAFC",
+                        "background-dark": "#0A0A0A", // Updated to darker linear style
+                        surface: {
+                            light: "#FFFFFF",
+                            dark: "#111111" // Darker surface
+                        },
+                        border: {
+                            light: "#E2E8F0",
+                            dark: "rgba(255, 255, 255, 0.08)" // 1px white/8 border
+                        },
+                        text: {
+                            light: "#1E293B",
+                            dark: "#FFFFFF", // Brighter text for dark mode
+                            muted: {
+                                light: "#64748B",
+                                dark: "#888888" // Softer muted text
+                            }
+                        }
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                    },
+                },
+            },
+        };
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass {
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .light .glass {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        .sidebar-item:hover, .sidebar-item.active {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .light .sidebar-item:hover, .light .sidebar-item.active {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        .media-card:hover .checkbox-overlay {
+            opacity: 1;
+        }.modal-overlay {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+        }
+        .glass-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark min-h-screen flex flex-col font-display antialiased relative">
+<header class="h-14 border-b border-border-light dark:border-border-dark flex items-center justify-between px-4 lg:px-6 bg-surface-light dark:bg-surface-dark z-20 shrink-0 sticky top-0">
+<div class="flex items-center gap-4">
+<a class="font-bold tracking-widest text-sm text-text-light dark:text-text-dark uppercase" href="#">
+                Run Apparel
+            </a>
+<div class="h-4 w-[1px] bg-border-light dark:bg-border-dark hidden md:block"></div>
+<nav class="hidden md:flex items-center gap-1 text-sm text-text-muted-light dark:text-text-muted-dark">
+<a class="hover:text-text-light dark:hover:text-text-dark flex items-center gap-1" href="#"><span class="material-icons-round text-[18px]">home</span></a>
+<span class="material-icons-round text-[16px]">chevron_right</span>
+<a class="hover:text-text-light dark:hover:text-text-dark" href="#">System</a>
+<span class="material-icons-round text-[16px]">chevron_right</span>
+<span class="text-text-light dark:text-text-dark font-medium">Media Library</span>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-text-muted-light dark:text-text-muted-dark text-[18px]">search</span>
+<input class="w-64 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-md py-1.5 pl-9 pr-3 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-text-light dark:text-text-dark placeholder-text-muted-light dark:placeholder-text-muted-dark transition-colors" placeholder="Search files..." type="text"/>
+<div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 text-[10px] text-text-muted-light dark:text-text-muted-dark border border-border-light dark:border-border-dark px-1.5 rounded bg-surface-light dark:bg-surface-dark">
+<span>⌘</span><span>K</span>
+</div>
+</div>
+<button class="relative p-1.5 rounded-md hover:bg-background-light dark:hover:bg-background-dark text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark transition-colors">
+<span class="material-icons-round text-[20px]">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full ring-2 ring-surface-light dark:ring-surface-dark"></span>
+</button>
+<div class="w-8 h-8 rounded-full bg-border-light dark:bg-border-dark flex items-center justify-center text-xs font-semibold overflow-hidden">
+<img alt="Alex Rivera" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCownbEh_YrJhsj1iUgcINqh4dNuWerOqR0z2lDxu8lvjBtJC4hBF35m5UUzduxxox3svfghzTtcc0xCKaCBUQqgZBbQq5pXEUUFnduTI2hLY9PuWwt77eK8P8TUuxLJVzdyhenSn0RT_lb2ZH7fb2t9UFNdj8mYkzoiFvGDWdk42G3iG05Qa5uF3GoBtA2jjc6I6l5jyBJD42qVua3lJJMxB7bkn8jrYIlbFTO8Sbaeli9FjX9q0Gzyj8uI6gpflcSN4WrJle4QnEI"/>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<aside class="w-64 border-r border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark flex-col hidden lg:flex shrink-0 overflow-y-auto">
+<div class="p-4 flex-1">
+<div class="mb-6 text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider px-3">Content</div>
+<nav class="space-y-0.5">
+<a class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-md text-sm text-text-muted-light dark:text-text-muted-dark transition-colors" href="#">
+<span class="material-icons-round text-[18px]">dashboard</span>
+                        Dashboard
+                    </a>
+<a class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-md text-sm text-text-muted-light dark:text-text-muted-dark transition-colors" href="#">
+<span class="material-icons-round text-[18px]">home</span>
+                        Homepage
+                    </a>
+<a class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-md text-sm text-text-muted-light dark:text-text-muted-dark transition-colors" href="#">
+<span class="material-icons-round text-[18px]">info</span>
+                        About Us
+                    </a>
+<a class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-md text-sm text-text-muted-light dark:text-text-muted-dark transition-colors" href="#">
+<span class="material-icons-round text-[18px]">eco</span>
+                        Sustainability
+                    </a>
+</nav>
+<div class="mt-8 mb-6 text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider px-3">Catalog</div>
+<nav class="space-y-0.5">
+<a class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-md text-sm text-text-muted-light dark:text-text-muted-dark transition-colors" href="#">
+<span class="material-icons-round text-[18px]">category</span>
+                        Categories
+                    </a>
+<a class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-md text-sm text-text-muted-light dark:text-text-muted-dark transition-colors" href="#">
+<span class="material-icons-round text-[18px]">inventory_2</span>
+                        Products
+                    </a>
+</nav>
+<div class="mt-8 mb-6 text-xs font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider px-3">System</div>
+<nav class="space-y-0.5">
+<a class="sidebar-item active bg-primary/10 text-primary flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors font-medium" href="#">
+<span class="material-icons-round text-[18px]">photo_library</span>
+                        Media Library
+                    </a>
+<a class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-md text-sm text-text-muted-light dark:text-text-muted-dark transition-colors" href="#">
+<span class="material-icons-round text-[18px]">storage</span>
+                        Storage
+                    </a>
+<a class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-md text-sm text-text-muted-light dark:text-text-muted-dark transition-colors" href="#">
+<span class="material-icons-round text-[18px]">settings</span>
+                        Settings
+                    </a>
+</nav>
+</div>
+<div class="p-4 border-t border-border-light dark:border-border-dark">
+<div class="flex items-center gap-3 px-3 py-2">
+<div class="w-8 h-8 rounded-full bg-border-light dark:bg-border-dark overflow-hidden shrink-0">
+<img alt="Alex Rivera" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCsryDr5o4not5I7p9DRTnpg528S1pTHltH6fO3TfWCHKmxPvvkbHLiVgQyRrHNq31gKCLMRtbqN9yOAY1l4G1gRlMZ0OlXoSj7qWpGLEkS_f6aLZQwJk16Fp3zPXUN1hJVFOlrkEzAUStayt5mpYHtYFR8ZltmL5zoOKF9NKbGDBdHVsBOKyo76w2G2_0XYQYUq84OKsn5HZ7beM55CBrIA8UD8TLAXaxzpEGB6rCQS5SZdFy2UpQRUu-gjpcrzxtoidpZgpopBxL"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-medium text-text-light dark:text-text-dark truncate">Alex Rivera</p>
+<p class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">Admin</p>
+</div>
+<button class="text-text-muted-light dark:text-text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+<span class="material-icons-round text-[18px]">logout</span>
+</button>
+</div>
+</div>
+</aside>
+<main class="flex-1 overflow-y-auto relative bg-background-light dark:bg-background-dark filter blur-[2px]">
+<div class="p-6 lg:p-8 max-w-[1600px] mx-auto">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+<div>
+<h1 class="text-2xl font-bold text-text-light dark:text-text-dark flex items-center gap-2">
+                            Media Library <span class="text-text-muted-light dark:text-text-muted-dark text-lg font-normal">(423)</span>
+</h1>
+<p class="text-sm text-text-muted-light dark:text-text-muted-dark mt-1">Manage all your product images, videos, and documents.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 border border-border-light dark:border-border-dark rounded-md text-sm font-medium text-text-light dark:text-text-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-icons-round text-[18px]">cleaning_services</span>
+                            Cleanup Orphans
+                        </button>
+<button class="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-blue-600 transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-icons-round text-[18px]">add</span>
+                            Upload Files
+                        </button>
+</div>
+</div>
+<div class="flex flex-col lg:flex-row justify-between gap-4 mb-8 border-b border-border-light dark:border-border-dark pb-6">
+<div class="flex flex-wrap items-center gap-2">
+<span class="text-sm text-text-muted-light dark:text-text-muted-dark mr-2">Type:</span>
+<button class="px-3 py-1.5 rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-sm font-medium hover:border-primary/50 transition-colors bg-primary/10 border-primary/30 text-primary">All</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-sm font-medium text-text-light dark:text-text-dark hover:border-text-muted-light dark:hover:border-text-muted-dark transition-colors flex items-center gap-1.5"><span class="material-icons-round text-[14px] text-text-muted-light dark:text-text-muted-dark">image</span>Images</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-sm font-medium text-text-light dark:text-text-dark hover:border-text-muted-light dark:hover:border-text-muted-dark transition-colors flex items-center gap-1.5"><span class="material-icons-round text-[14px] text-text-muted-light dark:text-text-muted-dark">videocam</span>Videos</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-sm font-medium text-text-light dark:text-text-dark hover:border-text-muted-light dark:hover:border-text-muted-dark transition-colors flex items-center gap-1.5"><span class="material-icons-round text-[14px] text-text-muted-light dark:text-text-muted-dark">view_in_ar</span>3D Models</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-sm font-medium text-text-light dark:text-text-dark hover:border-text-muted-light dark:hover:border-text-muted-dark transition-colors flex items-center gap-1.5"><span class="material-icons-round text-[14px] text-text-muted-light dark:text-text-muted-dark">description</span>Documents</button>
+</div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="text-sm text-text-muted-light dark:text-text-muted-dark mr-2">Status:</span>
+<select class="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-sm rounded-md px-3 py-1.5 text-text-light dark:text-text-dark focus:ring-primary focus:border-primary">
+<option>All Statuses</option>
+<option>Optimized</option>
+<option>Processing</option>
+<option>Failed</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
+<div class="media-card group bg-surface-light dark:bg-surface-dark border border-primary ring-1 ring-primary rounded-lg overflow-hidden flex flex-col cursor-pointer relative shadow-sm">
+<div class="absolute top-2 left-2 z-10">
+<input class="w-5 h-5 rounded border-border-light dark:border-border-dark text-primary focus:ring-primary bg-background-light dark:bg-background-dark cursor-pointer" type="checkbox"/>
+</div>
+<div class="absolute top-2 right-2 z-10 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">
+                            IMG
+                        </div>
+<div class="aspect-square bg-border-light dark:bg-border-dark relative overflow-hidden">
+<img alt="White t-shirt apparel product shot" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCttzY21cj7HZd7o05xKQYO3kqgYrpXtzZZCrHEXLAICWNZi3DjJdwTsWZeY1KrqrGcgB1X0U-IDrmJuINf44T3jicW7SOujamohlK7Lqmov9_nmkUyuzagUKA-phbz_x5vF5w4bnlNCPV5-_YWOR343FWyY-XNSJIGrd_XrgsziQGWYZ32TRasPRJR5DtKQhmeOc9CyaugL1VkXBXJxHPCDJamlQA8Tyg58WAfB2n1pQc1rZyGiSEVthfo19fSyN0hxg6LIXw5nenm"/>
+</div>
+<div class="p-3">
+<p class="text-sm font-medium text-text-light dark:text-text-dark truncate" title="tshirt_essential_white_front.jpg">tshirt_essential_white...</p>
+<p class="text-xs text-[#68869A] mt-1 flex justify-between">
+<span>2.4 MB</span>
+<span>2000x2000</span>
+</p>
+</div>
+</div>
+<div class="media-card group bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg overflow-hidden flex flex-col cursor-pointer hover:border-text-muted-light dark:hover:border-text-muted-dark transition-colors relative shadow-sm">
+<div class="checkbox-overlay absolute top-2 left-2 z-10 opacity-0 transition-opacity">
+<input class="w-5 h-5 rounded border-border-light dark:border-border-dark text-primary focus:ring-primary bg-background-light dark:bg-background-dark cursor-pointer shadow-sm" type="checkbox"/>
+</div>
+<div class="absolute top-2 right-2 z-10 bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">
+                            IMG
+                        </div>
+<div class="aspect-square bg-border-light dark:bg-border-dark relative overflow-hidden">
+<img alt="Black hoodie flat lay" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2tSpbuoAr3CRTKLnYUJTCf_WcG9OeiJr6kwOsBH7JSXQvAsIP5YpkywwmaJH9HQ-Ro9GrFC9iSOodfSsEqaRoqn5lhG0lz3nt6FyRkr-CAMGZmOinv5v4mSCOUwn1Tp46o7t2iR9IXk9G3cW8_APkUUV9QemDwx8O9G_WOikR9W5DDGc5IVr5LPLtFHt7NS05M-MUj2xmC9fYtOPi-sp6oViEz_srLrUyb79oG9dwTxrHN9zfzo-w3vi-tjZSIsLsMky8qQfFWPyb"/>
+</div>
+<div class="p-3">
+<p class="text-sm font-medium text-text-light dark:text-text-dark truncate" title="hoodie_heavyweight_black.jpg">hoodie_heavyweight_bla...</p>
+<p class="text-xs text-[#68869A] mt-1 flex justify-between">
+<span>4.1 MB</span>
+<span>2400x3000</span>
+</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
+<div class="glass w-full max-w-[900px] rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative animate-in fade-in zoom-in-95 duration-200">
+<button class="absolute top-4 right-4 z-10 text-text-muted-dark hover:text-white bg-black/20 hover:bg-black/40 rounded-full p-1 transition-colors backdrop-blur-md">
+<span class="material-icons-round text-[20px]">close</span>
+</button>
+<div class="w-full md:w-[60%] bg-black flex items-center justify-center relative min-h-[300px] md:min-h-[600px] border-b md:border-b-0 md:border-r border-border-dark">
+<img alt="Tech-Knit Hoodie Black Front" class="max-w-full max-h-[80vh] object-contain p-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2tSpbuoAr3CRTKLnYUJTCf_WcG9OeiJr6kwOsBH7JSXQvAsIP5YpkywwmaJH9HQ-Ro9GrFC9iSOodfSsEqaRoqn5lhG0lz3nt6FyRkr-CAMGZmOinv5v4mSCOUwn1Tp46o7t2iR9IXk9G3cW8_APkUUV9QemDwx8O9G_WOikR9W5DDGc5IVr5LPLtFHt7NS05M-MUj2xmC9fYtOPi-sp6oViEz_srLrUyb79oG9dwTxrHN9zfzo-w3vi-tjZSIsLsMky8qQfFWPyb"/>
+<div class="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-xs text-white/80 font-mono">
+                2400 × 3000
+            </div>
+</div>
+<div class="w-full md:w-[40%] flex flex-col h-full md:max-h-[600px] overflow-y-auto bg-surface-dark/40 backdrop-blur-sm">
+<div class="p-6 flex-1">
+<h2 class="text-lg font-bold text-white mb-6 break-all pr-8 leading-tight">
+                    hoodie_heavyweight_black_front.jpg
+                </h2>
+<div class="space-y-3 mb-8 text-sm">
+<div class="flex justify-between border-b border-border-dark/50 pb-2">
+<span class="text-text-muted-dark">Type</span>
+<span class="text-white font-medium">Image</span>
+</div>
+<div class="flex justify-between border-b border-border-dark/50 pb-2">
+<span class="text-text-muted-dark">Size</span>
+<span class="text-white font-medium">4.1 MB</span>
+</div>
+<div class="flex justify-between border-b border-border-dark/50 pb-2">
+<span class="text-text-muted-dark">Dimensions</span>
+<span class="text-white font-medium">2400x3000px</span>
+</div>
+<div class="flex justify-between border-b border-border-dark/50 pb-2">
+<span class="text-text-muted-dark">Format</span>
+<span class="text-white font-medium">JPEG</span>
+</div>
+<div class="flex justify-between border-b border-border-dark/50 pb-2">
+<span class="text-text-muted-dark">Uploaded</span>
+<span class="text-white font-medium">Oct 24, 2023</span>
+</div>
+</div>
+<div class="mb-8">
+<label class="block text-xs font-semibold text-text-muted-dark uppercase tracking-wider mb-2">Alt Text</label>
+<div class="relative">
+<textarea class="w-full bg-background-dark border border-border-dark rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-colors resize-none h-20 placeholder-text-muted-dark/50" placeholder="Describe the image for accessibility...">Black heavyweight cotton hoodie, front view flat lay</textarea>
+<button class="absolute bottom-2 right-2 bg-primary hover:bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded transition-colors shadow-sm">
+                            Save
+                        </button>
+</div>
+</div>
+<div class="mb-8">
+<label class="block text-xs font-semibold text-text-muted-dark uppercase tracking-wider mb-2">Tags</label>
+<div class="flex flex-wrap gap-2">
+<span class="glass-chip px-2.5 py-1 rounded-full text-xs font-medium text-white/90 flex items-center gap-1">
+                            #hoodie
+                            <button class="hover:text-white text-white/60 ml-0.5"><span class="material-icons-round text-[12px]">close</span></button>
+</span>
+<span class="glass-chip px-2.5 py-1 rounded-full text-xs font-medium text-white/90 flex items-center gap-1">
+                            #sportswear
+                            <button class="hover:text-white text-white/60 ml-0.5"><span class="material-icons-round text-[12px]">close</span></button>
+</span>
+<span class="glass-chip px-2.5 py-1 rounded-full text-xs font-medium text-white/90 flex items-center gap-1">
+                            #fall24
+                            <button class="hover:text-white text-white/60 ml-0.5"><span class="material-icons-round text-[12px]">close</span></button>
+</span>
+<button class="px-2 py-1 rounded-full text-xs font-medium text-text-muted-dark border border-dashed border-border-dark hover:text-white hover:border-white/30 transition-colors flex items-center gap-1">
+<span class="material-icons-round text-[14px]">add</span> Add
+                        </button>
+</div>
+</div>
+<div class="mb-4">
+<label class="block text-xs font-semibold text-text-muted-dark uppercase tracking-wider mb-2">Referenced By</label>
+<ul class="space-y-2">
+<li class="flex items-center gap-2 text-sm text-white/80 hover:text-white cursor-pointer bg-white/5 p-2 rounded border border-transparent hover:border-white/10 transition-colors">
+<span class="material-icons-round text-[16px] text-primary">inventory_2</span>
+<span class="truncate flex-1">Elite Performance Tee</span>
+<span class="material-icons-round text-[14px] text-text-muted-dark">open_in_new</span>
+</li>
+<li class="flex items-center gap-2 text-sm text-white/80 hover:text-white cursor-pointer bg-white/5 p-2 rounded border border-transparent hover:border-white/10 transition-colors">
+<span class="material-icons-round text-[16px] text-purple-400">category</span>
+<span class="truncate flex-1">Winter Catalog 2024</span>
+<span class="material-icons-round text-[14px] text-text-muted-dark">open_in_new</span>
+</li>
+</ul>
+</div>
+</div>
+<div class="p-4 border-t border-border-dark bg-background-dark/50 mt-auto">
+<div class="grid grid-cols-2 gap-2 mb-3">
+<button class="px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-md text-sm font-medium text-white transition-colors flex items-center justify-center gap-2">
+<span class="material-icons-round text-[16px]">content_copy</span> Copy URL
+                    </button>
+<button class="px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-md text-sm font-medium text-white transition-colors flex items-center justify-center gap-2">
+<span class="material-icons-round text-[16px]">download</span> Download
+                    </button>
+<button class="px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-md text-sm font-medium text-white transition-colors flex items-center justify-center gap-2">
+<span class="material-icons-round text-[16px]">find_replace</span> Replace Image
+                    </button>
+<button class="px-3 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-500 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
+<span class="material-icons-round text-[16px]">delete</span> Delete
+                    </button>
+</div>
+<p class="text-center text-[11px] text-text-muted-dark">Signed URL expires in 24h</p>
+</div>
+</div>
+</div>
+</div>
+</body></html>

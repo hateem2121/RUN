@@ -1,0 +1,54 @@
+/* @import "../../../styles/theme.css"; */
+/* Theme variables are available globally via index.css */
+
+@layer components {
+  /* =========================
+     Map Animations & Markers
+     Isolated from global animations.css
+     ========================= */
+
+  .facility-marker,
+  .client-marker {
+    @apply transition-all duration-300;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .facility-marker:hover,
+  .client-marker:hover {
+    @apply animate-marker-bounce;
+    z-index: var(--z-popover);
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+  }
+
+  .facility-marker svg,
+  .client-marker svg {
+    @apply h-8 w-8 rounded-full stroke-2 p-1 shadow-sm;
+    fill: var(--color-primary-foreground);
+    stroke: var(--color-primary);
+    background: linear-gradient(
+      135deg,
+      var(--color-primary),
+      color-mix(in oklch, var(--color-primary), black 20%)
+    );
+    box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary), transparent 70%);
+  }
+
+  .facility-marker svg {
+    stroke: var(--color-success);
+    background: linear-gradient(
+      135deg,
+      var(--color-success),
+      color-mix(in oklch, var(--color-success), black 20%)
+    );
+    box-shadow: 0 2px 8px color-mix(in oklch, var(--color-success), transparent 70%);
+  }
+
+  .leaflet-marker-shadow-sm {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .facility-marker:hover + .leaflet-marker-shadow-sm,
+  .client-marker:hover + .leaflet-marker-shadow-sm {
+    @apply animate-marker-shadow-grow;
+  }
+}

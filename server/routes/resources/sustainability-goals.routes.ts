@@ -1,0 +1,179 @@
+import { removeUndefined } from "../../utils.js";
+
+/**
+ * SUSTAINABILITY GOALS RESOURCE ROUTER
+ *
+ * Modular Express Router for Sustainability Goals management
+ * Handles full CRUD + reorder operations for sustainability goals
+ *
+ * Routes:
+ * - GET    /api/v1/sustainability-goals           - List all goals
+ * - GET    /api/v1/sustainability-goals/:id       - Get single goal
+ * - POST   /api/v1/sustainability-goals           - Create new goal
+ * - PATCH  /api/v1/sustainability-goals/:id       - Update goal
+ * - DELETE /api/v1/sustainability-goals/:id       - Delete goal
+ * - PATCH  /api/v1/sustainability-goals/reorder   - Reorder goals
+ */
+
+import { Router } from "express";
+import { z } from "zod";
+import { insertSustainabilityGoalSchema } from "../../../shared/index.js";
+import { CacheOperations } from "../../lib/cache/cache-strategies.js";
+import { pageContentRepository } from "../../lib/db/repositories/index.js";
+import { logger } from "../../lib/monitoring/logger.js";
+import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { authService } from "../../services/auth-service.js";
+
+const router = Router();
+
+const idParamSchema = z.object({
+  id: z.string().transform(Number).pipe(z.number().int().positive()),
+});
+
+const reorderSchema = z.object({
+  goals: z.array(
+    z.object({
+      id: z.number().int().positive(),
+      position: z.number().int().min(0),
+    }),
+  ),
+});
+
+router.get("/", async (_req, res) => {
+  const goals = await withTimeout(
+    pageContentRepository.getSustainabilityGoals(),
+    10000,
+    "Get sustainability goals",
+  );
+
+  logger.info(`[SustainabilityGoals] Retrieved ${goals.length} goals`);
+  return res.json(goals);
+});
+
+router.get("/:id", async (req, res) => {
+  const { id } = idParamSchema.parse(req.params);
+
+  const goal = await withTimeout(
+    pageContentRepository.getSustainabilityGoal(id),
+    10000,
+    "Get sustainability goal",
+  );
+
+  if (!goal) {
+    return res.status(404).json({ error: "Goal not found" });
+  }
+
+  logger.info(`[SustainabilityGoals] Retrieved goal ${id}`);
+  return res.json(goal);
+});
+
+router.post("/", authService.requireAdmin, async (req, res) => {
+  const validation = insertSustainabilityGoalSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    logger.warn("[SustainabilityGoals] Validation failed:", validation.error);
+    return res.status(400).json({
+      error: "Validation failed",
+      details: validation.error.issues,
+    });
+  }
+
+  const newGoal = await withTimeout(
+    pageContentRepository.createSustainabilityGoal(removeUndefined(validation.data)),
+    10000,
+    "Create sustainability goal",
+  );
+
+  CacheOperations.invalidateSustainability()
+    .then(() => logger.info("[SustainabilityGoals] ✅ Cache invalidated after creation"))
+    .catch((cacheError) =>
+      logger.error("[SustainabilityGoals] ❌ Cache invalidation failed:", cacheError),
+    );
+
+  logger.info(`[SustainabilityGoals] Created goal ${newGoal.id}`);
+  return res.status(201).json(newGoal);
+});
+
+router.patch("/:id", authService.requireAdmin, async (req, res) => {
+  const { id } = idParamSchema.parse(req.params);
+  const validation = insertSustainabilityGoalSchema.partial().safeParse(req.body);
+
+  if (!validation.success) {
+    logger.warn("[SustainabilityGoals] Validation failed:", validation.error);
+    return res.status(400).json({
+      error: "Validation failed",
+      details: validation.error.issues,
+    });
+  }
+
+  const updated = await withTimeout(
+    pageContentRepository.updateSustainabilityGoal(id, removeUndefined(validation.data)),
+    10000,
+    "Update sustainability goal",
+  );
+
+  if (!updated) {
+    return res.status(404).json({ error: "Goal not found" });
+  }
+
+  CacheOperations.invalidateSustainability()
+    .then(() => logger.info("[SustainabilityGoals] ✅ Cache invalidated after update"))
+    .catch((cacheError) =>
+      logger.error("[SustainabilityGoals] ❌ Cache invalidation failed:", cacheError),
+    );
+
+  logger.info(`[SustainabilityGoals] Updated goal ${id}`);
+  return res.json(updated);
+});
+
+router.delete("/:id", authService.requireAdmin, async (req, res) => {
+  const { id } = idParamSchema.parse(req.params);
+
+  const deleted = await withTimeout(
+    pageContentRepository.deleteSustainabilityGoal(id),
+    10000,
+    "Delete sustainability goal",
+  );
+
+  if (!deleted) {
+    return res.status(404).json({ error: "Goal not found" });
+  }
+
+  CacheOperations.invalidateSustainability()
+    .then(() => logger.info("[SustainabilityGoals] ✅ Cache invalidated after deletion"))
+    .catch((cacheError) =>
+      logger.error("[SustainabilityGoals] ❌ Cache invalidation failed:", cacheError),
+    );
+
+  logger.info(`[SustainabilityGoals] Deleted goal ${id}`);
+  return res.status(204).send();
+});
+
+router.patch("/reorder", authService.requireAdmin, async (req, res) => {
+  const validation = reorderSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    logger.warn("[SustainabilityGoals] Reorder validation failed:", validation.error);
+    return res.status(400).json({
+      error: "Validation failed",
+      details: validation.error.issues,
+    });
+  }
+
+  const updates = await Promise.all(
+    removeUndefined(validation.data).goals.map(({ id, position }) =>
+      pageContentRepository.updateSustainabilityGoal(id, { sortOrder: position }),
+    ),
+  );
+
+  CacheOperations.invalidateSustainability()
+    .then(() => logger.info("[SustainabilityGoals] ✅ Cache invalidated after reorder"))
+    .catch((cacheError) =>
+      logger.error("[SustainabilityGoals] ❌ Cache invalidation failed:", cacheError),
+    );
+
+  logger.info(`[SustainabilityGoals] Reordered ${updates.length} goals`);
+  return res.json({ success: true, updated: updates.length });
+});
+
+export default router;

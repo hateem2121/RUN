@@ -1,0 +1,92 @@
+name: Quality Gate (Cloud)
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  quality-check:
+    name: 🛡️ Late 2025 Quality Gate
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: run_remix
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 📋 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: 🔧 Install Dependencies
+        run: npm ci
+
+      - name: 🎨 CSS Architecture Lint
+        run: npm run lint:css-contract
+
+      - name: 🏗️ Build Project
+        run: npm run build
+
+      - name: 🔒 NPM Audit (Dependency Security)
+        run: npm audit --audit-level=high || true
+        continue-on-error: true
+
+      - name: 🛡️ Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+        continue-on-error: true
+
+      - name: 📊 Upload Trivy Results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+        if: always()
+
+      - name: 🔦 React Scan (Production Safety Check)
+        run: |
+          if grep -q "ReactScan({" vite.config.ts; then
+            echo "✅ React Scan plugin found."
+            if grep -q "enable: mode === \"development\"" vite.config.ts; then
+               echo "✅ React Scan is safely restricted to development mode."
+            else
+               echo "❌ CRITICAL: React Scan might be enabled in production!"
+               exit 1
+            fi
+          fi
+
+      - name: ⚡ Lighthouse CI (Performance)
+        run: |
+          # Run Lighthouse against the production build
+          # Note: The 'startServerCommand' in .lighthouserc.json handles the server startup
+          # We need to run migrations first for the app to start
+          npm run migrate:deploy
+          npm run test:lighthouse
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          DATABASE_URL: postgresql://user:password@localhost:5432/run_remix
+          NODE_ENV: production

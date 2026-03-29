@@ -1,0 +1,38 @@
+{
+  "recommendations": [
+    // === Essential Development ===
+    "biomejs.biome", // FOSS Linter & Formatter (Replaces ESLint)
+    "EditorConfig.EditorConfig", // EditorConfig Support
+    "rphlmr.drizzle-lab", // Drizzle Visualizer
+    "bradlc.vscode-tailwindcss", // TailwindCSS IntelliSense
+    "usernamehw.errorlens", // Inline Errors
+
+    // === API & Backend ===
+    "ckolkman.vscode-postgres", // Postgres Management
+
+    // === Quality & Testing ===
+    "unifiedjs.vscode-html-validate", // HTML Validation
+    "vitest.explorer", // Test Runner
+    "ryanluker.vscode-coverage-gutters", // Coverage
+
+    // === Productivity ===
+    "christian-kohler.path-intellisense",
+    "formulahendry.auto-rename-tag",
+    "wix.vscode-import-cost",
+    "aaron-bond.better-comments",
+    "mhutchie.git-graph",
+    "mikestead.dotenv",
+
+    // === React & 3D ===
+    "dsznajder.es7-react-js-snippets",
+    "mattpocock.ts-error-translator",
+    "cesium.gltf-vscode",
+    "chakrounanas.turbo-console-log",
+    "bruno-api.bruno"
+  ],
+  "unwantedRecommendations": [
+    "rangav.vscode-thunder-client",
+    "wallabyjs.console-ninja",
+    "dbaeumer.vscode-eslint"
+  ]
+}
