@@ -7,7 +7,7 @@ trigger: always_on
 ## Tech Stack
 - Framework: React Router v7 (Remix-style, file-based routing)
 - Styling: Tailwind CSS v4 with custom theme
-- Animation: Framer Motion (existing), GSAP + ScrollTrigger (new)
+- Animation: GSAP + ScrollTrigger + Locomotive Scroll (Framer Motion removed 2026-03-29)
 - State: TanStack React Query v5 with server-side prefetching
 - Build: Vite
 - Language: TypeScript (strict mode)
@@ -45,9 +45,10 @@ trigger: always_on
 - Technology: #00D4FF (cyan)  
 - Sustainability: #00C97B (emerald)
 
-## Animation Library Migration
-- EXISTING: Framer Motion (keep for simple fade-in-up, variants)
-- NEW: GSAP + ScrollTrigger for scroll-locking, horizontal scroll, 
-  marquee, count-up animations
-- NEW: Locomotive Scroll for smooth scrolling (integrate with GSAP ScrollTrigger proxy)
-- Install: gsap, @gsap/react, locomotive-scroll
+## Animation Library
+
+- **GSAP exclusively** — Framer Motion fully removed (migration completed 2026-03-29, 73 files migrated)
+- GSAP + ScrollTrigger for scroll-locking, horizontal scroll, marquee, count-up animations
+- Locomotive Scroll for smooth scrolling (integrated with GSAP ScrollTrigger proxy)
+- Installed packages: `gsap`, `@gsap/react`, `locomotive-scroll`
+- Do **not** re-introduce `framer-motion` under any circumstance

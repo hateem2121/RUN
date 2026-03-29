@@ -2,6 +2,32 @@
 
 ## Active Tasks
 
+### ✅ [DOCS] Documentation & GitHub Presence Overhaul — 2026-03-29
+**Status:** COMPLETE
+**Completed:** 2026-03-29
+**Scope:** Full documentation audit + GitHub presence update (17 files changed/created)
+
+**Changes made:**
+- `README.md` — Full rewrite. v2.1 "CMS System" → v3.0.0 "RUN Remix Ecosystem". Accurate tech stack, commands, structure, auth (Google OAuth), deployment (Cloud Run), contributing workflow.
+- `SECURITY.md` — Created at root. GitHub Security tab now populated. Covers STRIDE controls, response SLAs, in-scope components, CI security tools.
+- `CONTRIBUTING.md` — Created at root. GitHub PR banner now shows. B.L.A.S.T. protocol + hard constraints + commit message standards.
+- `LICENSE` — Created at root. Proprietary / All Rights Reserved (© 2026 RUN APPAREL (PVT) LTD / Durus Industries). GitHub now shows license.
+- `SUPPORT.md` — Created at root. GitHub Issue creation banner now shows support channels.
+- `.github/ISSUE_TEMPLATE/bug_report.md` — Created. Structured bug report with port 5002 check.
+- `.github/ISSUE_TEMPLATE/feature_request.md` — Created. B.L.A.S.T.-aligned feature request.
+- `.agent/rules/stitch.md` — Fixed. Removed stale Framer Motion references. Now correctly shows GSAP exclusively (migration completed 2026-03-29, 73 files).
+- `package.json` (root) — Removed `packages/sdk` from workspaces array (directory never existed, was H4 backlog item).
+- `.github/CODEOWNERS` — Fixed file path (`/client/src/index.css` → `/client/app/index.css`). Replaced non-existent `@frontend-team` / `@backend-team` etc. with `@hateemjamshaid` (configure GitHub Teams once org is set up).
+- `docs/FULL_SYSTEM_CONTEXT.json` — Updated `lastUpdated` to 2026-03-29. Removed `packages/sdk` from workspaces array.
+- 4 SOPs (DEPLOY, ROLLBACK, MIGRATE, ARCHITECTURE_AUDIT) — Verified all 4 already exist (created in previous session). No action needed.
+- `e2e.yml` — Verified PORT already set to 5002. No action needed.
+
+**Verification:**
+- `npm run verify:tech-integrity` → FAIL (pre-existing C1: 35 TypeScript errors — not caused by doc changes)
+- No `.ts`/`.tsx` files modified — all changes are docs, config, and markdown only
+
+---
+
 ### ✅ [AUDIT] Full System Architecture & Organisation Review — April 2026 (Second Pass)
 **Status:** COMPLETE
 **Completed:** 2026-03-29

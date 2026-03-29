@@ -2,17 +2,20 @@
 #
 # These files require review from designated owners to prevent regressions
 # in CSS cascade, SSR, and visual regression testing.
+#
+# NOTE: Replace @hateemjamshaid with actual GitHub team slugs once
+# GitHub teams are configured in the RUN APPAREL organization.
 
 # Tailwind v4 CSS Configuration - Cascade Layer Critical
-/client/src/index.css @frontend-team
+/client/app/index.css @hateemjamshaid
 
 # SSR Handler - FOUC and Hydration Critical
-/server/lib/ssr/ssr-handler.ts @backend-team @frontend-team
+/server/lib/ssr/ssr-handler.ts @hateemjamshaid
 
 # Visual Regression Test Suite
-/e2e/visual-regression-audit.spec.ts @qa-team @frontend-team
-/playwright.config.ts @qa-team
+/e2e/visual-regression-audit.spec.ts @hateemjamshaid
+/playwright.config.ts @hateemjamshaid
 
 # CI Workflows - Pipeline Stability
-/.github/workflows/ @devops-team
+/.github/workflows/ @hateemjamshaid
 
