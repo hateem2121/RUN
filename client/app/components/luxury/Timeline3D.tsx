@@ -1,5 +1,4 @@
 import { useGSAP } from "@gsap/react";
-import type { AboutTimelineEntry } from "@shared/index";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -10,13 +9,15 @@ import { useRef } from "react";
 import { cardVariants } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-interface Timeline3DProps {
-  entries: AboutTimelineEntry[];
-  getAssetUrl: (id: number) => string | null;
-  getAsset: (id: number) => unknown;
+interface TimelineEntry {
+  id: number | string;
+  year: string;
+  title: string;
+  description: string | null;
+  imageId?: number | null;
 }
 
-export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) {
+export function Timeline3D({ entries, getAssetUrl, getAsset }: any) {
   const timelineRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -117,67 +118,71 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
           {/* Central Timeline Line */}
           <div
             className="timeline-line absolute left-1/2 w-1 -translate-x-1/2 transform rounded-full bg-linear-to-b from-blue-200 via-blue-400 to-blue-600 shadow-sm-luxury-light"
-            style={{ height: `${entries.length * 300}px`, top: "50px" }}
+            style={{ height: `${(entries?.length || 0) * 300}px`, top: "50px" }}
           />
 
           {/* Timeline Entries */}
           <div className="space-y-24">
-            {entries.map((entry, index) => (
-              <div
-                key={entry.id}
-                className={`timeline-item relative flex items-center ${
-                  index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-                } flex-col`}
-              >
-                {/* Timeline Marker */}
+            {(entries as any[] || []).map((entryItem: any, index: number) => {
+              const entry = entryItem as TimelineEntry;
+              return (
                 <div
-                  className={cn(
-                    "timeline-marker",
-                    cardVariants({ variant: "glass-premium" }),
-                    "absolute left-1/2 z-elevated flex h-16 w-16 -translate-x-1/2 transform items-center justify-center rounded-full shadow-sm-luxury-elevated",
-                  )}
+                  key={entry.id}
+                  className={`timeline-item relative flex items-center ${
+                    index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                  } flex-col`}
                 >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500">
-                    <Calendar className="h-4 w-4 text-white" />
-                  </div>
-                </div>
-
-                {/* Content Card */}
-                <div
-                  className={`timeline-card-3d w-full md:w-5/12 ${
-                    index % 2 === 0 ? "md:mr-auto md:pr-16" : "md:ml-auto md:pl-16"
-                  }`}
-                >
+                  {/* Timeline Marker */}
                   <div
                     className={cn(
+                      "timeline-marker",
                       cardVariants({ variant: "glass-premium" }),
-                      "rounded-3xl p-8 shadow-sm-luxury-elevated",
+                      "absolute left-1/2 z-elevated flex h-16 w-16 -translate-x-1/2 transform items-center justify-center rounded-full shadow-sm-luxury-elevated",
                     )}
                   >
-                    {/* Year Badge */}
-                    <div className="mb-4 inline-flex items-center gap-2">
-                      <div className="stat-card-light rounded-full px-4 py-2">
-                        <span className="luxury-heading-light font-bold text-2xl">
-                          {entry.year}
-                        </span>
-                      </div>
-                      <Sparkles className="h-5 w-5 text-blue-500" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500">
+                      <Calendar className="h-4 w-4 text-white" />
                     </div>
+                  </div>
 
-                    {/* Title */}
-                    <h3 className="luxury-heading-light mb-4 font-bold font-neue-stance text-2xl md:text-3xl">
-                      {entry.title}
-                    </h3>
+                  {/* Content Card */}
+                  <div
+                    className={`timeline-card-3d w-full md:w-5/12 ${
+                      index % 2 === 0 ? "md:mr-auto md:pr-16" : "md:ml-auto md:pl-16"
+                    }`}
+                  >
+                    <div
+                      className={cn(
+                        cardVariants({ variant: "glass-premium" }),
+                        "rounded-3xl p-8 shadow-sm-luxury-elevated",
+                      )}
+                    >
+                      {/* Year Badge */}
+                      <div className="mb-4 inline-flex items-center gap-2">
+                        <div className="stat-card-light rounded-full px-4 py-2">
+                          <span className="luxury-heading-light font-bold text-2xl">
+                            {entry.year}
+                          </span>
+                        </div>
+                        <Sparkles className="h-5 w-5 text-blue-500" />
+                      </div>
 
-                    {/* Description */}
-                    <p className="luxury-text-light mb-6 leading-relaxed">{entry.description}</p>
+                      {/* Title */}
+                      <h3 className="luxury-heading-light mb-4 font-bold font-neue-stance text-2xl md:text-3xl">
+                        {String(entry.title)}
+                      </h3>
+
+                      {/* Description */}
+                      <p className="luxury-text-light mb-6 leading-relaxed">
+                        {String(entry.description || "")}
+                      </p>
 
                     {/* Media */}
                     {entry.imageId && getAsset(entry.imageId) && (
                       <div className="relative overflow-hidden rounded-2xl shadow-sm-luxury-light">
                         <img
                           src={getAssetUrl(entry.imageId) || ""}
-                          alt={entry.title}
+                          alt={String(entry.title)}
                           className="h-48 w-full object-cover brightness-105 filter"
                         />
                         <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
@@ -204,7 +209,8 @@ export function Timeline3D({ entries, getAssetUrl, getAsset }: Timeline3DProps) 
                   )}
                 />
               </div>
-            ))}
+            );
+          })}
           </div>
         </div>
 

@@ -47,7 +47,7 @@ const validateMeasurements = (measurements: Record<string, unknown>) => {
   let incomplete = 0;
   let total = 0;
 
-  Object.values(measurements).forEach((sizeData: unknown) => {
+  Object.values(measurements as Record<string, unknown>).forEach((sizeData: unknown) => {
     if (sizeData && typeof sizeData === "object") {
       Object.values(sizeData as Record<string, unknown>).forEach((value) => {
         total++;
@@ -100,7 +100,7 @@ const SizeChartList = ({
   return (
     <div className="max-h-96 space-y-4 overflow-y-auto">
       {sizeCharts.map((chart) => {
-        const validation = validateMeasurements(chart.measurements || {});
+        const validation = validateMeasurements((chart.measurements as Record<string, unknown>) || {});
         return (
           <div
             key={chart.id}
@@ -307,7 +307,7 @@ export function SizeChartManagementEnhanced() {
       region: chart.region || "",
       type: chart.type || "",
       description: chart.description || "",
-      measurements: chart.measurements || {},
+      measurements: (chart.measurements as Record<string, Record<string, string>>) || {},
       isActive: Boolean(chart.isActive),
     });
   };
@@ -376,8 +376,9 @@ export function SizeChartManagementEnhanced() {
     const newMeasurements: Record<string, Record<string, string>> = {};
     sizes.forEach((size) => {
       newMeasurements[size] = {};
+      const currentSize = newMeasurements[size]!;
       measurements.forEach((measurement) => {
-        newMeasurements[size][measurement] = "";
+        currentSize[measurement] = "";
       });
     });
 
@@ -826,7 +827,9 @@ export function SizeChartManagementEnhanced() {
                   <p className="text-neutral-600">{previewChart.description}</p>
                 )}
                 <div className="rounded-lg border p-4">
-                  {renderMeasurementTable(previewChart.measurements || {})}
+                  {renderMeasurementTable(
+                    (previewChart.measurements as Record<string, Record<string, string>>) || {},
+                  )}
                 </div>
               </div>
             )}

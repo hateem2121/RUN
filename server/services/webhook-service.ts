@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import type { WebhookSubscription } from "@run-remix/shared";
+import type { WebhookSubscription } from "@shared/schemas/webhooks.js";
 import { webhookRepository } from "../lib/db/repositories/index.js";
 import { logger } from "../lib/monitoring/logger.js";
 

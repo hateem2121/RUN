@@ -8,7 +8,9 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
-import ffprobe from "ffprobe-static";
+import ffprobeStatic from "ffprobe-static";
+// Use casting to access path if it's an object, or use as is
+const ffprobePath = (ffprobeStatic as any).path || ffprobeStatic;
 import type { InsertMediaAsset, MediaAsset } from "../../../shared/index.js";
 import { type ImageVariants, isImageFile, processImage } from "../../image-processor.js";
 import { mediaRepository } from "../../lib/db/repositories/index.js";
@@ -467,7 +469,7 @@ export async function getVideoMetadata(buffer: Buffer): Promise<{
   // Write buffer to temporary file for ffprobe to read
   await fs.writeFile(tempPath, buffer);
 
-  const { stdout } = await execFilePromise(ffprobe.path, [
+  const { stdout } = await execFilePromise(ffprobePath as string, [
     "-v",
     "quiet",
     "-print_format",

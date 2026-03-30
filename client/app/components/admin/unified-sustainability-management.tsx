@@ -367,19 +367,7 @@ export function UnifiedSustainabilityManagement() {
 
   const resetForm = useCallback(() => {
     if (unifiedData) {
-      const mappedData: Partial<UnifiedSustainability> = {
-        ...unifiedData,
-        data: {
-          ...unifiedData.data,
-          headline: unifiedData.headline,
-          subheadline: unifiedData.subheadline,
-          backgroundMediaId: unifiedData.backgroundImageId,
-          ctaText: unifiedData.ctaText,
-          ctaLink: unifiedData.ctaLink,
-          certificationIds: unifiedData.certificationIds,
-        },
-      };
-      setLocalForm(mappedData);
+      setLocalForm(unifiedData);
       setHasUnsavedChanges(false);
     }
   }, [unifiedData]);
@@ -402,13 +390,12 @@ export function UnifiedSustainabilityManagement() {
     if (localForm.title !== undefined) cleanedData.title = localForm.title;
     if (localForm.content !== undefined) cleanedData.content = localForm.content;
     if (localForm.isActive !== undefined) cleanedData.isActive = localForm.isActive;
-    if (localForm.data?.headline !== undefined) cleanedData.headline = localForm.data.headline;
-    if (localForm.data?.subheadline !== undefined)
-      cleanedData.subheadline = localForm.data.subheadline;
-    if (localForm.data?.backgroundMediaId !== undefined)
-      cleanedData.backgroundImageId = localForm.data.backgroundMediaId;
-    if (localForm.data?.ctaText !== undefined) cleanedData.ctaText = localForm.data.ctaText;
-    if (localForm.data?.ctaLink !== undefined) cleanedData.ctaLink = localForm.data.ctaLink;
+    if (localForm.headline !== undefined) cleanedData.headline = localForm.headline;
+    if (localForm.subheadline !== undefined) cleanedData.subheadline = localForm.subheadline;
+    if (localForm.backgroundImageId !== undefined)
+      cleanedData.backgroundImageId = localForm.backgroundImageId;
+    if (localForm.ctaText !== undefined) cleanedData.ctaText = localForm.ctaText;
+    if (localForm.ctaLink !== undefined) cleanedData.ctaLink = localForm.ctaLink;
     if (localForm.featuresTitle !== undefined) cleanedData.featuresTitle = localForm.featuresTitle;
     if (localForm.featuresDescription !== undefined)
       cleanedData.featuresDescription = localForm.featuresDescription;
@@ -440,9 +427,8 @@ export function UnifiedSustainabilityManagement() {
     if (localForm.goalsTitle !== undefined) cleanedData.goalsTitle = localForm.goalsTitle;
     if (localForm.goalsDescription !== undefined)
       cleanedData.goalsDescription = localForm.goalsDescription;
-
-    if (localForm.data?.certificationIds !== undefined) {
-      cleanedData.certificationIds = localForm.data.certificationIds;
+    if (localForm.certificationIds !== undefined) {
+      cleanedData.certificationIds = localForm.certificationIds;
     }
 
     const dataFields: Record<string, unknown> = {};
@@ -480,7 +466,7 @@ export function UnifiedSustainabilityManagement() {
     const media = Array.isArray(assets) ? assets[0] : assets;
     if (media) {
       handleLocalUpdate({
-        data: { ...localForm.data, backgroundMediaId: media.id },
+        backgroundImageId: media.id,
       });
       setIsMediaPickerOpen(false);
     }

@@ -213,7 +213,7 @@ export class ProductRepository {
     limit: number = 100,
     offset: number = 0,
     options?: RepositoryCacheOptions,
-  ): Promise<{ products: Partial<Product>[]; totalCount: number }> {
+  ): Promise<{ products: ProductSummary[]; totalCount: number }> {
     const cacheKey = `products:summary:${limit}:${offset}`;
     const cacheStrategy = options?.cacheStrategy || "normal";
     const perfTracker = queryPerformanceMonitor.startQuery("getProductsSummary");
@@ -229,7 +229,7 @@ export class ProductRepository {
         // PHASE 2A: Time cache read operation (L1+L2)
         const cached = await perfTracker.timePhase("cacheRead", async () => {
           return await unifiedCache.get<{
-            products: Partial<Product>[];
+            products: ProductSummary[];
             totalCount: number;
           }>(cacheKey);
         });
@@ -269,7 +269,7 @@ export class ProductRepository {
           LIMIT ${limit} OFFSET ${offset}
         `);
 
-        const summaryProducts = queryResult.rows as Partial<Product>[];
+        const summaryProducts = queryResult.rows as unknown as ProductSummary[];
 
         return { products: summaryProducts, totalCount };
       }, "getProductsSummary");
@@ -290,11 +290,11 @@ export class ProductRepository {
     return result;
   }
 
-  async getHomepageFeaturedProducts(limit: number = 20): Promise<Partial<Product>[]> {
+  async getHomepageFeaturedProducts(limit: number = 20): Promise<ProductSummary[]> {
     const cacheKey = `homepage:featured-products:${limit}`;
     const perfTracker = queryPerformanceMonitor.startQuery("getHomepageFeaturedProducts");
 
-    const cached = await unifiedCache.get<Partial<Product>[]>(cacheKey);
+    const cached = await unifiedCache.get<ProductSummary[]>(cacheKey);
     if (cached) {
       perfTracker.setCacheHit(true).complete();
       return cached;
@@ -303,14 +303,7 @@ export class ProductRepository {
     const result = await dbCircuitBreaker.execute(async () => {
       return await db
         .select({
-          id: products.id,
-          name: products.name,
-          slug: products.slug,
-          shortDescription: products.shortDescription,
-          primaryImageId: products.primaryImageId,
-          categoryId: products.categoryId,
-          isFeatured: products.isFeatured,
-          createdAt: products.createdAt,
+          ...PRODUCT_SUMMARY_COLUMNS,
         })
         .from(products)
         .where(and(eq(products.isActive, true), isNull(products.deletedAt)))
@@ -321,7 +314,7 @@ export class ProductRepository {
     perfTracker.setCacheHit(false).complete();
     await unifiedCache.set(cacheKey, result, PRODUCT_CACHE_TTL);
 
-    return result;
+    return result as ProductSummary[];
   }
 
   // PHASE 1 TASK 8: Product count cache with 1-hour TTL

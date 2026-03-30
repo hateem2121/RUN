@@ -249,12 +249,12 @@ export interface IMediaRepository {
 // Product Repository
 export interface IProductRepository {
   getProducts(limit?: number, offset?: number): Promise<ProductSummary[]>;
-  getHomepageFeaturedProducts(limit?: number): Promise<Partial<Product>[]>;
+  getHomepageFeaturedProducts(limit?: number): Promise<ProductSummary[]>;
   getProductsSummary(
     limit?: number,
     offset?: number,
     options?: RepositoryCacheOptions,
-  ): Promise<{ products: Partial<Product>[]; totalCount: number }>;
+  ): Promise<{ products: ProductSummary[]; totalCount: number }>;
   getProductsCount(): Promise<number>;
   getProductsByCategoryCount(categoryId: number): Promise<number>;
   getProductsByTagCount(tag: string): Promise<number>;
@@ -270,7 +270,12 @@ export interface IProductRepository {
   getRelatedProducts(productId: number): Promise<ProductSummary[]>;
   getActiveProducts(): Promise<ProductSummary[]>;
   getFeaturedProducts(): Promise<ProductSummary[]>;
-  searchProducts(query: string, limit?: number, offset?: number): Promise<ProductSummary[]>;
+  searchProducts(
+    query: string,
+    filters?: { categoryId?: number; isActive?: boolean; isFeatured?: boolean },
+    limit?: number,
+    offset?: number,
+  ): Promise<ProductSummary[]>;
   createProduct(product: InsertProduct): Promise<Product>;
   updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined>;
   deleteProduct(id: number): Promise<boolean>;

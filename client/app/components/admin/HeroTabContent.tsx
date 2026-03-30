@@ -60,10 +60,10 @@ export function HeroTabContent({
               </Label>
               <Input
                 id="headline"
-                value={localForm.data?.headline || ""}
+                value={localForm.headline || ""}
                 onChange={(e) =>
                   onLocalUpdate({
-                    data: { ...localForm.data, headline: e.target.value },
+                    headline: e.target.value,
                   })
                 }
                 className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-emerald-500/50 placeholder:text-white/20"
@@ -80,13 +80,10 @@ export function HeroTabContent({
               </Label>
               <Textarea
                 id="subheadline"
-                value={localForm.data?.subheadline || ""}
+                value={localForm.subheadline || ""}
                 onChange={(e) =>
                   onLocalUpdate({
-                    data: {
-                      ...localForm.data,
-                      subheadline: e.target.value,
-                    },
+                    subheadline: e.target.value,
                   })
                 }
                 className="bg-white/5 border-white/10 text-white rounded-xl min-h-[120px] focus:ring-emerald-500/50 placeholder:text-white/20 resize-none"
@@ -108,17 +105,17 @@ export function HeroTabContent({
                 >
                   <ImageIcon className="mr-3 h-5 w-5 text-emerald-500" />
                   <span className="truncate">
-                    {localForm.data?.backgroundMediaId
-                      ? `Asset ID: ${localForm.data.backgroundMediaId}`
+                    {localForm.backgroundImageId
+                      ? `Asset ID: ${localForm.backgroundImageId}`
                       : "Select Atmospheric Media"}
                   </span>
                 </Button>
-                {localForm.data?.backgroundMediaId && (
+                {localForm.backgroundImageId && (
                   <Button
                     type="button"
                     variant="ghost"
                     onClick={() =>
-                      onLocalUpdate({ data: { ...localForm.data, backgroundMediaId: undefined } })
+                      onLocalUpdate({ backgroundImageId: null })
                     }
                     className="h-14 w-14 rounded-xl border border-white/10 hover:bg-red-500/10 hover:text-red-400 text-[#68869A]"
                   >
@@ -138,10 +135,10 @@ export function HeroTabContent({
                 </Label>
                 <Input
                   id="ctaText"
-                  value={localForm.data?.ctaText || ""}
+                  value={localForm.ctaText || ""}
                   onChange={(e) =>
                     onLocalUpdate({
-                      data: { ...localForm.data, ctaText: e.target.value },
+                      ctaText: e.target.value,
                     })
                   }
                   className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-emerald-500/50 placeholder:text-white/20"
@@ -157,10 +154,10 @@ export function HeroTabContent({
                 </Label>
                 <Input
                   id="ctaLink"
-                  value={localForm.data?.ctaLink || ""}
+                  value={localForm.ctaLink || ""}
                   onChange={(e) =>
                     onLocalUpdate({
-                      data: { ...localForm.data, ctaLink: e.target.value },
+                      ctaLink: e.target.value,
                     })
                   }
                   className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-emerald-500/50 placeholder:text-white/20"
@@ -183,13 +180,13 @@ export function HeroTabContent({
                 <div className="absolute inset-0 z-0 bg-emerald-900/20 animate-pulse" />
                 <div className="absolute bottom-10 left-6 right-6 z-20 space-y-4">
                   <h3 className="text-2xl font-bold text-white leading-tight">
-                    {localForm.data?.headline || "Pioneering Vision"}
+                    {localForm.headline || "Pioneering Vision"}
                   </h3>
                   <p className="text-xs text-white/60 line-clamp-3">
-                    {localForm.data?.subheadline || "The future of sportswear is circular."}
+                    {localForm.subheadline || "The future of sportswear is circular."}
                   </p>
                   <Button className="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold h-10 rounded-full text-[10px] uppercase tracking-widest">
-                    {localForm.data?.ctaText || "Take Action"}
+                    {localForm.ctaText || "Take Action"}
                   </Button>
                 </div>
               </div>

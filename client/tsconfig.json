@@ -12,7 +12,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["app/*"],
+      "@shared": ["../shared/index.ts"],
       "@shared/*": ["../shared/*"],
+      "@run-remix/shared": ["../shared/index.ts"],
+      "@run-remix/shared/*": ["../shared/*"],
       "@assets/*": ["../attached_assets/*"]
     },
     "noUnusedLocals": true,

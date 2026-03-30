@@ -239,34 +239,39 @@ export const handleUploadError = (
   _req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): void => {
   if (error instanceof multer.MulterError) {
     switch (error.code) {
       case "LIMIT_FILE_SIZE":
         // PHASE 1.2 FIX: File size limits disabled - this error should not occur
-        return res.status(400).json({
+        res.status(400).json({
           message: `Unexpected file size error (limits are disabled)`,
         });
+        return;
       case "LIMIT_FILE_COUNT":
-        return res.status(400).json({
+        res.status(400).json({
           message: `Too many files. Maximum is ${MAX_FILES} files per batch. Consider using multiple batches for larger uploads.`,
           maxFiles: MAX_FILES,
           maxConcurrent: MAX_CONCURRENT_UPLOADS,
           suggestion: "Split large uploads into smaller batches for optimal performance",
         });
+        return;
       case "LIMIT_UNEXPECTED_FILE":
-        return res.status(400).json({
+        res.status(400).json({
           message: "Unexpected file field name",
         });
+        return;
       default:
-        return res.status(400).json({
+        res.status(400).json({
           message: `Upload error: ${error.message}`,
         });
+        return;
     }
   } else if (error instanceof Error && error.message.includes("File type not allowed")) {
-    return res.status(400).json({
+    res.status(400).json({
       message: error.message,
     });
+    return;
   }
 
   next(error);

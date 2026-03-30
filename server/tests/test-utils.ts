@@ -108,8 +108,10 @@ export function withAuthenticatedUser(user: SessionUser) {
     _res: import("express").Response,
     next: import("express").NextFunction,
   ) => {
-    req.user = user as import("express").User;
-    req.isAuthenticated = () => true;
+    (req as any).user = user;
+    (req as any).isAuthenticated = function(): this is { user: SessionUser } {
+      return true;
+    };
     next();
   };
 }

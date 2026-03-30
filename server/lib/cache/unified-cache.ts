@@ -113,7 +113,7 @@ export class UnifiedCache {
               span.setAttribute("cache.source", "l2");
 
               // Backfill L1 Memory Cache with default TTL
-              this.memoryCache.set(key, redisValue);
+              this.memoryCache.set(key, redisValue as unknown as object);
 
               span.setStatus({ code: SpanStatusCode.OK });
               span.end();

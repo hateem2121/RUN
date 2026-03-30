@@ -361,7 +361,8 @@ function SustainabilityInner() {
     ? {
         title: unifiedData.fabricPortfolioTitle,
         description: unifiedData.fabricPortfolioDescription || "",
-        selectedFabricIds: (unifiedData.data?.selectedFabricIds as number[]) || [],
+        selectedFabricIds:
+          ((unifiedData.data as Record<string, unknown>)?.selectedFabricIds as number[]) || [],
       }
     : null;
 
@@ -732,7 +733,9 @@ function SustainabilityInner() {
           <div className="relative z-10">
             <FabricPortfolioSection
               mediaAssets={mediaAssets || []}
-              selectedFabricIds={unifiedData?.data?.selectedFabricIds || []}
+              selectedFabricIds={
+        ((unifiedData?.data as Record<string, unknown>)?.selectedFabricIds as number[]) || []
+      }
               fabrics={batchData?.fabrics || []}
             />
           </div>

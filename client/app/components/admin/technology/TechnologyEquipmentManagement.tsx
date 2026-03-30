@@ -394,7 +394,7 @@ export function TechnologyEquipmentManagement({
       maintenanceSchedule: equipment.maintenanceSchedule || "",
       certifications: equipment.certifications || [],
       description: equipment.description || "",
-      specifications: equipment.specifications || {},
+      specifications: (equipment.specifications as Record<string, string | number | boolean>) || {},
       imageId: equipment.imageId || null,
       installationDate: equipment.installationDate || null,
       isActive: equipment.isActive ?? true,

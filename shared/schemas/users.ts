@@ -43,12 +43,13 @@ export const users = pgTable("users", {
   updatedAt: timestamp({ mode: "date", precision: 3 }).defaultNow().notNull(),
 });
 
+import { z } from "zod";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 // Zod Schemas
 export const selectUserSchema = createSelectSchema(users);
 export const insertUserSchema = createInsertSchema(users, {
-  email: (s) => s.email(),
+  email: z.string().email(),
 });
 
 // Export types for type safety across backend and frontend

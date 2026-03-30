@@ -221,11 +221,7 @@ export default function Resources() {
             items={filteredResults}
             columns={3}
             emptyState={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="py-16 text-center"
-              >
+          <div className="py-16 text-center">
                 <Filter className="mx-auto mb-4 h-16 w-16 text-muted-foreground/50" />
                 <Typography.H3 className="mb-2 font-semibold text-foreground text-xl">
                   No results found
@@ -233,7 +229,7 @@ export default function Resources() {
                 <Typography.P className="text-muted-foreground">
                   Try adjusting your search terms or browse by category below
                 </Typography.P>
-              </motion.div>
+              </div>
             }
             renderItem={(result) => (
               <ResourceCard
@@ -265,7 +261,7 @@ export default function Resources() {
         ) : (
           /* Resource Categories Grid */
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {resourceCategories.map((category, index) => {
+            {resourceCategories.map((category) => {
               const Icon = category.icon;
               const count =
                 category.id === "certifications"
@@ -281,11 +277,9 @@ export default function Resources() {
                           : 0;
 
               return (
-                <motion.div
+                <div
                   key={category.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
+                  className="resource-category-item"
                 >
                   {category.id === "fabrics" ? (
                     <Link to={category.href}>
@@ -340,7 +334,7 @@ export default function Resources() {
                       </Card>
                     </Link>
                   )}
-                </motion.div>
+                </div>
               );
             })}
           </div>

@@ -72,7 +72,11 @@ export class QueryPlanValidator {
     plan: unknown;
   } {
     const result = rawOutput[0] as Record<string, unknown[]>;
-    const explainData = result["QUERY PLAN"][0] as Record<string, unknown>;
+    const queryPlan = result["QUERY PLAN"];
+    if (!queryPlan || !queryPlan.length) {
+      return { planningTime: 0, executionTime: 0, plan: {} };
+    }
+    const explainData = queryPlan[0] as Record<string, unknown>;
 
     return {
       planningTime: (explainData["Planning Time"] as number) || 0,

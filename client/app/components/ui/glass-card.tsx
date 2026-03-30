@@ -4,7 +4,7 @@
  */
 import type { VariantProps } from "class-variance-authority";
 import gsap from "gsap";
-import { Draggable } from "gsap/Draggable";
+import { Draggable } from "gsap/all";
 
 import type * as React from "react";
 import { useEffect, useRef, useState } from "react";
@@ -165,12 +165,15 @@ const LiquidGlassCard = ({
 
   useEffect(() => {
     if (!cardRef.current) return;
-    gsap.to(cardRef.current, {
-      width: currentWidth === "auto" ? undefined : currentWidth,
-      height: currentHeight === "auto" ? undefined : currentHeight,
+    const vars: gsap.TweenVars = {
       duration: 0.35,
       ease: "power2.out",
-    });
+    };
+
+    if (currentWidth !== "auto") vars.width = currentWidth;
+    if (currentHeight !== "auto") vars.height = currentHeight;
+
+    gsap.to(cardRef.current, vars);
   }, [currentWidth, currentHeight]);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {

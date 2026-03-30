@@ -4,7 +4,7 @@
  * Includes visual swatches for materials, colors, and variations
  */
 
-import { useGSAP } from "@gsap/react";
+/* import { useGSAP } from "@gsap/react"; */
 import type { Certificate } from "@shared/schemas/catalog";
 import type { Fabric } from "@shared/schemas/materials";
 import type { ProductDetail } from "@shared/schemas/products";

@@ -69,9 +69,9 @@ steps:
           echo "Could not get canary URL, proceeding..."
           exit 0
         fi
-        echo "Health checking canary at: $CANARY_URL/health"
+        echo "Health checking canary at: $CANARY_URL/api/health"
         for i in 1 2 3 4 5; do
-          if curl -sf "$CANARY_URL/health" > /dev/null; then
+          if curl -sf "$CANARY_URL/api/health" > /dev/null; then
             echo "Health check passed!"
             exit 0
           fi

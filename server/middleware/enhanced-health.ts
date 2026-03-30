@@ -34,8 +34,8 @@ interface SystemHealth {
     state: string;
     failureCount: number;
     successCount: number;
-    stateChanges: number;
-    lastStateChange: string | null; // ISO string when serialized to JSON
+    stateChanges: any[]; // Changed from number to any[] to match appStorageService
+    lastStateChange: string | null;
     totalFailures: number;
     totalSuccesses: number;
   };
@@ -402,11 +402,11 @@ async function getSystemMetrics(indexUsageCheck?: HealthCheckResult) {
     return {
       ...baseMetrics,
       indexUsage: {
-        totalIndexes: indexUsageCheck.details?.totalIndexes || 0,
-        unusedIndexes: indexUsageCheck.details?.unusedIndexes || 0,
-        totalIndexSize: indexUsageCheck.details?.totalIndexSize || "0 B",
-        unusedIndexSize: indexUsageCheck.details?.unusedIndexSize || "0 B",
-        warnings: indexUsageCheck.details?.warnings || [],
+        totalIndexes: (indexUsageCheck.details?.totalIndexes as number) || 0,
+        unusedIndexes: (indexUsageCheck.details?.unusedIndexes as number) || 0,
+        totalIndexSize: (indexUsageCheck.details?.totalIndexSize as string) || "0 B",
+        unusedIndexSize: (indexUsageCheck.details?.unusedIndexSize as string) || "0 B",
+        warnings: (indexUsageCheck.details?.warnings as string[]) || [],
       },
     };
   }
@@ -450,7 +450,7 @@ export async function performHealthCheck(): Promise<SystemHealth> {
       state: string;
       failureCount: number;
       successCount: number;
-      stateChanges: number;
+      stateChanges: any[];
       lastStateChange: string | null;
       totalFailures: number;
       totalSuccesses: number;
@@ -461,10 +461,7 @@ export async function performHealthCheck(): Promise<SystemHealth> {
       const rawStatus = appStorageService?.getCircuitStatus();
       if (rawStatus) {
         // Convert Date to ISO string for JSON serialization
-        circuitStatus = {
-          ...rawStatus,
-          lastStateChange: rawStatus.lastStateChange ? rawStatus.lastStateChange : null,
-        };
+        circuitStatus = rawStatus;
         circuitBreakerAvailable = true;
       } else {
         // Service not initialized - provide default values
@@ -472,7 +469,7 @@ export async function performHealthCheck(): Promise<SystemHealth> {
           state: "UNAVAILABLE",
           failureCount: 0,
           successCount: 0,
-          stateChanges: 0,
+          stateChanges: [],
           lastStateChange: null,
           totalFailures: 0,
           totalSuccesses: 0,
@@ -485,7 +482,7 @@ export async function performHealthCheck(): Promise<SystemHealth> {
         state: "UNAVAILABLE",
         failureCount: 0,
         successCount: 0,
-        stateChanges: 0,
+        stateChanges: [],
         lastStateChange: null,
         totalFailures: 0,
         totalSuccesses: 0,

@@ -1,6 +1,6 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { Draggable } from "gsap/Draggable";
+import { Draggable } from "gsap/all";
 import { InertiaPlugin } from "gsap/InertiaPlugin";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
@@ -160,7 +160,7 @@ export const DraggableCardBody = ({
       });
 
       return () => {
-        draggable[0].kill();
+        draggable?.[0]?.kill();
       };
     },
     { scope: cardRef, dependencies: [constraints] },

@@ -183,5 +183,5 @@ export default defineConfig(
           ],
         },
       },
-    }) as ReturnType<Parameters<typeof defineConfig>[0]>,
+    }) as any,
 );

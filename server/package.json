@@ -83,6 +83,7 @@
     "@types/express": "^5.0.5",
     "@types/express-rate-limit": "^5.1.3",
     "@types/express-session": "^1.18.2",
+    "@types/ffprobe-static": "^2.0.3",
     "@types/fluent-ffmpeg": "^2.1.28",
     "@types/memoizee": "^0.4.12",
     "@types/multer": "^2.0.0",
@@ -90,6 +91,7 @@
     "@types/nodemailer": "^7.0.2",
     "@types/opossum": "^8.1.9",
     "@types/passport": "^1.0.17",
+    "@types/passport-google-oauth20": "^2.0.17",
     "@types/pg": "^8.15.5",
     "@types/supertest": "^6.0.3",
     "@types/swagger-ui-express": "^4.1.8",
@@ -102,6 +104,7 @@
   },
   "scripts": {
     "test": "vitest run",
+    "typecheck": "tsc --noEmit",
     "build": "tsc -b && esbuild index.ts --bundle --platform=node --target=node24 --packages=external --format=esm --outfile=../dist/index.js",
     "predev": "fuser -k 5002/tcp 2>/dev/null; echo '✓ Clean dev environment ready'",
     "dev": "DOTENV_CONFIG_PATH=../.env PORT=5002 NODE_OPTIONS='--expose-gc' tsx watch --ignore '**/node_modules' --ignore '../client' --ignore '../client/src' --ignore 'dist' --ignore '.cache' --ignore 'coverage' --ignore '.git' --ignore '*.log' index.ts",

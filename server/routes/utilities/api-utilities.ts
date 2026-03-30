@@ -101,9 +101,9 @@ export function setupResourceRoutes(app: Application, storage: IStorage) {
     const data = await Promise.all(promises);
 
     typeMap.forEach((type, index) => {
-      let items = data[index] || [];
+      let items = (data[index] || []) as { active?: boolean }[];
       if (activeOnly) {
-        items = items.filter((item: { active?: boolean }) => item.active !== false);
+        items = items.filter((item) => item.active !== false);
       }
       result[type] = items;
     });
@@ -154,9 +154,9 @@ export function setupResourceRoutes(app: Application, storage: IStorage) {
 
     // Process each resource type
     fetchTypes.forEach((dataType, index) => {
-      const items = fetchedData[index] || [];
+      const items = (fetchedData[index] || []) as Record<string, unknown>[];
 
-      items.forEach((item: Record<string, unknown>) => {
+      items.forEach((item) => {
         // Skip inactive items if active filter is set
         if (active === true && item.active === false) {
           return;

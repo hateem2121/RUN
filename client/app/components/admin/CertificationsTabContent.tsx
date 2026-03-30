@@ -22,7 +22,7 @@ export function CertificationsTabContent({
   onLocalUpdate,
   onSave,
 }: CertificationsTabContentProps) {
-  const selectedIds = localForm.data?.certificationIds || [];
+  const selectedIds = localForm.certificationIds || [];
 
   const toggleCertificate = (id: number) => {
     const currentIds = [...selectedIds];
@@ -31,10 +31,7 @@ export function CertificationsTabContent({
       : [...currentIds, id];
 
     onLocalUpdate({
-      data: {
-        ...localForm.data,
-        certificationIds: newIds,
-      },
+      certificationIds: newIds,
     });
   };
 

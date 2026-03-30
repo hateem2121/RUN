@@ -81,7 +81,10 @@ function createCorsMiddleware(): RequestHandler {
   return (req, res, next) => {
     const origin = req.headers.origin;
     if (process.env.NODE_ENV === "production") {
-      // res.setHeader('Access-Control-Allow-Origin', 'https://wear-run.com');
+      const allowedOrigins = (process.env.STRICT_ALLOWED_ORIGINS || "https://wear-run.com").split(",");
+      if (origin && allowedOrigins.includes(origin)) {
+        res.setHeader("Access-Control-Allow-Origin", origin);
+      }
     } else {
       res.setHeader("Access-Control-Allow-Origin", origin || "*");
     }
