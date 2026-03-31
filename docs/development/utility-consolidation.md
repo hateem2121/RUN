@@ -16,6 +16,7 @@ This document outlines the strategy for consolidating server-side utilities into
 
 **Location:** `server/utils.ts` (492 lines)  
 **Contents:**
+
 - Safe ID parsing utilities (`safeParseId`, `validateIdParam`)
 - Data transformation (`transformNullToUndefined`, `prepareForValidation`, `cleanApiData`, `safeSerialize`, `removeUndefined`)
 - Security utilities (`validateAndSanitizeInput`, `sanitizeString`, `validateFilename`, `validateMediaId`, `setSecureCORSHeaders`, `shouldBypassCache`)
@@ -30,6 +31,7 @@ This document outlines the strategy for consolidating server-side utilities into
 
 **Location:** `server/utils/`  
 **Files:**
+
 | File | Purpose | Size |
 |------|---------|------|
 | `data-transformation.ts` | Data transformation utilities | 575 chars |
@@ -39,6 +41,7 @@ This document outlines the strategy for consolidating server-side utilities into
 | `security-utils.ts` | Security utilities | 1,912 chars |
 
 **Potential Duplicates Identified:**
+
 - `transformNullToUndefined` - exists in both `utils.ts` and `utils/data-transformation.ts`
 - `validateFilename` - exists in both `utils.ts` and `utils/security-utils.ts`
 - Response utilities - overlap between `utils.ts` and `utils/response.ts`
@@ -47,6 +50,7 @@ This document outlines the strategy for consolidating server-side utilities into
 
 **Location:** `server/lib/`  
 **Structure:** Well-organized with domain-specific subdirectories:
+
 - `api/` - OpenAPI generator
 - `auth/` - Redis store
 - `cache/` - Two-tier caching system
@@ -158,12 +162,14 @@ export {
 ## Import Migration Examples
 
 ### Before
+
 ```typescript
 import { safeParseId, validateFilename } from '../utils.js';
 import { transformNullToUndefined } from '../utils/data-transformation.js';
 ```
 
 ### After
+
 ```typescript
 import { safeParseId, validateFilename, transformNullToUndefined } from '../lib/utilities/index.js';
 ```

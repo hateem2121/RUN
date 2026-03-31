@@ -20,6 +20,7 @@ This document defines the architectural hard-deck for the RUN Apparel B2B Platfo
 > For exact version numbers, see the **[System Overview](../overview.md#2-stack--critical-versions)** which is the Single Source of Truth.
 
 **Key Technologies:**
+
 - **Frontend**: React 19, Vite 7, Tailwind CSS v4
 - **Backend**: Express 5, Node.js 24+
 - **Data**: PostgreSQL (Neon), Drizzle ORM, Upstash Redis
@@ -34,26 +35,31 @@ This document defines the architectural hard-deck for the RUN Apparel B2B Platfo
 The codebase is split into three tightly coupled workspaces:
 
 1. **`@run-remix/client`** (`client/`)
+
 - **Responsibility**: UI rendering, client-side routing, assets.
 - **Dev Mode**: Does **NOT** run its own server. It is consumed as middleware by the server.
 - **Build**: Outputs to `dist/public` (assets) and `dist/server` (SSR).
 
-2. **`@run-remix/server`** (`server/`)
+1. **`@run-remix/server`** (`server/`)
+
 - **Responsibility**: API, Auth, Database access, and serving the Client.
 - **Dev Mode**: Runs `tsx watch index.ts`. Orchestrates Vite middleware to serve the client with HMR.
 - **Prod Mode**: Runs compiled `dist/index.js`. Serves static assets from `dist/public`.
 
-3. **`@run-remix/shared`** (`shared/`)
+1. **`@run-remix/shared`** (`shared/`)
+
 - **Responsibility**: Type definitions, Zod schemas, Database schemas.
 - **Constraint**: Zero runtime dependencies (except Zod/Drizzle-ORM types). Pure TS/JSON.
 
 ### 3.2. Server-Side Rendering (SSR) Strategy
+
 - **Approach**: Custom Express + Vite SSR implementation.
 - **Dev Flow**: Request -> Express -> Vite Dev Middleware -> Transforms `entry-server.tsx` -> Renders Stream.
 - **Prod Flow**: Request -> Express -> Imports `dist/server/entry-server.js` -> Renders Stream.
 - **Hydration**: React 19 partial hydration capabilities are enabled.
 
 ### 3.3. Navigation Architecture
+
 - **Source**: `/api/navigation-items` (Required for Header/Footer).
 - **Format**: JSON array of `NavigationItem` with optional `mediaIcon` relation.
 - **Cache**: Prefetched in `root.tsx` via TanStack Query for LCP optimization.

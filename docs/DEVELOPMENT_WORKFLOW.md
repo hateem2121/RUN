@@ -39,6 +39,7 @@ npm run dev
 ```
 
 **Expected Output:**
+
 ```
 ✓ Server running on http://localhost:5002
 ✓ Admin panel: http://localhost:5002/admin
@@ -54,6 +55,7 @@ If you see a different port, **STOP** and fix the configuration.
 #### Step 2.1: Planning (Required for Complex Features)
 
 **Create implementation plan if:**
+
 - More than 100 lines of code
 - Multiple files affected
 - Architectural changes
@@ -173,6 +175,7 @@ npm run build
 ```
 
 **Pre-commit hook automatically runs:**
+
 - `lint-staged` (formats code)
 - `npm run verify-port`
 
@@ -206,6 +209,7 @@ git commit -m "docs(readme): update port 5002 setup instructions"
 ```
 
 **Types:**
+
 - `feat` - New feature
 - `fix` - Bug fix
 - `docs` - Documentation
@@ -224,17 +228,20 @@ git commit -m "docs(readme): update port 5002 setup instructions"
 Before creating a PR, verify:
 
 **Port Compliance:**
+
 - [ ] `npm run verify-port` passes
 - [ ] No new port configurations introduced
 - [ ] All URLs use `http://localhost:5002`
 
 **Code Quality:**
+
 - [ ] `npm run lint` passes
 - [ ] `npm run typecheck` passes
 - [ ] `npm run build` passes
 - [ ] `npm run test` passes
 
 **Frontend-Admin Mapping (if applicable):**
+
 - [ ] Public route created/modified
 - [ ] Admin route created/modified (if public route added)
 - [ ] Public API endpoint created/modified
@@ -242,11 +249,13 @@ Before creating a PR, verify:
 - [ ] Route mapping table updated
 
 **Documentation:**
+
 - [ ] README updated (if needed)
 - [ ] Route mapping docs updated (if new pages)
 - [ ] API docs updated (if new endpoints)
 
 **Testing:**
+
 - [ ] Manual testing completed
 - [ ] Automated tests pass
 - [ ] No console errors
@@ -480,27 +489,32 @@ npm run verify-port
 #### Review Checklist
 
 **Port Configuration:**
+
 - [ ] No new ports introduced
 - [ ] All URLs use `localhost:5002`
 - [ ] `npm run verify-port` passes
 
 **Code Quality:**
+
 - [ ] Follows TypeScript strict mode
 - [ ] No `any` types
 - [ ] React 19 patterns (no forwardRef)
 - [ ] Express 5 async handlers
 
 **Architecture:**
+
 - [ ] Business logic in services (not routes)
 - [ ] Public/admin separation correct
 - [ ] Route mapping updated (if new pages)
 
 **Testing:**
+
 - [ ] Tests included
 - [ ] Tests pass
 - [ ] Manual testing done
 
 **Documentation:**
+
 - [ ] README updated (if needed)
 - [ ] Comments for complex logic
 - [ ] API docs updated (if needed)
@@ -600,7 +614,7 @@ pm2 save
 
 **Symptoms:** `Error: Port 5002 is already in use`
 
-#### Solution:
+#### Solution
 
 ```bash
 # Find process on port 5002
@@ -677,6 +691,7 @@ jobs:
 ```
 
 **Pipeline enforces:**
+
 1. ✅ Port 5002 verification FIRST
 2. ✅ Code quality checks
 3. ✅ Build verification
@@ -771,16 +786,19 @@ git push origin branch-name
 ## 🎯 Success Metrics
 
 **Daily Goals:**
+
 - ✅ All commits pass `npm run verify-port`
 - ✅ Zero port-related bugs reported
 - ✅ 100% route mapping coverage (public ↔ admin)
 
 **Weekly Goals:**
+
 - ✅ Port audit passes
 - ✅ All PRs include port verification
 - ✅ Documentation up to date
 
 **Monthly Goals:**
+
 - ✅ Zero production port incidents
 - ✅ Team trained on port compliance
 - ✅ Automated checks catching all issues
@@ -790,14 +808,17 @@ git push origin branch-name
 ## 🆘 Help & Support
 
 **Port Issues:**
+
 - Check `docs/TROUBLESHOOTING.md`
 - Run `npm run verify-port` for diagnostics
 
 **General Development:**
+
 - See `RULES.md` for coding standards
 - See `README.md` for setup instructions
 
 **Questions:**
+
 - Ask in #development Slack channel
 - Tag @team-lead for urgent issues
 

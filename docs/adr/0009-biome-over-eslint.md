@@ -7,6 +7,7 @@
 ## Context
 
 We needed code quality tooling that:
+
 - Provides fast linting and formatting
 - Has minimal configuration
 - Supports TypeScript natively
@@ -36,12 +37,14 @@ We chose **Biome** over ESLint + Prettier combination.
 ## Consequences
 
 ### Positive
+
 - CI runs complete in seconds, not minutes
 - Single `biome.json` configuration file
 - Consistent formatting enforcement
 - Fewer dependency vulnerabilities
 
 ### Negative
+
 - Fewer lint rules than ESLint ecosystem
 - Some ESLint plugins not available (accepted trade-off)
 - Team needs to learn new tool

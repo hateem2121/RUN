@@ -5,12 +5,14 @@
 This plan outlines the comprehensive alignment of RUN Remix with the AntiGravity methodology ecosystem. The goal is to achieve "perfect" integration with techniques, style, structure, and workflow from the AntiGravity Master Prompt, GitHub repositories (ui-ux-pro-max-skill, skillx, agents, superpowers, antigravity-awesome-skills, antigravity-skills), and Google Codelabs.
 
 **Current State:**
+
 - 7 existing skills in `.kilocode/skills/`
 - 4 rule files in `.kilocode/rules/`
 - 3 workflow files in `.kilocode/workflows/`
 - Strong foundation with `gemini.md` and `AGENTS.md`
 
 **Target State:**
+
 - 50+ high-value skills with progressive disclosure
 - Multi-agent orchestration capabilities
 - Workflow orchestrators for complex processes
@@ -25,6 +27,7 @@ This plan outlines the comprehensive alignment of RUN Remix with the AntiGravity
 Based on analysis of AntiGravity ecosystem, these skills provide the highest value:
 
 #### Core Development Skills
+
 | Skill | Source | Purpose |
 |-------|--------|---------|
 | `test-driven-development` | obra/superpowers | TDD workflow with verification gates |
@@ -34,6 +37,7 @@ Based on analysis of AntiGravity ecosystem, these skills provide the highest val
 | `executing-plans` | obra/superpowers | Plan execution tracking |
 
 #### Architecture & Design Skills
+
 | Skill | Source | Purpose |
 |-------|--------|---------|
 | `architecture-design` | wshobson/agents | System design patterns |
@@ -42,6 +46,7 @@ Based on analysis of AntiGravity ecosystem, these skills provide the highest val
 | `security-architecture` | wshobson/agents | Security-first design patterns |
 
 #### Code Quality Skills
+
 | Skill | Source | Purpose |
 |-------|--------|---------|
 | `code-review-receiver` | obra/superpowers | Receiving and implementing code review feedback |
@@ -50,6 +55,7 @@ Based on analysis of AntiGravity ecosystem, these skills provide the highest val
 | `performance-optimization` | nextlevelbuilder/skillx | Performance tuning workflow |
 
 #### UI/UX Skills
+
 | Skill | Source | Purpose |
 |-------|--------|---------|
 | `ui-component-creation` | nextlevelbuilder/ui-ux-pro-max-skill | Component development workflow |
@@ -58,6 +64,7 @@ Based on analysis of AntiGravity ecosystem, these skills provide the highest val
 | `design-system-alignment` | nextlevelbuilder/ui-ux-pro-max-skill | Design system consistency |
 
 #### Documentation Skills
+
 | Skill | Source | Purpose |
 |-------|--------|---------|
 | `documentation-writing` | guanyang/antigravity-skills | Technical documentation standards |
@@ -104,12 +111,16 @@ description: Use this skill when [specific trigger condition]. Use this for [pur
 ### Example 1: [Scenario]
 **Input:**
 ```
+
 [Example input]
+
 ```
 
 **Output:**
 ```
+
 [Example output]
+
 ```
 
 ## Constraints
@@ -131,6 +142,7 @@ description: Use this skill when [specific trigger condition]. Use this for [pur
 Enhance existing 7 skills with progressive disclosure:
 
 #### artifacts-builder
+
 ```
 .kilocode/skills/artifacts-builder/
 ├── SKILL.md                 # EXISTS - Update with YAML frontmatter
@@ -146,6 +158,7 @@ Enhance existing 7 skills with progressive disclosure:
 ```
 
 #### changelog-generator
+
 ```
 .kilocode/skills/changelog-generator/
 ├── SKILL.md                 # EXISTS - Update with YAML frontmatter
@@ -158,6 +171,7 @@ Enhance existing 7 skills with progressive disclosure:
 ```
 
 #### create-pull-request
+
 ```
 .kilocode/skills/create-pull-request/
 ├── SKILL.md                 # EXISTS - Update with YAML frontmatter
@@ -170,6 +184,7 @@ Enhance existing 7 skills with progressive disclosure:
 ```
 
 #### file-organizer
+
 ```
 .kilocode/skills/file-organizer/
 ├── SKILL.md                 # EXISTS - Update with YAML frontmatter
@@ -182,6 +197,7 @@ Enhance existing 7 skills with progressive disclosure:
 ```
 
 #### langsmith-fetch
+
 ```
 .kilocode/skills/langsmith-fetch/
 ├── SKILL.md                 # EXISTS - Update with YAML frontmatter
@@ -194,6 +210,7 @@ Enhance existing 7 skills with progressive disclosure:
 ```
 
 #### vercel-react-best-practices
+
 ```
 .kilocode/skills/vercel-react-best-practices/
 ├── SKILL.md                 # EXISTS - Update with YAML frontmatter
@@ -208,6 +225,7 @@ Enhance existing 7 skills with progressive disclosure:
 ```
 
 #### webapp-testing
+
 ```
 .kilocode/skills/webapp-testing/
 ├── SKILL.md                 # EXISTS - Update with YAML frontmatter
@@ -571,52 +589,60 @@ find .kilocode/skills -name "SKILL.md" | wc -l
 ## Implementation Order
 
 ### Week 1: Foundation
+
 1. Create directory structure for agents/, orchestrators/, plugins/
 2. Update existing 7 skills with YAML frontmatter
 3. Add references/ and examples/ to existing skills
 
 ### Week 2: Core Skills
-4. Create test-driven-development skill
-5. Create systematic-debugging skill
-6. Create verification-before-completion skill
-7. Create writing-plans skill
-8. Create executing-plans skill
+
+1. Create test-driven-development skill
+2. Create systematic-debugging skill
+3. Create verification-before-completion skill
+4. Create writing-plans skill
+5. Create executing-plans skill
 
 ### Week 3: Architecture Skills
-9. Create architecture-design skill
-10. Create api-design skill
-11. Create database-design skill
-12. Create security-architecture skill
+
+1. Create architecture-design skill
+2. Create api-design skill
+3. Create database-design skill
+4. Create security-architecture skill
 
 ### Week 4: Quality Skills
-13. Create code-review-receiver skill
-14. Create code-review-requester skill
-15. Create refactoring skill
-16. Create performance-optimization skill
+
+1. Create code-review-receiver skill
+2. Create code-review-requester skill
+3. Create refactoring skill
+4. Create performance-optimization skill
 
 ### Week 5: UI/UX Skills
-17. Create ui-component-creation skill
-18. Create accessibility-audit skill
-19. Create responsive-design skill
-20. Create design-system-alignment skill
+
+1. Create ui-component-creation skill
+2. Create accessibility-audit skill
+3. Create responsive-design skill
+4. Create design-system-alignment skill
 
 ### Week 6: Documentation Skills
-21. Create documentation-writing skill
-22. Create api-documentation skill
-23. Create changelog-writing skill
+
+1. Create documentation-writing skill
+2. Create api-documentation skill
+3. Create changelog-writing skill
 
 ### Week 7: Agents & Orchestrators
-24. Create orchestrator agent
-25. Create architecture agents
-26. Create development agents
-27. Create quality agents
-28. Create workflow orchestrators
+
+1. Create orchestrator agent
+2. Create architecture agents
+3. Create development agents
+4. Create quality agents
+5. Create workflow orchestrators
 
 ### Week 8: Documentation & Verification
-29. Update AGENTS.md
-30. Update gemini.md
-31. Run verification commands
-32. Final validation
+
+1. Update AGENTS.md
+2. Update gemini.md
+3. Run verification commands
+4. Final validation
 
 ---
 

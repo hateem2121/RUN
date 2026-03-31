@@ -5,6 +5,7 @@ This document describes how to configure Neon PostgreSQL read replicas for globa
 ## Overview
 
 To reduce latency for global users, we deploy read replicas in multiple regions:
+
 - **Primary**: us-east-1 (writes + reads)
 - **Replica 1**: eu-west-1 (reads only)
 - **Replica 2**: ap-southeast-1 (reads only)
@@ -14,6 +15,7 @@ To reduce latency for global users, we deploy read replicas in multiple regions:
 ### 1. Create Read Replicas
 
 In the Neon Console:
+
 1. Navigate to your project
 2. Go to **Branches** → **Create Branch**
 3. Select **Read Replica** type
@@ -124,6 +126,7 @@ curl https://eu.runapparel.com/api/debug/db-info
 ## Monitoring
 
 Monitor replica lag in Neon Console:
+
 - **Replica Lag**: Should be < 100ms under normal conditions
 - **Connections**: Monitor connection count per replica
 - **Query Distribution**: Verify reads are balanced

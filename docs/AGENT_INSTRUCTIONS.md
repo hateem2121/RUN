@@ -31,6 +31,7 @@ You are an AI coding agent working on the **RUN APPAREL CMS System**. This syste
 ### Your Port Responsibilities
 
 **You MUST:**
+
 1. ✅ Use port `5002` in ALL configurations you create or modify
 2. ✅ Verify port compliance BEFORE implementing any feature
 3. ✅ Run `npm run verify-port` after ANY configuration change
@@ -38,6 +39,7 @@ You are an AI coding agent working on the **RUN APPAREL CMS System**. This syste
 5. ✅ Never suggest or implement alternative ports
 
 **You MUST NEVER:**
+
 1. ❌ Use environment variables without defaulting to `5002`
 2. ❌ Use ports: 3000, 4000, 5000, 5001, 5003, 8080, 8000, or ANY other port
 3. ❌ Make port "configurable" unless explicitly requested with 5002 as default
@@ -85,11 +87,13 @@ grep -r "localhost:" --exclude-dir=node_modules . | grep -v "5002"
 ### Type 1: Port-Related Tasks
 
 **Indicators:**
+
 - Task mentions "port", "configuration", "server", "vite", "environment"
 - Task involves modifying config files
 - Task sets up new services
 
 **Required Actions:**
+
 1. Read `docs/core/port-5002-architecture.md` FIRST
 2. Verify all changes use port `5002`
 3. Run `npm run verify-port` BEFORE and AFTER changes
@@ -99,6 +103,7 @@ grep -r "localhost:" --exclude-dir=node_modules . | grep -v "5002"
 > "Fix the development server configuration"
 
 **Your Response:**
+
 ```markdown
 I'll fix the development server configuration with port 5002 compliance.
 
@@ -119,11 +124,13 @@ Verifying port compliance after changes:
 ### Type 2: New Page Tasks
 
 **Indicators:**
+
 - Task asks to create a new page
 - Task mentions "add a page for..."
 - Task involves new routes
 
 **Required Actions:**
+
 1. Read `docs/ROUTE_MAPPING.md` FIRST
 2. Create BOTH public AND admin routes
 3. Update `shared/constants/routeMapping.ts`
@@ -134,6 +141,7 @@ Verifying port compliance after changes:
 > "Create a new testimonials page"
 
 **Your Response:**
+
 ```markdown
 I'll create a new testimonials page with both public and admin interfaces.
 
@@ -169,11 +177,13 @@ Testing:
 ### Type 3: API/Backend Tasks
 
 **Indicators:**
+
 - Task involves Express routes
 - Task mentions API endpoints
 - Task involves database operations
 
 **Required Actions:**
+
 1. Ensure server listens on port `5002`
 2. Document endpoint URLs with `http://localhost:5002` prefix
 3. Separate public (`/api/*`) and admin (`/admin/api/*`) endpoints
@@ -183,6 +193,7 @@ Testing:
 > "Add an endpoint to get user statistics"
 
 **Your Response:**
+
 ```markdown
 I'll add an endpoint for user statistics at:
 - Admin: http://localhost:5002/admin/api/users/stats (authenticated)
@@ -201,11 +212,13 @@ This will be an admin-only endpoint since user statistics are sensitive.
 ### Type 4: Frontend/UI Tasks
 
 **Indicators:**
+
 - Task involves React components
 - Task mentions styling or UI
 - Task involves user interactions
 
 **Required Actions:**
+
 1. Ensure API calls target `http://localhost:5002`
 2. Use environment variable: `VITE_API_BASE_URL`
 3. Verify page loads at correct port during testing
@@ -214,6 +227,7 @@ This will be an admin-only endpoint since user statistics are sensitive.
 > "Add a loading spinner to the products page"
 
 **Your Response:**
+
 ```markdown
 I'll add a loading spinner to the products page.
 
@@ -280,6 +294,7 @@ const PORT = parseInt(process.env.PORT); // FORBIDDEN
 ```
 
 **After implementation:**
+
 ```bash
 npm run verify-port  # MUST pass
 ```
@@ -307,6 +322,7 @@ export default defineConfig({
 ```
 
 **After implementation:**
+
 ```bash
 npm run verify-port  # MUST pass
 npm run dev          # Verify starts on port 5002
@@ -332,6 +348,7 @@ const API_BASE_URL = 'http://localhost:3000/api'; // Wrong port
 ```
 
 **Environment file (.env):**
+
 ```bash
 VITE_API_BASE_URL=http://localhost:5002/api/v1
 ```
@@ -345,18 +362,21 @@ VITE_API_BASE_URL=http://localhost:5002/api/v1
 **Step-by-step:**
 
 1. **Create public route:**
+
 ```typescript
 // client/app/routes/index.tsx
 <Route path="/new-page" element={<NewPage />} />
 ```
 
-2. **Create admin route (REQUIRED):**
+1. **Create admin route (REQUIRED):**
+
 ```typescript
 // client/app/routes/admin.tsx
 <Route path="/admin/new-page" element={<NewPageAdmin />} />
 ```
 
-3. **Create API endpoints:**
+1. **Create API endpoints:**
+
 ```typescript
 // Public
 router.get('/api/new-page', async (req, res) => {
@@ -371,7 +391,8 @@ router.get('/admin/api/new-page', isAuthenticated, async (req, res) => {
 });
 ```
 
-4. **Update route mapping:**
+1. **Update route mapping:**
+
 ```typescript
 // shared/constants/routeMapping.ts
 {
@@ -382,7 +403,8 @@ router.get('/admin/api/new-page', isAuthenticated, async (req, res) => {
 }
 ```
 
-5. **Verify:**
+1. **Verify:**
+
 ```bash
 npm run verify-port
 curl http://localhost:5002/new-page
@@ -539,6 +561,7 @@ The feature is ready for review.
 ### Issue: "npm run verify-port" fails
 
 **Diagnosis:**
+
 ```bash
 # Run verification
 npm run verify-port
@@ -549,6 +572,7 @@ npm run verify-port
 ```
 
 **Solution:**
+
 1. Open each file mentioned
 2. Search for port references
 3. Change ALL to `5002`
@@ -559,6 +583,7 @@ npm run verify-port
 ### Issue: Dev server starts on wrong port
 
 **Diagnosis:**
+
 ```bash
 # Check vite config
 cat vite.config.ts | grep port
@@ -568,6 +593,7 @@ cat server/index.ts | grep PORT
 ```
 
 **Solution:**
+
 ```typescript
 // Fix vite.config.ts
 server: {
@@ -584,12 +610,14 @@ const PORT = 5002;
 ### Issue: API calls failing with 404
 
 **Diagnosis:**
+
 ```bash
 # Check browser console
 # Look for: Failed to fetch http://localhost:[wrong-port]/api/...
 ```
 
 **Solution:**
+
 ```typescript
 // Fix API base URL in .env
 VITE_API_BASE_URL=http://localhost:5002/api/v1
@@ -633,6 +661,7 @@ Agent Self-Assessment:
 4. `WORKFLOW.md` - Development processes
 
 **When in doubt:**
+
 - Search for similar patterns in existing code
 - Check `shared/constants/routeMapping.ts` for examples
 - Run `npm run verify-port` frequently
@@ -682,6 +711,7 @@ curl http://localhost:5002/api/v1/health
 ## 🎯 Success Criteria
 
 **You're doing well if:**
+
 - ✅ `npm run verify-port` never fails on your changes
 - ✅ Every public page has an admin counterpart
 - ✅ User never has to ask about port issues
@@ -689,6 +719,7 @@ curl http://localhost:5002/api/v1/health
 - ✅ Documentation stays up-to-date
 
 **You need to improve if:**
+
 - ❌ Forgetting to create admin routes
 - ❌ Using wrong ports in configurations
 - ❌ Skipping verification steps
@@ -699,6 +730,7 @@ curl http://localhost:5002/api/v1/health
 ## 📞 When to Ask for Help
 
 **Ask the user if:**
+
 1. Port verification fails and you can't identify the issue
 2. Unsure whether to create public or admin route
 3. Existing code contradicts these instructions
@@ -706,6 +738,7 @@ curl http://localhost:5002/api/v1/health
 5. Breaking changes required
 
 **Don't ask if:**
+
 1. Port should be 5002 (it always should)
 2. Whether to verify port (always do)
 3. Whether to create admin route (always do for public pages)

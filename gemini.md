@@ -18,6 +18,7 @@
 ## 3. The 8-Step Agentic Sprint
 
 All development follows the `gstack` high-performance cycle:
+
 1. **Think**: Deep exploration via `/office-hours` and `/brainstorming`.
 2. **Plan**: Architecture reviews via `/plan-ceo-review` and `/plan-eng-review`.
 3. **Build**: Execution using B.L.A.S.T. protocol layers.

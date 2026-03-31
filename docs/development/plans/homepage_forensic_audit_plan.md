@@ -11,18 +11,21 @@ This audit will conduct a comprehensive forensic-level investigation of the RUN 
 **Status:** ✅ Completed
 
 **Findings:**
+
 - **Project Location:** `/Users/hateemjamshaid/Documents/RUN-Remix`
 - **Architecture:** RUN Remix monorepo (client + server)
 - **Tech Stack:** React 19, Vite 7, Tailwind V4, Express 5, Node.js ≥24
 - **Port:** 5002 (confirmed)
 
 **Frontend Homepage Files:**
+
 - Route: `client/app/routes/_index.tsx` (homepage route)
 - Data Hook: `client/app/hooks/use-homepage-data.ts` (fetches from `/api/homepage-batch`)
 - Components: `client/app/components/homepage/` (dedicated directory)
 - Theme Provider: `client/app/components/shared/theme-provider.tsx`
 
 **CMS Admin Interface:**
+
 - Route: `/admin/:module` dynamic routing in `client/app/routes.ts`
 - Homepage Management: `client/app/components/admin/homepage-management.tsx`
 - Admin Tabs:
@@ -33,10 +36,12 @@ This audit will conduct a comprehensive forensic-level investigation of the RUN 
   - `HomepageFeaturedTab.tsx` - Featured products editing
 
 **Server API Routes:**
+
 - Batch endpoint: `server/routes/resources/homepage-batch.routes.ts` (two-tier cache: 3min L1, 30min L2)
 - CRUD endpoints: `server/routes/resources/homepage-management.routes.ts` (180-min TTL)
 
 **Database Schema:**
+
 - Tables: `homepageHero`, `homepageSections`, `homepageSlogans`, `homepageProcessCards`, `homepageSustainability`, `homepageFeaturedProductsSettings`
 - Location: `server/migrations/schema.ts`
 
@@ -45,6 +50,7 @@ This audit will conduct a comprehensive forensic-level investigation of the RUN 
 ### Phase 2: Build Verification (NEXT)
 
 **Command Execution Required:**
+
 ```bash
 cd /Users/hateemjamshaid/Documents/RUN-Remix
 
@@ -62,6 +68,7 @@ npm audit 2>&1 | tee audit-output.txt
 ```
 
 **Success Criteria:**
+
 - ✅ Build completes without errors
 - ✅ No TypeScript 'any' types detected
 - ✅ Biome linting passes
@@ -73,11 +80,13 @@ npm audit 2>&1 | tee audit-output.txt
 ### Phase 3: Code Analysis - Frontend Homepage
 
 **Files to Analyze:**
+
 1. `client/app/routes/_index.tsx` - Main homepage route
 2. `client/app/hooks/use-homepage-data.ts` - Data fetching hook
 3. `client/app/components/homepage/*.tsx` - Homepage components
 
 **Analysis Criteria:**
+
 - ✅ React 19 compliance (no forwardRef)
 - ✅ TypeScript strict mode (no 'any')
 - ✅ Tailwind V4 patterns (CVA + cn())
@@ -90,12 +99,14 @@ npm audit 2>&1 | tee audit-output.txt
 ### Phase 4: Code Analysis - CMS Admin Page
 
 **Files to Analyze:**
+
 1. `client/app/components/admin/homepage-management.tsx`
 2. `client/app/components/admin/homepage/*.tsx` (all tabs)
 3. `server/routes/resources/homepage-management.routes.ts`
 4. `server/lib/db/repositories/page-content-repository.ts`
 
 **Analysis Criteria:**
+
 - ✅ Zod validation schemas
 - ✅ Error handling
 - ✅ Admin-frontend data mapping
@@ -106,6 +117,7 @@ npm audit 2>&1 | tee audit-output.txt
 ### Phase 5: Runtime Analysis
 
 **Commands to Execute:**
+
 ```bash
 # 5.1 Page Load Testing
 curl -I http://localhost:5002
@@ -123,6 +135,7 @@ ls -lh dist/assets/*.js
 ### Phase 6: Pattern Detection
 
 **Search Patterns:**
+
 ```bash
 # 6.1 Duplicate Code
 find ./client/app/components -name "*.tsx" | xargs md5sum | sort | uniq -w32 -dD
@@ -144,6 +157,7 @@ grep -rn "className=" ./client/app/routes/_index.tsx | grep -v "dark:"
 ### Phase 7: Database Schema Analysis
 
 **Documentation Required:**
+
 - ER diagram for homepage tables
 - Foreign key relationships
 - Index identification
@@ -154,6 +168,7 @@ grep -rn "className=" ./client/app/routes/_index.tsx | grep -v "dark:"
 ### Phase 8: Report Generation
 
 **Deliverables:**
+
 1. `homepage_audit_report.md` - Full audit report
 2. 5+ Mermaid diagrams embedded:
    - Architecture diagram
@@ -167,18 +182,21 @@ grep -rn "className=" ./client/app/routes/_index.tsx | grep -v "dark:"
 ## Files to Examine
 
 ### Frontend Homepage
+
 - `client/app/routes/_index.tsx` - Main route (GSAP, Lenis smooth scrolling)
 - `client/app/hooks/use-homepage-data.ts` - React Query hook
 - `client/app/components/homepage/` - Homepage components
 - `client/app/components/shared/theme-provider.tsx` - Theme context
 
 ### CMS Admin
+
 - `client/app/routes.ts` - Routing configuration
 - `client/app/components/admin/homepage-management.tsx` - Main container
 - `client/app/components/admin/homepage/*.tsx` - Admin tabs
 - `client/app/hooks/use-admin-homepage-mutations.ts` - Admin mutations
 
 ### Backend
+
 - `server/routes/resources/homepage-batch.routes.ts` - Batch API
 - `server/routes/resources/homepage-management.routes.ts` - CRUD API
 - `server/lib/db/repositories/page-content-repository.ts` - Repository
@@ -236,6 +254,7 @@ grep -rn "className=" ./client/app/routes/_index.tsx | grep -v "dark:"
 **STATUS:** Ready for execution
 
 **Next Steps:**
+
 1. User approves plan
 2. Switch to Code mode to execute verification commands
 3. Analyze discovered code
@@ -246,4 +265,4 @@ grep -rn "className=" ./client/app/routes/_index.tsx | grep -v "dark:"
 **Created:** 2026-02-15  
 **Mode:** Architect  
 **Project:** RUN APPAREL (PVT) LTD  
-**Contact:** team@wear-run.com | +92-336-1777313
+**Contact:** <team@wear-run.com> | +92-336-1777313

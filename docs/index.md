@@ -27,4 +27,3 @@ Welcome to the RUN Apparel B2B Platform documentation.
 ## 🧠 For AI Agents
 
 Refer to **[`AGENT_INSTRUCTIONS.md`](./AGENT_INSTRUCTIONS.md)** and the **[`gemini.md`](../gemini.md)** constitution for operational rules and behavioral constraints.
-

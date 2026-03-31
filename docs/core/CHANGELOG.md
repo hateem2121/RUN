@@ -3,6 +3,7 @@
 ## [Unreleased] - 2026-02-16
 
 ### Added
+
 - Comprehensive documentation audit and synchronization.
 - Updated `README.md` and `docs/CODING_STANDARDS.md` to reflect actual Port 5002 enforcement in `server/server.ts`.
 - Realigned `AGENTS.md` with `.agent/` directory structure and current skill library.

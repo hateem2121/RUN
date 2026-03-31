@@ -140,7 +140,7 @@ Each finding must include:
 | *[To be selected]* | - | - |
 
 > [!IMPORTANT]
-> Contact security@runapparel.com to initiate vendor selection process.
+> Contact <security@runapparel.com> to initiate vendor selection process.
 
 ---
 

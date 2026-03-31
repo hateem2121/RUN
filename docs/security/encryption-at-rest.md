@@ -45,6 +45,7 @@ This document details the encryption-at-rest implementation across all RUN Appar
 ### CMEK Option
 
 For enhanced control, Customer-Managed Encryption Keys (CMEK) can be enabled:
+
 - Requires Neon Enterprise plan
 - Keys stored in AWS KMS or GCP KMS
 - Customer controls key rotation

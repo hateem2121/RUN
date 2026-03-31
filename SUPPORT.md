@@ -11,6 +11,7 @@
 ### GitHub Issues
 
 Use GitHub Issues for:
+
 - Bug reports — use the [Bug Report template](./.github/ISSUE_TEMPLATE/bug_report.md)
 - Feature requests — use the [Feature Request template](./.github/ISSUE_TEMPLATE/feature_request.md)
 

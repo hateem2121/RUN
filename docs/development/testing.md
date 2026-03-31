@@ -11,6 +11,7 @@ Unit tests focus on individual services and utility functions.
 - **Mandate**: 80%+ code coverage for the service layer.
 
 ### Running Unit Tests
+
 ```bash
 npm run test
 ```
@@ -26,14 +27,18 @@ Integration tests verify API endpoints and business flows using a high-fidelity 
 - **Location**: `server/tests/integration/*.integration.test.ts`
 
 ### The MemoryStorage Mock
+
 Unlike stateless mocks, `MemoryStorage` implements the full `IStorage` interface and persists data in-memory during the test run. This allows for complex verification of state changes across multiple API calls.
 
 ### RBAC Verification
+
 All mutation endpoints must be tested for Role-Based Access Control:
+
 - Use `createMockSessionUser({ isAdmin: true })` for success cases.
 - Use `createMockSessionUser({ isAdmin: false })` to verify `403 Forbidden`.
 
 ### Running Integration Tests
+
 ```bash
 # Run preferred v2 suites
 npm run test tests/v2
@@ -50,6 +55,7 @@ E2E tests verify the full system behavior from the user's perspective.
 - **Environment**: `http://localhost:5002`
 
 ### Running E2E Tests
+
 ```bash
 # Terminal 1: Start server
 npm run dev
@@ -63,14 +69,19 @@ npm run test:e2e
 ## 🛡️ Guardrails
 
 ### Z-Index Policy
+
 Use design tokens (`z-modal`, `z-dock`) instead of arbitrary values.
+
 - **Enforcement**: Biome linting.
 
 ### SSR Hydration Check
+
 Tests verify `window.__REACT_QUERY_STATE__` injection to prevent loading stalls.
 
 ## 📂 Artifacts
+
 Test failures generate artifacts in `e2e/artifacts/`:
+
 - **Screenshots**: `.png` snapshots.
 - **Traces**: Run `npx playwright show-trace e2e/artifacts/trace.zip`.
 - **Report**: `playwright-report/index.html`.

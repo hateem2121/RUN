@@ -8,7 +8,7 @@ on:
 
 jobs:
   quality-check:
-    name: 🛡️ Late 2025 Quality Gate
+    name: 🛡️ April 2026 Quality Gate
     runs-on: ubuntu-latest
 
     services:

@@ -9,6 +9,7 @@
 ## Trigger Criteria
 
 Initiate rollback if ANY of the following during or after a deployment:
+
 - Sentry error rate > 1% sustained for 5+ minutes
 - `/api/health` returning non-200 for > 30 seconds
 - P99 response latency > 3 seconds
@@ -37,7 +38,9 @@ curl https://wear-run.com/api/health
 ## Step 2: Database Schema Rollback (if migration was applied)
 
 ### Option A: Neon Branch Rollback (Recommended)
+
 Neon preserves point-in-time restore for 7 days.
+
 ```bash
 # Create restore branch from pre-migration timestamp
 # Use Neon Console → Branches → Restore Point
@@ -50,6 +53,7 @@ neon branches create --name=rollback-$(date +%Y%m%d) \
 ```
 
 ### Option B: Drizzle Down Migration
+
 ```bash
 # If a down migration exists in drizzle/migrations/
 npm run --workspace=@run-remix/server db:push -- --force-reset
@@ -59,7 +63,9 @@ npm run --workspace=@run-remix/server db:push -- --force-reset
 ```
 
 ### Option C: Manual DDL Reversal
+
 For simple column additions:
+
 ```sql
 -- Example: drop a column added in bad migration
 ALTER TABLE products DROP COLUMN IF EXISTS bad_column;

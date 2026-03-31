@@ -3,6 +3,8 @@ FROM node:24-alpine AS builder
 
 WORKDIR /app
 
+RUN apk upgrade --no-cache
+
 # Install dependencies
 # Install dependencies with workspace optimization
 ARG NODE_ENV=production
@@ -29,7 +31,7 @@ FROM node:24-alpine
 
 # P1 FIX: Tini for zombie process reaping
 ENV NODE_ENV=production
-RUN apk add --no-cache tini
+RUN apk upgrade --no-cache && apk add --no-cache tini
 ENTRYPOINT ["/sbin/tini", "--"]
 
 WORKDIR /app

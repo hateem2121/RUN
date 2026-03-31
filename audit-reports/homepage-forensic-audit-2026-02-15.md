@@ -105,12 +105,14 @@ graph TB
 ### 1.3 File Discovery Results
 
 **Frontend Homepage:**
+
 - **Route:** `client/app/routes/_index.tsx` (main entry point)
 - **Data Hook:** `client/app/hooks/use-homepage-data.ts` (React Query)
 - **Components:** `client/app/components/homepage/` (Hero, Categories, FeaturedProducts, Process, Stats, Values)
 - **Theme Provider:** `client/app/components/shared/theme-provider.tsx`
 
 **CMS Admin Interface:**
+
 - **Admin Route:** `/admin/:module` (dynamic routing)
 - **Homepage Management:** `client/app/components/admin/homepage-management.tsx`
 - **Admin Tabs (5 tabs):**
@@ -121,10 +123,12 @@ graph TB
   - `HomepageFeaturedTab.tsx`
 
 **Server API Routes:**
+
 - **Batch Endpoint:** `server/routes/resources/homepage-batch.routes.ts` (two-tier cache: 3min L1, 30min L2)
 - **CRUD Endpoints:** `server/routes/resources/homepage-management.routes.ts` (180-min TTL)
 
 **Database Schema:**
+
 - Tables: `homepageHero`, `homepageSections`, `homepageSlogans`, `homepageProcessCards`, `homepageSustainability`, `homepageFeaturedProductsSettings`
 
 ---
@@ -257,6 +261,7 @@ $ npm run test
 | Chaos Tests | ❌ 40% Pass | Environment configuration issues |
 
 **Environment Issues:**
+
 - Missing `SESSION_SECRET` - Required for session-based tests
 - Missing `JWT_SECRET` - Required for auth tests
 - Zopfli compression unavailable - Expected in test environment
@@ -313,9 +318,10 @@ graph TB
 
 ### 4.2 Code Quality Assessment
 
-#### ✅ Excellent Patterns Found:
+#### ✅ Excellent Patterns Found
 
 1. **Lazy Loading Implementation**
+
 ```typescript
 // Lines 11-17: Proper React.lazy with Suspense
 const Categories = lazy(() => import("@/components/homepage/Categories"));
@@ -325,7 +331,8 @@ const Stats = lazy(() => import("@/components/homepage/Stats"));
 const Values = lazy(() => import("@/components/homepage/Values"));
 ```
 
-2. **Proper useEffect Cleanup (No Memory Leaks)**
+1. **Proper useEffect Cleanup (No Memory Leaks)**
+
 ```typescript
 // Lines 48-100: Proper Lenis cleanup
 useEffect(() => {
@@ -338,7 +345,8 @@ useEffect(() => {
 }, [prefersReducedMotion, isMobile]);
 ```
 
-3. **Accessibility: Reduced Motion Support**
+1. **Accessibility: Reduced Motion Support**
+
 ```typescript
 // Lines 50-55: Respects prefers-reduced-motion
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -347,7 +355,8 @@ if (prefersReducedMotion || isMobile) {
 }
 ```
 
-4. **React Query Data Fetching**
+1. **React Query Data Fetching**
+
 ```typescript
 // use-homepage-data.ts: Proper staleTime configuration
 const FETCH_STALE_TIME = 1000 * 60 * 5; // 5 minutes
@@ -427,6 +436,7 @@ if (!mounted) {
 ### 6.1 Integration Score: 75/100
 
 **Admin Interface Discovery:**
+
 - ✅ Admin UI located: `client/app/components/admin/homepage-management.tsx`
 - ✅ Admin API routes found: `server/routes/resources/homepage-management.routes.ts`
 - ✅ Database schemas documented: `server/migrations/schema.ts`
@@ -502,6 +512,7 @@ graph LR
 ### 7.2 Code Patterns Verified
 
 **✅ Named Exports (No default exports)**
+
 ```typescript
 // client/app/routes/_index.tsx:32
 export default function Index() {  // ✅ Named export
@@ -511,6 +522,7 @@ export default function Index() {  // ✅ Named export
 The homepage component and hooks use proper TypeScript typing throughout.
 
 **✅ Proper Hook Dependencies**
+
 ```typescript
 // _index.tsx:48 - Proper dependency array
 useEffect(() => {
@@ -542,6 +554,7 @@ $ npm audit
 ### 8.2 Bundle Analysis
 
 The build could not complete due to TypeScript errors, but runtime analysis shows:
+
 - **GSAP**: ~60KB (tree-shakeable)
 - **Lenis**: ~5KB
 - **React Query**: ~15KB
@@ -583,6 +596,7 @@ pie title Issues by Category
 The RUN APPAREL homepage demonstrates **excellent architecture and modern coding practices** with a few pre-existing infrastructure issues that require attention before production deployment. The codebase shows:
 
 **Strengths:**
+
 - ✅ Modern React 19 patterns (no forwardRef)
 - ✅ Proper dark/light mode with FOUC prevention
 - ✅ Excellent performance optimizations (lazy loading, code splitting)
@@ -592,6 +606,7 @@ The RUN APPAREL homepage demonstrates **excellent architecture and modern coding
 - ✅ React Query for data management
 
 **Areas Requiring Attention:**
+
 - ❌ Build failure (tsconfig issues) - blocks deployment
 - ⚠️ Test environment configuration - 20 test failures
 - ⚠️ npm dependency vulnerabilities - security concerns
@@ -603,7 +618,7 @@ The RUN APPAREL homepage demonstrates **excellent architecture and modern coding
 
 **Report Generated:** February 15, 2026  
 **Audit Conducted by:** Antigravity AI Agent (v2.0)  
-**Contact:** team@wear-run.com | +92-336-1777313  
+**Contact:** <team@wear-run.com> | +92-336-1777313  
 **Project:** RUN APPAREL (PVT) LTD  
 
 ---

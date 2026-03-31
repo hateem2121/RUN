@@ -7,6 +7,7 @@
 ## Context
 
 We needed an ORM/query builder that:
+
 - Provides end-to-end type safety
 - Has minimal runtime overhead
 - Supports PostgreSQL with HTTP drivers
@@ -36,12 +37,14 @@ We chose **Drizzle ORM** over Prisma.
 ## Consequences
 
 ### Positive
+
 - Type-safe queries with excellent inference
 - Shared schema between client/server via `@run-remix/shared`
 - Efficient SQL generation
 - Zero runtime dependencies beyond pg driver
 
 ### Negative
+
 - Less mature migration tooling than Prisma
 - Fewer learning resources available
 - Studio/visualization tools less polished

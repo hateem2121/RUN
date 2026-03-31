@@ -7,6 +7,7 @@
 ## Context
 
 We needed a PostgreSQL database solution that:
+
 - Scales automatically with traffic
 - Minimizes cold start latency
 - Integrates well with serverless infrastructure (Cloud Run)
@@ -36,12 +37,14 @@ We chose **Neon Serverless PostgreSQL** over traditional managed PostgreSQL (Clo
 ## Consequences
 
 ### Positive
+
 - No connection pool management in application code
 - Cost-effective for variable traffic patterns
 - Database branching for safe migrations
 - Drizzle ORM integration is excellent
 
 ### Negative
+
 - Cold start latency (~200-500ms after suspend)
 - Requires `-pooler` endpoint for best performance
 - Newer platform with less track record

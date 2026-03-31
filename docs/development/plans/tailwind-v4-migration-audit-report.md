@@ -2,8 +2,8 @@
 
 **Date:** February 15, 2026  
 **Auditor:** Antigravity AI Agent  
-**Scope:** Homepage + Product Pages (http://localhost:5002)  
-**Repository:** https://github.com/hateem2121/RUN
+**Scope:** Homepage + Product Pages (<http://localhost:5002>)  
+**Repository:** <https://github.com/hateem2121/RUN>
 
 ---
 
@@ -11,13 +11,15 @@
 
 This comprehensive audit of the RUN Apparel website reveals a **partially successful Tailwind CSS v4 migration** with **CRITICAL FUNCTIONAL ISSUES** that render the product catalog completely non-functional. The audit covered the homepage (Phase 1) and product pages (Phase 2), identifying **14 distinct issues** across visual, functional, performance, and code quality categories.
 
-### Phase 1 (Homepage) Findings:
+### Phase 1 (Homepage) Findings
+
 1. **Critical LCP Performance Issue** - 167,620ms (nearly 3 minutes) vs. 2,500ms target
 2. **API Authentication Failure** - Footer API returning 401 Unauthorized
 3. **Standards Violations** - 119 instances of arbitrary values in className, 41 instances of TypeScript `any` type
 4. **Duplicate CSS Definitions** - `z-modal-backdrop` and `z-modal` utilities defined twice
 
-### Phase 2 (Product Pages) Findings - CRITICAL:
+### Phase 2 (Product Pages) Findings - CRITICAL
+
 1. **Product Catalog Empty** - ALL products fail frontend Zod schema validation, showing 0 products
 2. **Product Detail Pages 404** - Database `urlPath` values don't match frontend-generated URL paths
 3. **Schema-Frontend Mismatch** - Frontend expects fields that API doesn't return
@@ -163,6 +165,7 @@ flowchart LR
 The Largest Contentful Paint (LCP) metric is **167,620ms** (nearly 3 minutes), which is **67x worse** than the target of 2,500ms. This makes the homepage effectively unusable for most users, especially on slower connections or devices.
 
 **Evidence:**
+
 ```
 [Web Vitals] LCP: 167620ms
 Value: 167620
@@ -172,12 +175,14 @@ Target: < 2500ms
 
 **Root Cause:**
 The extreme LCP delay is likely caused by:
+
 1. GSAP animations blocking the main thread during hero section rendering
 2. Large unoptimized images in the hero section
 3. JavaScript bundle not being code-split effectively
 4. Possible infinite loop or race condition in animation initialization
 
 **Recommended Fix:**
+
 1. Implement lazy loading for GSAP animations
 2. Add `fetchpriority="high"` to hero images
 3. Code-split the hero section component
@@ -185,6 +190,7 @@ The extreme LCP delay is likely caused by:
 5. Investigate GSAP initialization for blocking behavior
 
 **Business Impact:**
+
 - **Revenue:** Critical - Users will abandon before page loads
 - **Brand:** Critical - Professional appearance compromised
 - **Compliance:** N/A
@@ -202,6 +208,7 @@ The extreme LCP delay is likely caused by:
 The footer API endpoint returns HTTP 401 Unauthorized, preventing footer content from loading. This affects the entire site's footer section including contact information, social links, and legal pages.
 
 **Evidence:**
+
 ```
 Failed to load resource: the server responded with a status of 401 (Unauthorized)
 @ http://localhost:5002/api/footer
@@ -211,12 +218,14 @@ Failed to load resource: the server responded with a status of 401 (Unauthorized
 The `/api/footer` endpoint appears to require authentication when it should be publicly accessible. This is likely a middleware configuration issue where public routes are incorrectly protected.
 
 **Recommended Fix:**
+
 1. Check Express middleware configuration for `/api/footer` route
 2. Add `/api/footer` to public routes whitelist
 3. Verify authentication middleware is not applied globally
 4. Test with authentication disabled to confirm root cause
 
 **Business Impact:**
+
 - **Revenue:** High - Contact information unavailable
 - **Brand:** High - Professional appearance compromised
 - **Compliance:** Medium - Legal pages inaccessible
@@ -236,6 +245,7 @@ The `/api/footer` endpoint appears to require authentication when it should be p
 The product catalog page shows "Showing 0 products" with "No products found" message despite the API returning products successfully. ALL products from the API fail frontend Zod schema validation, resulting in an empty display.
 
 **Evidence:**
+
 ```
 API Response: Returns 10+ products successfully
 Frontend Display: "Showing 0 products"
@@ -256,6 +266,7 @@ The frontend Zod schema in [`client/app/schemas/product.ts`](client/app/schemas/
    - Result: Type mismatch causes validation failure
 
 **Code Analysis:**
+
 ```typescript
 // client/app/schemas/product.ts (Lines 100-140)
 export const ProductSummarySchema = z.object({
@@ -278,12 +289,14 @@ const validatedProducts = useMemo(() => {
 ```
 
 **Recommended Fix:**
+
 1. Make `shortDescription` optional in schema: `shortDescription: z.string().optional()`
 2. Update `fiberComposition` to accept both formats: `fiberComposition: z.union([z.record(z.string()), z.array(z.any())])`
 3. OR update API to include `shortDescription` and correct `fiberComposition` format
 4. Add schema/API integration tests to catch mismatches
 
 **Business Impact:**
+
 - **Revenue:** CRITICAL - Customers cannot browse products, zero conversion possible
 - **Brand:** CRITICAL - Professional B2B platform appears broken
 - **Compliance:** N/A
@@ -301,6 +314,7 @@ const validatedProducts = useMemo(() => {
 Product detail pages return 404 errors when accessed via the frontend-generated URL paths. The route structure is correct, but database `urlPath` values don't match the paths the frontend generates.
 
 **Evidence:**
+
 ```
 Frontend Generated Path: /categories/athletic-wear/pro-performance-running-shirt
 API Request: GET /api/products/by-path?path=/categories/athletic-wear/pro-performance-running-shirt
@@ -324,6 +338,7 @@ The database `urlPath` column values don't match the frontend-generated URL path
    - Or `urlPath` was never populated during data migration
 
 **Code Analysis:**
+
 ```typescript
 // server/lib/db/repositories/product-repository.ts (Lines 473-530)
 async getProductByPath(urlPath: string): Promise<ProductDetailWithContext | null> {
@@ -349,7 +364,9 @@ urlPath: varchar("url_path", { length: 500 }), // ❌ Nullable, may be NULL
 ```
 
 **Recommended Fix:**
+
 1. **Option A - Data Migration:** Update all product `urlPath` values to match frontend format
+
    ```sql
    UPDATE products 
    SET url_path = CONCAT('/categories/', category_slug, '/', product_slug)
@@ -357,6 +374,7 @@ urlPath: varchar("url_path", { length: 500 }), // ❌ Nullable, may be NULL
    ```
 
 2. **Option B - Fallback Query:** Add fallback to query by product slug if `urlPath` fails
+
    ```typescript
    // Try urlPath first, then fall back to slug
    const product = await getByPath(urlPath) ?? await getBySlug(productSlug);
@@ -365,6 +383,7 @@ urlPath: varchar("url_path", { length: 500 }), // ❌ Nullable, may be NULL
 3. **Option C - Dynamic Path Generation:** Generate `urlPath` on product creation/update
 
 **Business Impact:**
+
 - **Revenue:** CRITICAL - Customers cannot view product details, cannot order
 - **Brand:** CRITICAL - All product links appear broken
 - **Compliance:** N/A
@@ -414,6 +433,7 @@ flowchart TD
 GSAP animation library is attempting to animate elements that don't exist in the DOM, causing two console warnings. This indicates race conditions between component mounting and animation initialization.
 
 **Evidence:**
+
 ```
 GSAP target null not found. https://gsap.com
 GSAP target null not found. https://gsap.com
@@ -423,12 +443,14 @@ GSAP target null not found. https://gsap.com
 The Hero component uses GSAP for text animations with parallax effects. The animation initialization is likely happening before React has finished rendering the target elements, or the selectors are incorrect.
 
 **Recommended Fix:**
+
 1. Wrap GSAP animations in `useLayoutEffect` or ensure DOM is ready
 2. Add null checks before GSAP targets
 3. Use React refs instead of DOM selectors
 4. Add cleanup function to kill animations on unmount
 
 **Code Example:**
+
 ```typescript
 // Correct pattern
 useLayoutEffect(() => {
@@ -441,6 +463,7 @@ useLayoutEffect(() => {
 ```
 
 **Business Impact:**
+
 - **Revenue:** Medium - Degraded user experience
 - **Brand:** Medium - Animation issues visible
 - **Compliance:** N/A
@@ -458,6 +481,7 @@ useLayoutEffect(() => {
 Found **119 instances** of arbitrary Tailwind values in className attributes across 50+ files. This violates the RUN Remix coding standards which require using `@layer utilities` instead of arbitrary values.
 
 **Examples Found:**
+
 - `text-[10px]`, `text-[13vw]`, `text-[10vw]`
 - `h-[350px]`, `w-[150px]`, `min-h-[150vh]`
 - `bg-[#1a1a2e]`, `opacity-[0.03]`
@@ -467,6 +491,7 @@ Found **119 instances** of arbitrary Tailwind values in className attributes acr
 - `mt-[-2vw]` (negative arbitrary margin)
 
 **Files Affected:**
+
 - `client/app/components/homepage/Hero.tsx`
 - `client/app/components/homepage/Categories.tsx`
 - `client/app/routes/technology.tsx`
@@ -477,12 +502,14 @@ Found **119 instances** of arbitrary Tailwind values in className attributes acr
 Developers used arbitrary values for quick prototyping instead of defining proper utilities in the CSS layer. This pattern was not caught during code review.
 
 **Recommended Fix:**
+
 1. Create a script to identify all arbitrary values
 2. Define equivalent utilities in `@layer utilities` in `index.css`
 3. Replace arbitrary values with named utilities
 4. Add linting rule to prevent arbitrary values
 
 **Example Fix:**
+
 ```css
 /* In index.css */
 @utility text-hero-xl {
@@ -503,6 +530,7 @@ Developers used arbitrary values for quick prototyping instead of defining prope
 ```
 
 **Business Impact:**
+
 - **Revenue:** N/A
 - **Brand:** N/A
 - **Compliance:** N/A (Technical debt)
@@ -520,12 +548,14 @@ Developers used arbitrary values for quick prototyping instead of defining prope
 Found **41 instances** of TypeScript `any` type usage, violating the project's TypeScript strict mode requirements. This reduces type safety and can lead to runtime errors.
 
 **Examples Found:**
+
 - Filter callbacks with `(m: any) => ...`
 - Function parameters like `fabricData: any`
 - API response types using `any`
 - Form value types using `any`
 
 **Files Affected:**
+
 - `client/app/routes/sustainability.tsx`
 - `client/app/routes/developer.playground.tsx`
 - `client/app/routes/fabrics.tsx`
@@ -536,12 +566,14 @@ Found **41 instances** of TypeScript `any` type usage, violating the project's T
 Quick development without proper type definitions, or migration from JavaScript without adding proper types.
 
 **Recommended Fix:**
+
 1. Create proper TypeScript interfaces for all data types
 2. Use Zod schemas to generate types
 3. Replace `any` with `unknown` and add type guards
 4. Enable stricter TypeScript linting rules
 
 **Example Fix:**
+
 ```typescript
 // Before
 const filtered = items.filter((m: any) => m.active);
@@ -557,6 +589,7 @@ const filtered = items.filter((m: Item) => m.active);
 ```
 
 **Business Impact:**
+
 - **Revenue:** N/A
 - **Brand:** N/A
 - **Compliance:** N/A (Technical debt)
@@ -576,6 +609,7 @@ const filtered = items.filter((m: Item) => m.active);
 The CSS utilities `z-modal-backdrop` and `z-modal` are defined twice in the main CSS file, which could cause specificity conflicts or unexpected behavior.
 
 **Evidence:**
+
 ```css
 /* First definition - lines 49-55 */
 @utility z-modal-backdrop {
@@ -601,6 +635,7 @@ Likely a merge conflict or copy-paste error during the Tailwind v4 migration.
 Remove the duplicate definitions (lines 73-79) from `client/app/index.css`.
 
 **Business Impact:**
+
 - **Revenue:** Low
 - **Brand:** Low
 - **Compliance:** N/A
@@ -618,6 +653,7 @@ Remove the duplicate definitions (lines 73-79) from `client/app/index.css`.
 Multiple 504 errors for "Outdated Optimize Dep" affecting various JavaScript chunks. This impacts development experience with failed hot module replacement.
 
 **Evidence:**
+
 ```
 Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)
 - chunk-UGQCDJIU.js
@@ -630,6 +666,7 @@ Failed to load resource: the server responded with a status of 504 (Outdated Opt
 Vite's dependency cache is stale after the Tailwind v4 migration or dependency updates.
 
 **Recommended Fix:**
+
 ```bash
 # Clear Vite cache
 rm -rf node_modules/.vite
@@ -639,6 +676,7 @@ npm run dev
 ```
 
 **Business Impact:**
+
 - **Revenue:** N/A (Development only)
 - **Brand:** N/A
 - **Compliance:** N/A
@@ -656,22 +694,26 @@ npm run dev
 The Vite development server connection is being lost, triggering polling for restart. This affects hot module replacement during development.
 
 **Evidence:**
+
 ```
 [vite] server connection lost. Polling for restart...
 ```
 
 **Root Cause:**
 Possible causes include:
+
 1. Server crash due to memory issues
 2. File watcher hitting system limits
 3. Network issues in development environment
 
 **Recommended Fix:**
+
 1. Increase file watcher limits: `echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf`
 2. Check for memory leaks in development server
 3. Restart development server
 
 **Business Impact:**
+
 - **Revenue:** N/A (Development only)
 - **Brand:** N/A
 - **Compliance:** N/A
@@ -689,6 +731,7 @@ Possible causes include:
 First Contentful Paint (FCP) is **2,452ms**, exceeding the target of **1,800ms** by 36%. This affects perceived page load speed.
 
 **Evidence:**
+
 ```
 [Web Vitals] FCP: 2452ms
 Value: 2452
@@ -696,18 +739,21 @@ Target: < 1800ms
 ```
 
 **Root Cause:**
+
 1. Large initial JavaScript bundle
 2. Render-blocking resources
 3. CSS not inlined for above-fold content
 4. Font loading not optimized
 
 **Recommended Fix:**
+
 1. Implement critical CSS inlining
 2. Use `preload` for critical fonts
 3. Code-split initial route
 4. Defer non-critical JavaScript
 
 **Business Impact:**
+
 - **Revenue:** Medium - Slower perceived load
 - **Brand:** Medium - User experience impact
 - **Compliance:** N/A
@@ -727,6 +773,7 @@ Target: < 1800ms
 Console message prompting React DevTools installation. This is expected in development mode.
 
 **Evidence:**
+
 ```
 Download the React DevTools for a better development experience: https://react.dev/link/rea...
 ```
@@ -759,6 +806,7 @@ The RUN Remix standards explicitly require **Lucide React** as the only icon lib
 | `client/app/components/admin/technology/TechnologyRoadmapManagement.tsx` | Roadmap section icons |
 
 **Evidence:**
+
 ```typescript
 // Found in IconSelector.tsx
 import * as TablerIcons from '@tabler/icons-react';
@@ -771,11 +819,13 @@ import { IconPhoto, IconUpload, IconTrash } from '@tabler/icons-react';
 These files were likely created before the Lucide-only standard was enforced, or developers were unaware of the standard during implementation.
 
 **Recommended Fix:**
+
 1. Replace all `@tabler/icons-react` imports with equivalent Lucide React icons
 2. Use Lucide's comprehensive icon library (1000+ icons available)
 3. If exact icon match not available, use closest equivalent
 
 **Migration Example:**
+
 ```typescript
 // ❌ BEFORE - Tabler Icons
 import { IconPhoto, IconUpload, IconTrash } from '@tabler/icons-react';
@@ -785,6 +835,7 @@ import { Image, Upload, Trash2 } from 'lucide-react';
 ```
 
 **Business Impact:**
+
 - **Revenue:** Low - Admin-only impact
 - **Brand:** Low - Not customer-facing
 - **Compliance:** Medium - Standards violation
@@ -859,6 +910,7 @@ graph LR
 ### CMS Integration Issues
 
 **Issue #11: Footer CMS Integration Broken**
+
 - The footer content management is disconnected due to API authentication error
 - Footer displays static content but cannot be updated through CMS
 - Requires immediate attention to restore CMS functionality
@@ -879,6 +931,7 @@ graph LR
 ### Component Duplication
 
 **No significant component duplication found.** The codebase follows proper component organization with:
+
 - Generic UI components in `client/app/components/ui/`
 - Domain-specific components in respective folders
 - No duplicate Button, Input, or Card components found
@@ -1051,6 +1104,7 @@ gantt
 ### 1. Implement Design System Documentation
 
 Create a comprehensive style guide documenting:
+
 - All Tailwind v4 theme variables
 - Custom utility classes
 - Component variants with CVA
@@ -1075,6 +1129,7 @@ test('Homepage is accessible', async () => {
 ### 3. Performance Budgets
 
 Enforce performance budgets in CI/CD:
+
 ```javascript
 // lighthouserc.js
 module.exports = {
@@ -1092,6 +1147,7 @@ module.exports = {
 ### 4. Add Tailwind Linting Rules
 
 Create custom Biome or ESLint rules to:
+
 - Prevent arbitrary values in className
 - Enforce named utility usage
 - Flag deprecated Tailwind v3 patterns
@@ -1099,6 +1155,7 @@ Create custom Biome or ESLint rules to:
 ### 5. Implement Critical CSS Inlining
 
 Use Vite plugin to inline critical CSS:
+
 ```javascript
 // vite.config.ts
 import { defineConfig } from 'vite';
@@ -1169,10 +1226,10 @@ export default defineConfig({
 
 ## Appendix C: References
 
-- **Tailwind CSS v4 Upgrade Guide:** https://tailwindcss.com/docs/upgrade-guide
-- **WCAG 2.1 Guidelines:** https://www.w3.org/WAI/WCAG21/quickref/
-- **Core Web Vitals:** https://web.dev/vitals/
-- **React 19 Documentation:** https://react.dev/
+- **Tailwind CSS v4 Upgrade Guide:** <https://tailwindcss.com/docs/upgrade-guide>
+- **WCAG 2.1 Guidelines:** <https://www.w3.org/WAI/WCAG21/quickref/>
+- **Core Web Vitals:** <https://web.dev/vitals/>
+- **React 19 Documentation:** <https://react.dev/>
 - **RUN Remix Standards:** Project custom instructions
 
 ---
@@ -1180,7 +1237,7 @@ export default defineConfig({
 ## Phase 2: Product Pages and Catalog Audit
 
 **Date:** February 15, 2026  
-**Scope:** Product catalog page (http://localhost:5002/products)  
+**Scope:** Product catalog page (<http://localhost:5002/products>)  
 **Status:** CRITICAL ISSUE DISCOVERED
 
 ### Executive Summary - Phase 2
@@ -1202,6 +1259,7 @@ During Phase 2 audit of the product catalog page, a **CRITICAL SEVERITY 5/5 issu
 The product catalog page shows zero products despite the API returning valid product data. Console analysis reveals that ALL products (IDs 49-61) are failing Zod schema validation on the frontend. The validation is performed by `safeParseArray` which silently filters out invalid products, resulting in an empty array.
 
 **Console Evidence:**
+
 ```
 Product validation failed for product 49: [
   {
@@ -1263,6 +1321,7 @@ const summaryColumns = {
 ```
 
 **Business Impact:**
+
 - **Revenue:** CRITICAL - No products can be viewed, preventing any purchases
 - **Brand:** HIGH - Professional appearance severely damaged
 - **User Experience:** COMPLETE FAILURE - Core functionality broken
@@ -1270,6 +1329,7 @@ const summaryColumns = {
 **Recommended Fix:**
 
 Option A - Update Schema to Match API (Recommended):
+
 ```typescript
 // client/app/schemas/product.ts
 export const ProductSummarySchema = z.object({
@@ -1283,6 +1343,7 @@ export const ProductSummarySchema = z.object({
 ```
 
 Option B - Update API Response to Match Schema:
+
 ```typescript
 // server/routes/products.ts - Add shortDescription to query
 // Convert fiberComposition string to record object
@@ -1342,6 +1403,7 @@ pie title Issue Distribution by Category - Updated
 ### Updated Score (Phase 2): 35/100
 
 **Score Breakdown:**
+
 - Visual Quality: 60/100 (unchanged)
 - Functional Correctness: 0/100 (products completely broken)
 - Performance: 45/100 (FCP/TTFB still exceeding targets)
@@ -1388,6 +1450,7 @@ gantt
 
 **Status:** IN PROGRESS - Critical issue discovered, additional testing paused  
 **Next Steps:**
+
 1. Fix product schema validation issue (P0)
 2. Test product detail pages
 3. Check product-related API endpoints

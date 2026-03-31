@@ -20,6 +20,7 @@ As a B2B SaaS platform, we need a consistent, production-grade error handling st
 We adopt [RFC 9457 Problem Details for HTTP APIs](https://datatracker.ietf.org/doc/html/rfc9457) as our error response format.
 
 **Response structure**:
+
 ```json
 {
   "type": "https://api.run-remix.com/errors/validation-failed",

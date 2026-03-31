@@ -93,6 +93,7 @@ Highly sensitive data with strict access controls.
 ### Right to Access (Art. 15)
 
 **Request Process**:
+
 1. User submits request via `/api/privacy/access`
 2. Identity verified via email confirmation
 3. Data exported within 30 days
@@ -101,6 +102,7 @@ Highly sensitive data with strict access controls.
 ### Right to Erasure (Art. 17)
 
 **Request Process**:
+
 1. User submits request via `/api/privacy/delete`
 2. Identity verified
 3. Data marked for deletion
@@ -108,6 +110,7 @@ Highly sensitive data with strict access controls.
 5. Confirmation email sent
 
 **Exceptions**:
+
 - Legal hold requirements (7-year order retention)
 - Active disputes or support tickets
 
@@ -166,6 +169,7 @@ Highly sensitive data with strict access controls.
 ### Audit Trail
 
 All access to PII is logged with:
+
 - User ID
 - Action performed
 - Timestamp

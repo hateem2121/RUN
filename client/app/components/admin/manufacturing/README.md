@@ -7,6 +7,7 @@
 - **NO** `console.log` statements in production code
 - Use proper error boundaries for error handling
 - Development-only logging must be wrapped in:
+
   ```tsx
   if (process.env.NODE_ENV === 'development') {
     console.log(...);

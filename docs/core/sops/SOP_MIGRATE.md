@@ -37,6 +37,7 @@ cd server && npx drizzle-kit generate
 ```
 
 **Review the generated SQL before applying:**
+
 ```bash
 cat server/migrations/<latest>.sql
 # Confirm: only the expected changes are present

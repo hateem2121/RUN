@@ -28,6 +28,7 @@ Availability = (Total Requests - 5xx Errors) / Total Requests × 100
 ```
 
 **Exclusions**:
+
 - Scheduled maintenance windows (announced 48h in advance)
 - Requests to `/api/health` endpoints
 
@@ -194,6 +195,7 @@ Example: 99.9% availability = 0.1% error budget = 43.8 minutes/month
 ## Appendix: Monitoring Queries
 
 ### Availability Query
+
 ```sql
 SELECT ROUND(
   (SUM(IF(response_code < 500, 1, 0)) / COUNT(*)) * 100, 2
@@ -203,6 +205,7 @@ WHERE timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 HOUR)
 ```
 
 ### P95 Latency Query
+
 ```sql
 SELECT APPROX_QUANTILES(latency_ms, 100)[OFFSET(95)] AS p95_latency
 FROM cloud_run_requests

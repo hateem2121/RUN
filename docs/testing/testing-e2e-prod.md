@@ -8,9 +8,9 @@ To ensure maximum reliability and to test the **actual artifact** that will be d
 
 ## Why Prod-Mode Exists
 
-1.  **Reliability**: Removes Vite HMR client and other development-only injections that can conflict with headless browsers.
-2.  **Accuracy**: Tests the optimized, minified production bundles and the real Express production server.
-3.  **Performance**: Identifies hydration issues and performance bottlenecks that only appear in production-like environments.
+1. **Reliability**: Removes Vite HMR client and other development-only injections that can conflict with headless browsers.
+2. **Accuracy**: Tests the optimized, minified production bundles and the real Express production server.
+3. **Performance**: Identifies hydration issues and performance bottlenecks that only appear in production-like environments.
 
 ## How to Run Locally
 
@@ -44,6 +44,6 @@ E2E_TARGET=prod npx playwright test --project=prod-chromium --update-snapshots
 
 If tests fail in production mode but pass in dev:
 
-1.  **Hydration Mismatches**: Check the console for hydration warnings.
-2.  **Asset Loading**: Ensure `dist/public` exists and is populated.
-3.  **Trace Investigation**: Playwright captures traces on the first retry. Check the `test-results/` directory or run `npx playwright show-report`.
+1. **Hydration Mismatches**: Check the console for hydration warnings.
+2. **Asset Loading**: Ensure `dist/public` exists and is populated.
+3. **Trace Investigation**: Playwright captures traces on the first retry. Check the `test-results/` directory or run `npx playwright show-report`.

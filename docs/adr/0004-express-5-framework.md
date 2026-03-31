@@ -7,6 +7,7 @@
 ## Context
 
 We needed a Node.js web framework that:
+
 - Provides robust middleware ecosystem
 - Supports async/await natively
 - Has long-term stability and community support
@@ -36,11 +37,13 @@ We chose **Express 5.1** over Fastify or Hono.
 ## Consequences
 
 ### Positive
+
 - Vast middleware ecosystem
 - Easy to find developers with Express experience
 - Excellent documentation and Stack Overflow coverage
 - React Router SSR works seamlessly
 
 ### Negative
+
 - Not the fastest option (though fast enough for our needs)
 - Some legacy patterns in older middleware

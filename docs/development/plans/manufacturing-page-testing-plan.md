@@ -1,6 +1,7 @@
 # Manufacturing Page Testing Plan
 
 ## Summary
+
 Comprehensive end-to-end testing for the Manufacturing page to ensure CMS updates reflect immediately on the public page with proper cache invalidation. This plan covers API endpoints, admin CMS components, public-facing components, and full E2E integration tests.
 
 ## Architecture Overview
@@ -54,28 +55,33 @@ flowchart TB
 ## Files to Create
 
 ### API Endpoint Tests
+
 - `tests/unit/api/manufacturing-hero.test.ts` - Hero API endpoint tests
 - `tests/unit/api/manufacturing-processes.test.ts` - Processes CRUD + reorder tests
 - `tests/unit/api/manufacturing-capabilities.test.ts` - Capabilities CRUD tests
 - `tests/unit/api/manufacturing-qualities.test.ts` - Qualities CRUD tests
 
 ### Admin CMS Component Tests
+
 - `tests/unit/components/admin/HeroManagement.test.tsx` - Hero CMS form tests
 - `tests/unit/components/admin/ProcessManagement.test.tsx` - Process CMS tests with DnD
 - `tests/unit/components/admin/CapabilityManagement.test.tsx` - Capability CMS tests
 - `tests/unit/components/admin/QualityManagement.test.tsx` - Quality CMS tests
 
 ### Public Component Tests
+
 - `tests/unit/components/public/PublicHeroSection.test.tsx` - Hero rendering tests
 - `tests/unit/components/public/PublicProcessSection.test.tsx` - Process rendering tests
 - `tests/unit/components/public/PublicCapabilitySection.test.tsx` - Capability rendering tests
 - `tests/unit/components/public/PublicQualitySection.test.tsx` - Quality rendering tests
 
 ### Integration Tests
+
 - `tests/integration/manufacturing-cms-to-page.test.ts` - Full CMS-to-Page data flow
 - `tests/integration/manufacturing-cache-invalidation.test.ts` - Cache invalidation verification
 
 ### E2E Tests
+
 - `e2e/manufacturing-cms-e2e.spec.ts` - Full user flow E2E test
 
 ## Test Details
@@ -83,6 +89,7 @@ flowchart TB
 ### 1. API Endpoint Tests
 
 #### Hero API Tests - `manufacturing-hero.test.ts`
+
 ```typescript
 describe('Manufacturing Hero API', () => {
   // GET /api/manufacturing-hero
@@ -100,6 +107,7 @@ describe('Manufacturing Hero API', () => {
 ```
 
 #### Processes API Tests - `manufacturing-processes.test.ts`
+
 ```typescript
 describe('Manufacturing Processes API', () => {
   // GET /api/manufacturing-processes
@@ -127,6 +135,7 @@ describe('Manufacturing Processes API', () => {
 ### 2. Admin CMS Component Tests
 
 #### HeroManagement Tests
+
 ```typescript
 describe('HeroManagement', () => {
   it('renders loading state while fetching hero')
@@ -144,6 +153,7 @@ describe('HeroManagement', () => {
 ```
 
 #### ProcessManagement Tests
+
 ```typescript
 describe('ProcessManagement', () => {
   it('renders empty state when no processes exist')
@@ -164,6 +174,7 @@ describe('ProcessManagement', () => {
 ### 3. Public Component Tests
 
 #### PublicHeroSection Tests
+
 ```typescript
 describe('PublicHeroSection', () => {
   it('renders hero headline and subheadline')
@@ -177,6 +188,7 @@ describe('PublicHeroSection', () => {
 ```
 
 #### PublicProcessSection Tests
+
 ```typescript
 describe('PublicProcessSection', () => {
   it('renders all active processes')
@@ -192,6 +204,7 @@ describe('PublicProcessSection', () => {
 ### 4. Integration Tests
 
 #### CMS-to-Page Data Flow
+
 ```typescript
 describe('Manufacturing CMS-to-Page Integration', () => {
   it('updates hero in CMS and reflects on public page', async () => {
@@ -221,6 +234,7 @@ describe('Manufacturing CMS-to-Page Integration', () => {
 ```
 
 #### Cache Invalidation Tests
+
 ```typescript
 describe('Manufacturing Cache Invalidation', () => {
   it('invalidates manufacturing cache on hero update')
@@ -235,6 +249,7 @@ describe('Manufacturing Cache Invalidation', () => {
 ### 5. E2E Tests
 
 #### Full User Flow
+
 ```typescript
 describe('Manufacturing Page E2E', () => {
   it('admin can update hero and see changes on public page', async () => {
@@ -259,6 +274,7 @@ describe('Manufacturing Page E2E', () => {
 ## Testing Approach
 
 ### Phase 1: API Layer Testing
+
 1. Start with API endpoint tests using Vitest
 2. Mock database layer for unit tests
 3. Use test database for integration tests
@@ -266,6 +282,7 @@ describe('Manufacturing Page E2E', () => {
 5. Test authentication middleware
 
 ### Phase 2: Component Testing
+
 1. Test admin CMS components with React Testing Library
 2. Mock API calls with MSW or vi.fn()
 3. Test form validation and submission
@@ -273,18 +290,21 @@ describe('Manufacturing Page E2E', () => {
 5. Test media picker integration
 
 ### Phase 3: Public Component Testing
+
 1. Test rendering with various data states
 2. Test with missing/null data
 3. Verify accessibility attributes
 4. Test responsive behavior
 
 ### Phase 4: Integration Testing
+
 1. Test full data flow from CMS to public page
 2. Verify cache invalidation works correctly
 3. Test with real database (test instance)
 4. Verify React Query cache updates
 
 ### Phase 5: E2E Testing
+
 1. Use Playwright for full user flow tests
 2. Test admin authentication flow
 3. Verify visual rendering
@@ -293,6 +313,7 @@ describe('Manufacturing Page E2E', () => {
 ## Risks and Considerations
 
 ### Technical Risks
+
 - **Cache Timing**: Two-tier cache may have race conditions
   - Mitigation: Add delays in tests to account for cache propagation
 - **DnD Testing**: Drag-and-drop can be flaky in tests
@@ -301,11 +322,13 @@ describe('Manufacturing Page E2E', () => {
   - Mitigation: Mock media picker responses, test in isolation
 
 ### Test Data Management
+
 - Use factory functions for test data
 - Clean up test database between tests
 - Use transactions for rollback in integration tests
 
 ### Coverage Targets
+
 - API Routes: 85%+
 - Admin Components: 80%+
 - Public Components: 75%+

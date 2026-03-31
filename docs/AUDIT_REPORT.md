@@ -1,4 +1,5 @@
 # RUN Repository Documentation Audit Report
+
 **Generated:** 2026-02-25T22:20:00Z  
 **Agent:** Antigravity  
 **Repo:** hateem2121/RUN  
@@ -7,6 +8,7 @@
 ---
 
 ## Executive Summary
+
 - **Total files scanned:** 342
 - **Files current:** 298
 - **Files needing updates:** 8
@@ -18,6 +20,7 @@ The repository's documentation layer is extremely robust and well-aligned with t
 ---
 
 ## Section 1: Files to KEEP (No Changes)
+
 | File | Status | Notes |
 |------|--------|-------|
 | `docs/AGENT_INSTRUCTIONS.md` | ✅ CURRENT | Accurate Port 5002 guidelines and roles. |
@@ -33,26 +36,30 @@ The repository's documentation layer is extremely robust and well-aligned with t
 ## Section 2: Files Requiring Updates
 
 ### 2.1 `AGENTS.md`
+
 - **File:** `AGENTS.md`
 - **Issue:** Broken internal documentation links and outdated paths.
-- **Suggested Fix:** 
-    - Update `docs/guides/developer-workflow.md` to `docs/DEVELOPMENT_WORKFLOW.md`.
-    - Update `docs/guides/3D_INTEGRATION.md` reference to correct path.
+- **Suggested Fix:**
+  - Update `docs/guides/developer-workflow.md` to `docs/DEVELOPMENT_WORKFLOW.md`.
+  - Update `docs/guides/3D_INTEGRATION.md` reference to correct path.
 - **Priority:** High
 
 ### 2.2 `CONTRIBUTING.md`
+
 - **File:** `CONTRIBUTING.md`
 - **Issue:** Missing specific 2026 toolchain details (Biome, Vitest).
 - **Suggested Fix:** Add sections explicitly mentioning Biome for linting/formatting and Vitest for testing standards.
 - **Priority:** Medium
 
 ### 2.3 `client/app/styles/animations.css`
+
 - **File:** `client/app/styles/animations.css`
 - **Issue:** Extensive use of `@apply` outside of `@utility` layers.
 - **Suggested Fix:** Refactor to use Tailwind V4 utility classes in components or wrap in `@utility` layer if custom classes are required.
 - **Priority:** Low
 
 ### 2.4 `client/app/components/ui/map/map-styles.css`
+
 - **File:** `client/app/components/ui/map/map-styles.css`
 - **Issue:** Use of `@apply`.
 - **Suggested Fix:** Move to `@utility` layer or inline classes.
@@ -83,12 +90,14 @@ Across the repository, the following deprecated patterns were identified:
 ---
 
 ## Section 5: Gaps & Missing Documentation
+
 - **Unified Onboarding Guide**: While `DEVELOPMENT_WORKFLOW.md` exists, a high-level "Quick Start / Onboarding" guide for new 2026 developers would combine setup, port compliance, and first-task protocol.
 - **Link Integrity**: `AGENTS.md` is significantly out of sync with current file paths in `docs/`.
 
 ---
 
 ## Section 6: Proposed Removal Plan
+
 1. `rm -rf docs/archive/` — Cleanup legacy clutter.
 2. `rm scanner_lint_legacy.txt` — Remove dead log file.
 3. `rm biome_full_v2.txt` — Remove dead log file.
@@ -97,6 +106,7 @@ Across the repository, the following deprecated patterns were identified:
 ---
 
 ## Section 7: Recommended Next Steps
+
 1. **Approve Removal Plan**: Mark Section 6 as approved to trigger file cleanup.
 2. **Fix `AGENTS.md` Links**: Prioritize fixing links to ensure agents have correct context.
 3. **Refactor CSS**: Optionally schedule a minor refactor for `@apply` usage in animation files.

@@ -5,12 +5,14 @@ This directory contains SQL migrations for performance optimizations identified 
 ## Migration Files
 
 ### 001_add_search_indexes.sql
+
 **Purpose**: Add full-text search indexes using PostgreSQL trigram extension  
 **Impact**: 10x faster search queries (500ms → 50ms)  
 **Risk**: None (non-breaking, read-only optimization)  
 **Tables Affected**: `fabrics`, `accessories`
 
 **What it does**:
+
 - Enables `pg_trgm` extension for trigram similarity search
 - Adds GIN index on `fabrics.name` for ILIKE queries
 - Adds separate GIN indexes on `accessories.name`, `accessories.description`, and `accessories.sku` for OR queries
@@ -20,12 +22,14 @@ This directory contains SQL migrations for performance optimizations identified 
 ---
 
 ### 002_add_covering_index.sql
+
 **Purpose**: Add covering index for product URL lookups (index-only scans)  
 **Impact**: 20-30% faster product page loads  
 **Risk**: Minimal - slight increase in write latency (negligible)  
 **Tables Affected**: `products`
 
 **What it does**:
+
 - Creates covering index with INCLUDE clause for frequently accessed columns
 - Enables index-only scans (no table lookup needed)
 - Optionally drops old index after verification
@@ -154,6 +158,7 @@ After applying migrations, monitor these metrics:
 4. **Write Latency**: Should increase by <5ms (negligible)
 
 Check query performance:
+
 ```sql
 SELECT query, mean_exec_time, calls 
 FROM pg_stat_statements 

@@ -22,6 +22,7 @@ Use [GitHub's private vulnerability reporting](https://docs.github.com/en/code-s
 Send a report to the maintainer: **M. Hateem Jamshaid** — Business Development Director, RUN APPAREL (PVT) LTD.
 
 Include in your report:
+
 - Vulnerability type (e.g., OWASP category)
 - Affected component and version
 - Steps to reproduce

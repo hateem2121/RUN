@@ -7,6 +7,7 @@ Welcome to the RUN Remix API. Our API provides programmatic access to the sports
 ### Base URL
 
 All API requests should be made to:
+
 - Production: `https://wear-run.com/api`
 - Development: `http://localhost:5002/api`
 

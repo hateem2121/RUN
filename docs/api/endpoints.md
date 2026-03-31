@@ -475,6 +475,7 @@ All Admin endpoints require `admin` role authentication via session cookie.
 **Purpose**: Retrieve unified sustainability configuration (hero, metrics, certifications, initiatives, goals).
 
 #### Response Format
+
 ```json
 {
   "id": 1,
@@ -498,18 +499,22 @@ All Admin endpoints require `admin` role authentication via session cookie.
 ## Manufacturing Endpoints
 
 ### GET /api/manufacturing-hero
+
 **Purpose**: Retrieve hero section data for the Manufacturing page.  
 **Registration**: `server/routes/resources/manufacturing-hero.routes.ts`
 
 ### GET /api/v1/manufacturing-processes
+
 **Purpose**: Retrieve a list of all manufacturing processes with descriptions and icons.  
 **Registration**: `server/routes/resources/manufacturing-processes.routes.ts`
 
 ### GET /api/v1/manufacturing-capabilities
+
 **Purpose**: Retrieve a list of manufacturing infrastructure and technical capabilities.  
 **Registration**: `server/routes/resources/manufacturing-capabilities.routes.ts`
 
 ### GET /api/v1/manufacturing-qualities
+
 **Purpose**: Retrieve quality assurance standards and certification details.  
 **Registration**: `server/routes/resources/manufacturing-qualities.routes.ts`
 
@@ -518,18 +523,22 @@ All Admin endpoints require `admin` role authentication via session cookie.
 ## Technology Endpoints
 
 ### GET /api/v1/technology-innovations
+
 **Purpose**: Retrieve details on proprietary technology and R&D breakthroughs.  
 **Registration**: `server/routes/resources/technology-innovations.routes.ts`
 
 ### GET /api/v1/technology-equipment
+
 **Purpose**: List advanced machinery and automation systems used in production.  
 **Registration**: `server/routes/resources/technology-equipment.routes.ts`
 
 ### GET /api/v1/technology-roadmap
+
 **Purpose**: Retrieve the technical development roadmap for future system phases.  
 **Registration**: `server/routes/resources/technology-roadmap.routes.ts`
 
 ### GET /api/technology-gradient-settings
+
 **Purpose**: Retrieve global CSS gradient configurations for technical UI elements.  
 **Registration**: `server/routes/resources/technology-gradient-settings.routes.ts`
 
@@ -765,6 +774,7 @@ All clients should migrate to `/api/v1/*`.
 
 **Deprecation Headers**:
 Responses from legacy endpoints include standard RFC 8594 headers:
+
 - `Deprecation: true`
 - `Sunset: Sat, 01 Jun 2026 00:00:00 GMT`
 - `Link: </api/v1>; rel="successor-version"`

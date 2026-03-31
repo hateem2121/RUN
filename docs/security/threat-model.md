@@ -10,6 +10,7 @@
 ## System Overview
 
 The RUN Apparel platform is a B2B e-commerce system consisting of:
+
 - React 19 frontend (SSR via React Router 7)
 - Express 5 API backend
 - PostgreSQL database (Neon serverless)
@@ -30,6 +31,7 @@ The RUN Apparel platform is a B2B e-commerce system consisting of:
 | Admin impersonation | HIGH | RBAC, audit logging | ✅ |
 
 #### Controls Implemented
+
 - Google OAuth 2.0 for authentication
 - Session ID rotation every 15 minutes
 - User-Agent binding to detect hijacked sessions
@@ -45,6 +47,7 @@ The RUN Apparel platform is a B2B e-commerce system consisting of:
 | Config tampering | LOW | Secret Manager, env validation | ✅ |
 
 #### Controls Implemented
+
 - Zod schema validation on all inputs
 - Drizzle ORM parameterizes all queries
 - CSRF protection on state-changing operations
@@ -59,6 +62,7 @@ The RUN Apparel platform is a B2B e-commerce system consisting of:
 | Access denial | LOW | Cloud Audit Logs | ✅ |
 
 #### Controls Implemented
+
 - All admin mutations logged to `audit_logs` table
 - Request correlation IDs for traceability
 - Cloud Audit Logs for infrastructure access
@@ -74,6 +78,7 @@ The RUN Apparel platform is a B2B e-commerce system consisting of:
 | Session data exposure | MEDIUM | Redis encryption | ✅ |
 
 #### Controls Implemented
+
 - Source maps blocked via security middleware
 - Generic error messages in production
 - Secrets loaded from Google Secret Manager
@@ -89,6 +94,7 @@ The RUN Apparel platform is a B2B e-commerce system consisting of:
 | Database overload | MEDIUM | Connection pooling, caching | ✅ |
 
 #### Controls Implemented
+
 - Redis-backed rate limiting (fail-open)
 - Request size limits (configurable)
 - Request timeout middleware
@@ -104,6 +110,7 @@ The RUN Apparel platform is a B2B e-commerce system consisting of:
 | API key escalation | MEDIUM | Separate key scopes | ✅ |
 
 #### Controls Implemented
+
 - Role-based access control (Admin/User)
 - Admin status verified from database
 - Admin cache with short TTL

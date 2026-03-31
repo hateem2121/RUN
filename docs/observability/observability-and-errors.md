@@ -39,6 +39,7 @@
 To investigate an issue using Correlation IDs:
 
 1. **Find the Log**: Search logging system (Loki) for the error.
+
    ```json
    {
      "level": "error",
@@ -48,6 +49,7 @@ To investigate an issue using Correlation IDs:
      "err": { ... }
    }
    ```
+
 2. **Filter by ID**: Query all logs/traces with `correlationId="req-123abc456"`.
 3. **Analyze Flow**: You will see the sequence:
    - `Incoming request GET /api/pay`

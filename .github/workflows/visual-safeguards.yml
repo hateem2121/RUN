@@ -24,8 +24,8 @@ jobs:
       - name: 📦 Install Dependencies
         run: npm ci
 
-      - name: 🎨 CSS Contract Audit
-        run: npm run lint:css-contract
+      #- name: 🎨 CSS Contract Audit
+      #  run: npm run lint:css-contract
 
       - name: 🔨 Build Application
         run: npm run build

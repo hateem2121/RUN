@@ -173,19 +173,23 @@ try {
 The SDK automatically retries requests under these conditions:
 
 ### Rate Limiting (429)
+
 - Reads `Retry-After` header if present
 - Falls back to exponential backoff if header missing
 - Respects `maxRetries` limit
 
 ### Server Errors (5xx)
+
 - Uses exponential backoff: `initialRetryDelay * 2^attempt`
 - Default: 1000ms → 2000ms → 4000ms
 
 ### Network Errors
+
 - Retries on connection failures
 - Uses exponential backoff
 
 ### No Retry For
+
 - 4xx errors (except 429)
 - Malformed requests (400)
 - Authentication failures (401)
@@ -205,6 +209,7 @@ npm run generate
 ```
 
 This command runs:
+
 ```bash
 npx openapi-typescript ../../openapi-spec.json -o src/generated/schema.d.ts
 ```
@@ -236,6 +241,7 @@ npm run build
 ```
 
 Outputs to `dist/`:
+
 - `dist/index.js` - ESM entry point
 - `dist/index.d.ts` - Type declarations
 
@@ -297,6 +303,7 @@ export const internalApiClient = new RunCMSClient({
 ## Best Practices
 
 ### 1. Singleton Pattern
+
 Create a single client instance and reuse it:
 
 ```typescript
@@ -312,6 +319,7 @@ async function getProducts() {
 ```
 
 ### 2. Environment Variables
+
 Store sensitive configuration in environment variables:
 
 ```typescript
@@ -322,6 +330,7 @@ const client = new RunCMSClient({
 ```
 
 ### 3. Error Boundaries
+
 Always wrap SDK calls in try/catch:
 
 ```typescript
@@ -339,6 +348,7 @@ async function fetchProducts() {
 ```
 
 ### 4. Type Safety
+
 Leverage generated types for compile-time safety:
 
 ```typescript
@@ -371,7 +381,7 @@ The SDK follows semantic versioning:
 
 - **Documentation**: `docs/api/endpoints.md`
 - **Issues**: GitHub Issues
-- **Contact**: team@wear-run.com
+- **Contact**: <team@wear-run.com>
 
 ---
 

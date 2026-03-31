@@ -36,11 +36,13 @@ await db.transaction(async (tx) => {
 ### Use Idempotency Keys for Create Operations
 
 The idempotency middleware (`server/middleware/idempotency.ts`) handles this automatically for:
+
 - `POST` - Create operations
 - `PUT`, `PATCH` - Update operations  
 - `DELETE` - Delete operations
 
 **Client Usage:**
+
 ```typescript
 fetch("/api/orders", {
   method: "POST",
@@ -140,6 +142,7 @@ const [job] = await db
 ## 5. Circuit Breaker Integration
 
 The storage layer uses a circuit breaker (`server/lib/db/db-circuit-breaker.ts`) that:
+
 - **Opens** after 5 consecutive failures
 - **Half-opens** after 30 seconds
 - **Closes** after 3 successful requests

@@ -830,9 +830,9 @@ autoscaling:
 
 | Service | Asia Endpoint | US Endpoint |
 |---------|---------------|-------------|
-| Frontend | https://asia.wear-run.com | https://us.wear-run.com |
-| API | https://asia.api.wear-run.com | https://us.api.wear-run.com |
-| Health | https://asia.api.wear-run.com/health | https://us.api.wear-run.com/health |
+| Frontend | <https://asia.wear-run.com> | <https://us.wear-run.com> |
+| API | <https://asia.api.wear-run.com> | <https://us.api.wear-run.com> |
+| Health | <https://asia.api.wear-run.com/health> | <https://us.api.wear-run.com/health> |
 
 ### B. Related Documentation
 
@@ -846,7 +846,7 @@ autoscaling:
 | Role | Contact | Availability |
 |------|---------|--------------|
 | On-Call Engineer | +92-336-1777313 | 24/7 |
-| Platform Lead | team@wear-run.com | Business Hours |
+| Platform Lead | <team@wear-run.com> | Business Hours |
 | Google Cloud Support | Premium Support | 24/7 |
 
 ---

@@ -1,18 +1,22 @@
 # FORENSIC-LEVEL CMS SYSTEM AUDIT & REMEDIATION
 
 ## Goal
-Conduct a comprehensive, forensic-grade examination of the RUN Remix CMS admin system (http://localhost:5002/admin) to identify, document, and prioritize all technical defects, security vulnerabilities, architectural inconsistencies, UI/UX issues, and integration gaps across the entire admin console and its corresponding visitor-facing pages.
+
+Conduct a comprehensive, forensic-grade examination of the RUN Remix CMS admin system (<http://localhost:5002/admin>) to identify, document, and prioritize all technical defects, security vulnerabilities, architectural inconsistencies, UI/UX issues, and integration gaps across the entire admin console and its corresponding visitor-facing pages.
 
 ## Context
-**Repository:** https://github.com/hateem2121/RUN  
-**Development Environment:** http://localhost:5002  
-**Critical Focus Area:** http://localhost:5002/admin and all sub-pages  
+
+**Repository:** <https://github.com/hateem2121/RUN>  
+**Development Environment:** <http://localhost:5002>  
+**Critical Focus Area:** <http://localhost:5002/admin> and all sub-pages  
 **Tech Stack:** React 19, Vite 7, Tailwind V4, Express 5, Node.js ≥24
 
 ### Current State
+
 The CMS admin system requires a forensic-level investigation to ensure production readiness. This audit will serve as the foundation for systematic remediation and will establish a baseline for future quality assurance.
 
 ### Why This Matters
+
 - **Business Impact:** Admin system is the control center for all content management operations
 - **User Experience:** Both admin users and end-users depend on flawless integration
 - **Security:** Admin panels are high-value targets requiring fortress-level security
@@ -22,6 +26,7 @@ The CMS admin system requires a forensic-level investigation to ensure productio
 ## Requirements
 
 ### 1. BACKEND & API FORENSICS
+
 Investigate the entire backend infrastructure with surgical precision:
 
 - **Database Schema Analysis**
@@ -393,6 +398,7 @@ Measure and document performance bottlenecks:
     - Database schema ERD
   
 - [ ] **CMS System Score Calculated** using weighted formula:
+
   ```
   Score = (Security × 30%) + (Performance × 20%) + (Code Quality × 20%) + 
           (Accessibility × 15%) + (UI/UX × 10%) + (Architecture × 5%)
@@ -554,7 +560,9 @@ Before generating the audit report, reason through:
 ### 1. SECURITY FINDINGS
 
 #### Critical Issues (Must Fix Immediately)
+
 **[Issue ID]: [Issue Title]**
+
 - **Severity:** Critical
 - **Category:** [OWASP Category]
 - **Location:** [File path and line number]
@@ -567,9 +575,11 @@ Before generating the audit report, reason through:
 [Repeat for each critical issue]
 
 #### High Priority Issues
+
 [Same structure]
 
 #### Medium/Low Priority Issues
+
 [Same structure]
 
 ---
@@ -579,21 +589,25 @@ Before generating the audit report, reason through:
 #### Lighthouse Scores
 
 **Desktop:**
+
 - Performance: X/100
 - Accessibility: X/100
 - Best Practices: X/100
 - SEO: X/100
 
 **Mobile:**
+
 - Performance: X/100
 - Accessibility: X/100
 - Best Practices: X/100
 - SEO: X/100
 
 #### Core Web Vitals
+
 [Metrics table]
 
 #### Performance Issues
+
 [Same structure as security findings]
 
 ---
@@ -607,9 +621,11 @@ Before generating the audit report, reason through:
 ```
 
 #### Issues Found
+
 [Detailed list with screenshots/references]
 
 #### Contrast Ratio Violations
+
 | Component | Light Mode | Dark Mode | WCAG Status |
 |-----------|-----------|-----------|-------------|
 | Button Primary | 7.2:1 ✅ | 2.1:1 ❌ | Fail |
@@ -626,10 +642,12 @@ Before generating the audit report, reason through:
 ```
 
 #### Missing Integrations
+
 1. [Visitor Page] → No admin console page
 2. ...
 
 #### Orphaned Admin Features
+
 1. [Admin Feature] → No corresponding visitor page
 2. ...
 
@@ -644,10 +662,11 @@ Before generating the audit report, reason through:
 ```
 
 #### Specific Duplications
+
 1. **Component Logic Duplication**
    - Files: [file1.tsx, file2.tsx]
    - Suggested Abstraction: [Shared hook or component]
-   
+
 2. **Database Queries**
    - Files: [service1.ts, service2.ts]
    - Suggested: [Shared repository pattern]
@@ -664,6 +683,7 @@ erDiagram
 ```
 
 #### Schema Issues
+
 [Issues found]
 
 ---
@@ -675,6 +695,7 @@ erDiagram
 ```
 
 #### Architecture Issues
+
 [Issues found]
 
 ---
@@ -682,16 +703,20 @@ erDiagram
 ## Remediation Roadmap
 
 ### Phase 1: Critical Security Fixes (Week 1)
+
 - [ ] [Issue ID]: [Issue name] - Owner: [TBD] - Effort: X hours
 - [ ] ...
 
 ### Phase 2: High Priority & Performance (Week 2-3)
+
 - [ ] ...
 
 ### Phase 3: UI/UX & Accessibility (Week 4-5)
+
 - [ ] ...
 
 ### Phase 4: Code Quality & Refactoring (Week 6-8)
+
 - [ ] ...
 
 ---
@@ -699,16 +724,19 @@ erDiagram
 ## Automated Tool Results
 
 ### npm audit
+
 ```
 [Full output]
 ```
 
 ### TypeScript Compiler
+
 ```
 [Full output]
 ```
 
 ### Biome Lint
+
 ```
 [Full output]
 ```
@@ -718,12 +746,15 @@ erDiagram
 ## Recommendations
 
 ### Immediate Actions (This Week)
+
 1. ...
 
 ### Short-term Improvements (This Month)
+
 1. ...
 
 ### Long-term Strategic Initiatives (This Quarter)
+
 1. ...
 
 ---
@@ -735,10 +766,12 @@ erDiagram
 ---
 
 **Appendices:**
+
 - A: Complete Issue List (CSV format)
 - B: Testing Methodology
 - C: Tool Versions and Configuration
 - D: References and Resources
+
 ```
 
 ### Advanced Techniques

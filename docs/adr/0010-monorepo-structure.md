@@ -7,6 +7,7 @@
 ## Context
 
 We needed a repository structure that:
+
 - Enables code sharing between frontend and backend
 - Supports atomic changes across packages
 - Provides consistent tooling and versioning
@@ -44,12 +45,14 @@ RUN-Remix/
 ## Consequences
 
 ### Positive
+
 - Schema changes automatically type-check across packages
 - Single CI pipeline for all code
 - Consistent code quality across packages
 - Easy refactoring across boundaries
 
 ### Negative
+
 - Larger repository size
 - CI must be optimized for incremental builds
 - Steeper learning curve for new developers

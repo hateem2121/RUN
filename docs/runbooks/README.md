@@ -25,6 +25,7 @@ Each runbook follows this structure:
 ## Quick Reference
 
 ### Health Check Endpoints
+
 ```bash
 # Quick health (public)
 curl https://your-domain.com/health
@@ -34,6 +35,7 @@ curl -H "X-Health-Check-Key: YOUR_SECRET" https://your-domain.com/health/detaile
 ```
 
 ### Key Environment Variables
+
 - `HEALTH_CHECK_SECRET` - Auth for detailed health endpoint
 - `METRICS_SECRET` - Auth for Prometheus metrics
 - `SENTRY_DSN` - Sentry error tracking

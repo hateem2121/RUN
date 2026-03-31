@@ -15,10 +15,12 @@ This folder contains a pre-configured observability stack using Open-Source (OSS
 
 1. **Ensure Docker is running.**
 2. **Start the stack:**
+
    ```bash
    cd ops/observability
    docker-compose up -d
    ```
+
 3. **Verify services are up:**
    - Grafana: [http://localhost:3000](http://localhost:3000) (User: `admin`, Pass: `admin`)
    - Prometheus: [http://localhost:9090](http://localhost:9090)

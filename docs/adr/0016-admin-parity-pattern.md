@@ -57,20 +57,25 @@ const MODULE_MAP = {
 ## Consequences
 
 ### Positive
+
 - Adding a new admin module requires only: (a) a new component, (b) one line in the module map
 - Auth and layout logic live in one place — cannot be accidentally bypassed
 - No route file proliferation for admin sections
 
 ### Negative
+
 - Admin URLs are not deep-linkable to specific entity records (e.g., `/admin/products/123` is not natively supported — requires module-internal state)
 - Browser back/forward within an admin module requires the module to manage its own history state
 - Feature parity auditing requires reading the module map, not the filesystem
 
 ### Mitigation for deep linking
+
 For record-level deep links within admin, modules use URL search params:
+
 ```
 /admin/products?id=123&mode=edit
 ```
+
 This is handled by the module's internal state management, not React Router.
 
 ---
@@ -80,6 +85,7 @@ This is handled by the module's internal state management, not React Router.
 When adding a new public-facing feature, the admin counterpart MUST be added to `admin.$module.tsx` in the same PR. The audit checklist in `SOP_CODE_CHANGE.md` includes this as a required gate.
 
 **To audit current admin coverage:**
+
 ```bash
 grep -n "MODULE_MAP" client/app/routes/admin.\$module.tsx
 ```
@@ -89,11 +95,15 @@ grep -n "MODULE_MAP" client/app/routes/admin.\$module.tsx
 ## Alternatives Considered
 
 ### Option A: 1:1 Route Parity
+
 Create `admin.products.$id.tsx`, `admin.categories.$id.tsx`, etc.
+
 - **Rejected:** 20+ new route files, duplicated auth/layout boilerplate, no clear benefit given different admin vs. public UX requirements.
 
 ### Option B: Separate Admin SPA
+
 A completely separate admin application (e.g., separate Vite build).
+
 - **Rejected:** Doubles build/deploy surface area, complicates shared component usage, unnecessary for the current scale.
 
 ---
@@ -101,6 +111,7 @@ A completely separate admin application (e.g., separate Vite build).
 ## Review
 
 This decision should be re-evaluated if:
+
 - Admin complexity grows to require deeply nested routing (5+ levels)
 - SEO or external linking of admin pages becomes a requirement
 - Team size grows to where separate admin/public ownership is needed

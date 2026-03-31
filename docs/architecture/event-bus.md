@@ -82,11 +82,13 @@ unsubscribe();
 ## Design Decisions
 
 **Why in-memory?**
+
 - Simple, no infrastructure dependency
 - Sufficient for current monolith scale
 - Can migrate to Redis Pub/Sub or Cloud Pub/Sub when needed
 
 **Future roadmap:**
+
 - Redis Pub/Sub for distributed events
 - Cloud Pub/Sub for async job processing
 - Event store for event sourcing patterns

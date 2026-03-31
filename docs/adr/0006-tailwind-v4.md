@@ -7,6 +7,7 @@
 ## Context
 
 We needed a CSS solution that:
+
 - Provides consistent design system enforcement
 - Enables rapid UI development
 - Supports modern CSS features
@@ -36,11 +37,13 @@ We chose **Tailwind CSS v4** over CSS Modules or styled-components.
 ## Consequences
 
 ### Positive
+
 - 10/10 CSS architecture score achieved
 - Consistent design language across application
 - Fast development velocity
 - Semantic color tokens eliminate raw color usage
 
 ### Negative
+
 - Learning curve for utility-first approach
 - HTML can become verbose (mitigated by `cn()` helper)

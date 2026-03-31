@@ -502,9 +502,9 @@ echo "✅ All validation checks passed!"
 
 | Service | Provider | Support Contact |
 |---------|----------|-----------------|
-| Neon Database | Neon | support@neon.tech |
+| Neon Database | Neon | <support@neon.tech> |
 | Cloud Run | Google Cloud | Google Cloud Support |
-| Upstash Redis | Upstash | support@upstash.com |
+| Upstash Redis | Upstash | <support@upstash.com> |
 | Cloud Storage | Google Cloud | Google Cloud Support |
 
 ### B. Useful Commands

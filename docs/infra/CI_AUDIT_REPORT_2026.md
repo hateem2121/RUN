@@ -176,60 +176,70 @@ flowchart TD
 ## 8. Per-Check Forensic Findings
 
 ### 1. Lighthouse CI
+
 - **Evidence:** `lighthouserc.js`: `startServerCommand: "npm run start"`. `quality-gate.yml` passes no DB config.
 - **Why it failed:** `npm run start` crashes without a valid `DATABASE_URL` because the app cannot connect to the database. The workflow does not spin up a temporary database.
 - **Dev Fix:** Update workflow to run a Postgres service container or mock the DB connection.
 - **Production Fix:** Deploy strictly from verified builds.
 
 ### 2. Quality Gate (Cloud)
+
 - **Evidence:** `.github/workflows/quality-gate.yml`.
 - **Why it failed:** It depends on `npm run test:lighthouse` which fails (see above).
 - **Dev Fix:** Fix Lighthouse CI (see above).
 - **Production Fix:** Enable SonarCloud analysis with token.
 
 ### 3. Documentation Check
+
 - **Evidence:** `.github/workflows/docs-check.yml` runs `npm run check:docs`.
 - **Why it failed:** `markdown-link-check` likely found broken relative links in the documentation files, or `eslint/biome` found formatting issues in `.md` files.
 - **Dev Fix:** Run `npm run check:docs` locally and fix broken links/formatting.
 - **Production Fix:** Enforce linting in pre-commit hooks.
 
 ### 4. Security Scanning
+
 - **Evidence:** `.github/workflows/security-scanning.yml` line 67: `SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}`.
 - **Why it failed:** The `SNYK_TOKEN` secret is likely missing from the repository settings.
 - **Dev Fix:** Add the `SNYK_TOKEN` secret or disable the Snyk job in the workflow.
 - **Production Fix:** Rotate tokens periodically.
 
 ### 5. Visual Regression
+
 - **Evidence:** `.github/workflows/visual-regression.yml` line 91 sets `PORT: 5001`. `package.json` script `start` forces `PORT=5002`.
 - **Why it failed:** Port mismatch. The server starts on 5002, but Playwright waits for 5001.
 - **Dev Fix:** Change workflow `PORT` env var to 5002 matching `package.json`.
 - **Production Fix:** Use dynamic port allocation.
 
 ### 6. Production Deployment
+
 - **Evidence:** `.github/workflows/deploy.yml` triggers on `push: branches: [main]`.
 - **Why it failed:** It shouldn't run on `RUN-PROD` unless manually triggered or misconfigured. If it ran and failed, it's due to missing `DATABASE_URL` and `NEON_API_KEY` secrets for the production environment.
 - **Dev Fix:** Ensure secrets are set if deployment is intended, or restrict trigger further.
 - **Production Fix:** Use environment protection rules.
 
 ### 7. Docs Lint
+
 - **Evidence:** `.github/workflows/docs-lint.yml`.
 - **Why it failed:** Valid linting errors in markdown files (e.g., bare URLs, heading levels).
 - **Dev Fix:** Run `npx markdownlint-cli2 '**/*.md'` locally and fix errors.
 - **Production Fix:** Enforce in CI.
 
 ### 8. Docs Link Check
+
 - **Evidence:** `.github/workflows/ci.yml` line 89 runs `npm run check:docs`.
 - **Why it failed:** Same as #3.
 - **Dev Fix:** Fix broken links.
 - **Production Fix:** Enforce in CI.
 
 ### 9. ci.yml
+
 - **Evidence:** `.github/workflows/ci.yml` line 3: `on: pull_request`.
 - **Why it failed:** No `push` trigger.
 - **Dev Fix:** Add `push: branches: ['**']` or `['RUN-PROD']` to the `on:` block.
 - **Production Fix:** Keep PR triggers for main branch protection.
 
 ### 10. synthetic-monitoring.yml
+
 - **Evidence:** `.github/workflows/synthetic-monitoring.yml` line 3: `on: schedule`.
 - **Why it failed:** No `push` trigger.
 - **Dev Fix:** Add `push` trigger if immediate feedback is desired, or rely on schedule.
@@ -239,29 +249,29 @@ flowchart TD
 
 ## 9. Priority Fix Roadmap
 
-1.  **Fix `ci.yml` Trigger** (Enables CI on push)
-    -   File: `.github/workflows/ci.yml`
-    -   Action: Add `push` event to `on:` section.
-    -   Time: 1 min.
+1. **Fix `ci.yml` Trigger** (Enables CI on push)
+    - File: `.github/workflows/ci.yml`
+    - Action: Add `push` event to `on:` section.
+    - Time: 1 min.
 
-2.  **Fix Visual Regression Port** (Unblocks Visual Tests)
-    -   File: `.github/workflows/visual-regression.yml`
-    -   Action: Change `PORT: 5001` to `PORT: 5002` and `BASE_URL` to `http://localhost:5002`.
-    -   Time: 1 min.
+2. **Fix Visual Regression Port** (Unblocks Visual Tests)
+    - File: `.github/workflows/visual-regression.yml`
+    - Action: Change `PORT: 5001` to `PORT: 5002` and `BASE_URL` to `http://localhost:5002`.
+    - Time: 1 min.
 
-3.  **Fix Docs Links & Lint** (Unblocks Docs Checks)
-    -   File: Documentation files.
-    -   Action: Run local checks and fix broken links.
-    -   Time: 10-30 mins.
+3. **Fix Docs Links & Lint** (Unblocks Docs Checks)
+    - File: Documentation files.
+    - Action: Run local checks and fix broken links.
+    - Time: 10-30 mins.
 
-4.  **Add Snyk Secret** (Unblocks Security)
-    -   Action: Add `SNYK_TOKEN` to GitHub Secrets.
-    -   Time: 2 mins.
+4. **Add Snyk Secret** (Unblocks Security)
+    - Action: Add `SNYK_TOKEN` to GitHub Secrets.
+    - Time: 2 mins.
 
-5.  **Configure DB for Workflows** (Unblocks Lighthouse & Quality Gate)
-    -   File: `.github/workflows/quality-gate.yml`
-    -   Action: Add Service Container for Postgres OR skip Lighthouse in dev.
-    -   Time: 15-30 mins.
+5. **Configure DB for Workflows** (Unblocks Lighthouse & Quality Gate)
+    - File: `.github/workflows/quality-gate.yml`
+    - Action: Add Service Container for Postgres OR skip Lighthouse in dev.
+    - Time: 15-30 mins.
 
 ---
 

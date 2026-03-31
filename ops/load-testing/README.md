@@ -55,16 +55,19 @@ k6 cloud ops/load-testing/baseline.js
 ## Interpreting Results
 
 ### Healthy System
+
 - ✅ All thresholds pass
 - ✅ Error rate near 0%
 - ✅ Latency stable under load
 
 ### Degraded System
+
 - ⚠️ P99 above threshold
 - ⚠️ Error rate 1-5%
 - ⚠️ Latency increase under load
 
 ### Unhealthy System
+
 - ❌ Thresholds failing
 - ❌ Error rate > 5%
 - ❌ Latency growing unbounded

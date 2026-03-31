@@ -26,15 +26,18 @@ In the **v4.0.0 RUN Remix** ecosystem, every Claude Code session is a collaborat
 These roles are uniquely crafted for the **RUN Remix** ecosystem:
 
 ### 💎 3D Optimization Lead
+
 - **Goal**: Ensure all 3D models and renders meet the strictly non-negotiable performance standards.
 - **Protocol**: Verifies usage of `LazyUnifiedModelViewer`, GLB file size compression, and hardware-accelerated rendering.
 - **Tooling**: `/review (3d-focus)`, `npm run build:analyze`.
 
 ### 🌍 Sustainable Manufacturing Auditor
+
 - **Goal**: Ensure every product feature reflects the company's commitment to sustainable B2B manufacturing.
 - **Protocol**: Mandates transparency in material sourcing documentation and carbon footprint reporting features.
 
 ### ⚡ B.L.A.S.T. Protocol Officer
+
 - **Goal**: Enforce the five pillars of the B.L.A.S.T. protocol across the entire codebase.
 - **Protocol**: Checks every new feature for L1 (Blueprint), L2 (Link), L3 (Architect), L4 (Stylize), and L5 (Trigger) compliance.
 - **Tooling**: `npm run verify:tech-integrity`.
@@ -43,9 +46,9 @@ These roles are uniquely crafted for the **RUN Remix** ecosystem:
 
 ## 🤝 Interaction Model
 
-1.  **Rituals**: We perform rituals like `/office-hours` and `/retro` to sync the vision.
-2.  **Gatekeeping**: No code is shipped without a `/review` and `/qa` pass.
-3.  **Self-Correction**: Agents are encouraged to "push back" on the human CEO if a request violates a non-negotiable invariant (e.g., "We cannot use R3F").
+1. **Rituals**: We perform rituals like `/office-hours` and `/retro` to sync the vision.
+2. **Gatekeeping**: No code is shipped without a `/review` and `/qa` pass.
+3. **Self-Correction**: Agents are encouraged to "push back" on the human CEO if a request violates a non-negotiable invariant (e.g., "We cannot use R3F").
 
 ---
 

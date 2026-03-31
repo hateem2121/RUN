@@ -12,6 +12,7 @@
 The RUN Remix platform is built on an **A.N.T. (Advanced Node.js & TypeScript)** architecture, emphasizing service-oriented design and high-performance serverless database interactions.
 
 ### 1.1 Backend Service Topology
+
 The following diagram illustrates the flow of data from the client through the Express 5 stack to the Neon PostgreSQL database.
 
 ```mermaid
@@ -50,6 +51,7 @@ graph TD
 The system employs a sophisticated middleware stack that prioritizes observability (Sentry/OTel), security (CSRF/CSP), and performance (Compression/Caching).
 
 ### 2.1 Middleware Execution Flow
+
 ```mermaid
 sequenceDiagram
     participant C as Client
@@ -76,6 +78,7 @@ sequenceDiagram
 Performance is maintained through a multi-layered caching architecture that targets both static assets and dynamic API responses.
 
 ### 3.1 Caching Hierarchy
+
 ```mermaid
 graph LR
     subgraph "Layer 1: CDN/Edge"
@@ -106,6 +109,7 @@ graph LR
 The database schema is highly optimized for B2B catalog management, with clear separation between product data and technical material specifications.
 
 ### 4.1 Core Entity Map
+
 ```mermaid
 classDiagram
     Product "1" *-- "many" MediaAsset : primaryImage / primaryVideo
@@ -139,6 +143,7 @@ classDiagram
 The project uses `verify-tech-integrity.ts` to enforce standards across the monorepo.
 
 ### 5.1 Integrity Verification Pipeline
+
 ```mermaid
 graph TD
     Start[Start Integrity Check] --> TC[Type Check]
@@ -156,16 +161,22 @@ graph TD
 ## 6. Critical Analysis & Recommendations
 
 ### 6.1 TypeScript Workspace Integrity (BLOCKER)
+
 **Issue:** Large-scale **TS6307** errors. The client workspace imports server-side logic without proper configuration in `tsconfig.json`.
+
 - **Impact:** Broken type safety for cross-workspace schemas.
 - **Fix:** Update `tsconfig.json` to correctly `include` or `reference` shared/server directories.
 
 ### 6.2 Caching "Zombie" Mitigation (HIGH)
+
 **Issue:** Evidence of stale cache reads in `PageContentRepository`.
+
 - **Refinement:** Implement a more robust `InvalidationEventBus` that guarantees purges across all instances (if scaling horizontally).
 
 ### 6.3 Async Optimization (MEDIUM)
+
 **Issue:** 600+ warnings related to unnecessary `async` or missing `await`.
+
 - **Fix:** Run a bulk automated refactor using Biome's `--apply` flag for `useAwait` rules.
 
 ---

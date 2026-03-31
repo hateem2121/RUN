@@ -591,9 +591,9 @@ X-RateLimit-Reset: 1707955200
 
 ### Contact
 
-- **Security Team**: security@wear-run.com
+- **Security Team**: <security@wear-run.com>
 - **Emergency**: +92-336-1777313
-- **Bug Bounty**: security@wear-run.com
+- **Bug Bounty**: <security@wear-run.com>
 
 ---
 

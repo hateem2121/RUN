@@ -33,7 +33,7 @@ Every request receives a unique correlation ID:
 
 1. **Generation**: UUID via `crypto.randomUUID()`
 2. **Storage**: `AsyncLocalStorage` for thread-safe isolation
-3. **Headers**: 
+3. **Headers**:
    - Response: `X-Correlation-ID`
    - W3C: `traceparent` (when OTel active)
 4. **Logs**: Auto-injected via Pino mixin

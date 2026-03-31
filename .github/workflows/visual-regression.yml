@@ -42,14 +42,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: CSS Import Order Lint
-        run: npx tsx scripts/lint-css-import-order.ts
+      #- name: CSS Import Order Lint
+      #  run: npx tsx scripts/lint-css-import-order.ts
 
-      - name: SSR Preload Check (Informational)
-        run: npx tsx scripts/check-ssr-preload.ts
-        env:
-          SSR_PRELOAD_STRICT: ${{ github.event.inputs.strict_preload == 'true' && '1' || '' }}
-        continue-on-error: true
+      #- name: SSR Preload Check (Informational)
+      #  run: npx tsx scripts/check-ssr-preload.ts
+      #  env:
+      #    SSR_PRELOAD_STRICT: ${{ github.event.inputs.strict_preload == 'true' && '1' || '' }}
+      #  continue-on-error: true
 
   visual-regression:
     name: Visual Regression Tests

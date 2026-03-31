@@ -9,6 +9,7 @@
 ## Pre-Deployment Gates (Must All Pass)
 
 ### 1. Local Verification
+
 ```bash
 # Run in order — all must exit 0
 npm run verify-port              # Port 5002 Law — zero tolerance
@@ -20,12 +21,15 @@ npm run build                    # Turborepo production build
 ```
 
 ### 2. CI Gates (GitHub Actions)
+
 Confirm these workflows are green before promoting:
+
 - `ci.yml` — lint, typecheck, Neon branch, migration, coverage (40% min)
 - `quality-gate.yml` — CSS lint, npm audit, Trivy, React Scan, Lighthouse CI
 - `e2e.yml` — Playwright E2E on port 5002
 
 ### 3. Database Migrations
+
 ```bash
 # Generate migration from schema changes
 npm run --workspace=@run-remix/server db:generate
@@ -45,19 +49,23 @@ npm run verify:neon
 ## Deployment Steps (Cloud Run Canary)
 
 ### Step 1: Tag the release
+
 ```bash
 git tag v$(date +%Y%m%d-%H%M) -m "Release: <brief description>"
 git push origin --tags
 ```
 
 ### Step 2: Cloud Build triggers automatically
+
 `cloudbuild.yaml` handles:
+
 1. `npm ci` — install deps
 2. `npm run verify:tech-integrity` — pre-build gate
 3. `docker build` → push to GCR
 4. Cloud Run deploy as new revision (0% traffic)
 
 ### Step 3: Canary promotion
+
 ```bash
 # Route 10% of traffic to new revision
 gcloud run services update-traffic run-remix \
@@ -74,6 +82,7 @@ gcloud run services update-traffic run-remix \
 ```
 
 ### Step 4: Health check gate
+
 ```bash
 curl https://wear-run.com/api/health
 # Must return: { "status": "UP" }
@@ -84,12 +93,14 @@ curl https://wear-run.com/api/health
 ## Rollback Trigger Criteria
 
 Immediately rollback if ANY of the following:
+
 - Error rate in Sentry exceeds 1% within 5 minutes of promotion
 - `/api/health` returns non-200 for more than 30 seconds
 - P99 latency exceeds 3 seconds
 - Any Critical or High Sentry alert fires
 
 **Rollback command:**
+
 ```bash
 # See SOP_ROLLBACK.md
 ```
@@ -97,6 +108,7 @@ Immediately rollback if ANY of the following:
 ---
 
 ## Post-Deployment
+
 - [ ] Confirm `/api/health` returns `{ status: "UP" }`
 - [ ] Verify Sentry shows no new issues
 - [ ] Check Prometheus metrics are flowing

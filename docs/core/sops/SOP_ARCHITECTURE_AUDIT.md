@@ -16,11 +16,13 @@
 | 2026-03-29 | Second Pass (post-remediation) | 6.7/10 | 4 | 6 | Claude Code Sonnet 4.6 |
 
 ### Second Pass Top 3 Findings (2026-03-29)
+
 1. 🔴 **TypeScript regression** — 35 typecheck errors (was EXIT 0 on 2026-03-28). Root cause: framer-motion migration incomplete in `resources.tsx`, lru-cache v11 resolution, admin component type drift.
 2. 🔴 **Test suite collapse** — 58/93 test files failing. `LRUCache is not a constructor` takes down entire unified-cache test suite.
 3. 🔴 **Runtime crash on /resources** — `<motion.div>` used without import after incomplete Phase E migration.
 
 ### New Checklist Items (from Second Pass)
+
 - [ ] After each migration sprint: grep for removed library's JSX elements (not just imports) — catches `motion.div`, `AnimatePresence`, etc.
 - [ ] Run `npm run test` before marking any remediation task COMPLETE — do not rely on typecheck alone
 - [ ] Verify `lru-cache` + other ESM-only packages resolve correctly in Vitest SSR mode after any tsconfig change
@@ -46,6 +48,7 @@ Establish a repeatable, comprehensive process for auditing the RUN Remix codebas
 ## Audit Checklist (14 Domains)
 
 ### Pre-Task Protocol (Run First)
+
 - [ ] Read `gemini.md` and `CLAUDE.md` — re-internalize all constitutional rules
 - [ ] Update `task_plan.md` — log audit as active task with date
 - [ ] Update `findings.md` — create new section `## Architecture Audit — [Month Year]`
@@ -100,6 +103,7 @@ Findings are written to `findings.md` under `## Architecture Audit — [Month Ye
 | ✅ Strength | Well-implemented pattern worth preserving |
 
 **Auto-Critical triggers (no judgment needed):**
+
 - Any port other than 5002
 - `try/catch` in Express 5 route handlers
 - `forwardRef` in client code

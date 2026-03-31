@@ -13,9 +13,11 @@ The RUN Apparel CMS System is engineered to operate exclusively on **Port 5002**
 ## 2. Theoretical Framework
 
 ### 2.1 The Gateway Principle
+
 In both development and production, Port 5002 serves as the unified entry point for all system interactions (UI, API, and Admin).
 
 ### 2.2 Strict Port Compliance
+
 Every service in the monorepo is configured with `strictPort: true`. If Port 5002 is unavailable, the system must fail to start rather than fallback to an arbitrary port.
 
 ---
@@ -23,6 +25,7 @@ Every service in the monorepo is configured with `strictPort: true`. If Port 500
 ## 3. Implementation Details
 
 ### 3.1 Backend (Express 5)
+
 The server entry point (`server/index.ts`) hardcodes the listening port.
 
 ```typescript
@@ -33,6 +36,7 @@ app.listen(PORT, () => {
 ```
 
 ### 3.2 Frontend (Vite 7)
+
 The development server is configured to bind to 5002 and requires strict compliance.
 
 ```typescript
@@ -46,6 +50,7 @@ export default defineConfig({
 ```
 
 ### 3.3 Proxy Logic
+
 In development, the Express server acts as the primary orchestrator, using `vite-plugin-ssr` (or custom middleware) to serve the frontend via Port 5002, while also exposing API routes on the same port.
 
 ---
@@ -53,16 +58,21 @@ In development, the Express server acts as the primary orchestrator, using `vite
 ## 4. Verification & Governance
 
 ### 4.1 Automated Validation
+
 The system includes a mandatory verification script: `scripts/verify-port-5002.js`.
 
 ### 4.2 Pre-Commit Enforcement
+
 Port compliance is enforced via Husky pre-commit hooks:
+
 ```bash
 npm run verify-port
 ```
 
 ### 4.3 Environment Variables
+
 Environment variables MUST default to 5002:
+
 - `PORT=5002`
 - `VITE_API_BASE_URL=http://localhost:5002/api/v1`
 
@@ -71,6 +81,7 @@ Environment variables MUST default to 5002:
 ## 5. Troubleshooting Port Collisions
 
 If Port 5002 is occupied:
+
 1. Identify the process: `lsof -i :5002`
 2. Terminate the process: `npm run kill:5002` (or `kill -9 <PID>`)
 3. Restart the system: `npm run dev`

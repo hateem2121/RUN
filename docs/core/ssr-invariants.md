@@ -73,6 +73,7 @@ Run `npm run verify:ssr` before merging PRs affecting core infrastructure. This 
 ```bash
   npm run verify:ssr
   ```
+
   _This builds production, starts a real server, runs E2E tests, and checks invariants._
 
 - [ ] **Manual Sanity Check**:

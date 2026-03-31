@@ -1,14 +1,17 @@
 # Implementation Plan: Testing Coverage Overhaul - Phase 2 Completion
 
 ## Summary
+
 Complete Phase 2 of the Testing Infrastructure Overhaul by increasing test coverage for ProductRepository (from ~20% to >70%) and AuthService (from ~62% to >70%). This plan focuses on adding comprehensive unit tests for untested methods and edge cases using Vitest and the existing mock patterns.
 
 ## Current State Analysis
 
 ### ProductRepository Test Coverage (~20%)
+
 **File:** [`server/lib/db/repositories/__tests__/product-repository.test.ts`](server/lib/db/repositories/__tests__/product-repository.test.ts)
 
 **Currently Tested Methods:**
+
 - `createProduct` (basic tests)
 - `updateProduct` (basic tests)
 - `deleteProduct` (basic tests)
@@ -23,6 +26,7 @@ Complete Phase 2 of the Testing Infrastructure Overhaul by increasing test cover
 - `get3DModelMetadata` (basic tests)
 
 **Methods Needing Additional Tests:**
+
 - `getProductsCursor` - Cursor-based pagination (no tests)
 - `getProductsByCategoryCount` - Count by category with caching (no tests)
 - `getProductsByTagCount` - Count by tag with caching (no tests)
@@ -35,9 +39,11 @@ Complete Phase 2 of the Testing Infrastructure Overhaul by increasing test cover
 - Edge cases for existing methods
 
 ### AuthService Test Coverage (~62%)
+
 **File:** [`server/services/__tests__/auth-service.test.ts`](server/services/__tests__/auth-service.test.ts)
 
 **Currently Tested:**
+
 - `verifyAdminAccess` - cached status, storage check, mock admin handling
 - `sessionSecurityMiddleware` - UA hash, mismatch rejection, session rotation
 - Account lockout - failed attempts, lock check, reset
@@ -46,6 +52,7 @@ Complete Phase 2 of the Testing Infrastructure Overhaul by increasing test cover
 - Utilities - `hashUserAgent`
 
 **Needs Additional Tests:**
+
 - Edge cases for `verifyAdminAccess` - null user, missing claims
 - Unauthenticated user scenarios
 - Session expiration handling
@@ -67,6 +74,7 @@ Complete Phase 2 of the Testing Infrastructure Overhaul by increasing test cover
 ### Part 1: ProductRepository Tests (Priority: High)
 
 #### 1.1 Cursor-Based Pagination Tests
+
 ```typescript
 describe('getProductsCursor', () => {
   it('returns products with cursor for pagination')
@@ -76,6 +84,7 @@ describe('getProductsCursor', () => {
 ```
 
 #### 1.2 Count Methods with Caching Tests
+
 ```typescript
 describe('getProductsByCategoryCount', () => {
   it('returns count from database on cache miss')
@@ -98,6 +107,7 @@ describe('searchProductsCount', () => {
 ```
 
 #### 1.3 Single Product Retrieval Tests
+
 ```typescript
 describe('getProduct', () => {
   it('returns product by ID')
@@ -115,6 +125,7 @@ describe('getProductByPath', () => {
 ```
 
 #### 1.4 Mutation Tests
+
 ```typescript
 describe('hardDeleteProduct', () => {
   it('permanently deletes product')
@@ -127,6 +138,7 @@ describe('invalidateProductCount', () => {
 ```
 
 #### 1.5 Cache Scenario Tests
+
 ```typescript
 describe('Cache Scenarios', () => {
   it('getHomepageFeaturedProducts returns cached on hit')
@@ -138,6 +150,7 @@ describe('Cache Scenarios', () => {
 ### Part 2: AuthService Tests (Priority: Medium)
 
 #### 2.1 Edge Cases for verifyAdminAccess
+
 ```typescript
 describe('verifyAdminAccess edge cases', () => {
   it('returns false for null user')
@@ -147,6 +160,7 @@ describe('verifyAdminAccess edge cases', () => {
 ```
 
 #### 2.2 Unauthenticated Scenarios
+
 ```typescript
 describe('Unauthenticated scenarios', () => {
   it('requireAdmin returns 401 for unauthenticated user')
@@ -155,6 +169,7 @@ describe('Unauthenticated scenarios', () => {
 ```
 
 #### 2.3 Session Expiration
+
 ```typescript
 describe('Session expiration', () => {
   it('handles expired session correctly')
@@ -167,6 +182,7 @@ describe('Session expiration', () => {
 ## Mock Patterns to Use
 
 ### ProductRepository Mock Pattern
+
 ```typescript
 // Chainable mock for Drizzle queries
 const createMockChain = (resolvedValue: unknown) => ({
@@ -190,6 +206,7 @@ vi.mock('../../lib/cache/unified-cache', () => ({
 ```
 
 ### AuthService Mock Pattern
+
 ```typescript
 // Existing pattern from test file
 vi.mock('../../lib/storage-singleton', () => ({
@@ -222,14 +239,17 @@ vi.mock('../../lib/cache/admin-cache', () => ({
 ## Risks and Considerations
 
 ### Risk 1: Complex Mock Setup for getProductByPath
+
 - **Issue:** `getProductByPath` uses circuit breaker, parallel queries, and multiple table joins
 - **Mitigation:** Mock `dbCircuitBreaker.execute` to wrap the callback, use simplified mock data
 
 ### Risk 2: Cache Mock Interference Between Tests
+
 - **Issue:** Cache state might persist between tests
 - **Mitigation:** Use `beforeEach` to clear all mocks, reset cache state
 
 ### Risk 3: Drizzle ORM Query Chain Mocking
+
 - **Issue:** Complex query chains are hard to mock accurately
 - **Mitigation:** Use the existing `mockReturnThis()` pattern consistently
 
@@ -269,6 +289,7 @@ npm run check:apply
 ## Rollback Plan
 
 If tests cause issues:
+
 1. New tests are additive only - no existing code modified
 2. Simply delete the new test blocks to rollback
 3. No database or configuration changes required

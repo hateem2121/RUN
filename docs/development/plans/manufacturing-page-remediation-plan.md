@@ -30,6 +30,7 @@ This document provides a detailed remediation plan to address all deficiencies i
 **File:** [`client/app/components/public/manufacturing/PublicProcessSection.tsx`](client/app/components/public/manufacturing/PublicProcessSection.tsx:82-100)
 
 **Current Code:**
+
 ```tsx
 <Button
   onClick={() => {
@@ -41,6 +42,7 @@ This document provides a detailed remediation plan to address all deficiencies i
 ```
 
 **Fixed Code:**
+
 ```tsx
 <Button
   onClick={() => {
@@ -64,6 +66,7 @@ This document provides a detailed remediation plan to address all deficiencies i
 **Implementation:** Add a skip link before the horizontal scroll section that allows keyboard users to bypass the pinned scroll area.
 
 **Code to Add:**
+
 ```tsx
 <section 
   ref={containerRef}
@@ -92,6 +95,7 @@ This document provides a detailed remediation plan to address all deficiencies i
 ### 1.3 Fix Color Contrast for Low-Contrast Text
 
 **Files Affected:**
+
 - [`client/app/components/public/manufacturing/PublicProcessSection.tsx:214`](client/app/components/public/manufacturing/PublicProcessSection.tsx:214)
 - [`client/app/components/public/manufacturing/PublicCapabilitySection.tsx:59,91`](client/app/components/public/manufacturing/PublicCapabilitySection.tsx:59)
 
@@ -100,6 +104,7 @@ This document provides a detailed remediation plan to address all deficiencies i
 **Fixed Color:** `text-[#8BA3B5]` (contrast ratio ~5.1:1, passes WCAG AA)
 
 **Changes Required:**
+
 ```tsx
 // Before
 <p className="text-[#68869A] text-sm">Scroll vertically to explore phases</p>
@@ -109,6 +114,7 @@ This document provides a detailed remediation plan to address all deficiencies i
 ```
 
 **Alternative:** Create a Tailwind utility class:
+
 ```css
 /* In client/app/styles/utilities.css */
 @layer utilities {
@@ -127,11 +133,13 @@ This document provides a detailed remediation plan to address all deficiencies i
 **File:** [`client/app/components/public/manufacturing/PublicProcessSection.tsx`](client/app/components/public/manufacturing/PublicProcessSection.tsx:82-100)
 
 **Current Code:**
+
 ```tsx
 className="group flex h-12 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-6 font-bold text-white backdrop-blur-xl transition-all hover:bg-white/10 hover:border-[#D4A853]/50"
 ```
 
 **Fixed Code:**
+
 ```tsx
 className="group flex h-12 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-6 font-bold text-white backdrop-blur-xl transition-all hover:bg-white/10 hover:border-[#D4A853]/50 focus-visible:ring-2 focus-visible:ring-[#D4A853] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0A] focus-visible:outline-none"
 ```
@@ -147,6 +155,7 @@ className="group flex h-12 items-center gap-3 rounded-full border border-white/1
 **Implementation:** Add an aria-live region that announces scroll progress to screen readers.
 
 **Code to Add:**
+
 ```tsx
 // Add state for current panel
 const [currentPanel, setCurrentPanel] = useState(0);
@@ -181,6 +190,7 @@ onUpdate: (self) => {
 **Implementation:** Add arrow key navigation for the horizontal scroll section.
 
 **Code to Add:**
+
 ```tsx
 // Add keyboard navigation
 useEffect(() => {
@@ -221,6 +231,7 @@ useEffect(() => {
 **File:** [`client/app/components/public/manufacturing/PublicProcessSection.tsx`](client/app/components/public/manufacturing/PublicProcessSection.tsx:179-183)
 
 **Current Code:**
+
 ```tsx
 <OptimizedImage 
   mediaId={bgAsset.id}
@@ -230,6 +241,7 @@ useEffect(() => {
 ```
 
 **Fixed Code:**
+
 ```tsx
 <OptimizedImage 
   mediaId={bgAsset.id}
@@ -249,6 +261,7 @@ useEffect(() => {
 **File:** [`client/app/routes/manufacturing.tsx`](client/app/routes/manufacturing.tsx:141-148)
 
 **Current Code:**
+
 ```tsx
 console.log("[Manufacturing] Rendering:", {
   heroData: !!heroData,
@@ -261,6 +274,7 @@ console.log("[Manufacturing] Rendering:", {
 ```
 
 **Fixed Code:**
+
 ```tsx
 if (import.meta.env.DEV) {
   console.log("[Manufacturing] Rendering:", {
@@ -283,6 +297,7 @@ if (import.meta.env.DEV) {
 **File:** [`client/app/components/public/manufacturing/PublicCapabilitySection.tsx`](client/app/components/public/manufacturing/PublicCapabilitySection.tsx:70-73)
 
 **Current Code:**
+
 ```tsx
 const iconName = capability.icon || "";
 const IconComponent = iconName && (LucideIcons as any)[iconName] 
@@ -291,6 +306,7 @@ const IconComponent = iconName && (LucideIcons as any)[iconName]
 ```
 
 **Fixed Code:**
+
 ```tsx
 // Create a type-safe icon mapping utility
 // File: client/app/utils/icon-resolver.ts (already exists, extend it)
@@ -330,11 +346,13 @@ const IconComponent = resolveIcon(capability.icon);
 **File:** [`client/app/routes/manufacturing.tsx`](client/app/routes/manufacturing.tsx:82)
 
 **Current Code:**
+
 ```tsx
 staleTime: 5 * 60 * 1000,
 ```
 
 **Fixed Code:**
+
 ```tsx
 // At top of file or in shared/constants/cache.ts
 const CACHE_STALE_TIME = {
@@ -357,6 +375,7 @@ staleTime: CACHE_STALE_TIME.MEDIUM,
 **File:** [`client/app/routes/manufacturing.tsx`](client/app/routes/manufacturing.tsx)
 
 **Code to Add:**
+
 ```tsx
 /**
  * Manufacturing page component for RUN APPAREL.
@@ -409,6 +428,7 @@ export async function loader() {
 ### 3.1 Extract Arbitrary Tailwind Values to @layer utilities
 
 **Files Affected:**
+
 - [`client/app/components/public/manufacturing/PublicCapabilitySection.tsx:47`](client/app/components/public/manufacturing/PublicCapabilitySection.tsx:47) - `opacity-[0.03]`
 - [`client/app/components/public/manufacturing/PublicCapabilitySection.tsx:97`](client/app/components/public/manufacturing/PublicCapabilitySection.tsx:97) - `opacity-[0.02]`, `opacity-[0.05]`
 
@@ -443,6 +463,7 @@ export async function loader() {
 ```
 
 **Update Components:**
+
 ```tsx
 // Before
 <div className="... bg-[#D4A853] opacity-[0.03] blur-[120px] ...">
@@ -460,6 +481,7 @@ export async function loader() {
 **File:** `client/app/styles/theme.css`
 
 **Add CSS Variables:**
+
 ```css
 :root {
   /* Manufacturing Page Colors */
@@ -480,6 +502,7 @@ export async function loader() {
 ```
 
 **Update Tailwind Config:**
+
 ```typescript
 // tailwind.config.ts
 colors: {
@@ -504,6 +527,7 @@ colors: {
 **Implementation Steps:**
 
 1. **Create Database Schema:**
+
 ```sql
 -- File: migrations/add_manufacturing_case_studies.sql
 CREATE TABLE manufacturing_case_studies (
@@ -523,7 +547,8 @@ CREATE TABLE manufacturing_case_studies (
 );
 ```
 
-2. **Create API Endpoint:**
+1. **Create API Endpoint:**
+
 ```typescript
 // File: server/routes/manufacturingCaseStudiesRoutes.ts
 import { Router } from 'express';
@@ -544,7 +569,8 @@ router.get('/api/manufacturing-case-studies', async (req, res) => {
 export default router;
 ```
 
-3. **Update CaseStudySection Component:**
+1. **Update CaseStudySection Component:**
+
 ```tsx
 // File: client/app/components/public/manufacturing/CaseStudySection.tsx
 import { useQuery } from '@tanstack/react-query';
@@ -586,6 +612,7 @@ export function CaseStudySection() {
 **File:** [`client/app/routes/manufacturing.tsx`](client/app/routes/manufacturing.tsx:33-41)
 
 **Current Code:**
+
 ```tsx
 export function meta({}: Route.MetaArgs) {
   return [
@@ -599,6 +626,7 @@ export function meta({}: Route.MetaArgs) {
 ```
 
 **Fixed Code:**
+
 ```tsx
 export function meta({}: Route.MetaArgs) {
   return [
@@ -737,6 +765,7 @@ flowchart TB
 After implementing all fixes, verify:
 
 ### Accessibility (Target: 20/20)
+
 - [ ] Toggle button has `aria-label` and `aria-pressed`
 - [ ] Skip link is visible on focus and works correctly
 - [ ] All text meets WCAG AA contrast ratio (4.5:1)
@@ -746,20 +775,24 @@ After implementing all fixes, verify:
 - [ ] All images have descriptive alt text
 
 ### Code Quality (Target: 20/20)
+
 - [ ] No console.log in production build
 - [ ] No `any` type usage
 - [ ] All magic numbers extracted to constants
 - [ ] All public functions have JSDoc comments
 
 ### Visual Design (Target: 20/20)
+
 - [ ] No arbitrary Tailwind values in className
 - [ ] All colors use CSS variables
 
 ### Component Architecture (Target: 20/20)
+
 - [ ] CaseStudySection fetches from CMS API
 - [ ] Admin can manage case studies
 
 ### Performance (Target: 20/20)
+
 - [ ] Meta tags include Open Graph and Twitter cards
 - [ ] Structured data validates in Google Rich Results Test
 - [ ] Images have blur placeholders

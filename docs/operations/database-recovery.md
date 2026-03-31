@@ -42,6 +42,7 @@
 **When**: Data corruption, accidental deletion, or need to restore to specific point.
 
 **Steps**:
+
 1. Log into [Neon Console](https://console.neon.tech)
 2. Navigate to your project → **Branches**
 3. Click **Restore** on the main branch
@@ -58,6 +59,7 @@
 **When**: Need to test recovery or create parallel environment.
 
 **Steps**:
+
 ```bash
 # Using Neon CLI
 neon branches create --project-id $NEON_PROJECT_ID \
@@ -78,10 +80,11 @@ neon connection-string recovery-test-$(date +%Y%m%d)
 **When**: Primary database unreachable, Neon regional outage.
 
 **Steps**:
+
 1. **Immediate**: Activate maintenance page (Cloud Run traffic to static page)
 2. **Assessment**: Check [Neon Status Page](https://status.neon.tech)
 3. **If Neon outage**: Wait for provider resolution, monitor status
-4. **If configuration issue**: 
+4. **If configuration issue**:
    - Verify `DATABASE_URL` in Secret Manager
    - Check connection string includes `-pooler` suffix
    - Review Cloud Run service logs

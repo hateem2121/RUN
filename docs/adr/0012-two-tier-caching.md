@@ -7,6 +7,7 @@
 ## Context
 
 We needed a caching strategy that:
+
 - Minimizes database load
 - Provides sub-millisecond access for hot data
 - Scales across distributed instances
@@ -50,12 +51,14 @@ Request → L1 (LRU Memory) → L2 (Upstash Redis) → Database
 ## Consequences
 
 ### Positive
+
 - 10x reduction in database queries for hot paths
 - P99 latency under 50ms for cached endpoints
 - Resilient to Redis outages via L1 fallback
 - SWR pattern provides always-fresh perception
 
 ### Negative
+
 - Cache invalidation complexity (event-based)
 - Memory usage monitoring required
 - Potential for stale data during revalidation window

@@ -7,6 +7,7 @@
 ## Context
 
 We needed a Redis solution for:
+
 - L2 distributed caching
 - Rate limiting state
 - Session storage (optional)
@@ -36,12 +37,14 @@ We chose **Upstash Redis** over ElastiCache or self-managed Redis.
 ## Consequences
 
 ### Positive
+
 - Zero infrastructure management
 - Works seamlessly with serverless architecture
 - Built-in rate limiting support
 - Global edge caching available
 
 ### Negative
+
 - Higher per-operation cost at scale
 - HTTP latency vs TCP (minimal impact)
 - Less Redis feature parity (acceptable trade-off)

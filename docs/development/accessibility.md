@@ -27,6 +27,7 @@ RUN Remix is committed to ensuring digital accessibility for people with disabil
 The accessibility testing utilities are located at [`client/tests/accessibility.ts`](../../client/tests/accessibility.ts).
 
 **Dependencies:**
+
 - `vitest-axe` - axe-core integration for Vitest
 - `axe-core` - Accessibility engine
 
@@ -151,6 +152,7 @@ assertTabOrder(container, [
 ### Perceivable
 
 #### 1.1 Text Alternatives
+
 - All images must have descriptive `alt` attributes
 - Decorative images use `alt=""`
 - Complex images have extended descriptions
@@ -165,10 +167,12 @@ assertTabOrder(container, [
 ```
 
 #### 1.2 Time-based Media
+
 - Video has captions and audio descriptions
 - Audio has text transcripts
 
 #### 1.3 Adaptable
+
 - Use semantic HTML elements
 - Form inputs have associated labels
 - Use proper heading hierarchy
@@ -186,6 +190,7 @@ assertTabOrder(container, [
 ```
 
 #### 1.4 Distinguishable
+
 - Color contrast ratio of 4.5:1 for normal text
 - Color contrast ratio of 3:1 for large text
 - Text can be resized to 200% without loss of content
@@ -193,6 +198,7 @@ assertTabOrder(container, [
 ### Operable
 
 #### 2.1 Keyboard Accessible
+
 - All functionality available via keyboard
 - No keyboard traps
 - Custom components have proper focus management
@@ -213,13 +219,16 @@ assertTabOrder(container, [
 ```
 
 #### 2.2 Enough Time
+
 - Users can extend time limits
 - Moving content can be paused
 
 #### 2.3 Seizures and Physical Reactions
+
 - No content flashes more than 3 times per second
 
 #### 2.4 Navigable
+
 - Skip navigation links
 - Descriptive page titles
 - Logical focus order
@@ -233,21 +242,25 @@ assertTabOrder(container, [
 ```
 
 #### 2.5 Input Modalities
+
 - Touch targets are at least 44x44 CSS pixels
 - Motion can be disabled
 
 ### Understandable
 
 #### 3.1 Readable
+
 - Page language declared (`<html lang="en">`)
 - Language changes marked up
 
 #### 3.2 Predictable
+
 - Consistent navigation
 - Consistent identification
 - No unexpected context changes
 
 #### 3.3 Input Assistance
+
 - Error identification
 - Labels and instructions
 - Error suggestion
@@ -256,6 +269,7 @@ assertTabOrder(container, [
 ### Robust
 
 #### 4.1 Compatible
+
 - Valid HTML
 - Name, Role, Value for custom components
 - Status messages announced
@@ -267,6 +281,7 @@ assertTabOrder(container, [
 When testing a component for accessibility, verify:
 
 ### Interactive Elements
+
 - [ ] All buttons have accessible names
 - [ ] Links have descriptive text (not "click here")
 - [ ] Form inputs have associated labels
@@ -274,18 +289,21 @@ When testing a component for accessibility, verify:
 - [ ] Required fields are indicated
 
 ### Focus Management
+
 - [ ] Focus is visible on all interactive elements
 - [ ] Tab order is logical
 - [ ] Focus is trapped in modals
 - [ ] Focus returns to trigger element when modal closes
 
 ### Screen Reader Support
+
 - [ ] Images have appropriate alt text
 - [ ] Icons have aria-labels or are hidden
 - [ ] Dynamic content changes are announced
 - [ ] Landmarks are properly marked up
 
 ### Color and Contrast
+
 - [ ] Text meets contrast requirements
 - [ ] Information is not conveyed by color alone
 - [ ] Focus indicators are visible
@@ -307,18 +325,21 @@ npm run test -- --grep "accessibility"
 ### Manual Testing
 
 #### Browser DevTools
+
 1. Open Chrome DevTools
 2. Go to **Lighthouse** tab
 3. Select **Accessibility** audit
 4. Run audit
 
 #### Screen Reader Testing
+
 - **macOS**: VoiceOver (Cmd+F5)
 - **Windows**: NVDA (free) or JAWS
 - **iOS**: VoiceOver (Settings > Accessibility)
 - **Android**: TalkBack (Settings > Accessibility)
 
 #### Keyboard Testing
+
 1. Navigate using Tab, Shift+Tab
 2. Activate using Enter, Space
 3. Escape should close modals/dropdowns
@@ -366,6 +387,7 @@ Timestamp: 2026-02-14T12:00:00.000Z
 ## Common Violations and Fixes
 
 ### button-name
+
 **Issue:** Buttons must have discernible text.
 
 ```tsx
@@ -381,6 +403,7 @@ Timestamp: 2026-02-14T12:00:00.000Z
 ```
 
 ### color-contrast
+
 **Issue:** Insufficient color contrast.
 
 ```tsx
@@ -392,6 +415,7 @@ Timestamp: 2026-02-14T12:00:00.000Z
 ```
 
 ### form-field-multiple-labels
+
 **Issue:** Form field has multiple labels.
 
 ```tsx
@@ -405,6 +429,7 @@ Timestamp: 2026-02-14T12:00:00.000Z
 ```
 
 ### landmark-unique
+
 **Issue:** Landmarks must have unique names.
 
 ```tsx
@@ -418,6 +443,7 @@ Timestamp: 2026-02-14T12:00:00.000Z
 ```
 
 ### heading-order
+
 **Issue:** Heading levels should increase by one.
 
 ```tsx
@@ -435,16 +461,19 @@ Timestamp: 2026-02-14T12:00:00.000Z
 ## Resources
 
 ### Documentation
+
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 - [axe-core Rules](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md)
 - [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
 
 ### Tools
+
 - [axe DevTools](https://www.deque.com/axe/devtools/) - Browser extension
 - [WAVE](https://wave.webaim.org/) - Web accessibility evaluation tool
 - [Pa11y](https://pa11y.org/) - Automated accessibility testing CLI
 
 ### Training
+
 - [WebAIM](https://webaim.org/) - Web accessibility training
 - [A11y Project](https://www.a11yproject.com/) - Community resource
 
@@ -454,7 +483,7 @@ Timestamp: 2026-02-14T12:00:00.000Z
 
 For accessibility questions or to report an accessibility issue:
 
-- **Email:** team@wear-run.com
+- **Email:** <team@wear-run.com>
 - **Phone:** +92-336-1777313
 - **Address:** RUN APPAREL (PVT) LTD, Sialkot, Pakistan
 

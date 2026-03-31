@@ -1,6 +1,7 @@
 # CMS FORENSIC AUDIT - SCORING RUBRIC & QUICK REFERENCE
 
 ## Overview
+
 This document provides detailed scoring criteria and quick reference checklists to accompany the main forensic audit prompt for the RUN Remix CMS Admin System.
 
 ---
@@ -8,12 +9,14 @@ This document provides detailed scoring criteria and quick reference checklists 
 ## Detailed Scoring Methodology
 
 ### Overall Score Formula
+
 ```
 TOTAL SCORE = (Security × 30%) + (Performance × 20%) + (Code Quality × 20%) + 
               (Accessibility × 15%) + (UI/UX × 10%) + (Architecture × 5%)
 ```
 
 ### Score Interpretation
+
 | Range | Grade | Status | Action Required |
 |-------|-------|--------|----------------|
 | 90-100 | A+ | Excellent | Production-ready, minor enhancements |
@@ -27,6 +30,7 @@ TOTAL SCORE = (Security × 30%) + (Performance × 20%) + (Code Quality × 20%) +
 ## 1. SECURITY SCORING (30% Weight)
 
 ### Score Calculation
+
 ```
 Security Score = 100 - (Critical × 20) - (High × 10) - (Medium × 5) - (Low × 2)
 
@@ -37,6 +41,7 @@ Deductions capped at 100 points total
 ### Severity Definitions
 
 #### 🔴 Critical (20 points each)
+
 - Authentication bypass
 - SQL Injection exploits
 - Remote Code Execution (RCE)
@@ -46,6 +51,7 @@ Deductions capped at 100 points total
 - XSS on admin pages allowing account takeover
 
 #### 🟠 High (10 points each)
+
 - CSRF on state-changing operations
 - Weak password policies
 - Missing rate limiting on authentication
@@ -55,6 +61,7 @@ Deductions capped at 100 points total
 - Sensitive data exposure
 
 #### 🟡 Medium (5 points each)
+
 - Missing input validation
 - Verbose error messages
 - Outdated dependencies with known CVEs
@@ -63,6 +70,7 @@ Deductions capped at 100 points total
 - Cookie security flags missing
 
 #### 🟢 Low (2 points each)
+
 - Information disclosure in headers
 - Missing security.txt file
 - Unused dependencies
@@ -71,6 +79,7 @@ Deductions capped at 100 points total
 ### Security Checklist
 
 **OWASP Top 10 Coverage:**
+
 - [ ] A01: Broken Access Control - Tested
 - [ ] A02: Cryptographic Failures - Verified encryption
 - [ ] A03: Injection - All inputs sanitized
@@ -83,6 +92,7 @@ Deductions capped at 100 points total
 - [ ] A10: SSRF - URL validation present
 
 **Additional Checks:**
+
 - [ ] Passwords hashed with bcrypt/Argon2
 - [ ] API keys stored in environment variables
 - [ ] CORS properly configured
@@ -98,6 +108,7 @@ Deductions capped at 100 points total
 ## 2. PERFORMANCE SCORING (20% Weight)
 
 ### Score Calculation
+
 ```
 Performance Score = (Lighthouse Performance × 40%) + 
                    (Core Web Vitals × 40%) + 
@@ -105,6 +116,7 @@ Performance Score = (Lighthouse Performance × 40%) +
 ```
 
 ### Lighthouse Performance Targets
+
 | Metric | Target | Points |
 |--------|--------|--------|
 | Performance | 90+ | 40 |
@@ -115,26 +127,31 @@ Performance Score = (Lighthouse Performance × 40%) +
 ### Core Web Vitals Scoring
 
 #### LCP (Largest Contentful Paint)
+
 - <2.5s: 40 points
 - 2.5-4s: 20 points
 - >4s: 0 points
 
 #### FID (First Input Delay)
+
 - <100ms: 40 points
 - 100-300ms: 20 points
 - >300ms: 0 points
 
 #### CLS (Cumulative Layout Shift)
+
 - <0.1: 40 points
 - 0.1-0.25: 20 points
 - >0.25: 0 points
 
 ### Backend Performance
+
 - Average API response <200ms: 20 points
 - 200-500ms: 10 points
 - >500ms: 0 points
 
 ### Performance Checklist
+
 - [ ] Lighthouse score >90 (mobile)
 - [ ] Lighthouse score >90 (desktop)
 - [ ] LCP <2.5s
@@ -156,6 +173,7 @@ Performance Score = (Lighthouse Performance × 40%) +
 ## 3. CODE QUALITY SCORING (20% Weight)
 
 ### Score Calculation
+
 ```
 Code Quality = (TypeScript Strictness × 25%) + 
                (Test Coverage × 25%) + 
@@ -164,17 +182,20 @@ Code Quality = (TypeScript Strictness × 25%) +
 ```
 
 ### TypeScript Strictness (25 points)
+
 - Strict mode enabled: +15
 - No `any` types: +10
 - Interfaces well-defined: +5
 - Maximum: 25 points
 
 **Deductions:**
+
 - Each `any` type: -2 points
 - Missing strict mode: -15 points
 - Poor type definitions: -5 points
 
 ### Test Coverage (25 points)
+
 | Coverage | Points |
 |----------|--------|
 | 80%+ | 25 |
@@ -184,6 +205,7 @@ Code Quality = (TypeScript Strictness × 25%) +
 | <20% | 0 |
 
 ### Code Duplication (25 points)
+
 | Duplication % | Points |
 |---------------|--------|
 | 0-5% | 25 |
@@ -193,12 +215,14 @@ Code Quality = (TypeScript Strictness × 25%) +
 | >30% | 0 |
 
 ### Linting Compliance (25 points)
+
 - 0 errors: 25 points
 - 1-10 errors: 15 points
 - 11-50 errors: 5 points
 - >50 errors: 0 points
 
 ### Code Quality Checklist
+
 - [ ] TypeScript strict mode enabled
 - [ ] No `any` types used
 - [ ] Biome configured and passing
@@ -219,6 +243,7 @@ Code Quality = (TypeScript Strictness × 25%) +
 ## 4. ACCESSIBILITY SCORING (15% Weight)
 
 ### Score Calculation
+
 ```
 Accessibility = (WCAG Compliance × 50%) + 
                 (Keyboard Navigation × 30%) + 
@@ -226,6 +251,7 @@ Accessibility = (WCAG Compliance × 50%) +
 ```
 
 ### WCAG 2.2 Level AA Compliance (50 points)
+
 - 0 violations: 50 points
 - 1-5 violations: 35 points
 - 6-15 violations: 20 points
@@ -233,18 +259,21 @@ Accessibility = (WCAG Compliance × 50%) +
 - >30 violations: 0 points
 
 ### Keyboard Navigation (30 points)
+
 - All features accessible: 30 points
 - Most features accessible: 20 points
 - Some features accessible: 10 points
 - Keyboard traps present: 0 points
 
 ### Screen Reader Compatibility (20 points)
+
 - Full compatibility: 20 points
 - Mostly compatible: 12 points
 - Partially compatible: 5 points
 - Major issues: 0 points
 
 ### Accessibility Checklist
+
 - [ ] Color contrast ≥4.5:1 (normal text)
 - [ ] Color contrast ≥3:1 (large text)
 - [ ] UI component contrast ≥3:1
@@ -266,6 +295,7 @@ Accessibility = (WCAG Compliance × 50%) +
 ## 5. UI/UX SCORING (10% Weight)
 
 ### Score Calculation
+
 ```
 UI/UX = (Dark/Light Mode × 40%) + 
         (Responsive Design × 30%) + 
@@ -273,11 +303,13 @@ UI/UX = (Dark/Light Mode × 40%) +
 ```
 
 ### Dark/Light Mode Parity (40 points)
+
 ```
 Score = (Components Passing / Total Components) × 40
 ```
 
 **Passing Criteria per Component:**
+
 - Light mode contrast WCAG compliant
 - Dark mode contrast WCAG compliant
 - Theme toggle works
@@ -285,21 +317,25 @@ Score = (Components Passing / Total Components) × 40
 - No visual bugs in either mode
 
 ### Responsive Design (30 points)
+
 - Mobile (320-767px): 10 points
 - Tablet (768-1023px): 10 points
 - Desktop (1024px+): 10 points
 
 **Deductions:**
+
 - Horizontal scroll: -5 points
 - Broken layout: -10 points per breakpoint
 - Touch targets <44px: -2 points each
 
 ### Visual Consistency (30 points)
+
 - Spacing consistent: 10 points
 - Typography consistent: 10 points
 - Colors from palette: 10 points
 
 ### UI/UX Checklist
+
 - [ ] Dark mode implemented
 - [ ] Light mode implemented
 - [ ] Theme toggle functional
@@ -323,6 +359,7 @@ Score = (Components Passing / Total Components) × 40
 ## 6. ARCHITECTURE SCORING (5% Weight)
 
 ### Score Calculation
+
 ```
 Architecture = (Folder Structure × 30%) + 
                (Separation of Concerns × 30%) + 
@@ -330,23 +367,27 @@ Architecture = (Folder Structure × 30%) +
 ```
 
 ### Folder Structure (30 points)
+
 - RUN Remix conventions followed: 30 points
 - Mostly consistent: 20 points
 - Some inconsistencies: 10 points
 - Poor structure: 0 points
 
 ### Separation of Concerns (30 points)
+
 - Controllers thin, services thick: 30 points
 - Some business logic in controllers: 15 points
 - Most logic in controllers: 0 points
 
 ### Scalability (40 points)
+
 - Horizontal scaling ready: 40 points
 - Some refactoring needed: 25 points
 - Major changes needed: 10 points
 - Not scalable: 0 points
 
 ### Architecture Checklist
+
 - [ ] `/client/app/components/ui/` for generic UI
 - [ ] `/client/app/components/[domain]/` for specific
 - [ ] `/server/routes/` thin controllers
@@ -365,6 +406,7 @@ Architecture = (Folder Structure × 30%) +
 ## Dark/Light Mode Detailed Checklist
 
 ### Implementation Checklist
+
 - [ ] CSS Variables defined for colors
 - [ ] `@media (prefers-color-scheme: dark)` implemented
 - [ ] Manual toggle button present
@@ -373,6 +415,7 @@ Architecture = (Folder Structure × 30%) +
 - [ ] Smooth transition between modes (<300ms)
 
 ### Color Palette Audit
+
 - [ ] Pure black (#000) avoided in dark mode
 - [ ] Dark gray (#121212 or similar) used instead
 - [ ] Accent colors desaturated for dark mode
@@ -381,9 +424,11 @@ Architecture = (Folder Structure × 30%) +
 - [ ] Disabled states visible in both modes
 
 ### Component-by-Component Audit
+
 For EACH component, verify:
 
 **Buttons:**
+
 - [ ] Light mode text contrast ≥4.5:1
 - [ ] Dark mode text contrast ≥4.5:1
 - [ ] Hover states visible in both
@@ -391,6 +436,7 @@ For EACH component, verify:
 - [ ] Disabled state clear in both
 
 **Forms:**
+
 - [ ] Input backgrounds distinguishable
 - [ ] Placeholder text readable
 - [ ] Labels high contrast
@@ -398,24 +444,28 @@ For EACH component, verify:
 - [ ] Success states clear
 
 **Navigation:**
+
 - [ ] Active state clear
 - [ ] Hover state visible
 - [ ] Text readable
 - [ ] Background contrast sufficient
 
 **Cards/Panels:**
+
 - [ ] Elevation/shadows work in dark
 - [ ] Border contrast sufficient
 - [ ] Content readable
 - [ ] No halation effect
 
 **Data Tables:**
+
 - [ ] Headers distinguishable
 - [ ] Row separators visible
 - [ ] Hover states work
 - [ ] Selected rows clear
 
 **Modals/Dialogs:**
+
 - [ ] Overlay appropriate
 - [ ] Content readable
 - [ ] Close button visible
@@ -426,11 +476,13 @@ For EACH component, verify:
 ## Admin-to-Visitor Integration Scoring
 
 ### Coverage Formula
+
 ```
 Coverage % = (Mapped Visitor Pages / Total Visitor Pages) × 100
 ```
 
 ### Scoring
+
 - 100% coverage: Full points
 - 90-99%: -5 points
 - 80-89%: -10 points
@@ -438,7 +490,9 @@ Coverage % = (Mapped Visitor Pages / Total Visitor Pages) × 100
 - <70%: -30 points
 
 ### Integration Checklist
+
 For each visitor page, verify:
+
 - [ ] Corresponding admin page exists
 - [ ] Content can be created
 - [ ] Content can be edited
@@ -451,7 +505,9 @@ For each visitor page, verify:
 - [ ] Media can be attached
 
 ### Admin Feature Audit
+
 For each admin feature, verify:
+
 - [ ] Has corresponding visitor page(s)
 - [ ] Functional and tested
 - [ ] Documented
@@ -462,6 +518,7 @@ For each admin feature, verify:
 ## Duplication Detection Guidelines
 
 ### Code Duplication Tools
+
 ```bash
 # Install jscpd
 npm install -g jscpd
@@ -473,6 +530,7 @@ jscpd --min-lines 5 --min-tokens 50 ./src
 ```
 
 ### Acceptable Duplication Thresholds
+
 - **Excellent:** <5%
 - **Good:** 5-10%
 - **Needs Work:** 10-20%
@@ -481,27 +539,32 @@ jscpd --min-lines 5 --min-tokens 50 ./src
 ### Types of Duplication to Track
 
 #### 1. Component Logic
+
 - Similar useState patterns
 - Repeated useEffect logic
 - Duplicate API calls
 - Redundant validation
 
 #### 2. CSS/Styling
+
 - Repeated Tailwind class combinations
 - Duplicate @utility definitions
 - Similar CSS-in-JS
 
 #### 3. Configuration
+
 - Repeated constants
 - Duplicate environment checks
 - Similar middleware stacks
 
 #### 4. Database
+
 - Duplicate queries
 - Similar migrations
 - Redundant indexes
 
 ### Remediation Strategies
+
 | Duplication Type | Solution |
 |------------------|----------|
 | Component logic | Custom hook |
@@ -516,6 +579,7 @@ jscpd --min-lines 5 --min-tokens 50 ./src
 ## Priority Matrix
 
 ### Severity vs Effort
+
 ```
 HIGH IMPACT, LOW EFFORT (Do First)
 ┌─────────────────────────┐
@@ -552,6 +616,7 @@ LOW IMPACT, HIGH EFFORT (Defer)
 ## Recommended Mermaid Diagrams
 
 ### 1. System Architecture Overview
+
 ```mermaid
 graph TB
     A[User Browser] --> B[Nginx/Load Balancer]
@@ -567,6 +632,7 @@ graph TB
 ```
 
 ### 2. Authentication Flow
+
 ```mermaid
 sequenceDiagram
     participant U as User
@@ -585,6 +651,7 @@ sequenceDiagram
 ```
 
 ### 3. Content Publishing Flow
+
 ```mermaid
 stateDiagram-v2
     [*] --> Draft
@@ -598,6 +665,7 @@ stateDiagram-v2
 ```
 
 ### 4. Component Dependency Graph
+
 ```mermaid
 graph LR
     A[App.tsx] --> B[AdminLayout]
@@ -612,6 +680,7 @@ graph LR
 ```
 
 ### 5. Database ERD
+
 ```mermaid
 erDiagram
     USER ||--o{ POST : creates
@@ -645,6 +714,7 @@ erDiagram
 ## Quick Reference: Issue Templates
 
 ### Security Issue Template
+
 ```markdown
 **[SEC-001]: SQL Injection in User Search**
 - **Severity:** Critical
@@ -656,7 +726,9 @@ erDiagram
   ```bash
   curl 'http://localhost:5002/api/users/search?q=' OR '1'='1'
   ```
+
 - **Remediation:**
+
   ```typescript
   // ❌ Vulnerable
   const query = `SELECT * FROM users WHERE name LIKE '%${req.query.q}%'`;
@@ -665,8 +737,10 @@ erDiagram
   const query = 'SELECT * FROM users WHERE name LIKE ?';
   const results = await db.execute(query, [`%${req.query.q}%`]);
   ```
+
 - **Effort:** 1 hour
 - **Priority:** P0 (Immediate)
+
 ```
 
 ### Performance Issue Template
@@ -695,8 +769,10 @@ erDiagram
     LEFT JOIN users u ON p.author_id = u.id
   `);
   ```
+
 - **Effort:** 2 hours
 - **Priority:** P1 (This sprint)
+
 ```
 
 ### Accessibility Issue Template
@@ -715,8 +791,10 @@ erDiagram
   // ✅ Accessible
   <img src={image.url} alt={image.description || 'Gallery image'} />
   ```
+
 - **Effort:** 30 minutes
 - **Priority:** P2 (This month)
+
 ```
 
 ---
@@ -737,6 +815,7 @@ erDiagram
 ```
 
 #### 2. Performance Monitoring
+
 ```javascript
 // Lighthouse CI configuration
 {
@@ -756,6 +835,7 @@ erDiagram
 ```
 
 #### 3. Code Quality Monitoring
+
 ```bash
 # Pre-commit hook
 npm run lint
@@ -768,12 +848,14 @@ npm test -- --coverage --coverageThreshold='{"global":{"branches":80,"functions"
 ## Final Notes
 
 ### Document Version
+
 - **Version:** 1.0
 - **Last Updated:** February 2026
 - **Created for:** RUN APPAREL (PVT) LTD
 - **Optimized for:** RUN Remix CMS Admin System
 
 ### Usage Instructions
+
 1. Use this rubric alongside the main audit prompt
 2. Reference scoring criteria during audit execution
 3. Apply templates for consistency in issue reporting
@@ -782,8 +864,10 @@ npm test -- --coverage --coverageThreshold='{"global":{"branches":80,"functions"
 6. Calculate final score using formulas provided
 
 ### Contact
+
 For questions or updates to this rubric:
-- **Email:** team@wear-run.com
+
+- **Email:** <team@wear-run.com>
 - **WhatsApp:** +92-336-1777313
 - **Name:** M. Hateem Jamshaid (Business Development Director)
 

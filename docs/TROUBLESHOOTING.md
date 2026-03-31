@@ -31,11 +31,13 @@ node --version  # Should be ≥24
 ### Issue 1: Port 5002 Already in Use
 
 **Symptoms:**
+
 ```
 Error: listen EADDRINUSE: address already in use :::5002
 ```
 
 **Diagnosis:**
+
 ```bash
 # Find what's using port 5002
 lsof -i :5002
@@ -48,6 +50,7 @@ lsof -i :5002
 **Solutions:**
 
 **Option A: Kill the process**
+
 ```bash
 # Kill specific process
 kill -9 1234
@@ -57,12 +60,14 @@ killall node
 ```
 
 **Option B: Use different terminal**
+
 ```bash
 # Check if you have multiple terminals running dev server
 ps aux | grep "npm run dev"
 ```
 
 **Prevention:**
+
 ```bash
 # Add to package.json scripts
 "predev": "lsof -ti:5002 | xargs kill -9 || true",
@@ -74,10 +79,12 @@ ps aux | grep "npm run dev"
 ### Issue 2: Server Starts on Wrong Port
 
 **Symptoms:**
+
 - Server logs show: `Server running on http://localhost:3000`
 - Browser URL: `http://localhost:3000` instead of `5002`
 
 **Diagnosis:**
+
 ```bash
 # Check server configuration
 cat server/index.ts | grep PORT
@@ -92,18 +99,21 @@ npm run verify-port
 **Common Causes:**
 
 **Cause 1: Environment variable override**
+
 ```typescript
 // ❌ WRONG - server/index.ts
 const PORT = process.env.PORT || 3000;
 ```
 
 **Solution:**
+
 ```typescript
 // ✅ CORRECT
 const PORT = 5002; // Hardcoded, no env variable
 ```
 
 **Cause 2: Vite config wrong**
+
 ```typescript
 // ❌ WRONG - vite.config.ts
 server: {
@@ -112,6 +122,7 @@ server: {
 ```
 
 **Solution:**
+
 ```typescript
 // ✅ CORRECT
 server: {
@@ -121,12 +132,14 @@ server: {
 ```
 
 **Cause 3: Environment file**
+
 ```bash
 # ❌ WRONG - .env
 PORT=3000
 ```
 
 **Solution:**
+
 ```bash
 # ✅ CORRECT
 PORT=5002
@@ -137,6 +150,7 @@ PORT=5002
 ### Issue 3: Port Verification Script Fails
 
 **Symptoms:**
+
 ```
 npm run verify-port
 ❌ vite.config.ts contains forbidden port (not 5002)
@@ -144,6 +158,7 @@ npm run verify-port
 ```
 
 **Diagnosis:**
+
 ```bash
 # Find all port references
 grep -rn "port.*:" --include="*.ts" --include="*.js" . | grep -v node_modules | grep -v "5002"
@@ -159,6 +174,7 @@ grep -rn "port.*:" --include="*.ts" --include="*.js" . | grep -v node_modules | 
 4. **Re-run verification**
 
 **Example:**
+
 ```bash
 # File: vite.config.ts
 # Line 15: port: 3000
@@ -168,6 +184,7 @@ grep -rn "port.*:" --include="*.ts" --include="*.js" . | grep -v node_modules | 
 ```
 
 **Bulk fix (use with caution):**
+
 ```bash
 # Find and replace in specific files
 sed -i 's/port: 3000/port: 5002/g' vite.config.ts
@@ -179,10 +196,12 @@ sed -i 's/PORT = 3000/PORT = 5002/g' server/index.ts
 ### Issue 4: API Calls Go to Wrong Port
 
 **Symptoms:**
+
 - Network tab shows: `http://localhost:3000/api/...`
 - API calls fail with 404 or connection refused
 
 **Diagnosis:**
+
 ```bash
 # Check API base URL in code
 grep -r "localhost:" client/ | grep -v "5002"
@@ -194,24 +213,28 @@ cat .env | grep API_BASE_URL
 **Common Causes:**
 
 **Cause 1: Hardcoded wrong URL**
+
 ```typescript
 // ❌ WRONG
 const API_URL = 'http://localhost:3000/api';
 ```
 
 **Solution:**
+
 ```typescript
 // ✅ CORRECT
 const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5002/api';
 ```
 
 **Cause 2: Missing environment variable**
+
 ```bash
 # .env missing or incorrect
 VITE_API_BASE_URL=http://localhost:3000/api
 ```
 
 **Solution:**
+
 ```bash
 # .env
 VITE_API_BASE_URL=http://localhost:5002/api/v1
@@ -219,6 +242,7 @@ VITE_ADMIN_BASE_URL=http://localhost:5002/admin
 ```
 
 **Cause 3: Vite proxy misconfigured**
+
 ```typescript
 // ❌ WRONG
 proxy: {
@@ -229,6 +253,7 @@ proxy: {
 ```
 
 **Solution:**
+
 ```typescript
 // ✅ CORRECT
 proxy: {
@@ -244,10 +269,12 @@ proxy: {
 ### Issue 5: Multiple Ports in Docker
 
 **Symptoms:**
+
 - Docker container exposes multiple ports
 - Application accessible on different ports
 
 **Diagnosis:**
+
 ```bash
 # Check docker-compose.yml
 cat docker-compose.yml | grep ports
@@ -259,6 +286,7 @@ cat Dockerfile | grep EXPOSE
 **Solution:**
 
 **docker-compose.yml:**
+
 ```yaml
 # ❌ WRONG
 services:
@@ -277,6 +305,7 @@ services:
 ```
 
 **Dockerfile:**
+
 ```dockerfile
 # ❌ WRONG
 EXPOSE 3000
@@ -292,10 +321,12 @@ EXPOSE 5002
 ### Issue 6: Can't Access Admin Panel
 
 **Symptoms:**
+
 - Redirected to login page
 - Admin routes return 401 Unauthorized
 
 **Diagnosis:**
+
 ```bash
 # Check if server is running
 curl http://localhost:5002/api/v1/health
@@ -309,6 +340,7 @@ curl http://localhost:5002/admin/api/auth/me
 **Cause 1: Not logged in**
 
 **Solution:**
+
 ```bash
 # Login via API
 curl -X POST http://localhost:5002/admin/api/auth/login \
@@ -319,6 +351,7 @@ curl -X POST http://localhost:5002/admin/api/auth/login \
 **Cause 2: Token expired**
 
 **Solution:**
+
 ```typescript
 // Check token expiration
 // Clear localStorage/cookies
@@ -329,6 +362,7 @@ localStorage.clear();
 **Cause 3: Middleware not applied**
 
 **Solution:**
+
 ```typescript
 // server/routes/admin.ts
 // ❌ WRONG - Missing middleware
@@ -348,12 +382,14 @@ router.get('/admin/api/products', async (req, res) => {
 ### Issue 7: CORS Errors on Admin API
 
 **Symptoms:**
+
 ```
 Access to fetch at 'http://localhost:5002/admin/api/...' 
 has been blocked by CORS policy
 ```
 
 **Diagnosis:**
+
 ```bash
 # Check CORS middleware
 cat server/middleware/cors.ts
@@ -362,6 +398,7 @@ cat server/middleware/cors.ts
 **Solution:**
 
 **server/middleware/cors.ts:**
+
 ```typescript
 import cors from 'cors';
 
@@ -381,10 +418,12 @@ app.use(corsMiddleware);
 ### Issue 8: Public Page Missing Admin Counterpart
 
 **Symptoms:**
+
 - Public page works: `http://localhost:5002/team`
 - Admin page 404: `http://localhost:5002/admin/team`
 
 **Diagnosis:**
+
 ```bash
 # Check route mapping
 cat shared/constants/routeMapping.ts | grep team
@@ -393,12 +432,14 @@ cat shared/constants/routeMapping.ts | grep team
 **Solution:**
 
 **1. Create admin route:**
+
 ```typescript
 // client/app/routes/admin.tsx
 <Route path="/admin/team" element={<TeamManagementPage />} />
 ```
 
 **2. Create admin page component:**
+
 ```typescript
 // client/app/pages/admin/TeamManagementPage.tsx
 export function TeamManagementPage() {
@@ -407,6 +448,7 @@ export function TeamManagementPage() {
 ```
 
 **3. Create admin API endpoint:**
+
 ```typescript
 // server/routes/api/admin.ts
 router.get('/admin/api/team', isAuthenticated, async (req, res) => {
@@ -416,6 +458,7 @@ router.get('/admin/api/team', isAuthenticated, async (req, res) => {
 ```
 
 **4. Update route mapping:**
+
 ```typescript
 // shared/constants/routeMapping.ts
 {
@@ -431,10 +474,12 @@ router.get('/admin/api/team', isAuthenticated, async (req, res) => {
 ### Issue 9: Admin Route Returns Public Data
 
 **Symptoms:**
+
 - Admin page shows only published items
 - Can't see drafts or unpublished content
 
 **Diagnosis:**
+
 ```bash
 # Check admin API endpoint
 curl -H "Authorization: Bearer <token>" \
@@ -444,6 +489,7 @@ curl -H "Authorization: Bearer <token>" \
 **Solution:**
 
 **Separate service methods:**
+
 ```typescript
 // ❌ WRONG - Both use same method
 // Public API
@@ -479,12 +525,14 @@ router.get('/admin/api/products', isAuthenticated, async (req, res) => {
 ### Issue 10: Build Fails Due to Port Configuration
 
 **Symptoms:**
+
 ```
 npm run build
 [vite]: Build failed with errors
 ```
 
 **Diagnosis:**
+
 ```bash
 # Run build with verbose output
 npm run build -- --debug
@@ -498,6 +546,7 @@ npm run typecheck
 **Cause 1: Type errors in config files**
 
 **Solution:**
+
 ```bash
 # Check vite.config.ts
 npm run typecheck
@@ -508,6 +557,7 @@ npm run typecheck
 **Cause 2: Environment variables missing**
 
 **Solution:**
+
 ```bash
 # Create .env.production
 cat > .env.production << 'EOF'
@@ -522,12 +572,14 @@ EOF
 ### Issue 11: Production Server Won't Start
 
 **Symptoms:**
+
 ```
 npm run start
 Error: Cannot find module './dist/server/index.js'
 ```
 
 **Diagnosis:**
+
 ```bash
 # Check if build was successful
 ls -la dist/
@@ -539,12 +591,14 @@ ls -la dist/server/
 **Solutions:**
 
 **Solution 1: Build project**
+
 ```bash
 npm run build
 npm run start
 ```
 
 **Solution 2: Check build script**
+
 ```json
 // package.json
 {
@@ -557,6 +611,7 @@ npm run start
 ```
 
 **Solution 3: Check output path**
+
 ```typescript
 // vite.config.ts
 export default defineConfig({
@@ -573,12 +628,14 @@ export default defineConfig({
 ### Issue 12: Tests Fail Due to Port Mismatch
 
 **Symptoms:**
+
 ```
 npm run test
 Tests failed: Expected port 5002, got 3000
 ```
 
 **Diagnosis:**
+
 ```bash
 # Check test configuration
 cat vitest.config.ts
@@ -587,6 +644,7 @@ cat vitest.config.ts
 **Solution:**
 
 **vitest.config.ts:**
+
 ```typescript
 export default defineConfig({
   test: {
@@ -601,6 +659,7 @@ export default defineConfig({
 ```
 
 **Test setup file:**
+
 ```typescript
 // tests/setup.ts
 process.env.PORT = '5002';
@@ -612,11 +671,13 @@ process.env.VITE_API_BASE_URL = 'http://localhost:5002/api';
 ### Issue 13: Integration Tests Can't Connect
 
 **Symptoms:**
+
 ```
 Integration test failed: ECONNREFUSED localhost:3000
 ```
 
 **Diagnosis:**
+
 ```bash
 # Check if test server is running
 ps aux | grep "test server"
@@ -625,6 +686,7 @@ ps aux | grep "test server"
 **Solution:**
 
 **Test server setup:**
+
 ```typescript
 // tests/integration/setup.ts
 import { createServer } from '../../server';
@@ -646,11 +708,13 @@ export const API_BASE = `http://localhost:${PORT}`;
 ### Issue 14: Database Connection Fails
 
 **Symptoms:**
+
 ```
 Error: connect ECONNREFUSED 127.0.0.1:5432
 ```
 
 **Diagnosis:**
+
 ```bash
 # Check database is running
 pg_isready
@@ -662,6 +726,7 @@ cat .env | grep DATABASE_URL
 **Solution:**
 
 **1. Start database:**
+
 ```bash
 # PostgreSQL
 pg_ctl start
@@ -671,11 +736,13 @@ docker-compose up -d postgres
 ```
 
 **2. Verify connection:**
+
 ```bash
 psql $DATABASE_URL -c "SELECT 1"
 ```
 
 **3. Check .env:**
+
 ```bash
 DATABASE_URL=postgresql://user:password@localhost:5432/cms_db
 ```
@@ -687,10 +754,12 @@ DATABASE_URL=postgresql://user:password@localhost:5432/cms_db
 ### Issue 15: Admin Panel UI Not Loading
 
 **Symptoms:**
+
 - Blank page at `http://localhost:5002/admin`
 - Console errors about missing chunks
 
 **Diagnosis:**
+
 ```bash
 # Check browser console
 # Look for: Failed to load module
@@ -704,6 +773,7 @@ DATABASE_URL=postgresql://user:password@localhost:5432/cms_db
 **Cause 1: Build not included admin files**
 
 **Solution:**
+
 ```bash
 # Rebuild
 npm run build
@@ -715,6 +785,7 @@ ls -la dist/admin/
 **Cause 2: Wrong base path**
 
 **Solution:**
+
 ```typescript
 // vite.config.ts
 export default defineConfig({
@@ -730,10 +801,12 @@ export default defineConfig({
 ### Issue 16: Styles Not Loading
 
 **Symptoms:**
+
 - Unstyled content
 - Missing Tailwind classes
 
 **Diagnosis:**
+
 ```bash
 # Check if Tailwind is compiled
 cat dist/assets/*.css | grep "utility"
@@ -744,6 +817,7 @@ cat dist/assets/*.css | grep "utility"
 **Solution:**
 
 **1. Verify Tailwind config:**
+
 ```typescript
 // tailwind.config.ts
 export default {
@@ -754,6 +828,7 @@ export default {
 ```
 
 **2. Rebuild:**
+
 ```bash
 npm run build
 ```
@@ -765,11 +840,13 @@ npm run build
 ### Issue 17: TypeScript Errors in Config Files
 
 **Symptoms:**
+
 ```
 vite.config.ts:7:5 - error TS2322: Type 'number' is not assignable
 ```
 
 **Diagnosis:**
+
 ```bash
 npm run typecheck
 ```
@@ -777,6 +854,7 @@ npm run typecheck
 **Solution:**
 
 **Check type definitions:**
+
 ```typescript
 // vite.config.ts
 import { defineConfig } from 'vite';
@@ -794,9 +872,11 @@ export default defineConfig({
 ### Issue 18: Environment Variables Not Loading
 
 **Symptoms:**
+
 - `console.log(import.meta.env.VITE_API_BASE_URL)` shows `undefined`
 
 **Diagnosis:**
+
 ```bash
 # Check .env file exists
 ls -la .env
@@ -808,6 +888,7 @@ cat .env | grep VITE_
 **Solution:**
 
 **1. Variables must have VITE_ prefix:**
+
 ```bash
 # ❌ WRONG
 API_BASE_URL=http://localhost:5002/api/v1
@@ -817,6 +898,7 @@ VITE_API_BASE_URL=http://localhost:5002/api/v1
 ```
 
 **2. Restart dev server:**
+
 ```bash
 # Environment variables loaded on startup
 npm run dev
@@ -829,9 +911,11 @@ npm run dev
 ### Issue 19: Production Env Wrong Port
 
 **Symptoms:**
+
 - Production app runs on port 80 or 443 instead of 5002
 
 **Diagnosis:**
+
 ```bash
 # Check production server
 ssh production-server
@@ -843,6 +927,7 @@ lsof -i :5002
 **This is EXPECTED in production.**
 
 **Nginx reverse proxy:**
+
 ```nginx
 # nginx.conf
 server {
@@ -860,6 +945,7 @@ server {
 ```
 
 **App still runs on 5002 internally:**
+
 ```bash
 # Production .env
 PORT=5002
@@ -870,10 +956,12 @@ PORT=5002
 ### Issue 20: PM2 Starts Multiple Instances
 
 **Symptoms:**
+
 - Multiple processes on port 5002
 - Port conflict errors
 
 **Diagnosis:**
+
 ```bash
 # Check PM2 processes
 pm2 list
@@ -882,11 +970,13 @@ pm2 list
 **Solution:**
 
 **1. Stop all instances:**
+
 ```bash
 pm2 delete all
 ```
 
 **2. Start single instance:**
+
 ```bash
 PORT=5002 pm2 start dist/server/index.js \
   --name cms-app \
@@ -894,6 +984,7 @@ PORT=5002 pm2 start dist/server/index.js \
 ```
 
 **3. Save configuration:**
+
 ```bash
 pm2 save
 ```
@@ -955,6 +1046,7 @@ npm run dev > debug.log 2>&1
 ```
 
 **Include in your help request:**
+
 1. Output of `npm run verify-port`
 2. Relevant error messages
 3. Steps to reproduce
@@ -972,7 +1064,7 @@ npm run dev > debug.log 2>&1
 
 - GitHub Issues: [Link to issues]
 - Slack: #development channel
-- Email: team@wear-run.com
+- Email: <team@wear-run.com>
 
 ---
 
@@ -991,4 +1083,4 @@ npm run dev > debug.log 2>&1
 
 **Last Updated:** February 2026  
 **Maintained by:** Development Team  
-**Need more help?** See `README.md` or contact team@wear-run.com
+**Need more help?** See `README.md` or contact <team@wear-run.com>

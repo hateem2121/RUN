@@ -18,6 +18,7 @@ This plan outlines the comprehensive QA validation approach for verifying that t
 ### 1.1 Manufacturing Page (`client/app/routes/manufacturing.tsx`)
 
 **Components Identified:**
+
 - `PublicHeroSection` - Hero with word-by-word scroll-trigger reveal
 - `MarqueeStrip` - Ticker/marquee after hero with amber accent
 - `PublicProcessSection` - **Horizontal scroll-locked journey** with Lock/Unlock toggle
@@ -28,6 +29,7 @@ This plan outlines the comprehensive QA validation approach for verifying that t
 - `CallToAction` - CTA section
 
 **Key Implementation Details:**
+
 - Dark mode background: `bg-[#0A0A0A]`
 - Amber accent: `#D4A853` via CSS classes
 - Scroll-lock: GSAP ScrollTrigger with "Sticky View" / "Release Scroll" buttons
@@ -38,6 +40,7 @@ This plan outlines the comprehensive QA validation approach for verifying that t
 ### 1.2 Technology Page (`client/app/routes/technology.tsx`)
 
 **Components Identified:**
+
 - `GradientBlinds` - WebGL gradient background for hero
 - `InteractiveExperienceSection` - **Dedicated 3D model section** (NOT in hero)
 - `TechnologyStackSection` - Consolidated innovations + equipment
@@ -45,6 +48,7 @@ This plan outlines the comprehensive QA validation approach for verifying that t
 - `MarqueeStrip` - Ticker with cyan accent
 
 **Key Implementation Details:**
+
 - Cyan accent: `#00D4FF` consistently applied
 - 3D model moved to dedicated "Interactive Experience" section
 - Framed container with instructions and controls
@@ -54,6 +58,7 @@ This plan outlines the comprehensive QA validation approach for verifying that t
 ### 1.3 Sustainability Page (`client/app/routes/sustainability.tsx`)
 
 **Components Identified:**
+
 - `HeroSection` - GSAP word-by-word reveal
 - `CertificatesSection` - **Interactive logo wall** with hexagonal cards
 - `FabricPortfolioSection` - Horizontal showcase with interaction
@@ -61,6 +66,7 @@ This plan outlines the comprehensive QA validation approach for verifying that t
 - `InitiativesSection` - Initiatives display
 
 **Key Implementation Details:**
+
 - Emerald accent: `#00C97B` consistently applied
 - Certifications: Hexagonal cards with hover reveal + floating detail card
 - Dark mode background: `bg-[#0A0A0A]`
@@ -105,33 +111,39 @@ flowchart TD
 ### 4.1 Common Checks (All Pages)
 
 #### Dark Mode Consistency
+
 - [ ] Backgrounds truly dark (no random light sections)
 - [ ] Text contrast readable (no grey-on-grey)
 - [ ] Cards use consistent glass style
 - [ ] Accent colors visible against dark backgrounds
 
 #### Motion Correctness
+
 - [ ] Scroll-trigger reveals trigger at sensible times
 - [ ] No jitter/re-trigger on scroll
 - [ ] Hover states exist for cards/buttons (lift + accent glow)
 - [ ] Marquee/ticker present where designed; smooth movement
 
 #### Usability
+
 - [ ] Buttons look clickable with hover + focus states
 - [ ] Sections are scannable (clear headings, spacing, hierarchy)
 - [ ] Mobile: interactions degrade gracefully
 - [ ] No broken scroll, no overlapping UI
 
 #### CMS Resilience
+
 - [ ] Sections render with variable counts (0, 1, many)
 - [ ] Empty states are graceful (no blank dead zones)
 
 #### Page Transitions
+
 - [ ] Transition animations run between pages
 - [ ] Scroll position doesn't jump incorrectly
 - [ ] Locomotive integration doesn't double-init
 
 #### No Regressions
+
 - [ ] Home page unchanged visually & functionally
 - [ ] About page unchanged visually & functionally
 - [ ] Contact page unchanged visually & functionally
@@ -186,12 +198,15 @@ flowchart TD
 ## 5. Artifacts to Produce
 
 ### 5.1 QA Checklist Results (Markdown)
+
 - Pass/fail status for each line item
 - Evidence references (screenshot/video timestamps)
 - Notes on partial passes
 
 ### 5.2 UI Proof Pack
+
 **Desktop Screenshots (1440px):**
+
 - `manufacturing-desktop-baseline.png`
 - `manufacturing-desktop-dark.png`
 - `technology-desktop-baseline.png`
@@ -200,24 +215,30 @@ flowchart TD
 - `sustainability-desktop-dark.png`
 
 **Mobile Screenshots (375px):**
+
 - `manufacturing-mobile-baseline.png`
 - `technology-mobile-baseline.png`
 - `sustainability-mobile-baseline.png`
 
 ### 5.3 Interaction Proof Pack
+
 **Browser Recordings:**
+
 - `manufacturing-interaction.webm` - Marquee + reveal + hover + scroll-lock
 - `technology-interaction.webm` - Hero + 3D interaction + timeline
 - `sustainability-interaction.webm` - Hero + certifications hover + fabric portfolio
 - `manufacturing-scroll-lock.webm` - Dedicated scroll-lock journey demo
 
 ### 5.4 Legacy Replacement Report
+
 - Components/behaviors replaced
 - Components/behaviors kept (with rationale)
 - Usability regressions found + fix status
 
 ### 5.5 Scorecard
+
 **Scoring Categories (Total /100):**
+
 | Category | Weight | Criteria |
 |----------|--------|----------|
 | Visual fidelity to intended design | 25 | Accent colors, dark mode, layout |
@@ -228,6 +249,7 @@ flowchart TD
 | Accessibility basics | 10 | Focus states, keyboard nav |
 
 **PASS/FAIL Gate:**
+
 - FAIL if any critical gate requirement missing
 - PASS requires score ≥ 70/100 AND all gates passed
 
@@ -236,25 +258,30 @@ flowchart TD
 ## 6. Execution Steps
 
 ### STEP 1: Baseline Snapshot
+
 1. Start dev server on port 5002
 2. Open each page in browser
 3. Capture desktop screenshot (1440px)
 4. Record 15-25s video scrolling hero to CTA
 
 ### STEP 2: Functional Build Verification
+
 1. Run `npm run typecheck`
 2. Run `npm run build`
 3. Open browser console on each page
 4. Verify NO console errors on load, scroll, hover, route transitions
 
 ### STEP 3: Page-by-Page Verification
+
 Use Browser Sub-Agent to:
+
 1. Navigate to each page
 2. Execute checklist items
 3. Capture evidence (screenshots/videos)
 4. Document pass/fail status
 
 ### STEP 4: Legacy Replacement Check
+
 1. Compare against known legacy patterns
 2. Verify no CMS data surfaces removed
 3. Verify no CTA pathways removed
@@ -262,6 +289,7 @@ Use Browser Sub-Agent to:
 5. Test mobile usability
 
 ### STEP 5: Fix What Fails
+
 1. Create Fix Plan artifact
 2. Implement fixes
 3. Re-verify affected items

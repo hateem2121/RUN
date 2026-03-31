@@ -17,6 +17,7 @@
 ## 2. The 8-Step Agentic Sprint
 
 All work must follow this cycle:
+
 1. **Think**: `/office-hours`, `/brainstorming`
 2. **Plan**: `/plan-ceo-review`, `/plan-eng-review`, `/plan-design-review`
 3. **Build**: Execution via B.L.A.S.T. protocol

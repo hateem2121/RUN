@@ -18,6 +18,7 @@ We strictly support **GLB (Binary glTF)** and **glTF (JSON)**.
 | **glTF** | `.gltf` + `.bin` | ⚠️ Dev Only | Debugging structure. Avoid in production due to multiple requests. |
 
 ### Technical constraints
+
 - **Textures**: Embedded in GLB or relative paths in glTF.
 - **Draco Compression**: Supported and recommended for high-poly models.
 - **Max File Size**: Target **< 5MB** for mobile performance. Warns > 20MB.
@@ -48,6 +49,7 @@ export function ProductShowcase({ asset }: { asset: MediaAsset }) {
 ```
 
 ### Key Features
+
 - **Lazy Loading**: Uses `IntersectionObserver` to load models only when visible in the viewport.
 - **Error Boundaries**: Automates recovery from WebGL context loss or network failures.
 - **Smart Retries**: Exponential backoff for failed loads (Configurable via `ModelViewerErrorConfig`).
@@ -86,18 +88,23 @@ import { MODEL_VIEWER_PRESETS } from "@/lib/model-viewer-config";
 All assets should pass through optimization before upload.
 
 ### Recommended Tools
-1.  **gltf-transform** (CLI): Best for scripting.
+
+1. **gltf-transform** (CLI): Best for scripting.
+
     ```bash
     # Resize textures to 1024px and use KTX2 compression
     gltf-transform resize input.glb output.glb --width 1024 --height 1024
     ```
-2.  **glTF Pipeline**:
+
+2. **glTF Pipeline**:
+
     ```bash
     # Apply Draco compression
     gltf-pipeline -i input.glb -o output.glb --draco.compressionLevel 7
     ```
 
 ### Performance Budgets
+
 - **Geometry**: < 100k triangles.
 - **Textures**: Max 2048x2048 for Hero, 1024x1024 for listings.
 - **Draw Calls**: < 50 per model (merge meshes where possible).
@@ -108,14 +115,14 @@ All assets should pass through optimization before upload.
 
 ### Common Issues
 
-1.  **"WebGL Context Lost"**
-    *   **Cause**: Too many active contexts (browser limit usually ~16) or tab backgrounding.
-    *   **Fix**: `UnifiedModelViewer` handles this automatically via `handleWebGLRecovery`.
+1. **"WebGL Context Lost"**
+    - **Cause**: Too many active contexts (browser limit usually ~16) or tab backgrounding.
+    - **Fix**: `UnifiedModelViewer` handles this automatically via `handleWebGLRecovery`.
 
-2.  **Texture Artifacts**
-    *   **Cause**: Incompatible compression (e.g., standard JPEG/PNG vs KTX2).
-    *   **Fix**: Ensure client supports the extensions used in the GLB.
+2. **Texture Artifacts**
+    - **Cause**: Incompatible compression (e.g., standard JPEG/PNG vs KTX2).
+    - **Fix**: Ensure client supports the extensions used in the GLB.
 
-3.  **Loading Stalls**
-    *   **Cause**: Large file size or valid CORS headers missing.
-    *   **Fix**: Check `verify-assets.ts` (future) or verify CDN CORS headers.
+3. **Loading Stalls**
+    - **Cause**: Large file size or valid CORS headers missing.
+    - **Fix**: Check `verify-assets.ts` (future) or verify CDN CORS headers.

@@ -10,6 +10,7 @@
 ## Context
 
 We needed a modern React framework for building a B2B e-commerce platform with:
+
 - Server-side rendering (SSR) for SEO and performance
 - Type-safe routing
 - Excellent developer experience
@@ -38,12 +39,14 @@ We chose **React 19 with React Router 7** (formerly Remix) over Next.js.
 ## Consequences
 
 ### Positive
+
 - Full control over server infrastructure
 - Standard Express middleware compatibility
 - Excellent TypeScript integration
 - React 19 concurrent features available
 
 ### Negative
+
 - Smaller community than Next.js
 - Fewer tutorials and examples
 - Must manage SSR configuration ourselves

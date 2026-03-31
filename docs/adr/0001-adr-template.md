@@ -15,11 +15,13 @@ We will use the MADR (Markdown Any Decision Records) format for all ADRs.
 ## Consequences
 
 ### Positive
+
 - Consistent documentation format
 - Easy to read and maintain
 - Git-trackable decision history
 
 ### Negative
+
 - Overhead of creating records for each decision
 
 ## Template

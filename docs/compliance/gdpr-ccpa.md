@@ -3,13 +3,14 @@
 **Status**: Active  
 **Version**: 1.0  
 **Last Updated**: January 2026  
-**Data Protection Officer**: dpo@runapparel.com *(Pending assignment - contact security@runapparel.com)*
+**Data Protection Officer**: <dpo@runapparel.com> *(Pending assignment - contact <security@runapparel.com>)*
 
 ---
 
 ## Overview
 
 This document outlines how the RUN Apparel B2B Platform complies with:
+
 - **GDPR** (General Data Protection Regulation) - EU
 - **CCPA** (California Consumer Privacy Act) - California, USA
 
@@ -122,6 +123,7 @@ This document outlines how the RUN Apparel B2B Platform complies with:
 ## Breach Notification Procedures
 
 ### Detection
+
 - Sentry alerting for anomalous errors
 - Cloud Audit logs for access monitoring
 - Weekly security review
@@ -135,6 +137,7 @@ This document outlines how the RUN Apparel B2B Platform complies with:
 | Data subjects | "Without undue delay" | < 72 hours |
 
 ### Incident Response
+
 See: [docs/runbooks/incident-response.md](../runbooks/incident-response.md)
 
 ---

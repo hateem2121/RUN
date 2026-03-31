@@ -1,4 +1,5 @@
 # Error Handling Audit Report: RUN APPAREL System
+
 **Date:** 2026-02-09  
 **Auditor:** Antigravity AI Agent  
 **System Version:** Production (v1.0.0-audit)
@@ -10,6 +11,7 @@
 This audit provides a comprehensive evaluation of the RUN APPAREL error handling landscape across React 19, Express 5, and Node.js 24 layers. The system demonstrates a high degree of maturity, particularly in its adherence to **RFC 7807 (Problem Details)** for API errors and its robust **AppError hierarchy** on the backend.
 
 ### Key Findings
+
 - **Strengths:** Centralized backend error classification, comprehensive frontend Error Boundaries (Media, 3D, Auth), and a sophisticated localstorage-based client-side error queuing system.
 - **Critical Gaps:** Lack of modern TypeScript **error chaining (`cause`)**, inconsistent usage of `unknown` in catch blocks (some legacy `any` remains), and partial coverage of 3D model specific WebGL context loss recovery.
 - **Overall Health Score: 84/100**. The system is production-ready but requires minor modernization to meet 2026 enterprise-grade standards.
@@ -55,6 +57,7 @@ flowchart TB
 ```
 
 ### Analysis
+
 - **Strengths:** Excellent separation of concerns between operational and programmer errors.
 - **Weaknesses:** Error propagation from services to routes is sometimes manual via `try/catch`, missing the native Express 5 async handler capabilities in some legacy routes.
 
@@ -63,6 +66,7 @@ flowchart TB
 ## 2. Frontend Error Handling Analysis (React 19)
 
 ### 2.1 Error Boundaries
+
 The frontend uses a granular Error Boundary strategy, isolating failures in high-risk areas like 3D models and manufacturing dashboards.
 
 ```mermaid
@@ -88,6 +92,7 @@ flowchart TD
 ```
 
 ### 2.2 API Call Error Handling
+
 The client implements a dual-layer fetch wrapper (`apiRequest` and `fetchWithTimeout`) with automatic retry logic for transient failures (429, 503).
 
 ```mermaid
@@ -114,6 +119,7 @@ sequenceDiagram
 ```
 
 ### 2.3 State Management Errors
+
 Application states are managed with explicit error flags, ensuring the UI doesn't hang.
 
 ```mermaid
@@ -134,9 +140,11 @@ stateDiagram-v2
 ## 3. Backend Error Handling Analysis (Express 5)
 
 ### 3.1 Route Error Handling
+
 Express 5 native async support is leveraged to eliminate common `try/catch` boilerplate, though inconsistencies exist in newer modules.
 
 ### 3.2 Custom Error Classes
+
 A robust inheritance hierarchy ensures consistent status codes and error grouping.
 
 ```mermaid
@@ -201,6 +209,7 @@ flowchart LR
 ## 6. Code Examples for Critical Fixes
 
 ### Example 1: Modern Error Chaining (2026 Standard)
+
 ```typescript
 // server/services/manufacturing.ts
 try {
@@ -215,6 +224,7 @@ try {
 ```
 
 ### Example 2: Global Error Boundary (React 19)
+
 ```typescript
 // client/app/components/ErrorBoundary.tsx
 export function GlobalErrorBoundary({ children }: { children: React.ReactNode }) {
@@ -237,10 +247,12 @@ export function GlobalErrorBoundary({ children }: { children: React.ReactNode })
 ## 7. Implementation Roadmap
 
 ### Phase 1: Critical Stability (Immediate)
+
 - [ ] Implement `cause` property in `AppError` base class ([errors.ts](file:///Users/hateemjamshaid/Documents/RUN-Remix/server/lib/errors.ts))
 - [ ] Audit and remove all manual `try/catch` from Express 5 routes ([server/routes/](file:///Users/hateemjamshaid/Documents/RUN-Remix/server/routes/))
 
 ### Phase 2: User Experience (Short-term)
+
 - [ ] Enhance [UnifiedModelViewer.tsx](file:///Users/hateemjamshaid/Documents/RUN-Remix/client/app/components/ui/UnifiedModelViewer.tsx) with automatic WebGL restoration
 - [ ] Standardize [ApiError](file:///Users/hateemjamshaid/Documents/RUN-Remix/client/app/lib/api.ts) mapping for consistent toast notifications
 
@@ -249,6 +261,7 @@ export function GlobalErrorBoundary({ children }: { children: React.ReactNode })
 ## Appendix: Mermaid Diagram Source Code
 
 ### Diagram 1: System Architecture
+
 ```mermaid
 flowchart TB
     User([User Interaction]) --> Frontend[React 19 UI]

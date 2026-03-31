@@ -98,6 +98,7 @@ RUN Remix v3.0.0 demonstrates strong foundational architecture with correct tech
 ### Verification Script Outputs
 
 #### `npm run verify-port` Output
+
 ```
 > run-remix-monorepo@3.0.0 verify-port
 > node scripts/verify-port-5002.js
@@ -111,6 +112,7 @@ Warnings:
 ```
 
 #### `npm run verify:tech-integrity` Output
+
 ```
 > run-remix-monorepo@3.0.0 verify:tech-integrity
 > tsx scripts/verify-tech-integrity.ts
@@ -124,18 +126,21 @@ SEVERITY: 🔴 Critical (C3) — blocks all automated verification.
 ```
 
 #### `npm run lint` Output
+
 ```
 BLOCKED — node_modules absent. Biome binary not installed.
 Manual source analysis completed across all 14 audit domains.
 ```
 
 #### `npm run typecheck` Output
+
 ```
 BLOCKED — node_modules absent. tsc binary not installed.
 Manual type analysis completed; 10+ any violations identified (see H1).
 ```
 
 #### `npm run test` Coverage Summary
+
 ```
 BLOCKED — node_modules absent. Vitest binary not installed.
 Test file inventory completed manually (see Domain 11 findings).
@@ -243,16 +248,19 @@ Test file inventory completed manually (see Domain 11 findings).
 **Status:** B6 ✅ · D3 ✅ · Phase E ✅ — All April 2026 audit items closed
 
 #### B6 — noExplicitAny enforcement
+
 - `biome.json`: `"noExplicitAny": "error"`, `"noImplicitAnyLet": "error"` enabled
 - 51 violations fixed in root `tests/` workspace (prior agents scoped to `server/` + `client/`, missing `tests/` workspace)
 - Key files: `tests/unit/repositories/media-repository.test.ts` (12), `user-repository.test.ts` (7), `tests/unit/services/auth-service.test.ts` (12), `unified-cache.test.ts` (2), `tests/integration/contract-compliance.test.ts`, `crash.test.ts`, `media-reliability.test.ts`, `slow-query.test.ts`, `tests/setup.ts`, `tests/technology/innovation-management.test.tsx`
 - Pattern: `as any` → `as unknown as ConcreteType`; explicit Express `Request`/`Response` type imports for mocks
 
 #### D3 — Migration history
+
 - `docs/core/sops/SOP_MIGRATE.md`: 5 stale path occurrences (`drizzle/migrations/` → `server/migrations/`) corrected
 - `server/migrations/` (6 SQL files + meta/ + schema.ts + relations.ts) + `server/drizzle.config.ts` staged in git
 
 #### Phase E — framer-motion → GSAP (73 files, 7 sprints)
+
 - **E-1** (8 files): Type-only import stripping — `Transition`, `MotionConfig`, `Variants`, `MotionStyle`, `PanInfo`, `MotionProps` replaced with local TS types
 - **E-2** (22 files): Simple entrance — `motion.div` with `initial/animate/transition` → `useRef + useGSAP(() => gsap.from())` pattern; stagger via `.card` class selectors
 - **E-3** (19 files): AnimatePresence/exit — `shouldRender` state + `useEffect` + `gsap.to({ onComplete: () => setShouldRender(false) })` pattern
@@ -262,6 +270,7 @@ Test file inventory completed manually (see Domain 11 findings).
 - **E-7**: Package removal — `"framer-motion"` removed from `client/package.json` + `client/vite.config.ts` manual chunks; `npm install` run; 0 imports remaining
 
 **Incidental fixes during E-7 verification:**
+
 - `resources.tsx`: dangling `</motion.div>` closing tag → `</div>` (E-2 agent partial migration)
 - `DesignShowcase.tsx`: missed by grep, migrated inline
 - 4 files with `// import { motion }` commented lines removed via sed
@@ -269,6 +278,7 @@ Test file inventory completed manually (see Domain 11 findings).
 - `InquiryModal.tsx`: `useExhaustiveDependencies` fixed with `--unsafe`
 
 #### Final Lint Status (2026-03-28)
+
 - Errors: **0**
 - Warnings: **6** — all pre-existing `noDangerouslySetInnerHtml` in Footer.tsx, ProductionBlueprint.tsx, PublicHeroSection.tsx, root.tsx, manufacturing.tsx
 
@@ -298,17 +308,20 @@ A follow-up deep-dive pass should be scheduled after **Critical issues C1–C3 a
 ## Server Startup (Previous Session)
 
 ## Port Configuration
+
 - Root `package.json` suggests `dev:server` and `dev:client` are separate, but `server/server.ts` unifies them.
 - `server/package.json` `dev` script: `PORT=5002 tsx watch index.ts` (root-level index).
 - `client/vite.config.ts`: Confirms Vite runs in middleware mode, controlled by Express on port 5002.
 - **Conflict Resolved**: The configuration is intentional. `npm run dev:server` initiates both services.
 
 ## Environment Validation
+
 - `server/env.schema.ts` requirements: `DATABASE_URL`, `GOOGLE_CLIENT_ID/SECRET`, `SESSION_SECRET`.
 - `.env` status: All required variables are present and valid.
 - Database: Neon Postgres connection string is configured.
 
 ## Next Steps
+
 - Execute `npm run kill:all` to clear any ghost processes.
 - Start the unified dev environment via `npm run dev:server`.
 
@@ -473,6 +486,7 @@ RUN Remix v3.0.0 has made meaningful progress since the March 2026 audit: Port 5
 ### Verification Script Outputs
 
 #### `npm run verify-port`
+
 ```
 > run-remix-monorepo@3.0.0 verify-port
 > node scripts/verify-port-5002.js
@@ -481,11 +495,13 @@ RUN Remix v3.0.0 has made meaningful progress since the March 2026 audit: Port 5
 
 ✅ Port 5002 Compliance Verified.
 ```
+
 **Result: PASS ✅ — Zero warnings. Improved from prior audit.**
 
 ---
 
 #### `npm run verify:tech-integrity`
+
 ```
 EXIT CODE: 1
 
@@ -512,11 +528,13 @@ server workspace (primary):
   api-utilities.ts:106,159 — TS2769/TS2345
   memory-storage.ts:738,878 — TS2322/TS2416
 ```
+
 **Result: FAIL 🔴 — PRODUCTION DEPLOY BLOCKED per Protocol 0.**
 
 ---
 
 #### `npm audit` Summary
+
 ```
 25 vulnerabilities (6 low, 7 moderate, 10 high, 2 critical)
 
@@ -535,6 +553,7 @@ High (10):
 ---
 
 #### `npm run build` Output
+
 ```
 [NOT RUN — build skipped per read-only audit protocol. With 35 typecheck errors,
 the tsc -b stage would fail. Vite bundle sizes cannot be captured in this state.
@@ -544,23 +563,28 @@ See C1 for remediation path. Run npm run build:analyze after typecheck is restor
 ---
 
 #### `npm run lint` (Biome 2.3.10)
+
 ```
 Checked 1177 files in 213ms. No fixes applied.
 Found 6 warnings. (all noDangerouslySetInnerHtml — expected inline <style>/<script> patterns)
 ```
+
 **Result: PASS ✅**
 
 ---
 
 #### `npm run typecheck`
+
 ```
 EXIT CODE: 1 — 35 errors across both workspaces. See verify:tech-integrity output above.
 ```
+
 **Result: FAIL 🔴**
 
 ---
 
 #### `npm run test` Coverage Summary
+
 ```
 Test Files:  58 failed | 33 passed | 2 skipped  (93 total)
 Tests:       51 failed | 385 passed | 11 skipped (447 total)
@@ -582,6 +606,7 @@ Tertiary failure:
 Coverage: INDETERMINATE — 62% test file failure rate.
 Services coverage target (80%+): CANNOT BE VERIFIED.
 ```
+
 **Result: FAIL 🔴**
 
 ---
@@ -656,4 +681,5 @@ Services coverage target (80%+): CANNOT BE VERIFIED.
 #### Final Recommendation
 
 A **focused remediation sprint is required before the next production deploy** — the four Critical findings (TypeScript regression, `/resources` runtime crash, Express 5 try/catch residue, and test suite collapse at 62% failure rate) represent compounding risk where each one individually blocks confident deployment, and together they mean the codebase cannot be reliably built, tested, or operated. The **three highest-priority sub-domains for immediate deep investigation after the remediation sprint** are: **(1) Vite bundle analysis** — blocked by C1, must verify chunk sizes after removing `three` and cleaning dead chunk config; **(2) E2E + accessibility suite** — blocked by C4, the 385 passing tests cannot be trusted without knowing what the 51 failing tests were covering; and **(3) CORS production restoration** — H2 must be resolved urgently as commented-out origin headers mean any cross-origin API call (webhooks, CDN-served assets, external integrations) silently fails in the live environment. Fixes 1–5 in the remediation queue are all Simple tasks that can restore the build to a deployable state within a single focused session.
+
 - Run health checks and tech integrity verification.

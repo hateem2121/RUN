@@ -145,6 +145,7 @@ npm ci
 | **Visual** | Playwright | `npm run test:e2e:visual` | Regression guardrails |
 
 ### Core Invariants
+
 - **SSR Hydration**: Verified via `tests/unit/ssr/invariants.test.ts`.
 - **Z-Index Tokens**: Enforced by Biome and visual regression.
 - **Router Purity**: Verified by `npm run check:router`.

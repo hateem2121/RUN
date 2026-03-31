@@ -8,6 +8,7 @@
 **Outcome:** Complete — full report in `findings.md` § Architecture Audit — April 2026 (Second Pass)
 
 **Investigation Order:**
+
 1. Read `gemini.md`, `task_plan.md`, `findings.md` (prior audit context)
 2. Updated `task_plan.md` with new audit task (IN_PROGRESS)
 3. Ran `npm run verify-port` → ✅ PASS (zero warnings)
@@ -21,6 +22,7 @@
 11. Assembled 23-domain report with health scores, findings tables, verification outputs, risk heatmap, remediation queue, deep investigation self-assessment
 
 **Key Decisions:**
+
 - Build (`npm run build`) not run — typecheck must pass first per audit protocol
 - All investigation read-only — no source modifications
 - 4 Critical findings identified: TypeScript regression, runtime crash on /resources, Express 5 try/catch residue, 62% test failure rate
@@ -33,6 +35,7 @@
 **Outcome:** Complete — report in `findings.md` § Architecture Audit — April 2026
 
 ### What Was Done
+
 - Read `gemini.md` and `CLAUDE.md` to re-internalize constitutional rules
 - Ran `npm run verify-port` — PASSED (1 warning)
 - Attempted `npm run verify:tech-integrity` — BLOCKED (no node_modules at root → Critical C3)
@@ -43,11 +46,13 @@
 - Created `progress.md` (this file) and `docs/core/sops/SOP_ARCHITECTURE_AUDIT.md`
 
 ### Key Decisions
+
 - Audit conducted in read-only mode — no production code modified
 - Script-based verification blocked by missing `node_modules`; documented as C3
 - Admin parity finding raised as Medium (not Critical) — generic `admin.$module` pattern may be intentional
 
 ### Open Items
+
 See `task_plan.md` § Immediate Next Actions for full remediation list
 
 ---

@@ -24,24 +24,28 @@ k6 cloud ops/load-testing/baseline.js
 ## Test Scenarios
 
 ### 1. Baseline Test (Daily)
+
 - **File:** `ops/load-testing/baseline.js`
 - **Duration:** 5 minutes
 - **VUs:** 10-50 ramping
 - **Purpose:** Establish performance baseline
 
 ### 2. Peak Load Test (Weekly)
+
 - **File:** `ops/load-testing/peak.js`
 - **Duration:** 15 minutes
 - **VUs:** 100-500 ramping
 - **Purpose:** Verify peak traffic handling
 
 ### 3. Soak Test (Monthly)
+
 - **File:** `ops/load-testing/soak.js`
 - **Duration:** 1 hour
 - **VUs:** 50 constant
 - **Purpose:** Detect memory leaks, connection pool exhaustion
 
 ### 4. Spike Test (Quarterly)
+
 - **File:** `ops/load-testing/spike.js`
 - **Duration:** 10 minutes
 - **VUs:** 50 → 500 → 50 (sudden spike)

@@ -30,6 +30,7 @@ This plan outlines the specific improvements needed to elevate the RUN Remix arc
 ### 1. Testing Strategy (88 → 100)
 
 **Current Gaps:**
+
 - No actual coverage metrics displayed in documentation
 - Test organization does not fully mirror source structure
 - Missing coverage thresholds in vitest configuration
@@ -37,8 +38,10 @@ This plan outlines the specific improvements needed to elevate the RUN Remix arc
 **Required Actions:**
 
 #### 1.1 Add Coverage Thresholds to Vitest Config
+
 - **File:** `client/vitest.config.ts`
 - **Change:** Add coverage thresholds matching documentation claims
+
 ```typescript
 coverage: {
   provider: 'v8',
@@ -57,6 +60,7 @@ coverage: {
 ```
 
 #### 1.2 Create Coverage Report Documentation
+
 - **File:** `docs/development/coverage-report.md` (new)
 - **Content:** Document actual coverage metrics by module:
   - Services layer coverage
@@ -65,8 +69,10 @@ coverage: {
   - Hooks coverage
 
 #### 1.3 Reorganize Tests to Mirror Source
+
 - **Current:** `server/test/` and `server/tests/` exist separately
 - **Target:** Consolidate to `server/tests/` with structure mirroring source
+
 ```
 server/tests/
 ├── unit/
@@ -84,6 +90,7 @@ server/tests/
 ### 2. Accessibility Standards (89 → 100)
 
 **Current Gaps:**
+
 - No automated accessibility testing in CI/CD
 - axe-core integration missing
 - No accessibility audit documentation
@@ -91,8 +98,10 @@ server/tests/
 **Required Actions:**
 
 #### 2.1 Add axe-core Integration
+
 - **File:** `client/package.json`
 - **Add dependencies:**
+
 ```json
 {
   "devDependencies": {
@@ -103,20 +112,24 @@ server/tests/
 ```
 
 #### 2.2 Create Accessibility Test Setup
+
 - **File:** `client/tests/accessibility/setup.ts` (new)
 - **Content:** Configure axe-core for automated testing
 
 #### 2.3 Add Accessibility Test Utilities
+
 - **File:** `client/tests/accessibility/axe-helpers.ts` (new)
 - **Content:** Helper functions for accessibility assertions
 
 #### 2.4 Create Playwright Accessibility Tests
+
 - **File:** `e2e/accessibility.spec.ts` (new)
 - **Content:** E2E accessibility tests for critical pages
 
 #### 2.5 Document Accessibility Testing
+
 - **File:** `docs/development/accessibility.md` (new)
-- **Content:** 
+- **Content:**
   - WCAG AA compliance checklist
   - axe-core usage guide
   - Keyboard navigation testing procedures
@@ -127,6 +140,7 @@ server/tests/
 ### 3. Directory Structure (90 → 100)
 
 **Current Gaps:**
+
 - Server has 17 subdirectories with redundancy
 - `utils/` and `lib/` serve similar purposes
 - `test/` and `tests/` both exist
@@ -135,18 +149,22 @@ server/tests/
 **Required Actions:**
 
 #### 3.1 Consolidate Server Utility Directories
+
 - **Merge:** `server/utils/` → `server/lib/`
 - **Rationale:** Single location for utility functions
 - **Files affected:** All imports referencing `../utils/`
 
 #### 3.2 Consolidate Test Directories
+
 - **Merge:** `server/test/` → `server/tests/`
 - **Rationale:** Single location for all tests
 - **Files affected:** Test configuration and imports
 
 #### 3.3 Modularize Admin Components
+
 - **Current:** Single large `admin/` directory
 - **Target:** Sub-modules by feature domain
+
 ```
 client/app/components/admin/
 ├── products/           # Product management module
@@ -166,6 +184,7 @@ client/app/components/admin/
 ```
 
 #### 3.4 Update Architecture Documentation
+
 - **File:** `docs/core/architecture.md`
 - **Update:** Reflect consolidated directory structure
 
@@ -174,6 +193,7 @@ client/app/components/admin/
 ### 4. Performance Optimization (90 → 100)
 
 **Current Gaps:**
+
 - No Core Web Vitals monitoring documented
 - Performance budget not defined
 - No performance dashboard integration
@@ -181,8 +201,10 @@ client/app/components/admin/
 **Required Actions:**
 
 #### 4.1 Add Core Web Vitals Monitoring
+
 - **File:** `client/app/lib/performance.ts` (new)
 - **Content:** Web Vitals measurement and reporting
+
 ```typescript
 export function reportWebVitals(metric: Metric) {
   const body = {
@@ -201,6 +223,7 @@ export function reportWebVitals(metric: Metric) {
 ```
 
 #### 4.2 Define Performance Budget
+
 - **File:** `docs/development/performance-budget.md` (new)
 - **Content:**
   - LCP: < 2.5s
@@ -210,12 +233,15 @@ export function reportWebVitals(metric: Metric) {
   - Image size guidelines
 
 #### 4.3 Add Performance Monitoring Component
+
 - **File:** `client/app/components/debug/PerformanceMonitor.tsx` (new)
 - **Content:** Development-only performance tracking overlay
 
 #### 4.4 Update Vite Config for Performance
+
 - **File:** `client/vite.config.ts`
 - **Add:** Bundle analysis and chunk size warnings
+
 ```typescript
 build: {
   rollupOptions: {
@@ -234,6 +260,7 @@ build: {
 ### 5. Documentation Quality (94 → 100)
 
 **Current Gaps:**
+
 - Architecture health claims 100% across all categories - unrealistic
 - No actual metrics backing health scores
 - SDK workspace not documented
@@ -241,8 +268,10 @@ build: {
 **Required Actions:**
 
 #### 5.1 Update Architecture Health Metrics
+
 - **File:** `docs/core/architecture.md`
 - **Replace:** 100% claims with actual measured metrics
+
 ```markdown
 ## Architecture Health
 
@@ -256,6 +285,7 @@ build: {
 ```
 
 #### 5.2 Document SDK Workspace
+
 - **File:** `docs/core/sdk-workspace.md` (new)
 - **Content:**
   - SDK package purpose and structure
@@ -264,8 +294,10 @@ build: {
   - Integration with client/server
 
 #### 5.3 Create Dependency Graph
+
 - **File:** `docs/core/dependency-graph.md` (new)
 - **Content:** Mermaid diagram showing package relationships
+
 ```mermaid
 graph TD
     Client --> Shared
@@ -282,6 +314,7 @@ graph TD
 ### 6. Security Implementation (92 → 100)
 
 **Current Gaps:**
+
 - CSRF protection not documented
 - Security headers not explicitly listed
 - No disaster recovery documentation
@@ -289,6 +322,7 @@ graph TD
 **Required Actions:**
 
 #### 6.1 Document CSRF Protection
+
 - **File:** `docs/security/csrf-protection.md` (new)
 - **Content:**
   - CSRF token implementation details
@@ -296,6 +330,7 @@ graph TD
   - Client-side integration guide
 
 #### 6.2 Document Security Headers
+
 - **File:** `docs/security/headers.md` (new)
 - **Content:**
   - Content-Security-Policy configuration
@@ -305,6 +340,7 @@ graph TD
   - Referrer-Policy
 
 #### 6.3 Create Security Middleware Documentation
+
 - **File:** `docs/security/middleware.md` (new)
 - **Content:**
   - Authentication flow
@@ -317,6 +353,7 @@ graph TD
 ### 7. Infrastructure Resilience (New Category)
 
 **Current Gaps:**
+
 - No disaster recovery documentation
 - Multi-region deployment not documented
 - Backup procedures not documented
@@ -324,6 +361,7 @@ graph TD
 **Required Actions:**
 
 #### 7.1 Create Disaster Recovery Plan
+
 - **File:** `docs/infrastructure/disaster-recovery.md` (new)
 - **Content:**
   - RTO/RPO definitions
@@ -332,6 +370,7 @@ graph TD
   - Contact escalation matrix
 
 #### 7.2 Document Multi-Region Deployment
+
 - **File:** `docs/infrastructure/multi-region.md` (new)
 - **Content:**
   - Current regions: us-central1, europe-west1
@@ -340,6 +379,7 @@ graph TD
   - CDN configuration
 
 #### 7.3 Create Runbook
+
 - **File:** `docs/infrastructure/runbook.md` (new)
 - **Content:**
   - Common operational procedures
@@ -352,33 +392,38 @@ graph TD
 ## Implementation Order
 
 ### Phase 1: Foundation (Critical)
+
 1. Add coverage thresholds to vitest config
 2. Consolidate `test/` and `tests/` directories
 3. Update architecture health metrics with real data
 4. Document SDK workspace
 
 ### Phase 2: Quality Assurance
-5. Integrate axe-core for accessibility testing
-6. Create accessibility testing documentation
-7. Add Core Web Vitals monitoring
-8. Define performance budget
+
+1. Integrate axe-core for accessibility testing
+2. Create accessibility testing documentation
+3. Add Core Web Vitals monitoring
+4. Define performance budget
 
 ### Phase 3: Organization
-9. Consolidate `utils/` and `lib/` directories
-10. Modularize admin components
-11. Create dependency graph documentation
+
+1. Consolidate `utils/` and `lib/` directories
+2. Modularize admin components
+3. Create dependency graph documentation
 
 ### Phase 4: Security & Infrastructure
-12. Document CSRF protection
-13. Document security headers
-14. Create disaster recovery plan
-15. Document multi-region deployment
+
+1. Document CSRF protection
+2. Document security headers
+3. Create disaster recovery plan
+4. Document multi-region deployment
 
 ### Phase 5: Verification
-16. Run full test suite with coverage
-17. Run accessibility audit
-18. Verify all documentation is accurate
-19. Calculate final architecture score
+
+1. Run full test suite with coverage
+2. Run accessibility audit
+3. Verify all documentation is accurate
+4. Calculate final architecture score
 
 ---
 

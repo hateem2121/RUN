@@ -22,6 +22,7 @@ We combine **Heritage Craftsmanship** (Durus Industries, est. 1889) with **Advan
 ## ⚡ Quick Start
 
 ### 1. Developer Induction
+
 ```bash
 # Clone the factory
 git clone <repository-url>
@@ -40,7 +41,9 @@ npm run verify:tech-integrity
 ```
 
 ### 2. Invoke the Team
+
 Open Claude Code and run:
+
 - `/office-hours` — To brainstorm new product features with the CEO role.
 - `/plan-ceo-review` — To get a business-level critique of your architecture.
 - `/review` — To have a senior engineer find and fix bugs in your current branch.

@@ -21,6 +21,7 @@ All coding standards defined here MUST be cross-referenced with the architectura
 ### Port Configuration Requirements
 
 **✅ ALWAYS:**
+
 - Use port `5002` in ALL configuration files
 - Hardcode port `5002` in server initialization
 - Configure Vite dev server to port `5002` with `strictPort: true`
@@ -28,12 +29,14 @@ All coding standards defined here MUST be cross-referenced with the architectura
 - Target `http://localhost:5002` in all API calls
 
 **❌ NEVER:**
+
 - Use environment variables without default to `5002`
 - Use ports: 3000, 4000, 5000, 5001, 5003, 8080, 8000
 - Allow port to be configurable without explicit override
 - Skip port verification before deployment
 
 #### server/server.ts
+
 ```typescript
 // Port 5002 is strictly enforced in the HTTP server listener
 const PORT = process.env.PORT !== undefined ? parseInt(process.env.PORT, 10) : 5002;
@@ -43,6 +46,7 @@ httpServer.listen(PORT, () => {
 ```
 
 #### vite.config.ts
+
 ```typescript
 // Dev server optimization - Host true allows local/LAN access
 export default defineConfig({
@@ -68,6 +72,7 @@ If this command fails, **DO NOT PROCEED** until fixed.
 **No `any` types allowed.** Period.
 
 **✅ CORRECT:**
+
 ```typescript
 interface User {
   id: string;
@@ -81,12 +86,14 @@ function getUser(id: string): Promise<User> {
 ```
 
 **❌ FORBIDDEN:**
+
 ```typescript
 function getData(params: any) { } // NEVER
 const result: any = await fetch(); // NEVER
 ```
 
 ### Enforcement
+
 - `tsconfig.json` must have `"strict": true`
 - Pre-commit hook runs `tsc --noEmit`
 
@@ -97,6 +104,7 @@ const result: any = await fetch(); // NEVER
 ### No forwardRef (React 19 Native Ref Support)
 
 **✅ CORRECT:**
+
 ```typescript
 export function Input({ ref, ...props }: { ref?: Ref<HTMLInputElement> }) {
   return <input ref={ref} {...props} />;
@@ -104,6 +112,7 @@ export function Input({ ref, ...props }: { ref?: Ref<HTMLInputElement> }) {
 ```
 
 **❌ FORBIDDEN:**
+
 ```typescript
 const Input = forwardRef((props, ref) => {
   return <input ref={ref} {...props} />;
@@ -113,6 +122,7 @@ const Input = forwardRef((props, ref) => {
 ### Named Exports Only
 
 **✅ CORRECT:**
+
 ```typescript
 export function UserProfile({ userId }: Props) {
   return <div>{userId}</div>;
@@ -120,6 +130,7 @@ export function UserProfile({ userId }: Props) {
 ```
 
 **❌ FORBIDDEN:**
+
 ```typescript
 export default function UserProfile() { } // No default exports
 ```
@@ -131,6 +142,7 @@ export default function UserProfile() { } // No default exports
 Express 5 automatically handles promise rejections.
 
 **✅ CORRECT:**
+
 ```typescript
 router.get('/users', async (req, res) => {
   const users = await userService.getAll();
@@ -139,6 +151,7 @@ router.get('/users', async (req, res) => {
 ```
 
 **❌ FORBIDDEN:**
+
 ```typescript
 router.get('/users', async (req, res) => {
   try {
@@ -168,11 +181,13 @@ app.use(errorHandler);
 ## RULE #4: 3D Content - Google Model Viewer ONLY
 
 **FORBIDDEN PACKAGES:**
+
 - `@react-three/fiber`
 - `@react-three/drei`
 - `three` (unless wrapped in UnifiedModelViewer)
 
 **✅ CORRECT:**
+
 ```typescript
 import { LazyUnifiedModelViewer } from '@/components/3d/LazyUnifiedModelViewer';
 
@@ -189,6 +204,7 @@ function ProductView() {
 ```
 
 **❌ FORBIDDEN:**
+
 ```typescript
 import { useGLTF } from '@react-three/drei'; // NEVER IMPORT THIS
 ```
@@ -198,6 +214,7 @@ import { useGLTF } from '@react-three/drei'; // NEVER IMPORT THIS
 ## RULE #5: Tailwind V4 - @utility Layer for Custom CSS
 
 **✅ CORRECT:**
+
 ```css
 /* styles.css */
 @layer utilities {
@@ -208,6 +225,7 @@ import { useGLTF } from '@react-three/drei'; // NEVER IMPORT THIS
 ```
 
 **❌ FORBIDDEN:**
+
 ```css
 /* No arbitrary values in HTML classes */
 <div className="bg-[#ff0000]"> // Don't do this
@@ -238,6 +256,7 @@ const buttonVariants = cva(
 **Business logic goes in `services/`, NOT in routes.**
 
 **✅ CORRECT:**
+
 ```typescript
 // server/routes/products.ts
 router.get('/products', async (req, res) => {
@@ -257,6 +276,7 @@ export async function getAll() {
 ```
 
 **❌ FORBIDDEN:**
+
 ```typescript
 // server/routes/products.ts
 router.get('/products', async (req, res) => {
@@ -275,6 +295,7 @@ router.get('/products', async (req, res) => {
 **Mandatory 1:1 mapping between frontend and admin pages.**
 
 When creating a new public page, you MUST create:
+
 1. Public route
 2. Admin route
 3. Public API endpoint
@@ -313,16 +334,19 @@ Update `shared/constants/routeMapping.ts`:
 ## RULE #8: Testing Requirements
 
 ### Unit Tests (Vitest)
+
 - Every service function MUST have tests in `server/services/*.test.ts`.
 - Minimum 80% coverage for services.
 
 ### Integration Tests (MemoryStorage)
+
 - **Mandatory**: Every API endpoint and mutation flow MUST have an integration test.
 - **Statefulness**: Use `MemoryStorage` for multi-step verification.
 - **RBAC**: Every mutation endpoint MUST verify admin-only access using `createMockSessionUser`.
 - **v2 Preferred**: Prefer the `v2` testing pattern implemented in `server/tests/integration/*.integration.test.ts`.
 
 ### E2E Tests (Recommended)
+
 - Critical user flows (login, media upload, product configuration) using Playwright.
 
 **Run tests before committing:**
@@ -340,6 +364,7 @@ npm run test server/tests/integration/admin-v2.integration.test.ts
 ## RULE #9: File Structure Standards
 
 ### Client (Frontend)
+
 ```
 client/
 ├── app/
@@ -359,6 +384,7 @@ client/
 ```
 
 ### Server (Backend)
+
 ```
 server/
 ├── routes/
@@ -397,6 +423,7 @@ LOG_LEVEL=info
 ```
 
 ### Environment File Rules
+
 - `.env` - local development (gitignored)
 - `.env.example` - committed template (port 5002 shown)
 - `.env.production` - production secrets (gitignored)
@@ -427,6 +454,7 @@ npm run test            # Unit tests
 ```
 
 **Types:**
+
 - `feat` - New feature
 - `fix` - Bug fix
 - `docs` - Documentation only
@@ -436,6 +464,7 @@ npm run test            # Unit tests
 - `chore` - Maintenance
 
 **Examples:**
+
 ```
 feat(products): add product search functionality
 fix(admin): correct port 5002 reference in API client
@@ -447,11 +476,13 @@ docs(readme): update port 5002 configuration guide
 ## RULE #12: Security Standards
 
 ### Authentication
+
 - Admin routes MUST use `isAuthenticated` middleware
 - JWT tokens stored in httpOnly cookies
 - CSRF protection enabled
 
 ### API Security
+
 ```typescript
 // ✅ CORRECT - Admin API protected
 router.use('/admin/api', isAuthenticated);
@@ -466,6 +497,7 @@ router.get('/api/products', rateLimiter({ max: 100 }), async (req, res) => {
 ```
 
 ### Input Validation
+
 ```typescript
 import { z } from 'zod';
 
@@ -487,11 +519,13 @@ router.post('/admin/api/products', async (req, res) => {
 ## RULE #13: Performance Standards
 
 ### Bundle Size
+
 - Main bundle: < 200KB (gzipped)
 - Route chunks: < 50KB each
 - Use dynamic imports for heavy components
 
 ### Lazy Loading
+
 ```typescript
 // ✅ CORRECT - Lazy load admin pages
 const ProductEditorPage = lazy(() => import('@/pages/admin/ProductEditorPage'));
@@ -501,6 +535,7 @@ import { LazyUnifiedModelViewer } from '@/components/3d/LazyUnifiedModelViewer';
 ```
 
 ### API Response Times
+
 - Public API: < 200ms (p95)
 - Admin API: < 500ms (p95)
 - Use database indexes on frequently queried columns
@@ -510,6 +545,7 @@ import { LazyUnifiedModelViewer } from '@/components/3d/LazyUnifiedModelViewer';
 ## RULE #14: Accessibility (A11Y)
 
 ### Minimum Requirements
+
 - WCAG 2.1 Level AA compliance
 - Keyboard navigation for all interactive elements
 - ARIA labels where needed
@@ -535,6 +571,7 @@ import { LazyUnifiedModelViewer } from '@/components/3d/LazyUnifiedModelViewer';
 ## RULE #15: Error Handling
 
 ### Client-Side Errors
+
 ```typescript
 import { toast } from '@/lib/toast';
 
@@ -551,6 +588,7 @@ try {
 ```
 
 ### Server-Side Errors
+
 ```typescript
 // Use custom error classes
 export class NotFoundError extends Error {
@@ -624,11 +662,13 @@ npm run start
 ## Rule Violations = Build Failures
 
 Violations of these rules will cause:
+
 - ❌ Pre-commit hook failures
 - ❌ CI/CD pipeline failures
 - ❌ Code review rejections
 
 **Zero tolerance for:**
+
 - Wrong port usage (not 5002)
 - `any` types in TypeScript
 - Missing admin counterparts for public pages
@@ -642,18 +682,21 @@ Violations of these rules will cause:
 ## RULE #16: Database & Caching Optimization
 
 ### Caching Strategy (`UnifiedCache`)
+
 - **Tiered Approach**: ALWAYS use `UnifiedCache` for critical paths (Products, Categories, Navigation).
 - **L1 Access**: Local in-memory caching for high-frequency low-payload data.
 - **L2 Access**: Redis caching for distributed shared state/sessions.
 - **Event-Driven**: Repository methods MUST emit invalidation events on data mutation (`emitCacheInvalidation`).
 
 ### Database Optimization
+
 - **Indexing**: Every new table/column used for filtering/sorting MUST have a corresponding index.
 - **Prepared Statements**: Use `db.execute(sql.prepare(...))` for high-frequency parameterized queries.
 - **Cursor Pagination**: Prefer cursor-based pagination (`getProductsCursor`) over offset for large datasets.
 - **Resilience**: Wrap critical I/O in `retryDbOperation` and `withCircuit`.
 
 ### Monitoring & Observability
+
 - **Slow Query Logging**: Queries exceeding 100ms are automatically logged for audit.
 - **Tracing**: All database and cache operations must be instrumented with OpenTelemetry spans.
 

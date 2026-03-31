@@ -63,27 +63,27 @@ Agents SHOULD prioritize these npm scripts over raw CLI commands.
 
 ## 4. The B.L.A.S.T. Workflow
 
-1.  **Blueprint**: Vision & Logic. Ask 5 Discovery questions if ambiguous. Update SOPs in `architecture/`.
-2.  **Link**: Connectivity. Test credentials and API handshakes in `scripts/`.
-3.  **Architect**: The Build.
-    *   L1: Update SOPs.
-    *   L2: Routing logic.
-    *   L3: Implement atomic tools in `tools/`.
-4.  **Stylize**: The WOW. Apply Glassmorphism, Aurora UI, and 60fps animations.
-5.  **Trigger**: Deployment. Set up triggers and finalize Maintenance logs in `gemini.md`.
+1. **Blueprint**: Vision & Logic. Ask 5 Discovery questions if ambiguous. Update SOPs in `architecture/`.
+2. **Link**: Connectivity. Test credentials and API handshakes in `scripts/`.
+3. **Architect**: The Build.
+    * L1: Update SOPs.
+    * L2: Routing logic.
+    * L3: Implement atomic tools in `tools/`.
+4. **Stylize**: The WOW. Apply Glassmorphism, Aurora UI, and 60fps animations.
+5. **Trigger**: Deployment. Set up triggers and finalize Maintenance logs in `gemini.md`.
 
 ---
 
 ## 5. Development Workflow (Protocol 0)
 
-1.  **Initialization**: Update `task_plan.md` and `findings.md`.
-2.  **Modification**:
-    *   Update SOPs in `architecture/` FIRST.
-    *   Implement logic.
-    *   Run linting and typechecks.
-3.  **Self-Annealing**:
-    *   Analyze failures, patch, and document in `progress.md`.
-    *   Update architecture if logic changed.
+1. **Initialization**: Update `task_plan.md` and `findings.md`.
+2. **Modification**:
+    * Update SOPs in `architecture/` FIRST.
+    * Implement logic.
+    * Run linting and typechecks.
+3. **Self-Annealing**:
+    * Analyze failures, patch, and document in `progress.md`.
+    * Update architecture if logic changed.
 
 ---
 
@@ -163,7 +163,6 @@ Skills use a three-tier structure for token efficiency:
 > [!NOTE]
 > Agent configurations are managed via internal prompts and tool-shaping rather than static YAML files.
 
-
 ### 7.2. Agent Roles
 
 | Agent | Role | Primary Skills |
@@ -224,6 +223,7 @@ flowchart LR
 ```
 
 **Steps:**
+
 1. **Plan**: Create implementation plan with `writing-plans` skill
 2. **Design**: Architecture design with `architect` agent
 3. **Implement**: TDD with `developer` agent
@@ -246,6 +246,7 @@ flowchart LR
 ```
 
 **Steps:**
+
 1. **Reproduce**: Confirm bug exists
 2. **Isolate**: Identify root cause with `systematic-debugging`
 3. **Fix**: Implement fix with TDD
@@ -268,17 +269,17 @@ Workflows are activated by the orchestrator agent based on task type:
 
 ## 9. Testing & Compliance
 
-*   **Service Layer**: 80%+ coverage using Vitest.
-*   **Port Compliance**: ALWAYS use port **5002**.
-*   **Data-First**: Define inputs/outputs in `gemini.md` before building.
-*   **Skill Activation**: Check skill descriptions before complex tasks.
-*   **Workflow Adherence**: Follow orchestrator workflows for multi-step tasks.
+* **Service Layer**: 80%+ coverage using Vitest.
+* **Port Compliance**: ALWAYS use port **5002**.
+* **Data-First**: Define inputs/outputs in `gemini.md` before building.
+* **Skill Activation**: Check skill descriptions before complex tasks.
+* **Workflow Adherence**: Follow orchestrator workflows for multi-step tasks.
 
 ---
 
 ## Version Compatibility
 
-*   **Last Updated**: 2026-02-19
-*   **Applies to**: `run-remix-monorepo` v3.0.0
-*   **Agent Protocol**: System Pilot v3.0
-*   **Skills Framework**: AntiGravity v2.0
+* **Last Updated**: 2026-02-19
+* **Applies to**: `run-remix-monorepo` v3.0.0
+* **Agent Protocol**: System Pilot v3.0
+* **Skills Framework**: AntiGravity v2.0

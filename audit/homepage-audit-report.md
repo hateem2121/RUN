@@ -1,4 +1,5 @@
 # RUN Homepage & CMS Admin — Forensic Audit Report
+
 **Date:** 2026-03-16  **Auditor:** Antigravity  **Scope:** Homepage + CMS Admin
 
 ---
@@ -176,6 +177,7 @@ The RUN homepage is a visually ambitious, animation-heavy single-page experience
 
 **File:** `client/app/routes/_index.tsx` (line 50-54)
 **Finding:** The root `_index.tsx` correctly checks `prefers-reduced-motion` and skips Lenis smooth scroll and skew effects. However, **none of the lazy-loaded section components** honor this preference independently:
+
 - `Stats.tsx` — No `prefers-reduced-motion` check. ScrollTrigger pins and scramble animations fire regardless.
 - `Categories.tsx` — Has CSS `motion-reduce:[animation-play-state:paused]` for the marquee ✅, but no GSAP guard.
 - `FeaturedProducts.tsx` — No `prefers-reduced-motion` check. GSAP card reveals fire regardless.
@@ -220,6 +222,7 @@ The RUN homepage is a visually ambitious, animation-heavy single-page experience
 
 **File:** `client/app/routes/_index.tsx`
 **Finding:** The homepage route has no `loader` export. All data is fetched client-side via `useHomepageData()` (TanStack Query calling `/api/homepage-batch`). This means:
+
 1. The initial HTML has no homepage content — it's an empty shell until JavaScript hydrates and the API call completes.
 2. SEO crawlers that don't execute JS won't see homepage content.
 3. First Contentful Paint is delayed by the API round-trip.
@@ -248,6 +251,7 @@ The RUN homepage is a visually ambitious, animation-heavy single-page experience
 
 **File:** `client/app/components/homepage/store.ts` vs `client/app/stores/useCursorStore.ts`
 **Finding:** Two separate Zustand stores manage cursor state:
+
 1. `homepage/store.ts` — Used by `Categories.tsx`, `FeaturedProducts.tsx`, `Values.tsx`
 2. `stores/useCursorStore.ts` — Used by `CustomCursor.tsx` and `FooterInquiryForm.tsx`
 
@@ -373,6 +377,7 @@ Products DB → productRepository.getProducts(20) → GET /api/homepage-batch (p
 
 **File:** `client/app/components/homepage/types.ts` (line 60) vs `client/app/hooks/use-admin-homepage-data.ts` (line 10)
 **Finding:** Two completely separate interface definitions for `HomepageBatchResponse`:
+
 - Visitor version: includes `products`, `categories`, `processCards`, typed loosely (`unknown[]` for sections)
 - Admin version: excludes `products`, `categories`, `processCards` — different shape entirely
 
@@ -424,7 +429,7 @@ Products DB → productRepository.getProducts(20) → GET /api/homepage-batch (p
 **2026 Standard Violated:** TypeScript strict mode prohibits `any`. The `SustainabilitySectionData` type exists in `shared/types/homepage.ts` but isn't used here.
 **Impact:** No type safety for section data. Any shape can be inserted.
 
-### No `// TODO`, `// FIXME`, or `// HACK` comments found in homepage-related files.
+### No `// TODO`, `// FIXME`, or `// HACK` comments found in homepage-related files
 
 ---
 

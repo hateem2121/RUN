@@ -34,6 +34,7 @@ This project uses strict guardrails to prevent regression of specific known issu
 1. Edit `e2e/visual/regression.spec.ts`.
 2. Add a test case with `.toHaveScreenshot()`.
 3. Use masking for dynamic elements (video, dates):
+
    ```typescript
    await expect(page).toHaveScreenshot("name.png", {
      mask: [page.locator(".dynamic-content")],

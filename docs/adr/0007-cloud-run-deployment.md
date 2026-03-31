@@ -7,6 +7,7 @@
 ## Context
 
 We needed a container hosting platform that:
+
 - Auto-scales based on traffic
 - Minimizes operational overhead
 - Supports multi-region deployment
@@ -36,12 +37,14 @@ We chose **Google Cloud Run** over GKE or AWS ECS.
 ## Consequences
 
 ### Positive
+
 - Minimal operational overhead
 - Auto-scaling from 1-10 instances per region
 - Canary deployments via traffic splitting
 - Native GCP integration (Secret Manager, Cloud Build)
 
 ### Negative
+
 - Less control than Kubernetes
 - Cold starts can add latency
 - Vendor lock-in to GCP (mitigated by standard containers)

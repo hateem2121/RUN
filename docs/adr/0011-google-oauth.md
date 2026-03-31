@@ -7,6 +7,7 @@
 ## Context
 
 We needed an authentication solution that:
+
 - Integrates with our B2B customer base
 - Minimizes external dependencies
 - Provides secure session management
@@ -36,12 +37,14 @@ We chose **Google OAuth 2.0 via Passport.js** over managed auth providers.
 ## Consequences
 
 ### Positive
+
 - No authentication costs regardless of scale
 - Enterprise customers already have Google accounts
 - Session rotation and UA binding for security
 - Simple implementation with passport-google-oauth20
 
 ### Negative
+
 - Single identity provider (acceptable for B2B)
 - Must manage sessions ourselves
 - No built-in MFA (could add later)

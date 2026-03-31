@@ -70,6 +70,6 @@ ALL error responses MUST use the `application/problem+json` content type.
 
 ## 5. Implementation Rules
 
-1.  **Always** set `Content-Type: application/problem+json` for errors.
-2.  **Never** leak stack traces in the `detail` field.
-3.  **Validation**: Use `invalid-params` extension key for field-specific errors.
+1. **Always** set `Content-Type: application/problem+json` for errors.
+2. **Never** leak stack traces in the `detail` field.
+3. **Validation**: Use `invalid-params` extension key for field-specific errors.

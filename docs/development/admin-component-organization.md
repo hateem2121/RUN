@@ -192,6 +192,7 @@ client/app/components/admin/
 ### 1. Domain-Driven Structure
 
 Each domain should have its own subdirectory with:
+
 - **Components**: UI components specific to the domain
 - **Types**: TypeScript interfaces and types
 - **Hooks**: Custom hooks for the domain
@@ -199,6 +200,7 @@ Each domain should have its own subdirectory with:
 - **Index**: Barrel export for clean imports
 
 **Example:**
+
 ```
 fabric/
 ├── FabricCard.tsx       # Display component
@@ -223,6 +225,7 @@ fabric/
 ### 3. Import Patterns
 
 **Preferred:**
+
 ```typescript
 // Domain-specific import
 import { FabricCard, FabricForm } from '@/components/admin/fabric';
@@ -232,6 +235,7 @@ import { StatusBadge, DeleteConfirmationDialog } from '@/components/admin/shared
 ```
 
 **Avoid:**
+
 ```typescript
 // Deep relative imports
 import { FabricCard } from '@/components/admin/fabric/FabricCard';
@@ -251,6 +255,7 @@ import { FabricCard } from '@/components/admin/fabric/FabricCard';
 | Tab Content | < 300 lines | 500 lines |
 
 **If a component exceeds these limits:**
+
 1. Extract sub-components
 2. Move logic to custom hooks
 3. Create domain-specific utilities

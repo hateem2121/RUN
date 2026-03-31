@@ -81,6 +81,7 @@ flowchart TB
 ### Z-Index Values by Component
 
 #### PublicHeroSection
+
 | Z-Index | Element | CSS Class | Purpose |
 |---------|---------|-----------|---------|
 | `z-0` | Editorial Grid Overlay | `absolute inset-0 z-0 opacity-5` | Decorative grid pattern |
@@ -90,6 +91,7 @@ flowchart TB
 | `z-20` | Stats Bar | `absolute bottom-12 ... z-20` | Floating statistics cards |
 
 #### PublicProcessSection
+
 | Z-Index | Element | CSS Class | Purpose |
 |---------|---------|-----------|---------|
 | `z-[60]` | Toggle Button | `fixed top-8 right-8 z-[60]` | Lock/unlock scroll toggle |
@@ -98,16 +100,19 @@ flowchart TB
 | `z-0` | Background Aura | `absolute inset-0 z-0` | Decorative gradient |
 
 #### PublicCapabilitySection
+
 | Z-Index | Element | CSS Class | Purpose |
 |---------|---------|-----------|---------|
 | `z-10` | Card Content | `relative z-10` | Icon, title, description |
 
 #### PublicQualitySection
+
 | Z-Index | Element | CSS Class | Purpose |
 |---------|---------|-----------|---------|
 | `z-10` | Content Container | `relative z-10` | Headline and metrics grid |
 
 #### CallToAction
+
 | Z-Index | Element | CSS Class | Purpose |
 |---------|---------|-----------|---------|
 | `z-0` | Mesh Gradient Background | `absolute inset-0 z-0` | Premium gradient effect |
@@ -237,6 +242,7 @@ flowchart TB
 ### GSAP ScrollTrigger Animations
 
 #### Hero Section Animations
+
 | Animation | Target | Properties | Trigger |
 |-----------|--------|------------|---------|
 | Word Reveal | `.word` elements | `y: 100, opacity: 0 → 1` | `top 80%` |
@@ -245,18 +251,21 @@ flowchart TB
 | Counter | `.stat-number` | Count up animation | `top 90%` |
 
 #### Process Section Animations
+
 | Animation | Target | Properties | Trigger |
 |-----------|--------|------------|---------|
 | Horizontal Scroll | `innerRef` | `xPercent: -100 * (n-1)` | Pinned scroll |
 | Progress Bar | `progressBarRef` | `scaleX: 0 → 1` | On scroll update |
 
 #### Capabilities Section Animations
+
 | Animation | Target | Properties | Trigger |
 |-----------|--------|------------|---------|
 | Card Reveal | `.capability-card` | `y: 50, opacity: 0 → 1` | `top 80%` |
 | Stagger | All cards | `stagger: 0.15` | Sequential |
 
 #### Quality Section Animations
+
 | Animation | Target | Properties | Trigger |
 |-----------|--------|------------|---------|
 | Ring Progress | `.quality-ring circle` | `strokeDashoffset` | `top 85%` |
@@ -292,6 +301,7 @@ flowchart LR
 ```
 
 **Implementation Details:**
+
 - **Pin Container**: `triggerRef` with `h-screen overflow-hidden`
 - **Scroll Distance**: `(totalPanels - 1) * window.innerWidth`
 - **Scrub**: `scrub: 1` for smooth scroll linking

@@ -1,6 +1,7 @@
 # Documentation Maturity Score Tracking
 
 ## Overview
+
 This document tracks the maturity of the RUN system documentation against 2026+ industry standards.
 
 ## Maturity Matrix (Q1 2026)
@@ -17,6 +18,7 @@ This document tracks the maturity of the RUN system documentation against 2026+ 
 **Overall Maturity Score: 84.7%**
 
 ## Remediation Tracking
+
 - **[DONE]** Forensic System Audit (Contact Page Architecture & Data Flow).
 - **[DONE]** Conflict resolution for Contact route documentation.
 - **[DONE]** Expansion of Manufacturing/Technology API docs.
@@ -26,6 +28,7 @@ This document tracks the maturity of the RUN system documentation against 2026+ 
 - **[TODO]** Documentation freshness check (CI integration).
 
 ## Footer Standard (Template)
+
 All documentation files must include the following footer:
 
 ---

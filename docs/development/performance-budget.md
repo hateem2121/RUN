@@ -250,16 +250,19 @@ monitor.onMetric((report) => {
 #### JavaScript Bundle Too Large
 
 1. **Analyze bundle composition**
+
    ```bash
    VITE_INSPECT=true npm run build
    ```
 
 2. **Apply code splitting**
+
    ```typescript
    const HeavyComponent = lazy(() => import('./HeavyComponent'));
    ```
 
 3. **Remove unused dependencies**
+
    ```bash
    npx depcheck
    ```
@@ -271,6 +274,7 @@ monitor.onMetric((report) => {
 #### CSS Bundle Too Large
 
 1. **Purge unused styles**
+
    ```typescript
    // tailwind.config.ts
    export default {
@@ -279,6 +283,7 @@ monitor.onMetric((report) => {
    ```
 
 2. **Remove unused CSS**
+
    ```bash
    npx purgecss --css dist/*.css --content dist/*.html
    ```
@@ -286,11 +291,13 @@ monitor.onMetric((report) => {
 #### Images Too Large
 
 1. **Convert to modern formats**
+
    ```bash
    npx sharp-cli resize 800 --format webp --quality 80
    ```
 
 2. **Implement responsive images**
+
    ```tsx
    <picture>
      <source srcSet="image.webp" type="image/webp" />
@@ -299,6 +306,7 @@ monitor.onMetric((report) => {
    ```
 
 3. **Use CDN transformations**
+
    ```
    https://cdn.wear-run.com/image.jpg?w=800&q=80&fm=webp
    ```
@@ -306,6 +314,7 @@ monitor.onMetric((report) => {
 #### LCP Too Slow
 
 1. **Preload critical resources**
+
    ```html
    <link rel="preload" href="/fonts/primary.woff2" as="font" type="font/woff2" crossorigin />
    ```
@@ -322,6 +331,7 @@ monitor.onMetric((report) => {
 #### CLS Too High
 
 1. **Reserve space for images**
+
    ```css
    img {
      aspect-ratio: 16 / 9;
@@ -331,6 +341,7 @@ monitor.onMetric((report) => {
    ```
 
 2. **Avoid layout shifts from fonts**
+
    ```css
    @font-face {
      font-display: optional;
@@ -338,6 +349,7 @@ monitor.onMetric((report) => {
    ```
 
 3. **Set explicit dimensions**
+
    ```tsx
    <img src="product.jpg" width="800" height="600" />
    ```
@@ -405,7 +417,7 @@ monitor.onMetric((report) => {
 
 For performance-related questions or concerns:
 
-- **Email:** team@wear-run.com
+- **Email:** <team@wear-run.com>
 - **Slack:** #engineering-performance
 
 ---
