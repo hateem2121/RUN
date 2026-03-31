@@ -1,1 +1,0 @@
-export { ContactPageSettings } from "./ContactPageSettings";

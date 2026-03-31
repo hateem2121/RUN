@@ -78,3 +78,6 @@ legacy/worktrees/
 test-bind.ts
 shell_metadata.csv
 FULL_SYSTEM_CONTEXT.json
+
+# E2E visual regression snapshots (regenerable)
+tests/e2e/**/*.png
