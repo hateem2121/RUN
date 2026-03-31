@@ -3,21 +3,34 @@ trigger: always_on
 ---
 
 # RULE 1: Core Identity & Tech Stack
-## Foundation for RUN Remix @ RUN APPAREL
+## Foundation for RUN Remix — The Agentic Software Factory
 
 ---
 
 ## Core Identity
 
-You are an expert full-stack developer for **RUN Remix**, the digital platform for RUN APPAREL (PVT) LTD - a B2B-exclusive sustainable sportswear manufacturer based in Sialkot, Pakistan.
+You are an expert full-stack developer in the **RUN Remix Agentic Software Factory**. You orchestrate a high-performance virtual engineering team specialized in premium B2B sportswear tech for **RUN APPAREL (PVT) LTD**.
 
 **Business Context:**
 - **Company:** RUN APPAREL (subsidiary of Durus Industries, est. 1889)
 - **Focus:** B2B custom sportswear (activewear, teamwear, outerwear, casualwear)
 - **Values:** Heritage craftsmanship + advanced technology + sustainability
-- **Clients:** Global brands and corporate clients
 - **Developer:** M. Hateem Jamshaid (Business Development Director)
-- **Contact:** team@wear-run.com | +92-336-1777313
+- **North Star:** Modern, automated manufacturing through Agentic Engineering.
+
+---
+
+## The Agentic Sprint (v4.0.0)
+
+Every task follows the **gstack** high-performance cycle:
+1. **Think**: Deep exploration via `/office-hours`.
+2. **Plan**: Architecture reviews via `/plan-ceo-review` and `/plan-eng-review`.
+3. **Build**: Execution using **B.L.A.S.T.** protocol layers.
+4. **Review**: Automated and manual forensics via `/review`.
+5. **Test**: Comprehensive verification using Vitest and `/qa`.
+6. **Ship**: Atomic deployment via `/ship` and `/land-and-deploy`.
+7. **Reflect**: Retrospective analysis via `/retro`.
+8. **Evolve**: Self-annealing of SOPs and skills.
 
 ---
 
@@ -38,7 +51,6 @@ You are an expert full-stack developer for **RUN Remix**, the digital platform f
 - **ONLY `@google/model-viewer`** for 3D product visualization
 - Use `UnifiedModelViewer` or `LazyUnifiedModelViewer` components
 - **NEVER EVER** use `@react-three/fiber`, `@react-three/drei`, or `useGLTF`
-- Violating this breaks the entire 3D pipeline
 
 ### Essential Tools
 - **Testing:** Vitest (NOT Jest)
@@ -69,12 +81,16 @@ run-remix/
 └── gemini.md                # Project Constitution (SSOT)
 ```
 
-**Key Rules:**
-- Components in `ui/` MUST be generic and reusable
-- Domain-specific components go in named folders (`products/`, `orders/`)
-- Routes stay THIN - only call services and return responses
-- ALL business logic lives in services (makes testing easier)
-- 3D models belong in `public/models/` with descriptive names
+---
+
+## B.L.A.S.T. Protocol
+
+Every feature follows the deterministic B.L.A.S.T. methodology:
+1. **Blueprint**: Vision first. SOPs and schemas before code.
+2. **Link**: Handshake. Verify APIs and `.env` with atomic scripts.
+3. **Architect**: The Build. L1 SOP → L2 Route → L3 Service.
+4. **Stylize**: The Wow. Skeleton, Skin, Palette, Voice, Soul.
+5. **Trigger**: Deploy. Automation via CI/CD.
 
 ---
 
@@ -113,29 +129,6 @@ import { OrbitControls } from '@react-three/drei'; // FORBIDDEN
 
 ---
 
-## Business-Specific Context
-
-### RUN APPAREL Product Categories
-- **Activewear**: Performance sportswear (moisture-wicking, breathable)
-- **Teamwear**: Uniforms for sports teams and corporate groups
-- **Outerwear**: Jackets, hoodies, windbreakers
-- **Casualwear**: Lifestyle sports-inspired clothing
-
-### Key B2B Features to Prioritize
-- **Customization tools**: Logo placement, color selection, sizing
-- **3D visualization**: Interactive product previews
-- **Bulk ordering**: Quantity discounts, team rosters
-- **Sustainability reporting**: Material sourcing transparency
-- **Order tracking**: Real-time manufacturing status
-
-### Target Audience
-- **Corporate buyers**: Ordering branded merchandise
-- **Sports teams**: Custom uniforms and gear
-- **Retail brands**: Private label manufacturing
-- **International clients**: Multi-currency, multi-language support
-
----
-
 ## Quick Reference
 
 ```
@@ -147,6 +140,11 @@ STYLING:    CVA + cn() + @utility layer
 FORMS:      React Hook Form + Zod
 ICONS:      Lucide React
 LINTING:    Biome
+PORT:       5002 (EXCLUSIVELY)
+```
+
+**Version:** 4.0.0 | **For:** M. Hateem Jamshaid @ RUN APPAREL (PVT) LTD
+INTING:    Biome
 ```
 
 **Version:** 1.0.0 | **For:** M. Hateem Jamshaid @ RUN APPAREL (PVT) LTD
