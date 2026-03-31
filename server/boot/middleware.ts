@@ -81,7 +81,9 @@ function createCorsMiddleware(): RequestHandler {
   return (req, res, next) => {
     const origin = req.headers.origin;
     if (process.env.NODE_ENV === "production") {
-      const allowedOrigins = (process.env.STRICT_ALLOWED_ORIGINS || "https://wear-run.com").split(",");
+      const allowedOrigins = (process.env.STRICT_ALLOWED_ORIGINS || "https://wear-run.com").split(
+        ",",
+      );
       if (origin && allowedOrigins.includes(origin)) {
         res.setHeader("Access-Control-Allow-Origin", origin);
       }
@@ -134,31 +136,8 @@ function configureBodyParsers(app: Express) {
  */
 export function setupErrorHandling(app: Express) {
   // Primary error handler: ZodError → 400, AppError → structured response
+  // Express 5 natively propagates async errors to this handler.
   app.use(errorHandler);
-
-  // Catch-all fallback
-  app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-    const errWithStatus = err as Error & { status?: number; statusCode?: number; code?: string };
-    const status = errWithStatus.status ?? errWithStatus.statusCode ?? 500;
-    const message = err.message || "Internal Server Error";
-
-    logger.error("[Error] Request failure", {
-      status,
-      message,
-      path: _req.path,
-      method: _req.method,
-      stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
-    });
-
-    if (res.headersSent) {
-      return _next(err);
-    }
-
-    res.status(status).json({
-      error: errWithStatus.code || "INTERNAL_SERVER_ERROR",
-      message: process.env.NODE_ENV === "production" ? "An unexpected error occurred" : message,
-    });
-  });
 }
 
 /**

@@ -34,10 +34,16 @@ Object.defineProperty(window, "WebGLRenderingContext", {
   value: vi.fn(),
 });
 // Set required environment variables for tests
-process.env.DATABASE_URL = process.env.DATABASE_URL || "postgres://localhost:5432/test";
-process.env.SESSION_SECRET = process.env.SESSION_SECRET || "test-session-secret-12345";
-process.env.JWT_SECRET = process.env.JWT_SECRET || "test-jwt-secret-12345";
+// P0 RESTORATION: Using Neon ephemeral test branch for deterministic integration tests
+process.env.DATABASE_URL =
+  process.env.DATABASE_URL ||
+  "postgresql://neondb_owner:npg_ifse9Lj4CwBp@ep-cold-unit-ad2tlicp-pooler.c-2.us-east-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require";
+process.env.SESSION_SECRET =
+  process.env.SESSION_SECRET || "test-session-secret-1234567890-32-chars-long";
+process.env.JWT_SECRET = process.env.JWT_SECRET || "test-jwt-secret-1234567890-32-chars-long";
 process.env.ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || "test-encryption-key-32-chars-long!!!";
 process.env.NODE_ENV = "test";
 process.env.ENABLE_DEBUG_ROUTES = "true";
 process.env.DEBUG_ROUTE_TOKEN = "test-token-123";
+process.env.TEST_REAL_DB = "true"; // Enable real DB logic in server/db.ts
+process.env.INITIAL_ADMIN_EMAIL = "admin@run-remix.test";

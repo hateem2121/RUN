@@ -74,7 +74,7 @@ export async function getLatestInvalidationTime(pattern: string): Promise<number
   try {
     if (isRedisEnabled) {
       const key = `cache:invalidation:latest:${pattern}`;
-      const data = await redis.get<CacheInvalidationEvent>(key);
+      const data = (await redis.get(key)) as CacheInvalidationEvent | null;
       return data ? data.timestamp : 0;
     } else {
       // Local fallback

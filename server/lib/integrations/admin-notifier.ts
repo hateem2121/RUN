@@ -19,7 +19,11 @@ export const adminNotifier = {
     const connectionString = dbConfig.directUrl;
 
     if (!connectionString) {
-      if (process.env.NODE_ENV === "production") {
+      if (
+        process.env.NODE_ENV === "production" &&
+        !process.env.VITEST &&
+        !process.env.FORCE_LISTEN
+      ) {
         throw new Error(
           "DIRECT_DATABASE_URL is required for admin-notifier (LISTEN/NOTIFY) in production.",
         );

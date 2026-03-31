@@ -30,7 +30,7 @@ export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<Test
     INITIAL_ADMIN_EMAIL: "admin@wear-run.com",
     FORCE_LISTEN: "true",
     VITEST: "true", // Ensure spawned server knows it's in test mode
-    SKIP_SECRET_MANAGER: "true",
+    LOG_LEVEL: "info",
     ...env,
   };
   const serverProcess = spawn(TSX_PATH, [SERVER_PATH], {
@@ -73,25 +73,30 @@ export async function startTestServer(env: NodeJS.ProcessEnv = {}): Promise<Test
     let _stderrData = "";
 
     serverProcess.stdout?.on("data", (data) => {
-      _stdoutData += data.toString();
-      process.stderr.write(data); // Debug: Pipe server stdout to test runner stderr
       const str = data.toString();
-      // console.log("[Server]", str); // Optional debug
+      _stdoutData += str;
+      // Debug: Log all server output to test runner stderr for visibility
+      process.stderr.write(`[Server STDOUT] ${str}`);
+
       const match =
         str.match(/HTTP Listener open on port (\d+)/i) ||
-        str.match(/Server running on port (\d+)/i);
+        str.match(/Server running on port (\d+)/i) ||
+        str.match(/port (\d+)/i); // Ultimate fallback
+
       if (match) {
         const port = match[1];
+        if (port === "0") return; // OS hasn't assigned it yet or we just logged the 0 placeholder.
+
         baseUrl = `http://localhost:${port}`;
         clearTimeout(timeout);
-        // Don't resolve yet if we want to wait for "Ready"?
-        // Current app prints "Server running on port..." as final step.
         resolve({ process: serverProcess, baseUrl, kill });
       }
     });
 
     serverProcess.stderr?.on("data", (data) => {
-      _stderrData += data.toString();
+      const str = data.toString();
+      _stderrData += str;
+      process.stderr.write(`[Server STDERR] ${str}`);
     });
 
     serverProcess.stderr?.pipe(process.stderr);

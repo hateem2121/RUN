@@ -20,7 +20,7 @@ export const serverReady: Promise<void> = (async () => {
     console.log(`[Bootstrap] Loaded ${Object.keys(secrets).length} secrets.`);
 
     // 1.5. Validate Environment Variables
-    const { validateEnv } = await import("./env.schema.js");
+    const { validateEnv } = await import("../shared/schemas/env.schema.js");
     validateEnv();
 
     // 2. Import Main Server (Dynamic)

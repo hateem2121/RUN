@@ -17,7 +17,6 @@ import { db } from "../../db.js";
 import { CacheKeys } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { asyncHandler } from "../../middleware/async-handler.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = express.Router();
@@ -132,124 +131,113 @@ async function getFooterConfig() {
 const updateSchema = insertFooterConfigurationSchema.partial();
 
 // PUBLIC endpoint for footer configuration
-router.get(
-  "/footer",
-  asyncHandler(async (_req, res) => {
-    const cacheKey = CacheKeys.footer.config();
+router.get("/footer", async (_req, res) => {
+  const cacheKey = CacheKeys.footer.config();
 
-    const cached = await unifiedCache.get<unknown>(cacheKey);
-    if (cached) {
-      res.setHeader("X-Cache-Hit", "true");
-      return res.json(cached);
-    }
+  const cached = await unifiedCache.get<unknown>(cacheKey);
+  if (cached) {
+    res.setHeader("X-Cache-Hit", "true");
+    return res.json(cached);
+  }
 
-    const response = await getFooterConfig();
+  const response = await getFooterConfig();
 
-    await unifiedCache.set(cacheKey, response, CACHE_TTL_FOOTER * 1000);
-    return res.json(response);
-  }),
-);
+  await unifiedCache.set(cacheKey, response, CACHE_TTL_FOOTER * 1000);
+  return res.json(response);
+});
 
 // ADMIN endpoint for footer configuration
-router.get(
-  "/admin/footer",
-  authService.requireAdmin,
-  asyncHandler(async (_req, res) => {
-    // Shared cache key with public endpoint
-    const cacheKey = CacheKeys.footer.config();
-    const cached = await unifiedCache.get<unknown>(cacheKey);
+router.get("/admin/footer", authService.requireAdmin, async (_req, res) => {
+  // Shared cache key with public endpoint
+  const cacheKey = CacheKeys.footer.config();
+  const cached = await unifiedCache.get<unknown>(cacheKey);
 
-    if (cached) {
-      res.setHeader("X-Cache-Hit", "true");
-      return res.json(cached);
-    }
+  if (cached) {
+    res.setHeader("X-Cache-Hit", "true");
+    return res.json(cached);
+  }
 
-    const response = await getFooterConfig();
-    await unifiedCache.set(cacheKey, response, CACHE_TTL_FOOTER * 1000);
-    return res.json(response);
-  }),
-);
+  const response = await getFooterConfig();
+  await unifiedCache.set(cacheKey, response, CACHE_TTL_FOOTER * 1000);
+  return res.json(response);
+});
 
 // prettier-ignore
-router.patch(
-  "/admin/footer",
-  authService.requireAdmin,
-  asyncHandler(async (req, res) => {
-    // security
-    // 1. Validate payload
-    const validatedData = updateSchema.parse(req.body);
+router.patch("/admin/footer", authService.requireAdmin, async (req, res) => {
+  // security
+  // 1. Validate payload
+  const validatedData = updateSchema.parse(req.body);
 
-    // 2. Transform/Normalize data for frontend compatibility if needed
-    // The new schema expects strict JSONB structures, but we keep the logic resilient
-    // Mapping isn't strictly necessary if frontend matches schema, but good for safety
+  // 2. Transform/Normalize data for frontend compatibility if needed
+  // The new schema expects strict JSONB structures, but we keep the logic resilient
+  // Mapping isn't strictly necessary if frontend matches schema, but good for safety
 
-    /* 
+  /* 
        Note: The frontend currently sends `url` / `platform` sometimes.
        We map them to `href` / `name` to match our strict schema.
     */
-    const normalizedData: Record<string, unknown> = { ...validatedData };
+  const normalizedData: Record<string, unknown> = { ...validatedData };
 
-    if (validatedData.navigationColumns) {
-      normalizedData.navigationColumns = validatedData.navigationColumns.map((col) => ({
-        title: col.title,
-        links:
-          col.links?.map((link) => ({
-            label: link.label,
-            href: link.href || ((link as Record<string, unknown>).url as string),
-            external: link.external,
-          })) || [],
-      }));
-    }
+  if (validatedData.navigationColumns) {
+    normalizedData.navigationColumns = validatedData.navigationColumns.map((col) => ({
+      title: col.title,
+      links:
+        col.links?.map((link) => ({
+          label: link.label,
+          href: link.href || ((link as Record<string, unknown>).url as string),
+          external: link.external,
+        })) || [],
+    }));
+  }
 
-    if (validatedData.socialLinks) {
-      normalizedData.socialLinks = validatedData.socialLinks.map((social) => ({
-        name: social.name || ((social as Record<string, unknown>).platform as string),
-        icon: social.icon,
-        href: social.href || ((social as Record<string, unknown>).url as string),
-        hoverColor: social.hoverColor,
-      }));
-    }
+  if (validatedData.socialLinks) {
+    normalizedData.socialLinks = validatedData.socialLinks.map((social) => ({
+      name: social.name || ((social as Record<string, unknown>).platform as string),
+      icon: social.icon,
+      href: social.href || ((social as Record<string, unknown>).url as string),
+      hoverColor: social.hoverColor,
+    }));
+  }
 
-    if (validatedData.legalLinks) {
-      normalizedData.legalLinks = validatedData.legalLinks.map((link) => ({
-        label: link.label,
-        href: link.href || ((link as Record<string, unknown>).url as string),
-      }));
-    }
+  if (validatedData.legalLinks) {
+    normalizedData.legalLinks = validatedData.legalLinks.map((link) => ({
+      label: link.label,
+      href: link.href || ((link as Record<string, unknown>).url as string),
+    }));
+  }
 
-    // 3. Perform Upsert
-    const [existing] = await db.select().from(footerConfiguration).limit(1);
+  // 3. Perform Upsert
+  const [existing] = await db.select().from(footerConfiguration).limit(1);
 
-    let updated: FooterConfiguration | undefined;
-    if (existing) {
-      [updated] = await db
-        .update(footerConfiguration)
-        .set({ ...normalizedData, updatedAt: new Date() })
-        .where(eq(footerConfiguration.id, existing.id))
-        .returning();
-    } else {
-      [updated] = await db
-        .insert(footerConfiguration)
-        .values({ ...normalizedData })
-        .returning();
-    }
+  let updated: FooterConfiguration | undefined;
+  if (existing) {
+    [updated] = await db
+      .update(footerConfiguration)
+      .set({ ...normalizedData, updatedAt: new Date() })
+      .where(eq(footerConfiguration.id, existing.id))
+      .returning();
+  } else {
+    [updated] = await db
+      .insert(footerConfiguration)
+      .values({ ...normalizedData })
+      .returning();
+  }
 
-    // 4. Invalidate Cache
-    unifiedCache
-      .delete(CacheKeys.footer.config())
-      .then(() => logger.info(`[Footer] Cache invalidated for ${CacheKeys.footer.config()}`))
-      .catch((cacheError) =>
-        logger.warn("[Footer] Cache invalidation failed (non-fatal):", cacheError),
-      );
+  // 4. Invalidate Cache
+  unifiedCache
+    .delete(CacheKeys.footer.config())
+    .then(() => logger.info(`[Footer] Cache invalidated for ${CacheKeys.footer.config()}`))
+    .catch((cacheError) =>
+      logger.warn("[Footer] Cache invalidation failed (non-fatal):", cacheError),
+    );
 
-    logger.info("[Footer] Footer configuration updated successfully", {
-      id: updated?.id,
-      updatedFields: Object.keys(normalizedData),
-    });
+  logger.info("[Footer] Footer configuration updated successfully", {
+    id: updated?.id,
+    updatedFields: Object.keys(normalizedData),
+  });
 
-    return res.json(updated);
-  }),
-);
+  return res.json(updated);
+});
 
 logger.debug("[Footer Config Routes] ✅ Footer configuration routes loaded (Drizzle Optimized)");
 

@@ -13,7 +13,7 @@ export const redis = new Proxy(
         url: process.env.UPSTASH_REDIS_REST_URL,
         token: process.env.UPSTASH_REDIS_REST_TOKEN,
       })
-    : ({} as Redis),
+    : ({} as unknown as Redis),
   {
     get: (target, prop, receiver) => {
       const value = Reflect.get(target, prop, receiver);

@@ -246,23 +246,9 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
     sortOrder: z.number().optional(),
   });
 
-  let validatedData: z.infer<typeof updateSchema>;
-  try {
-    validatedData = updateSchema.parse(req.body);
-    logger.info(`[Sustainability] ✅ Validation successful [${reqId}]`);
-  } catch (err) {
-    if (err instanceof z.ZodError) {
-      logger.error(`[Sustainability] ❌ Zod Validation Failed [${reqId}]`, {
-        timestamp: new Date().toISOString(),
-        requestId: reqId,
-        issues: err.issues,
-        rawBody: req.body,
-        fieldCount: Object.keys(req.body || {}).length,
-        errorCount: err.issues.length,
-      });
-    }
-    throw err;
-  }
+  // Input validation with Zod
+  const validatedData = updateSchema.parse(req.body);
+  logger.info(`[Sustainability] ✅ Validation successful [${reqId}]`);
 
   logger.info(`[Sustainability] PATCH request - updating config [${reqId}]`);
 

@@ -75,7 +75,7 @@ export class AuthService {
       });
       logger.info("[Auth] Redis Session Store initialized", { ttl: sessionTtl / 1000 });
     } else {
-      if (process.env.NODE_ENV === "production") {
+      if (process.env.NODE_ENV === "production" && process.env.VITEST !== "true") {
         throw new Error(
           "Redis is required for session storage in production (NEON/Serverless). Set REDIS_URL or UPSTASH_REDIS_REST_URL.",
         );

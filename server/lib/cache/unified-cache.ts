@@ -85,7 +85,7 @@ export class UnifiedCache {
    * Get value from cache with OpenTelemetry tracing
    */
   async get<T>(key: string, _namespace?: string): Promise<T | null> {
-    return tracer.startActiveSpan("cache.get", async (span) => {
+    const result = (await tracer.startActiveSpan("cache.get", async (span) => {
       span.setAttribute("cache.key", key);
       span.setAttribute("cache.operation", "get");
 
@@ -105,7 +105,7 @@ export class UnifiedCache {
         // 2. Check L2 Redis Cache (if enabled)
         if (isRedisEnabled) {
           try {
-            const redisValue = await this.readL2<T>(key);
+            const redisValue = await this.readL2(key);
             if (redisValue !== null) {
               this.stats.hits++;
               this.stats.l2Hits++;
@@ -135,12 +135,13 @@ export class UnifiedCache {
         span.recordException(error as Error);
         span.setStatus({
           code: SpanStatusCode.ERROR,
-          message: (error as Error).message,
+          message: error instanceof Error ? error.message : String(error),
         });
         span.end();
-        throw error;
+        return null;
       }
-    });
+    })) as Promise<T | null>;
+    return result;
   }
 
   /**
@@ -215,7 +216,7 @@ export class UnifiedCache {
       // Use circuit breaker for Redis operations
       const data = await withCircuit(
         "redis-cache-read",
-        async () => redis.get<string>(key),
+        async () => redis.get(key),
         REDIS_CIRCUIT_OPTIONS,
       );
       if (!data) {

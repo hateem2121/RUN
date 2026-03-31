@@ -61,12 +61,24 @@ router.get("/about-batch", async (_req, res) => {
 
   logger.info("[About] Cache miss - fetching from database");
 
-  // Fetch all about data via unified service
-  const { hero, timeline, locations, sections, statistics, teamMessage } = await withTimeout(
+  // Fetch all about data via unified service with aggregate timeout
+  const aboutData = await withTimeout(
     aboutService.getAllAboutData(),
-    20000,
+    15000,
     "About batch fetch (service layer)",
-  );
+  ).catch((err) => {
+    logger.error("[About] Aggregate fetch failed, returning empty set", err);
+    return {
+      hero: null,
+      timeline: [],
+      locations: [],
+      sections: [],
+      statistics: [],
+      teamMessage: null,
+    };
+  });
+
+  const { hero, timeline, locations, sections, statistics, teamMessage } = aboutData;
 
   // Collect all media IDs used in about content
   const dataToScan = [hero, timeline, locations, sections, statistics, teamMessage];

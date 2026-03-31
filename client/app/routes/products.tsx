@@ -140,6 +140,11 @@ export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [viewMode, setViewMode] = useState<"small" | "medium" | "large">(validViewMode);
   const [sortBy, setSortBy] = useState(initialSortBy);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   // Advanced filters state
   const [selectedFilters, setSelectedFilters] = useState({
@@ -172,10 +177,10 @@ export default function ProductsPage() {
 
   // Use server products by default.
   // Note: Client-side search/filter state updates URL -> triggers Loader -> updates serverProducts.
-  const products = useMemo(
-    () => safeParseArray(ProductSummarySchema, serverProducts),
-    [serverProducts],
-  );
+  const products = useMemo(() => {
+    if (!isHydrated) return [];
+    return safeParseArray(ProductSummarySchema, serverProducts);
+  }, [serverProducts, isHydrated]);
 
   // Track page view on mount
   useEffect(() => {
@@ -229,10 +234,10 @@ export default function ProductsPage() {
   }, [searchTerm, selectedCategory, viewMode, sortBy, setSearchParams, searchParams]);
 
   // Extract unique tags from all products
-  const availableTags = useMemo(
-    () => [...new Set((products || []).filter(Boolean).flatMap((p) => p.tags || []))],
-    [products],
-  );
+  const availableTags = useMemo(() => {
+    if (!isHydrated) return [];
+    return [...new Set((products || []).filter(Boolean).flatMap((p) => p.tags || []))];
+  }, [products, isHydrated]);
 
   // Filter and sort products (Client-side refinement of server results)
   const sortedProducts = useMemo(() => {

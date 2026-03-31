@@ -10,13 +10,10 @@ import express from "express";
 import { setupErrorHandling, setupHealthChecks, setupMiddleware } from "./boot/middleware.js";
 import { setupRoutes } from "./boot/routes.js";
 import { startServices } from "./boot/services.js";
-import { validateEnv } from "./config/env-validation.js";
 import { getConfig } from "./config/production.js";
 import { logger } from "./lib/monitoring/logger.js";
 import { setupGracefulShutdown } from "./lib/shutdown-manager.js";
-
-// SEC-002: Validate environment variables before any initialization
-validateEnv();
+// SEC-002: Environment is validated in index.ts before this file is loaded.
 
 export const app = express();
 const config = getConfig();
@@ -47,9 +44,11 @@ export const serverReady: Promise<void> = (async () => {
     const shouldListen = process.env.NODE_ENV !== "test" || process.env.FORCE_LISTEN === "true";
 
     if (shouldListen) {
-      httpServer.listen(PORT, () => {
+      const server = httpServer.listen(PORT, () => {
+        const address = server.address();
+        const actualPort = typeof address === "string" ? address : address?.port;
         logger.info(
-          `[Startup] HTTP Listener open on port ${PORT}. Environment: ${config.app.environment}`,
+          `[Startup] HTTP Listener open on port ${actualPort}. Environment: ${config.app.environment}`,
         );
         logger.info("[Startup] Continuing async bootstrap (Routes, SSR, Services)...");
       });
@@ -82,6 +81,7 @@ export const serverReady: Promise<void> = (async () => {
     setupGracefulShutdown(httpServer, 30000);
   } catch (error) {
     logger.error("Failed to boot server", error);
+    console.error("BOOT_ERROR_RAW:", error);
     process.exit(1); // Fatal error during startup
   }
 })();

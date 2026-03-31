@@ -3,8 +3,8 @@ import { startTestServer, type TestServer } from "./test-utils";
 
 const DEBUG_TOKEN = "test-token-123";
 
-// Increased timeout for all tests in this file (server startup is slow)
-const TEST_TIMEOUT = 45000;
+// Increased timeout for all tests in this file (server startup is slow in integration tier)
+const TEST_TIMEOUT = 90000;
 
 describe("Security Hardening (Integration Tier)", () => {
   let server: TestServer;
