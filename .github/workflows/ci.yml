@@ -199,7 +199,7 @@ jobs:
         run: npm run check:bundle
 
       - name: Upload Source Maps to Sentry
-        if: ${{ secrets.SENTRY_AUTH_TOKEN != '' }}
+        if: env.SENTRY_AUTH_TOKEN != ''
         run: |
           npx @sentry/cli sourcemaps inject ./client/build
           npx @sentry/cli sourcemaps upload ./client/build --org ${{ secrets.SENTRY_ORG }} --project ${{ secrets.SENTRY_PROJECT }}
