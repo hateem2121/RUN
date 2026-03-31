@@ -40,9 +40,24 @@ jobs:
       - name: Verify Port 5002 Compliance
         run: npm run verify-port
 
+  build_shared:
+    name: Build Shared Package
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+      - run: npm ci
+      - name: Build Shared
+        run: npm run build --prefix shared
+
   # Parallel quality checks for faster feedback
   lint:
     name: Lint (Biome)
+    needs: build_shared
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
@@ -58,6 +73,7 @@ jobs:
 
   typecheck:
     name: Type Check (TSC)
+    needs: build_shared
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
