@@ -83,11 +83,15 @@ const OPENAI_LITMUS_CHECKS = [
 // ─── External Host Helpers ───────────────────────────────────
 
 // Re-export local copy for use in this file (matches codex-helpers.ts)
-function externalSkillName(skillDir: string): string {
+// Accepts optional frontmatter name to support directory/invocation name divergence
+function externalSkillName(skillDir: string, frontmatterName?: string): string {
+  // Root skill (skillDir === '' or '.') always maps to 'gstack' regardless of frontmatter
   if (skillDir === '.' || skillDir === '') return 'gstack';
+  // Use frontmatter name when it differs from directory name (e.g., run-tests/ with name: test)
+  const baseName = frontmatterName && frontmatterName !== skillDir ? frontmatterName : skillDir;
   // Don't double-prefix: gstack-upgrade → gstack-upgrade (not gstack-gstack-upgrade)
-  if (skillDir.startsWith('gstack-')) return skillDir;
-  return `gstack-${skillDir}`;
+  if (baseName.startsWith('gstack-')) return baseName;
+  return `gstack-${baseName}`;
 }
 
 function extractNameAndDescription(content: string): { name: string; description: string } {
@@ -128,6 +132,63 @@ function extractNameAndDescription(content: string): { name: string; description
   return { name, description };
 }
 
+// ─── Voice Trigger Processing ────────────────────────────────
+
+/**
+ * Extract voice-triggers YAML list from frontmatter.
+ * Returns an array of trigger strings, or [] if no voice-triggers field.
+ */
+function extractVoiceTriggers(content: string): string[] {
+  const fmStart = content.indexOf('---\n');
+  if (fmStart !== 0) return [];
+  const fmEnd = content.indexOf('\n---', fmStart + 4);
+  if (fmEnd === -1) return [];
+  const frontmatter = content.slice(fmStart + 4, fmEnd);
+
+  const triggers: string[] = [];
+  let inVoice = false;
+  for (const line of frontmatter.split('\n')) {
+    if (/^voice-triggers:/.test(line)) { inVoice = true; continue; }
+    if (inVoice) {
+      const m = line.match(/^\s+-\s+"(.+)"$/);
+      if (m) triggers.push(m[1]);
+      else if (!/^\s/.test(line)) break;
+    }
+  }
+  return triggers;
+}
+
+/**
+ * Preprocess voice triggers: fold voice-triggers YAML field into description,
+ * then strip the field from frontmatter. Must run BEFORE transformFrontmatter
+ * and extractNameAndDescription so all hosts see the updated description.
+ */
+function processVoiceTriggers(content: string): string {
+  const triggers = extractVoiceTriggers(content);
+  if (triggers.length === 0) return content;
+
+  // Strip voice-triggers block from frontmatter
+  content = content.replace(/^voice-triggers:\n(?:\s+-\s+"[^"]*"\n?)*/m, '');
+
+  // Get current description (after stripping voice-triggers, so it's clean)
+  const { description } = extractNameAndDescription(content);
+  if (!description) return content;
+
+  // Build new description with voice triggers appended
+  const voiceLine = `Voice triggers (speech-to-text aliases): ${triggers.map(t => `"${t}"`).join(', ')}.`;
+  const newDescription = description + '\n' + voiceLine;
+
+  // Replace old indented description with new in frontmatter
+  const oldIndented = description.split('\n').map(l => `  ${l}`).join('\n');
+  const newIndented = newDescription.split('\n').map(l => `  ${l}`).join('\n');
+  content = content.replace(oldIndented, newIndented);
+
+  return content;
+}
+
+// Export for testing
+export { extractVoiceTriggers, processVoiceTriggers };
+
 const OPENAI_SHORT_DESCRIPTION_LIMIT = 120;
 
 function condenseOpenAIShortDescription(description: string): string {
@@ -159,8 +220,10 @@ policy:
  */
 function transformFrontmatter(content: string, host: Host): string {
   if (host === 'claude') {
-    // Strip sensitive: field from Claude output (only Factory uses it)
-    return content.replace(/^sensitive:\s*true\n/m, '');
+    // Strip fields not used by Claude: sensitive (Factory-only), voice-triggers (folded into description by preprocessing)
+    content = content.replace(/^sensitive:\s*true\n/m, '');
+    content = content.replace(/^voice-triggers:\n(?:\s+-\s+"[^"]*"\n?)*/m, '');
+    return content;
   }
 
   const fmStart = content.indexOf('---\n');
@@ -255,11 +318,12 @@ function processExternalHost(
   skillDir: string,
   extractedDescription: string,
   ctx: TemplateContext,
+  frontmatterName?: string,
 ): { content: string; outputPath: string; outputDir: string; symlinkLoop: boolean } {
   const config = EXTERNAL_HOST_CONFIG[host];
   if (!config) throw new Error(`No external host config for: ${host}`);
 
-  const name = externalSkillName(skillDir === '.' ? '' : skillDir);
+  const name = externalSkillName(skillDir === '.' ? '' : skillDir, frontmatterName);
   const outputDir = path.join(ROOT, config.hostSubdir, 'skills', name);
   fs.mkdirSync(outputDir, { recursive: true });
   const outputPath = path.join(outputDir, 'SKILL.md');
@@ -324,9 +388,12 @@ function processTemplate(tmplPath: string, host: Host = 'claude'): { outputPath:
   // Determine skill directory relative to ROOT
   const skillDir = path.relative(ROOT, path.dirname(tmplPath));
 
-  // Extract skill name from frontmatter for TemplateContext
+  // Extract skill name from frontmatter early — needed for both TemplateContext and external host output paths.
+  // When frontmatter name: differs from directory name (e.g., run-tests/ with name: test),
+  // the frontmatter name is used for external skill naming and setup script symlinks.
   const { name: extractedName, description: extractedDescription } = extractNameAndDescription(tmplContent);
   const skillName = extractedName || path.basename(path.dirname(tmplPath));
+
 
   // Extract benefits-from list from frontmatter (inline YAML: benefits-from: [a, b])
   const benefitsMatch = tmplContent.match(/^benefits-from:\s*\[([^\]]*)\]/m);
@@ -340,18 +407,30 @@ function processTemplate(tmplPath: string, host: Host = 'claude'): { outputPath:
 
   const ctx: TemplateContext = { skillName, tmplPath, benefitsFrom, host, paths: HOST_PATHS[host], preambleTier };
 
-  // Replace placeholders
-  let content = tmplContent.replace(/\{\{(\w+)\}\}/g, (match, name) => {
-    const resolver = RESOLVERS[name];
-    if (!resolver) throw new Error(`Unknown placeholder {{${name}}} in ${relTmplPath}`);
-    return resolver(ctx);
+  // Replace placeholders (supports parameterized: {{NAME:arg1:arg2}})
+  let content = tmplContent.replace(/\{\{(\w+(?::[^}]+)?)\}\}/g, (match, fullKey) => {
+    const parts = fullKey.split(':');
+    const resolverName = parts[0];
+    const args = parts.slice(1);
+    const resolver = RESOLVERS[resolverName];
+    if (!resolver) throw new Error(`Unknown placeholder {{${resolverName}}} in ${relTmplPath}`);
+    return args.length > 0 ? resolver(ctx, args) : resolver(ctx);
   });
 
   // Check for any remaining unresolved placeholders
-  const remaining = content.match(/\{\{(\w+)\}\}/g);
+  const remaining = content.match(/\{\{(\w+(?::[^}]+)?)\}\}/g);
   if (remaining) {
     throw new Error(`Unresolved placeholders in ${relTmplPath}: ${remaining.join(', ')}`);
   }
+
+  // Preprocess voice triggers: fold into description, strip field from frontmatter.
+  // Must run BEFORE transformFrontmatter so all hosts see the updated description,
+  // and BEFORE extractedDescription is used by external host metadata.
+  content = processVoiceTriggers(content);
+
+  // Re-extract description AFTER voice trigger preprocessing so Codex openai.yaml
+  // metadata gets the updated description with voice triggers included.
+  const postProcessDescription = extractNameAndDescription(content).description;
 
   // For Claude: strip sensitive: field (only Factory uses it)
   // For external hosts: route output, transform frontmatter, rewrite paths
@@ -359,7 +438,7 @@ function processTemplate(tmplPath: string, host: Host = 'claude'): { outputPath:
   if (host === 'claude') {
     content = transformFrontmatter(content, host);
   } else {
-    const result = processExternalHost(content, tmplContent, host, skillDir, extractedDescription, ctx);
+    const result = processExternalHost(content, tmplContent, host, skillDir, postProcessDescription, ctx, extractedName || undefined);
     content = result.content;
     outputPath = result.outputPath;
     symlinkLoop = result.symlinkLoop;
@@ -461,3 +540,16 @@ if (failures.length > 0 && HOST_ARG_VAL === 'all') {
   if (failures.some(f => f.host === 'claude')) process.exit(1);
 }
 // Single host dry-run failure already handled above
+
+// After all hosts processed, warn if prefix patches may need re-applying
+if (!DRY_RUN) {
+  try {
+    const configPath = path.join(process.env.HOME || '', '.gstack', 'config.yaml');
+    if (fs.existsSync(configPath)) {
+      const config = fs.readFileSync(configPath, 'utf-8');
+      if (/^skill_prefix:\s*true/m.test(config)) {
+        console.log('\nNote: skill_prefix is true. Run gstack-relink to re-apply name: patches.');
+      }
+    }
+  } catch { /* non-fatal */ }
+}

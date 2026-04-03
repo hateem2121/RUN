@@ -13,8 +13,7 @@
       "@shared": ["../shared/index.ts"],
       "@shared/*": ["../shared/*"],
       "@run-remix/shared": ["../shared/index.ts"],
-      "@run-remix/shared/*": ["../shared/*"],
-      "lru-cache": ["../node_modules/lru-cache"]
+      "@run-remix/shared/*": ["../shared/*"]
     },
     "lib": ["es2022"],
     "noUnusedLocals": false,
