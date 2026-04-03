@@ -50,22 +50,19 @@ jobs:
         continue-on-error: true
 
       - name: 🛡️ Trivy Vulnerability Scanner
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.28.0
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
-          exit-code: '0'
+          image-ref: "node:24-slim"
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH"
           ignore-unfixed: true
-        continue-on-error: true
 
-      - name: 📊 Upload Trivy Results to GitHub Security
+      - name: 📊 Upload Trivy Results
         uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results.sarif'
         if: always()
+        with:
+          sarif_file: "trivy-results.sarif"
 
       - name: 🔦 React Scan (Production Safety Check)
         run: |

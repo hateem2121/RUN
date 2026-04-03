@@ -23,6 +23,33 @@ const router = express.Router();
 
 const CACHE_TTL_FOOTER = 3600; // 1 hour cache for footer
 
+interface NavLink {
+  label: string;
+  href?: string;
+  url?: string;
+  external?: boolean;
+}
+
+interface NavColumn {
+  title: string;
+  links?: NavLink[];
+}
+
+interface SocialLink {
+  name?: string;
+  platform?: string;
+  icon?: string;
+  href?: string;
+  url?: string;
+  hoverColor?: string;
+}
+
+interface LegalLink {
+  label: string;
+  href?: string;
+  url?: string;
+}
+
 // Helper function to fetch and build footer configuration
 async function getFooterConfig() {
   // Query DB for footer config
@@ -179,30 +206,32 @@ router.patch("/admin/footer", authService.requireAdmin, async (req, res) => {
   const normalizedData: Record<string, unknown> = { ...validatedData };
 
   if (validatedData.navigationColumns) {
-    normalizedData.navigationColumns = validatedData.navigationColumns.map((col) => ({
-      title: col.title,
-      links:
-        col.links?.map((link) => ({
-          label: link.label,
-          href: link.href || ((link as Record<string, unknown>).url as string),
-          external: link.external,
-        })) || [],
-    }));
+    normalizedData.navigationColumns = (validatedData.navigationColumns as NavColumn[]).map(
+      (col) => ({
+        title: col.title,
+        links:
+          col.links?.map((link) => ({
+            label: link.label,
+            href: link.href || link.url,
+            external: link.external,
+          })) || [],
+      }),
+    );
   }
 
   if (validatedData.socialLinks) {
-    normalizedData.socialLinks = validatedData.socialLinks.map((social) => ({
-      name: social.name || ((social as Record<string, unknown>).platform as string),
+    normalizedData.socialLinks = (validatedData.socialLinks as SocialLink[]).map((social) => ({
+      name: social.name || social.platform,
       icon: social.icon,
-      href: social.href || ((social as Record<string, unknown>).url as string),
+      href: social.href || social.url,
       hoverColor: social.hoverColor,
     }));
   }
 
   if (validatedData.legalLinks) {
-    normalizedData.legalLinks = validatedData.legalLinks.map((link) => ({
+    normalizedData.legalLinks = (validatedData.legalLinks as LegalLink[]).map((link) => ({
       label: link.label,
-      href: link.href || ((link as Record<string, unknown>).url as string),
+      href: link.href || link.url,
     }));
   }
 
