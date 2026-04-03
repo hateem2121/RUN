@@ -79,7 +79,7 @@ export class AdminService {
     newValues?: Record<string, unknown>;
     oldValues?: Record<string, unknown>;
   }) {
-    const userEmail = data.user?.email;
+    const userEmail = data.user?.claims?.email;
     const encryptedUserEmail = userEmail ? encrypt(userEmail) : undefined;
     const userEmailIndex = userEmail ? getBlindIndex(userEmail) : undefined;
     const encryptedIpAddress = data.ipAddress ? encrypt(data.ipAddress) : undefined;
@@ -90,7 +90,7 @@ export class AdminService {
       action: data.action,
       tableName: data.tableName,
       recordId: data.recordId,
-      userId: data.user?.id,
+      userId: data.user?.claims?.sub,
       userEmail: encryptedUserEmail,
       userEmailIndex: userEmailIndex,
       userAgent: encryptedUserAgent,
