@@ -14,7 +14,7 @@ env:
 
 jobs:
   health-check:
-    if: github.event_name == 'workflow_dispatch' || (secrets.PRODUCTION_URL != null && secrets.PRODUCTION_URL != '')
+    if: github.event_name == 'workflow_dispatch' || (env.PRODUCTION_URL != null && env.PRODUCTION_URL != '')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     
