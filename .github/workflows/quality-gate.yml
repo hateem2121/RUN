@@ -50,9 +50,10 @@ jobs:
         continue-on-error: true
 
       - name: 🛡️ Trivy Vulnerability Scanner
-        uses: aquasecurity/trivy-action@v0.28.0
+        uses: aquasecurity/trivy-action@master
         with:
-          image-ref: "node:24-slim"
+          scan-type: "fs"
+          scan-ref: "."
           format: "sarif"
           output: "trivy-results.sarif"
           severity: "CRITICAL,HIGH"

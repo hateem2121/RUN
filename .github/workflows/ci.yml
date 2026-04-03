@@ -83,6 +83,8 @@ jobs:
           node-version: "24"
           cache: "npm"
       - run: npm ci
+      - name: Build Shared Declarations
+        run: npm run build --prefix shared
       - run: npm run typecheck
 
   security_audit:
@@ -200,8 +202,6 @@ jobs:
           node-version: "24"
           cache: "npm"
       - run: npm ci
-      - name: Build Shared Locally
-        run: npm run build --prefix shared
       - name: Cache Turbo
         uses: actions/cache@v4
         with:
