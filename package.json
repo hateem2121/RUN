@@ -90,7 +90,7 @@
       "biome check --write"
     ],
     "*.{js,json,md}": [
-      "biome check --write"
+      "biome check --write --files-ignore-unknown=true"
     ]
   },
   "dependencies": {
