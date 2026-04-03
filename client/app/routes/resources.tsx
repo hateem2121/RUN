@@ -221,7 +221,7 @@ export default function Resources() {
             items={filteredResults}
             columns={3}
             emptyState={
-          <div className="py-16 text-center">
+              <div className="py-16 text-center">
                 <Filter className="mx-auto mb-4 h-16 w-16 text-muted-foreground/50" />
                 <Typography.H3 className="mb-2 font-semibold text-foreground text-xl">
                   No results found
@@ -277,10 +277,7 @@ export default function Resources() {
                           : 0;
 
               return (
-                <div
-                  key={category.id}
-                  className="resource-category-item"
-                >
+                <div key={category.id} className="resource-category-item">
                   {category.id === "fabrics" ? (
                     <Link to={category.href}>
                       <HoverCard3D>

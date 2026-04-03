@@ -95,6 +95,7 @@ const Footer: React.FC = () => {
       {footerConfig?.structuredData && (
         <script
           type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data is server-controlled, not user input
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(footerConfig.structuredData),
           }}

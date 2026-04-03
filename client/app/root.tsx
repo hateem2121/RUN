@@ -121,6 +121,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* Theme script MUST be first to prevent FOUC - applies .dark before CSS loads */}
         <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: hardcoded theme-init script, no user input
           dangerouslySetInnerHTML={{
             __html: `
               (function() {

@@ -145,6 +145,7 @@ export function PublicHeroSection({
           </div>
 
           <style
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: hardcoded static CSS string, no user input
             dangerouslySetInnerHTML={{
               __html: `
             .spark {

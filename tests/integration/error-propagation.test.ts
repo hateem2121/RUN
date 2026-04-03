@@ -1,5 +1,5 @@
 import request from "supertest";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { app, serverReady } from "../../server/server.js";
 
 describe("Express 5 Async Error Propagation", () => {

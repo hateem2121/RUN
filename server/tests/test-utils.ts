@@ -108,10 +108,10 @@ export function withAuthenticatedUser(user: SessionUser) {
     _res: import("express").Response,
     next: import("express").NextFunction,
   ) => {
+    // biome-ignore lint/suspicious/noExplicitAny: augmenting Express request in test utilities
     (req as any).user = user;
-    (req as any).isAuthenticated = function(): this is { user: SessionUser } {
-      return true;
-    };
+    // biome-ignore lint/suspicious/noExplicitAny: augmenting Express request in test utilities
+    (req as any).isAuthenticated = (): this is { user: SessionUser } => true;
     next();
   };
 }

@@ -9,8 +9,11 @@ import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
 import ffprobeStatic from "ffprobe-static";
-// Use casting to access path if it's an object, or use as is
-const ffprobePath = (ffprobeStatic as any).path || ffprobeStatic;
+
+// ffprobe-static exports either a string path or an object with a .path property depending on version
+const ffprobePath =
+  (ffprobeStatic as { path: string }).path ?? (ffprobeStatic as unknown as string);
+
 import type { InsertMediaAsset, MediaAsset } from "../../../shared/index.js";
 import { type ImageVariants, isImageFile, processImage } from "../../image-processor.js";
 import { mediaRepository } from "../../lib/db/repositories/index.js";

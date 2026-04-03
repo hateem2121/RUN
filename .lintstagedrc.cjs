@@ -3,9 +3,7 @@
 // "No files were processed". This filter prevents that by stripping those paths
 // before passing to biome. Remaining paths are quoted to handle spaces.
 const biomeCheck = (files) => {
-  const toCheck = files.filter(
-    (f) => !f.includes("/.claude/") && !f.endsWith(".md"),
-  );
+  const toCheck = files.filter((f) => !f.includes("/.claude/") && !f.endsWith(".md"));
   if (toCheck.length === 0) return [];
   const quoted = toCheck.map((f) => `"${f}"`).join(" ");
   return [`biome check --write --files-ignore-unknown=true ${quoted}`];

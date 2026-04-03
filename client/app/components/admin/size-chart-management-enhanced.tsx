@@ -100,7 +100,9 @@ const SizeChartList = ({
   return (
     <div className="max-h-96 space-y-4 overflow-y-auto">
       {sizeCharts.map((chart) => {
-        const validation = validateMeasurements((chart.measurements as Record<string, unknown>) || {});
+        const validation = validateMeasurements(
+          (chart.measurements as Record<string, unknown>) || {},
+        );
         return (
           <div
             key={chart.id}

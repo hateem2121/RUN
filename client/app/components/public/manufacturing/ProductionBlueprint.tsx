@@ -185,6 +185,7 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
 
         {/* Custom CSS for Wipe Reveal directly in component scope */}
         <style
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: hardcoded static CSS string, no user input
           dangerouslySetInnerHTML={{
             __html:
               ".blueprint-corner { position: absolute; width: 15px; height: 15px; border: 2px solid #FF4D00; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }" +

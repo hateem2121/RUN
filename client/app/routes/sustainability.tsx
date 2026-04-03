@@ -734,8 +734,9 @@ function SustainabilityInner() {
             <FabricPortfolioSection
               mediaAssets={mediaAssets || []}
               selectedFabricIds={
-        ((unifiedData?.data as Record<string, unknown>)?.selectedFabricIds as number[]) || []
-      }
+                ((unifiedData?.data as Record<string, unknown>)?.selectedFabricIds as number[]) ||
+                []
+              }
               fabrics={batchData?.fabrics || []}
             />
           </div>

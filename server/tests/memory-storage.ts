@@ -85,13 +85,13 @@ import type {
   SizeChart,
   StorageAnalysisResult,
   StorageChangeLog,
+  SustainabilityCallToAction,
   SustainabilityFeatures,
   SustainabilityGoal,
   SustainabilityHero,
   SustainabilityInitiative,
   SustainabilityMetric,
   SustainabilitySectionHeaders,
-  SustainabilityCallToAction,
   TechnologyCta,
   TechnologyEquipment,
   TechnologyGradientSettings,
@@ -133,7 +133,6 @@ export class MemoryStorage implements IStorage {
   private homepageSections = new Map<number, HomepageSection>();
   private homepageSustainability = new Map<number, HomepageSustainability>();
   private logoAnimationSettings = new Map<number, LogoAnimationSettings>();
-  private footerConfigurations = new Map<number, FooterConfiguration>();
   private aboutHeroes = new Map<number, AboutHero>();
   private aboutTimelineEntries = new Map<number, AboutTimelineEntry>();
   private aboutMapLocations = new Map<number, AboutMapLocation>();
@@ -792,17 +791,18 @@ export class MemoryStorage implements IStorage {
   async searchProducts(
     query: string,
     filters?: { categoryId?: number; isActive?: boolean; isFeatured?: boolean },
-    limit = 100, 
-    offset = 0
+    limit = 100,
+    offset = 0,
   ): Promise<ProductSummary[]> {
     const q = query.toLowerCase();
     return Array.from(this.products.values())
       .filter((p) => {
         const nameMatch = p.name.toLowerCase().includes(q);
         const descMatch = (p.description || "").toLowerCase().includes(q);
-        const matchesFilters = (!filters?.categoryId || p.categoryId === filters.categoryId) &&
-                               (filters?.isActive === undefined || p.isActive === filters.isActive) &&
-                               (filters?.isFeatured === undefined || p.isFeatured === filters.isFeatured);
+        const matchesFilters =
+          (!filters?.categoryId || p.categoryId === filters.categoryId) &&
+          (filters?.isActive === undefined || p.isActive === filters.isActive) &&
+          (filters?.isFeatured === undefined || p.isFeatured === filters.isFeatured);
         return (nameMatch || descMatch) && matchesFilters && !p.deletedAt;
       })
       .slice(offset, offset + limit) as unknown as ProductSummary[];
@@ -985,7 +985,11 @@ export class MemoryStorage implements IStorage {
   async deleteInquiry(id: number): Promise<boolean> {
     return this.inquiries.delete(id);
   }
-  async getInquiryStats(): Promise<{ byStatus: Record<string, number>; bySource: Record<string, number>; recentCount: number; }> {
+  async getInquiryStats(): Promise<{
+    byStatus: Record<string, number>;
+    bySource: Record<string, number>;
+    recentCount: number;
+  }> {
     return { byStatus: {}, bySource: {}, recentCount: 0 };
   }
 
@@ -1004,7 +1008,9 @@ export class MemoryStorage implements IStorage {
     return updated;
   }
   async getHomepageSlogans(): Promise<HomepageSlogan[]> {
-    return Array.from(this.homepageSlogans.values()).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+    return Array.from(this.homepageSlogans.values()).sort(
+      (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0),
+    );
   }
   async getHomepageSlogan(id: number): Promise<HomepageSlogan | undefined> {
     return this.homepageSlogans.get(id);
@@ -1038,7 +1044,7 @@ export class MemoryStorage implements IStorage {
   }
   async getHomepageProcessCards(includeInactive?: boolean): Promise<HomepageProcessCard[]> {
     return Array.from(this.homepageProcessCards.values())
-      .filter(c => includeInactive || c.isActive)
+      .filter((c) => includeInactive || c.isActive)
       .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
   }
   async getHomepageProcessCard(id: number): Promise<HomepageProcessCard | undefined> {
@@ -1075,7 +1081,7 @@ export class MemoryStorage implements IStorage {
     return Array.from(this.homepageSections.values());
   }
   async getHomepageSection(name: string): Promise<HomepageSection | undefined> {
-    return Array.from(this.homepageSections.values()).find(s => s.name === name);
+    return Array.from(this.homepageSections.values()).find((s) => s.name === name);
   }
   async getHomepageSectionById(id: number): Promise<HomepageSection | undefined> {
     return this.homepageSections.get(id);
@@ -1159,7 +1165,7 @@ export class MemoryStorage implements IStorage {
   }
   async getAboutTimelineEntries(includeInactive?: boolean): Promise<AboutTimelineEntry[]> {
     return Array.from(this.aboutTimelineEntries.values())
-      .filter(e => includeInactive || e.isActive)
+      .filter((e) => includeInactive || e.isActive)
       .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
   }
   async getAboutTimelineEntry(id: number): Promise<AboutTimelineEntry | undefined> {
@@ -1193,8 +1199,7 @@ export class MemoryStorage implements IStorage {
     });
   }
   async getAboutMapLocations(includeInactive?: boolean): Promise<AboutMapLocation[]> {
-    return Array.from(this.aboutMapLocations.values())
-      .filter(l => includeInactive || l.isActive);
+    return Array.from(this.aboutMapLocations.values()).filter((l) => includeInactive || l.isActive);
   }
   async getAboutMapLocation(id: number): Promise<AboutMapLocation | undefined> {
     return this.aboutMapLocations.get(id);
@@ -1220,7 +1225,7 @@ export class MemoryStorage implements IStorage {
   }
   async getAboutSections(includeInactive?: boolean): Promise<AboutSection[]> {
     return Array.from(this.aboutSections.values())
-      .filter(s => includeInactive || s.isActive)
+      .filter((s) => includeInactive || s.isActive)
       .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
   }
   async getAboutSection(id: number): Promise<AboutSection | undefined> {
@@ -1255,7 +1260,7 @@ export class MemoryStorage implements IStorage {
   }
   async getAboutStatistics(includeInactive?: boolean): Promise<AboutStatistic[]> {
     return Array.from(this.aboutStatistics.values())
-      .filter(s => includeInactive || s.isActive)
+      .filter((s) => includeInactive || s.isActive)
       .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
   }
   async getAboutStatistic(id: number): Promise<AboutStatistic | undefined> {
@@ -1311,7 +1316,9 @@ export class MemoryStorage implements IStorage {
   async getSustainabilityHero(): Promise<SustainabilityHero | undefined> {
     return Array.from(this.sustainabilityHero.values())[0];
   }
-  async updateSustainabilityHero(hero: Partial<InsertSustainabilityHero>): Promise<SustainabilityHero> {
+  async updateSustainabilityHero(
+    hero: Partial<InsertSustainabilityHero>,
+  ): Promise<SustainabilityHero> {
     const existing = await this.getSustainabilityHero();
     const updated = {
       id: existing?.id || 1,
@@ -1333,7 +1340,9 @@ export class MemoryStorage implements IStorage {
   async getSustainabilityMetric(id: number): Promise<SustainabilityMetric | undefined> {
     return this.sustainabilityMetrics.get(id);
   }
-  async createSustainabilityMetric(metric: InsertSustainabilityMetric): Promise<SustainabilityMetric> {
+  async createSustainabilityMetric(
+    metric: InsertSustainabilityMetric,
+  ): Promise<SustainabilityMetric> {
     const id = this.nextIds.sustainabilityMetric++;
     const newMetric: SustainabilityMetric = {
       ...metric,
@@ -1350,7 +1359,10 @@ export class MemoryStorage implements IStorage {
     this.sustainabilityMetrics.set(id, newMetric);
     return newMetric;
   }
-  async updateSustainabilityMetric(id: number, metric: Partial<InsertSustainabilityMetric>): Promise<SustainabilityMetric | undefined> {
+  async updateSustainabilityMetric(
+    id: number,
+    metric: Partial<InsertSustainabilityMetric>,
+  ): Promise<SustainabilityMetric | undefined> {
     const existing = this.sustainabilityMetrics.get(id);
     if (!existing) return undefined;
     const updated: SustainabilityMetric = {
@@ -1382,7 +1394,9 @@ export class MemoryStorage implements IStorage {
   async getSustainabilityInitiative(id: number): Promise<SustainabilityInitiative | undefined> {
     return this.sustainabilityInitiatives.get(id);
   }
-  async createSustainabilityInitiative(initiative: InsertSustainabilityInitiative): Promise<SustainabilityInitiative> {
+  async createSustainabilityInitiative(
+    initiative: InsertSustainabilityInitiative,
+  ): Promise<SustainabilityInitiative> {
     const id = this.nextIds.sustainabilityInitiative++;
     const newInitiative: SustainabilityInitiative = {
       ...initiative,
@@ -1404,7 +1418,10 @@ export class MemoryStorage implements IStorage {
     this.sustainabilityInitiatives.set(id, newInitiative);
     return newInitiative;
   }
-  async updateSustainabilityInitiative(id: number, initiative: Partial<InsertSustainabilityInitiative>): Promise<SustainabilityInitiative | undefined> {
+  async updateSustainabilityInitiative(
+    id: number,
+    initiative: Partial<InsertSustainabilityInitiative>,
+  ): Promise<SustainabilityInitiative | undefined> {
     const existing = this.sustainabilityInitiatives.get(id);
     if (!existing) return undefined;
     const updated: SustainabilityInitiative = {
@@ -1459,7 +1476,10 @@ export class MemoryStorage implements IStorage {
     this.sustainabilityGoals.set(id, newGoal);
     return newGoal;
   }
-  async updateSustainabilityGoal(id: number, goal: Partial<InsertSustainabilityGoal>): Promise<SustainabilityGoal | undefined> {
+  async updateSustainabilityGoal(
+    id: number,
+    goal: Partial<InsertSustainabilityGoal>,
+  ): Promise<SustainabilityGoal | undefined> {
     const existing = this.sustainabilityGoals.get(id);
     if (!existing) return undefined;
     const updated: SustainabilityGoal = {
@@ -1524,7 +1544,9 @@ export class MemoryStorage implements IStorage {
   async getSustainabilityFeatures(): Promise<SustainabilityFeatures | undefined> {
     return Array.from(this.sustainabilityFeatures.values())[0];
   }
-  async updateSustainabilityFeatures(features: Partial<InsertSustainabilityFeatures>): Promise<SustainabilityFeatures> {
+  async updateSustainabilityFeatures(
+    features: Partial<InsertSustainabilityFeatures>,
+  ): Promise<SustainabilityFeatures> {
     const existingArray = Array.from(this.sustainabilityFeatures.values());
     const existing = existingArray[0];
     const id = existing ? existing.id : this.nextIds.sustainabilityFeatures++;
@@ -1547,7 +1569,9 @@ export class MemoryStorage implements IStorage {
   async getSustainabilityCallToAction(): Promise<SustainabilityCallToAction | undefined> {
     return Array.from(this.sustainabilityCallToAction.values())[0];
   }
-  async updateSustainabilityCallToAction(cta: Partial<SustainabilityCallToAction>): Promise<SustainabilityCallToAction> {
+  async updateSustainabilityCallToAction(
+    cta: Partial<SustainabilityCallToAction>,
+  ): Promise<SustainabilityCallToAction> {
     const existing = await this.getSustainabilityCallToAction();
     const updated = {
       ...existing,
@@ -1564,7 +1588,9 @@ export class MemoryStorage implements IStorage {
   async getManufacturingHero(): Promise<ManufacturingHero | undefined> {
     return this.getRawManufacturingHero();
   }
-  async updateManufacturingHero(hero: Partial<InsertManufacturingHero>): Promise<ManufacturingHero> {
+  async updateManufacturingHero(
+    hero: Partial<InsertManufacturingHero>,
+  ): Promise<ManufacturingHero> {
     const existing = await this.getRawManufacturingHero();
     const id = existing ? existing.id : this.nextIds.manufacturingHero++;
     const updated = {
@@ -1582,7 +1608,9 @@ export class MemoryStorage implements IStorage {
   async getManufacturingProcess(id: number): Promise<ManufacturingProcess | undefined> {
     return this.manufacturingProcesses.get(id);
   }
-  async createManufacturingProcess(process: InsertManufacturingProcess): Promise<ManufacturingProcess> {
+  async createManufacturingProcess(
+    process: InsertManufacturingProcess,
+  ): Promise<ManufacturingProcess> {
     const id = this.nextIds.manufacturingProcess++;
     const newProcess: ManufacturingProcess = {
       ...process,
@@ -1593,7 +1621,10 @@ export class MemoryStorage implements IStorage {
     this.manufacturingProcesses.set(id, newProcess);
     return newProcess;
   }
-  async updateManufacturingProcess(id: number, process: Partial<InsertManufacturingProcess>): Promise<ManufacturingProcess | undefined> {
+  async updateManufacturingProcess(
+    id: number,
+    process: Partial<InsertManufacturingProcess>,
+  ): Promise<ManufacturingProcess | undefined> {
     const existing = this.manufacturingProcesses.get(id);
     if (!existing) return undefined;
     const updated: ManufacturingProcess = {
@@ -1625,7 +1656,9 @@ export class MemoryStorage implements IStorage {
   async getManufacturingCapability(id: number): Promise<ManufacturingCapability | undefined> {
     return this.manufacturingCapabilities.get(id);
   }
-  async createManufacturingCapability(capability: InsertManufacturingCapability): Promise<ManufacturingCapability> {
+  async createManufacturingCapability(
+    capability: InsertManufacturingCapability,
+  ): Promise<ManufacturingCapability> {
     const id = this.nextIds.manufacturingCapability++;
     const newCap: ManufacturingCapability = {
       ...capability,
@@ -1636,7 +1669,10 @@ export class MemoryStorage implements IStorage {
     this.manufacturingCapabilities.set(id, newCap);
     return newCap;
   }
-  async updateManufacturingCapability(id: number, capability: Partial<InsertManufacturingCapability>): Promise<ManufacturingCapability | undefined> {
+  async updateManufacturingCapability(
+    id: number,
+    capability: Partial<InsertManufacturingCapability>,
+  ): Promise<ManufacturingCapability | undefined> {
     const existing = this.manufacturingCapabilities.get(id);
     if (!existing) return undefined;
     const updated: ManufacturingCapability = {
@@ -1668,7 +1704,9 @@ export class MemoryStorage implements IStorage {
   async getManufacturingQuality(id: number): Promise<ManufacturingQuality | undefined> {
     return this.manufacturingQualities.get(id);
   }
-  async createManufacturingQuality(quality: InsertManufacturingQuality): Promise<ManufacturingQuality> {
+  async createManufacturingQuality(
+    quality: InsertManufacturingQuality,
+  ): Promise<ManufacturingQuality> {
     const id = this.nextIds.manufacturingQuality++;
     const newQual: ManufacturingQuality = {
       ...quality,
@@ -1679,7 +1717,10 @@ export class MemoryStorage implements IStorage {
     this.manufacturingQualities.set(id, newQual);
     return newQual;
   }
-  async updateManufacturingQuality(id: number, quality: Partial<InsertManufacturingQuality>): Promise<ManufacturingQuality | undefined> {
+  async updateManufacturingQuality(
+    id: number,
+    quality: Partial<InsertManufacturingQuality>,
+  ): Promise<ManufacturingQuality | undefined> {
     const existing = this.manufacturingQualities.get(id);
     if (!existing) return undefined;
     const updated: ManufacturingQuality = {
@@ -1706,7 +1747,6 @@ export class MemoryStorage implements IStorage {
     }
   }
 
-
   // Technology Repository
   async getTechnologyHero(): Promise<TechnologyHero | undefined> {
     return Array.from(this.technologyHero.values())[0];
@@ -1729,7 +1769,9 @@ export class MemoryStorage implements IStorage {
   async getTechnologyInnovation(id: number): Promise<TechnologyInnovation | undefined> {
     return this.technologyInnovations.get(id);
   }
-  async createTechnologyInnovation(innovation: InsertTechnologyInnovation): Promise<TechnologyInnovation> {
+  async createTechnologyInnovation(
+    innovation: InsertTechnologyInnovation,
+  ): Promise<TechnologyInnovation> {
     const id = this.nextIds.technologyInnovation++;
     const newInnovation = {
       ...innovation,
@@ -1739,7 +1781,10 @@ export class MemoryStorage implements IStorage {
     this.technologyInnovations.set(id, newInnovation);
     return newInnovation;
   }
-  async updateTechnologyInnovation(id: number, innovation: Partial<InsertTechnologyInnovation>): Promise<TechnologyInnovation | undefined> {
+  async updateTechnologyInnovation(
+    id: number,
+    innovation: Partial<InsertTechnologyInnovation>,
+  ): Promise<TechnologyInnovation | undefined> {
     const existing = this.technologyInnovations.get(id);
     if (!existing) return undefined;
     const updated = { ...existing, ...innovation, id } as TechnologyInnovation;
@@ -1766,7 +1811,9 @@ export class MemoryStorage implements IStorage {
   async getTechnologyEquipmentItem(id: number): Promise<TechnologyEquipment | undefined> {
     return this.technologyEquipment.get(id);
   }
-  async createTechnologyEquipment(equipment: InsertTechnologyEquipment): Promise<TechnologyEquipment> {
+  async createTechnologyEquipment(
+    equipment: InsertTechnologyEquipment,
+  ): Promise<TechnologyEquipment> {
     const id = this.nextIds.technologyEquipment++;
     const newItem = {
       ...equipment,
@@ -1776,7 +1823,10 @@ export class MemoryStorage implements IStorage {
     this.technologyEquipment.set(id, newItem);
     return newItem;
   }
-  async updateTechnologyEquipment(id: number, equipment: Partial<InsertTechnologyEquipment>): Promise<TechnologyEquipment | undefined> {
+  async updateTechnologyEquipment(
+    id: number,
+    equipment: Partial<InsertTechnologyEquipment>,
+  ): Promise<TechnologyEquipment | undefined> {
     const existing = this.technologyEquipment.get(id);
     if (!existing) return undefined;
     const updated = { ...existing, ...equipment, id } as TechnologyEquipment;
@@ -1814,7 +1864,10 @@ export class MemoryStorage implements IStorage {
     this.technologyResearch.set(id, newItem);
     return newItem;
   }
-  async updateTechnologyResearch(id: number, research: Partial<InsertTechnologyResearch>): Promise<TechnologyResearch | undefined> {
+  async updateTechnologyResearch(
+    id: number,
+    research: Partial<InsertTechnologyResearch>,
+  ): Promise<TechnologyResearch | undefined> {
     const existing = this.technologyResearch.get(id);
     if (!existing) return undefined;
     const updated = { ...existing, ...research, id, updatedAt: new Date() } as TechnologyResearch;
@@ -1852,7 +1905,10 @@ export class MemoryStorage implements IStorage {
     this.technologyRoadmap.set(id, newItem);
     return newItem;
   }
-  async updateTechnologyRoadmap(id: number, roadmap: Partial<InsertTechnologyRoadmap>): Promise<TechnologyRoadmap | undefined> {
+  async updateTechnologyRoadmap(
+    id: number,
+    roadmap: Partial<InsertTechnologyRoadmap>,
+  ): Promise<TechnologyRoadmap | undefined> {
     const existing = this.technologyRoadmap.get(id);
     if (!existing) return undefined;
     const updated = { ...existing, ...roadmap, id, updatedAt: new Date() } as TechnologyRoadmap;
@@ -1959,12 +2015,16 @@ export class MemoryStorage implements IStorage {
     return this.animationErrors.delete(id);
   }
   async getUnresolvedAnimationErrors(): Promise<AnimationError[]> {
-    return Array.from(this.animationErrors.values()).filter(e => !e.resolved);
+    return Array.from(this.animationErrors.values()).filter((e) => !e.resolved);
   }
   async markAnimationErrorResolved(id: number): Promise<boolean> {
     const error = this.animationErrors.get(id);
     if (!error) return false;
-    this.animationErrors.set(id, { ...error, resolved: true, resolvedAt: new Date() } as AnimationError);
+    this.animationErrors.set(id, {
+      ...error,
+      resolved: true,
+      resolvedAt: new Date(),
+    } as AnimationError);
     return true;
   }
   async getPerformanceMetrics(): Promise<PerformanceMetric[]> {
@@ -1983,14 +2043,16 @@ export class MemoryStorage implements IStorage {
     return this.performanceMetrics.delete(id);
   }
   async getPerformanceMetricsByType(metricType: string): Promise<PerformanceMetric[]> {
-    return Array.from(this.performanceMetrics.values()).filter(m => m.metricType === metricType);
+    return Array.from(this.performanceMetrics.values()).filter((m) => m.metricType === metricType);
   }
   async getPerformanceMetricsByComponent(componentName: string): Promise<PerformanceMetric[]> {
-    return Array.from(this.performanceMetrics.values()).filter(m => m.componentName === componentName);
+    return Array.from(this.performanceMetrics.values()).filter(
+      (m) => m.componentName === componentName,
+    );
   }
   async getRecentPerformanceMetrics(hours: number): Promise<PerformanceMetric[]> {
     const cutoff = new Date(Date.now() - hours * 60 * 60 * 1000);
-    return Array.from(this.performanceMetrics.values()).filter(m => {
+    return Array.from(this.performanceMetrics.values()).filter((m) => {
       if (!m.timestamp) return false;
       return new Date(m.timestamp) >= cutoff;
     });
@@ -2002,7 +2064,11 @@ export class MemoryStorage implements IStorage {
     result: InsertStorageAnalysisResult,
   ): Promise<StorageAnalysisResult> {
     const id = this.nextIds.storageAnalysisResult++;
-    const newResult = { ...result, id, timestamp: new Date().toISOString() } as StorageAnalysisResult;
+    const newResult = {
+      ...result,
+      id,
+      timestamp: new Date().toISOString(),
+    } as StorageAnalysisResult;
     this.storageAnalysisResults.set(id, newResult);
     return newResult;
   }
@@ -2037,13 +2103,20 @@ export class MemoryStorage implements IStorage {
   }
   setAuditTrailEnabled(_enabled: boolean): void {}
   configureTrackedTables(_tables: string[]): void {}
-  async repairDatabaseIntegrity(): Promise<{ validated: number; repaired: number; removed: number; }> {
+  async repairDatabaseIntegrity(): Promise<{
+    validated: number;
+    repaired: number;
+    removed: number;
+  }> {
     return { validated: 0, repaired: 0, removed: 0 };
   }
-  async cleanupAllCorruptEntries(): Promise<{ totalCleaned: number; results: Record<string, unknown>; }> {
+  async cleanupAllCorruptEntries(): Promise<{
+    totalCleaned: number;
+    results: Record<string, unknown>;
+  }> {
     return { totalCleaned: 0, results: {} };
   }
-  async checkDatabaseHealth(): Promise<{ healthy: boolean; latency: number; }> {
+  async checkDatabaseHealth(): Promise<{ healthy: boolean; latency: number }> {
     return { healthy: true, latency: 0 };
   }
 

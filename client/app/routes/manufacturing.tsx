@@ -299,6 +299,7 @@ function ManufacturingInner() {
     <>
       <script
         type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data is hardcoded, not user input
         dangerouslySetInnerHTML={{ __html: generateStructuredData() }}
       />
       <div className="dark min-h-screen bg-[#0A0A0A] text-white font-helvetica selection:bg-amber-500/30">

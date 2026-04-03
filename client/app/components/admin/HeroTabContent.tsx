@@ -114,9 +114,7 @@ export function HeroTabContent({
                   <Button
                     type="button"
                     variant="ghost"
-                    onClick={() =>
-                      onLocalUpdate({ backgroundImageId: null })
-                    }
+                    onClick={() => onLocalUpdate({ backgroundImageId: null })}
                     className="h-14 w-14 rounded-xl border border-white/10 hover:bg-red-500/10 hover:text-red-400 text-[#68869A]"
                   >
                     <Plus className="h-5 w-5 rotate-45" />

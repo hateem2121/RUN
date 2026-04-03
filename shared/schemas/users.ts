@@ -43,8 +43,8 @@ export const users = pgTable("users", {
   updatedAt: timestamp({ mode: "date", precision: 3 }).defaultNow().notNull(),
 });
 
-import { z } from "zod";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { z } from "zod";
 
 // Zod Schemas
 export const selectUserSchema = createSelectSchema(users);
