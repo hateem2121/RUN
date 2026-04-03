@@ -10,6 +10,10 @@ jobs:
   quality-check:
     name: 🛡️ April 2026 Quality Gate
     runs-on: ubuntu-latest
+        permissions:
+              security-events: write
+                    contents: read
+                    
 
     services:
       postgres:
