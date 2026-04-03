@@ -117,7 +117,7 @@ jobs:
 
   test:
     name: Test & Verify
-    needs: setup
+    needs: [setup, build_shared]
     if: |
       github.event_name == 'pull_request' && (
       github.event.action == 'synchronize'
@@ -146,7 +146,8 @@ jobs:
           cache: "npm"
 
       - run: npm ci
-
+      - name: Build Shared Locally
+        run: npm run build --prefix shared
       - name: Push Database Schema
         run: npm run db:push
         env:
@@ -199,6 +200,8 @@ jobs:
           node-version: "24"
           cache: "npm"
       - run: npm ci
+      - name: Build Shared Locally
+        run: npm run build --prefix shared
       - name: Cache Turbo
         uses: actions/cache@v4
         with:

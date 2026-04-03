@@ -5,6 +5,8 @@
  */
 
 import type {
+  Certificate,
+  Fiber,
   InsertCertificate,
   InsertFiber,
   InsertProduct,
@@ -107,7 +109,13 @@ export class AdminService {
     page: number = 1,
     limit: number = 50,
     options: { skipMetadata?: boolean; includeRecentMedia?: boolean } = {},
-  ) {
+  ): Promise<{
+    products: unknown[];
+    categories: unknown[];
+    fabrics: unknown[];
+    mediaAssets: unknown[];
+    meta: unknown;
+  }> {
     const offset = (page - 1) * limit;
 
     const metadataPromises = options.skipMetadata
@@ -206,7 +214,13 @@ export class AdminService {
     search?: string;
     categoryId?: string;
     status?: string;
-  }) {
+  }): Promise<{
+    products: unknown[];
+    categories: unknown[];
+    fabrics: unknown[];
+    mediaAssets: unknown[];
+    meta: unknown;
+  }> {
     const { page = 1, limit = 50, search, categoryId, status } = options;
     const offset = (page - 1) * limit;
 
@@ -290,7 +304,7 @@ export class AdminService {
   /**
    * Creates a new product and logs the action
    */
-  async createProduct(audit: AuditContext, data: InsertProduct) {
+  async createProduct(audit: AuditContext, data: InsertProduct): Promise<Product> {
     const newProduct = await this.productRepo.createProduct(data);
 
     // Log the creation
@@ -310,7 +324,11 @@ export class AdminService {
   /**
    * Updates an existing product and logs the action
    */
-  async updateProduct(audit: AuditContext, id: number, data: Partial<InsertProduct>) {
+  async updateProduct(
+    audit: AuditContext,
+    id: number,
+    data: Partial<InsertProduct>,
+  ): Promise<Product> {
     // Get original for audit log
     const original = await this.productRepo.getProduct(id);
 
@@ -325,17 +343,20 @@ export class AdminService {
       userAgent: audit.userAgent,
       ipAddress: audit.ipAddress,
       oldValues: original as Record<string, unknown>,
-      newValues: updatedProduct as Record<string, unknown>,
+      newValues: updatedProduct! as Record<string, unknown>,
     });
 
-    return updatedProduct;
+    return updatedProduct!;
   }
 
   /**
    * Corrects media URL corruption in category featured content.
    * Optimized to process in parallel chunks and filter before processing.
    */
-  async fixCorruptedMedia(audit: AuditContext, timeoutMs = 30000) {
+  async fixCorruptedMedia(
+    audit: AuditContext,
+    timeoutMs = 30000,
+  ): Promise<{ fixedCount: number; fixedCategories: string[] }> {
     logger.debug("AdminService: Starting cleanup of corrupted media URLs", { timeoutMs });
     // Fetch all categories - this is fast
     const categories = await withTimeout(
@@ -716,11 +737,11 @@ export class AdminService {
   // CERTIFICATE MANAGEMENT
   // =============================================================================
 
-  async getCertificatesList() {
+  async getCertificatesList(): Promise<Certificate[]> {
     return this.miscRepo.getCertificates();
   }
 
-  async createCertificate(audit: AuditContext, data: unknown) {
+  async createCertificate(audit: AuditContext, data: unknown): Promise<Certificate> {
     const validated = insertCertificateSchema.parse(data);
     const result = await this.miscRepo.createCertificate(validated);
 
@@ -737,7 +758,11 @@ export class AdminService {
     return result;
   }
 
-  async updateCertificate(audit: AuditContext, id: number, data: Partial<InsertCertificate>) {
+  async updateCertificate(
+    audit: AuditContext,
+    id: number,
+    data: Partial<InsertCertificate>,
+  ): Promise<Certificate> {
     const original = await this.miscRepo.getCertificate(id);
     const result = await this.miscRepo.updateCertificate(id, data);
 
@@ -749,10 +774,10 @@ export class AdminService {
       userAgent: audit.userAgent,
       ipAddress: audit.ipAddress,
       oldValues: original as Record<string, unknown>,
-      newValues: result as Record<string, unknown>,
+      newValues: result! as Record<string, unknown>,
     });
 
-    return result;
+    return result!;
   }
 
   async deleteCertificate(audit: AuditContext, id: number) {
@@ -778,11 +803,11 @@ export class AdminService {
   // FIBER MANAGEMENT
   // =============================================================================
 
-  async getFibersList() {
+  async getFibersList(): Promise<Fiber[]> {
     return this.miscRepo.getFibers();
   }
 
-  async createFiber(audit: AuditContext, data: unknown) {
+  async createFiber(audit: AuditContext, data: unknown): Promise<Fiber> {
     const validated = insertFiberSchema.parse(data);
     const result = await this.miscRepo.createFiber(validated);
 
@@ -795,11 +820,10 @@ export class AdminService {
       ipAddress: audit.ipAddress,
       newValues: result as Record<string, unknown>,
     });
-
-    return result;
+    return result!;
   }
 
-  async updateFiber(audit: AuditContext, id: number, data: Partial<InsertFiber>) {
+  async updateFiber(audit: AuditContext, id: number, data: Partial<InsertFiber>): Promise<Fiber> {
     const original = await this.miscRepo.getFiber(id);
     const result = await this.miscRepo.updateFiber(id, data);
 
@@ -813,8 +837,7 @@ export class AdminService {
       oldValues: original as Record<string, unknown>,
       newValues: result as Record<string, unknown>,
     });
-
-    return result;
+    return result!;
   }
 
   async deleteFiber(audit: AuditContext, id: number) {
