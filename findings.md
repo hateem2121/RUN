@@ -683,3 +683,25 @@ Services coverage target (80%+): CANNOT BE VERIFIED.
 A **focused remediation sprint is required before the next production deploy** — the four Critical findings (TypeScript regression, `/resources` runtime crash, Express 5 try/catch residue, and test suite collapse at 62% failure rate) represent compounding risk where each one individually blocks confident deployment, and together they mean the codebase cannot be reliably built, tested, or operated. The **three highest-priority sub-domains for immediate deep investigation after the remediation sprint** are: **(1) Vite bundle analysis** — blocked by C1, must verify chunk sizes after removing `three` and cleaning dead chunk config; **(2) E2E + accessibility suite** — blocked by C4, the 385 passing tests cannot be trusted without knowing what the 51 failing tests were covering; and **(3) CORS production restoration** — H2 must be resolved urgently as commented-out origin headers mean any cross-origin API call (webhooks, CDN-served assets, external integrations) silently fails in the live environment. Fixes 1–5 in the remediation queue are all Simple tasks that can restore the build to a deployable state within a single focused session.
 
 - Run health checks and tech integrity verification.
+
+---
+
+## Logic Alignment Remediation — April 2026
+
+**Conducted by:** Antigravity (AI Coding Assistant)
+**Status:** Complete ✅ · Typecheck (Server) ✅ · Logic Alignment ✅
+
+### Completed Fixes
+
+| Item | Description | Files Changed |
+|------|-------------|---------------|
+| MemoryStorage Cleanup | Removed all duplicate method implementations and fixed 'unknown' return types in `tests/memory-storage.ts`. | `tests/memory-storage.ts` |
+| Webhook Type Integrity | Updated `IWebhookRepository` and `MemoryStorage` to use proper `WebhookSubscription` and `InsertWebhookSubscription` types. | `server/repositories/storage-interfaces.ts`, `tests/memory-storage.ts` |
+| Storage Singleton | Verified `StorageSingleton` correctly uses the updated `IStorage` interface. | `server/lib/storage-singleton.ts` |
+| Product Repo Alignment | Fixed `category` insertion in `product-repository.ts` to align with the new logic. | `server/lib/db/repositories/product-repository.ts` |
+
+### Verification Result
+
+- **TypeScript:** `npm run typecheck` in `@run-remix/server` passes with zero errors.
+- **Redundancy:** `MemoryStorage` methods no longer shadow each other.
+- **Consistency:** All storage methods now use the same shared types from `@run-remix/shared`.

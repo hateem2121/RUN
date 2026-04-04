@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 
 // Accordion state interface
-interface AccordionState {
+export interface AccordionState {
   [key: string]: boolean;
 }
 

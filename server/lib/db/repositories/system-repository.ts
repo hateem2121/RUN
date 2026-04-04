@@ -3,12 +3,17 @@ import { desc } from "drizzle-orm";
 import { db } from "../../../db.js";
 import { decrypt } from "../../encryption.js";
 import { logger } from "../../monitoring/logger.js";
+import { StorageSingleton } from "../../storage-singleton.js";
 
 export class SystemRepository {
   /**
    * Get recent audit logs
    */
   async getRecentAuditLogs(limit: number = 100): Promise<AuditLog[]> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getRecentAuditLogs(limit);
+    }
     const logs = await db.select().from(auditLogs).orderBy(desc(auditLogs.createdAt)).limit(limit);
     return logs.map((log) => this.decryptAuditLog(log));
   }
@@ -17,6 +22,10 @@ export class SystemRepository {
    * Create a new audit log
    */
   async createAuditLog(log: InsertAuditLog): Promise<AuditLog> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createAuditLog(log);
+    }
     const [created] = await db.insert(auditLogs).values(log).returning();
     if (!created) {
       throw new Error("Failed to create audit log");

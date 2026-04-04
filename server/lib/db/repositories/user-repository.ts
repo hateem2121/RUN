@@ -9,6 +9,7 @@ import { users } from "../../../../shared/index.js";
 import { db } from "../../../db.js";
 import { decrypt, encrypt, getBlindIndex } from "../../encryption.js";
 import { logger } from "../../monitoring/logger.js";
+import { StorageSingleton } from "../../storage-singleton.js";
 
 export class UserRepository {
   /**
@@ -16,6 +17,10 @@ export class UserRepository {
    * Cost Optimization: No cache needed - middleware caches admin status
    */
   async getUser(id: string): Promise<User | undefined> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getUser(id);
+    }
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user ? this.decryptUser(user) : undefined;
   }
@@ -24,6 +29,10 @@ export class UserRepository {
    * Get user by email
    */
   async getUserByEmail(email: string): Promise<User | undefined> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getUserByEmail(email);
+    }
     const index = getBlindIndex(email);
     const [user] = await db.select().from(users).where(eq(users.emailIndex, index));
     return user ? this.decryptUser(user) : undefined;
@@ -36,6 +45,10 @@ export class UserRepository {
    * Admin promotion must be done manually via SQL to prevent privilege escalation
    */
   async upsertUser(userData: UpsertUser): Promise<User> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().upsertUser(userData);
+    }
     const encryptedData = {
       ...userData,
       email: userData.email ? encrypt(userData.email) : userData.email,

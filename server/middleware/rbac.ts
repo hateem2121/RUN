@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { logger } from "../lib/monitoring/logger.js";
-import { adminService } from "../services/admin/admin.service.js";
+import { adminService as defaultAdminService } from "../services/admin/admin.service.js";
 import { AuthErrors, authService } from "../services/auth-service.js";
 import type { SessionUser } from "../types/session.js";
 
@@ -11,8 +11,13 @@ import type { SessionUser } from "../types/session.js";
  */
 export function requireRole(...allowedRoles: string[]) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    // 0. Development bypass
-    if (process.env.NODE_ENV === "development") {
+    // Get the admin service from app context (for tests) or fallback to singleton
+    const adminService = req.app?.get("adminService") || defaultAdminService;
+    // 0. Test-only bypass (Disabled in production via env validation)
+    if (process.env.BYPASS_RBAC_FOR_TESTING === "true") {
+      logger.warn(
+        "[RBAC] ⚠️ Role check bypassed via BYPASS_RBAC_FOR_TESTING flag. THIS SHOULD NEVER HAPPEN IN PRODUCTION.",
+      );
       return next();
     }
 
@@ -35,16 +40,23 @@ export function requireRole(...allowedRoles: string[]) {
 
     let hasRole = false;
 
-    // Map 'admin' to secure admin check
-    if (allowedRoles.includes("admin")) {
-      const isAdmin = await authService.verifyAdminAccess(user);
-      if (isAdmin) {
-        hasRole = true;
+    for (const role of allowedRoles) {
+      if (role === "admin") {
+        if (await authService.verifyAdminAccess(user)) {
+          hasRole = true;
+          break;
+        }
+      } else {
+        // Generic role checking
+        if (
+          (user.claims as { role?: string })?.role === role ||
+          (user as { role?: string }).role === role
+        ) {
+          hasRole = true;
+          break;
+        }
       }
     }
-
-    // If we add other roles later (editor, viewer), check them here.
-    // e.g. if (allowedRoles.includes('editor') && user.isEditor) ...
 
     if (!hasRole) {
       // 3. SEC-F04: Audit Log - Access Denied

@@ -70,6 +70,8 @@ import type {
   InsertTechnologyResearch,
   InsertTechnologyRoadmap,
   InsertUnifiedSustainability,
+  InsertWebhookDelivery,
+  InsertWebhookSubscription,
   LogoAnimationSettings,
   ManufacturingCapability,
   ManufacturingHero,
@@ -97,6 +99,7 @@ import type {
   UnifiedSustainability,
   UpsertUser,
   User,
+  WebhookSubscription,
 } from "../../shared/index.js";
 import type { RepositoryCacheOptions } from "../lib/cache/cache-strategies.js";
 import type {
@@ -567,13 +570,17 @@ export interface ITechnologyRepository {
   createTechnologyCta(cta: InsertTechnologyCta): Promise<TechnologyCta>;
 }
 
+// Webhook Repository
 export interface IWebhookRepository {
-  getWebhookSubscriptions(): Promise<unknown[]>;
-  getWebhookSubscription(id: number): Promise<unknown | undefined>;
-  createWebhookSubscription(subscription: unknown): Promise<unknown>;
-  updateWebhookSubscription(id: number, subscription: unknown): Promise<unknown | undefined>;
+  getWebhookSubscriptions(): Promise<WebhookSubscription[]>;
+  getWebhookSubscription(id: number): Promise<WebhookSubscription | undefined>;
+  createWebhookSubscription(subscription: InsertWebhookSubscription): Promise<WebhookSubscription>;
+  updateWebhookSubscription(
+    id: number,
+    subscription: Partial<InsertWebhookSubscription>,
+  ): Promise<WebhookSubscription | undefined>;
   deleteWebhookSubscription(id: number): Promise<boolean>;
-  logWebhookDelivery(delivery: unknown): Promise<void>;
+  logWebhookDelivery(delivery: InsertWebhookDelivery): Promise<void>;
 }
 
 // System, Metrics & Audit

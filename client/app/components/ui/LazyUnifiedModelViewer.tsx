@@ -11,7 +11,7 @@ const UnifiedModelViewer = lazy(() =>
 function ModelViewerSkeleton({ className }: { className?: string }) {
   return (
     <div
-      className={`flex h-full w-full min-h-96 items-center justify-center rounded-lg bg-muted/50 ${className || ""}`}
+      className={`relative aspect-square h-full w-full items-center justify-center rounded-lg bg-muted/50 ${className || ""}`}
     >
       <div className="space-y-2 text-center">
         <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-surface-emphasis border-t-blue-600" />

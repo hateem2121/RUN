@@ -877,20 +877,20 @@ export function UnifiedModelViewer({
             // src set programmatically in useEffect
             alt: asset.originalName || "3D Model",
             poster: asset.thumbnailUrl || undefined, // Use thumbnail as poster image
-            reveal: userActivated || finalConfig.loading === "auto" ? "auto" : "interaction", // Use "auto" for modal, "interaction" for grid
+            reveal: userActivated || finalConfig.loading === "auto" ? "auto" : "interaction",
             "camera-controls": finalConfig.cameraControls,
-            "auto-rotate": isMobile ? false : finalConfig.autoRotate, // Disable auto-rotate on mobile to save battery
+            "auto-rotate": isMobile ? false : finalConfig.autoRotate,
             "background-color": finalConfig.backgroundColorHex,
-            exposure: isMobile ? Math.min(finalConfig.exposure || 1, 0.8) : finalConfig.exposure, // Reduce exposure on mobile
-            "shadow-intensity": isMobile ? 0.5 : finalConfig.shadowIntensity, // Reduce shadow-sm intensity on mobile (50% less GPU work)
+            exposure: isMobile ? Math.min(finalConfig.exposure || 1, 0.8) : finalConfig.exposure,
+            "shadow-intensity": isMobile ? 0.5 : finalConfig.shadowIntensity,
             "interaction-policy": finalConfig.interactionPolicy,
-            "draco-decoder-path": "https://www.gstatic.com/draco/versioned/decoders/1.5.6/", // Enable Draco compression
-            className: "w-full h-full min-h-96",
+            "draco-decoder-path": "https://www.gstatic.com/draco/versioned/decoders/1.5.6/",
+            className: "w-full h-full aspect-square",
             style: {
               width: "100%",
               height: "100%",
-              minHeight: "400px",
-              backgroundColor: finalConfig.backgroundColorHex || "hsl(240 10% 4%)", // matches --background
+              aspectRatio: "1 / 1",
+              backgroundColor: finalConfig.backgroundColorHex || "hsl(240 10% 4%)",
             },
             "data-testid": "model-viewer-element",
           })}

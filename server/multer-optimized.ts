@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import DOMPurify from "isomorphic-dompurify";
 import multer from "multer";
 
 // PHASE 1.2 FIX: Unified multer configuration - REMOVED file size limits per user request
@@ -29,7 +30,7 @@ function validateFileSignature(
   buffer: Buffer,
   mimetype: string,
   filename: string,
-): { valid: boolean; reason?: string } {
+): { valid: boolean; reason?: string; sanitizedBuffer?: Buffer } {
   // Read first 16 bytes for signature checking
   const header = buffer.slice(0, 16);
 
@@ -79,13 +80,23 @@ function validateFileSignature(
     return { valid: false, reason: `Unknown file extension: .${ext}` };
   }
 
-  if (
-    mimetype === "application/json" ||
-    mimetype === "image/svg+xml" ||
-    mimetype === "video/mp4" ||
-    mimetype === "video/webm"
-  ) {
-    // Skip magic number validation for JSON, SVG, and video files (complex headers)
+  if (mimetype === "image/svg+xml") {
+    try {
+      // SEC-F03: Rigorous SVG sanitization
+      const sanitized = DOMPurify.sanitize(buffer.toString("utf-8"), {
+        USE_PROFILES: { svg: true },
+        FORBID_TAGS: ["script", "style", "iframe", "object", "embed"],
+        FORBID_ATTR: ["onload", "onerror", "onclick"],
+        ALLOW_DATA_ATTR: false,
+      });
+      return { valid: true, sanitizedBuffer: Buffer.from(sanitized, "utf-8") };
+    } catch (_e) {
+      return { valid: false, reason: "Invalid or unparseable SVG content" };
+    }
+  }
+
+  if (mimetype === "application/json" || mimetype === "video/mp4" || mimetype === "video/webm") {
+    // Skip magic number validation for JSON and video files (complex headers)
     return { valid: true };
   }
 
@@ -134,6 +145,9 @@ export function validateMagicNumbers(req: Request, res: Response, next: NextFunc
           mimetype: file.mimetype,
         });
         return;
+      } else if (result.sanitizedBuffer) {
+        file.buffer = result.sanitizedBuffer;
+        file.size = result.sanitizedBuffer.length;
       }
     }
 

@@ -12,9 +12,14 @@ import {
   webhookSubscriptions,
 } from "../../../../shared/index.js";
 import { db } from "../../../db.js";
+import { StorageSingleton } from "../../storage-singleton.js";
 
 export class WebhookRepository {
   async getWebhookSubscriptions(): Promise<WebhookSubscription[]> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getWebhookSubscriptions();
+    }
     return await db
       .select()
       .from(webhookSubscriptions)

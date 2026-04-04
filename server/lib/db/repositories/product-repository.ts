@@ -34,6 +34,7 @@ import { CacheKeys } from "../../cache/cache-keys.js";
 import type { RepositoryCacheOptions } from "../../cache/cache-strategies.js";
 import { UnifiedCache } from "../../cache/unified-cache.js";
 import { logger } from "../../monitoring/logger.js";
+import { StorageSingleton } from "../../storage-singleton.js";
 import { dbCircuitBreaker } from "../db-circuit-breaker.js";
 import { queryPerformanceMonitor } from "../query-performance.js";
 import { MiscRepository } from "./misc-repository.js";
@@ -214,6 +215,10 @@ export class ProductRepository {
     offset: number = 0,
     options?: RepositoryCacheOptions,
   ): Promise<{ products: ProductSummary[]; totalCount: number }> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getProductsSummary(limit, offset, options);
+    }
     const cacheKey = `products:summary:${limit}:${offset}`;
     const cacheStrategy = options?.cacheStrategy || "normal";
     const perfTracker = queryPerformanceMonitor.startQuery("getProductsSummary");
@@ -427,6 +432,10 @@ export class ProductRepository {
   }
 
   async getProduct(id: number): Promise<ProductDetail | undefined> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getProduct(id);
+    }
     const [product] = await db
       .select(PRODUCT_DETAIL_COLUMNS)
       .from(products)
@@ -914,6 +923,10 @@ export class ProductRepository {
     limit: number = 100,
     offset: number = 0,
   ): Promise<ProductSummary[]> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().searchProducts(query, filters, limit, offset);
+    }
     return await db
       .select({
         ...PRODUCT_SUMMARY_COLUMNS,
@@ -941,6 +954,10 @@ export class ProductRepository {
   }
 
   async createProduct(product: InsertProduct, tx?: DbClient): Promise<Product> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createProduct(product);
+    }
     return await dbCircuitBreaker.execute(
       async () => {
         const dbInstance = tx || db;
@@ -967,6 +984,10 @@ export class ProductRepository {
     product: Partial<InsertProduct>,
     tx?: DbClient,
   ): Promise<Product | undefined> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateProduct(id, product);
+    }
     return await dbCircuitBreaker.execute(
       async () => {
         const dbInstance = tx || db;
@@ -989,6 +1010,10 @@ export class ProductRepository {
   }
 
   async deleteProduct(id: number, tx?: DbClient): Promise<boolean> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteProduct(id);
+    }
     return await dbCircuitBreaker.execute(
       async () => {
         const dbInstance = tx || db;

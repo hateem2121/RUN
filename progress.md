@@ -61,3 +61,22 @@ See `task_plan.md` § Immediate Next Actions for full remediation list
 
 **Task:** Enable development environment
 **Outcome:** Complete — unified dev server on port 5002 confirmed working
+
+## 2026-04-03 — Logic Alignment Remediation
+
+**Task:** Resolve MemoryStorage duplicate methods and type integrity issues
+**Agent:** Antigravity (AI Coding Assistant)
+**Status:** Complete ✅ · Typecheck (Server) ✅ · Logic Alignment ✅
+**Outcome:** Unified MemoryStorage implementation and restored TypeScript passing state for the server.
+
+### What Was Done
+
+1. **MemoryStorage Cleanup:** Identified and removed 10+ duplicate methods in `tests/memory-storage.ts` (e.g., `getWebhookSubscriptions`, `createCategory`, etc.) that were shadowing each other.
+2. **Type Integrity:** Updated `IWebhookRepository` in `server/repositories/storage-interfaces.ts` and its implementation in `MemoryStorage` to use proper shared types (`WebhookSubscription`, `InsertWebhookSubscription`, etc.) instead of `unknown`.
+3. **Product Repository Alignment:** Fixed a type-mismatch error in `server/lib/db/repositories/product-repository.ts` where `createCategory` was failing due to incorrect table/type inference.
+4. **Verification:** Ran `npm run typecheck --workspace=@run-remix/server` and confirmed EXIT 0.
+
+### Key Decisions
+
+- **Single Source of Truth:** Method signatures in `MemoryStorage` must exactly match `storage-interfaces.ts`.
+- **Shared Types:** All storage interfaces must use types from `@run-remix/shared` to ensure contract compliance between mock and real database repositories.

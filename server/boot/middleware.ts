@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import cookieParser from "cookie-parser";
@@ -11,7 +12,7 @@ import express, {
 import helmet from "helmet";
 import { logger } from "../lib/monitoring/logger.js";
 import { csrfProtection } from "../middleware/csrf.js";
-import { errorHandler } from "../middleware/errorHandler.js";
+import { productionErrorHandler } from "../middleware/production-error-handler.js";
 import { requestSanitization } from "../middleware/sanitization.js";
 import { authService } from "../services/auth-service.js";
 
@@ -107,11 +108,9 @@ function createCorsMiddleware(): RequestHandler {
  * Helper: CSP Nonce Middleware
  */
 function nonceMiddleware(_req: Request, res: Response, next: NextFunction) {
-  import("node:crypto").then((crypto) => {
-    const nonce = crypto.randomBytes(16).toString("hex");
-    res.locals.cspNonce = nonce;
-    next();
-  });
+  const nonce = crypto.randomBytes(16).toString("base64url");
+  res.locals.cspNonce = nonce;
+  next();
 }
 
 /**
@@ -127,8 +126,14 @@ function configureBodyParsers(app: Express) {
   );
 
   // Standard parsers ONLY for /api routes to avoid consuming the stream for React Router
-  app.use("/api", express.json({ limit: "10mb" }));
-  app.use("/api", express.urlencoded({ extended: false, limit: "10mb" }));
+  app.use("/api", express.json({ limit: "100kb" }));
+  app.use("/api", express.urlencoded({ extended: false, limit: "100kb" }));
+
+  if (!process.env.UPSTASH_REDIS_REST_URL && process.env.NODE_ENV === "production") {
+    logger.warn(
+      "[Middleware] ⚠️ UPSTASH_REDIS_REST_URL is missing in production. Rate limiting will degrade to in-memory.",
+    );
+  }
 }
 
 /**
@@ -137,7 +142,7 @@ function configureBodyParsers(app: Express) {
 export function setupErrorHandling(app: Express) {
   // Primary error handler: ZodError → 400, AppError → structured response
   // Express 5 natively propagates async errors to this handler.
-  app.use(errorHandler);
+  app.use(productionErrorHandler);
 }
 
 /**

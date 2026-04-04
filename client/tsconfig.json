@@ -7,6 +7,7 @@
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "useDefineForClassFields": true,
+    "composite": true,
     "outDir": "../dist/client",
     "tsBuildInfoFile": "../dist/client/.tsbuildinfo",
     "baseUrl": ".",
@@ -16,18 +17,14 @@
       "@shared/*": ["../shared/*"],
       "@run-remix/shared": ["../shared/index.ts"],
       "@run-remix/shared/*": ["../shared/*"],
+      "@run-remix/server": ["../server/index.ts"],
+      "@run-remix/server/*": ["../server/*"],
       "@assets/*": ["../attached_assets/*"]
     },
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
   "include": ["app/**/*", "src/types/**/*", "vite.config.ts"],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "**/*.spec.ts",
-    "**/*.test.ts",
-    "../server/**/*",
-    "**/*.server.ts"
-  ]
+  "exclude": ["dist", "node_modules", "**/*.spec.ts", "**/*.test.ts"],
+  "references": [{ "path": "../shared" }, { "path": "../server" }]
 }

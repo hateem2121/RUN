@@ -1,3 +1,6 @@
+// Production-Grade Error Handling
+// PHASE 4: Production Readiness - Error Management
+import type { ProblemDetails } from "@run-remix/shared";
 import type { NextFunction, Request, Response } from "express";
 import { getConfig } from "../config/production.js";
 import {
@@ -14,10 +17,7 @@ import { alertService } from "../lib/integrations/alert-service.js";
 import { errorAggregator } from "../lib/monitoring/error-aggregator.js";
 import { correlationContext, logger } from "../lib/monitoring/logger.js";
 import { getRunbookUrl, shouldIncludeRunbook } from "../lib/runbook-registry.js";
-// Production-Grade Error Handling
-// PHASE 4: Production Readiness - Error Management
-
-import type { ProblemDetails } from "@run-remix/shared";
+import { sanitizeForLogging } from "../lib/sanitize-for-logging.js";
 
 const config = getConfig();
 
@@ -40,6 +40,7 @@ interface ErrorDetails {
   ip?: string | undefined;
   path: string;
   method: string;
+  body?: unknown;
 }
 
 // Generate unique error ID for tracking
@@ -58,6 +59,7 @@ function classifyError(error: unknown, req: Request): ErrorDetails {
   const method = req.method;
   const userAgent = req.get("User-Agent");
   const ip = req.ip || req.connection.remoteAddress;
+  const body = req.body ? sanitizeForLogging(req.body) : undefined;
 
   let type: ErrorDetails["type"] = "internal";
   let severity: ErrorDetails["severity"] = "medium";
@@ -142,6 +144,7 @@ function classifyError(error: unknown, req: Request): ErrorDetails {
     ip,
     path,
     method,
+    body,
   };
 }
 
@@ -175,6 +178,7 @@ function logError(error: unknown, details: ErrorDetails) {
     ip: details.ip,
     type: details.type,
     correlationId,
+    body: details.body,
     ...(error instanceof AppError && error.details ? error.details : {}),
   };
 

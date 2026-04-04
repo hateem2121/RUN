@@ -2,6 +2,7 @@ import express from "express";
 import { emailService, type InquiryEmailData } from "../lib/integrations/email-service.js";
 import { logger } from "../lib/monitoring/logger.js";
 import type { MediaOperation, MediaTaskPayload } from "../lib/queues/media-queue.js";
+import { verifyCloudTaskToken } from "../lib/verify-cloud-task-token.js";
 
 const router = express.Router();
 
@@ -17,16 +18,15 @@ const VALID_MEDIA_OPERATIONS: MediaOperation[] = [
 
 // Worker route to handle async email sending from Cloud Tasks
 router.post("/workers/send-email", async (req, res) => {
-  // security
-  // Verify request is from Cloud Tasks
-  // In production, Cloud Tasks adds "X-CloudTasks-QueueName" header
-  // We can also verify OIDC token if configured, but header check is a good baseline
-  const queueName = req.header("X-CloudTasks-QueueName");
+  // Verify request is from Cloud Tasks via OIDC token
   const isProduction = process.env.NODE_ENV === "production";
 
-  if (isProduction && !queueName) {
-    logger.warn("[Worker] Unauthorized access attempt to email worker");
-    return res.status(403).json({ error: "Unauthorized" });
+  if (isProduction) {
+    const isAuthorized = await verifyCloudTaskToken(req);
+    if (!isAuthorized) {
+      logger.warn("[Worker] Unauthorized access attempt to email worker");
+      return res.status(403).json({ error: "Unauthorized" });
+    }
   }
 
   const payload = req.body as InquiryEmailData;
@@ -69,14 +69,16 @@ router.post("/workers/send-email", async (req, res) => {
 router.post("/process-media", async (req, res) => {
   const startTime = performance.now();
 
-  // Verify Cloud Tasks header in production
-  const queueName = req.header("X-CloudTasks-QueueName");
-  const taskName = req.header("X-CloudTasks-TaskName");
+  // Verify request is from Cloud Tasks via OIDC token
   const isProduction = process.env.NODE_ENV === "production";
+  const taskName = req.header("X-CloudTasks-TaskName");
 
-  if (isProduction && !queueName) {
-    logger.warn("[Worker:Media] Unauthorized access attempt");
-    return res.status(403).json({ error: "Forbidden: Invalid request source" });
+  if (isProduction) {
+    const isAuthorized = await verifyCloudTaskToken(req);
+    if (!isAuthorized) {
+      logger.warn("[Worker:Media] Unauthorized access attempt");
+      return res.status(403).json({ error: "Forbidden: Invalid request source" });
+    }
   }
 
   const payload: MediaTaskPayload = req.body;

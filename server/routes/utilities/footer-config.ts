@@ -84,68 +84,63 @@ async function getFooterConfig() {
   }> = [];
 
   if (baseResponse.certificateIds && baseResponse.certificateIds.length > 0) {
-    try {
-      const certIds = baseResponse.certificateIds;
+    const certIds = baseResponse.certificateIds;
 
-      // Batch fetch certificates using Drizzle
-      const fetchedCertificates = await db
-        .select({
-          id: certificates.id,
-          name: certificates.name,
-          type: certificates.type,
-          issuingOrganization: certificates.issuingOrganization,
-          imageId: certificates.imageId,
-          imageUrl: certificates.imageUrl, // Fallback
-        })
-        .from(certificates)
-        .where(inArray(certificates.id, certIds));
+    // Batch fetch certificates using Drizzle
+    const fetchedCertificates = await db
+      .select({
+        id: certificates.id,
+        name: certificates.name,
+        type: certificates.type,
+        issuingOrganization: certificates.issuingOrganization,
+        imageId: certificates.imageId,
+        imageUrl: certificates.imageUrl, // Fallback
+      })
+      .from(certificates)
+      .where(inArray(certificates.id, certIds));
 
-      const certificateMap = new Map(fetchedCertificates.map((cert) => [cert.id, cert]));
+    const certificateMap = new Map(fetchedCertificates.map((cert) => [cert.id, cert]));
 
-      // Collect imageIds for batch fetching
-      const imageIds = fetchedCertificates
-        .map((c) => c.imageId)
-        .filter((id): id is number => id !== null);
+    // Collect imageIds for batch fetching
+    const imageIds = fetchedCertificates
+      .map((c) => c.imageId)
+      .filter((id): id is number => id !== null);
 
-      // Batch fetch media
-      let mediaMap = new Map();
-      if (imageIds.length > 0) {
-        const medias = await db.select().from(mediaAssets).where(inArray(mediaAssets.id, imageIds));
+    // Batch fetch media
+    let mediaMap = new Map();
+    if (imageIds.length > 0) {
+      const medias = await db.select().from(mediaAssets).where(inArray(mediaAssets.id, imageIds));
 
-        mediaMap = new Map(medias.map((m) => [m.id, m]));
+      mediaMap = new Map(medias.map((m) => [m.id, m]));
+    }
+
+    // Map results preserving order of certificateIds
+    const certificatesWithNulls = certIds.map((certId: number) => {
+      const cert = certificateMap.get(certId);
+      if (!cert) {
+        return null;
       }
 
-      // Map results preserving order of certificateIds
-      const certificatesWithNulls = certIds.map((certId: number) => {
-        const cert = certificateMap.get(certId);
-        if (!cert) {
-          return null;
+      let imageUrl = cert.imageUrl || "";
+      if (cert.imageId) {
+        const media = mediaMap.get(cert.imageId);
+        if (media && !media.deletedAt) {
+          imageUrl = `/api/media/${media.id}/content`;
         }
+      }
 
-        let imageUrl = cert.imageUrl || "";
-        if (cert.imageId) {
-          const media = mediaMap.get(cert.imageId);
-          if (media && !media.deletedAt) {
-            imageUrl = `/api/media/${media.id}/content`;
-          }
-        }
+      return {
+        id: cert.id,
+        name: cert.name,
+        imageUrl,
+        type: cert.type,
+        issuingOrganization: cert.issuingOrganization,
+      };
+    });
 
-        return {
-          id: cert.id,
-          name: cert.name,
-          imageUrl,
-          type: cert.type,
-          issuingOrganization: cert.issuingOrganization,
-        };
-      });
-
-      certifications = certificatesWithNulls.filter(
-        (cert): cert is NonNullable<typeof cert> => cert !== null,
-      );
-    } catch (error) {
-      logger.error("[Footer] Error populating certificates:", error);
-      certifications = [];
-    }
+    certifications = certificatesWithNulls.filter(
+      (cert): cert is NonNullable<typeof cert> => cert !== null,
+    );
   }
 
   return {

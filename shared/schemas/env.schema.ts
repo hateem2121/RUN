@@ -127,6 +127,15 @@ export const envSchema = z.object({
     .string()
     .optional()
     .describe("Set to 'true' to allow LISTEN/NOTIFY without direct URL in tests"),
+  BYPASS_RBAC_FOR_TESTING: z
+    .string()
+    .default("false")
+    .transform((val) => val === "true")
+    .describe("Set to 'true' to bypass RBAC checks locally"),
+
+  // --- CLOUD TASKS (OIDC) ---
+  CLOUD_TASKS_AUDIENCE: z.string().optional(),
+  CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -161,6 +170,18 @@ export function validateEnv(input: unknown = process.env): Env {
     // JWT_SECRET dev-leak check
     if (data.JWT_SECRET.toLowerCase().includes("dev-secret")) {
       console.error("❌ FATAL: JWT_SECRET contains 'dev-secret' in production.");
+      process.exit(1);
+    }
+
+    if (data.BYPASS_RBAC_FOR_TESTING) {
+      console.error("❌ FATAL: BYPASS_RBAC_FOR_TESTING is 'true' in PRODUCTION.");
+      process.exit(1);
+    }
+
+    if (!data.CLOUD_TASKS_AUDIENCE || !data.CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL) {
+      console.error(
+        "❌ FATAL: CLOUD_TASKS_AUDIENCE and CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL are required in production for worker security.",
+      );
       process.exit(1);
     }
   }

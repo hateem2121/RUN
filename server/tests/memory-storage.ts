@@ -72,6 +72,8 @@ import type {
   InsertTechnologyResearch,
   InsertTechnologyRoadmap,
   InsertUnifiedSustainability,
+  InsertWebhookDelivery,
+  InsertWebhookSubscription,
   LogoAnimationSettings,
   ManufacturingCapability,
   ManufacturingHero,
@@ -102,6 +104,7 @@ import type {
   UnifiedSustainability,
   UpsertUser,
   User,
+  WebhookSubscription,
 } from "../../shared/index.js";
 import type { RepositoryCacheOptions } from "../lib/cache/cache-strategies.js";
 import type {
@@ -1970,23 +1973,30 @@ export class MemoryStorage implements IStorage {
     return newItem;
   }
 
-  // Webhook Repository - Stubs
-  async getWebhookSubscriptions(): Promise<unknown[]> {
+  // Webhook Repository
+  async getWebhookSubscriptions(): Promise<WebhookSubscription[]> {
     return [];
   }
-  async getWebhookSubscription(_id: number): Promise<unknown> {
+  async getWebhookSubscription(_id: number): Promise<WebhookSubscription | undefined> {
     return undefined;
   }
-  async createWebhookSubscription(subscription: unknown): Promise<unknown> {
-    return subscription;
+  async createWebhookSubscription(
+    subscription: InsertWebhookSubscription,
+  ): Promise<WebhookSubscription> {
+    return subscription as unknown as WebhookSubscription;
   }
-  async updateWebhookSubscription(_id: number, _subscription: unknown): Promise<unknown> {
+  async updateWebhookSubscription(
+    _id: number,
+    _subscription: Partial<InsertWebhookSubscription>,
+  ): Promise<WebhookSubscription | undefined> {
     return undefined;
   }
   async deleteWebhookSubscription(_id: number): Promise<boolean> {
     return true;
   }
-  async logWebhookDelivery(_delivery: unknown): Promise<void> {}
+  async logWebhookDelivery(_delivery: InsertWebhookDelivery): Promise<void> {
+    // No-op for tests
+  }
 
   // System Repository
   async getAnimationErrors(): Promise<AnimationError[]> {

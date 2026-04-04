@@ -79,5 +79,26 @@
         "mcp": "deny"
       }
     }
+  },
+  "mcp": {
+    "sequentialthinking": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "context7": {
+      "type": "local",
+      "command": ["npx", "-y", "@upstash/context7-mcp"],
+      "environment": {
+        "DEFAULT_MINIMUM_TOKENS": "{{DEFAULT_MINIMUM_TOKENS}}"
+      }
+    },
+    "memory": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-memory"]
+    },
+    "neon": {
+      "type": "local",
+      "command": ["npx", "-y", "mcp-remote", "https://mcp.neon.tech/sse"]
+    }
   }
 }

@@ -52,6 +52,11 @@ export async function setupTestApp(storage?: MemoryStorage) {
   // Note: setupMiddleware includes authService.setup(app) internally
   await setupMiddleware(app);
 
+  // Inject services for RBAC Dependency Injection
+  const { AdminService } = await import("../services/admin/admin.service.js");
+  const adminService = new AdminService();
+  app.set("adminService", adminService);
+
   // Inject test auth middleware AFTER standard middleware but BEFORE routes
   // This ensures it overrides any session-based identity
   app.use(testAuthMiddleware);
