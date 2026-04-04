@@ -64,6 +64,8 @@ Use the `/browse` skill from gstack for all web browsing. **Never use `mcp__clau
 | `/investigate` | Forensics | Deep-dive into complex bugs or legacy code. |
 | `/checkpoint` | Team Lead | Save and resume working state checkpoints. |
 | `/health` | Eng Lead | Code quality dashboard — typecheck, lint, tests. |
+| `/devex-review` | DX Lead | Developer experience review — tooling, workflow, onboarding friction. |
+| `/plan-devex-review` | DX Lead | Review implementation plans for developer experience impact. |
 
 ---
 

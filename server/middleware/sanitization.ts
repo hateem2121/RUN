@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import mongoSanitize from "express-mongo-sanitize";
 import xss from "xss";
+import { logger } from "../lib/monitoring/logger.js";
 
 /**
  * SANITIZATION MIDDLEWARE
@@ -82,7 +83,7 @@ export function requestSanitization(req: Request, res: Response, next: NextFunct
       }
     }
   } catch (error) {
-    console.warn("[Sanitization] Failed to run NoSQL sanitizer:", error);
+    logger.warn("[Sanitization] Failed to run NoSQL sanitizer", error);
   }
 
   // 2. XSS Prevention

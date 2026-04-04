@@ -31,6 +31,7 @@ All development follows the `gstack` high-performance cycle:
 ## 4. The B.L.A.S.T. Protocol
 
 - **Blueprint**: VISION FIRST. Define schemas in `shared/` and SOPs in `docs/core/sops/` before scripting.
+  - `shared/` intentionally has three runtime deps: `drizzle-orm`, `drizzle-zod`, `zod` — required for Drizzle table definitions and schema generation. This is by design, not an oversight.
 - **Link**: HANDSHAKE. Verify APIs and `.env` via atomic scripts.
 - **Architect**: THE BUILD (A.N.T. Layers).
   - **L1 Architecture**: Markdown SOPs in `docs/core/sops/`.

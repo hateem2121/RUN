@@ -14,6 +14,8 @@ export let app: express.Express;
 export const serverReady: Promise<void> = (async () => {
   try {
     // 1. Load Secrets (Async)
+    // NOTE: Pino logger is not yet initialised at this point — console.log is
+    // intentional here as the absolute earliest bootstrap signal before server.ts loads.
     console.log("[Bootstrap] Loading secrets from Secret Manager...");
     const secrets = await loadSecrets();
     injectSecretsToEnv();

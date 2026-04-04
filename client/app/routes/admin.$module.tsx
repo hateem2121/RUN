@@ -22,7 +22,7 @@ const AdminMediaPage = lazy(() =>
 );
 
 const FabricManagement = lazy(() =>
-  import("@/components/admin/fabric-management-enhanced-v2").then((m) => ({
+  import("@/components/admin/fabric-management-enhanced").then((m) => ({
     default: m.FabricManagementEnhancedV2,
   })),
 );
