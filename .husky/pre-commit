@@ -1,8 +1,7 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+export PATH="/usr/local/opt/node@24/bin:$PATH"
 
-# Run Port 5002 Compliance Check (CRITICAL)
-npm run verify-port
+# Run Tech Integrity Check (CRITICAL)
+npm run verify:tech-integrity
 
 # Run Type Checking
 npm run typecheck

@@ -1,6 +1,6 @@
 # RUN Remix — The Agentic Sportswear Factory
 
-**Version:** 4.0.0 | **Port:** 5002 (Exclusively) | **Engine:** gstack | **Last Updated:** March 2026
+**Version:** 4.0.0 | **Port:** 5002 (Exclusively) | **Engine:** gstack | **Last Updated:** April 2026
 
 [![Node 24+](https://img.shields.io/badge/Node-24%2B-339933?logo=node.js)](https://nodejs.org)
 [![React 19](https://img.shields.io/badge/React-19.2.4-61DAFB?logo=react)](https://react.dev)
@@ -65,6 +65,8 @@ The factory is staffed by 23+ specialized agent roles:
 | `/ship` | **Release Eng** | Final checks and deployment triggers. |
 | `/retro` | **Team Lead** | Learn from the sprint and update SOPs. |
 | `/investigate` | **Specialist** | Solve the most complex "impossible" bugs. |
+| `/devex-review` | **DX Lead** | Developer experience audit — tooling, workflow, onboarding. |
+| `/plan-devex-review` | **DX Lead** | Review plans for developer experience impact. |
 
 ---
 

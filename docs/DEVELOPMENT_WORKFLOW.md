@@ -1,7 +1,7 @@
 # Development Workflow
 
-**Version:** 3.0 (AntiGravity Protocol 0 Aligned)  
-**Last Updated:** February 2026  
+**Version:** 4.0 (AntiGravity Protocol 0 Aligned)
+**Last Updated:** April 2026
 **System:** RUN APPAREL CMS (Port 5002)
 
 ---
@@ -32,7 +32,7 @@ git pull origin main
 npm install
 
 # CRITICAL: Verify port 5002 configuration
-npm run verify-port
+npm run verify:tech-integrity
 
 # Start dev server (port 5002)
 npm run dev
@@ -90,7 +90,7 @@ If you see a different port, **STOP** and fix the configuration.
 - API endpoint: `/api/[endpoint]`
 
 ## Success Criteria
-- [ ] npm run verify-port passes
+- [ ] npm run verify:tech-integrity passes
 - [ ] npm run build passes
 - [ ] npm run test passes
 - [ ] Route mapping updated
@@ -110,11 +110,11 @@ If you see a different port, **STOP** and fix the configuration.
 # Type checking
 npm run typecheck
 
-# Linting
-npm run lint
+# Linting (auto-fix)
+npm run check:apply
 
 # PORT 5002 VERIFICATION (MANDATORY)
-npm run verify-port
+npm run verify:tech-integrity
 
 # Build verification
 npm run build
@@ -161,10 +161,10 @@ npm run test:e2e
 
 ```bash
 # Port verification (MANDATORY)
-npm run verify-port
+npm run verify:tech-integrity
 
 # Code quality
-npm run lint
+npm run check:apply
 npm run typecheck
 
 # Tests
@@ -177,7 +177,7 @@ npm run build
 **Pre-commit hook automatically runs:**
 
 - `lint-staged` (formats code)
-- `npm run verify-port`
+- `npm run verify:tech-integrity`
 
 If any command fails, **fix before committing.**
 
@@ -229,13 +229,13 @@ Before creating a PR, verify:
 
 **Port Compliance:**
 
-- [ ] `npm run verify-port` passes
+- [ ] `npm run verify:tech-integrity` passes
 - [ ] No new port configurations introduced
 - [ ] All URLs use `http://localhost:5002`
 
 **Code Quality:**
 
-- [ ] `npm run lint` passes
+- [ ] `npm run check:apply` passes
 - [ ] `npm run typecheck` passes
 - [ ] `npm run build` passes
 - [ ] `npm run test` passes
@@ -274,7 +274,7 @@ Before creating a PR, verify:
 - [ ] Port configuration fix
 
 ## Port 5002 Compliance
-- [ ] `npm run verify-port` passes
+- [ ] `npm run verify:tech-integrity` passes
 - [ ] No new port configurations
 - [ ] All endpoints target port 5002
 
@@ -334,7 +334,7 @@ Create team member showcase page with admin management interface
 - server/services/teamService.ts
 
 ## Success Criteria
-- [ ] npm run verify-port passes
+- [ ] npm run verify:tech-integrity passes
 - [ ] Both routes accessible at port 5002
 - [ ] Route mapping updated
 EOF
@@ -385,7 +385,7 @@ router.get('/admin/api/team', isAuthenticated, async (req, res) => {
 #### Step 6: Verify
 
 ```bash
-npm run verify-port  # MUST pass
+npm run verify:tech-integrity  # MUST pass
 npm run build        # MUST pass
 npm run test         # MUST pass
 ```
@@ -445,7 +445,7 @@ grep -r "process.env.PORT" --exclude-dir=node_modules .
 #### Step 3: Verify Fix
 
 ```bash
-npm run verify-port  # MUST now pass
+npm run verify:tech-integrity  # MUST now pass
 ```
 
 #### Step 4: Test
@@ -464,7 +464,7 @@ npm run dev
 git commit -m "port(vite): fix config to use port 5002 instead of 3000
 
 - Updated vite.config.ts server.port to 5002
-- Verified with npm run verify-port
+- Verified with npm run verify:tech-integrity
 - All services now consistently use port 5002"
 ```
 
@@ -481,7 +481,7 @@ git commit -m "port(vite): fix config to use port 5002 instead of 3000
 git checkout pr-branch-name
 
 # FIRST: Verify port compliance
-npm run verify-port
+npm run verify:tech-integrity
 
 # If fails, request changes immediately
 ```
@@ -492,7 +492,7 @@ npm run verify-port
 
 - [ ] No new ports introduced
 - [ ] All URLs use `localhost:5002`
-- [ ] `npm run verify-port` passes
+- [ ] `npm run verify:tech-integrity` passes
 
 **Code Quality:**
 
@@ -539,7 +539,7 @@ Nice work!
 
 **Port Compliance Issues:**
 - [ ] Found reference to port 3000 in `file.ts` line 42
-- [ ] `npm run verify-port` fails with error: [error]
+- [ ] `npm run verify:tech-integrity` fails with error: [error]
 
 **Code Quality Issues:**
 - [ ] Using `any` type in `file.ts` line 15
@@ -643,9 +643,9 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 jobs:
   verify:
@@ -662,7 +662,7 @@ jobs:
         run: npm ci
       
       - name: Verify Port 5002 Compliance
-        run: npm run verify-port
+        run: npm run verify:tech-integrity
       
       - name: Lint
         run: npm run lint
@@ -708,7 +708,7 @@ jobs:
 
 ```bash
 # Full codebase port audit
-npm run verify-port
+npm run verify:tech-integrity
 
 # Check docker configs
 grep -r "5002" docker-compose.yml
@@ -727,7 +727,7 @@ npm outdated
 npm update
 
 # Verify port config still correct
-npm run verify-port
+npm run verify:tech-integrity
 ```
 
 ### 3. Documentation Review
@@ -748,8 +748,8 @@ grep "5002" README.md
 
 ```bash
 npm run dev              # Start dev server (port 5002)
-npm run verify-port      # Verify port 5002 compliance
-npm run lint             # Lint code
+npm run verify:tech-integrity      # Verify tech stack integrity
+npm run check:apply      # Biome format + lint (auto-fix)
 npm run typecheck        # Type check
 npm run test             # Run tests
 npm run build            # Build for production
@@ -758,7 +758,7 @@ npm run build            # Build for production
 ### Port Management
 
 ```bash
-npm run verify-port      # Check port compliance
+npm run verify:tech-integrity      # Check port compliance
 lsof -i :5002           # What's on port 5002?
 kill -9 $(lsof -t -i:5002)  # Kill port 5002 process
 ```
@@ -776,7 +776,7 @@ npm run test:integration # Integration tests
 
 ```bash
 git add .
-npm run verify-port      # Before commit
+npm run verify:tech-integrity      # Before commit
 git commit -m "type(scope): message"
 git push origin branch-name
 ```
@@ -787,7 +787,7 @@ git push origin branch-name
 
 **Daily Goals:**
 
-- ✅ All commits pass `npm run verify-port`
+- ✅ All commits pass `npm run verify:tech-integrity`
 - ✅ Zero port-related bugs reported
 - ✅ 100% route mapping coverage (public ↔ admin)
 
@@ -810,7 +810,7 @@ git push origin branch-name
 **Port Issues:**
 
 - Check `docs/TROUBLESHOOTING.md`
-- Run `npm run verify-port` for diagnostics
+- Run `npm run verify:tech-integrity` for diagnostics
 
 **General Development:**
 
@@ -824,7 +824,7 @@ git push origin branch-name
 
 ---
 
-**Maintained by:** Development Team  
-**Version:** 2.0  
-**Last Review:** February 2026  
-**Next Review:** May 2026
+**Maintained by:** Development Team
+**Version:** 4.0
+**Last Review:** April 2026
+**Next Review:** July 2026

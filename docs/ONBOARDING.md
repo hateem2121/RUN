@@ -19,7 +19,7 @@ cd RUN
 npm ci
 
 # 2. Port Verification
-npm run verify-port
+npm run verify:tech-integrity
 
 # 3. Start Development
 npm run dev

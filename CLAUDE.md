@@ -101,7 +101,7 @@ Use the `/browse` skill from gstack for all web browsing. **Never use `mcp__clau
 
 ---
 
-*Last updated: 2026-03-31 | Identity: Agentic Software Factory v4.0.0*
+*Last updated: 2026-04-05 | Identity: Agentic Software Factory v4.0.0*
 
 ## Skill routing
 
