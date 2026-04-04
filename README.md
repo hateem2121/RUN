@@ -101,6 +101,9 @@ Every task follows the deterministic **B.L.A.S.T.** methodology:
 - [**Agent Ethos (ETHOS.md)**](./docs/core/ETHOS.md) — The factory manifesto.
 - [**Agent Role Directory (AGENTS.md)**](./docs/core/AGENTS.md) — Detailed role descriptions.
 - [**SOP Repository**](./docs/core/sops/) — Standard Operating Procedures.
+- [**Onboarding Guide**](./docs/ONBOARDING.md) — First-time contributor setup.
+- [**Development Workflow**](./docs/DEVELOPMENT_WORKFLOW.md) — Day-to-day coding protocols.
+- [**Coding Standards**](./docs/CODING_STANDARDS.md) — TypeScript, React, and Express rules.
 
 ---
 
