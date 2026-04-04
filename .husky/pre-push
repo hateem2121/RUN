@@ -1,4 +1,3 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+export PATH="/usr/local/opt/node@24/bin:$PATH"
 
 npm run verify:tech-integrity
