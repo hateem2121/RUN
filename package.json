@@ -10,7 +10,9 @@
   "workspaces": [
     "client",
     "server",
-    "shared"
+    "shared",
+    "utils",
+    "scripts"
   ],
   "scripts": {
     "dev:server": "PORT=5002 npm run --workspace=@run-remix/server dev",

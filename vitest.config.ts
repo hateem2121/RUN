@@ -2,6 +2,12 @@ import path from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
 
+// ROOT vitest config — the single source of truth for `turbo test` and `npm test`.
+// Picks up ALL test files across the monorepo (client, server, shared) because
+// there is no `include` restriction. The client/vitest.config.ts is ONLY used
+// when running `vitest` locally inside the client/ directory (e.g. for watch mode).
+// Do NOT add this file to client/package.json's test script — that would cause
+// double-runs in CI.
 export default defineConfig({
   plugins: [react()],
   test: {

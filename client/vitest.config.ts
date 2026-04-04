@@ -1,4 +1,10 @@
 /// <reference types="vitest" />
+// CLIENT-LOCAL vitest config — used only when running `vitest` directly inside
+// the client/ directory (e.g. `cd client && vitest` for local watch mode).
+// This config is NOT part of the Turborepo test pipeline. The root vitest.config.ts
+// owns all CI test runs. If you add a `test` script to client/package.json pointing
+// here, turbo will also pick it up — only do that if you want client tests isolated
+// in the pipeline.
 import path from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
