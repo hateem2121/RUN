@@ -52,6 +52,12 @@ export default defineConfig(
           "@": path.resolve(__dirname, "app"),
           "@shared": path.resolve(__dirname, "../shared"), // Sibling folder
           "@assets": path.resolve(__dirname, "../attached_assets"),
+          // Use the self-contained dist bundle (includes three.js) rather than the ESM
+          // lib entry, which imports three as an external peer and requires an import map.
+          "@google/model-viewer": path.resolve(
+            __dirname,
+            "../node_modules/@google/model-viewer/dist/model-viewer.min.js",
+          ),
         },
         // CRITICAL: Prevent multiple React instances during SSR
         dedupe: ["react", "react-dom", "react-router", "react-router-dom"],
@@ -128,7 +134,7 @@ export default defineConfig(
                   ],
 
                   // HEAVY VENDORS: Isolated
-                  "vendor-3d": ["three", "@google/model-viewer"],
+                  "vendor-3d": ["@google/model-viewer"],
                   "vendor-charts": ["recharts"],
                   "vendor-icons": ["lucide-react"],
 
