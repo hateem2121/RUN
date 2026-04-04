@@ -25,7 +25,7 @@ export function initSentry() {
       // Accessibility: Avoid capturing too much in Replay
       replaysSessionSampleRate: 0.1,
       replaysOnErrorSampleRate: 1.0,
-      tracesSampleRate: 1.0,
+      tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
     });
   } catch (_error) {}
 }

@@ -24,7 +24,8 @@
       "!**/test-results",
       "!**/openapi-spec.json",
       "!audit",
-      "!.claude"
+      "!.claude",
+      "!**/.kilo"
     ]
   },
   "formatter": {

@@ -2,7 +2,7 @@
 
 **Version:** 1.1.0
 **Created:** 2026-03-27
-**Last Audit:** 2026-03-29 (Second Pass — Overall Score: 6.7/10)
+**Last Audit:** 2026-04-04 (Third Pass — Overall Score: 7.5/10)
 **Owner:** M. Hateem Jamshaid — RUN APPAREL (PVT) LTD
 **Trigger:** Quarterly, before major releases, or after significant architectural changes
 
@@ -14,6 +14,21 @@
 |---|---|---|---|---|---|
 | 2026-03-27 | First Pass | ~6.0/10 | 3 | 5 | Claude Code Sonnet 4.6 |
 | 2026-03-29 | Second Pass (post-remediation) | 6.7/10 | 4 | 6 | Claude Code Sonnet 4.6 |
+| 2026-04-04 | Third Pass (post-remediation sessions 1–3) | 7.5/10 | 3 | 6 | Claude Code Sonnet 4.6 |
+
+### Third Pass Top 3 Findings (2026-04-04)
+
+1. 🔴 **Test suite 55.8% dark** — `node-zopfli-es` N-API incompatibility with Node 24. 53/95 test files fail with `TypeError: zopfli.createGzip is not a function`. Fix: replace `shrink-ray-current` with `compression`.
+2. 🔴 **CI quality gates bypassed** — `continue-on-error: true` on lint, typecheck, AND test in `ci.yml`. Broken builds merge silently.
+3. 🔴 **No `RUN-PROD` branch** — no staging gate between development and production deployment. `main` is the only branch.
+
+### New Checklist Items (from Third Pass)
+
+- [ ] Verify `shrink-ray-current` / any compression middleware that uses native addons is Node-version-compatible before upgrading Node
+- [ ] Scan ci.yml for `continue-on-error` after any CI refactor — must be absent on all quality gates
+- [ ] Confirm `RUN-PROD` branch exists before each production deploy
+- [ ] Verify Dockerfile has `USER node` directive — never ship as root
+- [ ] Verify logout route calls `req.session.destroy()` + `res.clearCookie()`, not just `req.logout()`
 
 ### Second Pass Top 3 Findings (2026-03-29)
 

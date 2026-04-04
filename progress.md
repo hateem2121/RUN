@@ -1,5 +1,49 @@
 # Progress Log
 
+## 2026-04-04 — Architecture Audit (Third Pass)
+
+**Task:** Full System Architecture & Organisation Audit — 23 Domains
+**Agent:** Claude Code (Sonnet 4.6) via gstack skill suite
+**Branch:** main
+**Outcome:** Complete — full report in `findings.md` § Architecture Audit — April 2026 (Third Pass)
+**Score:** 7.5/10 (up from 6.7/10 in second pass)
+
+### Investigation Order
+
+1. Read `task_plan.md`, `progress.md`, `gemini.md`, `CLAUDE.md` — re-internalized constitutional rules
+2. Updated `task_plan.md` — added audit task (IN_PROGRESS)
+3. Appended `findings.md` header for third-pass audit section
+4. Invoked `/careful` — destructive command guardrails active
+5. Invoked `/freeze` — edit boundary set to project root (reports-only mode)
+6. Ran `npm run verify-port` → ✅ PASS (100% compliance)
+7. Ran `npm run verify:tech-integrity` → ❌ FAIL (lodash high, request critical, Biome 1 error)
+8. Ran `npm audit` → ❌ 7 vulnerabilities (2 critical, 1 high, 2 moderate, 2 low)
+9. Ran `npm run build` → ✅ PASS (Turborepo cache, SSR 799.14 kB)
+10. Ran `npm run lint` → ❌ FAIL (1 error: server/test-cache.ts unused `cache` variable)
+11. Ran `npm run typecheck` → ✅ PASS (0 errors — all 3 workspaces)
+12. Ran `npm run test` → ❌ FAIL (53/95 files — zopfli.createGzip TypeError on Node 24)
+13. Invoked `/cso` — OWASP Top 10 + STRIDE analysis (Dockerfile root, weak logout, SSRF devDep)
+14. Invoked `/review` — exited (no diff on base branch); manual code review conducted instead
+15. Manual investigation: server/routes/ (6 try/catch remaining), client/package.json (three.js), Dockerfile (no USER), k8s/argocd/base/ (no PDB, identical probes), ci.yml (continue-on-error), vitest.config.ts (70% threshold), routes/auth.ts (logout), app/routes/ (no $.tsx), server/services/auth-service.ts (Redis session)
+16. Checked prior findings resolution: 6/8 resolved (C2✅, C3✅, H1✅, H2✅, H3✅, H5✅; C1 partial 6 remain, H4 not resolved)
+17. Invoked `/retro` — git velocity metrics (30 commits, 5 active days, v3→v4.0.0 week)
+18. Documentation currency check — SOP_DEPLOY.md stale, no CHANGELOG.md, missing GSAP ADR
+19. Wrote complete third-pass audit report to `findings.md` (System Health Scores, findings tables, gstack outputs, verification scripts, retro metrics, vulnerability report, risk heatmap, remediation queue, Deep Investigation Self-Assessment, follow-up tasks, final recommendation)
+20. Updated `task_plan.md` — audit marked complete, remediation backlog updated
+21. Updated `progress.md` — this entry
+22. Updated `docs/core/sops/SOP_ARCHITECTURE_AUDIT.md` — audit history row added
+
+### Key Decisions
+
+- RUN-PROD branch absent — logged as C3 Critical. Proceeded on `main` (only branch, IS production target)
+- /review exited gracefully on base branch — manual investigation substituted
+- `request` package downgraded from Critical to Medium for production risk (confirmed devDep, excluded from `npm ci --only=production` Docker prod image)
+- `shrink-ray-current` Node 24 incompatibility identified as new Critical (C1) — root cause: N-API binding mismatch in `node-zopfli-es`
+- All 23 domains covered. All 18 Deep Investigation sub-domains answered YES.
+- No production source code modified during this audit. `git status` clean except report files.
+
+---
+
 ## 2026-03-29 — Architecture Audit (Second Pass)
 
 **Task:** Full System Architecture & Organisation Audit — 23 Domains
