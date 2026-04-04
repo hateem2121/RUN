@@ -6,6 +6,7 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { InsertSustainabilityMetric, SustainabilityMetric } from "@shared/index";
+import { sustainabilityMetricFormSchema } from "@shared/index";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { Eye, Plus } from "lucide-react";
 import { useState } from "react";
@@ -42,21 +43,6 @@ import { TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { MetricCard } from "../../sustainability/cards/MetricCard";
 import { IconDisplay, IconPicker } from "../shared/IconPicker";
-
-// Zod schema for metric validation
-const metricSchema = z.object({
-  category: z.string().min(1, "Category is required"),
-  metric: z.string().min(3, "Metric name must be at least 3 characters"),
-  value: z
-    .string()
-    .min(1, "Value is required")
-    .refine((val) => !Number.isNaN(Number(val)), "Value must be a number"),
-  unit: z.string().min(1, "Unit is required"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
-  icon: z.string().default("Leaf"),
-  isActive: z.boolean().default(true),
-  position: z.number().int().min(1).default(1),
-});
 
 interface MetricFormData {
   category: string;
@@ -148,7 +134,7 @@ export function MetricsTabContent({
     try {
       if (field) {
         // Partial validation for single field
-        const pickSchema = metricSchema.pick({
+        const pickSchema = sustainabilityMetricFormSchema.pick({
           [field]: true,
         } as unknown as Record<keyof MetricFormData, true>); // Type assertion needed for dynamic pick
         const valueToValidate = value !== undefined ? value : metricForm[field];
@@ -161,7 +147,7 @@ export function MetricsTabContent({
         return true;
       } else {
         // Full validation
-        metricSchema.parse(metricForm);
+        sustainabilityMetricFormSchema.parse(metricForm);
         setMetricValidation({
           category: { isValid: true, message: "" },
           metric: { isValid: true, message: "" },

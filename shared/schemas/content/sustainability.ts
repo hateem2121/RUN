@@ -316,3 +316,19 @@ export const selectSustainabilityFeaturesSchema = createSelectSchema(sustainabil
 
 export const insertUnifiedSustainabilitySchema = createInsertSchema(unifiedSustainability);
 export const selectUnifiedSustainabilitySchema = createSelectSchema(unifiedSustainability);
+
+// Admin sustainability metric form validation schema
+export const sustainabilityMetricFormSchema = z.object({
+  category: z.string().min(1, "Category is required"),
+  metric: z.string().min(3, "Metric name must be at least 3 characters"),
+  value: z
+    .string()
+    .min(1, "Value is required")
+    .refine((val) => !Number.isNaN(Number(val)), "Value must be a number"),
+  unit: z.string().min(1, "Unit is required"),
+  description: z.string().min(10, "Description must be at least 10 characters"),
+  icon: z.string().default("Leaf"),
+  isActive: z.boolean().default(true),
+  position: z.number().int().min(1).default(1),
+});
+export type SustainabilityMetricFormData = z.infer<typeof sustainabilityMetricFormSchema>;

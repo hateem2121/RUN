@@ -184,3 +184,6 @@ export const insertCategorySchema = createInsertSchema(categories, {
 
 export type Category = typeof categories.$inferSelect;
 export type InsertCategory = z.infer<typeof insertCategorySchema>;
+
+// Client response schema — array of selected categories for use in API response validation
+export const categoriesResponseSchema = z.array(selectCategorySchema);

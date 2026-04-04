@@ -1,24 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { type InquiryFormData, inquiryFormSchema } from "@shared/validation/contact";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { apiRequest } from "../lib/queryClient";
 import { useHydratedStore } from "../lib/useHydratedStore";
 import { type QuoteItem, type QuoteStore, useQuoteStore } from "../stores/useQuoteStore";
 
-// Form Validation Schema
-export const inquiryFormSchema = z.object({
-  contact: z.object({
-    name: z.string().min(2, "Name is required"),
-    email: z.string().email("Invalid email"),
-    company: z.string().min(2, "Company is required"),
-    phone: z.string().optional(),
-    projectDescription: z.string().optional(),
-  }),
-});
-
-export type InquiryFormData = z.infer<typeof inquiryFormSchema>;
+export type { InquiryFormData };
+export { inquiryFormSchema };
 
 interface UseInquiryFormProps {
   onClose: () => void;

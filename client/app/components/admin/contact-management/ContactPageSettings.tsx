@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { type ContactContentForm, contactContentFormSchema } from "@shared/validation/contact";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   CheckCircle2,
@@ -21,7 +22,6 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
-import { z } from "zod";
 import {
   Accordion,
   AccordionContent,
@@ -35,46 +35,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
-
-const contactContentSchema = z.object({
-  heroTitle: z.string().min(1, "Hero title is required").default("DROP US A MESSAGE"),
-  email: z.string().email("Invalid email address").default("hello@runapparel.co"),
-  phone: z.string().min(1, "Phone number is required").default("+1 (555) 123-4567"),
-  locationLine1: z.string().min(1, "Address line 1 is required").default("123 Innovation Drive"),
-  locationLine2: z.string().min(1, "Address line 2 is required").default("Tech Valley, CA 94043"),
-  locationButtonText: z.string().default("GET DIRECTIONS"),
-  tradingHours: z
-    .array(
-      z.object({
-        label: z.string().optional().default(""),
-        value: z.string().optional().default(""),
-      }),
-    )
-    .optional()
-    .default([]),
-  socialLinks: z.preprocess((val) => {
-    if (typeof val !== "object" || val === null) {
-      return {};
-    }
-    const result: Record<string, string> = {};
-    for (const [key, value] of Object.entries(val)) {
-      result[key] = typeof value === "string" ? value : "";
-    }
-    return result;
-  }, z.record(z.string(), z.string()).optional().default({})),
-  platformOptions: z
-    .array(z.string())
-    .optional()
-    .default(["Phone Call", "WhatsApp", "WeChat", "Telegram", "Other"]),
-  formButtonText: z.string().default("Get a Response Within 24 Hours"),
-  formPrivacyText: z
-    .string()
-    .default("We value your privacy and will never share your information."),
-  successHeading: z.string().default("Thank you!"),
-  successMessage: z.string().default("We've received your message and will be in touch shortly."),
-});
-
-type ContactContentForm = z.infer<typeof contactContentSchema>;
 
 interface ContactConfig {
   id?: number | undefined;
@@ -102,7 +62,7 @@ export function ContactPageSettings() {
   });
 
   const form = useForm<ContactContentForm>({
-    resolver: zodResolver(contactContentSchema) as Resolver<ContactContentForm>,
+    resolver: zodResolver(contactContentFormSchema) as Resolver<ContactContentForm>,
     defaultValues: {
       heroTitle: "",
       email: "",
