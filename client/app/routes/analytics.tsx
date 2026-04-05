@@ -187,7 +187,7 @@ export default function Analytics() {
                                     Sales
                                   </span>
                                   <span className="font-bold text-muted-foreground">
-                                    {payload[0].value}
+                                    {payload[0]?.value}
                                   </span>
                                 </div>
                                 <div className="flex flex-col">
@@ -195,7 +195,7 @@ export default function Analytics() {
                                     Revenue
                                   </span>
                                   <span className="font-bold text-muted-foreground">
-                                    ${payload[1].value}
+                                    ${payload[1]?.value}
                                   </span>
                                 </div>
                               </div>

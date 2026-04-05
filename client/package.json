@@ -69,7 +69,7 @@
   },
   "scripts": {
     "dev": "vite --port 5002",
-    "build": "tsc -b && vite build && vite build --ssr",
+    "build": "tsc -b && vite build",
     "build:analyze": "VITE_ANALYZE=true tsc -b && vite build",
     "preview": "vite preview",
     "lint": "biome check .",

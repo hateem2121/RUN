@@ -89,57 +89,44 @@ export default defineConfig(
             warn(warning);
           },
           output: {
+            // Function-based manualChunks: only called for bundled modules, not
+            // externals. Safe across both client and SSR environments — when
+            // reactRouter() builds both in one vite build pass (Vite 7 Environments
+            // API), react is externalized in SSR so this function is never called
+            // for it, avoiding the "cannot be included in manualChunks" Rollup error.
             manualChunks: isSsrBuild
               ? undefined
-              : {
-                  "vendor-react": [
-                    "react",
-                    "react-dom",
-                    "@tanstack/react-query",
-                    "react-router",
-                    "react-router-dom",
-                  ],
-
-                  // LOW-LEVEL UTILS: Must be loaded first, shared by everyone
-                  "vendor-utils": [
-                    "clsx",
-                    "tailwind-merge",
-                    "class-variance-authority",
-                    "date-fns",
-                    "zod",
-                    "react-hook-form",
-                  ],
-
-                  // UI LIBRARY: All Radix primitives to prevent circular deps
-                  "vendor-ui": [
-                    "@radix-ui/react-accordion",
-                    "@radix-ui/react-alert-dialog",
-                    "@radix-ui/react-checkbox",
-                    "@radix-ui/react-collapsible",
-                    "@radix-ui/react-dialog",
-                    "@radix-ui/react-dropdown-menu",
-                    "@radix-ui/react-label",
-                    "@radix-ui/react-progress",
-                    "@radix-ui/react-scroll-area",
-                    "@radix-ui/react-select",
-                    "@radix-ui/react-separator",
-                    "@radix-ui/react-slider",
-                    "@radix-ui/react-slot",
-                    "@radix-ui/react-switch",
-                    "@radix-ui/react-tabs",
-                    "@radix-ui/react-toast",
-                    "@radix-ui/react-visually-hidden",
-                    "cmdk",
-                    "sonner",
-                  ],
-
-                  // HEAVY VENDORS: Isolated
-                  "vendor-3d": ["@google/model-viewer"],
-                  "vendor-charts": ["recharts"],
-                  "vendor-icons": ["lucide-react"],
-
-                  // SCHEMA
-                  "vendor-schema": ["@run-remix/shared", "drizzle-orm"],
+              : (id: string): string | undefined => {
+                  if (!id.includes("node_modules")) return undefined;
+                  if (
+                    id.includes("/react/") ||
+                    id.includes("/react-dom/") ||
+                    id.includes("/@tanstack/react-query") ||
+                    id.includes("/react-router/") ||
+                    id.includes("/react-router-dom/")
+                  )
+                    return "vendor-react";
+                  if (
+                    id.includes("/clsx/") ||
+                    id.includes("/tailwind-merge/") ||
+                    id.includes("/class-variance-authority/") ||
+                    id.includes("/date-fns/") ||
+                    id.includes("/zod/") ||
+                    id.includes("/react-hook-form/")
+                  )
+                    return "vendor-utils";
+                  if (
+                    id.includes("/@radix-ui/") ||
+                    id.includes("/cmdk/") ||
+                    id.includes("/sonner/")
+                  )
+                    return "vendor-ui";
+                  if (id.includes("/@google/model-viewer")) return "vendor-3d";
+                  if (id.includes("/recharts/")) return "vendor-charts";
+                  if (id.includes("/lucide-react/")) return "vendor-icons";
+                  if (id.includes("/@run-remix/shared") || id.includes("/drizzle-orm/"))
+                    return "vendor-schema";
+                  return undefined;
                 },
           },
         },

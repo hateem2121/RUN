@@ -1,4 +1,4 @@
-export PATH="/usr/local/opt/node@24/bin:$PATH"
+export PATH="/opt/homebrew/bin:/usr/local/opt/node@24/bin:$PATH"
 
 # Run Tech Integrity Check (CRITICAL)
 npm run verify:tech-integrity

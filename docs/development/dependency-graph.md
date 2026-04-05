@@ -533,7 +533,6 @@ import * as productService from '@/services/productService';
 
 ## References
 
-- [AGENTS.md](../../audit-reports/AGENTS.md) - Operational commands
 - [Architecture Documentation](../core/architecture.md) - System architecture
 - [SDK Workspace](../core/sdk-workspace.md) - Shared package details
 - [Developer Workflow](../guides/developer-workflow.md) - Development standards

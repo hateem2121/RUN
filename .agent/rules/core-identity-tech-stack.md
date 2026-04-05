@@ -76,7 +76,6 @@ run-remix/
 │   ├── development/
 │   │   └── plans/           # Active Implementation Plans
 │   └── guidance/            # Onboarding & Standards
-├── audit-reports/           # Forensic & Compliance Audits
 ├── logs/                    # Runtime & Build Logs
 └── gemini.md                # Project Constitution (SSOT)
 ```
