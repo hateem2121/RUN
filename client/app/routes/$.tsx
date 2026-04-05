@@ -15,7 +15,7 @@ export default function NotFound() {
       <Typography.H1 className="text-9xl font-bold text-primary">404</Typography.H1>
       <Typography.H2>Page Not Found</Typography.H2>
       <Typography.P className="text-muted-foreground max-w-md">
-        The page you're looking for doesn't exist or has been moved.
+        The page you&apos;re looking for doesn&apos;t exist or has been moved.
       </Typography.P>
       <Button asChild>
         <Link to="/">Return Home</Link>

@@ -1,7 +1,7 @@
 # SOP_DEPLOY — Deployment Checklist
 
 **Owner:** M. Hateem Jamshaid (Business Development Director)
-**Last Updated:** 2026-03-28
+**Last Updated:** 2026-04-04
 **Applies To:** All production deployments of RUN Remix v3+
 
 ---
