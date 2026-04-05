@@ -67,7 +67,12 @@ router.get("/logout", (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/");
+    req.session.destroy((sessionErr) => {
+      if (sessionErr) {
+        return next(sessionErr);
+      }
+      res.redirect("/");
+    });
   });
 });
 

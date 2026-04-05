@@ -8,8 +8,8 @@
  */
 
 import { createServer, type Server } from "node:http";
+import compression from "compression"; // Compression support
 import { type Express, Router } from "express";
-import shrinkRay from "shrink-ray-current"; // Brotli support
 import { logger } from "../lib/monitoring/logger.js";
 import { diagnosticLimiter } from "../lib/resilience/rate-limiter.js";
 import v1AdminRouter from "./admin/admin.js";
@@ -46,10 +46,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }
 
   app.use(
-    shrinkRay({
-      brotli: {
-        quality: 6, // Balanced compression
-      },
+    compression({
       threshold: 1024,
       filter: (_req, res) => {
         if (res.get("Content-Type")?.includes("application/json")) {

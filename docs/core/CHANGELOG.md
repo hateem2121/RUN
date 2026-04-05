@@ -1,5 +1,27 @@
 # Changelog
 
+## [Unreleased] - 2026-04-04
+
+### Added
+
+- K8s deployment configuration with separated liveness and readiness probes.
+- PodDisruptionBudget for high availability during rollouts.
+- 404 catch-all route ($.tsx) for proper route handling.
+- USER node directive in Dockerfile for security.
+
+### Changed
+
+- Replaced `shrink-ray-current` with `compression` (Node 24 N-API compatibility).
+- Raised Vitest coverage threshold from 70% to 80%.
+- Reduced Sentry tracesSampleRate from 1.0 to 0.1 for production.
+- Removed continue-on-error from CI workflows (strict mode).
+
+### Fixed
+
+- Logout route now properly destroys session.
+- Fixed unused cache variable in test-cache.ts.
+- Removed unused `three` dependency from client.
+
 ## [Unreleased] - 2026-02-16
 
 ### Added

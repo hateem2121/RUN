@@ -69,7 +69,6 @@ jobs:
       - run: npm ci
       - name: Run Biome Check
         run: npm run check
-        continue-on-error: true
 
   typecheck:
     name: Type Check (TSC)
@@ -100,7 +99,6 @@ jobs:
       - run: npm ci
       - name: Run npm audit
         run: npm audit --audit-level=high
-        continue-on-error: true
 
   docs_check:
     name: Docs Check
@@ -115,7 +113,6 @@ jobs:
       - run: npm ci
       - name: Check Documentation Links
         run: npm run check:docs
-        continue-on-error: true
 
   test:
     name: Test & Verify

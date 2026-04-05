@@ -1,8 +1,7 @@
 import { LRUCache } from "lru-cache";
 
 try {
-  const cache = new LRUCache({ max: 10 });
-  console.log("LRUCache is a valid constructor. Version check passed.");
+  new LRUCache({ max: 10 });
   process.exit(0);
 } catch (e) {
   console.error("LRUCache error:", e);

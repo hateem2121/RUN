@@ -440,29 +440,15 @@ export function registerMetricsRoutes(app: Express): void {
    * Returns: { status: 'healthy'|'unhealthy', latency: number, timestamp: ISO string }
    */
   app.get("/api/health/db", async (_req, res) => {
-    try {
-      // Test database connectivity with 3s timeout
-      const start = Date.now();
-      await withTimeout(db.execute(sql`SELECT 1`), 3000, "Database health check");
-      const latency = Date.now() - start;
+    const start = Date.now();
+    await withTimeout(db.execute(sql`SELECT 1`), 3000, "Database health check");
+    const latency = Date.now() - start;
 
-      const response = {
-        status: "healthy",
-        latency,
-        timestamp: new Date().toISOString(),
-      };
-
-      return res.status(200).json(response);
-    } catch (error) {
-      // Timeout or other error occurred
-      logger.error("[Health Check] Database health check failed:", error);
-      return res.status(503).json({
-        status: "unhealthy",
-        latency: 3000, // Timeout value
-        timestamp: new Date().toISOString(),
-        error: error instanceof Error ? error.message : "Unknown error",
-      });
-    }
+    return res.status(200).json({
+      status: "healthy",
+      latency,
+      timestamp: new Date().toISOString(),
+    });
   });
 
   /**
