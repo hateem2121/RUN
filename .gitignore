@@ -74,6 +74,15 @@ legacy/worktrees/
 # IDE/tool-specific
 .kilocodemodes
 .config/
+.context/
+.auth/
+
+# Protocol 0 session files (not project documentation)
+task_plan.md
+findings.md
+
+# Log output directories
+logs/
 
 # One-off debug artifacts
 test-bind.ts
