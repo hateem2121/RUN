@@ -25,6 +25,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
+      - name: Check production config safety
+        run: |
+          if grep -rn "ENABLE_MOCK_ADMIN=true" --include="*.yml" --include="*.yaml" --include="*.env" . 2>/dev/null | grep -v ".git" | grep -v "node_modules"; then
+            echo "ERROR: ENABLE_MOCK_ADMIN=true found in config files — must not be enabled in production"
+            exit 1
+          fi
+          echo "✓ Production config check passed"
+
       - name: Run npm audit
         run: npm audit --audit-level=high
         continue-on-error: true
