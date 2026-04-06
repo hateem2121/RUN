@@ -120,7 +120,11 @@ function AboutPageContent() {
   }, []);
   // Fetch all about data in one optimized batch call
   // This will now correctly find data in the cache from the HydrationBoundary
-  const { data: batchData, isLoading: batchLoading } = useQuery<{
+  const {
+    data: batchData,
+    isLoading: batchLoading,
+    isError: batchError,
+  } = useQuery<{
     hero: AboutHero | null;
     timeline: AboutTimelineEntry[];
     locations: AboutMapLocation[];
@@ -225,6 +229,24 @@ function AboutPageContent() {
   const heroBackgroundUrl =
     (heroBackgroundAsset && heroBackgroundMediaId ? getAssetUrl(heroBackgroundMediaId) : null) ??
     "";
+
+  if (batchError && !batchLoading) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background p-8 text-center">
+        <h1 className="text-2xl font-bold text-foreground">Unable to load about page</h1>
+        <p className="text-muted-foreground">
+          We couldn't reach the server. Please check your connection and try again.
+        </p>
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="mt-4 rounded-md bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   if (!heroData || !isDataReady) {
     return (

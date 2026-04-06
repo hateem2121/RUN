@@ -14,6 +14,12 @@
       "port": 5002
     },
     {
+      "name": "Server No-Watch",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "cd server && PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:$HOME/.bun/bin:$PATH DOTENV_CONFIG_PATH=../.env PORT=5002 NODE_OPTIONS='--expose-gc' npx tsx index.ts"],
+      "port": 5002
+    },
+    {
       "name": "Server Dev (Mock DB)",
       "runtimeExecutable": "/bin/sh",
       "runtimeArgs": ["-c", "PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:$PATH npm run --workspace=@run-remix/server dev:mock"],

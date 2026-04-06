@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- `/about` page no longer shows an infinite loading spinner when the API is unavailable — now shows a clear "Unable to load about page" error with a Retry button (`client/app/routes/about.tsx`)
+
+### Changed
+- Updated vendored gstack from v0.15.4.0 to v0.15.15.0 (includes browse cookie picker UI, platform detection improvements, telemetry fixes)
+- Added "Server No-Watch" launch config to `.claude/launch.json` for worktree development (prevents tsx watch restart loop from Vite temp files)
+
+### Added
+- `connect-chrome` skill directory added to `.claude/skills/`
+
 ## [4.0.0] - 2026-04-04
 
 ### Added

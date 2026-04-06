@@ -7,7 +7,7 @@ npm run verify:tech-integrity
 npm run typecheck
 
 # Run Linting & Formatting (only on staged files)
-npx lint-staged
+npx lint-staged --no-stash
 
 # Security Checks
 ./scripts/security/check-secrets.sh
