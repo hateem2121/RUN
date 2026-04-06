@@ -1,1 +1,1 @@
-/Users/hateemjamshaid/Sites/RUN/.claude/skills/gstack/learn/SKILL.md
+/Users/hateemjamshaid/Sites/RUN/.claude/worktrees/pedantic-goodall/.claude/skills/gstack/learn/SKILL.md

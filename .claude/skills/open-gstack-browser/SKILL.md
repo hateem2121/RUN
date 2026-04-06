@@ -1,0 +1,1 @@
+/Users/hateemjamshaid/Sites/RUN/.claude/worktrees/pedantic-goodall/.claude/skills/gstack/open-gstack-browser/SKILL.md
