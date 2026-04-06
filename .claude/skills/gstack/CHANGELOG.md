@@ -1,5 +1,76 @@
 # Changelog
 
+## [0.15.15.0] - 2026-04-06
+
+Community security wave: 8 PRs from 4 contributors, every fix credited as co-author.
+
+### Added
+- Cookie value redaction for tokens, API keys, JWTs, and session secrets in `browse cookies` output. Your secrets no longer appear in Claude's context.
+- IPv6 ULA prefix blocking (fc00::/7) in URL validation. Covers the full unique-local range, not just the literal `fd00::`. Hostnames like `fcustomer.com` are not false-positived.
+- Per-tab cancel signaling for sidebar agents. Stopping one tab's agent no longer kills all tabs.
+- Parent process watchdog for the browse server. When Claude Code exits, orphaned browser processes now self-terminate within 15 seconds.
+- Uninstall instructions in README (script + manual removal steps).
+- CSS value validation blocks `url()`, `expression()`, `@import`, `javascript:`, and `data:` in style commands, preventing CSS injection attacks.
+- Queue entry schema validation (`isValidQueueEntry`) with path traversal checks on `stateFile` and `cwd`.
+- Viewport dimension clamping (1-16384) and wait timeout clamping (1s-300s) prevent OOM and runaway waits.
+- Cookie domain validation in `cookie-import` prevents cross-site cookie injection.
+- DocumentFragment-based tab switching in sidebar (replaces innerHTML round-trip XSS vector).
+- `pollInProgress` reentrancy guard prevents concurrent chat polls from corrupting state.
+- 750+ lines of new security regression tests across 4 test files.
+- Supabase migration 003: column-level GRANT restricts anon UPDATE to (last_seen, gstack_version, os) only.
+
+### Fixed
+- Windows: `extraEnv` now passes through to the Windows launcher (was silently dropped).
+- Windows: welcome page serves inline HTML instead of `about:blank` redirect (fixes ERR_UNSAFE_REDIRECT).
+- Headed mode: auth token returned even without Origin header (fixes Playwright Chromium extensions).
+- `frame --url` now escapes user input before constructing RegExp (ReDoS fix).
+- Annotated screenshot path validation now resolves symlinks (was bypassable via symlink traversal).
+- Auth token removed from health broadcast, delivered via targeted `getToken` handler instead.
+- `/health` endpoint no longer exposes `currentUrl` or `currentMessage`.
+- Session ID validated before use in file paths (prevents path traversal via crafted active.json).
+- SIGTERM/SIGKILL escalation in sidebar agent timeout handler (was bare `kill()`).
+
+### For contributors
+- Queue files created with 0o700/0o600 permissions (server, CLI, sidebar-agent).
+- `escapeRegExp` utility exported from meta-commands.
+- State load filters cookies from localhost, .internal, and metadata domains.
+- Telemetry sync logs upsert errors from installation tracking.
+
+## [0.15.14.0] - 2026-04-05
+
+### Fixed
+
+- **`gstack-team-init` now detects and removes vendored gstack copies.** When you run `gstack-team-init` inside a repo that has gstack vendored at `.claude/skills/gstack/`, it automatically removes the vendored copy, untracks it from git, and adds it to `.gitignore`. No more stale vendored copies shadowing the global install.
+- **`/gstack-upgrade` respects team mode.** Step 4.5 now checks the `team_mode` config. In team mode, vendored copies are removed instead of synced, since the global install is the single source of truth.
+- **`team_mode` config key.** `./setup --team` and `./setup --no-team` now set a dedicated `team_mode` config key so the upgrade skill can reliably distinguish team mode from just having auto-upgrade enabled.
+
+## [0.15.13.0] - 2026-04-04 — Team Mode
+
+Teams can now keep every developer on the same gstack version automatically. No more vendoring 342 files into your repo. No more version drift across branches. No more "who upgraded gstack last?" Slack threads. One command, every developer is current.
+
+Hat tip to Jared Friedman for the design.
+
+### Added
+
+- **`./setup --team`.** Registers a `SessionStart` hook in `~/.claude/settings.json` that auto-updates gstack at the start of each Claude Code session. Runs in background (zero latency), throttled to once/hour, network-failure-safe, completely silent. `./setup --no-team` reverses it.
+- **`./setup -q` / `--quiet`.** Suppresses all informational output. Used by the session-update hook but also useful for CI and scripted installs.
+- **`gstack-team-init` command.** Generates repo-level bootstrap files in two flavors: `optional` (gentle CLAUDE.md suggestion, one-time offer per developer) or `required` (CLAUDE.md enforcement + PreToolUse hook that blocks work without gstack installed).
+- **`gstack-settings-hook` helper.** DRY utility for adding/removing hooks in Claude Code's `settings.json`. Atomic writes (.tmp + rename) prevent corruption.
+- **`gstack-session-update` script.** The SessionStart hook target. Background fork, PID-based lockfile with stale recovery, `GIT_TERMINAL_PROMPT=0` to prevent credential prompt hangs, debug log at `~/.gstack/analytics/session-update.log`.
+- **Vendoring deprecation in preamble.** Every skill now detects vendored gstack copies in the project and offers one-time migration to team mode. "Want me to do it for you?" beats "here are 4 manual steps."
+
+### Changed
+
+- **Vendoring is deprecated.** README no longer recommends copying gstack into your repo. Global install + `--team` is the way. `--local` flag still works but prints a deprecation warning.
+- **Uninstall cleans up hooks.** `gstack-uninstall` now removes the SessionStart hook from `~/.claude/settings.json`.
+
+## [0.15.12.0] - 2026-04-06
+
+### Fixed
+- `snapshot -i` now auto-includes cursor-interactive elements (dropdown items, popover options, custom listboxes). Previously you had to remember to pass `-C` separately — now `-i` alone finds everything clickable on the page.
+- Snapshot correctly captures items inside floating containers (React portals, Radix Popover, Floating UI) even when they have ARIA roles. Previously these were silently skipped because the accessibility tree sometimes misses dynamically-rendered portals.
+- Dropdown/menu items with `role="option"` or `role="menuitem"` inside popovers are now captured and tagged with `popover-child` in the reason string, making them easy to identify.
+
 ## [0.15.11.0] - 2026-04-05
 
 ### Changed

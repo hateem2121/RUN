@@ -120,7 +120,11 @@ function AboutPageContent() {
   }, []);
   // Fetch all about data in one optimized batch call
   // This will now correctly find data in the cache from the HydrationBoundary
-  const { data: batchData, isLoading: batchLoading, isError: batchError } = useQuery<{
+  const {
+    data: batchData,
+    isLoading: batchLoading,
+    isError: batchError,
+  } = useQuery<{
     hero: AboutHero | null;
     timeline: AboutTimelineEntry[];
     locations: AboutMapLocation[];

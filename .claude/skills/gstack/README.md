@@ -48,11 +48,23 @@ Open Claude Code and paste this. Claude does the rest.
 
 > Install gstack: run **`git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/.claude/skills/gstack && cd ~/.claude/skills/gstack && ./setup`** then add a "gstack" section to CLAUDE.md that says to use the /browse skill from gstack for all web browsing, never use mcp\_\_claude-in-chrome\_\_\* tools, and lists the available skills: /office-hours, /plan-ceo-review, /plan-eng-review, /plan-design-review, /design-consultation, /design-shotgun, /design-html, /review, /ship, /land-and-deploy, /canary, /benchmark, /browse, /connect-chrome, /qa, /qa-only, /design-review, /setup-browser-cookies, /setup-deploy, /retro, /investigate, /document-release, /codex, /cso, /autoplan, /plan-devex-review, /devex-review, /careful, /freeze, /guard, /unfreeze, /gstack-upgrade, /learn. Then ask the user if they also want to add gstack to the current project so teammates get it.
 
-### Step 2: Add to your repo so teammates get it (optional)
+### Step 2: Team mode — auto-update for shared repos (recommended)
 
-> Add gstack to this project: run **`cp -Rf ~/.claude/skills/gstack .claude/skills/gstack && rm -rf .claude/skills/gstack/.git && cd .claude/skills/gstack && ./setup`** then add a "gstack" section to this project's CLAUDE.md that says to use the /browse skill from gstack for all web browsing, never use mcp\_\_claude-in-chrome\_\_\* tools, lists the available skills: /office-hours, /plan-ceo-review, /plan-eng-review, /plan-design-review, /design-consultation, /design-shotgun, /design-html, /review, /ship, /land-and-deploy, /canary, /benchmark, /browse, /connect-chrome, /qa, /qa-only, /design-review, /setup-browser-cookies, /setup-deploy, /retro, /investigate, /document-release, /codex, /cso, /autoplan, /plan-devex-review, /devex-review, /careful, /freeze, /guard, /unfreeze, /gstack-upgrade, /learn, and tells Claude that if gstack skills aren't working, run `cd .claude/skills/gstack && ./setup` to build the binary and register skills.
+Every developer installs globally, updates happen automatically:
 
-Real files get committed to your repo (not a submodule), so `git clone` just works. Everything lives inside `.claude/`. Nothing touches your PATH or runs in the background.
+```bash
+cd ~/.claude/skills/gstack && ./setup --team
+```
+
+Then bootstrap your repo so teammates get it:
+
+```bash
+cd <your-repo>
+~/.claude/skills/gstack/bin/gstack-team-init required  # or: optional
+git add .claude/ CLAUDE.md && git commit -m "require gstack for AI-assisted work"
+```
+
+No vendored files in your repo, no version drift, no manual upgrades. Every Claude Code session starts with a fast auto-update check (throttled to once/hour, network-failure-safe, completely silent).
 
 > **Contributing or need full history?** The commands above use `--depth 1` for a fast install. If you plan to contribute or need full git history, do a full clone instead:
 > ```bash
@@ -264,6 +276,59 @@ The sprint structure is what makes parallelism work. Without a process, ten agen
 gstack skills have voice-friendly trigger phrases. Say what you want naturally —
 "run a security check", "test the website", "do an engineering review" — and the
 right skill activates. You don't need to remember slash command names or acronyms.
+
+## Uninstall
+
+### Option 1: Run the uninstall script
+
+If gstack is installed on your machine:
+
+```bash
+~/.claude/skills/gstack/bin/gstack-uninstall
+```
+
+This handles skills, symlinks, global state (`~/.gstack/`), project-local state, browse daemons, and temp files. Use `--keep-state` to preserve config and analytics. Use `--force` to skip confirmation.
+
+### Option 2: Manual removal (no local repo)
+
+If you don't have the repo cloned (e.g. you installed via a Claude Code paste and later deleted the clone):
+
+```bash
+# 1. Stop browse daemons
+pkill -f "gstack.*browse" 2>/dev/null || true
+
+# 2. Remove per-skill symlinks pointing into gstack/
+find ~/.claude/skills -maxdepth 1 -type l 2>/dev/null | while read -r link; do
+  case "$(readlink "$link" 2>/dev/null)" in gstack/*|*/gstack/*) rm -f "$link" ;; esac
+done
+
+# 3. Remove gstack
+rm -rf ~/.claude/skills/gstack
+
+# 4. Remove global state
+rm -rf ~/.gstack
+
+# 5. Remove integrations (skip any you never installed)
+rm -rf ~/.codex/skills/gstack* 2>/dev/null
+rm -rf ~/.factory/skills/gstack* 2>/dev/null
+rm -rf ~/.kiro/skills/gstack* 2>/dev/null
+rm -rf ~/.openclaw/skills/gstack* 2>/dev/null
+
+# 6. Remove temp files
+rm -f /tmp/gstack-* 2>/dev/null
+
+# 7. Per-project cleanup (run from each project root)
+rm -rf .gstack .gstack-worktrees .claude/skills/gstack 2>/dev/null
+rm -rf .agents/skills/gstack* .factory/skills/gstack* 2>/dev/null
+```
+
+### Clean up CLAUDE.md
+
+The uninstall script does not edit CLAUDE.md. In each project where gstack was added, remove the `## gstack` and `## Skill routing` sections.
+
+### Playwright
+
+`~/Library/Caches/ms-playwright/` (macOS) is left in place because other tools may share it. Remove it if nothing else needs it.
 
 ---
 

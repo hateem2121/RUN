@@ -1,15 +1,17 @@
-// biome.json excludes .claude/ (via "!.claude" in includes) and does not support
-// markdown. When biome receives ONLY excluded/unknown files, it exits code 1 with
-// "No files were processed". This filter prevents that by stripping those paths
-// before passing to biome. Remaining paths are quoted to handle spaces.
+// biome.json excludes .claude/ and does not support markdown. Patterns are scoped
+// to source directories only so that .claude/ files — which have nested .gitignore
+// rules (.factory/ etc.) — never enter lint-staged's match set. This prevents:
+//   - git add failures on gitignore'd paths during lint-staged re-staging
+//   - concurrent biome SIGKILL when .claude/ files trigger a second biome instance
+// The catch-all "*.{ts,tsx,js,json}" is intentionally absent; only named source
+// dirs are matched so root-level tooling configs (.claude/, biome.json, etc.) are
+// handled by the explicit verify/typecheck steps in the pre-commit hook.
 const biomeCheck = (files) => {
-  const toCheck = files.filter((f) => !f.includes("/.claude/") && !f.endsWith(".md"));
-  if (toCheck.length === 0) return [];
-  const quoted = toCheck.map((f) => `"${f}"`).join(" ");
+  if (files.length === 0) return [];
+  const quoted = files.map((f) => `"${f}"`).join(" ");
   return [`biome check --write --files-ignore-unknown=true ${quoted}`];
 };
 
 module.exports = {
-  "*.{ts,tsx}": biomeCheck,
-  "*.{js,json,md}": biomeCheck,
+  "{client,server,shared,scripts,e2e}/**/*.{ts,tsx,js,json}": biomeCheck,
 };
