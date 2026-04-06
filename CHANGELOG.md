@@ -9,13 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `/about` page no longer shows an infinite loading spinner when the API is unavailable — now shows a clear "Unable to load about page" error with a Retry button (`client/app/routes/about.tsx`)
+- `tsx watch` no longer loops infinitely in git worktrees — Vite's ephemeral `.vite-temp/vite.config.ts.timestamp-*.mjs` files (created during config evaluation) triggered FSEvents through symlinked `node_modules`, appearing as `../../../../client/**` relative paths that picomatch's `**` couldn't match across `..` traversal segments; fixed by adding `--ignore '../../../../client/**'` to `server/package.json` `dev` and `dev:mock` scripts (`server/package.json`)
 
 ### Changed
 - Updated vendored gstack from v0.15.4.0 to v0.15.15.0 (includes browse cookie picker UI, platform detection improvements, telemetry fixes)
-- Added "Server No-Watch" launch config to `.claude/launch.json` for worktree development (prevents tsx watch restart loop from Vite temp files)
+- Added "Server No-Watch" launch config to `.claude/launch.json` for worktree development
+- Vite `cacheDir` moved to `../.vite-cache` (repo root) to keep dep-optimization cache out of `node_modules` (`client/vite.config.ts`)
 
 ### Added
 - `connect-chrome` skill directory added to `.claude/skills/`
+- `.vite-cache/` added to `.gitignore`
 
 ## [4.0.0] - 2026-04-04
 

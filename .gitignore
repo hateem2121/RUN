@@ -1,5 +1,6 @@
 node_modules
 dist
+.vite-cache
 .DS_Store
 **/.DS_Store
 server/public

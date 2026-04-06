@@ -64,6 +64,12 @@ export default defineConfig(
       },
       root: __dirname, // Current folder is client
       envDir: path.resolve(__dirname, ".."), // Load .env from root
+      // Move Vite's dep-optimization cache (and the ephemeral .vite-temp dir it
+      // creates) out of node_modules so tsx watch's chokidar never sees it.
+      // node_modules/.vite-temp fires FSEvents that traverse symlinks into the
+      // server workspace and cause infinite restarts; ../vite-cache is outside
+      // the tsx watch scope entirely.
+      cacheDir: path.resolve(__dirname, "../.vite-cache"),
       build: {
         sourcemap: true, // Enable source maps for Sentry upload (plugin handles security/deletion if configured)
         outDir: isSsrBuild
