@@ -46,7 +46,8 @@ import { submitInquiryAction } from "../services/inquiry.server";
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   // Use the shared server action adapter to ensure consistent validation and response format
-  return await submitInquiryAction(null, formData);
+  // Pass the request object to allow for manual CSRF validation since this route is excluded from global middleware
+  return await submitInquiryAction(request, formData);
 }
 
 export default function Contact() {

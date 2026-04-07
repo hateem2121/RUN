@@ -39,7 +39,7 @@ export default defineConfig({
     },
     {
       name: "diagnostic",
-      testMatch: /diagnostic-auth\.spec\\.ts/,
+      testMatch: /diagnostic-auth\.spec\.ts/,
       use: { ...devices["Desktop Chrome"] },
     },
     {
@@ -53,14 +53,15 @@ export default defineConfig({
   ],
   webServer: {
     command: "cd server && npx tsx index.ts",
-    url: "http://localhost:5002/health",
+    url: "http://127.0.0.1:5002/api/health",
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
     env: {
-      NODE_ENV: "production",
+      NODE_ENV: "test",
       ENABLE_OTEL: "false",
       SKIP_SECRET_MANAGER: "true",
       PORT: "5002",
+      VITEST: "true",
     },
   },
 });

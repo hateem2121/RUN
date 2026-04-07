@@ -9,12 +9,13 @@ import crypto from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
 import { logger } from "../lib/monitoring/logger.js";
 
-const CSRF_COOKIE_NAME = "csrf_token";
-const CSRF_HEADER_NAME = "x-csrf-token";
+export const CSRF_COOKIE_NAME = "csrf_token";
+export const CSRF_HEADER_NAME = "x-csrf-token";
 const CSRF_TOKEN_LENGTH = 32;
 
 // Routes excluded from CSRF protection
 const EXCLUDED_ROUTES = [
+  "/contact", // Public form - handled by standard CSRF but allows initial render
   "/api/auth/google", // OAuth flow
   "/api/auth/google/callback",
   "/api/health",
@@ -32,12 +33,6 @@ function generateToken(): string {
   return crypto.randomBytes(CSRF_TOKEN_LENGTH).toString("hex");
 }
 
-/**
- * Check if a route is excluded from CSRF protection
- */
-function isExcludedRoute(path: string): boolean {
-  return EXCLUDED_ROUTES.some((route) => path === route || path.startsWith(`${route}/`));
-}
 
 /**
  * CSRF Token Generation Middleware
@@ -71,74 +66,88 @@ export function csrfTokenGenerator(req: Request, res: Response, next: NextFuncti
 }
 
 /**
- * CSRF Validation Middleware
- * Validates CSRF token on state-changing requests (POST, PUT, PATCH, DELETE)
+ * Validate CSRF tokens
+ * Returns null if valid, or an error object if invalid
  */
-export function csrfValidator(req: Request, res: Response, next: NextFunction): void {
-  // Bypassed for tests
-  if ((req as unknown as { _skipCsrf?: boolean })._skipCsrf || res.headersSent) {
-    next();
-    return;
-  }
-
-  // Skip for safe methods
-  if (["GET", "HEAD", "OPTIONS"].includes(req.method)) {
-    next();
-    return;
-  }
-
-  // Skip for excluded routes
-  if (isExcludedRoute(req.path)) {
-    next();
-    return;
-  }
-
-  const cookieToken = req.cookies?.[CSRF_COOKIE_NAME];
-  const headerToken = req.get(CSRF_HEADER_NAME);
-  const bodyToken = req.body?.[CSRF_COOKIE_NAME] || req.body?.csrfToken;
-  const tokenToValidate = headerToken || bodyToken;
-
-  // Validate both tokens exist and match
-  if (!cookieToken || !tokenToValidate) {
-    logger.warn("[CSRF] Missing token", {
-      path: req.path,
-      hasCookie: !!cookieToken,
-      hasHeader: !!headerToken,
-      hasBodyToken: !!bodyToken,
-    });
-    res.status(403).json({
+export function validateCsrfToken(
+  cookieToken: string | undefined,
+  providedToken: string | undefined,
+): { error: string; message: string; status: number } | null {
+  if (!cookieToken || !providedToken) {
+    return {
+      status: 403,
       error: "CSRF_TOKEN_MISSING",
       message: "CSRF token is required for this request",
-    });
-    return;
+    };
   }
 
-  // Constant-time comparison to prevent timing attacks
-  // SEC-003: Verify buffer lengths before comparison to prevent RangeError
   try {
     const cookieBuffer = Buffer.from(cookieToken);
-    const tokenBuffer = Buffer.from(tokenToValidate);
+    const tokenBuffer = Buffer.from(providedToken);
 
     if (
       cookieBuffer.length !== tokenBuffer.length ||
       !crypto.timingSafeEqual(cookieBuffer, tokenBuffer)
     ) {
-      logger.warn("[CSRF] Token mismatch or invalid length", {
-        path: req.path,
-        cookieLength: cookieBuffer.length,
-        tokenLength: tokenBuffer.length,
-      });
-      res.status(403).json({
+      return {
+        status: 403,
         error: "CSRF_TOKEN_INVALID",
         message: "CSRF token validation failed",
-      });
-      return;
+      };
     }
-  } catch (error) {
-    logger.error("[CSRF] Validation crash", { error, path: req.path });
-    res.status(403).json({
+  } catch (_error) {
+    return {
+      status: 403,
       error: "CSRF_VALIDATION_ERROR",
       message: "An error occurred during CSRF validation",
+    };
+  }
+
+  return null;
+}
+
+/**
+ * CSRF Validation Middleware
+ * Validates CSRF token on state-changing requests (POST, PUT, PATCH, DELETE)
+ */
+export function csrfValidator(req: Request, res: Response, next: NextFunction): void {
+  const isMutation = ["POST", "PUT", "PATCH", "DELETE"].includes(req.method);
+  if (!isMutation) {
+    next();
+    return;
+  }
+
+  // Handle React Router .data suffixes for exclusion check
+  const cleanPath = req.path.replace(/\.data$/, "");
+  if (EXCLUDED_ROUTES.includes(cleanPath)) {
+    next();
+    return;
+  }
+
+  // Bypassed for tests
+  if ((req as unknown as { _skipCsrf?: boolean })._skipCsrf) {
+    next();
+    return;
+  }
+
+  const cookieToken = req.cookies?.[CSRF_COOKIE_NAME];
+  const headerToken = req.headers?.[CSRF_HEADER_NAME] as string | undefined;
+  const bodyToken = (req.body?.csrf_token || req.body?.csrfToken) as string | undefined;
+
+  const providedToken = headerToken || bodyToken;
+
+  const csrfError = validateCsrfToken(cookieToken, providedToken);
+
+  if (csrfError) {
+    logger.warn("[CSRF] Validation failed", {
+      path: req.path,
+      ip: req.ip,
+      error: csrfError.error,
+    });
+
+    res.status(csrfError.status).json({
+      error: csrfError.error,
+      message: csrfError.message,
     });
     return;
   }

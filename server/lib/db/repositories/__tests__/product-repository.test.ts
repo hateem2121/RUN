@@ -171,16 +171,18 @@ describe("ProductRepository", () => {
 
   describe("getProductsSummary", () => {
     it("queries DB correctly and handles cache", async () => {
-      const mockResult = { rows: [{ id: 1, name: "P1", slug: "p1" }] };
-      mockDbInstance.execute.mockResolvedValue(mockResult);
+      const mockResult = [{ id: 1, name: "P1", slug: "p1" }];
+      selectChain.then.mockImplementation((res) => res(mockResult));
 
       // Need to mock getProductCount which is called inside
       vi.spyOn(repository, "getProductCount").mockResolvedValue(100);
 
       const result = await repository.getProductsSummary(10, 0);
       expect(result.products).toHaveLength(1);
+      expect(result.products[0].name).toBe("P1");
       expect(result.totalCount).toBe(100);
-      expect(mockDbInstance.execute).toHaveBeenCalled();
+      expect(selectChain.limit).toHaveBeenCalledWith(10);
+      expect(selectChain.offset).toHaveBeenCalledWith(0);
     });
   });
 

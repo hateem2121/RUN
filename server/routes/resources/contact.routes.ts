@@ -12,6 +12,7 @@ import {
   type ContactPageConfiguration,
   insertContactPageConfigurationSchema,
 } from "../../../shared/index.js";
+import { ContactSubmissionSchema } from "../../../shared/validation/contact.js";
 import { safeQuery } from "../../db.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
@@ -45,39 +46,13 @@ function shouldBypassCache(req: Request): boolean {
   return req.headers.referer?.includes("/admin") || req.query.nocache === "true";
 }
 
-// Zod validation schema for contact form
-const contactFormSchema = z.object({
-  name: z.string().trim().min(1, "Name is required").max(100),
-  email: z.string().trim().email("Invalid email address"),
-  message: z.string().trim().min(1, "Message is required").max(5000),
-  company: z
-    .string()
-    .trim()
-    .max(100)
-    .optional()
-    .transform((val) => val || null),
-  phone: z
-    .string()
-    .trim()
-    .max(20)
-    .optional()
-    .transform((val) => val || null),
-  country: z
-    .string()
-    .trim()
-    .max(100)
-    .optional()
-    .transform((val) => val || null),
-  preferredPlatform: z.string().trim().max(50).optional(),
-  honeypot: z.string().optional(),
-  recaptchaToken: z.string().optional(),
-});
+// Schema handled via import
 
 // Contact form submission endpoint
 // prettier-ignore
 router.post("/contact", async (req, res) => {
   // security (public)
-  const validatedData = contactFormSchema.parse(req.body);
+  const validatedData = ContactSubmissionSchema.parse(req.body);
 
   // Server-side honeypot validation - reject if filled (bot detection)
   if (validatedData.honeypot && validatedData.honeypot.trim().length > 0) {

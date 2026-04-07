@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type ContactFormData, contactFormSchema } from "@shared/validation/contact";
+import { type ContactFormData, ContactFormSchema } from "@shared/validation/contact";
 import { useEffect, useMemo, useState } from "react";
 import { type Resolver, useForm } from "react-hook-form";
 import { useFetcher } from "react-router";
@@ -46,7 +46,7 @@ export function useContactForm(config?: UseContactFormConfig) {
   const state = fetcher.data || { status: "idle", message: "", timestamp: Date.now() };
 
   const form = useForm<ContactFormData>({
-    resolver: zodResolver(contactFormSchema) as Resolver<ContactFormData>,
+    resolver: zodResolver(ContactFormSchema) as Resolver<ContactFormData>,
     defaultValues: {
       firstName: "",
       lastName: "",

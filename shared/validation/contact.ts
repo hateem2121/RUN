@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-export const contactFormSchema = z.object({
+/**
+ * UI-centric schema for the React Hook Form.
+ * Includes split name fields and UI-specific logic like 'otherPlatform'.
+ */
+export const ContactFormSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   jobTitle: z.string().optional(),
@@ -15,18 +19,72 @@ export const contactFormSchema = z.object({
   honeypot: z.string().optional(),
 });
 
-export type ContactFormData = z.infer<typeof contactFormSchema>;
+export type ContactFormData = z.infer<typeof ContactFormSchema>;
 
-// Inquiry (quote cart) form schema
-export const inquiryFormSchema = z.object({
+/**
+ * Backend-centric schema for database insertion and API validation.
+ * Matches the 'inquiries' table columns exactly.
+ */
+export const ContactSubmissionSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100),
+  email: z.string().trim().email("Invalid email address"),
+  message: z.string().trim().min(1, "Message is required").max(5000),
+  company: z
+    .string()
+    .trim()
+    .max(100)
+    .optional()
+    .nullable()
+    .transform((val) => val || null),
+  phone: z
+    .string()
+    .trim()
+    .max(20)
+    .optional()
+    .nullable()
+    .transform((val) => val || null),
+  country: z
+    .string()
+    .trim()
+    .max(100)
+    .optional()
+    .nullable()
+    .transform((val) => val || null),
+  preferredPlatform: z.string().trim().max(50).optional().nullable(),
+  source: z.string().default("contact-page"),
+  status: z.enum(["new", "read", "responded", "archived"]).default("new"),
+  honeypot: z.string().optional(),
+  recaptchaToken: z.string().optional(),
+});
+
+export type ContactSubmissionData = z.input<typeof ContactSubmissionSchema>;
+
+/**
+ * Quote request schema (B2B/Catalog-centric).
+ */
+export const QuoteSubmissionSchema = z.object({
   contact: z.object({
     name: z.string().min(2, "Name is required"),
-    email: z.string().email("Invalid email"),
-    company: z.string().min(2, "Company is required"),
+    email: z.string().email("Invalid email address"),
+    company: z.string().min(2, "Company name is required"),
     phone: z.string().optional(),
     projectDescription: z.string().optional(),
   }),
+  items: z
+    .array(
+      z.object({
+        productId: z.number(),
+        quantity: z.number().min(1),
+        notes: z.string().optional(),
+      }),
+    )
+    .min(1, "At least one item must be added to the quote"),
 });
+
+export type QuoteSubmissionData = z.infer<typeof QuoteSubmissionSchema>;
+
+// Inquiry (quote cart) form schema (LEGACY/Alias)
+export const inquiryFormSchema = QuoteSubmissionSchema;
 
 export type InquiryFormData = z.infer<typeof inquiryFormSchema>;
 

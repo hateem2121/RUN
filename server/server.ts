@@ -16,6 +16,8 @@ import { setupGracefulShutdown } from "./lib/shutdown-manager.js";
 // SEC-002: Environment is validated in index.ts before this file is loaded.
 
 export const app = express();
+
+
 const config = getConfig();
 
 export const serverReady: Promise<void> = (async () => {

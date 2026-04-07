@@ -230,106 +230,53 @@ test.describe("Admin Homepage (/admin/homepage)", () => {
     await expect(saveBtn).toBeEnabled({ timeout: 5000 });
   });
 
-  test("admin: PATCH /api/homepage-hero persists title change (API-level CRUD test)", async ({
-    page,
-  }) => {
-    // BUG NOTE: The React mutation (use-admin-homepage-mutations.ts) uses raw fetch() without
-    // the x-csrf-token header, causing every "Sync Hero" click to fail with 403 CSRF_TOKEN_MISSING.
-    // This test bypasses the broken UI mutation and tests the API endpoint directly.
-    // See: client/app/hooks/use-admin-homepage-mutations.ts — needs to use api.ts wrapper.
-
+  test("admin: UI Sync Hero persists title change (E2E CRUD)", async ({ page }) => {
     // 1. Get current title (to restore after test)
     const heroRes = await page.request.get(`${BASE}/api/homepage-hero`);
     expect(heroRes.ok()).toBe(true);
     const heroData = await heroRes.json();
     const originalTitle: string = heroData.title ?? "Next-Generation Sportswear Manufacturing";
 
-    // 2. Navigate to admin to get a fresh CSRF token cookie from the server
+    // 2. Navigate to admin UI
     await page.goto(`${BASE}/admin/homepage?tab=hero`);
     await page.waitForLoadState("networkidle");
-    const csrfToken = await page.evaluate(
-      () =>
-        document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("csrf_token="))
-          ?.split("=")[1] ?? null,
-    );
-    expect(csrfToken, "CSRF token must be set by server on admin page load").toBeTruthy();
 
-    const testTitle = `TEST-HEADING-${Date.now()}`;
+    const titleInput = page.locator("#title");
+    await titleInput.waitFor({ state: "visible", timeout: 8000 });
+
+    const testTitle = `TEST-UI-SYNC-${Date.now()}`;
 
     try {
-      // 3. PATCH via page.evaluate (runs in browser context with cookies + explicit CSRF header)
-      // Using browser fetch because page.request doesn't forward custom headers through the
-      // browser's CORS layer on same-origin requests.
-      const patchResult = await page.evaluate(
-        async ({ url, token, body }) => {
-          const res = await fetch(url, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              "x-csrf-token": token,
-            },
-            body: JSON.stringify(body),
-            credentials: "same-origin",
-          });
-          const text = await res.text();
-          return { status: res.status, ok: res.ok, body: text.substring(0, 300) };
-        },
-        {
-          url: `${BASE}/api/homepage-hero`,
-          token: csrfToken!,
-          body: {
-            title: testTitle,
-            subtitle: heroData.subtitle ?? "",
-            ctaText: heroData.ctaText ?? "",
-            ctaLink: heroData.ctaLink ?? "/manufacturing",
-            isActive: heroData.isActive ?? true,
-            sortOrder: heroData.sortOrder ?? 0,
-          },
-        },
-      );
-      expect(patchResult.ok, `PATCH failed with ${patchResult.status}: ${patchResult.body}`).toBe(
-        true,
-      );
+      // 3. Update via UI
+      await titleInput.click({ clickCount: 3 });
+      await titleInput.fill(testTitle);
+      
+      const saveBtn = page.getByRole("button", { name: /save|update|publish|sync hero/i }).first();
+      await expect(saveBtn).toBeEnabled({ timeout: 5000 });
+      await saveBtn.click();
 
-      // 4. Verify persistence
+      // 4. Verify success via button state (isDirty=false)
+      await expect(saveBtn).toBeDisabled({ timeout: 10000 });
+
+      // 5. Verify persistence via API
       const verifyRes = await page.request.get(`${BASE}/api/homepage-hero`);
       const verifyData = await verifyRes.json();
-      expect(verifyData.title, "Title should be persisted to database").toContain(
-        testTitle.substring(0, 12),
-      );
+      expect(verifyData.title, "Title should be persisted to database").toBe(testTitle);
+
+      // 6. Verify reflection on Public Homepage
+      await page.goto(`${BASE}/`);
+      await page.waitForLoadState("networkidle");
+      const h1 = page.locator("h1").first();
+      await expect(h1).toContainText(testTitle, { timeout: 10000 });
     } finally {
-      // 5. Restore original title via browser fetch (same CSRF approach)
-      const currentCsrf = await page.evaluate(
-        () =>
-          document.cookie
-            .split("; ")
-            .find((row) => row.startsWith("csrf_token="))
-            ?.split("=")[1] ?? null,
-      );
-      await page.evaluate(
-        async ({ url, token, body }) => {
-          await fetch(url, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json", "x-csrf-token": token },
-            body: JSON.stringify(body),
-            credentials: "same-origin",
-          });
-        },
-        {
-          url: `${BASE}/api/homepage-hero`,
-          token: currentCsrf ?? csrfToken!,
-          body: {
-            title: originalTitle,
-            subtitle: heroData.subtitle ?? "",
-            ctaText: heroData.ctaText ?? "",
-            ctaLink: heroData.ctaLink ?? "/manufacturing",
-            isActive: heroData.isActive ?? true,
-            sortOrder: heroData.sortOrder ?? 0,
-          },
-        },
-      );
+      // 7. RESTORE original data
+      await page.goto(`${BASE}/admin/homepage?tab=hero`);
+      await titleInput.waitFor({ state: "visible" });
+      await titleInput.click({ clickCount: 3 });
+      await titleInput.fill(originalTitle);
+      const saveBtn = page.getByRole("button", { name: /save|update|publish|sync hero/i }).first();
+      await saveBtn.click();
+      await expect(saveBtn).toBeDisabled({ timeout: 10000 });
     }
   });
 });

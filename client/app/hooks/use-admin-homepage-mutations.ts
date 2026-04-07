@@ -7,6 +7,7 @@ import type {
 } from "@shared/index";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/api";
 
 export function useAdminHomepageMutations() {
   const queryClient = useQueryClient();
@@ -20,15 +21,10 @@ export function useAdminHomepageMutations() {
   // Hero Mutations
   const updateHomepageHero = useMutation({
     mutationFn: async (data: Partial<InsertHomepageHero>) => {
-      const response = await fetch("/api/homepage-hero", {
+      return apiRequest<InsertHomepageHero>("/api/homepage-hero", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) {
-        throw new Error("Failed to update homepage hero");
-      }
-      return response.json();
     },
     onSuccess: () => {
       invalidateHomepageQueries();
@@ -42,15 +38,10 @@ export function useAdminHomepageMutations() {
   // Slogan Mutations
   const createSlogan = useMutation({
     mutationFn: async (data: InsertHomepageSlogan) => {
-      const response = await fetch("/api/homepage-slogans", {
+      return apiRequest<InsertHomepageSlogan>("/api/homepage-slogans", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) {
-        throw new Error("Failed to create slogan");
-      }
-      return response.json();
     },
     onSuccess: () => {
       invalidateHomepageQueries();
@@ -63,15 +54,10 @@ export function useAdminHomepageMutations() {
 
   const updateSlogan = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<InsertHomepageSlogan> }) => {
-      const response = await fetch(`/api/homepage-slogans/${id}`, {
+      return apiRequest<InsertHomepageSlogan>(`/api/homepage-slogans/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) {
-        throw new Error("Failed to update slogan");
-      }
-      return response.json();
     },
     onSuccess: () => {
       invalidateHomepageQueries();
@@ -84,12 +70,9 @@ export function useAdminHomepageMutations() {
 
   const deleteSlogan = useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/homepage-slogans/${id}`, {
+      await apiRequest(`/api/homepage-slogans/${id}`, {
         method: "DELETE",
       });
-      if (!response.ok) {
-        throw new Error("Failed to delete slogan");
-      }
     },
     onSuccess: () => {
       invalidateHomepageQueries();
@@ -102,15 +85,10 @@ export function useAdminHomepageMutations() {
 
   const reorderSlogans = useMutation({
     mutationFn: async (slogans: { id: number; position: number }[]) => {
-      const response = await fetch("/api/homepage-slogans/reorder", {
+      return apiRequest("/api/homepage-slogans/reorder", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slogans }),
       });
-      if (!response.ok) {
-        throw new Error("Failed to reorder slogans");
-      }
-      return response.json();
     },
     onSuccess: () => {
       invalidateHomepageQueries();
@@ -124,15 +102,10 @@ export function useAdminHomepageMutations() {
   // Process Card Mutations
   const createProcessCard = useMutation({
     mutationFn: async (data: InsertHomepageProcessCard) => {
-      const response = await fetch("/api/homepage-process-cards", {
+      return apiRequest<InsertHomepageProcessCard>("/api/homepage-process-cards", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) {
-        throw new Error("Failed to create process card");
-      }
-      return response.json();
     },
     onSuccess: () => {
       invalidateHomepageQueries();
@@ -145,15 +118,10 @@ export function useAdminHomepageMutations() {
 
   const updateProcessCard = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<InsertHomepageProcessCard> }) => {
-      const response = await fetch(`/api/homepage-process-cards/${id}`, {
+      return apiRequest<InsertHomepageProcessCard>(`/api/homepage-process-cards/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) {
-        throw new Error("Failed to update process card");
-      }
-      return response.json();
     },
     onSuccess: () => {
       invalidateHomepageQueries();
@@ -166,12 +134,9 @@ export function useAdminHomepageMutations() {
 
   const deleteProcessCard = useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/homepage-process-cards/${id}`, {
+      await apiRequest(`/api/homepage-process-cards/${id}`, {
         method: "DELETE",
       });
-      if (!response.ok) {
-        throw new Error("Failed to delete process card");
-      }
     },
     onSuccess: () => {
       invalidateHomepageQueries();
@@ -184,15 +149,10 @@ export function useAdminHomepageMutations() {
 
   const reorderProcessCards = useMutation({
     mutationFn: async (cards: { id: number; position: number }[]) => {
-      const response = await fetch("/api/homepage-process-cards/reorder", {
+      return apiRequest("/api/homepage-process-cards/reorder", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cards }),
       });
-      if (!response.ok) {
-        throw new Error("Failed to reorder process cards");
-      }
-      return response.json();
     },
     onSuccess: () => {
       invalidateHomepageQueries();
@@ -206,15 +166,10 @@ export function useAdminHomepageMutations() {
   // Section Mutations
   const updateSection = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<InsertHomepageSection> }) => {
-      const response = await fetch(`/api/homepage-sections/${id}`, {
+      return apiRequest<InsertHomepageSection>(`/api/homepage-sections/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) {
-        throw new Error("Failed to update section");
-      }
-      return response.json();
     },
     onSuccess: () => {
       invalidateHomepageQueries();
@@ -228,15 +183,13 @@ export function useAdminHomepageMutations() {
   // Featured Settings Mutation
   const updateFeaturedSettings = useMutation({
     mutationFn: async (data: Partial<InsertHomepageFeaturedProductsSettings>) => {
-      const response = await fetch("/api/homepage-featured-products-settings", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to update featured settings");
-      }
-      return response.json();
+      return apiRequest<InsertHomepageFeaturedProductsSettings>(
+        "/api/homepage-featured-products-settings",
+        {
+          method: "PATCH",
+          body: JSON.stringify(data),
+        },
+      );
     },
     onSuccess: () => {
       invalidateHomepageQueries();

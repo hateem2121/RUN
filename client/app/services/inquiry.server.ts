@@ -1,42 +1,10 @@
-"use server";
-
 import { z } from "zod";
-
-// --- Schemas ---
-
-export const ContactSubmissionSchema = z.object({
-  name: z.string().min(2, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  message: z.string().min(1, "Message is required"),
-  company: z.string().nullish(),
-  phone: z.string().nullish(),
-  country: z.string().nullish(),
-  preferredPlatform: z.string().nullish(),
-  honeypot: z.string().optional(),
-  recaptchaToken: z.string().optional(),
-});
-
-export const QuoteSubmissionSchema = z.object({
-  contact: z.object({
-    name: z.string().min(2, "Name is required"),
-    email: z.string().email("Invalid email address"),
-    company: z.string().min(2, "Company name is required"),
-    phone: z.string().optional(),
-    projectDescription: z.string().optional(),
-  }),
-  items: z
-    .array(
-      z.object({
-        productId: z.number(),
-        quantity: z.number().min(1),
-        notes: z.string().optional(),
-      }),
-    )
-    .min(1, "At least one item must be added to the quote"),
-});
-
-export type ContactSubmissionData = z.infer<typeof ContactSubmissionSchema>;
-export type QuoteSubmissionData = z.infer<typeof QuoteSubmissionSchema>;
+import {
+  ContactSubmissionSchema,
+  type ContactSubmissionData,
+  QuoteSubmissionSchema,
+  type QuoteSubmissionData,
+} from "@shared/validation/contact";
 
 // --- Actions ---
 
@@ -135,7 +103,7 @@ export async function submitQuoteRequest(data: QuoteSubmissionData) {
 // --- Internal ---
 
 // React 19 Server Action Adapter for useActionState
-export async function submitInquiryAction(_prevState: unknown, formData: FormData) {
+export async function submitInquiryAction(_request: Request | null, formData: FormData) {
   const data = {
     name: (formData.get("name") || formData.get("contactName")) as string,
     email: formData.get("email") as string,
@@ -150,13 +118,15 @@ export async function submitInquiryAction(_prevState: unknown, formData: FormDat
 
   try {
     const result = await submitContactInquiry({
-      ...data,
-      // Ensure nulls for optional fields if they are empty strings or undefined
+      name: data.name,
+      email: data.email,
+      message: data.message,
       company: data.company || null,
       phone: data.phone || null,
       country: data.country || null,
       preferredPlatform: data.preferredPlatform || null,
       honeypot: data.honeypot || undefined,
+      recaptchaToken: data.recaptchaToken || undefined,
     });
 
     return {
