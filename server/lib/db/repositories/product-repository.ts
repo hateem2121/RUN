@@ -79,6 +79,7 @@ const PRODUCT_SUMMARY_COLUMNS = {
   slug: products.slug,
   sku: products.sku,
   description: products.description,
+  shortDescription: products.shortDescription,
   primaryImageId: products.primaryImageId,
   primaryVideoId: products.primaryVideoId,
   imageIds: products.imageIds,

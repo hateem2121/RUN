@@ -37,6 +37,19 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { useLoaderData } from "react-router";
 import { apiRequest, getQueryClient, queryKeys } from "@/lib/queryClient";
 
+import type { Route } from "./+types/_index";
+
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "RUN Apparel | B2B Sportswear Manufacturing Partner" },
+    {
+      name: "description",
+      content:
+        "Next-generation B2B sportswear manufacturing. Sustainable, high-performance athletic apparel with precision engineering since 1889.",
+    },
+  ];
+}
+
 export async function loader() {
   const queryClient = getQueryClient();
 

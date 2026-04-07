@@ -242,6 +242,7 @@ export type ProductSummary = Pick<
   | "slug"
   | "sku"
   | "description"
+  | "shortDescription"
   | "primaryImageId"
   | "primaryVideoId"
   | "imageIds"

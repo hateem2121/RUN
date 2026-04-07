@@ -85,7 +85,7 @@ export const ProductSummaryResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
-  sku: z.string(),
+  sku: z.string().optional(),
   description: z.string().nullable(),
   shortDescription: z.string().nullable(),
 
@@ -123,7 +123,7 @@ export const ProductSummaryResponseSchema = z.object({
   accessoryIds: z.array(z.number()).nullable(),
   urlPath: z.string().nullable(),
 
-  createdAt: z.date().nullable(),
+  createdAt: z.coerce.date().nullable(),
 });
 
 export const ProductDetailResponseSchema = z.object({
