@@ -20,6 +20,8 @@ export default defineConfig({
       "**/build/**",
       "**/.{idea,git,cache,output,temp}/**",
       ".claude/**",
+      "e2e/**",
+      "tests/e2e/**",
     ],
     testTimeout: 60000,
     coverage: {

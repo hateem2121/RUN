@@ -23,8 +23,10 @@ setup("authenticate as admin", async ({ page }) => {
     await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 15000 });
   }
 
-  // 4. Verify the Admin Console is loaded (wait for a visible dashboard card)
-  await expect(page.getByText("Product Management")).toBeVisible({ timeout: 15000 });
+  // 4. Verify the Admin Console is loaded (wait for the sidebar nav to appear)
+  await expect(page.getByRole("navigation").filter({ hasText: "Dashboard" })).toBeVisible({
+    timeout: 15000,
+  });
 
   // 5. Save storage state
   await page.context().storageState({ path: authFile });

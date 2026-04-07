@@ -254,29 +254,15 @@ export class ProductRepository {
     // PHASE 2A: Time DB query execution (includes circuit breaker overhead)
     const result = await perfTracker.timePhase("dbQuery", async () => {
       return await dbCircuitBreaker.execute(async () => {
-        const queryResult = await db.execute<{
-          id: number;
-          name: string;
-          slug: string;
-          description: string | null;
-          primaryImageId: number | null;
-          categoryId: number;
-          isFeatured: boolean | null;
-        }>(sql`
-          SELECT 
-            id, name, slug, description,
-            primary_image_id as "primaryImageId",
-            category_id as "categoryId",
-            is_featured as "isFeatured"
-          FROM products
-          WHERE is_active = true AND deleted_at IS NULL
-          ORDER BY created_at DESC
-          LIMIT ${limit} OFFSET ${offset}
-        `);
+        const summaryProducts = await db
+          .select(PRODUCT_SUMMARY_COLUMNS)
+          .from(products)
+          .where(and(eq(products.isActive, true), isNull(products.deletedAt)))
+          .orderBy(desc(products.createdAt))
+          .limit(limit)
+          .offset(offset);
 
-        const summaryProducts = queryResult.rows as unknown as ProductSummary[];
-
-        return { products: summaryProducts, totalCount };
+        return { products: summaryProducts as ProductSummary[], totalCount };
       }, "getProductsSummary");
     });
 
