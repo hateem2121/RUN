@@ -85,7 +85,7 @@ export const ProductSummaryResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
-  sku: z.string().optional(),
+  sku: z.string(),
   description: z.string().nullable(),
   shortDescription: z.string().nullable(),
 
