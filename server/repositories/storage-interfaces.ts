@@ -1,10 +1,11 @@
 import type {
-  AboutHero,
-  AboutMapLocation,
-  AboutSection,
-  AboutStatistic,
-  AboutTeamMessage,
-  AboutTimelineEntry,
+  type AboutBatchResponse,
+  type AboutHero,
+  type AboutMapLocation,
+  type AboutSection,
+  type AboutStatistic,
+  type AboutTeamMessage,
+  type AboutTimelineEntry,
   Accessory,
   AnimationError,
   AuditLog,
@@ -252,6 +253,10 @@ export interface IMediaRepository {
 // Product Repository
 export interface IProductRepository {
   getProducts(limit?: number, offset?: number): Promise<ProductSummary[]>;
+  getProductsCursor(
+    limit?: number,
+    cursor?: string,
+  ): Promise<{ products: ProductSummary[]; nextCursor: string | null }>;
   getHomepageFeaturedProducts(limit?: number): Promise<ProductSummary[]>;
   getProductsSummary(
     limit?: number,
@@ -286,10 +291,10 @@ export interface IProductRepository {
   getProductsIncludingDeleted(limit?: number, offset?: number): Promise<Product[]>;
   restoreProduct(id: number): Promise<boolean>;
   permanentlyDeleteProduct(id: number): Promise<boolean>;
-  getHomepageFeaturedProductsSettings(): Promise<Record<string, unknown>>;
+  getHomepageFeaturedProductsSettings(): Promise<HomepageFeaturedProductsSettings>;
   updateHomepageFeaturedProductsSettings(
-    settings: Record<string, unknown>,
-  ): Promise<Record<string, unknown>>;
+    settings: Partial<InsertHomepageFeaturedProductsSettings>,
+  ): Promise<HomepageFeaturedProductsSettings>;
 }
 
 // Navigation Repository
@@ -436,6 +441,7 @@ export interface IContentRepository {
   reorderAboutStatistics(orderedIds: number[]): Promise<void>;
   getAboutTeamMessage(includeInactive?: boolean): Promise<AboutTeamMessage | undefined>;
   updateAboutTeamMessage(message: Partial<InsertAboutTeamMessage>): Promise<AboutTeamMessage>;
+  getAboutBatch(): Promise<AboutBatchResponse>;
 }
 
 export interface ISustainabilityRepository {

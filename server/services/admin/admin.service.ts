@@ -5,8 +5,10 @@
  */
 
 import type {
+  AboutTimelineEntry,
   Certificate,
   Fiber,
+  InsertAboutTimelineEntry,
   InsertCertificate,
   InsertFiber,
   InsertProduct,
@@ -21,6 +23,7 @@ import {
   fabrics,
   fibers,
   inquiries,
+  insertAboutTimelineEntrySchema,
   insertCertificateSchema,
   insertFiberSchema,
   mediaAssets,
@@ -40,6 +43,7 @@ import { getLifecycleScheduler } from "../../lib/integrations/storage-lifecycle-
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import type { SessionUser } from "../../types/session.js";
+import { aboutService } from "../about.service.js";
 
 export interface AuditContext {
   user: SessionUser;
@@ -52,17 +56,20 @@ export class AdminService {
   private readonly productRepo: typeof productRepository;
   private readonly mediaRepo: typeof mediaRepository;
   private readonly miscRepo: typeof miscRepository;
+  private readonly about: typeof aboutService;
 
   constructor(
     systemRepo = systemRepository,
     productRepo = productRepository,
     mediaRepo = mediaRepository,
     miscRepo = miscRepository,
+    about = aboutService,
   ) {
     this.systemRepo = systemRepo;
     this.productRepo = productRepo;
     this.mediaRepo = mediaRepo;
     this.miscRepo = miscRepo;
+    this.about = about;
   }
 
   /**
@@ -853,6 +860,72 @@ export class AdminService {
         userAgent: audit.userAgent,
         ipAddress: audit.ipAddress,
         oldValues: { name: original?.name } as Record<string, unknown>,
+      });
+    }
+
+    return result;
+  }
+
+  // =============================================================================
+  // ABOUT TIMELINE MANAGEMENT
+  // =============================================================================
+
+  async getAboutTimelineEntries(): Promise<AboutTimelineEntry[]> {
+    return this.about.getTimeline(true);
+  }
+
+  async createAboutTimelineEntry(audit: AuditContext, data: unknown): Promise<AboutTimelineEntry> {
+    const validated = insertAboutTimelineEntrySchema.parse(data);
+    const result = await this.about.createTimelineEntry(validated);
+
+    await this.logAudit({
+      action: "INSERT",
+      tableName: "about_timeline_entries",
+      recordId: result.id.toString(),
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+      newValues: result as Record<string, unknown>,
+    });
+
+    return result;
+  }
+
+  async updateAboutTimelineEntry(
+    audit: AuditContext,
+    id: number,
+    data: Partial<InsertAboutTimelineEntry>,
+  ): Promise<AboutTimelineEntry | undefined> {
+    const original = await this.about.getTimelineEntry(id);
+    const result = await this.about.updateTimelineEntry(id, data);
+
+    await this.logAudit({
+      action: "UPDATE",
+      tableName: "about_timeline_entries",
+      recordId: id.toString(),
+      user: audit.user,
+      userAgent: audit.userAgent,
+      ipAddress: audit.ipAddress,
+      oldValues: original as Record<string, unknown>,
+      newValues: result! as Record<string, unknown>,
+    });
+
+    return result;
+  }
+
+  async deleteAboutTimelineEntry(audit: AuditContext, id: number): Promise<boolean> {
+    const original = await this.about.getTimelineEntry(id);
+    const result = await this.about.deleteTimelineEntry(id);
+
+    if (result) {
+      await this.logAudit({
+        action: "DELETE",
+        tableName: "about_timeline_entries",
+        recordId: id.toString(),
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+        oldValues: { title: original?.title } as Record<string, unknown>,
       });
     }
 

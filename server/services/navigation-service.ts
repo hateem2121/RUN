@@ -93,7 +93,7 @@ export const NavigationService = {
     }
 
     const normalized = normalizeItems(result.value);
-    await unifiedCache.set(cacheKey, normalized, CACHE_TTL_NAVIGATION * 1000);
+    await unifiedCache.set(cacheKey, normalized, CACHE_TTL_NAVIGATION);
 
     return ok({
       data: normalized,
@@ -266,7 +266,7 @@ export const NavigationService = {
       borderRadius: 20,
     };
 
-    await unifiedCache.set(cacheKey, settings, CACHE_TTL_STATIC * 1000);
+    await unifiedCache.set(cacheKey, settings, CACHE_TTL_STATIC);
     return ok(settings);
   },
 

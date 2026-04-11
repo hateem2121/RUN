@@ -20,7 +20,6 @@ import { logger } from "../../lib/monitoring/logger.js";
 // Manufacturing imports moved to manufacturing-hero.routes.ts
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { extractMediaIds } from "../../lib/utilities/media-utils.js";
-import { aboutService } from "../../services/about.service.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
@@ -61,11 +60,11 @@ router.get("/about-batch", async (_req, res) => {
 
   logger.info("[About] Cache miss - fetching from database");
 
-  // Fetch all about data via unified service with aggregate timeout
+  // Fetch all about data via optimized repository batch method
   const aboutData = await withTimeout(
-    aboutService.getAllAboutData(),
+    pageContentRepository.getAboutBatch(),
     15000,
-    "About batch fetch (service layer)",
+    "About batch fetch (repository layer)",
   ).catch((err) => {
     logger.error("[About] Aggregate fetch failed, returning empty set", err);
     return {
@@ -95,16 +94,16 @@ router.get("/about-batch", async (_req, res) => {
       : [];
 
   const batchData = {
-    hero: hero || null,
-    timeline: timeline || [],
-    locations: locations || [],
-    sections: sections || [],
-    statistics: statistics || [],
-    teamMessage: teamMessage || null,
+    hero,
+    timeline,
+    locations,
+    sections,
+    statistics,
+    teamMessage,
     mediaAssets: mediaAssets || [],
     _meta: {
       fetchedAt: new Date().toISOString(),
-      totalRequests: 6,
+      totalRequests: 1, // Single batch call to repo
       mediaAssetsLoaded: mediaAssets.length,
       mediaIdsRequested: Array.from(mediaIds),
       responseTime: performance.now() - startTime,
@@ -112,7 +111,7 @@ router.get("/about-batch", async (_req, res) => {
   };
 
   // CHUNK 3: Cache the batch data for 120 minutes (7200s)
-  await unifiedCache.set(cacheKey, batchData, CACHE_TTL_NAVIGATION * 1000);
+  await unifiedCache.set(cacheKey, batchData, CACHE_TTL_NAVIGATION);
   logger.info("[About] Batch data cached for 120 minutes / 2 hours");
 
   res.setHeader("X-Response-Time", (performance.now() - startTime).toString());
@@ -241,7 +240,7 @@ router.get("/technology-batch", async (_req, res) => {
   };
 
   // CHUNK 5: Cache the batch data for 120 minutes (7200s)
-  await unifiedCache.set(cacheKey, batchData, CACHE_TTL_NAVIGATION * 1000);
+  await unifiedCache.set(cacheKey, batchData, CACHE_TTL_NAVIGATION);
   logger.info("[Technology] Batch data cached for 120 minutes / 2 hours");
 
   res.setHeader("X-Response-Time", (performance.now() - startTime).toString());

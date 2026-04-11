@@ -21,6 +21,10 @@ vi.mock("../../lib/storage-singleton.js", () => {
   };
   return {
     getStorage: () => mockStorage,
+    StorageSingleton: {
+      getInstance: () => mockStorage,
+      hasInstance: () => true,
+    },
   };
 });
 
@@ -82,7 +86,9 @@ describe("Auth Integration Tests", () => {
     vi.spyOn(authService, "setup").mockImplementation(async (app) => {
       app.use((req, _res, next) => {
         const r = req as unknown as Record<string, unknown>;
-        r.session = r.session || {};
+        r.session = r.session || {
+          destroy: (cb: (err: null) => void) => cb(null),
+        };
         next();
       });
     });

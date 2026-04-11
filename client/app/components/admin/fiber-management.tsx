@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -368,24 +369,26 @@ export function FiberManagement() {
           }
         }}
       >
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl" contentType="form">
           <DialogHeader>
             <DialogTitle>{editingFiber ? "Edit Fiber" : "Create New Fiber"}</DialogTitle>
           </DialogHeader>
-          <FiberForm
-            formData={formData}
-            setFormData={setFormData}
-            nameError={nameError}
-            isCustomType={isCustomType}
-            setIsCustomType={setIsCustomType}
-            customType={customType}
-            setCustomType={setCustomType}
-            propertyList={propertyList}
-            newProperty={newProperty}
-            setNewProperty={setNewProperty}
-            addProperty={addProperty}
-            removeProperty={removeProperty}
-          />
+          <DialogBody>
+            <FiberForm
+              formData={formData}
+              setFormData={setFormData}
+              nameError={nameError}
+              isCustomType={isCustomType}
+              setIsCustomType={setIsCustomType}
+              customType={customType}
+              setCustomType={setCustomType}
+              propertyList={propertyList}
+              newProperty={newProperty}
+              setNewProperty={setNewProperty}
+              addProperty={addProperty}
+              removeProperty={removeProperty}
+            />
+          </DialogBody>
           <DialogFooter>
             <Button
               variant="outline"

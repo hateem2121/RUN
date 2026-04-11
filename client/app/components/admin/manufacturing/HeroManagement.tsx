@@ -172,7 +172,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
               <div className="h-2 w-2 animate-bounce rounded-full bg-[#D4A853]"></div>
             </div>
             <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
-              Initialising Hero Tab...
+              Orchestrating Hero Tab...
             </p>
           </div>
         </CardContent>
@@ -373,6 +373,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                       <button
                         type="button"
                         onClick={() => setShowBackgroundPicker(true)}
+                        data-testid="select-background-button"
                         className="text-[10px] font-bold text-[#D4A853] hover:text-[#D4A853]/80 transition-colors uppercase tracking-wider"
                       >
                         {finalSelectedBackground ? "Change" : "Select"}
@@ -412,6 +413,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                       <button
                         type="button"
                         onClick={() => setShowVideoPicker(true)}
+                        data-testid="select-video-button"
                         className="text-[10px] font-bold text-[#D4A853] hover:text-[#D4A853]/80 transition-colors uppercase tracking-wider"
                       >
                         {finalSelectedVideo ? "Change Video" : "Select Video"}

@@ -95,7 +95,7 @@ router.get("/homepage-hero", async (req, res) => {
 
   const hero = await pageContentRepository.getHomepageHero();
   const result = hero || {};
-  await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC * 1000);
+  await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC);
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
@@ -161,7 +161,7 @@ router.get("/homepage-slogans", async (req, res) => {
 
   const slogans = await pageContentRepository.getHomepageSlogans();
   const result = slogans || [];
-  await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC * 1000);
+  await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC);
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
@@ -350,7 +350,7 @@ router.get("/homepage-sections", async (req, res) => {
 
   const sections = await pageContentRepository.getHomepageSections();
   const result = sections || [];
-  await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC * 1000);
+  await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC);
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
@@ -414,7 +414,7 @@ router.get("/homepage-featured-products-settings", async (req, res) => {
 
   const settings = await pageContentRepository.getHomepageFeaturedProductsSettings();
   const result = settings || {};
-  await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC * 1000);
+  await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC);
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");

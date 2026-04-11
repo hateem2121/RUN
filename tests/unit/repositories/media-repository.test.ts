@@ -215,7 +215,7 @@ describe("MediaRepository", () => {
       } as unknown as ReturnType<typeof db.update>);
 
       await expect(mediaRepository.deleteMediaAsset(999)).rejects.toThrow(
-        "Media asset not found or already deleted: 999",
+        "Media asset with ID 999 not found",
       );
     });
   });

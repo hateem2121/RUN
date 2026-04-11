@@ -1,4 +1,5 @@
-import { and, asc, count, desc, eq, getTableColumns, isNull, like, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, getTableColumns, ilike, isNull, like, or, sql } from "drizzle-orm";
+import { StorageSingleton } from "../../storage-singleton.js";
 import {
   type Accessory,
   accessories,
@@ -52,6 +53,9 @@ export class MiscRepository {
   // =============================================================================
 
   async getFibers(): Promise<Fiber[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getFibers();
+    }
     try {
       // Use unifiedCache (Redis) instead of global memory for statelessness
       const cached = await unifiedCache.get<Fiber[]>(FIBERS_CACHE_KEY, "data");
@@ -79,6 +83,9 @@ export class MiscRepository {
   }
 
   async getFiber(id: number): Promise<Fiber | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getFiber(id);
+    }
     const [fiber] = await db
       .select()
       .from(fibers)
@@ -87,6 +94,9 @@ export class MiscRepository {
   }
 
   async createFiber(fiber: InsertFiber, tx?: DbClient): Promise<Fiber> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createFiber(fiber);
+    }
     const dbConn = tx || db;
     const [created] = await dbConn.insert(fibers).values(fiber).returning();
 
@@ -110,6 +120,9 @@ export class MiscRepository {
     fiber: Partial<InsertFiber>,
     tx?: DbClient,
   ): Promise<Fiber | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateFiber(id, fiber);
+    }
     const dbConn = tx || db;
     const [updated] = await dbConn
       .update(fibers)
@@ -133,6 +146,9 @@ export class MiscRepository {
   }
 
   async deleteFiber(id: number, tx?: DbClient): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteFiber(id);
+    }
     const dbConn = tx || db;
     const result = await dbConn
       .update(fibers)
@@ -154,11 +170,40 @@ export class MiscRepository {
     return (result.rowCount ?? 0) > 0;
   }
 
+  async getFibersIncludingDeleted(): Promise<Fiber[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getFibersIncludingDeleted();
+    }
+    return await db.select().from(fibers).orderBy(desc(fibers.createdAt));
+  }
+
+  async restoreFiber(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().restoreFiber(id);
+    }
+    const result = await db
+      .update(fibers)
+      .set({ deletedAt: null })
+      .where(eq(fibers.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async permanentlyDeleteFiber(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().permanentlyDeleteFiber(id);
+    }
+    const result = await db.delete(fibers).where(eq(fibers.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
   // =============================================================================
   // FABRIC METHODS
   // =============================================================================
 
   async getFabrics(): Promise<Fabric[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getFabrics();
+    }
     const cacheKey = "fabrics:all";
     try {
       const cached = await unifiedCache.get<Fabric[]>(cacheKey, "data");
@@ -185,6 +230,9 @@ export class MiscRepository {
   }
 
   async getFabric(id: number): Promise<Fabric | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getFabric(id);
+    }
     const [fabric] = await dbCircuitBreaker.execute(
       async () =>
         await db
@@ -197,6 +245,9 @@ export class MiscRepository {
   }
 
   async createFabric(fabric: InsertFabric, tx?: DbClient): Promise<Fabric> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createFabric(fabric);
+    }
     const dbConn = tx || db;
 
     // Transform fabric data: separate database columns from properties fields
@@ -224,6 +275,9 @@ export class MiscRepository {
     fabric: Partial<InsertFabric>,
     tx?: DbClient,
   ): Promise<Fabric | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateFabric(id, fabric);
+    }
     const dbConn = tx || db;
 
     // Fetch existing fabric to preserve properties
@@ -538,6 +592,9 @@ export class MiscRepository {
   }
 
   async deleteFabric(id: number, tx?: DbClient): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteFabric(id);
+    }
     const dbConn = tx || db;
     const result = await dbConn
       .update(fabrics)
@@ -559,6 +616,37 @@ export class MiscRepository {
     return (result.rowCount ?? 0) > 0;
   }
 
+  async getFabricsIncludingDeleted(limit = 100, offset = 0): Promise<Fabric[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getFabricsIncludingDeleted(limit, offset);
+    }
+    return await db
+      .select()
+      .from(fabrics)
+      .limit(limit)
+      .offset(offset)
+      .orderBy(desc(fabrics.createdAt));
+  }
+
+  async restoreFabric(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().restoreFabric(id);
+    }
+    const result = await db
+      .update(fabrics)
+      .set({ deletedAt: null })
+      .where(eq(fabrics.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async permanentlyDeleteFabric(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().permanentlyDeleteFabric(id);
+    }
+    const result = await db.delete(fabrics).where(eq(fabrics.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
   // =============================================================================
   // CERTIFICATE METHODS
   // =============================================================================
@@ -568,6 +656,9 @@ export class MiscRepository {
   private readonly CERTIFICATES_CACHE_KEY = "certificates:active:v3";
 
   async getCertificates(): Promise<Certificate[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getCertificates();
+    }
     try {
       const cached = await unifiedCache.get<Certificate[]>(this.CERTIFICATES_CACHE_KEY, "data");
       if (cached) {
@@ -611,6 +702,9 @@ export class MiscRepository {
   }
 
   async getCertificate(id: number): Promise<Certificate | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getCertificate(id);
+    }
     const certificate = await dbCircuitBreaker.execute(async () => {
       const result = await db
         .select({
@@ -635,6 +729,9 @@ export class MiscRepository {
   }
 
   async createCertificate(certificate: InsertCertificate, tx?: DbClient): Promise<Certificate> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createCertificate(certificate);
+    }
     const dbConn = tx || db;
     const [created] = await dbConn.insert(certificates).values(certificate).returning();
 
@@ -659,6 +756,9 @@ export class MiscRepository {
     certificate: Partial<InsertCertificate>,
     tx?: DbClient,
   ): Promise<Certificate | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateCertificate(id, certificate);
+    }
     const dbConn = tx || db;
     const [updated] = await dbConn
       .update(certificates)
@@ -683,6 +783,9 @@ export class MiscRepository {
   }
 
   async deleteCertificate(id: number, tx?: DbClient): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteCertificate(id);
+    }
     const dbConn = tx || db;
     const result = await dbConn
       .update(certificates)
@@ -705,11 +808,40 @@ export class MiscRepository {
     return (result.rowCount ?? 0) > 0;
   }
 
+  async getCertificatesIncludingDeleted(): Promise<Certificate[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getCertificatesIncludingDeleted();
+    }
+    return await db.select().from(certificates).orderBy(desc(certificates.createdAt));
+  }
+
+  async restoreCertificate(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().restoreCertificate(id);
+    }
+    const result = await db
+      .update(certificates)
+      .set({ deletedAt: null })
+      .where(eq(certificates.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async permanentlyDeleteCertificate(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().permanentlyDeleteCertificate(id);
+    }
+    const result = await db.delete(certificates).where(eq(certificates.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
   // =============================================================================
   // SIZE CHART METHODS
   // =============================================================================
 
   async getSizeCharts(): Promise<SizeChart[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getSizeCharts();
+    }
     const cacheKey = "size-charts:active";
     try {
       const cached = await unifiedCache.get<SizeChart[]>(cacheKey, "data");
@@ -735,6 +867,9 @@ export class MiscRepository {
   }
 
   async getSizeChart(id: number): Promise<SizeChart | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getSizeChart(id);
+    }
     const [sizeChart] = await dbCircuitBreaker.execute(
       async () =>
         await db
@@ -747,6 +882,9 @@ export class MiscRepository {
   }
 
   async createSizeChart(sizeChart: InsertSizeChart, tx?: DbClient): Promise<SizeChart> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createSizeChart(sizeChart);
+    }
     const dbConn = tx || db;
     const [created] = await dbConn.insert(sizeCharts).values(sizeChart).returning();
 
@@ -770,6 +908,9 @@ export class MiscRepository {
     sizeChart: Partial<InsertSizeChart>,
     tx?: DbClient,
   ): Promise<SizeChart | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateSizeChart(id, sizeChart);
+    }
     const dbConn = tx || db;
     const [updated] = await dbConn
       .update(sizeCharts)
@@ -793,6 +934,9 @@ export class MiscRepository {
   }
 
   async deleteSizeChart(id: number, tx?: DbClient): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteSizeChart(id);
+    }
     const dbConn = tx || db;
     const result = await dbConn
       .update(sizeCharts)
@@ -814,11 +958,40 @@ export class MiscRepository {
     return (result.rowCount ?? 0) > 0;
   }
 
+  async getSizeChartsIncludingDeleted(): Promise<SizeChart[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getSizeChartsIncludingDeleted();
+    }
+    return await db.select().from(sizeCharts).orderBy(desc(sizeCharts.createdAt));
+  }
+
+  async restoreSizeChart(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().restoreSizeChart(id);
+    }
+    const result = await db
+      .update(sizeCharts)
+      .set({ deletedAt: null })
+      .where(eq(sizeCharts.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async permanentlyDeleteSizeChart(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().permanentlyDeleteSizeChart(id);
+    }
+    const result = await db.delete(sizeCharts).where(eq(sizeCharts.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
   // =============================================================================
   // ACCESSORY METHODS
   // =============================================================================
 
   async getAccessories(): Promise<Accessory[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAccessories();
+    }
     const cacheKey = "accessories:active";
     try {
       const cached = await unifiedCache.get<Accessory[]>(cacheKey, "data");
@@ -844,6 +1017,9 @@ export class MiscRepository {
   }
 
   async getAccessory(id: number): Promise<Accessory | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAccessory(id);
+    }
     const [accessory] = await dbCircuitBreaker.execute(
       async () =>
         await db
@@ -856,6 +1032,9 @@ export class MiscRepository {
   }
 
   async createAccessory(accessory: InsertAccessory, tx?: DbClient): Promise<Accessory> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createAccessory(accessory);
+    }
     const dbConn = tx || db;
     const [created] = await dbConn.insert(accessories).values(accessory).returning();
 
@@ -879,6 +1058,9 @@ export class MiscRepository {
     accessory: Partial<InsertAccessory>,
     tx?: DbClient,
   ): Promise<Accessory | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateAccessory(id, accessory);
+    }
     const dbConn = tx || db;
     const [updated] = await dbConn
       .update(accessories)
@@ -902,6 +1084,9 @@ export class MiscRepository {
   }
 
   async deleteAccessory(id: number, tx?: DbClient): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteAccessory(id);
+    }
     const dbConn = tx || db;
     const result = await dbConn
       .update(accessories)
@@ -928,6 +1113,9 @@ export class MiscRepository {
   // =============================================================================
 
   async getNavigationItems(): Promise<NavigationItem[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getNavigationItems();
+    }
     return await db
       .select()
       .from(navigationItems)
@@ -936,11 +1124,17 @@ export class MiscRepository {
   }
 
   async getNavigationItem(id: number): Promise<NavigationItem | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getNavigationItem(id);
+    }
     const [item] = await db.select().from(navigationItems).where(eq(navigationItems.id, id));
     return item;
   }
 
   async createNavigationItem(item: InsertNavigationItem): Promise<NavigationItem> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createNavigationItem(item);
+    }
     const [created] = await db.insert(navigationItems).values(item).returning();
     // CHUNK 4: Removed legacy cache code - caching now handled at route level
     try {
@@ -955,6 +1149,9 @@ export class MiscRepository {
     id: number,
     item: Partial<InsertNavigationItem>,
   ): Promise<NavigationItem | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateNavigationItem(id, item);
+    }
     const [updated] = await db
       .update(navigationItems)
       .set(item)
@@ -970,6 +1167,9 @@ export class MiscRepository {
   }
 
   async deleteNavigationItem(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteNavigationItem(id);
+    }
     const result = await db.delete(navigationItems).where(eq(navigationItems.id, id));
     // CHUNK 4: Removed legacy cache code - caching now handled at route level
     try {
@@ -981,6 +1181,9 @@ export class MiscRepository {
   }
 
   async reorderNavigationItems(items: { id: number; sortOrder: number }[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderNavigationItems(items);
+    }
     await db.transaction(async (tx) => {
       for (const item of items) {
         await tx
@@ -998,6 +1201,9 @@ export class MiscRepository {
   }
 
   async getNavigationGlassmorphismSettings(): Promise<NavigationGlassmorphismSettings | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getNavigationGlassmorphismSettings();
+    }
     const [settings] = await db.select().from(navigationGlassmorphismSettings).limit(1);
     return settings;
   }
@@ -1005,6 +1211,9 @@ export class MiscRepository {
   async updateNavigationGlassmorphismSettings(
     settings: Partial<InsertNavigationGlassmorphismSettings>,
   ): Promise<NavigationGlassmorphismSettings> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateNavigationGlassmorphismSettings(settings);
+    }
     const existing = await db.select().from(navigationGlassmorphismSettings).limit(1);
 
     let result: NavigationGlassmorphismSettings;
@@ -1041,6 +1250,9 @@ export class MiscRepository {
   // =============================================================================
 
   async getContactPageConfiguration(): Promise<ContactPageConfiguration | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getContactPageConfiguration();
+    }
     const [config] = await db.select().from(contactPageConfigurations).limit(1);
     return config;
   }
@@ -1048,6 +1260,9 @@ export class MiscRepository {
   async createContactPageConfiguration(
     config: InsertContactPageConfiguration,
   ): Promise<ContactPageConfiguration> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createContactPageConfiguration(config);
+    }
     const [created] = await db.insert(contactPageConfigurations).values(config).returning();
     try {
       await emitCacheInvalidation("contact:", "create");
@@ -1061,6 +1276,9 @@ export class MiscRepository {
     id: number,
     config: Partial<InsertContactPageConfiguration>,
   ): Promise<ContactPageConfiguration | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateContactPageConfiguration(id, config);
+    }
     const [updated] = await db
       .update(contactPageConfigurations)
       .set(config)
@@ -1079,6 +1297,9 @@ export class MiscRepository {
   // =============================================================================
 
   async getFooterConfiguration(): Promise<FooterConfiguration | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getFooterConfiguration();
+    }
     // PERFORMANCE: Cache footer config for 30min (truly static content, rarely changes)
     const cacheKey = "footer:config";
     try {
@@ -1136,6 +1357,9 @@ export class MiscRepository {
   async updateFooterConfiguration(
     config: Partial<InsertFooterConfiguration>,
   ): Promise<FooterConfiguration> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateFooterConfiguration(config);
+    }
     // PERFORMANCE: Invalidate 30min cache on update to prevent stale data
     try {
       await unifiedCache.delete("footer:config");
@@ -1183,6 +1407,9 @@ export class MiscRepository {
   // =============================================================================
 
   async createInquiry(inquiry: InsertInquiry): Promise<Inquiry> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createInquiry(inquiry);
+    }
     const encryptedData = {
       ...inquiry,
       name: inquiry.name ? encrypt(inquiry.name) : inquiry.name,
@@ -1211,6 +1438,9 @@ export class MiscRepository {
   }
 
   async getInquiryById(id: number): Promise<Inquiry | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getInquiryById(id);
+    }
     const [inquiry] = await db.select().from(inquiries).where(eq(inquiries.id, id));
     return inquiry ? this.decryptInquiry(inquiry) : undefined;
   }
@@ -1222,6 +1452,9 @@ export class MiscRepository {
     source?: string | undefined;
     search?: string | undefined;
   }): Promise<{ inquiries: Inquiry[]; total: number }> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().listInquiries(filters);
+    }
     const page = filters.page ?? 1;
     const limit = filters.limit ?? 20;
     const offset = (page - 1) * limit;
@@ -1270,6 +1503,9 @@ export class MiscRepository {
   }
 
   async updateInquiry(id: number, data: Partial<InsertInquiry>): Promise<Inquiry | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateInquiry(id, data);
+    }
     const updateData: Partial<InsertInquiry> = { ...data };
 
     if (data.status === "read" || data.status === "responded") {
@@ -1282,19 +1518,22 @@ export class MiscRepository {
       .where(eq(inquiries.id, id))
       .returning();
 
-    try {
-      await unifiedCache.delete("inquiries:stats");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear inquiry cache:", error);
-    }
+    if (updated) {
+      try {
+        await unifiedCache.delete("inquiries:stats");
+      } catch (error) {
+        logger.debug("[Cache] Failed to clear inquiry cache:", error);
+      }
 
-    try {
-      await emitCacheInvalidation("inquiries:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+      try {
+        await emitCacheInvalidation("inquiries:", "update");
+      } catch (error) {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      }
 
-    return updated ? this.decryptInquiry(updated as unknown as Inquiry) : undefined;
+      return this.decryptInquiry(updated as unknown as Inquiry);
+    }
+    return undefined;
   }
 
   async addCrmLog(
@@ -1314,6 +1553,9 @@ export class MiscRepository {
   }
 
   async deleteInquiry(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteInquiry(id);
+    }
     const result = await db.delete(inquiries).where(eq(inquiries.id, id));
 
     try {
@@ -1336,6 +1578,9 @@ export class MiscRepository {
     bySource: Record<string, number>;
     recentCount: number;
   }> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getInquiryStats();
+    }
     const cacheKey = "inquiries:stats";
     try {
       const cached = await unifiedCache.get<{
@@ -1398,10 +1643,14 @@ export class MiscRepository {
 
     return stats;
   }
+
   /**
    * Subscribe an email to the newsletter
    */
   async subscribeToNewsletter(email: string): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().subscribeToNewsletter(email);
+    }
     const encryptedEmail = encrypt(email);
     const index = getBlindIndex(email);
     try {

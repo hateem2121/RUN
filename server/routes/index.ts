@@ -96,11 +96,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // 2. Core Business Domains
   apiRouter.use(v1CoreRouter);
 
-  // 3. Media Management
-  apiRouter.use(v1MediaRouter);
-
-  // 4. Admin & Resources
-  apiRouter.use(v1AdminRouter);
+  // 3. Admin & Media Management
+  apiRouter.use("/admin", v1AdminRouter);
+  apiRouter.use("/media", v1MediaRouter);
 
   // ARCH-001 FIX: Single canonical API mount
   app.use("/api", apiRouter);

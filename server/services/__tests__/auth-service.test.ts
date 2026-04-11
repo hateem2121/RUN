@@ -12,6 +12,19 @@ import { AuthErrors, authService } from "../auth-service";
 // Mock dependencies
 vi.mock("../../lib/storage-singleton", () => ({
   getStorage: vi.fn(),
+  StorageSingleton: {
+    hasInstance: vi.fn().mockReturnValue(false),
+    getInstance: vi.fn(),
+  },
+}));
+
+vi.mock("../../lib/db/repositories/index.js", () => ({
+  userRepository: {
+    getUser: vi.fn(),
+    getUserByEmail: vi.fn(),
+    upsertUser: vi.fn(),
+    updateUser: vi.fn(),
+  },
 }));
 
 vi.mock("../../lib/cache/admin-cache", () => ({
@@ -55,24 +68,20 @@ describe("AuthService", () => {
 
     it("checks storage if not in cache", async () => {
       vi.mocked(adminCacheManager.get).mockReturnValue(null);
-      const mockStorage = {
-        getUser: vi.fn().mockResolvedValue({ id: "user-123", isAdmin: true }),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.getUser).mockResolvedValue({ id: "user-123", isAdmin: true } as any);
 
       const result = await authService.verifyAdminAccess(mockUser);
 
       expect(result).toBe(true);
-      expect(mockStorage.getUser).toHaveBeenCalledWith("user-123");
+      expect(userRepository.getUser).toHaveBeenCalledWith("user-123");
       expect(adminCacheManager.set).toHaveBeenCalledWith("user-123", true);
     });
 
     it("returns false if user not found in storage", async () => {
       vi.mocked(adminCacheManager.get).mockReturnValue(null);
-      const mockStorage = {
-        getUser: vi.fn().mockResolvedValue(null),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.getUser).mockResolvedValue(null);
 
       const result = await authService.verifyAdminAccess(mockUser);
 
@@ -93,6 +102,7 @@ describe("AuthService", () => {
       expect(result).toBe(true);
       expect(logger.warn).toHaveBeenCalledWith(
         expect.stringContaining("MOCK ADMIN ACCESS GRANTED"),
+        expect.any(Object),
       );
     });
 
@@ -104,10 +114,8 @@ describe("AuthService", () => {
         claims: { ...mockUser.claims, isMock: true },
       };
       vi.mocked(adminCacheManager.get).mockReturnValue(null);
-      const mockStorage = {
-        getUser: vi.fn().mockResolvedValue({ id: "user-123", isAdmin: false }),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.getUser).mockResolvedValue({ id: "user-123", isAdmin: false } as any);
 
       const result = await authService.verifyAdminAccess(mockUserWithMock);
 
@@ -181,18 +189,16 @@ describe("AuthService", () => {
 
   describe("account lockout", () => {
     it("locks account after 5 failed attempts", async () => {
-      const mockStorage = {
-        getUserByEmail: vi.fn().mockResolvedValue({
-          id: "1",
-          failedLoginAttempts: "4",
-        }),
-        updateUser: vi.fn().mockResolvedValue({}),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.getUserByEmail).mockResolvedValue({
+        id: "1",
+        failedLoginAttempts: "4",
+      } as any);
+      vi.mocked(userRepository.updateUser).mockResolvedValue({} as any);
 
       await authService.recordFailedLogin("test@example.com");
 
-      expect(mockStorage.updateUser).toHaveBeenCalledWith(
+      expect(userRepository.updateUser).toHaveBeenCalledWith(
         "1",
         expect.objectContaining({
           failedLoginAttempts: "5",
@@ -203,12 +209,10 @@ describe("AuthService", () => {
 
     it("checks if account is locked", async () => {
       const futureDate = new Date(Date.now() + 15 * 60 * 1000);
-      const mockStorage = {
-        getUserByEmail: vi.fn().mockResolvedValue({
-          lockoutUntil: futureDate,
-        }),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.getUserByEmail).mockResolvedValue({
+        lockoutUntil: futureDate,
+      } as any);
 
       const isLocked = await authService.isAccountLocked("test@example.com");
 
@@ -216,15 +220,13 @@ describe("AuthService", () => {
     });
 
     it("resets attempts on successful login", async () => {
-      const mockStorage = {
-        getUserByEmail: vi.fn().mockResolvedValue({ id: "1" }),
-        updateUser: vi.fn().mockResolvedValue({}),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.getUserByEmail).mockResolvedValue({ id: "1" } as any);
+      vi.mocked(userRepository.updateUser).mockResolvedValue({} as any);
 
       await authService.recordSuccessfulLogin("test@example.com");
 
-      expect(mockStorage.updateUser).toHaveBeenCalledWith(
+      expect(userRepository.updateUser).toHaveBeenCalledWith(
         "1",
         expect.objectContaining({
           failedLoginAttempts: "0",
@@ -234,10 +236,8 @@ describe("AuthService", () => {
     });
 
     it("returns false for non-existent user in isAccountLocked", async () => {
-      const mockStorage = {
-        getUserByEmail: vi.fn().mockResolvedValue(null),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.getUserByEmail).mockResolvedValue(null);
 
       const isLocked = await authService.isAccountLocked("notfound@test.com");
       expect(isLocked).toBe(false);
@@ -245,11 +245,9 @@ describe("AuthService", () => {
 
     it("resets lock if it has expired", async () => {
       const pastDate = new Date(Date.now() - 1000);
-      const mockStorage = {
-        getUserByEmail: vi.fn().mockResolvedValue({ id: "1", lockoutUntil: pastDate }),
-        updateUser: vi.fn().mockResolvedValue({}),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.getUserByEmail).mockResolvedValue({ id: "1", lockoutUntil: pastDate } as any);
+      vi.mocked(userRepository.updateUser).mockResolvedValue({} as any);
       const spySuccess = vi.spyOn(authService, "recordSuccessfulLogin");
 
       const isLocked = await authService.isAccountLocked("test@example.com");
@@ -260,10 +258,8 @@ describe("AuthService", () => {
 
   describe("upsertUser", () => {
     it("successfully upserts a user from Google profile", async () => {
-      const mockStorage = {
-        upsertUser: vi.fn().mockResolvedValue({ id: "google-123", email: "test@gmail.com" }),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.upsertUser).mockResolvedValue({ id: "google-123", email: "test@gmail.com" } as any);
 
       const profile = {
         id: "google-123",
@@ -277,8 +273,8 @@ describe("AuthService", () => {
         authService as unknown as { upsertUser: (p: unknown) => Promise<unknown> }
       ).upsertUser(profile);
 
-      expect(result.id).toBe("google-123");
-      expect(mockStorage.upsertUser).toHaveBeenCalledWith(
+      expect((result as any).id).toBe("google-123");
+      expect(userRepository.upsertUser).toHaveBeenCalledWith(
         expect.objectContaining({
           id: "google-123",
           email: "test@gmail.com",
@@ -485,33 +481,27 @@ describe("AuthService", () => {
 
   describe("getFailedAttempts", () => {
     it("returns 0 for non-existent user", async () => {
-      const mockStorage = {
-        getUserByEmail: vi.fn().mockResolvedValue(null),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.getUserByEmail).mockResolvedValue(null);
 
       const attempts = await authService.getFailedAttempts("notfound@test.com");
       expect(attempts).toBe(0);
     });
 
     it("returns correct attempts for existing user", async () => {
-      const mockStorage = {
-        getUserByEmail: vi.fn().mockResolvedValue({
-          id: "1",
-          failedLoginAttempts: "3",
-        }),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.getUserByEmail).mockResolvedValue({
+        id: "1",
+        failedLoginAttempts: "3",
+      } as any);
 
       const attempts = await authService.getFailedAttempts("test@example.com");
       expect(attempts).toBe(3);
     });
 
     it("returns 0 when failedLoginAttempts is not set", async () => {
-      const mockStorage = {
-        getUserByEmail: vi.fn().mockResolvedValue({ id: "1" }),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.getUserByEmail).mockResolvedValue({ id: "1" } as any);
 
       const attempts = await authService.getFailedAttempts("test@example.com");
       expect(attempts).toBe(0);
@@ -602,27 +592,22 @@ describe("AuthService", () => {
 
   describe("recordFailedLogin edge cases", () => {
     it("does nothing for non-existent user", async () => {
-      const mockStorage = {
-        getUserByEmail: vi.fn().mockResolvedValue(null),
-        updateUser: vi.fn(),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.getUserByEmail).mockResolvedValue(null);
 
       await authService.recordFailedLogin("notfound@test.com");
 
-      expect(mockStorage.updateUser).not.toHaveBeenCalled();
+      expect(userRepository.updateUser).not.toHaveBeenCalled();
     });
 
     it("handles user with no previous failed attempts", async () => {
-      const mockStorage = {
-        getUserByEmail: vi.fn().mockResolvedValue({ id: "1", failedLoginAttempts: undefined }),
-        updateUser: vi.fn().mockResolvedValue({}),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.getUserByEmail).mockResolvedValue({ id: "1", failedLoginAttempts: undefined } as any);
+      vi.mocked(userRepository.updateUser).mockResolvedValue({} as any);
 
       await authService.recordFailedLogin("test@example.com");
 
-      expect(mockStorage.updateUser).toHaveBeenCalledWith(
+      expect(userRepository.updateUser).toHaveBeenCalledWith(
         "1",
         expect.objectContaining({
           failedLoginAttempts: "1",
@@ -633,15 +618,12 @@ describe("AuthService", () => {
 
   describe("recordSuccessfulLogin edge cases", () => {
     it("does nothing for non-existent user", async () => {
-      const mockStorage = {
-        getUserByEmail: vi.fn().mockResolvedValue(null),
-        updateUser: vi.fn(),
-      };
-      vi.mocked(getStorage).mockReturnValue(mockStorage as unknown as IStorage);
+      const { userRepository } = await import("../../lib/db/repositories/index.js");
+      vi.mocked(userRepository.getUserByEmail).mockResolvedValue(null);
 
       await authService.recordSuccessfulLogin("notfound@test.com");
 
-      expect(mockStorage.updateUser).not.toHaveBeenCalled();
+      expect(userRepository.updateUser).not.toHaveBeenCalled();
     });
   });
 });

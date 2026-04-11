@@ -9,7 +9,11 @@
  * @see client/app/components/admin/manufacturing/* - CMS components
  */
 
-import { describe, expect, test } from "@playwright/test";
+import { AxeBuilder } from "@axe-core/playwright";
+import { expect, test } from "@playwright/test";
+
+const MANUFACTURING_PAGE_URL = "/manufacturing";
+const ADMIN_MANUFACTURING_URL = "/admin/manufacturing";
 
 /**
  * E2E TEST SUITE: Manufacturing CMS-to-Page Integration
@@ -22,14 +26,11 @@ import { describe, expect, test } from "@playwright/test";
  * 5. Accessibility requirements met
  * 6. Performance benchmarks achieved
  */
-describe("Manufacturing Page - CMS Integration E2E Tests", () => {
-  const MANUFACTURING_PAGE_URL = "/manufacturing";
-  const _ADMIN_MANUFACTURING_URL = "/admin/manufacturing";
-
+test.describe("Manufacturing Page - CMS Integration E2E Tests", () => {
   // Test timeout for slow connections
   test.setTimeout(60000);
 
-  describe("Public Page Rendering", () => {
+  test.describe("Public Page Rendering", () => {
     test("Page loads successfully with all sections", async ({ page }) => {
       await page.goto(MANUFACTURING_PAGE_URL);
 
@@ -52,41 +53,34 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
       await page.goto(MANUFACTURING_PAGE_URL);
       await page.waitForLoadState("networkidle");
 
-      // Hero should have title and subtitle
-      const heroTitle = page.locator("h1").first();
-      await expect(heroTitle).toBeVisible();
-
-      // Check for CTA button if present
-      const ctaButton = page.locator(
-        "a:has-text('Explore'), a:has-text('Contact'), button:has-text('Learn')",
-      );
-      const ctaCount = await ctaButton.count();
-      expect(ctaCount).toBeGreaterThanOrEqual(0);
+      // Correct heading identified via browser inspection
+      const title = page.locator("h1");
+      await expect(title).toBeVisible();
+      await expect(title).toContainText(/PRECISION AT SCALE/i);
     });
 
     test("Process section renders with items", async ({ page }) => {
       await page.goto(MANUFACTURING_PAGE_URL);
       await page.waitForLoadState("networkidle");
 
-      // Look for process-related content
-      const processSection = page.locator(
-        "section:has-text('Process'), section:has-text('Cutting'), section:has-text('Assembly')",
-      );
-      const processCount = await processSection.count();
+      // Validated heading "PRODUCTION BLUEPRINT"
+      const section = page.locator("section").filter({ hasText: /PRODUCTION BLUEPRINT/i });
+      await expect(section).toBeVisible();
 
-      // Either processes are displayed or section exists
-      expect(processCount).toBeGreaterThanOrEqual(0);
+      const count = await section.locator("h3").count();
+      expect(count).toBeGreaterThanOrEqual(0);
     });
 
     test("Capabilities section displays statistics", async ({ page }) => {
       await page.goto(MANUFACTURING_PAGE_URL);
       await page.waitForLoadState("networkidle");
 
-      // Look for capability/statistics content
-      const statsSection = page.locator("text=/\\d+.*M\\+|\\d+.*Lines|\\d+.*Days/i");
-      const statsCount = await statsSection.count();
+      // Validated section heading
+      const section = page.locator("section").filter({ hasText: /CAPABILITIES/i });
+      await expect(section).toBeVisible();
 
-      // Stats should be visible if data exists
+      const stats = section.locator("h3, .stat-value");
+      const statsCount = await stats.count();
       expect(statsCount).toBeGreaterThanOrEqual(0);
     });
 
@@ -94,17 +88,24 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
       await page.goto(MANUFACTURING_PAGE_URL);
       await page.waitForLoadState("networkidle");
 
-      // Look for quality/certification content
-      const qualitySection = page.locator(
-        "section:has-text('Quality'), section:has-text('ISO'), section:has-text('Certification')",
-      );
-      const qualityCount = await qualitySection.count();
+      // Validated heading "FACTORY FLOOR LIVE" or Quality references
+      const qualitySection = page
+        .locator("section")
+        .filter({ hasText: /FACTORY FLOOR LIVE|Quality/i });
+      await expect(qualitySection.first()).toBeVisible();
+    });
 
-      expect(qualityCount).toBeGreaterThanOrEqual(0);
+    test("SSR Verification - Content visible before hydration", async ({ page }) => {
+      // Use a fresh page without cache
+      await page.goto(MANUFACTURING_PAGE_URL, { waitUntil: "commit" });
+
+      // Check for presence of key headline before full network idle
+      const headline = page.locator("h1");
+      await expect(headline).toBeAttached();
     });
   });
 
-  describe("API Data Integration", () => {
+  test.describe("API Data Integration", () => {
     test("Hero API data is fetched and displayed", async ({ page }) => {
       // Intercept API calls
       const heroResponse = page.waitForResponse(
@@ -183,7 +184,7 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
     });
   });
 
-  describe("Loading States", () => {
+  test.describe("Loading States", () => {
     test("Loading skeleton displays during data fetch", async ({ page }) => {
       // Slow down network to see loading state
       await page.route("**/api/manufacturing-*", async (route) => {
@@ -204,7 +205,7 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
     });
   });
 
-  describe("Error Handling", () => {
+  test.describe("Error Handling", () => {
     test("Page handles API errors gracefully", async ({ page }) => {
       // Mock API error
       await page.route("**/api/manufacturing-hero", (route) => {
@@ -242,7 +243,7 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
     });
   });
 
-  describe("Accessibility", () => {
+  test.describe("Accessibility", () => {
     test("Page has proper heading hierarchy", async ({ page }) => {
       await page.goto(MANUFACTURING_PAGE_URL);
       await page.waitForLoadState("networkidle");
@@ -295,9 +296,21 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
       const tagName = await focusedElement.evaluate((el) => el?.tagName);
       expect(["A", "BUTTON", "INPUT", "SELECT", "TEXTAREA"]).toContain(tagName);
     });
+
+    test("Automated Accessibility Scan (Axe)", async ({ page }) => {
+      await page.goto(MANUFACTURING_PAGE_URL);
+      await page.waitForLoadState("networkidle");
+
+      const accessibilityScanResults = await new AxeBuilder({ page })
+        .include("main")
+        .withTags(["wcag2aa"])
+        .analyze();
+
+      expect(accessibilityScanResults.violations).toEqual([]);
+    });
   });
 
-  describe("Performance", () => {
+  test.describe("Performance", () => {
     test("Page loads within acceptable time", async ({ page }) => {
       const startTime = Date.now();
       await page.goto(MANUFACTURING_PAGE_URL);
@@ -335,7 +348,7 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
     });
   });
 
-  describe("SEO and Meta", () => {
+  test.describe("SEO and Meta", () => {
     test("Page has correct meta description", async ({ page }) => {
       await page.goto(MANUFACTURING_PAGE_URL);
       await page.waitForLoadState("networkidle");
@@ -364,30 +377,52 @@ describe("Manufacturing Page - CMS Integration E2E Tests", () => {
  * These tests verify the admin CMS functionality
  * Requires authentication mocking or test user
  */
-describe("Manufacturing Admin CMS Tests", () => {
-  // Note: These tests require admin authentication
-  // Skip in CI unless auth is properly mocked
+test.describe("Manufacturing Admin CMS Tests", () => {
+  // Use authentication state for admin tests
+  test.use({ storageState: ".auth/user.json" });
 
-  test.skip("Admin can access manufacturing CMS page", async ({ page }) => {
-    // This would require proper auth setup
+  test("Admin can access manufacturing CMS page", async ({ page }) => {
     await page.goto(ADMIN_MANUFACTURING_URL);
     await page.waitForLoadState("networkidle");
 
     // Should show admin interface
     await expect(page.locator("h1, h2").first()).toBeVisible();
+    await expect(page).toHaveURL(/admin\/manufacturing/);
   });
 
-  test.skip("Admin can update hero section", async ({ page }) => {
-    // This would require form interaction
+  test("Admin can update hero section and verify on public page", async ({ page }) => {
+    const TEST_MARKER = ` [QA-AUTO-${Date.now()}]`;
+    let originalTitle = "";
+
     await page.goto(ADMIN_MANUFACTURING_URL);
     await page.waitForLoadState("networkidle");
 
-    // Find hero form and update
-    const titleInput = page.locator("input[name='title'], #hero-title").first();
-    if (await titleInput.isVisible()) {
-      await titleInput.fill("Updated Hero Title");
-      // Submit form and verify
-    }
+    // Capture original title for restoration
+    const titleInput = page.locator("#headline").first();
+    originalTitle = await titleInput.inputValue();
+
+    // Perform update
+    const newTitle = `Precision Sports Manufacturing${TEST_MARKER}`;
+    await titleInput.fill(newTitle);
+
+    // Submit
+    const saveButton = page.locator("button:has-text('Save Hero Settings')").first();
+    await saveButton.click();
+
+    // Wait for success toast/indicator
+    await page.waitForTimeout(2000); // Wait for cache propagation
+
+    // Verify on public page
+    await page.goto(MANUFACTURING_PAGE_URL);
+    await page.waitForLoadState("networkidle");
+    await expect(page.locator("h1")).toContainText(newTitle);
+
+    // RESTORATION
+    await page.goto(ADMIN_MANUFACTURING_URL);
+    await page.waitForLoadState("networkidle");
+    await titleInput.fill(originalTitle);
+    await saveButton.click();
+    await page.waitForTimeout(1000);
   });
 
   test.skip("Admin can add new process", async ({ page }) => {
@@ -395,7 +430,9 @@ describe("Manufacturing Admin CMS Tests", () => {
     await page.waitForLoadState("networkidle");
 
     // Find add process button
-    const addButton = page.locator("button:has-text('Add'), button:has-text('New Process')");
+    const addButton = page
+      .locator("button:has-text('Add'), button:has-text('New Process')")
+      .first();
     if (await addButton.isVisible()) {
       await addButton.click();
       // Fill form and verify
@@ -421,7 +458,7 @@ describe("Manufacturing Admin CMS Tests", () => {
  *
  * Tests verify that cache is properly invalidated after CMS updates
  */
-describe("Cache Invalidation Tests", () => {
+test.describe("Cache Invalidation Tests", () => {
   test("Cache headers are present on API responses", async ({ page }) => {
     await page.goto(MANUFACTURING_PAGE_URL);
 

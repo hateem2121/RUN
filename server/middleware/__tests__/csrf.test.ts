@@ -92,8 +92,8 @@ describe("CSRF Middleware", () => {
 
     it("rejects mismatched tokens", () => {
       req.method = "POST";
-      req.cookies.csrf_token = "token1";
-      req.get.mockReturnValue("token2");
+      req.cookies.csrf_token = "a".repeat(64);
+      req.headers["x-csrf-token"] = "b".repeat(64);
       csrfValidator(req, res, next);
       expect(res.status).toHaveBeenCalledWith(403);
       expect(res.json).toHaveBeenCalledWith(
@@ -105,8 +105,8 @@ describe("CSRF Middleware", () => {
       const token = "a".repeat(64); // Need same length for timingSafeEqual
       req.method = "POST";
       req.cookies.csrf_token = token;
-      req.get.mockReturnValue(token);
-      csrfValidator(req, res, next);
+      req.headers["x-csrf-token"] = token;
+      csrfValidator(req as any, res as any, next);
       expect(next).toHaveBeenCalled();
     });
   });
@@ -116,9 +116,9 @@ describe("CSRF Middleware", () => {
       const token = "a".repeat(64);
       req.method = "POST";
       req.cookies.csrf_token = token;
-      req.get.mockReturnValue(token);
+      req.headers["x-csrf-token"] = token;
 
-      csrfProtection(req, res, next);
+      csrfProtection(req as any, res as any, next);
 
       expect(res.locals.csrfToken).toBe(token);
       expect(next).toHaveBeenCalled();

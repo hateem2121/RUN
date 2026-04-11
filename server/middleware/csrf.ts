@@ -23,7 +23,11 @@ const EXCLUDED_ROUTES = [
   "/api/docs",
   "/api-docs",
   "/api/webhooks", // External webhooks need their own verification
-  "/api/debug", // Debug routes (guarded by token)
+  "/api/auth/mock-login", // E2E/Internal testing auth
+  "/api/debug/crash", // Integration testing
+  "/api/debug/slow-query", // Integration testing
+  "/api/debug/ip-check", // Integration testing
+  "/api/test/crash", // Integration testing
 ];
 
 /**
@@ -32,7 +36,6 @@ const EXCLUDED_ROUTES = [
 function generateToken(): string {
   return crypto.randomBytes(CSRF_TOKEN_LENGTH).toString("hex");
 }
-
 
 /**
  * CSRF Token Generation Middleware

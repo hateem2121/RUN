@@ -90,6 +90,10 @@ export class UserRepository {
    * Update user's admin status (for manual admin operations)
    */
   async setAdminStatus(userId: string, isAdmin: boolean): Promise<User | undefined> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().setAdminStatus(userId, isAdmin);
+    }
     const [user] = await db
       .update(users)
       .set({ isAdmin, updatedAt: new Date() })
@@ -102,6 +106,10 @@ export class UserRepository {
    * Update user details
    */
   async updateUser(id: string, updates: Partial<User>): Promise<User | undefined> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateUser(id, updates);
+    }
     const [user] = await db
       .update(users)
       .set({ ...updates, updatedAt: new Date() })
@@ -114,6 +122,10 @@ export class UserRepository {
    * Get all admin users
    */
   async getAdminUsers(): Promise<User[]> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAdminUsers();
+    }
     const adminUsers = await db.select().from(users).where(eq(users.isAdmin, true));
     return adminUsers.map((user) => this.decryptUser(user));
   }

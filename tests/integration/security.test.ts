@@ -22,6 +22,8 @@ describe("Security Hardening (Integration Tier)", () => {
     async () => {
       server = await startTestServer({
         NODE_ENV: "production",
+        ENABLE_MOCK_ADMIN: "false",
+        ALLOW_MEMORY_SESSION: "true",
         ENABLE_DEBUG_ROUTES: "true",
       });
 
@@ -89,6 +91,8 @@ describe("Security Hardening (Integration Tier)", () => {
     async () => {
       server = await startTestServer({
         NODE_ENV: "production",
+        ENABLE_MOCK_ADMIN: "false",
+        ALLOW_MEMORY_SESSION: "true",
       });
 
       // Even if we don't request a real file, middleware should block any .map path
@@ -111,6 +115,8 @@ describe("Security Hardening (Integration Tier)", () => {
     async () => {
       server = await startTestServer({
         NODE_ENV: "production",
+        ENABLE_MOCK_ADMIN: "false",
+        ALLOW_MEMORY_SESSION: "true",
       });
 
       const res = await fetch(`${server.baseUrl}/health`);
@@ -124,6 +130,8 @@ describe("Security Hardening (Integration Tier)", () => {
     async () => {
       server = await startTestServer({
         NODE_ENV: "production",
+        ENABLE_MOCK_ADMIN: "false",
+        ALLOW_MEMORY_SESSION: "true",
       });
 
       const res = await fetch(`${server.baseUrl}/health`);

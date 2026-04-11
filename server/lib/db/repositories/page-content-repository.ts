@@ -1,5 +1,6 @@
-import { asc, eq, sql } from "drizzle-orm";
+import { asc, eq, getTableColumns, sql } from "drizzle-orm";
 import {
+  type AboutBatchResponse,
   type AboutHero,
   type AboutMapLocation,
   type AboutSection,
@@ -60,6 +61,7 @@ import {
   manufacturingHero,
   manufacturingProcesses,
   manufacturingQualities,
+  mediaAssets,
   type SustainabilityGoal,
   type SustainabilityHero,
   type SustainabilityInitiative,
@@ -90,11 +92,12 @@ import { db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../cache/cache-events.js";
 import { UnifiedCache } from "../../cache/unified-cache.js";
 import { logger } from "../../monitoring/logger.js";
+import { StorageSingleton } from "../../storage-singleton.js";
 
 const unifiedCache = UnifiedCache.getInstance();
 
 // Cache TTL for homepage content - marketing content changes infrequently
-const HOMEPAGE_CACHE_TTL = 60 * 60 * 1000; // 1 hour
+const HOMEPAGE_CACHE_TTL = 3600; // 1 hour (in seconds)
 
 export class PageContentRepository {
   // =============================================================================
@@ -102,6 +105,9 @@ export class PageContentRepository {
   // =============================================================================
 
   async getHomepageHero(): Promise<HomepageHero | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getHomepageHero();
+    }
     const cacheKey = "homepage:hero";
     try {
       const cached = await unifiedCache.get<HomepageHero>(cacheKey, "data");
@@ -140,6 +146,9 @@ export class PageContentRepository {
   }
 
   async updateHomepageHero(hero: Partial<InsertHomepageHero>): Promise<HomepageHero> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateHomepageHero(hero);
+    }
     const existing = await db
       .select()
       .from(homepageHero)
@@ -174,6 +183,9 @@ export class PageContentRepository {
   }
 
   async getHomepageSlogans(): Promise<HomepageSlogan[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getHomepageSlogans();
+    }
     const cacheKey = "homepage:slogans";
     const cached = await unifiedCache.get<HomepageSlogan[]>(cacheKey, "data");
     if (cached) return cached;
@@ -189,6 +201,9 @@ export class PageContentRepository {
   }
 
   async getHomepageSlogan(id: number): Promise<HomepageSlogan | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getHomepageSlogan(id);
+    }
     const [slogan] = await db
       .select()
       .from(homepageSlogans)
@@ -198,6 +213,9 @@ export class PageContentRepository {
   }
 
   async createHomepageSlogan(slogan: InsertHomepageSlogan): Promise<HomepageSlogan> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createHomepageSlogan(slogan);
+    }
     await unifiedCache.del("homepage:slogans");
     const [created] = await db.insert(homepageSlogans).values(slogan).returning();
     if (!created) throw new Error("Failed to create homepage slogan");
@@ -209,6 +227,9 @@ export class PageContentRepository {
     id: number,
     slogan: Partial<InsertHomepageSlogan>,
   ): Promise<HomepageSlogan> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateHomepageSlogan(id, slogan);
+    }
     await unifiedCache.del("homepage:slogans");
     const [updated] = await db
       .update(homepageSlogans)
@@ -222,6 +243,9 @@ export class PageContentRepository {
   }
 
   async deleteHomepageSlogan(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteHomepageSlogan(id);
+    }
     await unifiedCache.del("homepage:slogans");
     const result = await db.delete(homepageSlogans).where(eq(homepageSlogans.id, id));
     await emitCacheInvalidation("homepage:slogans", "delete");
@@ -229,6 +253,9 @@ export class PageContentRepository {
   }
 
   async reorderHomepageSlogans(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderHomepageSlogans(orderedIds);
+    }
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
         const id = orderedIds[i] as number;
@@ -244,6 +271,9 @@ export class PageContentRepository {
   }
 
   async getHomepageProcessCards(includeInactive = false): Promise<HomepageProcessCard[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getHomepageProcessCards(includeInactive);
+    }
     const cacheKey = includeInactive ? "homepage:process_cards:all" : "homepage:process_cards";
     const cached = await unifiedCache.get<HomepageProcessCard[]>(cacheKey, "data");
     if (cached) return cached;
@@ -279,6 +309,9 @@ export class PageContentRepository {
   }
 
   async getHomepageProcessCard(id: number): Promise<HomepageProcessCard | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getHomepageProcessCard(id);
+    }
     const [card] = await db
       .select()
       .from(homepageProcessCards)
@@ -288,6 +321,9 @@ export class PageContentRepository {
   }
 
   async createHomepageProcessCard(card: InsertHomepageProcessCard): Promise<HomepageProcessCard> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createHomepageProcessCard(card);
+    }
     await unifiedCache.del("homepage:process_cards:*");
     const [created] = await db.insert(homepageProcessCards).values(card).returning();
     if (!created) throw new Error("Failed to create homepage process card");
@@ -334,6 +370,9 @@ export class PageContentRepository {
   }
 
   async getHomepageSections(includeInactive: boolean = false): Promise<HomepageSection[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getHomepageSections(includeInactive);
+    }
     const cacheKey = includeInactive ? "homepage:sections:all" : "homepage:sections";
     const cached = await unifiedCache.get<HomepageSection[]>(cacheKey, "data");
     if (cached) return cached;
@@ -349,6 +388,9 @@ export class PageContentRepository {
   }
 
   async getHomepageSection(name: string): Promise<HomepageSection | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getHomepageSection(name);
+    }
     const [section] = await db
       .select()
       .from(homepageSections)
@@ -358,6 +400,9 @@ export class PageContentRepository {
   }
 
   async getHomepageSectionById(id: number): Promise<HomepageSection | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getHomepageSectionById(id);
+    }
     const [section] = await db
       .select()
       .from(homepageSections)
@@ -370,6 +415,9 @@ export class PageContentRepository {
     name: string,
     section: Partial<InsertHomepageSection>,
   ): Promise<HomepageSection> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateHomepageSection(name, section);
+    }
     const [existing] = await db
       .select()
       .from(homepageSections)
@@ -404,6 +452,9 @@ export class PageContentRepository {
     id: number,
     section: Partial<InsertHomepageSection>,
   ): Promise<HomepageSection | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateHomepageSectionById(id, section);
+    }
     await unifiedCache.del("homepage:sections:*");
 
     const [updated] = await db
@@ -420,6 +471,9 @@ export class PageContentRepository {
   }
 
   async getLogoAnimationSettings(): Promise<LogoAnimationSettings | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getLogoAnimationSettings();
+    }
     const [settings] = await db.select().from(logoAnimationSettings).limit(1);
     return settings ?? undefined;
   }
@@ -427,6 +481,9 @@ export class PageContentRepository {
   async updateLogoAnimationSettings(
     settings: Partial<InsertLogoAnimationSettings>,
   ): Promise<LogoAnimationSettings> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateLogoAnimationSettings(settings);
+    }
     const existing = await db.select().from(logoAnimationSettings).limit(1);
 
     let result: LogoAnimationSettings;
@@ -457,6 +514,9 @@ export class PageContentRepository {
   // =============================================================================
 
   async getHomepageFeaturedProductsSettings(): Promise<HomepageFeaturedProductsSettings> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getHomepageFeaturedProductsSettings();
+    }
     const cacheKey = "homepage:featured_products_settings";
     const cached = await unifiedCache.get<HomepageFeaturedProductsSettings>(cacheKey, "data");
     if (cached) return cached;
@@ -481,6 +541,9 @@ export class PageContentRepository {
   async updateHomepageFeaturedProductsSettings(
     settings: Partial<InsertHomepageFeaturedProductsSettings>,
   ): Promise<HomepageFeaturedProductsSettings> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateHomepageFeaturedProductsSettings(settings);
+    }
     await unifiedCache.del("homepage:featured_products_settings");
 
     const existing = await db.select().from(homepageFeaturedProductsSettings).limit(1);
@@ -512,6 +575,9 @@ export class PageContentRepository {
   // =============================================================================
 
   async getAboutHero(includeInactive: boolean = false): Promise<AboutHero | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAboutHero(includeInactive);
+    }
     const cacheKey = includeInactive ? "about:hero:all" : "about:hero";
     const cached = await unifiedCache.get<AboutHero>(cacheKey, "data");
     if (cached) return cached;
@@ -531,7 +597,11 @@ export class PageContentRepository {
   }
 
   async updateAboutHero(hero: Partial<InsertAboutHero>): Promise<AboutHero> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateAboutHero(hero);
+    }
     await unifiedCache.del("about:hero");
+    await unifiedCache.del("about:batch");
 
     const existing = await db.select().from(aboutHero).limit(1);
 
@@ -558,15 +628,41 @@ export class PageContentRepository {
     return result;
   }
 
-  async getAboutTimelineEntries(includeInactive: boolean = false): Promise<AboutTimelineEntry[]> {
-    let query = db.select().from(aboutTimelineEntries).$dynamic();
-    if (!includeInactive) {
-      query = query.where(eq(aboutTimelineEntries.isActive, true));
+  async getAboutTimelineEntries(
+    includeInactive: boolean = false,
+  ): Promise<(AboutTimelineEntry & { imageUrl: string | null })[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAboutTimelineEntries(includeInactive);
     }
-    return await query.orderBy(asc(aboutTimelineEntries.sortOrder));
+    const query = db
+      .select({
+        ...getTableColumns(aboutTimelineEntries),
+        mediaUrl: mediaAssets.url,
+      })
+      .from(aboutTimelineEntries)
+      .leftJoin(mediaAssets, eq(aboutTimelineEntries.imageId, mediaAssets.id))
+      .$dynamic();
+
+    if (!includeInactive) {
+      query.where(eq(aboutTimelineEntries.isActive, true));
+    }
+
+    const results = await query.orderBy(asc(aboutTimelineEntries.sortOrder));
+
+    // Hydrate mediaUrl correctly for frontend components
+    return results.map((entry) => {
+      const { mediaUrl, ...entryData } = entry;
+      return {
+        ...entryData,
+        imageUrl: mediaUrl || null,
+      };
+    });
   }
 
   async getAboutTimelineEntry(id: number): Promise<AboutTimelineEntry | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAboutTimelineEntry(id);
+    }
     const [entry] = await db
       .select()
       .from(aboutTimelineEntries)
@@ -575,6 +671,10 @@ export class PageContentRepository {
   }
 
   async createAboutTimelineEntry(entry: InsertAboutTimelineEntry): Promise<AboutTimelineEntry> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createAboutTimelineEntry(entry);
+    }
+    await unifiedCache.del("about:batch");
     const [created] = await db.insert(aboutTimelineEntries).values(entry).returning();
 
     try {
@@ -590,7 +690,11 @@ export class PageContentRepository {
     id: number,
     entry: Partial<InsertAboutTimelineEntry>,
   ): Promise<AboutTimelineEntry> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateAboutTimelineEntry(id, entry);
+    }
     await unifiedCache.del("about:timeline");
+    await unifiedCache.del("about:batch");
     const [updated] = await db
       .update(aboutTimelineEntries)
       .set(entry)
@@ -603,6 +707,10 @@ export class PageContentRepository {
   }
 
   async deleteAboutTimelineEntry(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteAboutTimelineEntry(id);
+    }
+    await unifiedCache.del("about:batch");
     const result = await db.delete(aboutTimelineEntries).where(eq(aboutTimelineEntries.id, id));
 
     try {
@@ -615,7 +723,11 @@ export class PageContentRepository {
   }
 
   async reorderAboutTimelineEntries(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderAboutTimelineEntries(orderedIds);
+    }
     await unifiedCache.del("about:timeline");
+    await unifiedCache.del("about:batch");
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
         const id = orderedIds[i] as number;
@@ -630,6 +742,9 @@ export class PageContentRepository {
   }
 
   async getAboutMapLocations(includeInactive: boolean = false): Promise<AboutMapLocation[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAboutMapLocations(includeInactive);
+    }
     const cacheKey = includeInactive ? "about:locations:all" : "about:locations";
     const cached = await unifiedCache.get<AboutMapLocation[]>(cacheKey, "data");
     if (cached) return cached;
@@ -647,6 +762,9 @@ export class PageContentRepository {
   }
 
   async getAboutMapLocation(id: number): Promise<AboutMapLocation | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAboutMapLocation(id);
+    }
     const [location] = await db
       .select()
       .from(aboutMapLocations)
@@ -655,6 +773,10 @@ export class PageContentRepository {
   }
 
   async createAboutMapLocation(location: InsertAboutMapLocation): Promise<AboutMapLocation> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createAboutMapLocation(location);
+    }
+    await unifiedCache.del("about:batch");
     const [created] = await db.insert(aboutMapLocations).values(location).returning();
 
     try {
@@ -670,7 +792,11 @@ export class PageContentRepository {
     id: number,
     location: Partial<InsertAboutMapLocation>,
   ): Promise<AboutMapLocation> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateAboutMapLocation(id, location);
+    }
     await unifiedCache.del("about:locations");
+    await unifiedCache.del("about:batch");
     const [updated] = await db
       .update(aboutMapLocations)
       .set(location)
@@ -683,6 +809,10 @@ export class PageContentRepository {
   }
 
   async deleteAboutMapLocation(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteAboutMapLocation(id);
+    }
+    await unifiedCache.del("about:batch");
     const result = await db.delete(aboutMapLocations).where(eq(aboutMapLocations.id, id));
 
     try {
@@ -695,6 +825,9 @@ export class PageContentRepository {
   }
 
   async getAboutSections(includeInactive: boolean = false): Promise<AboutSection[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAboutSections(includeInactive);
+    }
     const cacheKey = includeInactive ? "about:sections:all" : "about:sections";
     const cached = await unifiedCache.get<AboutSection[]>(cacheKey, "data");
     if (cached) return cached;
@@ -712,11 +845,18 @@ export class PageContentRepository {
   }
 
   async getAboutSection(id: number): Promise<AboutSection | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAboutSection(id);
+    }
     const [section] = await db.select().from(aboutSections).where(eq(aboutSections.id, id));
     return section;
   }
 
   async createAboutSection(section: InsertAboutSection): Promise<AboutSection> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createAboutSection(section);
+    }
+    await unifiedCache.del("about:batch");
     const [created] = await db.insert(aboutSections).values(section).returning();
 
     try {
@@ -732,7 +872,11 @@ export class PageContentRepository {
     id: number,
     section: Partial<InsertAboutSection>,
   ): Promise<AboutSection> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateAboutSection(id, section);
+    }
     await unifiedCache.del("about:sections");
+    await unifiedCache.del("about:batch");
     const [updated] = await db
       .update(aboutSections)
       .set({ ...section, updatedAt: new Date() })
@@ -745,6 +889,10 @@ export class PageContentRepository {
   }
 
   async deleteAboutSection(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteAboutSection(id);
+    }
+    await unifiedCache.del("about:batch");
     const result = await db.delete(aboutSections).where(eq(aboutSections.id, id));
 
     try {
@@ -757,6 +905,10 @@ export class PageContentRepository {
   }
 
   async reorderAboutSections(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderAboutSections(orderedIds);
+    }
+    await unifiedCache.del("about:batch");
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
         const id = orderedIds[i] as number;
@@ -775,6 +927,9 @@ export class PageContentRepository {
   }
 
   async getAboutStatistics(includeInactive: boolean = false): Promise<AboutStatistic[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAboutStatistics(includeInactive);
+    }
     const cacheKey = includeInactive ? "about:statistics:all" : "about:statistics";
     const cached = await unifiedCache.get<AboutStatistic[]>(cacheKey, "data");
     if (cached) return cached;
@@ -792,11 +947,18 @@ export class PageContentRepository {
   }
 
   async getAboutStatistic(id: number): Promise<AboutStatistic | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAboutStatistic(id);
+    }
     const [statistic] = await db.select().from(aboutStatistics).where(eq(aboutStatistics.id, id));
     return statistic;
   }
 
   async createAboutStatistic(statistic: InsertAboutStatistic): Promise<AboutStatistic> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createAboutStatistic(statistic);
+    }
+    await unifiedCache.del("about:batch");
     const [created] = await db.insert(aboutStatistics).values(statistic).returning();
 
     try {
@@ -812,6 +974,10 @@ export class PageContentRepository {
     id: number,
     statistic: Partial<InsertAboutStatistic>,
   ): Promise<AboutStatistic | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateAboutStatistic(id, statistic);
+    }
+    await unifiedCache.del("about:batch");
     const [updated] = await db
       .update(aboutStatistics)
       .set(statistic)
@@ -828,6 +994,10 @@ export class PageContentRepository {
   }
 
   async deleteAboutStatistic(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteAboutStatistic(id);
+    }
+    await unifiedCache.del("about:batch");
     const result = await db.delete(aboutStatistics).where(eq(aboutStatistics.id, id));
 
     try {
@@ -840,7 +1010,11 @@ export class PageContentRepository {
   }
 
   async reorderAboutStatistics(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderAboutStatistics(orderedIds);
+    }
     await unifiedCache.del("about:statistics");
+    await unifiedCache.del("about:batch");
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
         const id = orderedIds[i] as number;
@@ -872,6 +1046,9 @@ export class PageContentRepository {
   // =============================================================================
 
   async getSustainabilityHero(): Promise<SustainabilityHero | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getSustainabilityHero();
+    }
     const cacheKey = "sustainability:hero";
     const cached = await unifiedCache.get<SustainabilityHero>(cacheKey);
     if (cached) return cached;
@@ -886,6 +1063,9 @@ export class PageContentRepository {
   async updateSustainabilityHero(
     data: Partial<InsertSustainabilityHero>,
   ): Promise<SustainabilityHero> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateSustainabilityHero(data);
+    }
     const existing = await this.getSustainabilityHero();
     await unifiedCache.del("sustainability:hero");
 
@@ -911,6 +1091,9 @@ export class PageContentRepository {
   }
 
   async getSustainabilityGoals(includeInactive = false): Promise<SustainabilityGoal[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getSustainabilityGoals(includeInactive);
+    }
     let query = db.select().from(sustainabilityGoals).$dynamic();
 
     if (!includeInactive) {
@@ -921,6 +1104,9 @@ export class PageContentRepository {
   }
 
   async getSustainabilityGoal(id: number): Promise<SustainabilityGoal | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getSustainabilityGoal(id);
+    }
     const [goal] = await db
       .select()
       .from(sustainabilityGoals)
@@ -930,6 +1116,9 @@ export class PageContentRepository {
   }
 
   async createSustainabilityGoal(data: InsertSustainabilityGoal): Promise<SustainabilityGoal> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createSustainabilityGoal(data);
+    }
     const maxOrderRes = await db
       .select({ max: sql<number>`MAX(${sustainabilityGoals.sortOrder})` })
       .from(sustainabilityGoals);
@@ -953,6 +1142,9 @@ export class PageContentRepository {
     id: number,
     data: Partial<InsertSustainabilityGoal>,
   ): Promise<SustainabilityGoal> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateSustainabilityGoal(id, data);
+    }
     await unifiedCache.del("sustainability:goals:*");
     const [updated] = await db
       .update(sustainabilityGoals)
@@ -966,6 +1158,9 @@ export class PageContentRepository {
   }
 
   async deleteSustainabilityGoal(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteSustainabilityGoal(id);
+    }
     await unifiedCache.del("sustainability:goals:*");
     const result = await db.delete(sustainabilityGoals).where(eq(sustainabilityGoals.id, id));
     await emitCacheInvalidation("sustainability:goals", "delete");
@@ -973,6 +1168,9 @@ export class PageContentRepository {
   }
 
   async reorderSustainabilityGoals(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderSustainabilityGoals(orderedIds);
+    }
     await unifiedCache.del("sustainability:goals:*");
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
@@ -986,6 +1184,9 @@ export class PageContentRepository {
   }
 
   async getSustainabilityMetrics(): Promise<SustainabilityMetric[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getSustainabilityMetrics();
+    }
     const cacheKey = "sustainability:metrics";
     const cached = await unifiedCache.get<SustainabilityMetric[]>(cacheKey);
     if (cached) return cached;
@@ -1001,6 +1202,9 @@ export class PageContentRepository {
   }
 
   async getSustainabilityMetric(id: number): Promise<SustainabilityMetric | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getSustainabilityMetric(id);
+    }
     const [metric] = await db
       .select()
       .from(sustainabilityMetrics)
@@ -1012,6 +1216,9 @@ export class PageContentRepository {
   async createSustainabilityMetric(
     data: InsertSustainabilityMetric,
   ): Promise<SustainabilityMetric> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createSustainabilityMetric(data);
+    }
     const maxOrderRes = await db
       .select({ max: sql<number>`MAX(${sustainabilityMetrics.sortOrder})` })
       .from(sustainabilityMetrics);
@@ -1035,6 +1242,9 @@ export class PageContentRepository {
     id: number,
     data: Partial<InsertSustainabilityMetric>,
   ): Promise<SustainabilityMetric> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateSustainabilityMetric(id, data);
+    }
     const [updated] = await db
       .update(sustainabilityMetrics)
       .set({ ...data, updatedAt: new Date() })
@@ -1051,6 +1261,9 @@ export class PageContentRepository {
   }
 
   async deleteSustainabilityMetric(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteSustainabilityMetric(id);
+    }
     const result = await db.delete(sustainabilityMetrics).where(eq(sustainabilityMetrics.id, id));
     await unifiedCache.del("sustainability:metrics");
     await emitCacheInvalidation("sustainability:metrics", "delete");
@@ -1058,6 +1271,9 @@ export class PageContentRepository {
   }
 
   async reorderSustainabilityMetrics(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderSustainabilityMetrics(orderedIds);
+    }
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
         await tx
@@ -1071,6 +1287,9 @@ export class PageContentRepository {
   }
 
   async getSustainabilityInitiatives(includeInactive = false): Promise<SustainabilityInitiative[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getSustainabilityInitiatives(includeInactive);
+    }
     let query = db.select().from(sustainabilityInitiatives).$dynamic();
 
     if (!includeInactive) {
@@ -1081,6 +1300,9 @@ export class PageContentRepository {
   }
 
   async getSustainabilityInitiative(id: number): Promise<SustainabilityInitiative | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getSustainabilityInitiative(id);
+    }
     const [initiative] = await db
       .select()
       .from(sustainabilityInitiatives)
@@ -1092,6 +1314,9 @@ export class PageContentRepository {
   async createSustainabilityInitiative(
     data: InsertSustainabilityInitiative,
   ): Promise<SustainabilityInitiative> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createSustainabilityInitiative(data);
+    }
     const maxOrderRes = await db
       .select({ max: sql<number>`MAX(${sustainabilityInitiatives.sortOrder})` })
       .from(sustainabilityInitiatives);
@@ -1115,6 +1340,9 @@ export class PageContentRepository {
     id: number,
     data: Partial<InsertSustainabilityInitiative>,
   ): Promise<SustainabilityInitiative> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateSustainabilityInitiative(id, data);
+    }
     const [updated] = await db
       .update(sustainabilityInitiatives)
       .set({ ...data, updatedAt: new Date() })
@@ -1131,6 +1359,9 @@ export class PageContentRepository {
   }
 
   async deleteSustainabilityInitiative(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteSustainabilityInitiative(id);
+    }
     const result = await db
       .delete(sustainabilityInitiatives)
       .where(eq(sustainabilityInitiatives.id, id));
@@ -1140,6 +1371,9 @@ export class PageContentRepository {
   }
 
   async reorderSustainabilityInitiatives(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderSustainabilityInitiatives(orderedIds);
+    }
     await unifiedCache.del("sustainability:initiatives:*");
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
@@ -1153,6 +1387,9 @@ export class PageContentRepository {
   }
 
   async getUnifiedSustainability(): Promise<UnifiedSustainability | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getUnifiedSustainability();
+    }
     const cacheKey = "sustainability:unified";
     const cached = await unifiedCache.get<UnifiedSustainability>(cacheKey);
     if (cached) return cached;
@@ -1167,6 +1404,9 @@ export class PageContentRepository {
   async updateUnifiedSustainability(
     data: Partial<InsertUnifiedSustainability>,
   ): Promise<UnifiedSustainability> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateUnifiedSustainability(data);
+    }
     const existing = await this.getUnifiedSustainability();
     await unifiedCache.del("sustainability:unified");
 
@@ -1223,6 +1463,9 @@ export class PageContentRepository {
   // =============================================================================
 
   async getManufacturingHero(): Promise<ManufacturingHero | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getManufacturingHero();
+    }
     const cacheKey = "manufacturing:hero";
     const cached = await unifiedCache.get<ManufacturingHero>(cacheKey);
     if (cached) return cached;
@@ -1237,6 +1480,9 @@ export class PageContentRepository {
   async updateManufacturingHero(
     data: Partial<InsertManufacturingHero>,
   ): Promise<ManufacturingHero> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateManufacturingHero(data);
+    }
     const existing = await this.getManufacturingHero();
     await unifiedCache.del("manufacturing:hero");
 
@@ -1263,6 +1509,9 @@ export class PageContentRepository {
   async createManufacturingCapability(
     data: InsertManufacturingCapability,
   ): Promise<ManufacturingCapability> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createManufacturingCapability(data);
+    }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${manufacturingCapabilities.sortOrder})` })
       .from(manufacturingCapabilities);
@@ -1280,6 +1529,9 @@ export class PageContentRepository {
   }
 
   async getManufacturingCapabilities(includeInactive = false): Promise<ManufacturingCapability[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getManufacturingCapabilities(includeInactive);
+    }
     let query = db.select().from(manufacturingCapabilities).$dynamic();
 
     if (!includeInactive) {
@@ -1290,6 +1542,9 @@ export class PageContentRepository {
   }
 
   async getManufacturingCapability(id: number): Promise<ManufacturingCapability | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getManufacturingCapability(id);
+    }
     const [capability] = await db
       .select()
       .from(manufacturingCapabilities)
@@ -1302,6 +1557,9 @@ export class PageContentRepository {
     id: number,
     data: Partial<InsertManufacturingCapability>,
   ): Promise<ManufacturingCapability> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateManufacturingCapability(id, data);
+    }
     await unifiedCache.del("manufacturing:capabilities:*");
     const [updated] = await db
       .update(manufacturingCapabilities)
@@ -1315,6 +1573,9 @@ export class PageContentRepository {
   }
 
   async deleteManufacturingCapability(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteManufacturingCapability(id);
+    }
     await unifiedCache.del("manufacturing:capabilities:*");
     const result = await db
       .delete(manufacturingCapabilities)
@@ -1324,6 +1585,9 @@ export class PageContentRepository {
   }
 
   async reorderManufacturingCapabilities(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderManufacturingCapabilities(orderedIds);
+    }
     await unifiedCache.del("manufacturing:capabilities:*");
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
@@ -1337,6 +1601,9 @@ export class PageContentRepository {
   }
 
   async getManufacturingProcess(id: number): Promise<ManufacturingProcess | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getManufacturingProcess(id);
+    }
     const [process] = await db
       .select()
       .from(manufacturingProcesses)
@@ -1346,6 +1613,9 @@ export class PageContentRepository {
   }
 
   async getManufacturingProcesses(includeInactive = false): Promise<ManufacturingProcess[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getManufacturingProcesses(includeInactive);
+    }
     let query = db.select().from(manufacturingProcesses).$dynamic();
 
     if (!includeInactive) {
@@ -1358,6 +1628,9 @@ export class PageContentRepository {
   async createManufacturingProcess(
     data: InsertManufacturingProcess,
   ): Promise<ManufacturingProcess> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createManufacturingProcess(data);
+    }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${manufacturingProcesses.sortOrder})` })
       .from(manufacturingProcesses);
@@ -1378,6 +1651,9 @@ export class PageContentRepository {
     id: number,
     data: Partial<InsertManufacturingProcess>,
   ): Promise<ManufacturingProcess> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateManufacturingProcess(id, data);
+    }
     await unifiedCache.del("manufacturing:processes:*");
     const [updated] = await db
       .update(manufacturingProcesses)
@@ -1391,6 +1667,9 @@ export class PageContentRepository {
   }
 
   async deleteManufacturingProcess(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteManufacturingProcess(id);
+    }
     await unifiedCache.del("manufacturing:processes:*");
     const result = await db.delete(manufacturingProcesses).where(eq(manufacturingProcesses.id, id));
     await emitCacheInvalidation("manufacturing:processes", "delete");
@@ -1398,6 +1677,9 @@ export class PageContentRepository {
   }
 
   async reorderManufacturingProcesses(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderManufacturingProcesses(orderedIds);
+    }
     await unifiedCache.del("manufacturing:processes:*");
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
@@ -1411,6 +1693,9 @@ export class PageContentRepository {
   }
 
   async getManufacturingQuality(id: number): Promise<ManufacturingQuality | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getManufacturingQuality(id);
+    }
     const [quality] = await db
       .select()
       .from(manufacturingQualities)
@@ -1420,6 +1705,9 @@ export class PageContentRepository {
   }
 
   async getManufacturingQualities(includeInactive = false): Promise<ManufacturingQuality[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getManufacturingQualities(includeInactive);
+    }
     let query = db.select().from(manufacturingQualities).$dynamic();
 
     if (!includeInactive) {
@@ -1432,6 +1720,9 @@ export class PageContentRepository {
   async createManufacturingQuality(
     data: InsertManufacturingQuality,
   ): Promise<ManufacturingQuality> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createManufacturingQuality(data);
+    }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${manufacturingQualities.sortOrder})` })
       .from(manufacturingQualities);
@@ -1452,6 +1743,9 @@ export class PageContentRepository {
     id: number,
     data: Partial<InsertManufacturingQuality>,
   ): Promise<ManufacturingQuality> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateManufacturingQuality(id, data);
+    }
     await unifiedCache.del("manufacturing:qualities:*");
     const [updated] = await db
       .update(manufacturingQualities)
@@ -1489,6 +1783,9 @@ export class PageContentRepository {
   // =============================================================================
 
   async getTechnologyHero(): Promise<TechnologyHero | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getTechnologyHero();
+    }
     const cacheKey = "technology:hero";
     const cached = await unifiedCache.get<TechnologyHero>(cacheKey);
     if (cached) return cached;
@@ -1501,6 +1798,9 @@ export class PageContentRepository {
   }
 
   async updateTechnologyHero(data: Partial<InsertTechnologyHero>): Promise<TechnologyHero> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateTechnologyHero(data);
+    }
     const existing = await this.getTechnologyHero();
     await unifiedCache.del("technology:hero");
 
@@ -1525,6 +1825,9 @@ export class PageContentRepository {
   }
 
   async getTechnologyCta(): Promise<TechnologyCta | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getTechnologyCta();
+    }
     const cacheKey = "technology:cta";
     const cached = await unifiedCache.get<TechnologyCta>(cacheKey);
     if (cached) return cached;
@@ -1537,6 +1840,9 @@ export class PageContentRepository {
   }
 
   async createTechnologyCta(data: InsertTechnologyCta): Promise<TechnologyCta> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createTechnologyCta(data);
+    }
     const [created] = await db.insert(technologyCta).values(data).returning();
     if (!created) throw new Error("Failed to create technology cta");
     await unifiedCache.del("technology:cta");
@@ -1545,6 +1851,9 @@ export class PageContentRepository {
   }
 
   async updateTechnologyCta(data: Partial<InsertTechnologyCta>): Promise<TechnologyCta> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateTechnologyCta(data);
+    }
     const existing = await this.getTechnologyCta();
     await unifiedCache.del("technology:cta");
 
@@ -1569,6 +1878,9 @@ export class PageContentRepository {
   }
 
   async deleteTechnologyCta(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteTechnologyCta(id);
+    }
     await unifiedCache.del("technology:cta");
     const result = await db.delete(technologyCta).where(eq(technologyCta.id, id));
     await emitCacheInvalidation("technology:cta", "delete");
@@ -1576,6 +1888,9 @@ export class PageContentRepository {
   }
 
   async getTechnologyEquipment(): Promise<TechnologyEquipment[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getTechnologyEquipment();
+    }
     const cacheKey = "technology:equipment";
     const cached = await unifiedCache.get<TechnologyEquipment[]>(cacheKey);
     if (cached) return cached;
@@ -1591,6 +1906,9 @@ export class PageContentRepository {
   }
 
   async getTechnologyEquipmentItem(id: number): Promise<TechnologyEquipment | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getTechnologyEquipmentItem(id);
+    }
     const [item] = await db
       .select()
       .from(technologyEquipment)
@@ -1600,6 +1918,9 @@ export class PageContentRepository {
   }
 
   async createTechnologyEquipment(data: InsertTechnologyEquipment): Promise<TechnologyEquipment> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createTechnologyEquipment(data);
+    }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${technologyEquipment.sortOrder})` })
       .from(technologyEquipment);
@@ -1620,6 +1941,9 @@ export class PageContentRepository {
     id: number,
     data: Partial<InsertTechnologyEquipment>,
   ): Promise<TechnologyEquipment> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateTechnologyEquipment(id, data);
+    }
     await unifiedCache.del("technology:equipment");
     const [updated] = await db
       .update(technologyEquipment)
@@ -1633,6 +1957,9 @@ export class PageContentRepository {
   }
 
   async deleteTechnologyEquipment(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteTechnologyEquipment(id);
+    }
     await unifiedCache.del("technology:equipment");
     const result = await db.delete(technologyEquipment).where(eq(technologyEquipment.id, id));
     await emitCacheInvalidation("technology:equipment", "delete");
@@ -1640,6 +1967,9 @@ export class PageContentRepository {
   }
 
   async reorderTechnologyEquipment(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderTechnologyEquipment(orderedIds);
+    }
     await unifiedCache.del("technology:equipment");
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
@@ -1653,6 +1983,9 @@ export class PageContentRepository {
   }
 
   async getTechnologyInnovations(includeInactive = false): Promise<TechnologyInnovation[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getTechnologyInnovations(includeInactive);
+    }
     let query = db.select().from(technologyInnovations).$dynamic();
 
     if (!includeInactive) {
@@ -1663,6 +1996,9 @@ export class PageContentRepository {
   }
 
   async getTechnologyInnovation(id: number): Promise<TechnologyInnovation | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getTechnologyInnovation(id);
+    }
     const [innovation] = await db
       .select()
       .from(technologyInnovations)
@@ -1674,6 +2010,9 @@ export class PageContentRepository {
   async createTechnologyInnovation(
     data: InsertTechnologyInnovation,
   ): Promise<TechnologyInnovation> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createTechnologyInnovation(data);
+    }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${technologyInnovations.sortOrder})` })
       .from(technologyInnovations);
@@ -1694,6 +2033,9 @@ export class PageContentRepository {
     id: number,
     data: Partial<InsertTechnologyInnovation>,
   ): Promise<TechnologyInnovation> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateTechnologyInnovation(id, data);
+    }
     await unifiedCache.del("technology:innovations:*");
     const [updated] = await db
       .update(technologyInnovations)
@@ -1707,6 +2049,9 @@ export class PageContentRepository {
   }
 
   async deleteTechnologyInnovation(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteTechnologyInnovation(id);
+    }
     await unifiedCache.del("technology:innovations:*");
     const result = await db.delete(technologyInnovations).where(eq(technologyInnovations.id, id));
     await emitCacheInvalidation("technology:innovations", "delete");
@@ -1714,6 +2059,9 @@ export class PageContentRepository {
   }
 
   async reorderTechnologyInnovations(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderTechnologyInnovations(orderedIds);
+    }
     await unifiedCache.del("technology:innovations:*");
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
@@ -1727,6 +2075,9 @@ export class PageContentRepository {
   }
 
   async getTechnologyResearch(includeInactive = false): Promise<TechnologyResearch[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getTechnologyResearch(includeInactive);
+    }
     let query = db.select().from(technologyResearch).$dynamic();
 
     if (!includeInactive) {
@@ -1737,6 +2088,9 @@ export class PageContentRepository {
   }
 
   async getTechnologyResearchItem(id: number): Promise<TechnologyResearch | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getTechnologyResearchItem(id);
+    }
     const [item] = await db
       .select()
       .from(technologyResearch)
@@ -1746,6 +2100,9 @@ export class PageContentRepository {
   }
 
   async createTechnologyResearch(data: InsertTechnologyResearch): Promise<TechnologyResearch> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createTechnologyResearch(data);
+    }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${technologyResearch.sortOrder})` })
       .from(technologyResearch);
@@ -1766,6 +2123,9 @@ export class PageContentRepository {
     id: number,
     data: Partial<InsertTechnologyResearch>,
   ): Promise<TechnologyResearch> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateTechnologyResearch(id, data);
+    }
     await unifiedCache.del("technology:research:*");
     const [updated] = await db
       .update(technologyResearch)
@@ -1779,6 +2139,9 @@ export class PageContentRepository {
   }
 
   async deleteTechnologyResearch(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteTechnologyResearch(id);
+    }
     await unifiedCache.del("technology:research:*");
     const result = await db.delete(technologyResearch).where(eq(technologyResearch.id, id));
     await emitCacheInvalidation("technology:research", "delete");
@@ -1786,6 +2149,9 @@ export class PageContentRepository {
   }
 
   async reorderTechnologyResearch(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderTechnologyResearch(orderedIds);
+    }
     await unifiedCache.del("technology:research:*");
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
@@ -1799,6 +2165,9 @@ export class PageContentRepository {
   }
 
   async getTechnologyRoadmap(includeInactive = false): Promise<TechnologyRoadmap[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getTechnologyRoadmap(includeInactive);
+    }
     let query = db.select().from(technologyRoadmap).$dynamic();
 
     if (!includeInactive) {
@@ -1809,6 +2178,9 @@ export class PageContentRepository {
   }
 
   async getTechnologyRoadmapItem(id: number): Promise<TechnologyRoadmap | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getTechnologyRoadmapItem(id);
+    }
     const [item] = await db
       .select()
       .from(technologyRoadmap)
@@ -1818,6 +2190,9 @@ export class PageContentRepository {
   }
 
   async createTechnologyRoadmap(data: InsertTechnologyRoadmap): Promise<TechnologyRoadmap> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createTechnologyRoadmap(data);
+    }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${technologyRoadmap.sortOrder})` })
       .from(technologyRoadmap);
@@ -1838,6 +2213,9 @@ export class PageContentRepository {
     id: number,
     data: Partial<InsertTechnologyRoadmap>,
   ): Promise<TechnologyRoadmap> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateTechnologyRoadmap(id, data);
+    }
     await unifiedCache.del("technology:roadmap:*");
     const [updated] = await db
       .update(technologyRoadmap)
@@ -1851,6 +2229,9 @@ export class PageContentRepository {
   }
 
   async deleteTechnologyRoadmap(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteTechnologyRoadmap(id);
+    }
     await unifiedCache.del("technology:roadmap:*");
     const result = await db.delete(technologyRoadmap).where(eq(technologyRoadmap.id, id));
     await emitCacheInvalidation("technology:roadmap", "delete");
@@ -1858,6 +2239,9 @@ export class PageContentRepository {
   }
 
   async reorderTechnologyRoadmap(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderTechnologyRoadmap(orderedIds);
+    }
     await unifiedCache.del("technology:roadmap:*");
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
@@ -1871,6 +2255,9 @@ export class PageContentRepository {
   }
 
   async getTechnologyGradientSettings(): Promise<TechnologyGradientSettings | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getTechnologyGradientSettings();
+    }
     const cacheKey = "technology:gradient";
     const cached = await unifiedCache.get<TechnologyGradientSettings>(cacheKey);
     if (cached) return cached;
@@ -1885,6 +2272,9 @@ export class PageContentRepository {
   async updateTechnologyGradientSettings(
     data: Partial<InsertTechnologyGradientSettings>,
   ): Promise<TechnologyGradientSettings> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateTechnologyGradientSettings(data);
+    }
     const existing = await this.getTechnologyGradientSettings();
     await unifiedCache.del("technology:gradient");
 
@@ -1913,8 +2303,12 @@ export class PageContentRepository {
   // =============================================================================
 
   async updateAboutTeamMessage(data: Partial<InsertAboutTeamMessage>): Promise<AboutTeamMessage> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateAboutTeamMessage(data);
+    }
     const existing = await this.getAboutTeamMessage(true);
     await unifiedCache.del("about:team-message");
+    await unifiedCache.del("about:batch");
 
     if (existing) {
       const [updated] = await db
@@ -1934,5 +2328,40 @@ export class PageContentRepository {
       await emitCacheInvalidation("about:team-message", "create");
       return created;
     }
+  }
+
+  /**
+   * Aggregates all About page content into a single response.
+   * Optimized for public-facing route performance.
+   */
+  async getAboutBatch(): Promise<AboutBatchResponse> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAboutBatch();
+    }
+    const cacheKey = "about:batch";
+    const cached = await unifiedCache.get<AboutBatchResponse>(cacheKey, "data");
+    if (cached) return cached;
+
+    const [hero, timeline, locations, sections, statistics, teamMessage] = await Promise.all([
+      this.getAboutHero(false),
+      this.getAboutTimelineEntries(false),
+      this.getAboutMapLocations(false),
+      this.getAboutSections(false),
+      this.getAboutStatistics(false),
+      this.getAboutTeamMessage(false),
+    ]);
+
+    const result: AboutBatchResponse = {
+      hero: (hero as AboutHero) || null,
+      timeline: timeline as AboutTimelineEntry[],
+      locations: locations as AboutMapLocation[],
+      sections: sections as AboutSection[],
+      statistics: statistics as AboutStatistic[],
+      teamMessage: (teamMessage as AboutTeamMessage) || null,
+    };
+
+    // Cache for 30 minutes
+    await unifiedCache.set(cacheKey, result, (30 * 60 * 1000) / 1000, "data");
+    return result;
   }
 }

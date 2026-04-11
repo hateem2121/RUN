@@ -1,11 +1,3 @@
-/**
- * Optimized Image Component
- * supports:
- * 1. Legacy Mode: mediaId (database ID) -> uses MediaUrlBuilder
- * 2. Direct Mode: src (string) -> uses direct URL
- * CLS Mitigation: Handles aspect ratio and blur-sm-up states.
- */
-
 import type * as React from "react";
 import { useEffect, useState } from "react";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
@@ -26,12 +18,12 @@ interface OptimizedImageProps
   imageClassName?: string | undefined;
 
   // Handlers
-  onLoad?: () => void;
-  onError?: (error: unknown) => void;
+  onLoad?: (() => void) | undefined;
+  onError?: ((error: unknown) => void) | undefined;
 }
 
 // === Sub-Component: Direct Image (New V2) ===
-const DirectImage: React.FC<OptimizedImageProps> = ({
+const DirectImage = ({
   src: srcProp,
   alt,
   className,
@@ -41,9 +33,11 @@ const DirectImage: React.FC<OptimizedImageProps> = ({
   fallbackSrc = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
   onLoad,
   onError,
-  priority = false, // Destructure priority
-  ...rest // Rename to rest to avoid confusion
-}) => {
+  priority = false, // Destructured: not included in HTML props
+  mediaId, // Destructured: not included in HTML props
+  quality, // Destructured: not included in HTML props
+  ...htmlProps
+}: OptimizedImageProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentSrc, setCurrentSrc] = useState(srcProp);
   const [hasError, setHasError] = useState(false);
@@ -89,7 +83,7 @@ const DirectImage: React.FC<OptimizedImageProps> = ({
         loading={priority ? "eager" : "lazy"}
         decoding="async"
         fetchPriority={priority ? "high" : "auto"}
-        {...rest}
+        {...htmlProps}
       />
 
       {/* Skeleton / Pulse Overlay during loading */}
@@ -101,7 +95,7 @@ const DirectImage: React.FC<OptimizedImageProps> = ({
 };
 
 // === Sub-Component: Legacy Image (Media ID) ===
-const LegacyImage: React.FC<OptimizedImageProps> = ({
+const LegacyImage = ({
   mediaId,
   priority = false,
   quality = 85,
@@ -113,7 +107,7 @@ const LegacyImage: React.FC<OptimizedImageProps> = ({
   aspectRatio = "aspect-3/4",
   objectFit = "cover",
   ...props
-}) => {
+}: OptimizedImageProps) => {
   if (mediaId === undefined) {
     return null;
   }
@@ -130,15 +124,17 @@ const LegacyImage: React.FC<OptimizedImageProps> = ({
       alt={alt || `Media ${mediaId}`}
       aspectRatio={aspectRatio}
       objectFit={objectFit}
-      {...(onLoad ? { onLoad } : {})}
-      {...(onError ? { onError } : {})}
+      priority={priority}
+      quality={quality}
+      onLoad={onLoad}
+      onError={onError}
       {...props}
     />
   );
 };
 
 // === Main Export ===
-export const OptimizedImage: React.FC<OptimizedImageProps> = (props) => {
+export const OptimizedImage = (props: OptimizedImageProps) => {
   if (props.mediaId !== undefined) {
     return <LegacyImage {...props} />;
   }

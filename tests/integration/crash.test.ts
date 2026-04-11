@@ -1,14 +1,24 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { startTestServer, type TestServer } from "./test-utils";
 
 const DEBUG_TOKEN = "test-token-123";
+
+// Mock ResizeObserver for Radix UI components
+vi.stubGlobal(
+  "ResizeObserver",
+  class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  },
+);
 
 describe("Process Crash Integrity (Integration Tier)", () => {
   let server: TestServer;
 
   beforeEach(async () => {
     server = await startTestServer({
-      NODE_ENV: "development",
+      NODE_ENV: "test",
       DEBUG_ROUTE_TOKEN: DEBUG_TOKEN,
       FORCE_EXIT_ON_CRASH: "true",
       ENABLE_DEBUG_ROUTES: "true",

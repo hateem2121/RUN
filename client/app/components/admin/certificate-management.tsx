@@ -375,6 +375,7 @@ export function CertificateManagement() {
                       variant={viewMode === "grid" ? "default" : "ghost"}
                       size="sm"
                       onClick={() => setViewMode("grid")}
+                      aria-label="Grid View"
                     >
                       <Grid3X3 className="h-4 w-4" />
                     </Button>
@@ -382,6 +383,7 @@ export function CertificateManagement() {
                       variant={viewMode === "list" ? "default" : "ghost"}
                       size="sm"
                       onClick={() => setViewMode("list")}
+                      aria-label="List View"
                     >
                       <List className="h-4 w-4" />
                     </Button>
@@ -389,6 +391,7 @@ export function CertificateManagement() {
                       variant={viewMode === "detailed" ? "default" : "ghost"}
                       size="sm"
                       onClick={() => setViewMode("detailed")}
+                      aria-label="Detailed View"
                     >
                       <Table className="h-4 w-4" />
                     </Button>

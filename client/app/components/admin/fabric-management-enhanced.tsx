@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -435,11 +436,11 @@ export function FabricManagementEnhancedV2() {
           }
         }}
       >
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl" contentType="form">
           <DialogHeader>
             <DialogTitle>{editingFabric ? "Edit Fabric" : "Create New Fabric"}</DialogTitle>
           </DialogHeader>
-          <div className="py-4">
+          <DialogBody>
             <FabricForm
               formData={formData}
               setFormData={setFormData}
@@ -453,7 +454,7 @@ export function FabricManagementEnhancedV2() {
               setSelectedSwatchAsset={setSelectedSwatchAsset}
               selectedSwatchAsset={selectedSwatchAsset}
             />
-          </div>
+          </DialogBody>
           <DialogFooter>
             <Button
               variant="outline"

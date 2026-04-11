@@ -165,6 +165,8 @@ export class MemoryStorage implements IStorage {
   private performanceMetrics = new Map<number, PerformanceMetric>();
   private storageAnalysisResults = new Map<number, StorageAnalysisResult>();
   private storageChangeLogs = new Map<number, StorageChangeLog>();
+  private webhookSubscriptions = new Map<number, WebhookSubscription>();
+  private webhookDeliveries = new Map<number, unknown>();
 
   private nextIds = {
     category: 1,
@@ -207,6 +209,7 @@ export class MemoryStorage implements IStorage {
     performanceMetric: 1,
     storageAnalysisResult: 1,
     storageChangeLog: 1,
+    webhookSubscription: 1,
   };
 
   // User Repository
@@ -244,6 +247,16 @@ export class MemoryStorage implements IStorage {
     const updated = { ...user, ...updates, updatedAt: new Date() };
     this.users.set(id, updated as User);
     return updated as User;
+  }
+  async setAdminStatus(userId: string, isAdmin: boolean): Promise<User | undefined> {
+    const user = this.users.get(userId);
+    if (!user) return undefined;
+    const updated = { ...user, isAdmin, updatedAt: new Date() };
+    this.users.set(userId, updated as User);
+    return updated as User;
+  }
+  async getAdminUsers(): Promise<User[]> {
+    return Array.from(this.users.values()).filter((u) => u.isAdmin);
   }
 
   // Category Repository
@@ -570,14 +583,14 @@ export class MemoryStorage implements IStorage {
   async getMediaAssets(
     limit = 100,
     offset = 0,
-    filters?: { type?: string; folderId?: number; search?: string },
+    filters?: { type?: string; folderId?: number; searchTerm?: string },
   ): Promise<MediaAsset[]> {
     let assets = Array.from(this.mediaAssets.values()).filter((a) => !a.deletedAt);
     if (filters?.type) assets = assets.filter((a) => a.type === filters.type);
     if (filters?.folderId !== undefined)
       assets = assets.filter((a) => a.folderId === filters.folderId);
-    if (filters?.search) {
-      const s = filters.search.toLowerCase();
+    if (filters?.searchTerm) {
+      const s = filters.searchTerm.toLowerCase();
       assets = assets.filter(
         (a) => a.filename.toLowerCase().includes(s) || a.altText?.toLowerCase().includes(s),
       );
@@ -587,14 +600,14 @@ export class MemoryStorage implements IStorage {
   async getMediaAssetsCount(filters?: {
     type?: string;
     folderId?: number;
-    search?: string;
+    searchTerm?: string;
   }): Promise<number> {
     return (await this.getMediaAssets(100000, 0, filters)).length;
   }
   async getMediaAssetsWithCount(
     limit: number,
     offset: number,
-    filters?: { type?: string; folderId?: number; search?: string },
+    filters?: { type?: string; folderId?: number; searchTerm?: string },
   ): Promise<{ assets: MediaAsset[]; total: number }> {
     const total = await this.getMediaAssetsCount(filters);
     const assets = await this.getMediaAssets(limit, offset, filters);
@@ -786,6 +799,20 @@ export class MemoryStorage implements IStorage {
       (p) => p.isActive && !p.deletedAt,
     ) as unknown as ProductSummary[];
   }
+  async getProductsCursor(
+    limit = 100,
+    cursor?: string,
+  ): Promise<{ products: ProductSummary[]; nextCursor: string | null }> {
+    const products = Array.from(this.products.values()).filter((p) => p.isActive && !p.deletedAt);
+    const startIndex = cursor ? Number.parseInt(cursor, 10) : 0;
+    const paginated = products.slice(startIndex, startIndex + limit);
+    const nextCursor = startIndex + limit < products.length ? (startIndex + limit).toString() : null;
+
+    return {
+      products: paginated as unknown as ProductSummary[],
+      nextCursor,
+    };
+  }
   async getFeaturedProducts(): Promise<ProductSummary[]> {
     return Array.from(this.products.values()).filter(
       (p) => p.isActive && !p.deletedAt && p.isFeatured,
@@ -956,9 +983,27 @@ export class MemoryStorage implements IStorage {
   }
   async updateContactPageConfiguration(
     _id: number,
-    _config: Partial<InsertContactPageConfiguration>,
+    config: Partial<InsertContactPageConfiguration>,
   ): Promise<ContactPageConfiguration | undefined> {
+    // Basic implementation since config is a singleton
+    return config as unknown as ContactPageConfiguration;
+  }
+
+  // Footer Repository
+  async getFooterConfiguration(): Promise<FooterConfiguration | undefined> {
     return undefined;
+  }
+  async getFooterSections(): Promise<unknown[]> {
+    return [];
+  }
+  async createFooterLink(link: unknown): Promise<unknown> {
+    return link;
+  }
+  async updateFooterConfiguration(
+    _id: number,
+    config: Partial<FooterConfiguration>,
+  ): Promise<FooterConfiguration | undefined> {
+    return config as unknown as FooterConfiguration;
   }
 
   // Inquiry Repository
@@ -1142,15 +1187,6 @@ export class MemoryStorage implements IStorage {
     this.logoAnimationSettings.set(updated.id, updated);
     return updated;
   }
-  async getFooterSections(): Promise<unknown[]> {
-    return [];
-  }
-  async getFooterConfiguration(): Promise<FooterConfiguration | undefined> {
-    return undefined;
-  }
-  async createFooterLink(link: unknown): Promise<unknown> {
-    return link;
-  }
   async getAboutHero(includeInactive?: boolean): Promise<AboutHero | undefined> {
     const hero = Array.from(this.aboutHeroes.values())[0];
     if (hero && !includeInactive && !hero.isActive) return undefined;
@@ -1299,7 +1335,6 @@ export class MemoryStorage implements IStorage {
   async getAboutTeamMessage(includeInactive?: boolean): Promise<AboutTeamMessage | undefined> {
     const message = Array.from(this.aboutTeamMessages.values())[0];
     if (message && !includeInactive && !message.isActive) return undefined;
-    message;
     return message;
   }
   async updateAboutTeamMessage(
@@ -1314,6 +1349,17 @@ export class MemoryStorage implements IStorage {
     this.aboutTeamMessages.set(updated.id, updated);
     return updated;
   }
+  async getAboutBatch(): Promise<AboutBatchResponse> {
+    return {
+      hero: await this.getAboutHero(),
+      timeline: await this.getAboutTimelineEntries(),
+      mapLocations: await this.getAboutMapLocations(),
+      sections: await this.getAboutSections(),
+      statistics: await this.getAboutStatistics(),
+      teamMessage: await this.getAboutTeamMessage(),
+    };
+  }
+
 
   // Sustainability Repository - Stubs
   async getSustainabilityHero(): Promise<SustainabilityHero | undefined> {
@@ -2263,5 +2309,15 @@ export class MemoryStorage implements IStorage {
 
   async deleteBlogCategory(id: number): Promise<boolean> {
     return this.blogCategories.delete(id);
+  }
+
+  async addCrmLog(_inquiryId: number, _log: string): Promise<void> {
+    // Mock
+  }
+  async subscribeToNewsletter(email: string): Promise<{ success: boolean }> {
+    return { success: true };
+  }
+  async getDeletedCategories(): Promise<Category[]> {
+    return Array.from(this.categories.values()).filter((c) => !!c.deletedAt);
   }
 }

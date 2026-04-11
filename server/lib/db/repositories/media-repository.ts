@@ -22,6 +22,7 @@ import { and, asc, desc, eq, ilike, inArray, isNull, or, sql } from "drizzle-orm
 import { db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../cache/cache-events.js";
 import { UnifiedCache } from "../../cache/unified-cache.js";
+import { StorageSingleton } from "../../storage-singleton.js";
 import { CacheInvalidationError, MediaNotFoundError } from "../../errors/media-errors.js";
 import { logger } from "../../monitoring/logger.js";
 import { dbCircuitBreaker } from "../db-circuit-breaker.js";
@@ -96,6 +97,9 @@ export class MediaRepository {
   // =============================================================================
 
   async getMediaAsset(id: number): Promise<MediaAsset | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getMediaAsset(id);
+    }
     // PERFORMANCE: Cache individual media assets for 1 hour (static content)
     // This prevents N+1 queries in footer/certificate loading
     const cacheKey = `media:asset:${id}`;
@@ -139,6 +143,9 @@ export class MediaRepository {
     offset: number = 0,
     filters?: { type?: string | undefined; search?: string | undefined; folderId?: number },
   ): Promise<MediaAssetSummary[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getMediaAssets(limit, offset, filters);
+    }
     const perfTracker = queryPerformanceMonitor.startQuery("getMediaAssets");
 
     // PERFORMANCE FIX: Use efficient Drizzle select() with database-level filtering
@@ -212,6 +219,9 @@ export class MediaRepository {
   }
 
   async createMediaAsset(mediaAsset: InsertMediaAsset): Promise<MediaAsset> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createMediaAsset(mediaAsset);
+    }
     const [created] = await db.insert(mediaAssets).values(mediaAsset).returning();
 
     this.invalidateMediaCacheSelectively("create", created!.id).catch((error) =>
@@ -225,6 +235,9 @@ export class MediaRepository {
     id: number,
     mediaAsset: Partial<InsertMediaAsset>,
   ): Promise<MediaAsset | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateMediaAsset(id, mediaAsset);
+    }
     const [updated] = await db
       .update(mediaAssets)
       .set({ ...mediaAsset, updatedAt: sql`NOW()` })
@@ -241,6 +254,9 @@ export class MediaRepository {
   }
 
   async deleteMediaAsset(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteMediaAsset(id);
+    }
     // CACHE-FIRST DELETE PATTERN (neon-http doesn't support transactions)
     // Pattern: Invalidate cache BEFORE DB delete to prevent stale cache responses
     // This ensures frontend never fetches stale data, even if DB delete fails
@@ -323,6 +339,9 @@ export class MediaRepository {
     search?: string | undefined;
     folderId?: number | undefined;
   }): Promise<number> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getMediaAssetsCount(filters);
+    }
     const conditions = [isNull(mediaAssets.deletedAt), eq(mediaAssets.isActive, true)];
 
     if (filters?.type) {
@@ -440,6 +459,9 @@ export class MediaRepository {
   }
 
   async getMediaAssetsByFolder(folderId: number | null): Promise<MediaAssetSummary[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getMediaAssetsByFolder(folderId);
+    }
     const folderCondition = folderId
       ? eq(mediaAssets.folderId, folderId)
       : isNull(mediaAssets.folderId);
@@ -453,6 +475,9 @@ export class MediaRepository {
   }
 
   async moveMediaAsset(id: number, targetFolderId: number | null): Promise<MediaAsset | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().moveMediaAsset(id, targetFolderId);
+    }
     const [moved] = await db
       .update(mediaAssets)
       .set({ folderId: targetFolderId, updatedAt: sql`NOW()` })
@@ -462,6 +487,9 @@ export class MediaRepository {
   }
 
   async updateMediaAssetsFolder(ids: number[], folderId: number | null): Promise<number> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateMediaAssetsFolder(ids, folderId);
+    }
     if (ids.length === 0) {
       return 0;
     }
@@ -479,6 +507,9 @@ export class MediaRepository {
   }
 
   async updateMediaAssetsTags(updates: Array<{ id: number; tags: string[] }>): Promise<number> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateMediaAssetsTags(updates);
+    }
     if (updates.length === 0) {
       return 0;
     }
@@ -510,6 +541,9 @@ export class MediaRepository {
   }
 
   async getMediaAssetsByIds(ids: string[]): Promise<MediaAsset[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getMediaAssetsByIds(ids);
+    }
     const perfTracker = queryPerformanceMonitor.startQuery("getMediaAssetsByIds");
 
     const numericIds = ids.map((id) => parseInt(id, 10)).filter((id) => !Number.isNaN(id));
@@ -568,6 +602,9 @@ export class MediaRepository {
     limit: number = 100,
     offset: number = 0,
   ): Promise<MediaAsset[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getMediaAssetsIncludingDeleted(limit, offset);
+    }
     return await db
       .select(MEDIA_DETAIL_COLUMNS)
       .from(mediaAssets)
@@ -577,6 +614,9 @@ export class MediaRepository {
   }
 
   async getAssetsNeedingThumbnails(): Promise<MediaAsset[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAssetsNeedingThumbnails();
+    }
     logger.info("🔍 Querying assets needing thumbnail generation...");
 
     return await db
@@ -597,6 +637,9 @@ export class MediaRepository {
   // =============================================================================
 
   async getFolders(): Promise<Folder[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getFolders();
+    }
     return await db
       .select()
       .from(folders)
@@ -605,6 +648,9 @@ export class MediaRepository {
   }
 
   async getFolder(id: number): Promise<Folder | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getFolder(id);
+    }
     const [folder] = await db
       .select()
       .from(folders)
@@ -613,11 +659,17 @@ export class MediaRepository {
   }
 
   async createFolder(folder: InsertFolder): Promise<Folder> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createFolder(folder);
+    }
     const [created] = await db.insert(folders).values(folder).returning();
     return created!;
   }
 
   async updateFolder(id: number, folder: Partial<InsertFolder>): Promise<Folder | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateFolder(id, folder);
+    }
     const [updated] = await db
       .update(folders)
       .set({ ...folder, updatedAt: sql`NOW()` })
@@ -627,6 +679,9 @@ export class MediaRepository {
   }
 
   async deleteFolder(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteFolder(id);
+    }
     const result = await db
       .update(folders)
       .set({ deletedAt: sql`NOW()` })
@@ -635,6 +690,9 @@ export class MediaRepository {
   }
 
   async getFoldersByParent(parentId: number | null): Promise<Folder[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getFoldersByParent(parentId);
+    }
     const parentCondition = parentId ? eq(folders.parentId, parentId) : isNull(folders.parentId);
     return await db
       .select()
@@ -644,11 +702,17 @@ export class MediaRepository {
   }
 
   async getFolderPath(folderId: number): Promise<string> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getFolderPath(folderId);
+    }
     const folder = await this.getFolder(folderId);
     return folder?.name || "";
   }
 
   async getFolderChildren(folderId: number): Promise<Folder[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getFolderChildren(folderId);
+    }
     return await db
       .select()
       .from(folders)
@@ -707,6 +771,9 @@ export class MediaRepository {
   }
 
   async restoreMediaAsset(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().restoreMediaAsset(id);
+    }
     const result = await db
       .update(mediaAssets)
       .set({ deletedAt: null, updatedAt: sql`NOW()` })
@@ -720,6 +787,9 @@ export class MediaRepository {
   }
 
   async permanentlyDeleteMediaAsset(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().permanentlyDeleteMediaAsset(id);
+    }
     const result = await db.delete(mediaAssets).where(eq(mediaAssets.id, id));
     const success = (result.rowCount ?? 0) > 0;
     if (success) {

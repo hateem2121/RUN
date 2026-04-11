@@ -74,7 +74,10 @@ export function MediaPickerModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-[1100px] h-[80vh] bg-[#0A0A0A]/90 backdrop-blur-2xl border border-white/10 rounded-2xl flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+      <div
+        data-testid="media-picker"
+        className="w-full max-w-[1100px] h-[80vh] bg-[#0A0A0A]/90 backdrop-blur-2xl border border-white/10 rounded-2xl flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200"
+      >
         {/* Header */}
         <header className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/[0.02]">
           <div>

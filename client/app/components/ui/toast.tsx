@@ -16,6 +16,7 @@ const ToastViewport = ({
 }) => (
   <ToastPrimitives.Viewport
     ref={ref}
+    data-testid="toast-viewport"
     className={cn(
       "fixed top-0 z-toast flex max-h-screen w-full flex-col-reverse p-4 sm:top-auto sm:right-0 sm:bottom-0 sm:flex-col md:max-w-toast",
       className,

@@ -114,7 +114,7 @@ export const CertificateList: React.FC<CertificateListProps> = ({
   const renderActions = (certificate: Certificate) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+        <Button variant="ghost" size="sm" className="h-8 w-8 p-0" aria-label="Certificate actions">
           <MoreVertical className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -156,6 +156,7 @@ export const CertificateList: React.FC<CertificateListProps> = ({
           {certificates.map((certificate) => (
             <Card
               key={certificate.id}
+              data-testid="resource-card"
               className={`group relative transition-all duration-200 hover:shadow-lg ${
                 selectedCertificates.includes(certificate.id) ? "bg-blue-50 ring-2 ring-ring" : ""
               }`}
@@ -237,6 +238,7 @@ export const CertificateList: React.FC<CertificateListProps> = ({
           {certificates.map((certificate, index) => (
             <div
               key={certificate.id}
+              data-testid="resource-card"
               className={`flex items-center space-x-4 rounded-lg p-4 transition-all duration-200 hover:bg-neutral-50 ${
                 index % 2 === 0 ? "bg-white/[0.02]" : "bg-transparent"
               } ${
@@ -291,6 +293,7 @@ export const CertificateList: React.FC<CertificateListProps> = ({
           {certificates.map((certificate) => (
             <Card
               key={certificate.id}
+              data-testid="resource-card"
               className={`transition-all duration-200 hover:shadow-lg ${
                 selectedCertificates.includes(certificate.id) ? "bg-blue-50 ring-2 ring-ring" : ""
               }`}

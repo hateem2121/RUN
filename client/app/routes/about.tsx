@@ -139,7 +139,7 @@ function AboutPageContent() {
     queryKey: ["/api/about-batch"],
     queryFn: () => apiRequest("/api/about-batch"),
     retry: 3,
-    staleTime: 1000 * 60 * 10, // 10 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes (standard CMS staleTime)
   });
 
   // Extract data from batch response

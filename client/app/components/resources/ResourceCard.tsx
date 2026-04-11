@@ -56,7 +56,7 @@ export function ResourceCard({
 
   return (
     <div ref={cardRef}>
-      <Card className="h-full transition-shadow-sm hover:shadow-lg">
+      <Card data-testid="resource-card" className="h-full transition-shadow-sm hover:shadow-lg">
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-3">
@@ -67,7 +67,13 @@ export function ResourceCard({
               </div>
             </div>
             {expandedContent && (
-              <Button variant="ghost" size="sm" onClick={onToggleExpand} className="ml-auto">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onToggleExpand}
+                className="ml-auto"
+                aria-label={isExpanded ? "Collapse details" : "Expand details"}
+              >
                 {isExpanded ? (
                   <ChevronUp className="h-4 w-4" />
                 ) : (

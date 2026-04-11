@@ -59,6 +59,13 @@ export class AuthService {
   }
 
   /**
+   * TESTING ONLY: Reset the singleton instance
+   */
+  public static __resetInstance(): void {
+    AuthService.instance = undefined as unknown as AuthService;
+  }
+
+  /**
    * Internal session setup
    */
   private async getSessionMiddleware() {
@@ -75,7 +82,7 @@ export class AuthService {
       });
       logger.info("[Auth] Redis Session Store initialized", { ttl: sessionTtl / 1000 });
     } else {
-      if (process.env.NODE_ENV === "production" && process.env.VITEST !== "true") {
+      if (process.env.NODE_ENV === "production" && process.env.ALLOW_MEMORY_SESSION !== "true") {
         throw new Error(
           "Redis is required for session storage in production (NEON/Serverless). Set REDIS_URL or UPSTASH_REDIS_REST_URL.",
         );
@@ -128,7 +135,6 @@ export class AuthService {
    * Configure Passport and Session
    */
   public async setup(app: Express) {
-    app.set("trust proxy", 1);
     const sessionMiddleware = await this.getSessionMiddleware();
     app.use(sessionMiddleware);
     app.use(passport.initialize());

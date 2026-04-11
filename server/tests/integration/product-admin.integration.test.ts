@@ -22,12 +22,25 @@ vi.mock("../../lib/storage-singleton.js", () => {
   };
   return {
     getStorage: () => mockStore,
+    StorageSingleton: {
+      hasInstance: () => true,
+      getInstance: () => mockStore,
+    },
   };
 });
 
 // Mock UnifiedCache
 vi.mock("../../lib/cache/unified-cache.js", () => ({
-  UnifiedCache: { getInstance: () => ({ get: vi.fn(), set: vi.fn(), invalidate: vi.fn() }) },
+  UnifiedCache: {
+    getInstance: () => ({ get: vi.fn(), set: vi.fn(), invalidate: vi.fn() }),
+    TTL_PRESETS: {
+      SHORT: 300,
+      MEDIUM: 1800,
+      LONG: 3600,
+      MEDIA: 21600,
+      STATIC: 86400,
+    },
+  },
   unifiedCache: { get: vi.fn(), set: vi.fn(), invalidate: vi.fn() },
 }));
 

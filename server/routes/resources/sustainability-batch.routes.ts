@@ -31,7 +31,7 @@ function shouldBypassCache(req: Request): boolean {
  */
 router.get("/", async (req, res) => {
   // PHASE 2A TASK 7: Two-tier cache with SWR
-  const { data: batchData, benchmark } = await twoTierBatchCache.get(
+  const { data: batchData, benchmark } = (await twoTierBatchCache.get(
     "sustainability:batch",
     async () => {
       // Fetch all sustainability data in parallel to minimize NEON connection time
@@ -79,7 +79,7 @@ router.get("/", async (req, res) => {
         // expire: 24 * 60 * 60 * 1000 // Hard expiry at 24 hours
       },
     },
-  );
+  )) || { data: null, benchmark: { hit: "MISS", totalTime: 0, l1Time: 0, l2Time: 0, dbTime: 0 } };
 
   // CHUNK 5: Log performance metrics and benchmark results
   res.setHeader("X-Cache-Hit", benchmark.hit);
@@ -99,7 +99,23 @@ router.get("/", async (req, res) => {
     }
   }
 
-  return res.json(batchData);
+  return res.json({
+    hero: batchData?.hero || null,
+    metrics: (batchData?.metrics || []).map((m) => ({
+      ...m,
+      title: (m as any).title || m.name || "Untitled Metric",
+    })),
+    initiatives: (batchData?.initiatives || []).map((i) => ({
+      ...i,
+      title: i.title || (i as any).name || "Untitled Initiative",
+    })),
+    goals: (batchData?.goals || []).map((g) => ({
+      ...g,
+      title: g.title || (g as any).name || "Untitled Goal",
+    })),
+    certificates: batchData?.certificates || [],
+    fabrics: batchData?.fabrics || [],
+  });
 });
 
 export default router;

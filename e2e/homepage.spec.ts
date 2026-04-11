@@ -250,7 +250,7 @@ test.describe("Admin Homepage (/admin/homepage)", () => {
       // 3. Update via UI
       await titleInput.click({ clickCount: 3 });
       await titleInput.fill(testTitle);
-      
+
       const saveBtn = page.getByRole("button", { name: /save|update|publish|sync hero/i }).first();
       await expect(saveBtn).toBeEnabled({ timeout: 5000 });
       await saveBtn.click();

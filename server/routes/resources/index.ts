@@ -39,8 +39,8 @@ import manufacturingProcessesRouter from "./manufacturing-processes.routes.js";
 import manufacturingQualitiesRouter from "./manufacturing-qualities.routes.js";
 
 import navigationRouter from "./navigation.routes.js";
-// Page Content Routes (public batch + hero endpoints)
 import pageContentRouter from "./page-content-routes.js";
+import resourceBatchRouter from "./resource-batch.routes.js";
 import sustainabilityRouter from "./sustainability.routes.js";
 // Sustainability Page Resources
 import sustainabilityBatchRouter from "./sustainability-batch.routes.js";
@@ -82,6 +82,7 @@ router.use("/about-team-message", aboutTeamMessageRouter);
 // ABOUT & TECHNOLOGY BATCH ROUTES (PUBLIC - from page-content-routes)
 // ============================================================================
 router.use(pageContentRouter); // Mounts /about-batch, /technology-batch, /sustainability-hero, /technology-hero
+router.use("/resources", resourceBatchRouter); // Mounts /resources/batch (aggregated Certs, Accessories, etc.)
 
 // ============================================================================
 // SUSTAINABILITY PAGE RESOURCES

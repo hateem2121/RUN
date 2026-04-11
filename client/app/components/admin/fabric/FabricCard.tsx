@@ -25,7 +25,10 @@ export const FabricCard: React.FC<FabricCardProps> = ({
   certificates,
 }) => {
   return (
-    <Card className="glass-premium transition-all duration-200 hover:border-white/20">
+    <Card
+      data-testid="fabric-card"
+      className="glass-premium transition-all duration-200 hover:border-white/20"
+    >
       <div className="p-6">
         {/* Always visible summary */}
         <div className="mb-4 flex items-center justify-between">

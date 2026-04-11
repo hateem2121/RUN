@@ -164,6 +164,9 @@ export class ProductRepository {
     limit: number = 20,
     cursor?: number, // using ID as cursor
   ): Promise<ProductSummary[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getProductsCursor(limit, cursor);
+    }
     const conditions = [eq(products.isActive, true), isNull(products.deletedAt)];
 
     if (cursor) {
@@ -182,6 +185,9 @@ export class ProductRepository {
   }
 
   async getProducts(limit: number = 100, offset: number = 0): Promise<ProductSummary[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getProducts(limit, offset);
+    }
     const cacheKey = `products:${limit}:${offset}`;
     const perfTracker = queryPerformanceMonitor.startQuery("getProducts");
 
@@ -283,6 +289,9 @@ export class ProductRepository {
   }
 
   async getHomepageFeaturedProducts(limit: number = 20): Promise<ProductSummary[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getHomepageFeaturedProducts(limit);
+    }
     const cacheKey = `homepage:featured-products:${limit}`;
     const perfTracker = queryPerformanceMonitor.startQuery("getHomepageFeaturedProducts");
 
@@ -312,6 +321,9 @@ export class ProductRepository {
   // PHASE 1 TASK 8: Product count cache with 1-hour TTL
   // Used by getProductsSummary to avoid COUNT(*) OVER() window function overhead
   async getProductCount(): Promise<number> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getProductCount();
+    }
     const cacheKey = CacheKeys.products.totalCount();
     const cached = await unifiedCache.get<number>(cacheKey);
     if (cached !== null && cached !== undefined) {
@@ -337,6 +349,9 @@ export class ProductRepository {
   }
 
   async getProductsByCategoryCount(categoryId: number): Promise<number> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getProductsByCategoryCount(categoryId);
+    }
     const cacheKey = `products:count:category:${categoryId}`;
     const cached = await unifiedCache.get<number>(cacheKey);
     if (cached !== null && cached !== undefined) {
@@ -360,6 +375,9 @@ export class ProductRepository {
   }
 
   async getProductsByTagCount(tag: string): Promise<number> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getProductsByTagCount(tag);
+    }
     const cacheKey = `products:count:tag:${tag}`;
     const cached = await unifiedCache.get<number>(cacheKey);
     if (cached !== null && cached !== undefined) {
@@ -390,6 +408,9 @@ export class ProductRepository {
       isFeatured?: boolean;
     } = {},
   ): Promise<number> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().searchProductsCount(query, filters);
+    }
     const cacheKey = `products:count:search:${query}`;
     const cached = await unifiedCache.get<number>(cacheKey);
     if (cached !== null && cached !== undefined) {
@@ -419,7 +440,6 @@ export class ProductRepository {
   }
 
   async getProduct(id: number): Promise<ProductDetail | undefined> {
-    // In test mode with memory storage, redirect to the storage instance
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getProduct(id);
     }
@@ -435,6 +455,9 @@ export class ProductRepository {
     limit: number = 100,
     offset: number = 0,
   ): Promise<ProductSummary[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getProductsByCategory(categoryId, limit, offset);
+    }
     return await db
       .select(PRODUCT_SUMMARY_COLUMNS)
       .from(products)
@@ -464,11 +487,17 @@ export class ProductRepository {
     .prepare("get_product_by_slug");
 
   async getProductBySlug(slug: string): Promise<ProductDetail | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getProductBySlug(slug);
+    }
     const [product] = await this.getProductBySlugQuery.execute({ slug });
     return product;
   }
 
   async getProductByPath(urlPath: string): Promise<ProductDetailWithContext | null> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getProductByPath(urlPath);
+    }
     const cacheKey = `product:by-path:${urlPath}`;
     const perfTracker = queryPerformanceMonitor.startQuery("getProductByPath");
 
@@ -807,6 +836,9 @@ export class ProductRepository {
     limit: number = 100,
     offset: number = 0,
   ): Promise<ProductSummary[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getProductsByTag(tag, limit, offset);
+    }
     return await db
       .select(PRODUCT_SUMMARY_COLUMNS)
       .from(products)
@@ -823,6 +855,9 @@ export class ProductRepository {
   }
 
   async getRelatedProducts(productId: number): Promise<ProductSummary[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getRelatedProducts(productId);
+    }
     const sourceProduct = await db
       .select({ categoryId: products.categoryId })
       .from(products)
@@ -875,10 +910,16 @@ export class ProductRepository {
   }
 
   async getActiveProducts(): Promise<ProductSummary[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getActiveProducts();
+    }
     return await this.getProducts();
   }
 
   async getFeaturedProducts(): Promise<ProductSummary[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getFeaturedProducts();
+    }
     const rows = await db
       .select({
         ...PRODUCT_SUMMARY_COLUMNS,
@@ -1024,10 +1065,16 @@ export class ProductRepository {
   }
 
   async getProductsCount(): Promise<number> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getProductsCount();
+    }
     return await this.getProductCount();
   }
 
   async getProductsIncludingDeleted(limit: number = 50, offset: number = 0): Promise<Product[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getProductsIncludingDeleted(limit, offset);
+    }
     return await db
       .select()
       .from(products)
@@ -1037,6 +1084,9 @@ export class ProductRepository {
   }
 
   async restoreProduct(id: number, tx?: DbClient): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().restoreProduct(id);
+    }
     return await dbCircuitBreaker.execute(
       async () => {
         const dbInstance = tx || db;
@@ -1060,6 +1110,9 @@ export class ProductRepository {
   }
 
   async permanentlyDeleteProduct(id: number, tx?: DbClient): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().permanentlyDeleteProduct(id);
+    }
     return await dbCircuitBreaker.execute(
       async () => {
         const dbInstance = tx || db;
@@ -1084,6 +1137,9 @@ export class ProductRepository {
   // =============================================================================
 
   async getCategories(limit?: number, offset?: number): Promise<Category[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getCategories(limit, offset);
+    }
     const cacheKey =
       limit && offset !== undefined ? `categories:active:${limit}:${offset}` : "categories:active";
 
@@ -1148,6 +1204,9 @@ export class ProductRepository {
   }
 
   async getCategory(id: number): Promise<Category | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getCategory(id);
+    }
     // CHUNK 10: JOIN with media_assets to get media URL
     const [category] = (await db
       .select({
@@ -1184,6 +1243,9 @@ export class ProductRepository {
   }
 
   async getCategoryBySlug(slug: string): Promise<Category | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getCategoryBySlug(slug);
+    }
     // SEO-friendly category lookup by slug with caching
     const cacheKey = `categories:slug:${slug}`;
 
@@ -1242,6 +1304,9 @@ export class ProductRepository {
   }
 
   async getCategoriesCount(): Promise<number> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getCategoriesCount();
+    }
     const cacheKey = "categories:count";
     const cached = await unifiedCache.get<number>(cacheKey);
     if (cached !== null && cached !== undefined) {
@@ -1259,6 +1324,9 @@ export class ProductRepository {
   }
 
   async createCategory(category: InsertCategory, tx?: DbClient): Promise<Category> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createCategory(category);
+    }
     return await dbCircuitBreaker.execute(
       async () => {
         const dbInstance = tx || db;
@@ -1282,6 +1350,9 @@ export class ProductRepository {
     category: Partial<InsertCategory>,
     tx?: DbClient,
   ): Promise<Category | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateCategory(id, category);
+    }
     return await dbCircuitBreaker.execute(
       async () => {
         const dbInstance = tx || db;
@@ -1303,6 +1374,9 @@ export class ProductRepository {
   }
 
   async deleteCategory(id: number, tx?: DbClient): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteCategory(id);
+    }
     return await dbCircuitBreaker.execute(
       async () => {
         const dbInstance = tx || db;
@@ -1327,6 +1401,9 @@ export class ProductRepository {
 
   // DELETED CATEGORIES MANAGEMENT
   async getDeletedCategories(): Promise<Category[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getDeletedCategories();
+    }
     const cacheKey = "categories:deleted";
     const perfTracker = queryPerformanceMonitor.startQuery("getDeletedCategories");
 
@@ -1364,6 +1441,9 @@ export class ProductRepository {
     limit: number = 1000,
     offset: number = 0,
   ): Promise<Category[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getCategoriesIncludingDeleted(limit, offset);
+    }
     return (await db
       .select()
       .from(categories)
@@ -1373,6 +1453,9 @@ export class ProductRepository {
   }
 
   async restoreCategory(id: number, tx?: DbClient): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().restoreCategory(id);
+    }
     return await dbCircuitBreaker.execute(
       async () => {
         const dbInstance = tx || db;
@@ -1396,6 +1479,9 @@ export class ProductRepository {
   }
 
   async permanentlyDeleteCategory(id: number, tx?: DbClient): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().permanentlyDeleteCategory(id);
+    }
     return await dbCircuitBreaker.execute(
       async () => {
         const dbInstance = tx || db;
@@ -1426,6 +1512,9 @@ export class ProductRepository {
    * This reduces NEON database queries by 90% (only fetched for viewers)
    */
   async get3DModelMetadata(productId: number): Promise<MediaAsset | null> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().get3DModelMetadata(productId);
+    }
     const cacheKey = `product:${productId}:3d-model`;
     const perfTracker = queryPerformanceMonitor.startQuery("get3DModelMetadata");
 

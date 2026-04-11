@@ -8,6 +8,7 @@ import type {
 import { blogCategories, blogPosts } from "../../../../shared/index.js";
 import { db } from "../../../db.js";
 import type { IBlogRepository } from "../../../repositories/storage-interfaces.js";
+import { StorageSingleton } from "../../storage-singleton.js";
 
 export class BlogRepository implements IBlogRepository {
   async getBlogPosts(
@@ -21,6 +22,9 @@ export class BlogRepository implements IBlogRepository {
       includeDeleted?: boolean;
     },
   ): Promise<{ posts: BlogPost[]; total: number }> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getBlogPosts(limit, offset, filters);
+    }
     const conditions = [];
 
     if (filters?.status) {
@@ -70,21 +74,33 @@ export class BlogRepository implements IBlogRepository {
   }
 
   async getBlogPost(id: number): Promise<BlogPost | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getBlogPost(id);
+    }
     const [post] = await db.select().from(blogPosts).where(eq(blogPosts.id, id)).limit(1);
     return post as BlogPost | undefined;
   }
 
   async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getBlogPostBySlug(slug);
+    }
     const [post] = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).limit(1);
     return post as BlogPost | undefined;
   }
 
   async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createBlogPost(post);
+    }
     const [newPost] = await db.insert(blogPosts).values(post).returning();
     return newPost as BlogPost;
   }
 
   async updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateBlogPost(id, post);
+    }
     const [updatedPost] = await db
       .update(blogPosts)
       .set({ ...post, updatedAt: new Date() })
@@ -94,6 +110,9 @@ export class BlogRepository implements IBlogRepository {
   }
 
   async deleteBlogPost(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteBlogPost(id);
+    }
     const [deletedPost] = await db
       .update(blogPosts)
       .set({ deletedAt: new Date(), updatedAt: new Date() })
@@ -103,6 +122,9 @@ export class BlogRepository implements IBlogRepository {
   }
 
   async restoreBlogPost(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().restoreBlogPost(id);
+    }
     const [restoredPost] = await db
       .update(blogPosts)
       .set({ deletedAt: null, updatedAt: new Date() })
@@ -112,10 +134,16 @@ export class BlogRepository implements IBlogRepository {
   }
 
   async getBlogCategories(): Promise<BlogCategory[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getBlogCategories();
+    }
     return await db.select().from(blogCategories).orderBy(desc(blogCategories.name));
   }
 
   async createBlogCategory(category: InsertBlogCategory): Promise<BlogCategory> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createBlogCategory(category);
+    }
     const [newCategory] = await db.insert(blogCategories).values(category).returning();
     return newCategory as BlogCategory;
   }
@@ -124,6 +152,9 @@ export class BlogRepository implements IBlogRepository {
     id: number,
     category: Partial<InsertBlogCategory>,
   ): Promise<BlogCategory | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateBlogCategory(id, category);
+    }
     const [updatedCategory] = await db
       .update(blogCategories)
       .set({ ...category, updatedAt: new Date() })
@@ -133,6 +164,9 @@ export class BlogRepository implements IBlogRepository {
   }
 
   async deleteBlogCategory(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteBlogCategory(id);
+    }
     const [deletedCategory] = await db
       .delete(blogCategories)
       .where(eq(blogCategories.id, id))

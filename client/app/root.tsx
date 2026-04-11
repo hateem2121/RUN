@@ -15,6 +15,7 @@ import FloatingDockHeader from "@/components/navigation/floating-dock-header";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import BackToTop from "@/components/ui/back-to-top";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
+import { Toaster } from "@/components/ui/toaster";
 import { getQueryClient } from "@/lib/queryClient";
 import "@/index.css";
 import { useEffect } from "react";
@@ -110,7 +111,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
   // using useState allows us to keep the client stable across re-renders
   const [queryClient] = useState(() => getQueryClient());
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     reportWebVitals();
   }, []);
 
@@ -153,6 +157,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 </a>
                 <FloatingDockHeader />
                 {children}
+                {mounted && <Toaster />}
                 <BackToTop />
                 <OfflineIndicator />
               </HydrationBoundary>

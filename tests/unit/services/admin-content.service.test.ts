@@ -1,0 +1,100 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { miscRepository } from "../../../server/lib/db/repositories/index.js";
+import { aboutService } from "../../../server/services/about.service.js";
+import { adminService } from "../../../server/services/admin/admin.service.js";
+
+vi.mock("../../../server/lib/db/repositories/index.js", async (importOriginal) => {
+  const actual = await importOriginal<any>();
+  return {
+    ...actual,
+    miscRepository: {
+      getFibers: vi.fn(),
+      createFiber: vi.fn(),
+      getFiber: vi.fn(),
+      updateFiber: vi.fn(),
+      deleteFiber: vi.fn(),
+      getCertificates: vi.fn(),
+      createCertificate: vi.fn(),
+      getCertificate: vi.fn(),
+      updateCertificate: vi.fn(),
+      deleteCertificate: vi.fn(),
+    },
+  };
+});
+
+vi.mock("../../../server/services/about.service.js", () => ({
+  aboutService: {
+    getTimeline: vi.fn(),
+    getTimelineEntry: vi.fn(),
+    createTimelineEntry: vi.fn(),
+    updateTimelineEntry: vi.fn(),
+    deleteTimelineEntry: vi.fn(),
+  },
+}));
+
+// Mock Audit logging in repo if needed, but AdminService logs it internally via logAudit which usually calls auditRepo
+vi.mock("../../../server/lib/db/repositories/audit-repository.js", () => ({
+  auditRepository: {
+    logAudit: vi.fn().mockResolvedValue(true),
+  },
+}));
+
+const mockAudit = {
+  user: { id: 1, email: "admin@run.com" },
+  userAgent: "testAgent",
+  ipAddress: "127.0.0.1",
+};
+
+describe("AdminService - Content Management", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe("Fiber Management", () => {
+    it("should get fibers list", async () => {
+      vi.mocked(miscRepository.getFibers).mockResolvedValue([{ id: 1, name: "Polyester" }] as any);
+      const list = await adminService.getFibersList();
+      expect(list).toHaveLength(1);
+      expect(list[0].name).toBe("Polyester");
+    });
+
+    it("should create fiber and log audit", async () => {
+      const fiberData = { name: "Cotton", type: "natural", description: "Natural" };
+      vi.mocked(miscRepository.createFiber).mockResolvedValue({ id: 2, ...fiberData } as any);
+
+      const result = await adminService.createFiber(mockAudit as any, fiberData);
+
+      expect(result.id).toBe(2);
+      expect(miscRepository.createFiber).toHaveBeenCalled();
+    });
+  });
+
+  describe("Certificate Management", () => {
+    it("should get certificates list", async () => {
+      vi.mocked(miscRepository.getCertificates).mockResolvedValue([{ id: 1, name: "GOTS" }] as any);
+      const list = await adminService.getCertificatesList();
+      expect(list).toHaveLength(1);
+    });
+
+    it("should delete certificate and log audit", async () => {
+      vi.mocked(miscRepository.getCertificate).mockResolvedValue({ id: 1, name: "GOTS" } as any);
+      vi.mocked(miscRepository.deleteCertificate).mockResolvedValue(true);
+
+      const result = await adminService.deleteCertificate(mockAudit as any, 1);
+
+      expect(result).toBe(true);
+    });
+  });
+
+  describe("About Timeline Management", () => {
+    it("should delegate timeline creation to aboutService", async () => {
+      const entryData = { year: "2010", title: "Start" };
+      vi.mocked(aboutService.createTimelineEntry).mockResolvedValue({ id: 1, ...entryData } as any);
+
+      const result = await adminService.createAboutTimelineEntry(mockAudit as any, entryData);
+
+      expect(result.id).toBe(1);
+      expect(aboutService.createTimelineEntry).toHaveBeenCalledWith(entryData);
+    });
+  });
+});

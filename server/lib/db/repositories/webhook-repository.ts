@@ -27,6 +27,10 @@ export class WebhookRepository {
   }
 
   async getWebhookSubscription(id: number): Promise<WebhookSubscription | undefined> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getWebhookSubscription(id);
+    }
     const [subscription] = await db
       .select()
       .from(webhookSubscriptions)
@@ -37,6 +41,10 @@ export class WebhookRepository {
   async createWebhookSubscription(
     subscription: InsertWebhookSubscription,
   ): Promise<WebhookSubscription> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createWebhookSubscription(subscription);
+    }
     const [created] = await db.insert(webhookSubscriptions).values(subscription).returning();
     return created!;
   }
@@ -45,6 +53,10 @@ export class WebhookRepository {
     id: number,
     subscription: Partial<InsertWebhookSubscription>,
   ): Promise<WebhookSubscription | undefined> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateWebhookSubscription(id, subscription);
+    }
     const [updated] = await db
       .update(webhookSubscriptions)
       .set({ ...subscription, updatedAt: sql`NOW()` as unknown as Date })
@@ -54,11 +66,19 @@ export class WebhookRepository {
   }
 
   async deleteWebhookSubscription(id: number): Promise<boolean> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteWebhookSubscription(id);
+    }
     const result = await db.delete(webhookSubscriptions).where(eq(webhookSubscriptions.id, id));
     return (result.rowCount ?? 0) > 0;
   }
 
   async logWebhookDelivery(delivery: InsertWebhookDelivery): Promise<void> {
+    // In test mode with memory storage, redirect to the storage instance
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().logWebhookDelivery(delivery);
+    }
     await db.insert(webhookDeliveries).values(delivery);
   }
 }

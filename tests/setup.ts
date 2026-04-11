@@ -1,4 +1,5 @@
 import { vi } from "vitest";
+import "@testing-library/jest-dom/vitest";
 
 // Mock Replit database (Vitest 4.0 syntax)
 vi.mock("@replit/database", () => {
@@ -47,3 +48,4 @@ process.env.ENABLE_DEBUG_ROUTES = "true";
 process.env.DEBUG_ROUTE_TOKEN = "test-token-123";
 process.env.TEST_REAL_DB = "true"; // Enable real DB logic in server/db.ts
 process.env.INITIAL_ADMIN_EMAIL = "admin@run-remix.test";
+process.env.BYPASS_RBAC_FOR_TESTING = "false";

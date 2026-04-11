@@ -121,7 +121,8 @@ describe("AuthService", () => {
 
   describe("requireAdmin middleware", () => {
     beforeEach(() => {
-      vi.resetModules();
+      vi.clearAllMocks();
+      process.env.BYPASS_RBAC_FOR_TESTING = "false";
     });
 
     it("should return SESSION_EXPIRED for unauthenticated requests", async () => {

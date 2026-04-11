@@ -269,10 +269,10 @@ export class AppStorageService {
           method,
         });
 
-        const bucket = this.storage.bucket(this.bucketName);
-        const file = bucket.file(key);
-
         try {
+          const bucket = this.storage.bucket(this.bucketName);
+          const file = bucket.file(key);
+
           const [url] = await file.getSignedUrl({
             version: "v4",
             action: method === "GET" ? "read" : method === "PUT" ? "write" : "delete",

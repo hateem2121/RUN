@@ -83,7 +83,7 @@ router.get("/homepage-batch", async (req, res) => {
   // stale-while-revalidate=3600: Cache can serve stale content for up to 1 hour while fetching a fresh version
   res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=3600");
 
-  const { data: batchData, benchmark } = await twoTierBatchCache.get(
+  const { data: batchData, benchmark } = (await twoTierBatchCache.get(
     "homepage:batch",
     fetchHomepageData,
     {
@@ -93,7 +93,7 @@ router.get("/homepage-batch", async (req, res) => {
         staleWhileRevalidate: 6 * 60 * 60 * 1000, // serve stale for 6h while revalidating in background
       },
     },
-  );
+  )) || { data: null, benchmark: { hit: "MISS", totalTime: 0, l1Time: 0, l2Time: 0, dbTime: 0 } };
 
   const responseTime = performance.now() - startTime;
 
@@ -121,7 +121,19 @@ router.get("/homepage-batch", async (req, res) => {
     }
   }
 
-  res.json(batchData);
+  // ALIGNMENT: Provide defensive fallbacks and property aliases for process cards
+  return res.json({
+    ...batchData,
+    processCards: batchData?.processCards
+      ? {
+          ...batchData.processCards,
+          result: (batchData.processCards.result || []).map((p: any) => ({
+            ...p,
+            title: p.title || p.name || "Untitled Process",
+          })),
+        }
+      : { result: [], timestamp: new Date().toISOString() },
+  });
 });
 
 // CHUNK 5: Cache Performance Monitoring
@@ -167,7 +179,7 @@ router.get("/homepage-process-cards", async (req, res) => {
   const bypassCache = req.query.refresh === "1" || req.headers["cache-control"] === "no-cache";
 
   // PHASE 2A TASK 7: Two-tier cache with SWR
-  const { data, benchmark } = await twoTierBatchCache.get(
+  const { data, benchmark } = (await twoTierBatchCache.get(
     "homepage:process-cards",
     async () => {
       const processCards = await pageContentRepository.getHomepageProcessCards();
@@ -179,13 +191,8 @@ router.get("/homepage-process-cards", async (req, res) => {
     },
     {
       bypassCache,
-      // swrConfig: {
-      //   fresh: 5 * 60 * 1000,  // Fresh for 5 minutes
-      //   stale: 30 * 60 * 1000, // Serve stale for 30 minutes while revalidating
-      //   expire: 60 * 60 * 1000 // Hard expiry at 1 hour
-      // }
     },
-  );
+  )) || { data: null, benchmark: { hit: "MISS", totalTime: 0, l1Time: 0, l2Time: 0, dbTime: 0 } };
 
   // CHUNK 5: Log performance metrics
   res.setHeader("X-Cache-Hit", benchmark.hit);

@@ -1,5 +1,5 @@
 import { useGSAP } from "@gsap/react";
-import type { Certificate, CompositionSet, Fabric, Fiber } from "@shared/index";
+import type { Certificate, CompositionSet, Fabric, Fiber, MediaAsset } from "@shared/index";
 import { dehydrate, HydrationBoundary, keepPreviousData, useQuery } from "@tanstack/react-query";
 import gsap from "gsap";
 import { ChevronDown, ChevronUp, Layers, Leaf, Loader2, Search, Shirt, Wind } from "lucide-react";
@@ -12,8 +12,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HoverCard3D } from "@/components/ui/hover-card-3d";
 import { Input } from "@/components/ui/input";
+import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
+import { ModelViewerErrorBoundary } from "@/components/ui/ModelViewerErrorBoundary";
 import { Progress } from "@/components/ui/progress";
 import { Typography } from "@/components/ui/typography";
+import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 import type { Route } from "./+types/fabrics";
@@ -348,26 +351,55 @@ export default function Fabrics() {
                             >
                               <HoverCard3D maxRotation={10}>
                                 <Card
+                                  data-testid="fabric-card"
                                   className="h-full cursor-pointer overflow-hidden transition-shadow-sm hover:shadow-lg"
                                   onClick={() => toggleExpanded(fabric.id)}
                                 >
-                                  {/* Texture Preview */}
-                                  <div
-                                    className="relative h-32"
-                                    style={{
-                                      background: getTexturePattern(fabric),
-                                      backgroundColor: "#f3f4f6",
-                                    }}
-                                  >
-                                    <div className="absolute inset-0 bg-linear-to-b from-transparent to-white/50"></div>
-                                    <div className="absolute right-2 bottom-2">
+                                  {/* Texture Preview / 3D Viewer */}
+                                  <div className="relative h-48 overflow-hidden bg-muted/20">
+                                    {fabric.visualSwatchId ? (
+                                      <ModelViewerErrorBoundary>
+                                        <LazyUnifiedModelViewer
+                                          asset={
+                                            {
+                                              id: fabric.visualSwatchId,
+                                              originalName: `${fabric.name}.glb`,
+                                              mimeType: "model/gltf-binary",
+                                              url: MediaUrlBuilder.buildModelUrlSafe(
+                                                fabric.visualSwatchId,
+                                              ),
+                                              type: "model",
+                                              isActive: true,
+                                              createdAt: new Date(),
+                                              updatedAt: new Date(),
+                                              storagePath: "",
+                                              bucketName: "",
+                                              filename: `${fabric.name.toLowerCase().replace(/\s+/g, "-")}.glb`,
+                                              metadata: {},
+                                            } as MediaAsset
+                                          }
+                                          className="h-full w-full"
+                                        />
+                                      </ModelViewerErrorBoundary>
+                                    ) : (
+                                      <div
+                                        className="h-full w-full"
+                                        style={{
+                                          background: getTexturePattern(fabric),
+                                          backgroundColor: "#f3f4f6",
+                                        }}
+                                      >
+                                        <div className="absolute inset-0 bg-linear-to-b from-transparent to-white/50"></div>
+                                      </div>
+                                    )}
+                                    <div className="absolute right-2 bottom-2 z-10">
                                       <Badge variant="secondary" className="text-xs">
                                         {fabric.weight} GSM
                                       </Badge>
                                     </div>
                                     {fabric.sustainabilityScore &&
                                       fabric.sustainabilityScore >= 4 && (
-                                        <div className="absolute top-2 left-2">
+                                        <div className="absolute top-2 left-2 z-10">
                                           <Badge variant="default" className="bg-green-600 text-xs">
                                             <Leaf className="mr-1 h-3 w-3" />
                                             Eco

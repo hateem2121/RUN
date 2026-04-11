@@ -12,26 +12,35 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-
+import type React from "react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
-// Mock the hooks
-const mockToast = vi.fn();
-const mockMutate = vi.fn();
-const mockInvalidateQueries = vi.fn();
+// Mock ResizeObserver for Radix UI components
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
+// Mock the hooks using vi.hoisted to ensure they are available to hoisted vi.mock calls
+const { vi_mockToast, vi_mockMutate, vi_mockInvalidateQueries } = vi.hoisted(() => ({
+  vi_mockToast: vi.fn(),
+  vi_mockMutate: vi.fn(),
+  vi_mockInvalidateQueries: vi.fn(),
+}));
 
 vi.mock("@/hooks/use-toast", () => ({
   useToast: () => ({
-    toast: mockToast,
+    toast: vi_mockToast,
   }),
 }));
 
 vi.mock("@/hooks/useManufacturingMutations", () => ({
   useManufacturingMutations: () => ({
-    createMutation: { mutate: mockMutate, isPending: false },
-    updateMutation: { mutate: mockMutate, isPending: false },
-    deleteMutation: { mutate: mockMutate, isPending: false },
-    reorderMutation: { mutate: mockMutate, isPending: false },
+    createMutation: { mutate: vi_mockMutate, isPending: false },
+    updateMutation: { mutate: vi_mockMutate, isPending: false },
+    deleteMutation: { mutate: vi_mockMutate, isPending: false },
+    reorderMutation: { mutate: vi_mockMutate, isPending: false },
   }),
 }));
 
@@ -45,20 +54,23 @@ vi.mock("@/hooks/useOptimizedQuery", () => ({
 vi.mock("@/lib/queryClient", () => ({
   apiRequest: vi.fn().mockResolvedValue({ data: {} }),
   getQueryClient: () => ({
-    invalidateQueries: mockInvalidateQueries,
+    invalidateQueries: vi_mockInvalidateQueries,
   }),
 }));
 
-vi.mock("@tanstack/react-query", async () => {
-  const actual = await vi.importActual("@tanstack/react-query");
+vi.mock("@tanstack/react-query", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@tanstack/react-query")>();
   return {
     ...actual,
     useQuery: vi.fn().mockReturnValue({
       data: null,
       isPending: false,
+      isLoading: false,
+      isError: false,
+      refetch: vi.fn(),
     }),
     useMutation: vi.fn().mockReturnValue({
-      mutate: mockMutate,
+      mutate: vi_mockMutate,
       isPending: false,
     }),
   };
@@ -117,7 +129,7 @@ vi.mock("@/components/ui/card", () => ({
 }));
 
 vi.mock("@/components/shared/manufacturing", () => ({
-  ManufacturingLoadingState: () => <div>Loading...</div>,
+  ManufacturingLoadingState: () => <div>Orchestrating...</div>,
   ProcessCard: ({ process }: { process: { title: string } }) => (
     <div data-testid="process-card">{process.title}</div>
   ),
@@ -191,27 +203,30 @@ describe("HeroManagement Component", () => {
       { id: 2, filename: "video.mp4", url: "/video.mp4" },
     ];
 
-    render(createWrapper()(HeroManagement({ mediaAssets: mockMediaAssets })));
+    render(<HeroManagement mediaAssets={mockMediaAssets} />, { wrapper: createWrapper() });
 
     // Check for form labels
-    expect(screen.getByLabelText(/headline/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/subheadline/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/cta button text/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/cta button link/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^headline$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^subheadline$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^main button text$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^main button link$/i)).toBeInTheDocument();
   });
 
   test("should display loading state while fetching hero data", async () => {
     // Mock loading state
-    vi.mocked(await import("@tanstack/react-query")).useQuery.mockReturnValueOnce({
+    vi.mocked((await import("@tanstack/react-query")).useQuery).mockReturnValueOnce({
       data: null,
       isPending: true,
-    });
+      isLoading: true,
+      isError: false,
+      refetch: vi.fn(),
+    } as any);
 
     const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
-    render(createWrapper()(HeroManagement({ mediaAssets: [] })));
+    render(<HeroManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    expect(screen.getByText(/orchestrating hero tab/i)).toBeInTheDocument();
   });
 
   test("should populate form with existing hero data", async () => {
@@ -230,14 +245,17 @@ describe("HeroManagement Component", () => {
       bottomCtaLink: "/contact",
     };
 
-    vi.mocked(await import("@tanstack/react-query")).useQuery.mockReturnValue({
+    vi.mocked((await import("@tanstack/react-query")).useQuery).mockReturnValue({
       data: mockHeroData,
       isPending: false,
-    });
+      isLoading: false,
+      isError: false,
+      refetch: vi.fn(),
+    } as any);
 
     const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
-    render(createWrapper()(HeroManagement({ mediaAssets: [] })));
+    render(<HeroManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
     await waitFor(() => {
       expect(screen.getByDisplayValue("World-Class Manufacturing")).toBeInTheDocument();
@@ -250,9 +268,9 @@ describe("HeroManagement Component", () => {
 
     const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
-    render(createWrapper()(HeroManagement({ mediaAssets: [] })));
+    render(<HeroManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
-    const headlineInput = screen.getByLabelText(/headline/i);
+    const headlineInput = screen.getByLabelText(/^headline$/i);
     await user.clear(headlineInput);
     await user.type(headlineInput, "New Headline");
 
@@ -264,14 +282,14 @@ describe("HeroManagement Component", () => {
 
     const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
-    render(createWrapper()(HeroManagement({ mediaAssets: [] })));
+    render(<HeroManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
-    const submitButton = screen.getByRole("button", { name: /update hero/i });
+    const submitButton = screen.getByRole("button", { name: /save hero/i });
     await user.click(submitButton);
 
     // Mutation should be called
     await waitFor(() => {
-      expect(mockMutate).toHaveBeenCalled();
+      expect(vi_mockMutate).toHaveBeenCalled();
     });
   });
 
@@ -280,9 +298,9 @@ describe("HeroManagement Component", () => {
 
     const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
-    render(createWrapper()(HeroManagement({ mediaAssets: [] })));
+    render(<HeroManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
-    const backgroundButton = screen.getByRole("button", { name: /select background/i });
+    const backgroundButton = screen.getByTestId("select-background-button");
     await user.click(backgroundButton);
 
     expect(screen.getByTestId("media-picker")).toBeInTheDocument();
@@ -293,9 +311,9 @@ describe("HeroManagement Component", () => {
 
     const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
-    render(createWrapper()(HeroManagement({ mediaAssets: [] })));
+    render(<HeroManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
-    const videoButton = screen.getByRole("button", { name: /select video/i });
+    const videoButton = screen.getByTestId("select-video-button");
     await user.click(videoButton);
 
     expect(screen.getByTestId("media-picker")).toBeInTheDocument();
@@ -306,7 +324,7 @@ describe("HeroManagement Component", () => {
 
     const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
-    render(createWrapper()(HeroManagement({ mediaAssets: [] })));
+    render(<HeroManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
     const activeSwitch = screen.getByRole("switch", { name: /active/i });
     const initialValue = activeSwitch.getAttribute("aria-checked");
@@ -320,12 +338,12 @@ describe("HeroManagement Component", () => {
   test("should display bottom CTA fields", async () => {
     const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
-    render(createWrapper()(HeroManagement({ mediaAssets: [] })));
+    render(<HeroManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
-    expect(screen.getByLabelText(/bottom cta title/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/bottom cta description/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/bottom cta button text/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/bottom cta button link/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/banner title/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/banner description/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/banner button text/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/banner button link/i)).toBeInTheDocument();
   });
 });
 
@@ -342,40 +360,40 @@ describe("ProcessManagement Component", () => {
       "@/components/admin/manufacturing/ProcessManagement"
     );
 
-    render(createWrapper()(ProcessManagement({ mediaAssets: [] })));
+    render(<ProcessManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
-    expect(screen.getByText(/manufacturing processes/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /manufacturing processes/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /add process/i })).toBeInTheDocument();
   });
 
   test("should display empty state when no processes exist", async () => {
-    vi.mocked(await import("@/hooks/useOptimizedQuery")).useOptimizedQuery.mockReturnValue({
+    vi.mocked((await import("@/hooks/useOptimizedQuery")).useOptimizedQuery).mockReturnValue({
       data: [],
       isLoading: false,
-    });
+    } as any);
 
     const { ProcessManagement } = await import(
       "@/components/admin/manufacturing/ProcessManagement"
     );
 
-    render(createWrapper()(ProcessManagement({ mediaAssets: [] })));
+    render(<ProcessManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
     expect(screen.getByText(/no manufacturing processes found/i)).toBeInTheDocument();
   });
 
   test("should display loading state while fetching processes", async () => {
-    vi.mocked(await import("@/hooks/useOptimizedQuery")).useOptimizedQuery.mockReturnValue({
+    vi.mocked((await import("@/hooks/useOptimizedQuery")).useOptimizedQuery).mockReturnValue({
       data: [],
       isLoading: true,
-    });
+    } as any);
 
     const { ProcessManagement } = await import(
       "@/components/admin/manufacturing/ProcessManagement"
     );
 
-    render(createWrapper()(ProcessManagement({ mediaAssets: [] })));
+    render(<ProcessManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
-    expect(screen.getByText(/loading processes/i)).toBeInTheDocument();
+    expect(screen.getByText(/orchestrating processes tab/i)).toBeInTheDocument();
   });
 
   test("should open add process dialog when button clicked", async () => {
@@ -385,7 +403,7 @@ describe("ProcessManagement Component", () => {
       "@/components/admin/manufacturing/ProcessManagement"
     );
 
-    render(createWrapper()(ProcessManagement({ mediaAssets: [] })));
+    render(<ProcessManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
     const addButton = screen.getByRole("button", { name: /add process/i });
     await user.click(addButton);
@@ -401,12 +419,12 @@ describe("ProcessManagement Component", () => {
       "@/components/admin/manufacturing/ProcessManagement"
     );
 
-    render(createWrapper()(ProcessManagement({ mediaAssets: [] })));
+    render(<ProcessManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
     const addButton = screen.getByRole("button", { name: /add process/i });
     await user.click(addButton);
 
-    expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^title$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/step number/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/category/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/efficiency/i)).toBeInTheDocument();
@@ -421,12 +439,12 @@ describe("ProcessManagement Component", () => {
       "@/components/admin/manufacturing/ProcessManagement"
     );
 
-    render(createWrapper()(ProcessManagement({ mediaAssets: [] })));
+    render(<ProcessManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
     const addButton = screen.getByRole("button", { name: /add process/i });
     await user.click(addButton);
 
-    const titleInput = screen.getByLabelText(/title/i);
+    const titleInput = screen.getByLabelText(/^title$/i);
     await user.type(titleInput, "Fabric Cutting");
 
     expect(titleInput).toHaveValue("Fabric Cutting");
@@ -439,7 +457,7 @@ describe("ProcessManagement Component", () => {
       "@/components/admin/manufacturing/ProcessManagement"
     );
 
-    render(createWrapper()(ProcessManagement({ mediaAssets: [] })));
+    render(<ProcessManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
     const addButton = screen.getByRole("button", { name: /add process/i });
     await user.click(addButton);
@@ -457,20 +475,20 @@ describe("ProcessManagement Component", () => {
       "@/components/admin/manufacturing/ProcessManagement"
     );
 
-    render(createWrapper()(ProcessManagement({ mediaAssets: [] })));
+    render(<ProcessManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
     const addButton = screen.getByRole("button", { name: /add process/i });
     await user.click(addButton);
 
     // Fill required fields
-    const titleInput = screen.getByLabelText(/title/i);
+    const titleInput = screen.getByLabelText(/^title$/i);
     await user.type(titleInput, "Quality Control");
 
     const submitButton = screen.getByRole("button", { name: /create process/i });
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(mockMutate).toHaveBeenCalled();
+      expect(vi_mockMutate).toHaveBeenCalled();
     });
   });
 
@@ -516,16 +534,16 @@ describe("ProcessManagement Component", () => {
       },
     ];
 
-    vi.mocked(await import("@/hooks/useOptimizedQuery")).useOptimizedQuery.mockReturnValue({
+    vi.mocked((await import("@/hooks/useOptimizedQuery")).useOptimizedQuery).mockReturnValue({
       data: mockProcesses,
       isLoading: false,
-    });
+    } as any);
 
     const { ProcessManagement } = await import(
       "@/components/admin/manufacturing/ProcessManagement"
     );
 
-    render(createWrapper()(ProcessManagement({ mediaAssets: [] })));
+    render(<ProcessManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
     expect(screen.getByText("Fabric Cutting")).toBeInTheDocument();
     expect(screen.getByText("Assembly")).toBeInTheDocument();
@@ -538,12 +556,12 @@ describe("ProcessManagement Component", () => {
       "@/components/admin/manufacturing/ProcessManagement"
     );
 
-    render(createWrapper()(ProcessManagement({ mediaAssets: [] })));
+    render(<ProcessManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
     const addButton = screen.getByRole("button", { name: /add process/i });
     await user.click(addButton);
 
-    const mediaButton = screen.getByRole("button", { name: /select process media/i });
+    const mediaButton = screen.getByTestId("select-process-media");
     await user.click(mediaButton);
 
     expect(screen.getByTestId("media-picker")).toBeInTheDocument();
@@ -556,7 +574,7 @@ describe("ProcessManagement Component", () => {
       "@/components/admin/manufacturing/ProcessManagement"
     );
 
-    render(createWrapper()(ProcessManagement({ mediaAssets: [] })));
+    render(<ProcessManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
     const addButton = screen.getByRole("button", { name: /add process/i });
     await user.click(addButton);
@@ -581,13 +599,13 @@ describe("CMS to Page Data Flow Integration", () => {
 
     const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
-    render(createWrapper()(HeroManagement({ mediaAssets: [] })));
+    render(<HeroManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
-    const submitButton = screen.getByRole("button", { name: /update hero/i });
+    const submitButton = screen.getByRole("button", { name: /save hero/i });
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(mockMutate).toHaveBeenCalled();
+      expect(vi_mockMutate).toHaveBeenCalled();
     });
   });
 
@@ -598,19 +616,19 @@ describe("CMS to Page Data Flow Integration", () => {
       "@/components/admin/manufacturing/ProcessManagement"
     );
 
-    render(createWrapper()(ProcessManagement({ mediaAssets: [] })));
+    render(<ProcessManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
     const addButton = screen.getByRole("button", { name: /add process/i });
     await user.click(addButton);
 
-    const titleInput = screen.getByLabelText(/title/i);
+    const titleInput = screen.getByLabelText(/^title$/i);
     await user.type(titleInput, "New Process");
 
     const submitButton = screen.getByRole("button", { name: /create process/i });
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(mockMutate).toHaveBeenCalled();
+      expect(vi_mockMutate).toHaveBeenCalled();
     });
   });
 });
@@ -622,7 +640,7 @@ describe("CMS Component Accessibility", () => {
   test("HeroManagement should have proper form labels", async () => {
     const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
-    render(createWrapper()(HeroManagement({ mediaAssets: [] })));
+    render(<HeroManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
     // All inputs should have associated labels
     const inputs = screen.getAllByRole("textbox");
@@ -639,7 +657,7 @@ describe("CMS Component Accessibility", () => {
       "@/components/admin/manufacturing/ProcessManagement"
     );
 
-    render(createWrapper()(ProcessManagement({ mediaAssets: [] })));
+    render(<ProcessManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
     const addButton = screen.getByRole("button", { name: /add process/i });
     await user.click(addButton);
@@ -651,46 +669,9 @@ describe("CMS Component Accessibility", () => {
   test("Form submit buttons should have descriptive text", async () => {
     const { HeroManagement } = await import("@/components/admin/manufacturing/HeroManagement");
 
-    render(createWrapper()(HeroManagement({ mediaAssets: [] })));
+    render(<HeroManagement mediaAssets={[]} />, { wrapper: createWrapper() });
 
-    const submitButton = screen.getByRole("button", { name: /update hero/i });
-    expect(submitButton).toHaveTextContent("Update Hero Section");
+    const submitButton = screen.getByRole("button", { name: /save hero/i });
+    expect(submitButton).toHaveTextContent("Save Hero Settings");
   });
 });
-
-/**
- * TEST SUMMARY
- *
- * This test suite validates:
- *
- * ✅ HeroManagement Component:
- *    - Form renders with all fields
- *    - Loading state displays
- *    - Existing data populates form
- *    - Input changes work
- *    - Form submission triggers mutation
- *    - Media pickers open correctly
- *    - Active switch toggles
- *    - Bottom CTA fields display
- *
- * ✅ ProcessManagement Component:
- *    - Card renders correctly
- *    - Empty state displays
- *    - Loading state displays
- *    - Add dialog opens
- *    - Form fields display
- *    - Input changes work
- *    - Active switch toggles
- *    - Form submission works
- *    - Existing processes display
- *    - Media picker opens
- *    - Dialog closes on cancel
- *
- * ✅ Integration:
- *    - Query invalidation after updates
- *
- * ✅ Accessibility:
- *    - Proper form labels
- *    - ARIA attributes on dialogs
- *    - Descriptive button text
- */

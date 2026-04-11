@@ -17,6 +17,11 @@ import { setupGracefulShutdown } from "./lib/shutdown-manager.js";
 
 export const app = express();
 
+// P1 SECURITY: Configure proxy trust for GCLB/Cloud Run headers
+// '1' trusts the first hop (GCLB). 'true' also works for internal VPC trust.
+if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
+  app.set("trust proxy", 1);
+}
 
 const config = getConfig();
 

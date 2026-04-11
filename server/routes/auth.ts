@@ -17,9 +17,9 @@ router.get(
   }),
 );
 
-// Mock Login Route (Development Only)
-if (process.env.NODE_ENV === "development") {
-  router.get("/mock-login", (req, res) => {
+// Mock Login Route (Development & Test Only)
+if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
+  router.get("/mock-login", async (req, res) => {
     const mockUser: SessionUser = {
       id: "mock-admin-id",
       email: "mock-admin@example.com",
@@ -39,13 +39,41 @@ if (process.env.NODE_ENV === "development") {
       },
     };
 
+    // Seed user if in test environment
+    if (process.env.NODE_ENV === "test") {
+      await userRepository.upsertUser({
+        id: mockUser.id,
+        email: mockUser.email,
+        emailIndex: mockUser.emailIndex,
+        firstName: mockUser.firstName,
+        lastName: mockUser.lastName,
+        profileImageUrl: mockUser.profileImageUrl,
+        isAdmin: mockUser.isAdmin,
+      });
+    }
+
     req.login(mockUser, (err) => {
       if (err) {
         console.error("Mock login failed", err);
-        return res.status(500).json({ error: "Mock login failed" });
+        res.status(500).json({ error: "Mock login failed" });
+        return;
       }
-      // Redirect to admin dashboard
-      return res.redirect("/admin");
+
+      // Ensure session is saved before redirecting/responding
+      req.session.save((saveErr) => {
+        if (saveErr) {
+          console.error("Session save failed", saveErr);
+          res.status(500).json({ error: "Session save failed" });
+          return;
+        }
+
+        const returnTo = (req.query.returnTo as string) || "/admin";
+        if (req.headers.accept?.includes("application/json")) {
+          res.json({ success: true, user: mockUser });
+          return;
+        }
+        res.redirect(returnTo);
+      });
     });
   });
 }

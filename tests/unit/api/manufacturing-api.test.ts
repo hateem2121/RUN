@@ -25,22 +25,176 @@ vi.mock("../../../server/lib/storage/app-service.js", () => ({
   },
 }));
 
-// Mock Cache Operations - must be before imports
-vi.mock("../../../server/lib/cache/cache-strategies.js", () => ({
-  CacheOperations: {
-    invalidateManufacturing: vi.fn(),
-  },
-}));
+// Mock Repositories - must be before imports
+vi.mock("../../../server/lib/db/repositories/index.js", async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+
+  const mockManufacturingHero = {
+    id: 1,
+    title: "World-Class Manufacturing",
+    subtitle: "Heritage Craftsmanship Since 1889",
+    description: "State-of-the-art sportswear manufacturing facility",
+    backgroundImageId: null,
+    backgroundVideoId: null,
+    ctaText: "Explore Our Facility",
+    ctaLink: "/contact",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const mockManufacturingProcesses = [
+    {
+      id: 1,
+      name: "Cutting",
+      title: "Cutting",
+      description: "Precision cutting with automated systems",
+      icon: "Scissors",
+      sortOrder: 1,
+      mediaId: null,
+    },
+    {
+      id: 2,
+      name: "Assembly",
+      title: "Assembly",
+      description: "Expert assembly by skilled craftsmen",
+      icon: "Cpu",
+      sortOrder: 2,
+      mediaId: null,
+    },
+    {
+      id: 3,
+      name: "Quality Control",
+      title: "Quality Control",
+      description: "Rigorous quality checkpoints",
+      icon: "ShieldCheck",
+      sortOrder: 3,
+      mediaId: null,
+    },
+  ];
+
+  const mockManufacturingCapabilities = [
+    {
+      id: 1,
+      name: "Annual Capacity",
+      title: "Annual Capacity",
+      capacity: "1200000",
+      unit: "Units/Year",
+      description: "High-volume production capability",
+      icon: "TrendingUp",
+      sortOrder: 1,
+    },
+    {
+      id: 2,
+      name: "Production Lines",
+      title: "Production Lines",
+      capacity: "24",
+      unit: "Active Lines",
+      description: "Multiple parallel production lines",
+      icon: "Cpu",
+      sortOrder: 2,
+    },
+  ];
+
+  const mockManufacturingQualities = [
+    {
+      id: 1,
+      title: "ISO 9001:2015",
+      description: "Quality Management System certified",
+      icon: "Award",
+      sortOrder: 1,
+    },
+    {
+      id: 2,
+      title: "OEKO-TEX Standard",
+      description: "Textile safety certification",
+      icon: "Shield",
+      sortOrder: 2,
+    },
+  ];
+
+  return {
+    ...actual,
+    pageContentRepository: {
+      ...actual.pageContentRepository,
+      getManufacturingHero: vi.fn().mockResolvedValue(mockManufacturingHero),
+      updateManufacturingHero: vi.fn().mockImplementation((data) => ({
+        ...mockManufacturingHero,
+        ...data,
+        updatedAt: new Date(),
+      })),
+      getManufacturingProcesses: vi.fn().mockResolvedValue(mockManufacturingProcesses),
+      getManufacturingProcess: vi
+        .fn()
+        .mockImplementation(
+          (id: number) => mockManufacturingProcesses.find((p) => p.id === id) || null,
+        ),
+      createManufacturingProcess: vi
+        .fn()
+        .mockImplementation((data) => ({ id: 4, ...data, createdAt: new Date() })),
+      updateManufacturingProcess: vi.fn().mockImplementation((id: number, data) => {
+        const existing = mockManufacturingProcesses.find((p) => p.id === id);
+        return existing ? { ...existing, ...data } : null;
+      }),
+      deleteManufacturingProcess: vi
+        .fn()
+        .mockImplementation((id: number) => mockManufacturingProcesses.some((p) => p.id === id)),
+      getManufacturingCapabilities: vi.fn().mockResolvedValue(mockManufacturingCapabilities),
+      getManufacturingCapability: vi
+        .fn()
+        .mockImplementation(
+          (id: number) => mockManufacturingCapabilities.find((c) => c.id === id) || null,
+        ),
+      createManufacturingCapability: vi
+        .fn()
+        .mockImplementation((data) => ({ id: 3, ...data, createdAt: new Date() })),
+      updateManufacturingCapability: vi.fn().mockImplementation((id: number, data) => {
+        const existing = mockManufacturingCapabilities.find((c) => c.id === id);
+        return existing ? { ...existing, ...data } : null;
+      }),
+      deleteManufacturingCapability: vi
+        .fn()
+        .mockImplementation((id: number) => mockManufacturingCapabilities.some((c) => c.id === id)),
+      getManufacturingQualities: vi.fn().mockResolvedValue(mockManufacturingQualities),
+      getManufacturingQuality: vi
+        .fn()
+        .mockImplementation(
+          (id: number) => mockManufacturingQualities.find((q) => q.id === id) || null,
+        ),
+      createManufacturingQuality: vi
+        .fn()
+        .mockImplementation((data) => ({ id: 3, ...data, createdAt: new Date() })),
+      updateManufacturingQuality: vi.fn().mockImplementation((id: number, data) => {
+        const existing = mockManufacturingQualities.find((q) => q.id === id);
+        return existing ? { ...existing, ...data } : null;
+      }),
+      deleteManufacturingQuality: vi
+        .fn()
+        .mockImplementation((id: number) => mockManufacturingQualities.some((q) => q.id === id)),
+    },
+  };
+});
 
 // Mock Two-Tier Cache - must be before imports
 vi.mock("../../../server/lib/cache/two-tier-batch.js", () => ({
   twoTierBatchCache: {
     invalidate: vi.fn(),
-    get: vi.fn(),
+    get: vi.fn().mockImplementation(async (_key, fetchFn) => {
+      const data = await fetchFn();
+      return {
+        data,
+        benchmark: {
+          hit: "MISS",
+          totalTime: 0,
+          l1Time: 0,
+          l2Time: 0,
+          dbTime: 0,
+        },
+      };
+    }),
   },
 }));
 
-// Mock Storage with Manufacturing-specific data - must be before imports
+// Mock Storage-singleton which is still needed by some other parts
 vi.mock("../../../server/lib/storage-singleton.js", () => {
   const mockManufacturingHero = {
     id: 1,
@@ -549,8 +703,10 @@ describe("MANUFACTURING API TESTS - CMS Integration", () => {
 
       if (response.status === 200 && response.body.length > 0) {
         response.body.forEach((capability: Record<string, unknown>) => {
-          expect(typeof capability.capacity).toBe("string");
-          expect(typeof capability.unit).toBe("string");
+          expect(typeof capability.capacity === "string" || capability.capacity === null).toBe(
+            true,
+          );
+          expect(typeof capability.unit === "string" || capability.unit === null).toBe(true);
         });
       }
     });

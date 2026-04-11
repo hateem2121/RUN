@@ -306,11 +306,11 @@ const ScrollExpandMedia = ({
 
       switch (lineIndex) {
         case 0:
-          return `translate3d(-${baseTranslate}vw, 0, 0)`; // First sentence moves left
+          return `translate3d(-${baseTranslate * 1.5}vw, 0, 0)`; // Increased multiplier for better clearance
         case 1:
-          return `translate3d(${baseTranslate}vw, 0, 0)`; // Second sentence moves right
+          return `translate3d(${baseTranslate * 1.5}vw, 0, 0)`; // Increased multiplier for better clearance
         case 2:
-          return `translate3d(0, -${baseTranslate * 0.3}vw, 0)`; // Third sentence moves up
+          return `translate3d(0, -${baseTranslate * 0.5}vw, 0)`;
         default:
           return `translate3d(0, 0, 0)`; // No movement for additional lines
       }
@@ -327,7 +327,8 @@ const ScrollExpandMedia = ({
         <div className="relative flex min-h-screen w-full flex-col items-center">
           <div ref={bgRef} className="absolute inset-0 z-base h-full">
             <OptimizedImage
-              mediaId={MediaUrlBuilder.extractAssetId(bgImageSrc) || 0}
+              mediaId={MediaUrlBuilder.extractAssetId(bgImageSrc) || undefined}
+              src={bgImageSrc}
               alt="Background"
               className="h-screen w-screen object-cover"
               priority={true}
@@ -397,7 +398,8 @@ const ScrollExpandMedia = ({
                 ) : mediaSrc ? (
                   <div className="relative h-full w-full">
                     <OptimizedImage
-                      mediaId={MediaUrlBuilder.extractAssetId(mediaSrc) || 0}
+                      mediaId={MediaUrlBuilder.extractAssetId(mediaSrc) || undefined}
+                      src={mediaSrc}
                       alt={title || "Media content"}
                       className="h-full w-full rounded-xl object-cover"
                       quality={90}
@@ -449,7 +451,7 @@ const ScrollExpandMedia = ({
                     <h1
                       className="font-bold text-3xl text-white transition-none md:text-4xl lg:text-6xl xl:text-7xl"
                       style={{
-                        transform: `translate3d(-${textTranslateX * 0.5}vw, 0, 0)`,
+                        transform: `translate3d(-${textTranslateX * 0.8}vw, 0, 0)`,
                         willChange: "transform",
                       }}
                     >
@@ -459,7 +461,7 @@ const ScrollExpandMedia = ({
                       <p
                         className="mx-auto max-w-3xl text-lg text-white/90 leading-relaxed md:text-xl lg:text-2xl"
                         style={{
-                          transform: `translate3d(${textTranslateX * 0.3}vw, 0, 0)`,
+                          transform: `translate3d(${textTranslateX * 0.6}vw, 0, 0)`,
                           willChange: "transform",
                         }}
                       >

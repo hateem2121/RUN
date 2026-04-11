@@ -22,9 +22,11 @@ vi.mock("../../server/config/environment.js", () => ({
 describe("Forensic Audit Verification", () => {
   const originalEnv = process.env;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.resetModules();
     process.env = { ...originalEnv };
+    const { AuthService } = await import("../../server/services/auth-service.js");
+    AuthService.__resetInstance();
   });
 
   afterEach(() => {

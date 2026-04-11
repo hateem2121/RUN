@@ -13,7 +13,7 @@ import {
   aboutTeamMessages,
   aboutTimelineEntries,
   mediaAssets,
-} from "../../shared/schemas.js";
+} from "../../shared/schemas/index.js";
 import { type SeedResult, seedWithTransaction } from "../utils/seed-helpers.js";
 
 /**

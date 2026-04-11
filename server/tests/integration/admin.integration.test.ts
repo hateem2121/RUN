@@ -45,6 +45,7 @@ describe("Admin Operations Integration Tests", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     mockUser = null;
+    process.env.BYPASS_RBAC_FOR_TESTING = "false";
 
     app = express();
     app.use(express.json());

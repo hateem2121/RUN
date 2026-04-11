@@ -18,7 +18,7 @@ import blogRouter from "./blog.routes.js";
 const router = Router();
 
 // Mount Blog Router under /api/admin/blog
-router.use("/admin/blog", blogRouter);
+router.use("/blog", blogRouter);
 
 // GET /api/media-assets - List all media assets (admin only)
 router.get("/media-assets", authService.requireAdmin, async (_req, res) => {
@@ -360,6 +360,41 @@ router.delete("/fibers/:id", authService.requireAdmin, async (req, res) => {
   if (id === null) return;
   const auditContext = getAuditContext(req);
   const result = await adminService.deleteFiber(auditContext, id);
+  return res.json({ success: result });
+});
+
+// =============================================================================
+// ABOUT TIMELINE MANAGEMENT
+// =============================================================================
+
+// GET /about/timeline - List all entries
+router.get("/about/timeline", authService.requireAdmin, async (_req, res) => {
+  const result = await adminService.getAboutTimelineEntries();
+  return res.json(result);
+});
+
+// POST /about/timeline - Create entry
+router.post("/about/timeline", authService.requireAdmin, async (req, res) => {
+  const auditContext = getAuditContext(req);
+  const result = await adminService.createAboutTimelineEntry(auditContext, req.body);
+  return res.status(201).json(result);
+});
+
+// PATCH /about/timeline/:id - Update entry
+router.patch("/about/timeline/:id", authService.requireAdmin, async (req, res) => {
+  const id = validateIdParam(req, res, "id", "timeline entry");
+  if (id === null) return;
+  const auditContext = getAuditContext(req);
+  const result = await adminService.updateAboutTimelineEntry(auditContext, id, req.body);
+  return res.json(result);
+});
+
+// DELETE /about/timeline/:id - Delete entry
+router.delete("/about/timeline/:id", authService.requireAdmin, async (req, res) => {
+  const id = validateIdParam(req, res, "id", "timeline entry");
+  if (id === null) return;
+  const auditContext = getAuditContext(req);
+  const result = await adminService.deleteAboutTimelineEntry(auditContext, id);
   return res.json({ success: result });
 });
 

@@ -14,8 +14,10 @@ describe("Express 5 Async Error Propagation", () => {
     const response = await request(app).get("/api/abc").expect(400);
 
     expect(response.body).toMatchObject({
-      status: "fail",
-      code: "VALIDATION_ERROR",
+      success: false,
+      error: {
+        code: "VALIDATION_ERROR",
+      },
     });
   });
 
@@ -24,8 +26,10 @@ describe("Express 5 Async Error Propagation", () => {
     const response = await request(app).get("/api/9999999").expect(404);
 
     expect(response.body).toMatchObject({
-      status: "fail",
-      code: "RESOURCE_NOT_FOUND",
+      success: false,
+      error: {
+        code: "RESOURCE_NOT_FOUND",
+      },
     });
   });
 });

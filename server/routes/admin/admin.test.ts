@@ -14,6 +14,10 @@ const { mockAdminService } = vi.hoisted(() => {
     restoreCategory: ReturnType<typeof vi.fn>;
     restoreProduct: ReturnType<typeof vi.fn>;
     restoreMediaAsset: ReturnType<typeof vi.fn>;
+    getAboutTimelineEntries: ReturnType<typeof vi.fn>;
+    createAboutTimelineEntry: ReturnType<typeof vi.fn>;
+    updateAboutTimelineEntry: ReturnType<typeof vi.fn>;
+    deleteAboutTimelineEntry: ReturnType<typeof vi.fn>;
   } = {
     getInitialProductsData: vi.fn(),
     fixCorruptedMedia: vi.fn(),
@@ -23,6 +27,10 @@ const { mockAdminService } = vi.hoisted(() => {
     restoreCategory: vi.fn(),
     restoreProduct: vi.fn(),
     restoreMediaAsset: vi.fn(),
+    getAboutTimelineEntries: vi.fn(),
+    createAboutTimelineEntry: vi.fn(),
+    updateAboutTimelineEntry: vi.fn(),
+    deleteAboutTimelineEntry: vi.fn(),
   };
 
   mock.fixCorruptedMedia.mockImplementation(async (audit: Record<string, unknown>) => {
@@ -296,6 +304,42 @@ describe("Admin Routes Integration", () => {
       const response = await request(app).post("/api/admin/media-assets/invalid/restore").send({});
       expect(response.status).toBe(400);
       expect(response.body.message).toContain("expected numeric ID");
+    });
+  });
+
+  describe("About Timeline Routes", () => {
+    const mockEntry = { id: 1, title: "Test Entry", year: 2024 };
+
+    it("GET /api/admin/about/timeline - should return timeline entries", async () => {
+      mockAdminService.getAboutTimelineEntries.mockResolvedValue([mockEntry]);
+      const response = await request(app).get("/api/admin/about/timeline");
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual([mockEntry]);
+    });
+
+    it("POST /api/admin/about/timeline - should create entry", async () => {
+      mockAdminService.createAboutTimelineEntry.mockResolvedValue(mockEntry);
+      const response = await request(app)
+        .post("/api/admin/about/timeline")
+        .send({ title: "New", year: 2025 });
+      expect(response.status).toBe(201);
+      expect(response.body).toEqual(mockEntry);
+    });
+
+    it("PATCH /api/admin/about/timeline/:id - should update entry", async () => {
+      mockAdminService.updateAboutTimelineEntry.mockResolvedValue(mockEntry);
+      const response = await request(app)
+        .patch("/api/admin/about/timeline/1")
+        .send({ title: "Updated" });
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(mockEntry);
+    });
+
+    it("DELETE /api/admin/about/timeline/:id - should delete entry", async () => {
+      mockAdminService.deleteAboutTimelineEntry.mockResolvedValue(true);
+      const response = await request(app).delete("/api/admin/about/timeline/1");
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
     });
   });
 });

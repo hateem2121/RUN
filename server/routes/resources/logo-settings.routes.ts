@@ -38,7 +38,7 @@ router.get("/logo-animation-settings", async (_req, res, next) => {
   }
 
   const settings = result.value || {};
-  await unifiedCache.set(cacheKey, settings, CACHE_TTL_STATIC * 1000);
+  await unifiedCache.set(cacheKey, settings, CACHE_TTL_STATIC);
   return res.json(settings);
 });
 

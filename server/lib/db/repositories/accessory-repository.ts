@@ -8,6 +8,7 @@
  */
 
 import { and, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
+import { StorageSingleton } from "../../storage-singleton.js";
 import type { Accessory, InsertAccessory } from "../../../../shared/index.js";
 import { accessories } from "../../../../shared/index.js";
 import { db } from "../../../db.js";
@@ -48,6 +49,9 @@ export class AccessoryRepository {
    * Get single accessory by ID (with cache)
    */
   async getAccessory(id: number): Promise<Accessory | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAccessory(id);
+    }
     const cacheKey = `accessory:${id}`;
 
     const cached = await unifiedCache.get<Accessory>(cacheKey);
@@ -78,6 +82,9 @@ export class AccessoryRepository {
     offset: number = 0,
     filters?: { category?: string | undefined; search?: string },
   ): Promise<Accessory[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAccessories(limit, offset, filters);
+    }
     const perfTracker = queryPerformanceMonitor.startQuery("getAccessories");
 
     const cacheKey = `accessories:paginated:${limit}:${offset}:${normalizeFilters(filters)}`;
@@ -136,6 +143,9 @@ export class AccessoryRepository {
     category?: string | undefined;
     search?: string;
   }): Promise<number> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAccessoriesCount(filters);
+    }
     const conditions = [isNull(accessories.deletedAt), eq(accessories.isActive, true)];
 
     if (filters?.category) {
@@ -199,6 +209,9 @@ export class AccessoryRepository {
    * Create new accessory with cache invalidation
    */
   async createAccessory(accessory: InsertAccessory): Promise<Accessory> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createAccessory(accessory);
+    }
     const [created] = await db.insert(accessories).values(accessory).returning();
 
     // Invalidate all paginated caches
@@ -216,6 +229,9 @@ export class AccessoryRepository {
     id: number,
     accessory: Partial<InsertAccessory>,
   ): Promise<Accessory | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().updateAccessory(id, accessory);
+    }
     const [updated] = await db
       .update(accessories)
       .set({ ...accessory, updatedAt: sql`NOW()` })
@@ -235,6 +251,9 @@ export class AccessoryRepository {
    * Soft delete accessory with cache-first pattern
    */
   async deleteAccessory(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteAccessory(id);
+    }
     // Cache-first delete: invalidate cache BEFORE DB operation
     try {
       await this.invalidateAccessoryCacheSelectively("delete", id);
@@ -264,6 +283,33 @@ export class AccessoryRepository {
 
     logger.info(`[AccessoryRepository] ✅ Cache-first delete succeeded for accessory ${id}`);
     return true;
+  }
+
+  async getAccessoriesIncludingDeleted(): Promise<Accessory[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAccessoriesIncludingDeleted();
+    }
+    return await db.select().from(accessories).orderBy(desc(accessories.createdAt));
+  }
+
+  async restoreAccessory(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().restoreAccessory(id);
+    }
+    const [updated] = await db
+      .update(accessories)
+      .set({ deletedAt: null })
+      .where(eq(accessories.id, id))
+      .returning();
+    return !!updated;
+  }
+
+  async permanentlyDeleteAccessory(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().permanentlyDeleteAccessory(id);
+    }
+    const [deleted] = await db.delete(accessories).where(eq(accessories.id, id)).returning();
+    return !!deleted;
   }
 
   /**

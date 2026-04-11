@@ -106,6 +106,7 @@ const SizeChartList = ({
         return (
           <div
             key={chart.id}
+            data-testid="chart-card"
             className="glass-premium group rounded-lg border border-white/10 p-4 transition-all duration-200 hover:border-blue-400/50"
           >
             <div className="mb-3 flex items-start justify-between">

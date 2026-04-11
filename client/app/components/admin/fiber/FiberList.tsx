@@ -79,7 +79,7 @@ export const FiberList: React.FC<FiberListProps> = ({
   const renderFiberActions = (fiber: Fiber) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" aria-label="Fiber actions">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -121,6 +121,7 @@ export const FiberList: React.FC<FiberListProps> = ({
         {fibers.map((fiber) => (
           <div
             key={fiber.id}
+            data-testid="fiber-card"
             className={`rounded-lg border p-4 transition-colors glass-premium ${
               selectedFibers.has(fiber.id)
                 ? "border-white/30 bg-white/10"
@@ -186,6 +187,7 @@ export const FiberList: React.FC<FiberListProps> = ({
         {fibers.map((fiber) => (
           <div
             key={fiber.id}
+            data-testid="fiber-card"
             className={`rounded-lg border p-4 transition-colors glass-premium ${
               selectedFibers.has(fiber.id)
                 ? "border-white/30 bg-white/10"
@@ -290,6 +292,7 @@ export const FiberList: React.FC<FiberListProps> = ({
       {fibers.map((fiber) => (
         <div
           key={fiber.id}
+          data-testid="fiber-card"
           className={`rounded-lg border p-3 transition-colors glass-premium ${
             selectedFibers.has(fiber.id)
               ? "border-white/30 bg-white/10"

@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { InquiryService } from "../inquiry-service";
-import { miscRepository } from "../../lib/db/repositories/index.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
+import { miscRepository } from "../../lib/db/repositories/index.js";
 import { emailService } from "../../lib/integrations/email-service.js";
+import { InquiryService } from "../inquiry-service";
 
 // Mock dependencies
 vi.mock("../../lib/db/repositories/index.js", () => ({
@@ -61,20 +61,20 @@ describe("InquiryService", () => {
         status: "new",
       } as any;
 
-      const mockInquiry = { 
-        id: 1, 
-        ...mockData, 
-        submittedAt: new Date() 
+      const mockInquiry = {
+        id: 1,
+        ...mockData,
+        submittedAt: new Date(),
       };
 
       vi.mocked(miscRepository.createInquiry).mockResolvedValue(mockInquiry);
-      
+
       const result = await service.createInquiry(mockData);
 
       expect(miscRepository.createInquiry).toHaveBeenCalledWith(mockData);
       expect(result).toEqual(mockInquiry);
       expect(unifiedCache.delete).toHaveBeenCalledWith("inquiries:stats");
-      
+
       // Verify email fallback (since emailQueue is mocked as null)
       expect(emailService.sendAdminNotification).toHaveBeenCalled();
       expect(emailService.sendCustomerConfirmation).toHaveBeenCalled();

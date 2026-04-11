@@ -59,6 +59,7 @@ export const FabricFilters: React.FC<FabricFiltersProps> = ({
                 variant={viewMode === "grid" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setViewMode("grid")}
+                aria-label="Grid View"
                 title="Grid View"
               >
                 <Grid3X3 className="h-4 w-4" />
@@ -67,6 +68,7 @@ export const FabricFilters: React.FC<FabricFiltersProps> = ({
                 variant={viewMode === "list" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setViewMode("list")}
+                aria-label="List View"
                 title="List View"
               >
                 <List className="h-4 w-4" />
@@ -75,6 +77,7 @@ export const FabricFilters: React.FC<FabricFiltersProps> = ({
                 variant={viewMode === "detailed" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setViewMode("detailed")}
+                aria-label="Detailed View"
                 title="Detailed View"
               >
                 <Table className="h-4 w-4" />

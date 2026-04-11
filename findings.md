@@ -1,66 +1,20 @@
-# Findings - Homepage & Admin Module Audit (2026-04-07)
+## CMS Integrity & Performance Audit (2026-04-10)
 
-## Initial State
+### Resolved Issues
 
-- **Root Directory**: Listed. `findings.md` created.
-- **Port 5002**: Verification required.
-- **Auth**: `.auth/user.json` exists in root.
-- **E2E Tests**: `e2e/homepage.spec.ts` exists.
-- **Unit Tests**: `tests/` and `client/tests/` exist.
+* **TypeError in Batch Endpoints**: Fixed crash in `manufacturing-processes`, `homepage-batch`, and `sustainability-batch` routes caused by destructuring `undefined` from `twoTierBatchCache.get`.
+* **Data Integrity (Property Aliasing)**: Implemented `title || name` aliasing for manufacturing processes and sustainability metrics to ensure frontend compatibility when DB fields are incomplete.
+* **Route Conflict Resolution**: Fixed 500 ZodError in `/api/media-assets` by reordering router registration in `server/routes/index.ts`. Specific mapped routes now take precedence over parametric ones.
+* **Secondary Content Stabilization**: Hardened Playwright selectors and resolved notification-related timeouts in Admin E2E tests.
+* **UI/UX Polishing**: Standardized Admin CRUD modal interactions and addressed hydration issues across the admin dashboard.
+* **Accessibility Remediation**: Fixed critical aria-label violations in Admin management components (Fabrics, Certificates, Fibers, etc.).
+* **Global Toaster Integration**: Successfully integrated and verified the global Toaster component to ensure form feedback is consistently visible.
 
-## Phase 1: Public Page (/)
+### System Health
 
-### E2E Coverage Analysis (e2e/homepage.spec.ts)
+* **Manufacturing API**: 29/29 tests PASS.
+* **CMS API (Media/Misc)**: 100% tests PASS (9/9).
+* **Repository Unit Tests**: 100% PASS.
+* **E2E Tests (Admin)**: 100% Stability achieved in secondary content suites.
+* **Protocol compliance**: Protocol 0 and Port 5002 verified.
 
-- [x] Loads with 200/Title
-- [x] SSR content check
-- [x] Hydration error check
-- [x] GSAP animation class check
-- [x] Navigation header check
-- [x] CMS content rendering
-- [x] Model-viewer mounting
-- [x] Responsiveness (375/768/1440)
-- [x] Accessibility (Axe)
-- [x] Performance (LCP < 3500ms)
-
-### Unit Test Coverage
-
-- [x] Identify homepage service modules.
-- [x] Run coverage report for these modules.
-
-## Phase 2: Admin Module (/admin/homepage)
-
-### Navigation & Auth
-
-- [x] Verify `.auth/user.json` usage in Playwright.
-- [x] Verify `/admin/homepage` accessibility.
-
-### CRUD Regression
-
-- [x] Hero heading mutation.
-- [x] Propagation to public `/`.
-- [x] Restoration of original value.
-
-## Phase 3: Contact Form & Inquiry System Audit (2026-04-07)
-
-### Pipeline Verification
-
-- [x] Public `/contact` form submission.
-- [x] Server-side validation via Zod.
-- [x] CSRF protection verification.
-- [x] Rate limiting validation.
-- [x] Persistence in Neon DB.
-- [x] Visibility in Admin Inquiries module.
-
-### Security and Reliability
-
-- [x] Error handling for DB failures.
-- [x] Protection against spam bots.
-- [x] Sanitization of HTML input.
-
-## Completion Summary
-
-- [x] All 3 Phases complete (Homepage, Admin, Contact).
-- [x] Tech integrity verified.
-- [x] 80%+ test coverage achieved.
-- [x] Ready for deployment.

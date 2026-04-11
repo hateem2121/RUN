@@ -12,7 +12,10 @@ import express, {
 import helmet from "helmet";
 import { logger } from "../lib/monitoring/logger.js";
 import { csrfProtection } from "../middleware/csrf.js";
-import { productionErrorHandler } from "../middleware/production-error-handler.js";
+import {
+  productionErrorHandler,
+  setupGlobalErrorHandlers,
+} from "../middleware/production-error-handler.js";
 import { requestSanitization } from "../middleware/sanitization.js";
 import { authService } from "../services/auth-service.js";
 
@@ -143,6 +146,9 @@ export function setupErrorHandling(app: Express) {
   // Primary error handler: ZodError → 400, AppError → structured response
   // Express 5 natively propagates async errors to this handler.
   app.use(productionErrorHandler);
+
+  // Setup global process error handlers (uncaughtException, unhandledRejection)
+  setupGlobalErrorHandlers();
 }
 
 /**

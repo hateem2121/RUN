@@ -16,7 +16,7 @@ export const MediaListQuerySchema = z.object({
 });
 
 export const MediaIdParamSchema = z.object({
-  id: z.coerce.number().positive(),
+  id: z.string().regex(/^\d+$/, "ID must be a numeric string").transform(Number),
 });
 
 export const MediaUploadParamSchema = z.object({

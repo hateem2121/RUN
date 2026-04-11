@@ -270,6 +270,7 @@ export default function Fibers() {
                             className="transition-transform duration-200 hover:-translate-y-1"
                           >
                             <Card
+                              data-testid="fiber-card"
                               className="h-full cursor-pointer transition-shadow-sm hover:shadow-lg"
                               onClick={() => toggleExpanded(fiber.id)}
                             >

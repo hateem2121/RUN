@@ -181,7 +181,7 @@ router.get("/health-scan", authService.requireAdmin, getHealthScan);
 router.get("/cache/stats", authService.requireAdmin, getCacheStats);
 
 // Rate Limiter Monitoring (Development only)
-router.get("/rate-limiter/stats", (_req, res) => {
+router.get("/media/rate-limiter/stats", (_req, res) => {
   if (process.env.NODE_ENV === "production") {
     return res.status(404).json({ error: "Not found" });
   }

@@ -1,5 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { productRepository, systemRepository, mediaRepository, miscRepository } from "../../../lib/db/repositories/index.js";
+import {
+  mediaRepository,
+  miscRepository,
+  productRepository,
+  systemRepository,
+} from "../../../lib/db/repositories/index.js";
 import { adminService } from "../admin.service";
 import type { AuditContext } from "../admin.service.js";
 
@@ -25,7 +30,7 @@ vi.mock("../../../lib/db/repositories/index.js", () => ({
   },
   miscRepository: {
     getFabrics: vi.fn(),
-  }
+  },
 }));
 
 vi.mock("../../../lib/resilience/request-timeout", () => ({
@@ -68,7 +73,10 @@ describe("AdminService", () => {
         action: "UPDATE",
         tableName: "products",
         recordId: "1",
-        user: { id: "user-1", claims: { email: "admin@test.com" } } as unknown as AuditContext["user"],
+        user: {
+          id: "user-1",
+          claims: { email: "admin@test.com" },
+        } as unknown as AuditContext["user"],
         ipAddress: "127.0.0.1",
       };
 
@@ -87,9 +95,13 @@ describe("AdminService", () => {
 
   describe("getInitialProductsData", () => {
     it("returns processed dashboard data", async () => {
-      vi.mocked(productRepository.getProductsIncludingDeleted).mockResolvedValue([{ id: 1, name: "Product 1", slug: "p1", isActive: true }] as any);
+      vi.mocked(productRepository.getProductsIncludingDeleted).mockResolvedValue([
+        { id: 1, name: "Product 1", slug: "p1", isActive: true },
+      ] as any);
       vi.mocked(productRepository.getProductsCount).mockResolvedValue(1 as any);
-      vi.mocked(productRepository.getCategories).mockResolvedValue([{ id: 1, name: "Cat 1" }] as any);
+      vi.mocked(productRepository.getCategories).mockResolvedValue([
+        { id: 1, name: "Cat 1" },
+      ] as any);
       vi.mocked(miscRepository.getFabrics).mockResolvedValue([] as any);
       vi.mocked(mediaRepository.getMediaAssetsByIds).mockResolvedValue([] as any);
       vi.mocked(mediaRepository.getMediaAssets).mockResolvedValue([] as any);

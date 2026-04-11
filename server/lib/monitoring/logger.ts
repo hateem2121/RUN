@@ -82,7 +82,7 @@ class SmartLogger {
         return correlationId ? { correlationId } : {};
       },
       // Pretty printing in development
-      ...(isDevelopment
+      ...(isDevelopment && process.env.MOCK_LOGGER !== "true"
         ? {
             transport: {
               target: "pino-pretty",

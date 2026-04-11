@@ -45,7 +45,7 @@ const idParamSchema = z.object({
 
 router.get("/", async (req, res) => {
   // CHUNK 5: Two-tier cache with benchmarking
-  const { data: processes, benchmark } = await twoTierBatchCache.get(
+  const { data: processes, benchmark } = (await twoTierBatchCache.get(
     "manufacturing:processes",
     async () => {
       return await withTimeout(
@@ -55,26 +55,31 @@ router.get("/", async (req, res) => {
       );
     },
     { bypassCache: shouldBypassCache(req) },
-  );
+  )) || { data: [], benchmark: { hit: "MISS", totalTime: 0, l1Time: 0, l2Time: 0, dbTime: 0 } };
 
   // Log performance metrics
-  res.setHeader("X-Cache-Hit", benchmark.hit);
-  if (benchmark.hit !== "MISS") {
+  res.setHeader("X-Cache-Hit", benchmark?.hit || "MISS");
+  if (benchmark?.hit && benchmark.hit !== "MISS") {
     const cacheTime = benchmark.hit === "L1" ? benchmark.l1Time : benchmark.l2Time;
     logger.info(
       `[ManufacturingProcesses] ✅ ${benchmark.hit} HIT: ${
-        processes.length
+        processes?.length || 0
       } processes (${cacheTime?.toFixed(2)}ms)`,
     );
   } else {
     logger.info(
       `[ManufacturingProcesses] ⬆️ MISS + CACHED: ${
-        processes.length
-      } processes (${benchmark.dbTime?.toFixed(2)}ms)`,
+        processes?.length || 0
+      } processes (${benchmark?.dbTime?.toFixed(2)}ms)`,
     );
   }
 
-  return res.json(processes);
+  return res.json(
+    (processes || []).map((p) => ({
+      ...p,
+      title: p.title || p.name || "Untitled Process",
+    })),
+  );
 });
 
 router.get("/:id", async (req, res) => {

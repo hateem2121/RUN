@@ -32,6 +32,10 @@ vi.mock("../../lib/storage-singleton.js", () => {
   };
   return {
     getStorage: () => mockStorage,
+    StorageSingleton: {
+      hasInstance: () => true,
+      getInstance: () => mockStorage,
+    },
   };
 });
 
@@ -46,6 +50,13 @@ vi.mock("../../lib/cache/unified-cache.js", () => {
   return {
     UnifiedCache: {
       getInstance: () => mockCache,
+      TTL_PRESETS: {
+        SHORT: 300,
+        MEDIUM: 1800,
+        LONG: 3600,
+        MEDIA: 21600,
+        STATIC: 86400,
+      },
     },
     unifiedCache: mockCache,
   };
@@ -120,7 +131,7 @@ describe("Product Integration Tests", () => {
       const response = await request(app).get("/api/products?search=shirt");
 
       expect(response.status).toBe(200);
-      expect(storage.searchProducts).toHaveBeenCalledWith("shirt", 20, 0);
+      expect(storage.searchProducts).toHaveBeenCalledWith("shirt", {}, 20, 0);
     });
   });
 

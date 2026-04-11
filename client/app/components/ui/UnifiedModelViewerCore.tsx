@@ -133,9 +133,7 @@ export function UnifiedModelViewer({
           // Reset to initial state and reapply src after brief delay
           setTimeout(() => {
             if (modelViewerRef.current && asset) {
-              const modelUrl =
-                MediaUrlBuilder.buildModelUrlSafe(asset.id, asset) ||
-                `/api/media/${asset.id}/content`;
+              const modelUrl = MediaUrlBuilder.buildModelUrlSafe(asset.id, asset);
 
               setLoadingState((prev) => ({ ...prev, status: "loading" }));
               modelViewerRef.current.src = modelUrl; // Reapply the source
@@ -610,8 +608,7 @@ export function UnifiedModelViewer({
         modelUrl = optimizedModelUrl;
       } else {
         // Priority 3: Fallback to network URL
-        modelUrl =
-          MediaUrlBuilder.buildModelUrlSafe(asset.id, asset) || `/api/media/${asset.id}/content`;
+        modelUrl = MediaUrlBuilder.buildModelUrlSafe(asset.id, asset);
       }
 
       // Set src programmatically to avoid React/Lit element conflicts
@@ -699,7 +696,10 @@ export function UnifiedModelViewer({
     try {
       onInteraction?.("download-start", { asset });
 
-      const response = await fetch(`/api/media/${asset.id}/download`);
+      const contentUrl = MediaUrlBuilder.buildContentUrl(asset.id);
+      if (!contentUrl) throw new Error("Invalid asset ID for download");
+      const downloadUrl = contentUrl.replace("/content", "/download");
+      const response = await fetch(downloadUrl);
       if (!response.ok) {
         throw new Error("Download failed");
       }

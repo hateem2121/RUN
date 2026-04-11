@@ -100,6 +100,7 @@ const AccessoryList = ({
       {activeAccessories.map((accessory) => (
         <div
           key={accessory.id}
+          data-testid="accessory-card"
           className="glass-premium group rounded-lg border border-white/10 p-4 transition-all duration-200 hover:border-purple-400/50"
         >
           <div className="mb-3 flex items-start justify-between">

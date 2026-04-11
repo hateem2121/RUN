@@ -146,6 +146,7 @@ function SortableProcessItem({
             <Edit className="h-4 w-4" />
           </Button>
           <DeleteConfirmationDialog
+            asChild
             onConfirm={() => onDelete(process.id)}
             title="Delete Process"
             description="Are you sure you want to delete this manufacturing process? This action cannot be undone."
@@ -237,7 +238,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
 
   const finalSelectedProcessMedia = [
     ...selectedProcessMedia,
-    ...(specificProcessMedia || []),
+    ...(Array.isArray(specificProcessMedia) ? specificProcessMedia : []),
   ].filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
 
   const resetProcessForm = () => {
@@ -363,7 +364,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                 <div className="h-2 w-2 animate-bounce rounded-full bg-[#D4A853]"></div>
               </div>
               <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
-                Initialising Processes...
+                Orchestrating Processes Tab...
               </p>
             </div>
           ) : processes.length === 0 ? (
@@ -665,12 +666,14 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                         <button
                           type="button"
                           onClick={() => setShowProcessImagePicker(true)}
+                          data-testid="select-process-media"
                           className="flex items-center justify-center gap-2 h-[66px] rounded-xl border-2 border-dashed border-white/5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/10 transition-all group"
                         >
                           <Plus className="size-4 text-[#68869A] group-hover:text-[#D4A853] transition-colors" />
                           <span className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest group-hover:text-white transition-colors">
                             Add Asset
                           </span>
+                          <span className="sr-only">Select Process Media</span>
                         </button>
                       </div>
                     </div>

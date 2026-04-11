@@ -39,6 +39,89 @@ export async function setupTestApp(storage?: MemoryStorage) {
     StorageSingleton.setInstance(testStorage);
     // Clear admin cache to ensure fresh state for each test run
     adminCacheManager.clear();
+
+    // Baseline Data Seeding for common endpoints in api-audit.test.ts
+    // -------------------------------------------------------------------------
+
+    // Seeding Certificates
+    await testStorage.createCertificate({
+      name: "Global Recycled Standard (GRS)",
+      description: "Certifying recycled content",
+      imageId: null,
+      isActive: true,
+      sortOrder: 0,
+    });
+
+    // Seeding Fabrics
+    await testStorage.createFabric({
+      name: "AERO-CORE Performance Mesh",
+      description: "Lightweight moisture-wicking fabric",
+      materials: "100% Recycled Polyester",
+      weight: "120gsm",
+      features: ["Breathable", "Anti-odor"],
+      imageId: null,
+      isActive: true,
+      sortOrder: 0,
+    });
+
+    // Seeding Fibers
+    await testStorage.createFiber({
+      name: "Recycled Polyester",
+      description: "Post-consumer waste transformation",
+      imageId: null,
+      isActive: true,
+      sortOrder: 0,
+    });
+
+    // Seeding Size Charts
+    await testStorage.createSizeChart({
+      name: "Standard Size Chart",
+      specification: {
+        tables: [{ title: "Tops", rows: [], columns: [] }],
+      },
+      isActive: true,
+      sortOrder: 0,
+    });
+
+    // Seeding About Page Content
+    await testStorage.updateAboutHero({
+      title: "Our Story",
+      subtitle: "Heritage of Excellence",
+      imageId: null,
+      isActive: true,
+    });
+
+    await testStorage.createAboutTimelineEntry({
+      year: "1889",
+      title: "The Beginning",
+      description: "Durus Industries founded",
+      imageId: null,
+      isActive: true,
+    });
+
+    await testStorage.createAboutMapLocation({
+      name: "Sialkot Facility",
+      city: "Sialkot",
+      country: "Pakistan",
+      coordinates: { lat: 32.49, lng: 74.52 },
+      type: "Manufacturing",
+      isActive: true,
+    });
+
+    await testStorage.createAboutSection({
+      title: "Craftsmanship",
+      content: "Deeply rooted in Sialkot's tradition of precision manufacturing.",
+      imageId: null,
+      isActive: true,
+      sortOrder: 0,
+    });
+
+    await testStorage.createAboutStatistic({
+      label: "Years of Experience",
+      value: "135+",
+      isActive: true,
+      sortOrder: 0,
+    });
   }
 
   // Global test middleware
