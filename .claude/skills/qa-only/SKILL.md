@@ -1,0 +1,1 @@
+/Users/hateemjamshaid/Sites/RUN/.claude/worktrees/quirky-wiles/.claude/skills/gstack/qa-only/SKILL.md
