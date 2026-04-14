@@ -806,17 +806,25 @@ export class MemoryStorage implements IStorage {
     const products = Array.from(this.products.values()).filter((p) => p.isActive && !p.deletedAt);
     const startIndex = cursor ? Number.parseInt(cursor, 10) : 0;
     const paginated = products.slice(startIndex, startIndex + limit);
-    const nextCursor = startIndex + limit < products.length ? (startIndex + limit).toString() : null;
+    const nextCursor =
+      startIndex + limit < products.length ? (startIndex + limit).toString() : null;
 
     return {
       products: paginated as unknown as ProductSummary[],
       nextCursor,
     };
   }
-  async getFeaturedProducts(): Promise<ProductSummary[]> {
+  async getFeaturedProducts(limit = 100, offset = 0): Promise<ProductSummary[]> {
+    const all = Array.from(this.products.values()).filter(
+      (p) => p.isActive && !p.deletedAt && p.isFeatured,
+    );
+    return all.slice(offset, offset + limit) as unknown as ProductSummary[];
+  }
+
+  async getFeaturedProductsCount(): Promise<number> {
     return Array.from(this.products.values()).filter(
       (p) => p.isActive && !p.deletedAt && p.isFeatured,
-    ) as unknown as ProductSummary[];
+    ).length;
   }
   async searchProducts(
     query: string,
@@ -1359,7 +1367,6 @@ export class MemoryStorage implements IStorage {
       teamMessage: await this.getAboutTeamMessage(),
     };
   }
-
 
   // Sustainability Repository - Stubs
   async getSustainabilityHero(): Promise<SustainabilityHero | undefined> {

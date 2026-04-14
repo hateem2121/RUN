@@ -2,18 +2,22 @@
 
 ## Active Tasks
 
-* **Sprint Syncing**: Synchronizing all current changes from the secondary content stabilization and admin testing sprint with GitHub.
-* **Manufacturing/SWR Stabilization**: Resolving `TypeError` in batch endpoints, fixing test regressions, and cleaning up stale docs.
-* **Homepage/Sustainability Alignment**: Auditing and aligning batch endpoints for consistency.
-* **Testing Suite Expansion**: Reached 100% stability in secondary content E2E tests.
-* **Documentation Hygiene**: Removing stale remediation documents and junk files.
-
+*All 10 code review findings resolved. Ready for next sprint.*
 
 ---
 
 ## Current Sprint Backlog
 
-*Fresh slate starting 2026-04-07. Ready for new tasks.*
+**Completed 2026-04-14: 5-Lens Review Remediation**
+- Rate limiter stub replaced with production `createRateLimiter()` middleware
+- Featured products pagination moved to DB-level LIMIT/OFFSET
+- Webhook `z.any()` removed — typed with `WebhookPayloadMap` discriminated union
+- Homepage batch stale comment rewritten; `(p: any)` cast replaced with `HomepageProcessCard`
+- Slug validation added to admin check-slug endpoint
+- Redundant `as string` casts removed from products route
+- CustomDropdown focus return fixed for Tab/Escape
+- Tailwind V4 arbitrary opacity values tokenized via `@utility`
+- Tech debt documented in `findings.md`: 3 monolithic files (1,235/1,120/2,367 LOC)
 
 ---
 
@@ -30,3 +34,4 @@
 * **Batch Endpoint Latency**: Verified caching behavior and fallback resilience.
 * **Protocol compliance**: Protocol 0 and Port 5002 verified.
 * **Testing Coverage**: Identified gaps in Fabrics, Accessories, Size Charts, and Media Asset management modules. |
+| 2026-04-14 (Session 7 — 5-Lens Review Remediation) | 10 code review findings resolved: rate limiter stub, featured products pagination, webhook z.any(), stale comment, (p: any) cast, slug validation, as string casts, CustomDropdown focus, Tailwind arbitrary values, tech debt docs. Tests: 63/63 product-repo, 51/51 services. |

@@ -7,6 +7,8 @@ import { registerShutdownHook } from "../shutdown-manager.js";
 const CHANNEL = "admin_cache_clear";
 let listenerClient: Client | null = null;
 let reconnectTimer: NodeJS.Timeout | null = null;
+let connectionState: "stopped" | "connecting" | "connected" | "reconnecting" = "stopped";
+let started = false;
 
 export const adminNotifier = {
   /**
@@ -14,6 +16,11 @@ export const adminNotifier = {
    * Uses a dedicated PG connection because LISTEN/NOTIFY requires it.
    */
   async start() {
+    if (started) {
+      logger.warn("[AdminNotifier] start() called twice — ignoring. Call stop() first to restart.");
+      return;
+    }
+    started = true;
     // CRITICAL: LISTEN/NOTIFY requires a direct connection. Pooled connections (port 6543)
     // in transaction mode will fail or hang.
     const connectionString = dbConfig.directUrl;
@@ -42,6 +49,7 @@ export const adminNotifier = {
     let retryCount = 0;
 
     const connect = async () => {
+      connectionState = "connecting";
       try {
         listenerClient = new Client({
           connectionString,
@@ -50,6 +58,7 @@ export const adminNotifier = {
         });
 
         await listenerClient.connect();
+        connectionState = "connected";
 
         listenerClient.on("notification", (msg) => {
           if (msg.channel === CHANNEL) {
@@ -65,11 +74,13 @@ export const adminNotifier = {
         });
 
         listenerClient.on("error", (err) => {
+          connectionState = "reconnecting";
           logger.error("[AdminNotifier] Listener connection error:", err);
           scheduleReconnect();
         });
 
         listenerClient.on("end", () => {
+          connectionState = "reconnecting";
           logger.warn("[AdminNotifier] Listener connection ended");
           scheduleReconnect();
         });
@@ -78,6 +89,7 @@ export const adminNotifier = {
         logger.info("[AdminNotifier] ✅ Listening for real-time cache invalidation");
         retryCount = 0; // Reset on success
       } catch (err) {
+        connectionState = "reconnecting";
         logger.error("[AdminNotifier] Startup failed:", err);
         scheduleReconnect();
       }
@@ -106,6 +118,9 @@ export const adminNotifier = {
    * Stop listening and close connection
    */
   async stop() {
+    started = false;
+    connectionState = "stopped";
+
     if (reconnectTimer) {
       clearTimeout(reconnectTimer);
       reconnectTimer = null;
@@ -119,6 +134,7 @@ export const adminNotifier = {
         logger.info("[AdminNotifier] Listener stopped.");
       } catch (err) {
         logger.error("[AdminNotifier] Error stopping listener:", err);
+        listenerClient = null;
       }
     }
   },
@@ -134,19 +150,22 @@ export const adminNotifier = {
     }
 
     const payload = userId || "ALL";
-    const query = `NOTIFY ${CHANNEL}, '${payload}'`;
 
     try {
-      // If listener is active, use it. Otherwise create one-off.
-      if (listenerClient) {
-        await listenerClient.query(query);
+      // Use parameterized pg_notify to prevent NOTIFY injection via single-quote in payload
+      const safeQuery = "SELECT pg_notify($1, $2)";
+      const params = [CHANNEL, payload];
+
+      // Only use listenerClient when connection is confirmed stable
+      if (listenerClient && connectionState === "connected") {
+        await listenerClient.query(safeQuery, params);
       } else {
         const tempClient = new Client({
           connectionString,
           ssl: dbConfig.ssl,
         });
         await tempClient.connect();
-        await tempClient.query(query);
+        await tempClient.query("SELECT pg_notify($1, $2)", params);
         await tempClient.end();
       }
       logger.info(`[AdminNotifier] Broadcasted invalidation for ${payload}`);

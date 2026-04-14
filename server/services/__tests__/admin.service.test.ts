@@ -77,11 +77,11 @@ describe("AdminService", () => {
   });
 
   const mockAuditContext = {
-    user: { 
-      id: "user-1", 
-      email: "admin@example.com", 
+    user: {
+      id: "user-1",
+      email: "admin@example.com",
       role: "admin",
-      claims: { sub: "user-1", email: "admin@example.com" }
+      claims: { sub: "user-1", email: "admin@example.com" },
     } as unknown as SessionUser,
     userAgent: "Mozilla/5.0",
     ipAddress: "127.0.0.1",
@@ -93,10 +93,10 @@ describe("AdminService", () => {
         action: "UPDATE",
         tableName: "products",
         recordId: "123",
-        user: { 
-          id: "u1", 
+        user: {
+          id: "u1",
           email: "test@example.com",
-          claims: { sub: "u1", email: "test@example.com" }
+          claims: { sub: "u1", email: "test@example.com" },
         } as unknown as SessionUser,
         ipAddress: "127.0.0.1",
         userAgent: "test-agent",

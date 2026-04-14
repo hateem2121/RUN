@@ -1,7 +1,7 @@
-import { beforeAll, describe, expect, it } from "vitest";
-import request from "supertest";
-import { setupTestApp } from "../test-utils.js";
 import type { Express } from "express";
+import request from "supertest";
+import { beforeAll, describe, expect, it } from "vitest";
+import { setupTestApp } from "../test-utils.js";
 
 describe("API Integrity Audit", () => {
   let app: Express;
@@ -28,7 +28,7 @@ describe("API Integrity Audit", () => {
       // We allow 200 (success) or 404 (if no content exists in memory storage)
       // but the main goal is that it doesn't 500
       expect([200, 404]).toContain(res.status);
-      
+
       if (res.status === 200) {
         expect(res.body).toBeDefined();
         if (Array.isArray(res.body)) {

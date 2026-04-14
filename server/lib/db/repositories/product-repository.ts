@@ -916,9 +916,9 @@ export class ProductRepository {
     return await this.getProducts();
   }
 
-  async getFeaturedProducts(): Promise<ProductSummary[]> {
+  async getFeaturedProducts(limit = 100, offset = 0): Promise<ProductSummary[]> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().getFeaturedProducts();
+      return StorageSingleton.getInstance().getFeaturedProducts(limit, offset);
     }
     const rows = await db
       .select({
@@ -932,13 +932,35 @@ export class ProductRepository {
       .where(
         and(eq(products.isFeatured, true), eq(products.isActive, true), isNull(products.deletedAt)),
       )
-      .orderBy(desc(products.createdAt));
+      .orderBy(desc(products.createdAt))
+      .limit(limit)
+      .offset(offset);
 
     return rows.map((row) => ({
       ...row,
       category: row.categoryName ? { name: row.categoryName } : null,
       primaryImage: row.primaryImageUrl ? { url: row.primaryImageUrl } : null,
     })) as unknown as ProductSummary[];
+  }
+
+  async getFeaturedProductsCount(): Promise<number> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getFeaturedProductsCount();
+    }
+    const cacheKey = "products:count:featured";
+    const cached = await unifiedCache.get<number>(cacheKey);
+    if (cached !== null && cached !== undefined) {
+      return cached;
+    }
+    const result = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(products)
+      .where(
+        and(eq(products.isFeatured, true), eq(products.isActive, true), isNull(products.deletedAt)),
+      );
+    const count = result[0]?.count ?? 0;
+    await unifiedCache.set(cacheKey, count, PRODUCT_CACHE_TTL);
+    return count;
   }
 
   async searchProducts(

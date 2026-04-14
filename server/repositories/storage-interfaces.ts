@@ -1,11 +1,11 @@
 import type {
-  type AboutBatchResponse,
-  type AboutHero,
-  type AboutMapLocation,
-  type AboutSection,
-  type AboutStatistic,
-  type AboutTeamMessage,
-  type AboutTimelineEntry,
+  AboutBatchResponse,
+  AboutHero,
+  AboutMapLocation,
+  AboutSection,
+  AboutStatistic,
+  AboutTeamMessage,
+  AboutTimelineEntry,
   Accessory,
   AnimationError,
   AuditLog,
@@ -277,7 +277,8 @@ export interface IProductRepository {
   getProductsByTag(tag: string, limit?: number, offset?: number): Promise<ProductSummary[]>;
   getRelatedProducts(productId: number): Promise<ProductSummary[]>;
   getActiveProducts(): Promise<ProductSummary[]>;
-  getFeaturedProducts(): Promise<ProductSummary[]>;
+  getFeaturedProducts(limit?: number, offset?: number): Promise<ProductSummary[]>;
+  getFeaturedProductsCount(): Promise<number>;
   searchProducts(
     query: string,
     filters?: { categoryId?: number; isActive?: boolean; isFeatured?: boolean },

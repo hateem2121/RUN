@@ -1,7 +1,11 @@
 import { integer, jsonb, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
+import type { Category } from "./categories";
 import { pgTable } from "./common";
+import type { Inquiry } from "./content/common";
+import type { MediaAsset } from "./media";
+import type { ProductDetail } from "./products";
 
 /**
  * Webhook Subscriptions Table
@@ -51,9 +55,41 @@ export const insertWebhookSubscriptionSchema = z.object({
   isActive: z.enum(["Y", "N"]).optional(),
 });
 
+export const webhookEventNames = [
+  "product.created",
+  "product.updated",
+  "product.deleted",
+  "category.created",
+  "category.updated",
+  "category.reordered",
+  "category.deleted",
+  "category.restored",
+  "media.uploaded",
+  "media.updated",
+  "media.deleted",
+  "inquiry.created",
+] as const;
+
+export type WebhookEventName = (typeof webhookEventNames)[number];
+
+export interface WebhookPayloadMap {
+  "product.created": ProductDetail;
+  "product.updated": ProductDetail;
+  "product.deleted": { id: number };
+  "category.created": Category;
+  "category.updated": Category;
+  "category.reordered": { count: number };
+  "category.deleted": { id: number; permanent?: boolean };
+  "category.restored": { id: number };
+  "media.uploaded": MediaAsset;
+  "media.updated": MediaAsset;
+  "media.deleted": { id: number };
+  "inquiry.created": Inquiry;
+}
+
 export const webhookEventSchema = z.object({
   id: z.string(),
   event: z.string(),
-  payload: z.any(),
+  payload: z.record(z.string(), z.unknown()),
   timestamp: z.string(),
 });

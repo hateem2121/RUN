@@ -103,15 +103,15 @@ router.get("/", async (req, res) => {
     hero: batchData?.hero || null,
     metrics: (batchData?.metrics || []).map((m) => ({
       ...m,
-      title: (m as any).title || m.name || "Untitled Metric",
+      title: m.name || "Untitled Metric",
     })),
     initiatives: (batchData?.initiatives || []).map((i) => ({
       ...i,
-      title: i.title || (i as any).name || "Untitled Initiative",
+      title: i.title || "Untitled Initiative",
     })),
     goals: (batchData?.goals || []).map((g) => ({
       ...g,
-      title: g.title || (g as any).name || "Untitled Goal",
+      title: g.title || "Untitled Goal",
     })),
     certificates: batchData?.certificates || [],
     fabrics: batchData?.fabrics || [],

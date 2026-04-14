@@ -3,23 +3,16 @@
  * Page-specific aggregated data endpoint for Homepage
  * Relocated from modules/ to resources/ for consistent architecture (October 15, 2025)
  *
- * HTTP CACHE-BUSTING IMPLEMENTATION (October 15, 2025):
- * Batch endpoint includes Cache-Control headers to prevent 304 Not Modified responses.
- * This ensures admin changes appear immediately in frontend without hard refresh.
+ * Caching strategy (stale-while-revalidate):
+ * - Cache hit:  Cache-Control: public, s-maxage=60, stale-while-revalidate=3600
+ * - Cache miss: Cache-Control: public, s-maxage=0, stale-while-revalidate=60
+ * - Visitor:    Cache-Control: public, s-maxage=60, stale-while-revalidate=3600
  *
- * Modified GET endpoint with cache-busting headers:
- * ✅ GET /api/homepage-batch - Aggregated homepage data (stale-while-revalidate pattern)
- *
- * Cache-busting headers applied:
- * - Cache-Control: no-cache, no-store, must-revalidate
- * - Pragma: no-cache
- * - Expires: 0
- *
- * Note: Headers applied in BOTH stale-return and fresh-return code paths.
- * Server-side caching (UnifiedCache) remains active for performance.
+ * Server-side two-tier batch cache (UnifiedCache) remains active for performance.
  */
 
 import express from "express";
+import type { HomepageProcessCard } from "../../../shared/schemas/content/home.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { pageContentRepository, productRepository } from "../../lib/db/repositories/index.js";
@@ -35,8 +28,11 @@ const router = express.Router();
 router.get("/homepage-batch", async (req, res) => {
   const startTime = performance.now();
 
-  // Support forced refresh for debugging
-  const bypassCache = req.query.refresh === "1" || req.headers["cache-control"] === "no-cache";
+  // Support forced refresh for authenticated admins only — unauthenticated bypass is a DoS vector
+  const isAdmin =
+    (req as { session?: { user?: { role?: string } } }).session?.user?.role === "admin";
+  const bypassCache =
+    req.query.refresh === "1" || (isAdmin && req.headers["cache-control"] === "no-cache");
 
   if (bypassCache) {
     logger.debug("[Homepage Batch] Force refresh requested - invalidating all caches");
@@ -99,9 +95,12 @@ router.get("/homepage-batch", async (req, res) => {
 
   // CHUNK 5: Log performance metrics and benchmark results
   res.setHeader("X-Cache-Hit", benchmark.hit);
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
+  // Conditional Cache-Control: serve CDN-friendly headers on cache hits, origin-only on misses
+  if (benchmark.hit !== "MISS") {
+    res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=3600");
+  } else {
+    res.setHeader("Cache-Control", "public, s-maxage=0, stale-while-revalidate=60");
+  }
 
   if (benchmark.hit !== "MISS") {
     const cacheTime = benchmark.hit === "L1" ? benchmark.l1Time : benchmark.l2Time;
@@ -121,15 +120,19 @@ router.get("/homepage-batch", async (req, res) => {
     }
   }
 
+  if (!batchData) {
+    return res.status(503).json({ error: "Homepage data temporarily unavailable" });
+  }
+
   // ALIGNMENT: Provide defensive fallbacks and property aliases for process cards
   return res.json({
     ...batchData,
     processCards: batchData?.processCards
       ? {
           ...batchData.processCards,
-          result: (batchData.processCards.result || []).map((p: any) => ({
+          result: (batchData.processCards.result || []).map((p: HomepageProcessCard) => ({
             ...p,
-            title: p.title || p.name || "Untitled Process",
+            title: p.title || "Untitled Process",
           })),
         }
       : { result: [], timestamp: new Date().toISOString() },
@@ -176,7 +179,10 @@ router.get("/performance-monitoring", async (_req, res) => {
 // CHUNK 5: Separate process cards endpoint with two-tier cache
 // Process cards are slower, so we split them for lazy loading
 router.get("/homepage-process-cards", async (req, res) => {
-  const bypassCache = req.query.refresh === "1" || req.headers["cache-control"] === "no-cache";
+  // Apply same admin-only bypass guard as /homepage-batch — unauthenticated refresh=1 is a DoS vector
+  const isAdmin =
+    (req as { session?: { user?: { role?: string } } }).session?.user?.role === "admin";
+  const bypassCache = isAdmin && (req.query.refresh === "1" || req.headers["cache-control"] === "no-cache");
 
   // PHASE 2A TASK 7: Two-tier cache with SWR
   const { data, benchmark } = (await twoTierBatchCache.get(
@@ -203,6 +209,10 @@ router.get("/homepage-process-cards", async (req, res) => {
     logger.debug(`[Process Cards] ✅ ${benchmark.hit} HIT (${cacheTime?.toFixed(2)}ms)`);
   } else {
     logger.debug(`[Process Cards] ⬆️ MISS + CACHED (${benchmark.dbTime?.toFixed(2)}ms)`);
+  }
+
+  if (!data) {
+    return res.status(503).json({ error: "Process cards temporarily unavailable" });
   }
 
   res.json(data);

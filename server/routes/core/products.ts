@@ -15,8 +15,15 @@ import { retryDbOperation } from "../../lib/db/db-retry.js";
 import { productRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { createRateLimiter } from "../../middleware/rateLimiter.js";
 import { webhookService } from "../../services/webhook-service.js";
-import { checkRateLimit, shouldBypassCache, validateIdParam } from "../../utils.js";
+import { shouldBypassCache, validateIdParam } from "../../utils.js";
+
+const writeRateLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 50,
+  message: "Too many write requests. Please try again later.",
+});
 
 // import { UnifiedCache } from "../../lib/cache/unified-cache.js";
 
@@ -260,8 +267,8 @@ router.get("/products", async (req, res): Promise<undefined | Response> => {
   const { category, active, featured, tag, search, page, limit } = query;
 
   // Parse pagination parameters
-  const pageNum = parseInt(page as string, 10) || 1;
-  const pageSize = Math.min(parseInt(limit as string, 10) || 20, 100); // Max 100 items per page
+  const pageNum = Math.max(1, Number(page) || 1); // clamp: page=0 or page=-1 must not produce negative offset
+  const pageSize = Math.min(Number(limit) || 20, 100); // Max 100 items per page
   const offset = (pageNum - 1) * pageSize;
 
   let products: ProductSummary[] = [];
@@ -311,11 +318,13 @@ router.get("/products", async (req, res): Promise<undefined | Response> => {
       { operationName: "Count products by category" },
     );
   } else if (featured === "true") {
-    products = await retryDbOperation(() => productRepository.getFeaturedProducts(), {
-      operationName: "Get featured products",
+    products = await retryDbOperation(
+      () => productRepository.getFeaturedProducts(pageSize, offset),
+      { operationName: "Get featured products" },
+    );
+    totalCount = await retryDbOperation(() => productRepository.getFeaturedProductsCount(), {
+      operationName: "Count featured products",
     });
-    totalCount = products.length;
-    products = products.slice(offset, offset + pageSize);
   } else if (active === "true") {
     // CHUNK 27-R: Combined query with window function - 40% faster (one query instead of two)
     const result = await retryDbOperation(
@@ -462,19 +471,11 @@ import { requireRole } from "../../middleware/rbac.js";
 router.post(
   "/products",
   requireRole("admin"),
+  writeRateLimiter,
   validateRequest({
     body: insertProductSchema,
   }),
   async (req, res): Promise<void> => {
-    // Rate limiting check
-    if (!checkRateLimit()) {
-      res.status(429).json({
-        success: false,
-        error: { message: "Too many requests. Please try again later." },
-      });
-      return;
-    }
-
     // Input sanitization handled by middleware and Zod schema
     const validatedData = req.body;
 
