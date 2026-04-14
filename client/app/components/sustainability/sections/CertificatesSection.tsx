@@ -129,7 +129,7 @@ export function CertificatesSection({
     >
       {/* Hex pattern SVG background */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <svg className="absolute w-full h-full opacity-[0.05]" height="100%" width="100%">
+        <svg className="absolute w-full h-full opacity-faint" height="100%" width="100%">
           <defs>
             <pattern height="40" id="hex-cert-pattern" patternUnits="userSpaceOnUse" width="40">
               <path

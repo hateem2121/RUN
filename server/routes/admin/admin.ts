@@ -9,6 +9,7 @@ import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
 import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { normalizeSlug } from "../../lib/utilities/slug-utils.js";
 import { adminService } from "../../services/admin/index.js";
 import { authService } from "../../services/auth-service.js";
 import { getAuditContext } from "../../utils/request-context.js";
@@ -90,12 +91,15 @@ router.patch("/products/:id", authService.requireAdmin, async (req, res) => {
 // GET /products/check-slug - Check slug availability
 // IMPORTANT: This route MUST be before /products/:id to avoid catching "check-slug" as an :id param
 router.get("/products/check-slug", authService.requireAdmin, async (req, res) => {
-  const slug = req.query.slug as string;
-  if (!slug) {
-    return res.status(400).json({ error: "slug query parameter is required" });
-  }
-  const excludeId = req.query.excludeId ? parseInt(req.query.excludeId as string, 10) : undefined;
-  const result = await adminService.checkSlugAvailability(slug, excludeId);
+  const slugQuery = z
+    .object({
+      slug: z.string().min(1).max(200),
+      excludeId: z.coerce.number().int().positive().optional(),
+    })
+    .parse(req.query);
+
+  const slug = normalizeSlug(slugQuery.slug);
+  const result = await adminService.checkSlugAvailability(slug, slugQuery.excludeId);
   return res.json(result);
 });
 

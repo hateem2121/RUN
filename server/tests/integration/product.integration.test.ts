@@ -18,6 +18,7 @@ vi.mock("../../lib/storage-singleton.js", () => {
     getProductByPath: vi.fn(),
     getCategories: vi.fn(),
     getFeaturedProducts: vi.fn(),
+    getFeaturedProductsCount: vi.fn(),
     getProductsCount: vi.fn(),
     getProductsSummary: vi.fn(),
     getProductsByCategory: vi.fn(),

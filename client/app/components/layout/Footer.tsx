@@ -97,13 +97,15 @@ const Footer: React.FC = () => {
           type="application/ld+json"
           // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data is server-controlled, not user input
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(footerConfig.structuredData),
+            // Escape </script> sequences to prevent script tag break-out (Node's JSON.stringify
+            // does not escape < or > by default, so </script> in a string value would be injected)
+            __html: JSON.stringify(footerConfig.structuredData).replace(/<\//g, "<\\/"),
           }}
         />
       )}
       {/* Blueprint Grid Background */}
       <div
-        className="bg-footer-grid pointer-events-none absolute inset-0 opacity-[0.03]"
+        className="bg-footer-grid pointer-events-none absolute inset-0 opacity-subtle"
         aria-hidden="true"
       />
 
@@ -326,7 +328,7 @@ const Footer: React.FC = () => {
       >
         <h1
           ref={textRef}
-          className="leading-none font-bold tracking-tighter opacity-[0.07] mix-blend-normal select-none will-change-transform dark:opacity-20 whitespace-nowrap text-[15.5vw]"
+          className="leading-none font-bold tracking-tighter opacity-muted-decoration mix-blend-normal select-none will-change-transform dark:opacity-20 whitespace-nowrap text-logotype"
         >
           RUN APPAREL
         </h1>

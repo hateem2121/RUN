@@ -199,11 +199,6 @@ export function validateAndSanitizeInput(input: unknown): unknown {
   return input;
 }
 
-export function checkRateLimit(): boolean {
-  // Simplified rate limiting - can be enhanced later
-  return true;
-}
-
 export function sanitizeString(str: string): string {
   return str.replace(/[<>]/g, "").trim();
 }
@@ -458,7 +453,6 @@ export default {
   prepareForValidation,
   cleanApiData,
   validateAndSanitizeInput,
-  checkRateLimit,
   sanitizeString,
   validateFilename,
   validateMediaId,

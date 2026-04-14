@@ -115,7 +115,10 @@ describe("AuthService", () => {
       };
       vi.mocked(adminCacheManager.get).mockReturnValue(null);
       const { userRepository } = await import("../../lib/db/repositories/index.js");
-      vi.mocked(userRepository.getUser).mockResolvedValue({ id: "user-123", isAdmin: false } as any);
+      vi.mocked(userRepository.getUser).mockResolvedValue({
+        id: "user-123",
+        isAdmin: false,
+      } as any);
 
       const result = await authService.verifyAdminAccess(mockUserWithMock);
 
@@ -246,7 +249,10 @@ describe("AuthService", () => {
     it("resets lock if it has expired", async () => {
       const pastDate = new Date(Date.now() - 1000);
       const { userRepository } = await import("../../lib/db/repositories/index.js");
-      vi.mocked(userRepository.getUserByEmail).mockResolvedValue({ id: "1", lockoutUntil: pastDate } as any);
+      vi.mocked(userRepository.getUserByEmail).mockResolvedValue({
+        id: "1",
+        lockoutUntil: pastDate,
+      } as any);
       vi.mocked(userRepository.updateUser).mockResolvedValue({} as any);
       const spySuccess = vi.spyOn(authService, "recordSuccessfulLogin");
 
@@ -259,7 +265,10 @@ describe("AuthService", () => {
   describe("upsertUser", () => {
     it("successfully upserts a user from Google profile", async () => {
       const { userRepository } = await import("../../lib/db/repositories/index.js");
-      vi.mocked(userRepository.upsertUser).mockResolvedValue({ id: "google-123", email: "test@gmail.com" } as any);
+      vi.mocked(userRepository.upsertUser).mockResolvedValue({
+        id: "google-123",
+        email: "test@gmail.com",
+      } as any);
 
       const profile = {
         id: "google-123",
@@ -602,7 +611,10 @@ describe("AuthService", () => {
 
     it("handles user with no previous failed attempts", async () => {
       const { userRepository } = await import("../../lib/db/repositories/index.js");
-      vi.mocked(userRepository.getUserByEmail).mockResolvedValue({ id: "1", failedLoginAttempts: undefined } as any);
+      vi.mocked(userRepository.getUserByEmail).mockResolvedValue({
+        id: "1",
+        failedLoginAttempts: undefined,
+      } as any);
       vi.mocked(userRepository.updateUser).mockResolvedValue({} as any);
 
       await authService.recordFailedLogin("test@example.com");

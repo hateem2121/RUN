@@ -1,5 +1,16 @@
-import { and, asc, count, desc, eq, getTableColumns, ilike, isNull, like, or, sql } from "drizzle-orm";
-import { StorageSingleton } from "../../storage-singleton.js";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  getTableColumns,
+  ilike,
+  isNull,
+  like,
+  or,
+  sql,
+} from "drizzle-orm";
 import {
   type Accessory,
   accessories,
@@ -39,6 +50,7 @@ import { emitCacheInvalidation } from "../../cache/cache-events.js";
 import { UnifiedCache } from "../../cache/unified-cache.js";
 import { decrypt, encrypt, getBlindIndex } from "../../encryption.js";
 import { logger } from "../../monitoring/logger.js";
+import { StorageSingleton } from "../../storage-singleton.js";
 import { dbCircuitBreaker } from "../db-circuit-breaker.js";
 
 const unifiedCache = UnifiedCache.getInstance();
@@ -181,10 +193,7 @@ export class MiscRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().restoreFiber(id);
     }
-    const result = await db
-      .update(fibers)
-      .set({ deletedAt: null })
-      .where(eq(fibers.id, id));
+    const result = await db.update(fibers).set({ deletedAt: null }).where(eq(fibers.id, id));
     return (result.rowCount ?? 0) > 0;
   }
 
@@ -632,10 +641,7 @@ export class MiscRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().restoreFabric(id);
     }
-    const result = await db
-      .update(fabrics)
-      .set({ deletedAt: null })
-      .where(eq(fabrics.id, id));
+    const result = await db.update(fabrics).set({ deletedAt: null }).where(eq(fabrics.id, id));
     return (result.rowCount ?? 0) > 0;
   }
 

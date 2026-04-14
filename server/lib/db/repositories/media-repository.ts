@@ -22,9 +22,9 @@ import { and, asc, desc, eq, ilike, inArray, isNull, or, sql } from "drizzle-orm
 import { db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../cache/cache-events.js";
 import { UnifiedCache } from "../../cache/unified-cache.js";
-import { StorageSingleton } from "../../storage-singleton.js";
 import { CacheInvalidationError, MediaNotFoundError } from "../../errors/media-errors.js";
 import { logger } from "../../monitoring/logger.js";
+import { StorageSingleton } from "../../storage-singleton.js";
 import { dbCircuitBreaker } from "../db-circuit-breaker.js";
 import { queryPerformanceMonitor } from "../query-performance.js";
 

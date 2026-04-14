@@ -17,14 +17,16 @@ import { productRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { normalizeSlug } from "../../lib/utilities/slug-utils.js";
+import { createRateLimiter } from "../../middleware/rateLimiter.js";
 import { authService } from "../../services/auth-service.js";
 import { webhookService } from "../../services/webhook-service.js";
-import {
-  checkRateLimit,
-  shouldBypassCache,
-  validateAndSanitizeInput,
-  validateIdParam,
-} from "../../utils.js";
+import { shouldBypassCache, validateAndSanitizeInput, validateIdParam } from "../../utils.js";
+
+const writeRateLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 50,
+  message: "Too many write requests. Please try again later.",
+});
 
 const router = Router();
 
@@ -373,14 +375,7 @@ router.get("/categories/:id", async (req, res) => {
 });
 
 // POST /api/categories
-router.post("/categories", authService.requireAdmin, async (req, res) => {
-  if (!checkRateLimit()) {
-    return res.status(429).json({
-      success: false,
-      error: { message: "Too many requests. Please try again later." },
-    });
-  }
-
+router.post("/categories", authService.requireAdmin, writeRateLimiter, async (req, res) => {
   if (req.body.name) req.body.name = validateAndSanitizeInput(req.body.name);
   if (req.body.slug) req.body.slug = validateAndSanitizeInput(req.body.slug);
   if (req.body.description) req.body.description = validateAndSanitizeInput(req.body.description);

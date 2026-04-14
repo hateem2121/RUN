@@ -1,5 +1,9 @@
 import crypto from "node:crypto";
-import type { WebhookSubscription } from "@shared/schemas/webhooks.js";
+import type {
+  WebhookEventName,
+  WebhookPayloadMap,
+  WebhookSubscription,
+} from "@shared/schemas/webhooks.js";
 import { webhookRepository } from "../lib/db/repositories/index.js";
 import { logger } from "../lib/monitoring/logger.js";
 
@@ -16,7 +20,10 @@ export class WebhookService {
    * @param event - The event name (e.g., 'product.created')
    * @param payload - The event data payload
    */
-  async trigger(event: string, payload: Record<string, unknown>): Promise<void> {
+  async trigger<E extends WebhookEventName>(
+    event: E,
+    payload: WebhookPayloadMap[E],
+  ): Promise<void> {
     try {
       const subscriptions = await webhookRepository.getWebhookSubscriptions();
 
