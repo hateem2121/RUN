@@ -125,8 +125,8 @@ vi.mock("../../services/auth-service.js", () => ({
   },
 }));
 
-vi.mock("../../lib/storage-singleton.js", () => ({
-  getStorage: vi.fn(() => ({
+vi.mock("../../lib/storage-singleton.js", () => {
+  const mockStorage = {
     getMediaAssets: vi.fn().mockResolvedValue([]),
     createAuditLog: vi.fn(),
     setAuditTrailEnabled: vi.fn(),
@@ -134,8 +134,16 @@ vi.mock("../../lib/storage-singleton.js", () => ({
     restoreCategory: vi.fn().mockResolvedValue(true),
     restoreProduct: vi.fn().mockResolvedValue(true),
     restoreMediaAsset: vi.fn().mockResolvedValue(true),
-  })),
-}));
+  };
+  return {
+    StorageSingleton: {
+      hasInstance: vi.fn().mockReturnValue(true),
+      getInstance: vi.fn().mockReturnValue(mockStorage),
+      setInstance: vi.fn(),
+    },
+    getStorage: vi.fn(() => mockStorage),
+  };
+});
 
 vi.mock("../../lib/resilience/request-timeout.js", () => ({
   withTimeout: (promise: Promise<unknown>) => promise,

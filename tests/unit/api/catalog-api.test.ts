@@ -172,6 +172,7 @@ vi.mock("../../../server/lib/db/repositories/index.js", () => {
       searchProducts: vi.fn().mockResolvedValue([mockProductSummary]),
       searchProductsCount: vi.fn().mockResolvedValue(1),
       getFeaturedProducts: vi.fn().mockResolvedValue([mockProductSummary]),
+      getFeaturedProductsCount: vi.fn().mockResolvedValue(1),
       getProductsByCategory: vi.fn().mockResolvedValue([mockProductSummary]),
       getProductsByCategoryCount: vi.fn().mockResolvedValue(1),
       getProductsByTag: vi.fn().mockResolvedValue([mockProductSummary]),

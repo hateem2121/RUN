@@ -32,10 +32,11 @@ vi.mock("../../../server/services/about.service.js", () => ({
   },
 }));
 
-// Mock Audit logging in repo if needed, but AdminService logs it internally via logAudit which usually calls auditRepo
-vi.mock("../../../server/lib/db/repositories/audit-repository.js", () => ({
-  auditRepository: {
-    logAudit: vi.fn().mockResolvedValue(true),
+// AdminService.logAudit() calls systemRepository.createAuditLog() — mock it to
+// prevent real Neon DB hits (the DB is missing the user_email_index column).
+vi.mock("../../../server/lib/db/repositories/system-repository.js", () => ({
+  systemRepository: {
+    createAuditLog: vi.fn().mockResolvedValue({ id: 1, action: "INSERT", tableName: "test", recordId: "1" }),
   },
 }));
 
