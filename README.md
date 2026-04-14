@@ -1,6 +1,6 @@
 # RUN Remix — The Agentic Sportswear Factory
 
-**Version:** 4.0.0 | **Port:** 5002 (Exclusively) | **Engine:** gstack | **Last Updated:** April 2026
+**Version:** 4.0.1 | **Port:** 5002 (Exclusively) | **Engine:** gstack | **Last Updated:** April 2026
 
 [![Node 24+](https://img.shields.io/badge/Node-24%2B-339933?logo=node.js)](https://nodejs.org)
 [![React 19](https://img.shields.io/badge/React-19.2.4-61DAFB?logo=react)](https://react.dev)

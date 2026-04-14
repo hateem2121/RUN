@@ -1,4 +1,4 @@
-# Constitution: AntiGravity System Invariants (v4.0.0)
+# Constitution: AntiGravity System Invariants (v4.0.1)
 
 ## 1. System Identity
 

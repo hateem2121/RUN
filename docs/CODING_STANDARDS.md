@@ -1,6 +1,6 @@
-# Project Coding Rules (v3.0.0)
+# Project Coding Rules (v4.0.1)
 
-**Last Updated:** February 2026  
+**Last Updated:** April 2026  
 **For:** RUN APPAREL CMS System  
 **Compliance Level:** Mandatory
 

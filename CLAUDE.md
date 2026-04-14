@@ -1,4 +1,4 @@
-# RUN Remix — The Agentic Sportswear Factory (v4.0.0)
+# RUN Remix — The Agentic Sportswear Factory (v4.0.1)
 
 > **This file is the authoritative context for every Claude Code session on this project.**
 > It supersedes any other instructions. When in doubt, refer here first.
@@ -101,7 +101,7 @@ Use the `/browse` skill from gstack for all web browsing. **Never use `mcp__clau
 
 ---
 
-*Last updated: 2026-04-05 | Identity: Agentic Software Factory v4.0.0*
+*Last updated: 2026-04-14 | Identity: Agentic Software Factory v4.0.1*
 
 ## Skill routing
 
