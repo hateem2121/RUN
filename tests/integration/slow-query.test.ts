@@ -3,7 +3,9 @@ import { startTestServer, type TestServer } from "./test-utils";
 
 const DEBUG_TOKEN = "test-token-123";
 
-const runTests = process.env.TEST_REAL_DB === "true" ? describe : describe.skip;
+// TEST_REAL_DB enables real-DB unit tests but not process-spawning integration tests.
+// Slow-query logging requires a full spawned server + live pg_sleep — use a dedicated gate.
+const runTests = process.env.ENABLE_SLOW_QUERY_TESTS === "true" ? describe : describe.skip;
 
 runTests("Slow Query Logging (Integration Tier)", () => {
   let server: TestServer;
@@ -57,6 +59,8 @@ runTests("Slow Query Logging (Integration Tier)", () => {
     const slowLog = logs.find((l) => {
       const entry = l as LogEntry;
       return (
+        entry.msg?.includes("🐌 SLOW QUERY") ||
+        entry.msg?.includes("🚨 SLOW QUERY ALERT") ||
         entry.msg?.includes("[Slow Query]") ||
         entry.message?.includes("[Slow Query]") ||
         entry.msg?.includes("[SLOW REQUEST]") ||

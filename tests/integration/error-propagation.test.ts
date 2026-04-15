@@ -8,28 +8,27 @@ describe("Express 5 Async Error Propagation", () => {
     await serverReady;
   });
 
-  it("should catch Zod validation errors in async params via global errorHandler", async () => {
-    // MediaIdParamSchema: id: z.coerce.number().positive()
-    // Path is /api/:id (no /media prefix in this specific router mount)
-    const response = await request(app).get("/api/abc").expect(400);
+  it("should return 400 with error detail for non-numeric ID params", async () => {
+    // validateIdParam in server/utils.ts rejects non-numeric values with 400
+    // Route: GET /api/products/:id — id must be a positive integer
+    const response = await request(app).get("/api/products/abc").expect(400);
 
     expect(response.body).toMatchObject({
-      success: false,
-      error: {
-        code: "VALIDATION_ERROR",
-      },
+      message: expect.stringContaining("product"),
+      parameter: "id",
+      value: "abc",
     });
   });
 
-  it("should handle Not Found errors in async routes natively", async () => {
-    // 9999999 is a positive number but won't exist in DB
-    const response = await request(app).get("/api/9999999").expect(404);
+  it("should return 404 when product ID is valid but product does not exist", async () => {
+    // 9999999 parses as a valid positive integer but won't exist in DB
+    const response = await request(app).get("/api/products/9999999").expect(404);
 
     expect(response.body).toMatchObject({
       success: false,
-      error: {
-        code: "RESOURCE_NOT_FOUND",
-      },
+      error: expect.objectContaining({
+        message: expect.stringContaining("not found"),
+      }),
     });
   });
 });

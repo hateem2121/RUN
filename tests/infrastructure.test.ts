@@ -6,11 +6,17 @@ process.env.RECAPTCHA_SECRET_KEY = "test-secret";
 import express from "express";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { emailService } from "../server/lib/email-service.js";
+import { emailService } from "../server/lib/integrations/email-service.js";
+import { verifyCloudTaskToken } from "../server/lib/verify-cloud-task-token.js";
 import { registerRoutes } from "../server/routes/index.js";
 
+// Mock verifyCloudTaskToken so production OIDC check passes in tests
+vi.mock("../server/lib/verify-cloud-task-token.js", () => ({
+  verifyCloudTaskToken: vi.fn().mockResolvedValue(true),
+}));
+
 // Mock Logger to avoid environment validation
-vi.mock("../server/lib/smart-logger.js", () => ({
+vi.mock("../server/lib/monitoring/logger.js", () => ({
   logger: {
     info: vi.fn(),
     warn: vi.fn(),
@@ -31,13 +37,46 @@ vi.mock("../server/config/environment.js", () => ({
   logging: { level: "info" },
 }));
 
-// Mock DB
+// Mock DB — must expose full Drizzle query-builder chain because ProductRepository
+// eagerly initialises prepared statements (db.select(...).from(...).prepare()) at import time.
+// vi.hoisted() ensures the chain object is available before the mock factory runs.
+const { _selectChain } = vi.hoisted(() => ({
+  _selectChain: {
+    from: vi.fn().mockReturnThis(),
+    where: vi.fn().mockReturnThis(),
+    limit: vi.fn().mockReturnThis(),
+    offset: vi.fn().mockReturnThis(),
+    orderBy: vi.fn().mockReturnThis(),
+    leftJoin: vi.fn().mockReturnThis(),
+    innerJoin: vi.fn().mockReturnThis(),
+    groupBy: vi.fn().mockReturnThis(),
+    having: vi.fn().mockReturnThis(),
+    prepare: vi.fn().mockReturnValue({ execute: vi.fn().mockResolvedValue([]) }),
+  },
+}));
 vi.mock("../server/db.ts", () => ({
-  db: {},
+  db: {
+    execute: vi.fn().mockResolvedValue([]),
+    select: vi.fn().mockReturnValue(_selectChain),
+    insert: vi.fn().mockReturnValue({
+      values: vi.fn().mockReturnThis(),
+      returning: vi.fn().mockResolvedValue([]),
+      onConflictDoUpdate: vi.fn().mockReturnThis(),
+    }),
+    update: vi.fn().mockReturnValue({
+      set: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+      returning: vi.fn().mockResolvedValue([]),
+    }),
+    delete: vi.fn().mockReturnValue({
+      where: vi.fn().mockReturnThis(),
+      returning: vi.fn().mockResolvedValue([]),
+    }),
+  },
 }));
 
 // Mock Rate Limiter
-vi.mock("../server/lib/rate-limiter.js", () => ({
+vi.mock("../server/lib/resilience/rate-limiter.js", () => ({
   adminLimiter: { middleware: () => (_req, _res, next) => next() },
   diagnosticLimiter: { middleware: () => (_req, _res, next) => next() },
 }));
@@ -58,22 +97,16 @@ vi.mock("@google-cloud/bigquery", () => {
   return { BigQuery };
 });
 
-vi.mock("../server/lib/email-service.js", () => ({
+vi.mock("../server/lib/integrations/email-service.js", () => ({
   emailService: {
     sendAdminNotification: vi.fn().mockResolvedValue(true),
     sendCustomerConfirmation: vi.fn().mockResolvedValue(true),
   },
 }));
 
-// Mock Google Auth setup to avoid DB connection
-vi.mock("../server/googleAuth.js", () => ({
-  setupAuth: vi.fn().mockResolvedValue(true),
-  isAuthenticated: (_req, _res, next) => next(),
-}));
-
 // Mock Storage to avoid DB connection
-vi.mock("../server/lib/storage-singleton.js", () => ({
-  getStorage: vi.fn().mockReturnValue({
+vi.mock("../server/lib/storage-singleton.js", () => {
+  const mockStorage = {
     createInquiry: vi.fn().mockResolvedValue({
       id: 123,
       name: "Test User",
@@ -84,36 +117,16 @@ vi.mock("../server/lib/storage-singleton.js", () => ({
     getUser: vi.fn().mockResolvedValue({ id: 1, isAdmin: true }),
     checkDatabaseHealth: vi.fn().mockResolvedValue({ healthy: true, latency: 10 }),
     getContactPageConfiguration: vi.fn().mockResolvedValue({ email: "contact@example.com" }),
-  }),
-}));
-
-// Mock Cache
-vi.mock("../server/lib/unified-replit-cache.js", () => ({
-  unifiedCache: {
-    get: vi.fn().mockResolvedValue(null),
-    set: vi.fn().mockResolvedValue(true),
-    delete: vi.fn().mockResolvedValue(true),
-    warmCache: vi.fn().mockResolvedValue(true),
-  },
-  UnifiedReplitCache: {
-    TTL_PRESETS: {
-      STATIC: 3600,
-      DYNAMIC: 60,
+  };
+  return {
+    StorageSingleton: {
+      hasInstance: vi.fn().mockReturnValue(true),
+      getInstance: vi.fn().mockReturnValue(mockStorage),
+      setInstance: vi.fn(),
     },
-    getInstance: vi.fn().mockReturnValue({
-      get: vi.fn().mockResolvedValue(null),
-      set: vi.fn().mockResolvedValue(true),
-      delete: vi.fn().mockResolvedValue(true),
-    }),
-  },
-}));
-
-// Mock DB Keep Alive
-vi.mock("../server/lib/database-keep-alive.js", () => ({
-  dbKeepAlive: {
-    start: vi.fn(),
-  },
-}));
+    getStorage: vi.fn().mockReturnValue(mockStorage),
+  };
+});
 
 describe("Infrastructure Remediation Verification", () => {
   let app: express.Express;
@@ -141,6 +154,9 @@ describe("Infrastructure Remediation Verification", () => {
   });
 
   it("should process worker email task correctly", async () => {
+    // OIDC token is verified — mock returns true (authorized)
+    vi.mocked(verifyCloudTaskToken).mockResolvedValueOnce(true);
+
     const payload = {
       id: 123,
       name: "Test User",
@@ -151,7 +167,7 @@ describe("Infrastructure Remediation Verification", () => {
 
     const response = await request(app)
       .post("/api/workers/send-email")
-      .set("X-CloudTasks-QueueName", "email-queue") // Simulate Cloud Tasks header
+      .set("Authorization", "Bearer mock-valid-oidc-token")
       .send(payload);
 
     expect(response.status).toBe(200);
@@ -164,7 +180,10 @@ describe("Infrastructure Remediation Verification", () => {
     expect(emailService.sendCustomerConfirmation).toHaveBeenCalled();
   });
 
-  it("should reject worker access without Cloud Tasks header in production", async () => {
+  it("should reject worker access without valid OIDC token in production", async () => {
+    // No Authorization header → verifyCloudTaskToken returns false
+    vi.mocked(verifyCloudTaskToken).mockResolvedValueOnce(false);
+
     const response = await request(app).post("/api/workers/send-email").send({});
 
     expect(response.status).toBe(403);

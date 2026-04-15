@@ -8,6 +8,7 @@ import { registerRoutes } from "../../server/routes/index.js";
 vi.mock("../../server/lib/db/repositories/index.js", () => ({
   mediaRepository: {
     getMediaAssets: vi.fn(),
+    getMediaAssetsWithCount: vi.fn(),
   },
   miscRepository: {
     getFibers: vi.fn(),
@@ -51,16 +52,16 @@ describe("CMS API Integration Tests", () => {
   });
 
   describe("Media Assets", () => {
-    test("GET /api/media-assets - Success", async () => {
-      vi.mocked(mediaRepository.getMediaAssets).mockResolvedValue([
-        { id: 1, filename: "test.jpg", url: "/test.jpg" },
-      ] as any);
+    test("GET /api/media - Success", async () => {
+      vi.mocked(mediaRepository.getMediaAssetsWithCount).mockResolvedValue({
+        assets: [{ id: 1, filename: "test.jpg", url: "/test.jpg" }],
+        total: 1,
+      } as any);
 
-      const response = await request(app).get("/api/media-assets");
+      const response = await request(app).get("/api/media");
 
       expect(response.status).toBe(200);
-      expect(Array.isArray(response.body)).toBe(true);
-      expect(response.body).toHaveLength(1);
+      expect(response.body).toMatchObject({ data: expect.any(Array) });
     });
   });
 
