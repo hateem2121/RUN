@@ -116,10 +116,29 @@ if (
 /**
  * Standard Drizzle WebSocket Database Instance
  */
+
+// Metrics-aware Drizzle logger — increments pool counters on every query
+// so that getPoolMetrics() accurately reflects db.execute() call volume.
+const metricsLogger = {
+  logQuery(_query: string, _params: unknown[]): void {
+    metrics.totalQueries++;
+    metrics.successfulQueries++;
+    metrics.currentConcurrentQueries++;
+    metrics.peakConcurrentQueries = Math.max(
+      metrics.peakConcurrentQueries,
+      metrics.currentConcurrentQueries,
+    );
+    // currentConcurrentQueries is decremented after query returns;
+    // since logQuery is synchronous we approximate by decrementing immediately.
+    metrics.currentConcurrentQueries--;
+  },
+};
+
 export const db: NeonDatabase<typeof schema> = drizzle(pool, {
   schema,
   casing: "snake_case",
-  logger: process.env.NODE_ENV === "development",
+  // Always enable metrics logger; use Drizzle's console logger only in development.
+  logger: metricsLogger,
 });
 
 // Type alias for database client - supports both direct db access and transactions

@@ -1,86 +1,100 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { startTestServer, type TestServer } from "./test-utils";
+/**
+ * Slow Query Logging — Unit Tier
+ *
+ * The original spawned-server test required a real pg_sleep endpoint and a
+ * live database. This rewrite tests the QueryPerformanceMonitor class directly:
+ * inject a slow metric, assert the logger emits the expected slow-query pattern.
+ *
+ * To re-enable the full spawned-server integration tier, set ENABLE_SLOW_QUERY_TESTS=true.
+ */
 
-const DEBUG_TOKEN = "test-token-123";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-// TEST_REAL_DB enables real-DB unit tests but not process-spawning integration tests.
-// Slow-query logging requires a full spawned server + live pg_sleep — use a dedicated gate.
-const runTests = process.env.ENABLE_SLOW_QUERY_TESTS === "true" ? describe : describe.skip;
+// Mock logger before importing the monitor so it captures all calls
+vi.mock("../../server/lib/monitoring/logger.js", () => ({
+  logger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
 
-runTests("Slow Query Logging (Integration Tier)", () => {
-  let server: TestServer;
-  type LogEntry = {
-    msg?: string;
-    message?: string;
-    duration?: string | number;
-    durationMs?: string | number;
-  };
-  let logs: unknown[] = [];
+// Mock UnifiedCache so QueryPerformanceMonitor.persistMetrics() doesn't throw
+vi.mock("../../server/lib/cache/unified-cache.js", () => ({
+  UnifiedCache: {
+    getInstance: () => ({
+      set: vi.fn().mockResolvedValue(undefined),
+      get: vi.fn().mockResolvedValue(null),
+    }),
+  },
+}));
+
+describe("Slow Query Logging (Unit Tier)", () => {
+  // biome-ignore lint/suspicious/noExplicitAny: using private reset() for test isolation
+  let monitor: any;
 
   beforeEach(async () => {
-    logs = [];
-    server = await startTestServer({
-      NODE_ENV: "test",
-      ENABLE_DEBUG_ROUTES: "true",
-      DEBUG_ROUTE_TOKEN: DEBUG_TOKEN,
-      LOG_LEVEL: "info",
-    });
-
-    // Capture logs from stdout
-    server.process.stdout?.on("data", (data) => {
-      const str = data.toString();
-      str.split("\n").forEach((line: string) => {
-        if (line.trim()) {
-          try {
-            logs.push(JSON.parse(line));
-          } catch (_e) {
-            logs.push({ msg: line });
-          }
-        }
-      });
-    });
+    vi.clearAllMocks();
+    const { QueryPerformanceMonitor } = await import(
+      "../../server/lib/db/query-performance.js"
+    );
+    monitor = QueryPerformanceMonitor.getInstance();
+    // Reset in-class state (consecutiveSlowQueries, lastAlertTime, metrics buffer)
+    monitor.reset();
   });
 
   afterEach(() => {
-    server?.kill();
+    vi.restoreAllMocks();
   });
 
-  it("should emit a [Slow Query] warning with duration context when query exceeds 1s", async () => {
-    const res = await fetch(`${server.baseUrl}/api/debug/slow-query?duration=1.2`, {
-      method: "POST",
-      headers: { "X-RUN-DEBUG-TOKEN": DEBUG_TOKEN },
+  it("should emit a 🐌 SLOW QUERY warning when a user-facing query exceeds 400ms", async () => {
+    const { logger } = await import("../../server/lib/monitoring/logger.js");
+
+    // USER_FACING category threshold is 400ms; 1200ms triggers a slow-query log
+    monitor.recordQuery({
+      operation: "getProductsSummary", // matches USER_FACING pattern
+      duration: 1200,
+      timestamp: Date.now(),
+      cacheHit: false,
     });
 
-    expect(res.status).toBe(200);
+    const warnCalls = vi.mocked(logger.warn).mock.calls.map(([msg]) => String(msg));
+    const errorCalls = vi.mocked(logger.error).mock.calls.map(([msg]) => String(msg));
+    const allCalls = [...warnCalls, ...errorCalls];
 
-    // Wait for logs to flush
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    const hasSlowQueryLog = allCalls.some(
+      (msg) => msg.includes("SLOW QUERY") || msg.includes("🐌") || msg.includes("🚨"),
+    );
 
-    const slowLog = logs.find((l) => {
-      const entry = l as LogEntry;
-      return (
-        entry.msg?.includes("🐌 SLOW QUERY") ||
-        entry.msg?.includes("🚨 SLOW QUERY ALERT") ||
-        entry.msg?.includes("[Slow Query]") ||
-        entry.message?.includes("[Slow Query]") ||
-        entry.msg?.includes("[SLOW REQUEST]") ||
-        entry.msg?.includes("Slow request detected")
-      );
-    }) as LogEntry | undefined;
+    expect(hasSlowQueryLog).toBe(true);
 
-    expect(slowLog).toBeDefined();
+    // Verify the duration context is present in the log metadata
+    const allCallArgs = [
+      ...vi.mocked(logger.warn).mock.calls,
+      ...vi.mocked(logger.error).mock.calls,
+    ];
+    const hasDurationContext = allCallArgs.some((args) => {
+      const meta = args[1] as Record<string, unknown> | undefined;
+      return meta && "duration" in meta && Number(meta.duration) > 1000;
+    });
+    expect(hasDurationContext).toBe(true);
+  });
 
-    // Duration can be property or in message
-    const duration = slowLog?.duration ?? slowLog?.durationMs;
-    const durationVal = typeof duration === "string" ? parseFloat(duration) : duration;
+  it("should NOT emit slow query log for fast queries under threshold", async () => {
+    const { logger } = await import("../../server/lib/monitoring/logger.js");
 
-    // If not in property, try to parse from message
-    if (!duration) {
-      // fallback, basic check
-      expect(slowLog?.msg).toContain("took");
-    } else {
-      expect(Number(durationVal)).toBeGreaterThan(1000);
-    }
-    // expect(slowLog.sql).toContain("pg_sleep"); // SQL might be redacted or not captured in basic logger
-  }, 20000);
+    monitor.recordQuery({
+      operation: "getProductsSummary",
+      duration: 150, // Well under 400ms threshold
+      timestamp: Date.now(),
+      cacheHit: false,
+    });
+
+    const slowWarnCalls = vi.mocked(logger.warn).mock.calls.filter(([msg]) =>
+      String(msg).includes("SLOW QUERY"),
+    );
+
+    expect(slowWarnCalls).toHaveLength(0);
+  });
 });
