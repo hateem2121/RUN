@@ -21,6 +21,16 @@
 - Behavior can only be verified via browser automation (focus isn't visible in unit tests)
 - Add Playwright test: open dropdown → Tab → assert focus on trigger button; repeat for Escape
 
+### P2: Harden idempotency middleware for production (noticed 2026-04-15)
+
+**Priority:** P2 — current implementation safe for single-instance dev/staging; not production-safe at scale
+
+- File: `server/middleware/idempotency.ts`
+- In-memory `Map` store has no TTL or eviction — sustained load leaks memory indefinitely
+- No cross-instance state: horizontal scaling (multiple pods/Cloud Run replicas) will execute duplicate requests on different instances, defeating the guarantee
+- Process restarts clear all cached keys — clients replaying after a pod restart get a fresh execution
+- Fix options: (a) add TTL + max-entries cap to the in-memory store for single-instance safety, (b) migrate store to Redis/Upstash for multi-instance correctness
+
 ---
 
 ## Completed
