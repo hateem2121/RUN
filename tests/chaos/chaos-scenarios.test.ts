@@ -9,6 +9,10 @@
 
 import { describe, expect, it } from "vitest";
 
+// Chaos tests require a live server at STAGING_URL (default: http://localhost:5002).
+// Gate them behind a dedicated env var to avoid ECONNREFUSED in unit-test CI.
+const runTests = process.env.ENABLE_CHAOS_TESTS === "true" ? describe : describe.skip;
+
 /**
  * Chaos test configuration
  */
@@ -48,7 +52,7 @@ async function _isHealthy(): Promise<boolean> {
   }
 }
 
-describe("Chaos Engineering: Database Failure", () => {
+runTests("Chaos Engineering: Database Failure", () => {
   // This test verifies circuit breaker behavior when DB is unavailable
 
   it("should return degraded health when database is unavailable", async () => {
@@ -72,7 +76,7 @@ describe("Chaos Engineering: Database Failure", () => {
   });
 });
 
-describe("Chaos Engineering: Rate Limit Surge", () => {
+runTests("Chaos Engineering: Rate Limit Surge", () => {
   it("should return 429 when rate limit exceeded", async () => {
     // Send rapid requests to trigger rate limiting
     const requests = Array(20)
@@ -99,7 +103,7 @@ describe("Chaos Engineering: Rate Limit Surge", () => {
   });
 });
 
-describe("Chaos Engineering: Timeout Handling", () => {
+runTests("Chaos Engineering: Timeout Handling", () => {
   it("should handle slow responses gracefully", async () => {
     // Test that the client handles timeouts properly
     const controller = new AbortController();
@@ -119,7 +123,7 @@ describe("Chaos Engineering: Timeout Handling", () => {
   });
 });
 
-describe("Chaos Engineering: Circuit Breaker State", () => {
+runTests("Chaos Engineering: Circuit Breaker State", () => {
   it("should report circuit breaker status in health check", async () => {
     const response = await fetch(`${CHAOS_CONFIG.targetUrl}${CHAOS_CONFIG.healthEndpoint}`);
     const health = await response.json();
@@ -132,7 +136,7 @@ describe("Chaos Engineering: Circuit Breaker State", () => {
   });
 });
 
-describe("Chaos Engineering: Error Response Format", () => {
+runTests("Chaos Engineering: Error Response Format", () => {
   it("should return RFC 9457 Problem Details for errors", async () => {
     // Request a non-existent resource to trigger 404
     const response = await fetch(`${CHAOS_CONFIG.targetUrl}/api/nonexistent-resource-12345`);
@@ -150,7 +154,7 @@ describe("Chaos Engineering: Error Response Format", () => {
   });
 });
 
-describe("Chaos Engineering: Graceful Degradation", () => {
+runTests("Chaos Engineering: Graceful Degradation", () => {
   it("should continue serving requests during partial failures", async () => {
     // Even if some services are degraded, core endpoints should work
     const coreEndpoints = ["/api/health", "/api/categories"];
