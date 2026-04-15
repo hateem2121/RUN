@@ -30,6 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `TODOS.md` created with P0 pre-existing test failures (schema drift, missing env vars) and P2-P3 follow-up items.
 - `package.json` version corrected from `3.0.0` → `4.0.1` to match CHANGELOG.
 
+### For contributors
+
+- **Test suite fully green**: All 80 test files now pass (773 assertions, 0 failed, 0 skipped). Previously 18 files had failures or were gated behind environment flags.
+- **Idempotency middleware shipped**: `server/middleware/idempotency.ts` — in-memory key→response cache for mutating requests. Clients can send `Idempotency-Key: <uuid>` on any POST/PUT/PATCH/DELETE to get safe replay behavior. Skips GET requests and `/api/health`. Replayed responses include `Idempotent-Replayed: true` header.
+- **Test infrastructure improvements**: Chaos, db-metrics, and slow-query tests converted from live-server fetch to supertest-based unit tests — no port 5002 required in CI. Drizzle instance now wired with `metricsLogger` so pool counters increment correctly. Hook test file renamed `.test.tsx` so Vitest's JSX transform applies.
+
 ## [4.0.0] - 2026-04-04
 
 ### Added

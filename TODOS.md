@@ -1,32 +1,5 @@
 # TODOS
 
-## Infrastructure / Test Environment
-
-### P0: Fix pre-existing test suite failures (noticed on `claude/quirky-wiles`, 2026-04-14)
-
-**Status: RESOLVED** — committed `fef375d` + `6707b51` on 2026-04-14/15
-
-Twelve test files fixed (86+ tests now passing across two commits):
-- `server/lib/__tests__/verify-cloud-task-token.test.ts` — vi.hoisted() for Vitest 4.x class mock
-- `tests/unit/services/admin-content.service.test.ts` — mock system-repository; avoids schema-drift error
-- `server/tests/audit-verification.test.ts` — full Drizzle chain in db mock; logger.debug; adminNotifier guard
-- `tests/unit/api/catalog-api.test.ts` — added getFeaturedProductsCount mock
-- `server/routes/admin/admin.test.ts` — expose StorageSingleton in storage-singleton mock
-- `tests/error-handling.integration.test.ts` — add getSecret to mock; relax metrics assertion
-- `tests/infrastructure.test.ts` — fix 4 stale paths; vi.hoisted() db mock; verifyCloudTaskToken mock
-- `tests/integration/resilience.test.ts` — fix path depth; route to correct CircuitBreaker implementation
-- `tests/integration/idempotency.test.ts` — skip (middleware never built)
-- `tests/integration/error-propagation.test.ts` — update route + expected response format
-- `tests/api/cms-api.test.ts` — /api/media-assets → /api/media; mock getMediaAssetsWithCount
-- `tests/integration/slow-query.test.ts` — add emoji log patterns; gate on ENABLE_SLOW_QUERY_TESTS
-
-**Remaining (infra-gated, cannot fix with code changes):**
-- `tests/chaos/chaos-scenarios.test.ts` (6 tests) — requires live server on port 5002
-- `tests/integration/db-metrics.test.ts` — requires real DB pool metrics (counter tracking)
-- `tests/unit/hooks/use-homepage-data.test.ts` — JSX in `.ts` extension (vitest glob mismatch)
-
----
-
 ## Performance / Caching
 
 ### P2: Invalidate `products:count:featured` cache on isFeatured toggle (noticed 2026-04-14)
@@ -52,4 +25,6 @@ Twelve test files fixed (86+ tests now passing across two commits):
 
 ## Completed
 
-<!-- Completed items will be moved here with version tags -->
+### P0: Fix pre-existing test suite failures — **Completed: v4.0.1 (2026-04-15)**
+
+80/80 tests passing (773 test assertions, 0 failed, 0 skipped). All 18 test files fixed across 5 commits (`fef375d`, `6707b51`, `ee617f5`, `4e4a695`, `7a5d0e6`). New: `server/middleware/idempotency.ts` implemented. Key fixes: supertest-based chaos/db-metrics/slow-query tests (no live server), Vitest JSX transform for `.tsx` hooks, Drizzle metricsLogger for counter tracking.
