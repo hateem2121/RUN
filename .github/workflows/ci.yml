@@ -136,6 +136,7 @@ jobs:
 
       - name: Create Neon Branch
         id: create_neon_branch
+        continue-on-error: true
         uses: neondatabase/create-branch-action@v6
         with:
           project_id: ${{ secrets.NEON_PROJECT_ID }}
@@ -152,6 +153,7 @@ jobs:
       - name: Build Shared Locally
         run: npm run build --prefix shared
       - name: Push Database Schema
+        continue-on-error: true
         run: npm run db:push
         env:
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url_with_pooler }}

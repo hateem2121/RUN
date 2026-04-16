@@ -57,12 +57,6 @@ jobs:
     timeout-minutes: 30
     needs: guardrails
 
-    services:
-      # The app server - started manually via npm run start in steps
-      app:
-        image: node:24
-        options: --network=host
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
