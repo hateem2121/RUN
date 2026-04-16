@@ -228,7 +228,7 @@ export class PageContentRepository {
     slogan: Partial<InsertHomepageSlogan>,
   ): Promise<HomepageSlogan> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateHomepageSlogan(id, slogan);
+      return (await StorageSingleton.getInstance().updateHomepageSlogan(id, slogan))!;
     }
     await unifiedCache.del("homepage:slogans");
     const [updated] = await db
@@ -691,7 +691,7 @@ export class PageContentRepository {
     entry: Partial<InsertAboutTimelineEntry>,
   ): Promise<AboutTimelineEntry> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateAboutTimelineEntry(id, entry);
+      return (await StorageSingleton.getInstance().updateAboutTimelineEntry(id, entry))!;
     }
     await unifiedCache.del("about:timeline");
     await unifiedCache.del("about:batch");
@@ -793,7 +793,7 @@ export class PageContentRepository {
     location: Partial<InsertAboutMapLocation>,
   ): Promise<AboutMapLocation> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateAboutMapLocation(id, location);
+      return (await StorageSingleton.getInstance().updateAboutMapLocation(id, location))!;
     }
     await unifiedCache.del("about:locations");
     await unifiedCache.del("about:batch");
@@ -873,7 +873,7 @@ export class PageContentRepository {
     section: Partial<InsertAboutSection>,
   ): Promise<AboutSection> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateAboutSection(id, section);
+      return (await StorageSingleton.getInstance().updateAboutSection(id, section))!;
     }
     await unifiedCache.del("about:sections");
     await unifiedCache.del("about:batch");
@@ -1143,7 +1143,7 @@ export class PageContentRepository {
     data: Partial<InsertSustainabilityGoal>,
   ): Promise<SustainabilityGoal> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateSustainabilityGoal(id, data);
+      return (await StorageSingleton.getInstance().updateSustainabilityGoal(id, data))!;
     }
     await unifiedCache.del("sustainability:goals:*");
     const [updated] = await db
@@ -1243,7 +1243,7 @@ export class PageContentRepository {
     data: Partial<InsertSustainabilityMetric>,
   ): Promise<SustainabilityMetric> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateSustainabilityMetric(id, data);
+      return (await StorageSingleton.getInstance().updateSustainabilityMetric(id, data))!;
     }
     const [updated] = await db
       .update(sustainabilityMetrics)
@@ -1341,7 +1341,7 @@ export class PageContentRepository {
     data: Partial<InsertSustainabilityInitiative>,
   ): Promise<SustainabilityInitiative> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateSustainabilityInitiative(id, data);
+      return (await StorageSingleton.getInstance().updateSustainabilityInitiative(id, data))!;
     }
     const [updated] = await db
       .update(sustainabilityInitiatives)
@@ -1558,7 +1558,7 @@ export class PageContentRepository {
     data: Partial<InsertManufacturingCapability>,
   ): Promise<ManufacturingCapability> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateManufacturingCapability(id, data);
+      return (await StorageSingleton.getInstance().updateManufacturingCapability(id, data))!;
     }
     await unifiedCache.del("manufacturing:capabilities:*");
     const [updated] = await db
@@ -1652,7 +1652,7 @@ export class PageContentRepository {
     data: Partial<InsertManufacturingProcess>,
   ): Promise<ManufacturingProcess> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateManufacturingProcess(id, data);
+      return (await StorageSingleton.getInstance().updateManufacturingProcess(id, data))!;
     }
     await unifiedCache.del("manufacturing:processes:*");
     const [updated] = await db
@@ -1744,7 +1744,7 @@ export class PageContentRepository {
     data: Partial<InsertManufacturingQuality>,
   ): Promise<ManufacturingQuality> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateManufacturingQuality(id, data);
+      return (await StorageSingleton.getInstance().updateManufacturingQuality(id, data))!;
     }
     await unifiedCache.del("manufacturing:qualities:*");
     const [updated] = await db
@@ -1942,7 +1942,7 @@ export class PageContentRepository {
     data: Partial<InsertTechnologyEquipment>,
   ): Promise<TechnologyEquipment> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateTechnologyEquipment(id, data);
+      return (await StorageSingleton.getInstance().updateTechnologyEquipment(id, data))!;
     }
     await unifiedCache.del("technology:equipment");
     const [updated] = await db
@@ -2034,7 +2034,7 @@ export class PageContentRepository {
     data: Partial<InsertTechnologyInnovation>,
   ): Promise<TechnologyInnovation> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateTechnologyInnovation(id, data);
+      return (await StorageSingleton.getInstance().updateTechnologyInnovation(id, data))!;
     }
     await unifiedCache.del("technology:innovations:*");
     const [updated] = await db
@@ -2124,7 +2124,7 @@ export class PageContentRepository {
     data: Partial<InsertTechnologyResearch>,
   ): Promise<TechnologyResearch> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateTechnologyResearch(id, data);
+      return (await StorageSingleton.getInstance().updateTechnologyResearch(id, data))!;
     }
     await unifiedCache.del("technology:research:*");
     const [updated] = await db
@@ -2214,7 +2214,7 @@ export class PageContentRepository {
     data: Partial<InsertTechnologyRoadmap>,
   ): Promise<TechnologyRoadmap> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateTechnologyRoadmap(id, data);
+      return (await StorageSingleton.getInstance().updateTechnologyRoadmap(id, data))!;
     }
     await unifiedCache.del("technology:roadmap:*");
     const [updated] = await db

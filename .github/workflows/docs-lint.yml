@@ -24,5 +24,7 @@ jobs:
             **/*.md
             !node_modules/**
             !.gemini/**
+            !.agent/**
+            !.claude/**
           config: '.markdownlint.json'
 

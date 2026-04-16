@@ -215,7 +215,7 @@ router.get("/homepage-process-cards", async (req, res) => {
     return res.status(503).json({ error: "Process cards temporarily unavailable" });
   }
 
-  res.json(data);
+  return res.json(data);
 });
 
 // Individual homepage endpoints are handled by homepage-management.routes.ts

@@ -49,38 +49,31 @@ export async function setupTestApp(storage?: MemoryStorage) {
       description: "Certifying recycled content",
       imageId: null,
       isActive: true,
-      sortOrder: 0,
     });
 
     // Seeding Fabrics
     await testStorage.createFabric({
       name: "AERO-CORE Performance Mesh",
       description: "Lightweight moisture-wicking fabric",
-      materials: "100% Recycled Polyester",
       weight: "120gsm",
-      features: ["Breathable", "Anti-odor"],
-      imageId: null,
       isActive: true,
-      sortOrder: 0,
     });
 
     // Seeding Fibers
     await testStorage.createFiber({
       name: "Recycled Polyester",
+      type: "synthetic",
       description: "Post-consumer waste transformation",
-      imageId: null,
       isActive: true,
-      sortOrder: 0,
     });
 
     // Seeding Size Charts
     await testStorage.createSizeChart({
       name: "Standard Size Chart",
-      specification: {
+      measurements: {
         tables: [{ title: "Tops", rows: [], columns: [] }],
       },
       isActive: true,
-      sortOrder: 0,
     });
 
     // Seeding About Page Content
@@ -103,12 +96,14 @@ export async function setupTestApp(storage?: MemoryStorage) {
       name: "Sialkot Facility",
       city: "Sialkot",
       country: "Pakistan",
-      coordinates: { lat: 32.49, lng: 74.52 },
+      latitude: "32.4900000000",
+      longitude: "74.5200000000",
       type: "Manufacturing",
       isActive: true,
     });
 
     await testStorage.createAboutSection({
+      sectionType: "content",
       title: "Craftsmanship",
       content: "Deeply rooted in Sialkot's tradition of precision manufacturing.",
       imageId: null,

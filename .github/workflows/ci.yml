@@ -67,6 +67,8 @@ jobs:
           node-version: "24"
           cache: "npm"
       - run: npm ci
+      - name: Build Shared Declarations
+        run: npm run build --prefix shared
       - name: Run Biome Check
         run: npm run check
 
@@ -84,6 +86,8 @@ jobs:
       - run: npm ci
       - name: Build Shared Declarations
         run: npm run build --prefix shared
+      - name: Build Server Declarations
+        run: npx tsc -b server/tsconfig.json
       - run: npm run typecheck
 
   security_audit:
