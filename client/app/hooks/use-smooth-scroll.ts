@@ -14,21 +14,31 @@ interface SmoothScrollOptions {
   wheelMultiplier?: number;
   touchMultiplier?: number;
   infinite?: boolean;
+  easing?: (t: number) => number;
+  wrapper?: Window | HTMLElement;
+  content?: HTMLElement;
+  onScroll?: (scroll: any) => void;
 }
 
 /**
  * Hook to initialize Locomotive Scroll v5 (which uses Lenis)
  * and integrate it with GSAP ScrollTrigger.
+ * 
+ * Handles React 19 double-invocations and ensures robust cleanup.
  */
 export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
   const scrollRef = useRef<LocomotiveScroll | null>(null);
 
   useEffect(() => {
-    // Locomotive Scroll v5 initializes on the window/body by default
-    // and doesn't require a specific container el in the same way v4 did.
-    // It's much simpler now.
+    if (typeof window === "undefined") return;
 
-    scrollRef.current = new LocomotiveScroll({
+    // Prevent multiple initializations in the same effect cycle (React 19)
+    if (scrollRef.current) return;
+
+    // Add a class to html to signal smooth scroll is active (used for CSS overrides)
+    document.documentElement.classList.add("has-scroll-smooth");
+
+    const scroll = new LocomotiveScroll({
       lenisOptions: {
         lerp: options.lerp ?? 0.1,
         duration: options.duration ?? 1.2,
@@ -38,16 +48,35 @@ export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
         wheelMultiplier: options.wheelMultiplier ?? 1,
         touchMultiplier: options.touchMultiplier ?? 2,
         infinite: options.infinite ?? false,
+        easing: options.easing ?? ((t: number) => Math.min(1, 1.001 - 2 ** (-10 * t))),
+        wrapper: options.wrapper ?? window,
+        content: options.content ?? document.documentElement,
       },
     });
 
-    // v5 automatically syncs with ScrollTrigger if ScrollTrigger is registered
-    // but we can manually refresh to be sure
-    ScrollTrigger.refresh();
+    scrollRef.current = scroll;
+
+    // Attach onScroll listener if provided
+    if (options.onScroll) {
+      scroll.on("scroll", options.onScroll);
+    }
+
+    // Ensure ScrollTrigger is aware of the new scroller
+    // v5 handles this mostly automatically, but a refresh is safe
+    const refreshTimer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
 
     return () => {
+      clearTimeout(refreshTimer);
+      document.documentElement.classList.remove("has-scroll-smooth");
+      
       if (scrollRef.current) {
-        scrollRef.current.destroy();
+        try {
+          scrollRef.current.destroy();
+        } catch (e) {
+          console.warn("LocomotiveScroll destruction error handled:", e);
+        }
         scrollRef.current = null;
       }
     };
@@ -60,5 +89,9 @@ export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
     options.wheelMultiplier,
     options.touchMultiplier,
     options.infinite,
+    options.easing,
+    options.wrapper,
+    options.content,
+    options.onScroll,
   ]);
 }

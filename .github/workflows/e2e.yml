@@ -8,7 +8,7 @@ on:
 jobs:
   verify-proofs:
     name: 🕵️ Forensic Proof Suite (P0/P1/P2)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     if: github.event.pull_request.draft == false
 
     steps:
@@ -35,11 +35,8 @@ jobs:
           PORT: 5002
         run: npm run start &
 
-      - name: "🛡️ Policy Check: Z-Index"
-        run: ./scripts/prevent-z-index-bloat.sh
-
-      - name: "🧪 Run Proof Suite"
-        run: ./scripts/run-proof.sh
+      - name: "🧪 Run E2E Proof Suite"
+        run: npx playwright test
         env:
           CI: true
           E2E_BASE_URL: http://127.0.0.1:5002

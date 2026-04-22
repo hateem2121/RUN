@@ -29,7 +29,7 @@ env:
 jobs:
   update-baselines:
     name: Update Playwright Baselines
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     timeout-minutes: 45
     if: ${{ github.event.inputs.confirm_update == 'yes' }}
 
@@ -58,7 +58,7 @@ jobs:
           sleep 10
         env:
           NODE_ENV: production
-          PORT: 5001
+          PORT: 5002
 
       - name: Update Baselines
         run: |
@@ -68,7 +68,7 @@ jobs:
             npx playwright test e2e/visual-regression-audit.spec.ts --update-snapshots
           fi
         env:
-          BASE_URL: http://localhost:5001
+          BASE_URL: http://localhost:5002
 
       - name: Upload Updated Baselines
         uses: actions/upload-artifact@v4

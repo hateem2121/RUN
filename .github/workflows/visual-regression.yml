@@ -10,9 +10,9 @@ name: Visual Regression
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main]
   push:
-    branches: [main, develop]
+    branches: [main]
   workflow_dispatch:
     inputs:
       strict_preload:
@@ -26,7 +26,7 @@ env:
 jobs:
   guardrails:
     name: Tailwind v4 Guardrails
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     timeout-minutes: 10
 
     steps:
@@ -53,7 +53,7 @@ jobs:
 
   visual-regression:
     name: Visual Regression Tests
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     timeout-minutes: 30
     needs: guardrails
 

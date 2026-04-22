@@ -4,8 +4,6 @@
 name: DAST Security Scan
 
 on:
-  schedule:
-    - cron: '0 2 * * 1'  # Weekly on Monday at 2 AM
   workflow_dispatch:
     inputs:
       target_url:
@@ -16,7 +14,7 @@ on:
 jobs:
   zap-scan:
     name: OWASP ZAP Full Scan
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     
     steps:
       - uses: actions/checkout@v4

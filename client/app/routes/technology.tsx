@@ -21,6 +21,7 @@ import { TechnologyStackSection } from "@/components/technology/TechnologyStackS
 import { MarqueeStrip } from "@/components/technology/ui/MarqueeStrip";
 import { Typography } from "@/components/ui/typography";
 import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
+import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import { getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/technology";
 
@@ -245,7 +246,6 @@ const TECH_PARTNERS = ["CLO 3D", "OPTITEX", "GERBER", "BROWZWEAR", "LECTRA"];
 
 function TechnologyInner() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<LocomotiveScroll | null>(null);
 
   const { data: batchData, isLoading: batchLoading } = useOptimizedQuery<TechnologyBatchResponse>({
     queryKey: ["/api/technology-batch"],
@@ -272,34 +272,16 @@ function TechnologyInner() {
     [hero, innovations, equipment, research, roadmap, cta],
   );
 
+  // Initialize smooth scroll (Locomotive v5) via unified hook
+  useSmoothScroll();
+
   React.useEffect(() => {
     document.documentElement.classList.add("technology-page");
     document.body.classList.add("technology-page");
 
-    // Initialize Locomotive Scroll v5
-    if (typeof window !== "undefined") {
-      scrollRef.current = new LocomotiveScroll({
-        lenisOptions: {
-          wrapper: window,
-          content: document.documentElement,
-          lerp: 0.1,
-          duration: 1.2,
-          orientation: "vertical",
-          gestureOrientation: "vertical",
-          smoothWheel: true,
-          wheelMultiplier: 1,
-          touchMultiplier: 2,
-          easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
-        },
-      });
-    }
-
     return () => {
       document.documentElement.classList.remove("technology-page");
       document.body.classList.remove("technology-page");
-      if (scrollRef.current) {
-        scrollRef.current.destroy();
-      }
     };
   }, []);
 

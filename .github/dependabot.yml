@@ -80,14 +80,3 @@ updates:
       - "docker"
       - "security"
 
-  # Terraform providers (Infrastructure)
-  - package-ecosystem: "terraform"
-    directory: "/terraform"
-    schedule:
-      interval: "monthly"
-    open-pull-requests-limit: 2
-    commit-message:
-      prefix: "terraform"
-    labels:
-      - "dependencies"
-      - "infrastructure"

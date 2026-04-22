@@ -2,8 +2,7 @@ name: CI / Neon Preview
 
 on:
   push:
-    branches:
-      - '**' # Run on all branches during dev
+    branches: [main]
   pull_request:
     types:
       - opened
@@ -13,13 +12,14 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   setup:
     name: Setup
     outputs:
       branch: ${{ steps.branch_name.outputs.current_branch }}
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - uses: actions/checkout@v4
       - name: Get branch name
@@ -29,7 +29,7 @@ jobs:
   verify_port:
     name: Verify Port (Strict 5002)
     if: github.event.action != 'closed'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -43,7 +43,7 @@ jobs:
   build_shared:
     name: Build Shared Package
     if: github.event.action != 'closed'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -59,7 +59,7 @@ jobs:
     name: Lint (Biome)
     needs: build_shared
     if: github.event.action != 'closed'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -78,7 +78,7 @@ jobs:
     name: Type Check (TSC)
     needs: build_shared
     if: github.event.action != 'closed'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -95,7 +95,7 @@ jobs:
   security_audit:
     name: Security Audit
     if: github.event.action != 'closed'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -109,7 +109,7 @@ jobs:
   docs_check:
     name: Docs Check
     if: github.event.action != 'closed'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -128,13 +128,13 @@ jobs:
       github.event.action == 'synchronize'
       || github.event.action == 'opened'
       || github.event.action == 'reopened')
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - uses: actions/checkout@v4
 
       - name: Get branch expiration date
         id: get_expiration_date
-        run: echo "EXPIRES_AT=$(date -u --date '+14 days' +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
+        run: echo "EXPIRES_AT=$(date -u -v+14d +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
 
       - name: Create Neon Branch
         id: create_neon_branch
@@ -199,7 +199,7 @@ jobs:
       github.event.action == 'synchronize'
       || github.event.action == 'opened'
       || github.event.action == 'reopened')
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -234,7 +234,7 @@ jobs:
     name: Delete Neon Branch
     needs: setup
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - name: Delete Neon Branch
         uses: neondatabase/delete-branch-action@v3

@@ -33,7 +33,7 @@ env:
 jobs:
   load-test:
     name: Run Load Test
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - uses: actions/checkout@v4
 
@@ -130,7 +130,7 @@ jobs:
   notify-failure:
     name: Notify on Failure
     needs: load-test
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     if: failure()
     steps:
       - name: Create Issue

@@ -1,7 +1,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import { Hero } from "@/components/homepage/Hero";
 import { Preloader } from "@/components/homepage/Preloader";
 import CustomCursor from "@/components/ui/CustomCursor";
@@ -83,59 +83,40 @@ export default function Index() {
   // Proxy object to hold animation values - avoids quickTo strictness warnings
   const skewProxy = useRef({ val: 0 });
 
-  // Store Lenis instance to control it later
-  const lenisRef = useRef<Lenis | null>(null);
+  // Use the unified smooth scroll hook with the kinetic skew effect
+  const handleScroll = useCallback(({ velocity }: { velocity: number }) => {
+    // Clamp velocity
+    const targetSkew = Math.min(Math.max(velocity * 0.1, -5), 5);
 
-  // Initialize Lenis Smooth Scroll with Skew Effect
+    // Tween the proxy value - this handles the smoothing/easing
+    gsap.to(skewProxy.current, {
+      val: targetSkew,
+      duration: 0.5,
+      ease: "power3.out",
+      overwrite: true,
+    });
+  }, []);
+
+  useSmoothScroll({
+    duration: 1.5,
+    touchMultiplier: 2.5,
+    onScroll: handleScroll,
+  });
+
+  // Animation ticker for skew effects
   useEffect(() => {
-    // Respect user preference for reduced motion
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (isMobile) return;
 
-    // Skip smooth scroll and skew effects for users who prefer reduced motion or on mobile devices
-    if (prefersReducedMotion || isMobile) {
-      return;
-    }
-
-    const lenis = new Lenis({
-      duration: 1.5,
-      easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
-      orientation: "vertical",
-      gestureOrientation: "vertical",
-      smoothWheel: true,
-      touchMultiplier: 2.5,
-    });
-
-    lenisRef.current = lenis;
-
-    lenis.on("scroll", ScrollTrigger.update);
-
-    // Kinetic Scroll Skew Effect via Proxy Pattern
-    lenis.on("scroll", ({ velocity }: { velocity: number }) => {
-      // Clamp velocity
-      const targetSkew = Math.min(Math.max(velocity * 0.1, -5), 5);
-
-      // Tween the proxy value - this handles the smoothing/easing
-      gsap.to(skewProxy.current, {
-        val: targetSkew,
-        duration: 0.5,
-        ease: "power3.out",
-        overwrite: true,
-      });
-    });
-
-    // Single Ticker Loop to apply values to DOM
     const handleTicker = () => {
       const val = skewProxy.current.val;
-
-      // Apply to explicit refs
       const targets = [heroRef.current, contentRef.current];
 
       targets.forEach((el) => {
         if (el) {
           gsap.set(el, {
             skewY: val,
-            rotateY: val * 0.2, // Subtle 3D rotation
-            force3D: true, // Force GPU layer
+            rotateY: val * 0.2,
+            force3D: true,
             transformOrigin: "center center",
           });
         }
@@ -143,18 +124,7 @@ export default function Index() {
     };
 
     gsap.ticker.add(handleTicker);
-
-    // Sync Lenis RAF — store reference for proper cleanup
-    const lenisRaf = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-    gsap.ticker.add(lenisRaf);
-
-    gsap.ticker.lagSmoothing(0);
-
     return () => {
-      lenis.destroy();
-      gsap.ticker.remove(lenisRaf);
       gsap.ticker.remove(handleTicker);
     };
   }, [isMobile]);

@@ -34,6 +34,25 @@
 * **Accessibility Remediation**: Fixed critical aria-label violations in Admin management components (Fabrics, Certificates, Fibers, etc.).
 * **Global Toaster Integration**: Successfully integrated and verified the global Toaster component to ensure form feedback is consistently visible.
 
+---
+
+## Smooth Scroll & Hydration Audit (2026-04-22)
+
+### Identified Issues
+
+* **Remediating Smooth Scroll Crash**: Successfully consolidated `LocomotiveScroll` v5 usage across all routes, migrated the homepage, and added a destruction safety net.
+* **TypeError: Cannot read properties of null (reading '__store')**: Runtime crash occurring during navigation or hydration on pages using `LocomotiveScroll` v5 (Lenis). Root cause identified as multiple conflicting instances and improper cleanup (including a `setTimeout` leak in `sustainability.tsx`).
+* **Inconsistent Scroll Initialization**: `LocomotiveScroll` is manually instantiated in `technology.tsx` and `sustainability.tsx` with different configurations, while `manufacturing.tsx` uses a `useSmoothScroll` hook.
+* **Native Scroll Conflict**: `scroll-behavior: smooth` in `index.css` may conflict with Lenis's virtual scroll smoothing.
+
+### Planned Remediation
+
+1. **Consolidate Smooth Scroll**: Migrated all pages (including the Homepage) to a single, robust `useSmoothScroll` hook. Removed conflicting `lenis` package usage from the homepage.
+2. **Fix Instance Leaks**: Removed `setTimeout` from `sustainability.tsx` and ensured `scroll.destroy()` is always called on unmount.
+3. **React 19 Compatibility**: Updated `useSmoothScroll` to handle React 19's stricter effect timing and potential double-invocations.
+4. **Safety Net**: Added a `try/catch` block around `destroy()` to prevent the `__store` crash from surfacing if a race condition occurs during rapid navigation.
+5. **CSS Optimization**: Set `scroll-behavior: auto !important` when Lenis is active to prevent browser-native interference.
+
 ### System Health
 
 * **Manufacturing API**: 29/29 tests PASS.
@@ -41,4 +60,3 @@
 * **Repository Unit Tests**: 100% PASS.
 * **E2E Tests (Admin)**: 100% Stability achieved in secondary content suites.
 * **Protocol compliance**: Protocol 0 and Port 5002 verified.
-

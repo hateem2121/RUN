@@ -13,7 +13,7 @@ on:
 jobs:
   markdownlint:
     name: Markdown Lint
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - uses: actions/checkout@v4
 

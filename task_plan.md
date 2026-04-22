@@ -3,6 +3,7 @@
 ## Active Tasks
 
 *All 10 code review findings resolved. Ready for next sprint.*
+* **Remediating Smooth Scroll Crash**: Successfully consolidated `LocomotiveScroll` v5 usage across all routes, migrated the homepage, and added a destruction safety net.
 
 ---
 

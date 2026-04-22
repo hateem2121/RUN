@@ -1116,6 +1116,11 @@
     scroll-padding-top: 100px;
     scroll-behavior: smooth;
   }
+
+  /* Disable native smooth scroll when Lenis is active to prevent conflicts */
+  html.has-scroll-smooth {
+    scroll-behavior: auto !important;
+  }
   * {
     @apply border-border;
   }

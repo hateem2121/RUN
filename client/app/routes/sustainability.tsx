@@ -1,5 +1,12 @@
 import { useGSAP } from "@gsap/react";
 import type { MediaAsset, SustainabilityBatchResponse } from "@shared/index";
+import type {
+  SustainabilityMetric,
+  SustainabilityInitiative,
+  SustainabilityGoal,
+} from "@shared/schemas/content/sustainability";
+import type { Certificate } from "@shared/schemas/catalog";
+import type { Fabric } from "@shared/schemas/materials";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -19,6 +26,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { MarqueeStrip } from "@/components/ui/marquee-strip";
 import { Typography } from "@/components/ui/typography";
+import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import { apiRequest, batchFetchMediaContent, getQueryClient } from "@/lib/queryClient";
 import { getSustainabilityIcon } from "@/lib/sustainability-utils";
 import { cn } from "@/lib/utils";
@@ -252,19 +260,8 @@ export default function Sustainability() {
 function SustainabilityInner() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    let locoScroll: LocomotiveScroll;
-
-    // Slight delay to ensure DOM is ready for Locomotive
-    const initTimer = setTimeout(() => {
-      locoScroll = new LocomotiveScroll();
-    }, 100);
-
-    return () => {
-      clearTimeout(initTimer);
-      if (locoScroll) locoScroll.destroy();
-    };
-  }, []);
+  // Initialize smooth scroll (Locomotive v5) via unified hook
+  useSmoothScroll();
 
   useGSAP(
     () => {
@@ -337,9 +334,9 @@ function SustainabilityInner() {
   });
 
   const unifiedData = batchData?.hero;
-  const activeImpactMetrics = batchData?.metrics?.filter((m) => m.isActive) || [];
-  const activeInitiatives = batchData?.initiatives?.filter((i) => i.isActive) || [];
-  const activeGoals = batchData?.goals?.filter((g) => g.isActive) || [];
+  const activeImpactMetrics = batchData?.metrics?.filter((m: SustainabilityMetric) => m.isActive) || [];
+  const activeInitiatives = batchData?.initiatives?.filter((i: SustainabilityInitiative) => i.isActive) || [];
+  const activeGoals = batchData?.goals?.filter((g: SustainabilityGoal) => g.isActive) || [];
   const allCertificates = batchData?.certificates || [];
 
   // Extract features data from unified model
@@ -422,14 +419,14 @@ function SustainabilityInner() {
       ids.add(hero.backgroundImageId);
     }
 
-    activeInitiatives.forEach((initiative) => {
+    activeInitiatives.forEach((initiative: { imageId?: number }) => {
       if (initiative.imageId) {
         ids.add(initiative.imageId);
       }
     });
 
     const fabricsToCollect = batchData?.fabrics || [];
-    fabricsToCollect.forEach((fabric) => {
+    fabricsToCollect.forEach((fabric: Fabric) => {
       if (fabric.visualSwatchId) {
         ids.add(fabric.visualSwatchId);
       }
@@ -445,7 +442,7 @@ function SustainabilityInner() {
         return [];
       }
       const results = await batchFetchMediaContent(requiredMediaIds);
-      return results.map((r) => ({
+      return results.map((r: { id: number; url?: string; mimeType?: string; filename?: string; type?: string }) => ({
         id: r.id,
         url: r.url || "",
         mimeType: r.mimeType || "image/jpeg",
@@ -471,7 +468,7 @@ function SustainabilityInner() {
   }, [fetchedMediaAssets, backgroundMedia]);
 
   const certificates = unifiedData?.certificationIds
-    ? allCertificates.filter((cert) => unifiedData.certificationIds?.includes(cert.id))
+    ? allCertificates.filter((cert: Certificate) => unifiedData.certificationIds?.includes(cert.id))
     : [];
 
   return (
@@ -581,7 +578,7 @@ function SustainabilityInner() {
 
           {activeImpactMetrics.length > 0 && (
             <div className="grid grid-cols-2 gap-3 w-full md:flex md:flex-row md:flex-wrap md:justify-center md:gap-4 lg:gap-6">
-              {activeImpactMetrics.slice(0, 4).map((metric, index) => (
+              {activeImpactMetrics.slice(0, 4).map((metric: SustainabilityMetric, index: number) => (
                 <StatCard
                   key={metric.id}
                   label={metric.name}
@@ -660,7 +657,7 @@ function SustainabilityInner() {
               role="group"
               aria-label="Sustainability metrics"
             >
-              {activeImpactMetrics.map((metric) => (
+              {activeImpactMetrics.map((metric: SustainabilityMetric) => (
                 <ImpactCounterCard
                   key={metric.id}
                   name={metric.name}

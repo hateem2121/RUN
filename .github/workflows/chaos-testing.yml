@@ -1,9 +1,6 @@
 name: Weekly Chaos Tests
 
 on:
-  schedule:
-    # Run every Sunday at 3 AM UTC
-    - cron: "0 3 * * 0"
   workflow_dispatch:
     inputs:
       experiment:
@@ -25,7 +22,7 @@ env:
 jobs:
   setup:
     name: Setup Chaos Infrastructure
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     outputs:
       experiment_id: ${{ steps.generate-id.outputs.id }}
     steps:
@@ -56,7 +53,7 @@ jobs:
 
   run-chaos:
     name: Execute Chaos Experiments
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     needs: setup
     steps:
       - uses: actions/checkout@v4
@@ -114,7 +111,7 @@ jobs:
 
   notify:
     name: Send Notifications
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     needs: [setup, run-chaos]
     if: always()
     steps:

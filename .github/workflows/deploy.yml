@@ -12,7 +12,7 @@ concurrency:
 jobs:
   backup:
     name: Create Safety Backup
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - name: Create Backup Branch
         uses: neondatabase/create-branch-action@v5
@@ -25,7 +25,7 @@ jobs:
   deploy_db:
     name: Apply Database Migrations
     needs: backup
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     environment: production
     steps:
       - name: Checkout code

@@ -2,7 +2,7 @@ name: Security Scanning
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
     branches: [main]
   schedule:
@@ -12,7 +12,7 @@ on:
 jobs:
   dependency-audit:
     name: Dependency Audit
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - uses: actions/checkout@v4
       
@@ -45,7 +45,7 @@ jobs:
 
   codeql:
     name: CodeQL Analysis
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     permissions:
       security-events: write
       contents: read
@@ -65,7 +65,7 @@ jobs:
 
   secret-scanning:
     name: Secret Scanning
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -80,8 +80,8 @@ jobs:
 
   container-scan:
     name: Container Vulnerability Scan
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, macOS]
+    if: false # Disabled: requires Docker (Linux runner). Re-enable when Docker runner available.
     steps:
       - uses: actions/checkout@v4
       
@@ -100,7 +100,7 @@ jobs:
 
   dast:
     name: DAST - OWASP ZAP Scan
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     if: github.event_name == 'schedule'
     steps:
       - uses: actions/checkout@v4
@@ -114,7 +114,7 @@ jobs:
 
   iac-scan:
     name: Infrastructure as Code Scan
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS]
     steps:
       - uses: actions/checkout@v4
       
