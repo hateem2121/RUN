@@ -17,7 +17,7 @@ interface SmoothScrollOptions {
   easing?: (t: number) => number;
   wrapper?: Window | HTMLElement;
   content?: HTMLElement;
-  onScroll?: (scroll: any) => void;
+  onScroll?: (instance: { scroll: number; limit: number; velocity: number; direction: number; progress: number }) => void;
 }
 
 /**
@@ -39,6 +39,7 @@ export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
     document.documentElement.classList.add("has-scroll-smooth");
 
     const scroll = new LocomotiveScroll({
+      scrollCallback: options.onScroll,
       lenisOptions: {
         lerp: options.lerp ?? 0.1,
         duration: options.duration ?? 1.2,
@@ -55,11 +56,6 @@ export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
     });
 
     scrollRef.current = scroll;
-
-    // Attach onScroll listener if provided
-    if (options.onScroll) {
-      scroll.on("scroll", options.onScroll);
-    }
 
     // Ensure ScrollTrigger is aware of the new scroller
     // v5 handles this mostly automatically, but a refresh is safe

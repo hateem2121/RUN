@@ -11,7 +11,7 @@ import type {
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import LocomotiveScroll from "locomotive-scroll";
+
 import React, { useRef } from "react";
 import { useLoaderData } from "react-router";
 // Import NEW unified sections

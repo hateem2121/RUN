@@ -10,9 +10,9 @@ import type { Fabric } from "@shared/schemas/materials";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import LocomotiveScroll from "locomotive-scroll";
+
 import { ArrowRight, Download } from "lucide-react";
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { isRouteErrorResponse, Link, useLoaderData, useRouteError } from "react-router";
 import { SEOMeta } from "@/components/seo/seo-meta";
 
@@ -419,7 +419,7 @@ function SustainabilityInner() {
       ids.add(hero.backgroundImageId);
     }
 
-    activeInitiatives.forEach((initiative: { imageId?: number }) => {
+    activeInitiatives.forEach((initiative) => {
       if (initiative.imageId) {
         ids.add(initiative.imageId);
       }
