@@ -18,6 +18,7 @@ import type {
   Fiber,
   Folder,
   FooterConfiguration,
+  HomepageFeaturedProductsSettings,
   HomepageHero,
   HomepageProcessCard,
   HomepageSection,
@@ -39,7 +40,9 @@ import type {
   InsertContactPageConfiguration,
   InsertFabric,
   InsertFiber,
+  InsertFooterConfiguration,
   InsertFolder,
+  InsertHomepageFeaturedProductsSettings,
   InsertHomepageHero,
   InsertHomepageProcessCard,
   InsertHomepageSection,
@@ -115,6 +118,8 @@ export interface IUserRepository {
   getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   updateUser(id: string, updates: Partial<User>): Promise<User | undefined>;
+  setAdminStatus(userId: string, isAdmin: boolean): Promise<User | undefined>;
+  getAdminUsers(): Promise<User[]>;
 }
 
 // Category Repository
@@ -127,6 +132,7 @@ export interface ICategoryRepository {
   updateCategory(id: number, category: Partial<InsertCategory>): Promise<Category | undefined>;
   deleteCategory(id: number): Promise<boolean>;
   getCategoriesIncludingDeleted(limit?: number, offset?: number): Promise<Category[]>;
+  getDeletedCategories(): Promise<Category[]>;
   restoreCategory(id: number): Promise<boolean>;
   permanentlyDeleteCategory(id: number): Promise<boolean>;
 }
@@ -180,7 +186,12 @@ export interface ISizeChartRepository {
 }
 
 export interface IAccessoryRepository {
-  getAccessories(): Promise<Accessory[]>;
+  getAccessories(
+    limit?: number,
+    offset?: number,
+    filters?: { category?: string | undefined; search?: string | undefined },
+  ): Promise<Accessory[]>;
+  getAccessoriesCount(filters?: { category?: string | undefined; search?: string | undefined }): Promise<number>;
   getAccessory(id: number): Promise<Accessory | undefined>;
   createAccessory(accessory: InsertAccessory): Promise<Accessory>;
   updateAccessory(id: number, accessory: Partial<InsertAccessory>): Promise<Accessory | undefined>;
@@ -255,8 +266,8 @@ export interface IProductRepository {
   getProducts(limit?: number, offset?: number): Promise<ProductSummary[]>;
   getProductsCursor(
     limit?: number,
-    cursor?: string,
-  ): Promise<{ products: ProductSummary[]; nextCursor: string | null }>;
+    cursor?: number,
+  ): Promise<ProductSummary[]>;
   getHomepageFeaturedProducts(limit?: number): Promise<ProductSummary[]>;
   getProductsSummary(
     limit?: number,
@@ -266,7 +277,10 @@ export interface IProductRepository {
   getProductsCount(): Promise<number>;
   getProductsByCategoryCount(categoryId: number): Promise<number>;
   getProductsByTagCount(tag: string): Promise<number>;
-  searchProductsCount(query: string): Promise<number>;
+  searchProductsCount(
+    query: string,
+    filters?: { categoryId?: number; isActive?: boolean; isFeatured?: boolean },
+  ): Promise<number>;
   getProduct(id: number): Promise<ProductDetail | undefined>;
   getProductsByCategory(
     categoryId: number,
@@ -346,12 +360,14 @@ export interface IInquiryRepository {
     status: string,
     adminNotes?: string,
   ): Promise<Inquiry | undefined>;
+  updateInquiry(id: number, data: Partial<InsertInquiry>): Promise<Inquiry | undefined>;
   deleteInquiry(id: number): Promise<boolean>;
   getInquiryStats(): Promise<{
     byStatus: Record<string, number>;
     bySource: Record<string, number>;
     recentCount: number;
   }>;
+  subscribeToNewsletter(email: string): Promise<boolean>;
 }
 
 // Content Repositories (Homepage, About, Sustainability, Technology, Footer)
@@ -377,7 +393,7 @@ export interface IContentRepository {
   ): Promise<HomepageProcessCard | undefined>;
   deleteHomepageProcessCard(id: number): Promise<boolean>;
   reorderHomepageProcessCards(orderedIds: number[]): Promise<void>;
-  getHomepageSections(): Promise<HomepageSection[]>;
+  getHomepageSections(includeInactive?: boolean): Promise<HomepageSection[]>;
   getHomepageSection(name: string): Promise<HomepageSection | undefined>;
   getHomepageSectionById(id: number): Promise<HomepageSection | undefined>;
   updateHomepageSection(
@@ -400,12 +416,13 @@ export interface IContentRepository {
   // Footer
   getFooterSections(): Promise<unknown[]>;
   getFooterConfiguration(): Promise<FooterConfiguration | undefined>;
+  updateFooterConfiguration(config: Partial<InsertFooterConfiguration>): Promise<FooterConfiguration>;
   createFooterLink(link: unknown): Promise<unknown>;
 
   // About
   getAboutHero(includeInactive?: boolean): Promise<AboutHero | undefined>;
   updateAboutHero(hero: Partial<InsertAboutHero>): Promise<AboutHero>;
-  getAboutTimelineEntries(includeInactive?: boolean): Promise<AboutTimelineEntry[]>;
+  getAboutTimelineEntries(includeInactive?: boolean): Promise<(AboutTimelineEntry & { imageUrl: string | null })[]>;
   getAboutTimelineEntry(id: number): Promise<AboutTimelineEntry | undefined>;
   createAboutTimelineEntry(entry: InsertAboutTimelineEntry): Promise<AboutTimelineEntry>;
   updateAboutTimelineEntry(
@@ -457,7 +474,7 @@ export interface ISustainabilityRepository {
   ): Promise<SustainabilityMetric | undefined>;
   deleteSustainabilityMetric(id: number): Promise<boolean>;
   reorderSustainabilityMetrics(orderedIds: number[]): Promise<void>;
-  getSustainabilityInitiatives(): Promise<SustainabilityInitiative[]>;
+  getSustainabilityInitiatives(includeInactive?: boolean): Promise<SustainabilityInitiative[]>;
   getSustainabilityInitiative(id: number): Promise<SustainabilityInitiative | undefined>;
   createSustainabilityInitiative(
     initiative: InsertSustainabilityInitiative,
@@ -468,7 +485,7 @@ export interface ISustainabilityRepository {
   ): Promise<SustainabilityInitiative | undefined>;
   deleteSustainabilityInitiative(id: number): Promise<boolean>;
   reorderSustainabilityInitiatives(orderedIds: number[]): Promise<void>;
-  getSustainabilityGoals(): Promise<SustainabilityGoal[]>;
+  getSustainabilityGoals(includeInactive?: boolean): Promise<SustainabilityGoal[]>;
   getSustainabilityGoal(id: number): Promise<SustainabilityGoal | undefined>;
   createSustainabilityGoal(goal: InsertSustainabilityGoal): Promise<SustainabilityGoal>;
   updateSustainabilityGoal(
@@ -497,7 +514,7 @@ export interface ISustainabilityRepository {
 export interface IManufacturingRepository {
   getManufacturingHero(): Promise<ManufacturingHero | undefined>;
   updateManufacturingHero(hero: Partial<InsertManufacturingHero>): Promise<ManufacturingHero>;
-  getManufacturingProcesses(): Promise<ManufacturingProcess[]>;
+  getManufacturingProcesses(includeInactive?: boolean): Promise<ManufacturingProcess[]>;
   getManufacturingProcess(id: number): Promise<ManufacturingProcess | undefined>;
   createManufacturingProcess(process: InsertManufacturingProcess): Promise<ManufacturingProcess>;
   updateManufacturingProcess(
@@ -506,7 +523,7 @@ export interface IManufacturingRepository {
   ): Promise<ManufacturingProcess | undefined>;
   deleteManufacturingProcess(id: number): Promise<boolean>;
   reorderManufacturingProcesses(orderedIds: number[]): Promise<void>;
-  getManufacturingCapabilities(): Promise<ManufacturingCapability[]>;
+  getManufacturingCapabilities(includeInactive?: boolean): Promise<ManufacturingCapability[]>;
   getManufacturingCapability(id: number): Promise<ManufacturingCapability | undefined>;
   createManufacturingCapability(
     capability: InsertManufacturingCapability,
@@ -517,7 +534,7 @@ export interface IManufacturingRepository {
   ): Promise<ManufacturingCapability | undefined>;
   deleteManufacturingCapability(id: number): Promise<boolean>;
   reorderManufacturingCapabilities(orderedIds: number[]): Promise<void>;
-  getManufacturingQualities(): Promise<ManufacturingQuality[]>;
+  getManufacturingQualities(includeInactive?: boolean): Promise<ManufacturingQuality[]>;
   getManufacturingQuality(id: number): Promise<ManufacturingQuality | undefined>;
   createManufacturingQuality(quality: InsertManufacturingQuality): Promise<ManufacturingQuality>;
   updateManufacturingQuality(
@@ -531,7 +548,7 @@ export interface IManufacturingRepository {
 export interface ITechnologyRepository {
   getTechnologyHero(): Promise<TechnologyHero | undefined>;
   updateTechnologyHero(hero: Partial<InsertTechnologyHero>): Promise<TechnologyHero>;
-  getTechnologyInnovations(): Promise<TechnologyInnovation[]>;
+  getTechnologyInnovations(includeInactive?: boolean): Promise<TechnologyInnovation[]>;
   getTechnologyInnovation(id: number): Promise<TechnologyInnovation | undefined>;
   createTechnologyInnovation(innovation: InsertTechnologyInnovation): Promise<TechnologyInnovation>;
   updateTechnologyInnovation(
@@ -549,7 +566,7 @@ export interface ITechnologyRepository {
   ): Promise<TechnologyEquipment | undefined>;
   deleteTechnologyEquipment(id: number): Promise<boolean>;
   reorderTechnologyEquipment(orderedIds: number[]): Promise<void>;
-  getTechnologyResearch(): Promise<TechnologyResearch[]>;
+  getTechnologyResearch(includeInactive?: boolean): Promise<TechnologyResearch[]>;
   getTechnologyResearchItem(id: number): Promise<TechnologyResearch | undefined>;
   createTechnologyResearch(research: InsertTechnologyResearch): Promise<TechnologyResearch>;
   updateTechnologyResearch(
@@ -558,7 +575,7 @@ export interface ITechnologyRepository {
   ): Promise<TechnologyResearch | undefined>;
   deleteTechnologyResearch(id: number): Promise<boolean>;
   reorderTechnologyResearch(orderedIds: number[]): Promise<void>;
-  getTechnologyRoadmap(): Promise<TechnologyRoadmap[]>;
+  getTechnologyRoadmap(includeInactive?: boolean): Promise<TechnologyRoadmap[]>;
   getTechnologyRoadmapItem(id: number): Promise<TechnologyRoadmap | undefined>;
   createTechnologyRoadmap(roadmap: InsertTechnologyRoadmap): Promise<TechnologyRoadmap>;
   updateTechnologyRoadmap(
@@ -575,6 +592,7 @@ export interface ITechnologyRepository {
   getTechnologyCta(): Promise<TechnologyCta | undefined>;
   updateTechnologyCta(cta: Partial<InsertTechnologyCta>): Promise<TechnologyCta>;
   createTechnologyCta(cta: InsertTechnologyCta): Promise<TechnologyCta>;
+  deleteTechnologyCta(id: number): Promise<boolean>;
 }
 
 // Webhook Repository

@@ -1,4 +1,5 @@
 import type {
+  AboutBatchResponse,
   AboutHero,
   AboutMapLocation,
   AboutSection,
@@ -17,6 +18,7 @@ import type {
   Fiber,
   Folder,
   FooterConfiguration,
+  HomepageFeaturedProductsSettings,
   HomepageHero,
   HomepageProcessCard,
   HomepageSection,
@@ -40,6 +42,8 @@ import type {
   InsertFabric,
   InsertFiber,
   InsertFolder,
+  InsertFooterConfiguration,
+  InsertHomepageFeaturedProductsSettings,
   InsertHomepageHero,
   InsertHomepageProcessCard,
   InsertHomepageSection,
@@ -498,8 +502,15 @@ export class MemoryStorage implements IStorage {
   }
 
   // Accessory Repository
-  async getAccessories(): Promise<Accessory[]> {
+  async getAccessories(
+    _limit?: number,
+    _offset?: number,
+    _filters?: { category?: string; search?: string },
+  ): Promise<Accessory[]> {
     return Array.from(this.accessories.values()).filter((f) => !f.deletedAt);
+  }
+  async getAccessoriesCount(_filters?: { category?: string; search?: string }): Promise<number> {
+    return Array.from(this.accessories.values()).filter((f) => !f.deletedAt).length;
   }
   async getAccessory(id: number): Promise<Accessory | undefined> {
     return this.accessories.get(id);
@@ -801,18 +812,12 @@ export class MemoryStorage implements IStorage {
   }
   async getProductsCursor(
     limit = 100,
-    cursor?: string,
-  ): Promise<{ products: ProductSummary[]; nextCursor: string | null }> {
-    const products = Array.from(this.products.values()).filter((p) => p.isActive && !p.deletedAt);
-    const startIndex = cursor ? Number.parseInt(cursor, 10) : 0;
-    const paginated = products.slice(startIndex, startIndex + limit);
-    const nextCursor =
-      startIndex + limit < products.length ? (startIndex + limit).toString() : null;
-
-    return {
-      products: paginated as unknown as ProductSummary[],
-      nextCursor,
-    };
+    cursor?: number,
+  ): Promise<ProductSummary[]> {
+    const allProducts = Array.from(this.products.values()).filter((p) => p.isActive && !p.deletedAt);
+    const startIndex = cursor ? allProducts.findIndex((p) => p.id < cursor) : 0;
+    const actualStart = startIndex === -1 ? 0 : startIndex;
+    return allProducts.slice(actualStart, actualStart + limit) as unknown as ProductSummary[];
   }
   async getFeaturedProducts(limit = 100, offset = 0): Promise<ProductSummary[]> {
     const all = Array.from(this.products.values()).filter(
@@ -913,13 +918,42 @@ export class MemoryStorage implements IStorage {
   async permanentlyDeleteProduct(id: number): Promise<boolean> {
     return this.products.delete(id);
   }
-  async getHomepageFeaturedProductsSettings(): Promise<Record<string, unknown>> {
-    return {};
+  async getHomepageFeaturedProductsSettings(): Promise<HomepageFeaturedProductsSettings> {
+    return {
+      id: 1,
+      title: null,
+      maxProducts: 8,
+      autoSelect: true,
+      selectedProductIds: null,
+      sortBy: "featured",
+      isActive: true,
+      isEnabled: true,
+      dotGrid: null,
+      liquidGlass: null,
+      swipeAnimation: null,
+      createdAt: null,
+      updatedAt: null,
+    };
   }
   async updateHomepageFeaturedProductsSettings(
-    settings: Record<string, unknown>,
-  ): Promise<Record<string, unknown>> {
-    return settings;
+    settings: Partial<InsertHomepageFeaturedProductsSettings>,
+  ): Promise<HomepageFeaturedProductsSettings> {
+    return {
+      id: 1,
+      title: null,
+      maxProducts: 8,
+      autoSelect: true,
+      selectedProductIds: null,
+      sortBy: "featured",
+      isActive: true,
+      isEnabled: true,
+      dotGrid: null,
+      liquidGlass: null,
+      swipeAnimation: null,
+      createdAt: null,
+      updatedAt: null,
+      ...settings,
+    } as HomepageFeaturedProductsSettings;
   }
 
   // Navigation Repository
@@ -1008,10 +1042,9 @@ export class MemoryStorage implements IStorage {
     return link;
   }
   async updateFooterConfiguration(
-    _id: number,
-    config: Partial<FooterConfiguration>,
-  ): Promise<FooterConfiguration | undefined> {
-    return config as unknown as FooterConfiguration;
+    config: Partial<InsertFooterConfiguration>,
+  ): Promise<FooterConfiguration> {
+    return { id: 1, ...config } as unknown as FooterConfiguration;
   }
 
   // Inquiry Repository
@@ -1035,6 +1068,13 @@ export class MemoryStorage implements IStorage {
     const i = this.inquiries.get(id);
     if (!i) return undefined;
     const updated = { ...i, status, adminNotes };
+    this.inquiries.set(id, updated as Inquiry);
+    return updated as Inquiry;
+  }
+  async updateInquiry(id: number, data: Partial<InsertInquiry>): Promise<Inquiry | undefined> {
+    const i = this.inquiries.get(id);
+    if (!i) return undefined;
+    const updated = { ...i, ...data };
     this.inquiries.set(id, updated as Inquiry);
     return updated as Inquiry;
   }
@@ -1210,10 +1250,11 @@ export class MemoryStorage implements IStorage {
     this.aboutHeroes.set(updated.id, updated);
     return updated;
   }
-  async getAboutTimelineEntries(includeInactive?: boolean): Promise<AboutTimelineEntry[]> {
+  async getAboutTimelineEntries(includeInactive?: boolean): Promise<(AboutTimelineEntry & { imageUrl: string | null })[]> {
     return Array.from(this.aboutTimelineEntries.values())
       .filter((e) => includeInactive || e.isActive)
-      .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+      .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+      .map((e) => ({ ...e, imageUrl: null }));
   }
   async getAboutTimelineEntry(id: number): Promise<AboutTimelineEntry | undefined> {
     return this.aboutTimelineEntries.get(id);
@@ -1359,12 +1400,12 @@ export class MemoryStorage implements IStorage {
   }
   async getAboutBatch(): Promise<AboutBatchResponse> {
     return {
-      hero: await this.getAboutHero(),
+      hero: (await this.getAboutHero()) ?? null,
       timeline: await this.getAboutTimelineEntries(),
-      mapLocations: await this.getAboutMapLocations(),
+      locations: await this.getAboutMapLocations(),
       sections: await this.getAboutSections(),
       statistics: await this.getAboutStatistics(),
-      teamMessage: await this.getAboutTeamMessage(),
+      teamMessage: (await this.getAboutTeamMessage()) ?? null,
     };
   }
 
@@ -2025,6 +2066,9 @@ export class MemoryStorage implements IStorage {
     this.technologyCta.set(id, newItem);
     return newItem;
   }
+  async deleteTechnologyCta(id: number): Promise<boolean> {
+    return this.technologyCta.delete(id);
+  }
 
   // Webhook Repository
   async getWebhookSubscriptions(): Promise<WebhookSubscription[]> {
@@ -2321,8 +2365,8 @@ export class MemoryStorage implements IStorage {
   async addCrmLog(_inquiryId: number, _log: string): Promise<void> {
     // Mock
   }
-  async subscribeToNewsletter(email: string): Promise<{ success: boolean }> {
-    return { success: true };
+  async subscribeToNewsletter(_email: string): Promise<boolean> {
+    return true;
   }
   async getDeletedCategories(): Promise<Category[]> {
     return Array.from(this.categories.values()).filter((c) => !!c.deletedAt);

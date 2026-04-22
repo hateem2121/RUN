@@ -322,7 +322,7 @@ export class ProductRepository {
   // Used by getProductsSummary to avoid COUNT(*) OVER() window function overhead
   async getProductCount(): Promise<number> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().getProductCount();
+      return StorageSingleton.getInstance().getProductsCount();
     }
     const cacheKey = CacheKeys.products.totalCount();
     const cached = await unifiedCache.get<number>(cacheKey);

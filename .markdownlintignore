@@ -3,3 +3,8 @@ node_modules/
 dist/
 build/
 coverage/
+.agent/
+.claude/
+docs/audit/
+findings.md
+task_plan.md

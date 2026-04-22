@@ -14,7 +14,6 @@
 |---|---|---|---|---|---|
 | 2026-03-27 | First Pass | ~6.0/10 | 3 | 5 | Claude Code Sonnet 4.6 |
 | 2026-03-29 | Second Pass (post-remediation) | 6.7/10 | 4 | 6 | Claude Code Sonnet 4.6 |
-<<<<<<< HEAD
 | 2026-04-04 | Third Pass (post-remediation) | 8.5/10 | 0 | 2 | Claude Code Sonnet 4.6 |
 
 ### Third Pass Top 3 Findings (2026-04-04)
