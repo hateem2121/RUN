@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.0.0] - 2026-04-04
 
 ### Added
+
 - PodDisruptionBudget for K8s deployments (minAvailable: 1)
 - Separate health check endpoints: `/healthz` (liveness), `/readyz` (readiness)
 - 404 catch-all route (`$.tsx`) for unmatched paths
@@ -46,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ADR-0017: GSAP over Framer Motion decision record
 
 ### Changed
+
 - Replaced `shrink-ray-current` with `compression` for HTTP compression
 - Raised Vitest coverage thresholds: lines/functions/statements to 80%, branches to 75%
 - Sentry `tracesSampleRate` reduced to 0.1 in production
@@ -55,12 +57,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Single-branch model: all work on `main` (no feature branches)
 
 ### Removed
+
 - `request`, `node-zopfli-es`, `shrink-ray-current` from dependencies
 - `three` from client dependencies (using `@google/model-viewer` only)
 - `continue-on-error: true` from CI workflow lint, security, and docs steps
 - Route-level try/catch from `/api/health/db` endpoint (Express 5 pattern)
 
 ### Security
+
 - Eliminated 2 critical and 1 high npm audit vulnerabilities
 - Added session destruction on logout
 - Clear session cookie on logout
@@ -68,6 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.0.0] - 2026-03-31
 
 ### Added
+
 - Agentic Sportswear Factory v3.0.0
 - B.L.A.S.T. Protocol integration
 - Neon Serverless Postgres via Drizzle ORM

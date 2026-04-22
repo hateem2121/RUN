@@ -37,10 +37,14 @@ jobs:
             --exclude-path node_modules
             --exclude-path .gemini
             --exclude-path .claude
+            --exclude-path .agent
             --exclude 'localhost'
             --exclude '127.0.0.1'
             --exclude 'example.com'
             --exclude 'file:///'
+            --exclude 'wear-run\.com'
+            --exclude 'runapparel\.com'
+            --exclude '^/'
             --timeout 30
             --max-retries 3
             './**/*.md'

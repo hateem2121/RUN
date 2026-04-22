@@ -69,6 +69,8 @@ jobs:
       - run: npm ci
       - name: Build Shared Declarations
         run: npm run build --prefix shared
+      - name: Build Server Declarations
+        run: npx tsc -b server/tsconfig.json
       - name: Run Biome Check
         run: npm run check
 
@@ -153,7 +155,7 @@ jobs:
       - name: Build Shared Locally
         run: npm run build --prefix shared
       - name: Push Database Schema
-        continue-on-error: true
+        continue-on-error: ${{ steps.create_neon_branch.outcome == 'failure' }}
         run: npm run db:push
         env:
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url_with_pooler }}

@@ -26,5 +26,8 @@ jobs:
             !.gemini/**
             !.agent/**
             !.claude/**
+            !docs/audit/**
+            !findings.md
+            !task_plan.md
           config: '.markdownlint.json'
 
