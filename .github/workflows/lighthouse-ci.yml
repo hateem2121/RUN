@@ -34,3 +34,7 @@ jobs:
           temporaryPublicStorage: true
         env:
           DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
+          SESSION_SECRET: placeholder_session_secret_min_32_chars_long
+          JWT_SECRET: placeholder_jwt_secret_min_32_chars_long
+          ENCRYPTION_KEY: placeholder_encryption_key_min_32_chars_long
+          INITIAL_ADMIN_EMAIL: admin@example.com
