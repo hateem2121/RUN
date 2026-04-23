@@ -38,8 +38,7 @@ export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
     // Add a class to html to signal smooth scroll is active (used for CSS overrides)
     document.documentElement.classList.add("has-scroll-smooth");
 
-    const scroll = new LocomotiveScroll({
-      scrollCallback: options.onScroll,
+    const scrollConfig: any = {
       lenisOptions: {
         lerp: options.lerp ?? 0.1,
         duration: options.duration ?? 1.2,
@@ -53,7 +52,13 @@ export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
         wrapper: options.wrapper ?? window,
         content: options.content ?? document.documentElement,
       },
-    });
+    };
+
+    if (options.onScroll) {
+      scrollConfig.scrollCallback = options.onScroll;
+    }
+
+    const scroll = new LocomotiveScroll(scrollConfig);
 
     scrollRef.current = scroll;
 

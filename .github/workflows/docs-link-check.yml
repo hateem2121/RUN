@@ -32,7 +32,7 @@ jobs:
           if ! command -v lychee &> /dev/null; then
             brew install lychee
           fi
-          lychee --verbose --no-progress --accept 200,204,206,301,302,304,307,308 --exclude-path node_modules --exclude-path .gemini --exclude-path .claude --exclude-path .agent --exclude 'localhost' --exclude '127.0.0.1' --exclude 'example.com' --exclude 'file:///' --exclude 'wear-run\.com' --exclude 'runapparel\.com' --exclude '^/' --timeout 30 --max-retries 3 './**/*.md'
+          lychee --verbose --no-progress --accept 200,204,206,301,302,304,307,308 --exclude-path node_modules --exclude-path .gemini --exclude-path .claude --exclude-path .agent --exclude 'localhost' --exclude '127.0.0.1' --exclude 'example.com' --exclude 'file:///' --exclude 'wear-run\.com' --exclude 'runapparel\.com' --exclude 'github\.com/hateem2121/RUN' --exclude '^/' --timeout 30 --max-retries 3 './**/*.md'
 
       - name: Upload Link Check Report
         uses: actions/upload-artifact@v4

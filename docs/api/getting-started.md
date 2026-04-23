@@ -57,6 +57,6 @@ If you exceed these limits, the API will return a `429 Too Many Requests` status
 
 ## Next Steps
 
-- Explore the [API Reference](/api-docs) for detailed endpoint specifications.
+- Explore the [API Reference](https://wear-run.com/api-docs) for detailed endpoint specifications.
 - Set up [Webhooks](./webhooks-guide.md) to receive real-time updates.
-- Try out requests in the [Interactive Playground](/developer/playground).
+- Try out requests in the [Interactive Playground](https://wear-run.com/developer/playground).
