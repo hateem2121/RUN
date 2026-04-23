@@ -49,3 +49,5 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
           INITIAL_ADMIN_EMAIL: ${{ secrets.INITIAL_ADMIN_EMAIL }}
+          CLOUD_TASKS_AUDIENCE: "placeholder"
+          CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"

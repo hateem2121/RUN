@@ -159,11 +159,15 @@ jobs:
         run: npm run db:push
         env:
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url_with_pooler }}
+          CLOUD_TASKS_AUDIENCE: "placeholder"
+          CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
 
       - name: Run Tests with Coverage
         run: npx vitest run --coverage
         env:
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url_with_pooler }}
+          CLOUD_TASKS_AUDIENCE: "placeholder"
+          CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
 
       - name: Check Coverage Thresholds
         run: |
@@ -218,6 +222,8 @@ jobs:
         run: npm run build
         env:
           DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
+          CLOUD_TASKS_AUDIENCE: "placeholder"
+          CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
 
       - name: Check Bundle Size
         run: npm run check:bundle
