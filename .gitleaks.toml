@@ -1,0 +1,5 @@
+[allowlist]
+paths = [
+    '''.github/workflows/lighthouse-ci.yml''',
+    '''.github/workflows/visual-regression.yml'''
+]
