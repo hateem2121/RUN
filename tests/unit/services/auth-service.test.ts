@@ -125,6 +125,51 @@ describe("AuthService", () => {
       process.env.BYPASS_RBAC_FOR_TESTING = "false";
     });
 
+    // RUN-SEC-004: Prod-guard regression tests — the bypass must NEVER work in production
+    it("should allow bypass in non-production environments (test-only mode)", async () => {
+      const originalNodeEnv = process.env.NODE_ENV;
+      process.env.BYPASS_RBAC_FOR_TESTING = "true";
+      process.env.NODE_ENV = "test";
+      try {
+        const { authService } = await import("../../../server/services/auth-service.js");
+        const req = { isAuthenticated: () => false } as unknown as Request;
+        const res = { status: vi.fn().mockReturnThis(), json: vi.fn() } as unknown as Response;
+        const next = vi.fn();
+
+        await authService.requireAdmin(req, res, next);
+
+        expect(next).toHaveBeenCalled();
+        expect(res.status).not.toHaveBeenCalled();
+      } finally {
+        process.env.BYPASS_RBAC_FOR_TESTING = "false";
+        process.env.NODE_ENV = originalNodeEnv;
+      }
+    });
+
+    it("should NOT allow bypass when NODE_ENV=production (fail-closed guard)", async () => {
+      const originalNodeEnv = process.env.NODE_ENV;
+      process.env.BYPASS_RBAC_FOR_TESTING = "true";
+      process.env.NODE_ENV = "production";
+      try {
+        const { authService, AuthErrors } = await import("../../../server/services/auth-service.js");
+        const req = {
+          isAuthenticated: () => false,
+          user: undefined,
+        } as unknown as Request;
+        const res = { status: vi.fn().mockReturnThis(), json: vi.fn() } as unknown as Response;
+        const next = vi.fn();
+
+        await authService.requireAdmin(req, res, next);
+
+        // In production, BYPASS_RBAC_FOR_TESTING is ignored — auth is enforced
+        expect(next).not.toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(AuthErrors.SESSION_EXPIRED.status);
+      } finally {
+        process.env.BYPASS_RBAC_FOR_TESTING = "false";
+        process.env.NODE_ENV = originalNodeEnv;
+      }
+    });
+
     it("should return SESSION_EXPIRED for unauthenticated requests", async () => {
       const { authService, AuthErrors } = await import("../../../server/services/auth-service.js");
 

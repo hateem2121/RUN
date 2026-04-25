@@ -14,6 +14,9 @@ on:
           - memory-pressure
           - pod-delete
 
+permissions:
+  contents: read
+
 env:
   CLUSTER_NAME: run-apparel-cluster
   CLUSTER_ZONE: us-central1-a
@@ -26,19 +29,19 @@ jobs:
     outputs:
       experiment_id: ${{ steps.generate-id.outputs.id }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       
       - name: Generate Experiment ID
         id: generate-id
         run: echo "id=chaos-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
 
       - name: Authenticate to GCP
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2.1.13
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
+        uses: google-github-actions/setup-gcloud@e427ad8a34f8676edf47cf7d7925499adf3eb74f # v2.2.1
 
       - name: Get GKE Credentials
         run: |
@@ -56,10 +59,10 @@ jobs:
     runs-on: [self-hosted, macOS]
     needs: setup
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Authenticate to GCP
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2.1.13
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
@@ -97,7 +100,7 @@ jobs:
           echo "- ❌ Failed: $FAILED" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Results Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: chaos-results-${{ needs.setup.outputs.experiment_id }}
           path: chaos-results.json

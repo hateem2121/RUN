@@ -4,6 +4,11 @@ import { adminService as defaultAdminService } from "../services/admin/admin.ser
 import { AuthErrors, authService } from "../services/auth-service.js";
 import type { SessionUser } from "../types/session.js";
 
+// Boot-time assertion: RBAC bypass must never ship to production.
+if (process.env.NODE_ENV === "production" && process.env.BYPASS_RBAC_FOR_TESTING === "true") {
+  throw new Error("CRITICAL SECURITY ERROR: BYPASS_RBAC_FOR_TESTING must be false in production.");
+}
+
 /**
  * Role-Based Access Control Middleware
  * Enforces role restrictions at the route level.
@@ -13,8 +18,8 @@ export function requireRole(...allowedRoles: string[]) {
   return async (req: Request, res: Response, next: NextFunction) => {
     // Get the admin service from app context (for tests) or fallback to singleton
     const adminService = req.app?.get("adminService") || defaultAdminService;
-    // 0. Test-only bypass (Disabled in production via env validation)
-    if (process.env.BYPASS_RBAC_FOR_TESTING === "true") {
+    // 0. Test-only bypass — only honored outside production (boot assertion above guards prod).
+    if (process.env.BYPASS_RBAC_FOR_TESTING === "true" && process.env.NODE_ENV !== "production") {
       logger.warn(
         "[RBAC] ⚠️ Role check bypassed via BYPASS_RBAC_FOR_TESTING flag. THIS SHOULD NEVER HAPPEN IN PRODUCTION.",
       );
