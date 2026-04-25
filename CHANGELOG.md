@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.2] - 2026-04-26
+
+### Security
+
+- **RBAC bypass fail-closed in production** (`server/middleware/rbac.ts`, `server/services/auth-service.ts`): `BYPASS_RBAC_FOR_TESTING` is now a dead letter in production. A boot-time assertion throws `CRITICAL SECURITY ERROR` if the flag is set with `NODE_ENV=production`. The per-request guard in both `requireRole()` and `requireAdmin()` additionally checks `NODE_ENV !== "production"` so even if the boot assertion were somehow bypassed, role enforcement is still enforced server-side on every request.
+- **GitHub Actions least-privilege permissions**: All 14 CI/CD workflows now carry a top-level `permissions: contents: read` block (or tighter per-job overrides where write access is needed). This limits the blast radius of a compromised workflow or supply-chain attack to read-only access to the repository.
+- **Supply-chain hardening via SHA-pinned actions**: All 69 third-party GitHub Action references across the 14 workflows are now pinned to immutable commit SHAs with version comments (e.g. `actions/checkout@34e1148...  # v4.3.1`). Floating tags (e.g. `@v4`) are mutable and have been the vector for several high-profile supply-chain attacks (e.g. tj-actions/changed-files).
+
+### Fixed
+
+- **Vitest runner-cache pollution eliminated** (`vitest.config.ts`): `.github/runner/**` is now in the `exclude` list. The self-hosted runner left a stale project checkout under `.github/runner/_work/` that vitest was collecting as a second copy of the test suite, producing 803 phantom test files and 45 phantom failures on every `npm test` run.
+
+### Added
+
+- **Regression tests for production RBAC guard** (`tests/unit/services/auth-service.test.ts`): Two new tests verify the `requireAdmin` bypass invariant: (1) bypass is honored in `NODE_ENV=test`; (2) bypass is silently ignored in `NODE_ENV=production`, enforcing real auth.
+
 ## [4.0.1] - 2026-04-14
 
 ### Fixed

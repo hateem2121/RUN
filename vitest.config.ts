@@ -20,6 +20,7 @@ export default defineConfig({
       "**/build/**",
       "**/.{idea,git,cache,output,temp}/**",
       ".claude/**",
+      ".github/runner/**",
       "e2e/**",
       "tests/e2e/**",
     ],
