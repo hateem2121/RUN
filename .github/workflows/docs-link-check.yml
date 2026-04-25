@@ -18,6 +18,9 @@ on:
     - cron: '0 3 * * 0'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   link-check:
     name: Check Documentation Links
@@ -25,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Link Checker
         run: |
@@ -35,7 +38,7 @@ jobs:
           lychee --verbose --no-progress --accept 200,204,206,301,302,304,307,308 --exclude-path node_modules --exclude-path .gemini --exclude-path .claude --exclude-path .agent --exclude 'localhost' --exclude '127.0.0.1' --exclude 'example.com' --exclude 'file:///' --exclude 'wear-run\.com' --exclude 'runapparel\.com' --exclude 'github\.com/hateem2121/RUN' --exclude '^/' --timeout 30 --max-retries 3 './**/*.md'
 
       - name: Upload Link Check Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: failure()
         with:
           name: link-check-report

@@ -11,13 +11,16 @@ on:
         required: false
         default: 'https://staging.runapparel.com'
 
+permissions:
+  contents: read
+
 jobs:
   zap-scan:
     name: OWASP ZAP Full Scan
     runs-on: [self-hosted, macOS]
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       
       - name: Set target URL
         id: target
@@ -29,7 +32,7 @@ jobs:
           fi
       
       - name: ZAP Full Scan
-        uses: zaproxy/action-full-scan@v0.10.0
+        uses: zaproxy/action-full-scan@d2a07475d467566c9a3e3c700f31f47724aa1060 # v0.10.0
         with:
           target: ${{ steps.target.outputs.url }}
           rules_file_name: '.zap/rules.tsv'
@@ -37,7 +40,7 @@ jobs:
           allow_issue_writing: false
       
       - name: Upload ZAP HTML Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
           name: zap-report-html
@@ -45,7 +48,7 @@ jobs:
           retention-days: 30
       
       - name: Upload ZAP JSON Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
           name: zap-report-json
@@ -65,7 +68,7 @@ jobs:
       
       - name: Notify on Critical Issues
         if: failure()
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@fcfb566f8b0aab22203f066d80ca1d7e4b5d05b3 # v1.27.1
         with:
           payload: |
             {

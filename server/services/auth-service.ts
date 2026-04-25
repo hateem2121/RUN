@@ -374,7 +374,7 @@ export class AuthService {
    * Middleware: Require admin role
    */
   public requireAdmin: RequestHandler = async (req, res, next) => {
-    if (process.env.BYPASS_RBAC_FOR_TESTING === "true") {
+    if (process.env.BYPASS_RBAC_FOR_TESTING === "true" && process.env.NODE_ENV !== "production") {
       logger.warn("[AuthService] ⚠️ Admin check bypassed due to BYPASS_RBAC_FOR_TESTING flag");
       return next();
     }

@@ -26,6 +26,9 @@ on:
     paths:
       - 'ops/load-testing/**'
 
+permissions:
+  contents: read
+
 env:
   STAGING_URL: https://staging.runapparel.com
   PRODUCTION_URL: https://runapparel.com
@@ -35,10 +38,10 @@ jobs:
     name: Run Load Test
     runs-on: [self-hosted, macOS]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Setup k6
-        uses: grafana/setup-k6-action@v1
+        uses: grafana/setup-k6-action@ffe7d7290dfa715e48c2ccc924d068444c94bde2 # v1.1.0
 
       - name: Set Target URL
         id: target
@@ -99,7 +102,7 @@ jobs:
           fi
 
       - name: Upload Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
           name: load-test-results-${{ github.run_number }}
@@ -132,9 +135,12 @@ jobs:
     needs: load-test
     runs-on: [self-hosted, macOS]
     if: failure()
+    permissions:
+      contents: read
+      issues: write
     steps:
       - name: Create Issue
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         with:
           script: |
             github.rest.issues.create({
