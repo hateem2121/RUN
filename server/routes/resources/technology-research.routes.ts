@@ -19,7 +19,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { insertTechnologyResearchSchema } from "../../../shared/index.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
-import { pageContentRepository } from "../../lib/db/repositories/index.js";
+import { technologyRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { authService } from "../../services/auth-service.js";
@@ -41,7 +41,7 @@ const reorderSchema = z.object({
 
 router.get("/", async (_req, res) => {
   const research = await withTimeout(
-    pageContentRepository.getTechnologyResearch(),
+    technologyRepository.getTechnologyResearch(),
     10000,
     "Get technology research",
   );
@@ -54,7 +54,7 @@ router.get("/:id", async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
   const item = await withTimeout(
-    pageContentRepository.getTechnologyResearchItem(id),
+    technologyRepository.getTechnologyResearchItem(id),
     10000,
     "Get technology research item",
   );
@@ -79,7 +79,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
   }
 
   const newResearch = await withTimeout(
-    pageContentRepository.createTechnologyResearch(removeUndefined(validation.data)),
+    technologyRepository.createTechnologyResearch(removeUndefined(validation.data)),
     10000,
     "Create technology research",
   );
@@ -107,7 +107,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
   }
 
   const updated = await withTimeout(
-    pageContentRepository.updateTechnologyResearch(id, removeUndefined(validation.data)),
+    technologyRepository.updateTechnologyResearch(id, removeUndefined(validation.data)),
     10000,
     "Update technology research",
   );
@@ -130,7 +130,7 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
   const deleted = await withTimeout(
-    pageContentRepository.deleteTechnologyResearch(id),
+    technologyRepository.deleteTechnologyResearch(id),
     10000,
     "Delete technology research",
   );
@@ -162,7 +162,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
 
   const updates = await Promise.all(
     removeUndefined(validation.data).research.map(({ id, position }) =>
-      pageContentRepository.updateTechnologyResearch(id, { sortOrder: position }),
+      technologyRepository.updateTechnologyResearch(id, { sortOrder: position }),
     ),
   );
 

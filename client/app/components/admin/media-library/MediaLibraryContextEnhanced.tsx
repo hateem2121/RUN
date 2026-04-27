@@ -10,18 +10,22 @@ import {
   useReducer,
   useState,
 } from "react";
-import { useSearchParams } from "react-router";
-import { useDebounce } from "@/hooks/use-debounce";
 import { useToast } from "@/hooks/use-toast";
 import { invalidateMediaQueries, MediaQueryKeys } from "@/lib/media-query-keys";
+
+// Import extracted hooks
+import { useMediaFilters } from "./hooks/useMediaFilters";
+import { useMediaSelection } from "./hooks/useMediaSelection";
+import { useMediaUrlSync } from "./hooks/useMediaUrlSync";
 
 // Type aliases for union types to reduce complexity
 type UploadStatus = "pending" | "uploading" | "processing" | "complete" | "error";
 type SyncStatus = "idle" | "syncing" | "success" | "error";
 
-// Consolidated State Interface - Includes all functionality from hooks
+// ─── State & Action Definitions ────────────────────────────────────────────────
+
 export interface MediaLibraryState {
-  // Core Display & Navigation (8 properties)
+  // Core Display & Navigation
   searchTerm: string;
   selectedType: string;
   selectedAssets: Set<number>;
@@ -30,20 +34,20 @@ export interface MediaLibraryState {
   sortOrder: "asc" | "desc";
   showFiltersPanel: boolean;
 
-  // Advanced Filters (from useMediaFilters) - (4 properties)
+  // Advanced Filters
   folderFilter: string;
   tagFilters: string[];
   dateRange: { from?: Date; to?: Date };
   sizeRange: { min?: number | undefined; max?: number };
 
-  // Modal State (3 properties)
+  // Modal State
   selectedAsset: MediaAsset | null;
   selectedAssetIndex: number;
   lightboxOpen: boolean;
   editModalOpen: boolean;
   deleteModalOpen: boolean;
 
-  // Upload State (from useMediaUpload) - (3 properties)
+  // Upload State
   uploadProgress: Record<
     string,
     {
@@ -55,20 +59,19 @@ export interface MediaLibraryState {
   isUploading: boolean;
   syncStatus: SyncStatus;
 
-  // Pagination State (3 properties)
+  // Pagination State
   currentPage: number;
   totalPages: number;
   totalAssets: number;
 
-  // Error Handling (1 property)
+  // Error Handling
   errorState: {
     hasError: boolean;
     errorMessage: string;
   };
 }
 
-// Consolidated Actions
-type MediaLibraryAction =
+export type MediaLibraryAction =
   // Basic filters
   | { type: "SET_SEARCH_TERM"; payload: string }
   | { type: "SET_SELECTED_TYPE"; payload: string }
@@ -115,7 +118,6 @@ type MediaLibraryAction =
   | { type: "RESET_STATE" };
 
 const initialState: MediaLibraryState = {
-  // Core functionality
   searchTerm: "",
   selectedType: "all",
   selectedAssets: new Set(),
@@ -124,30 +126,25 @@ const initialState: MediaLibraryState = {
   sortOrder: "desc",
   showFiltersPanel: true,
 
-  // Advanced filters
   folderFilter: "",
   tagFilters: [],
   dateRange: {},
   sizeRange: {},
 
-  // Modal state
   selectedAsset: null,
   selectedAssetIndex: 0,
   lightboxOpen: false,
   editModalOpen: false,
   deleteModalOpen: false,
 
-  // Upload state
   uploadProgress: {},
   isUploading: false,
   syncStatus: "idle",
 
-  // Pagination state
   currentPage: 1,
   totalPages: 1,
   totalAssets: 0,
 
-  // Error handling
   errorState: {
     hasError: false,
     errorMessage: "",
@@ -159,7 +156,6 @@ function mediaLibraryReducer(
   action: MediaLibraryAction,
 ): MediaLibraryState {
   switch (action.type) {
-    // Basic filters
     case "SET_SEARCH_TERM":
       return { ...state, searchTerm: action.payload };
     case "SET_SELECTED_TYPE":
@@ -175,7 +171,6 @@ function mediaLibraryReducer(
     case "SET_SHOW_FILTERS_PANEL":
       return { ...state, showFiltersPanel: action.payload };
 
-    // Advanced filters
     case "SET_FOLDER_FILTER":
       return { ...state, folderFilter: action.payload };
     case "SET_TAG_FILTERS":
@@ -185,7 +180,6 @@ function mediaLibraryReducer(
     case "SET_SIZE_RANGE":
       return { ...state, sizeRange: action.payload };
 
-    // Modal actions
     case "SET_SELECTED_ASSET":
       return { ...state, selectedAsset: action.payload };
     case "SET_SELECTED_ASSET_INDEX":
@@ -197,7 +191,6 @@ function mediaLibraryReducer(
     case "SET_DELETE_MODAL_OPEN":
       return { ...state, deleteModalOpen: action.payload };
 
-    // Upload actions
     case "SET_UPLOAD_PROGRESS":
       return { ...state, uploadProgress: action.payload };
     case "SET_IS_UPLOADING":
@@ -205,7 +198,6 @@ function mediaLibraryReducer(
     case "SET_SYNC_STATUS":
       return { ...state, syncStatus: action.payload };
 
-    // Pagination actions
     case "SET_CURRENT_PAGE":
       return { ...state, currentPage: action.payload };
     case "SET_TOTAL_PAGES":
@@ -213,7 +205,6 @@ function mediaLibraryReducer(
     case "SET_TOTAL_ASSETS":
       return { ...state, totalAssets: action.payload };
 
-    // Error actions
     case "SET_ERROR_STATE":
       return { ...state, errorState: action.payload };
     case "RESET_STATE":
@@ -223,15 +214,15 @@ function mediaLibraryReducer(
   }
 }
 
-// Consolidated Context Type - All functionality from three hooks
+// ─── Context Type ──────────────────────────────────────────────────────────────
+
 interface MediaLibraryContextType {
   state: MediaLibraryState;
   dispatch: React.Dispatch<MediaLibraryAction>;
 
-  // Consolidated state updater (replaces 6 individual setters)
   updateState: <K extends keyof MediaLibraryState>(key: K, value: MediaLibraryState[K]) => void;
 
-  // Advanced filter methods (from useMediaFilters)
+  // Filter methods (from useMediaFilters)
   updateFilter: <K extends keyof MediaLibraryState>(key: K, value: MediaLibraryState[K]) => void;
   resetFilters: () => void;
   clearSearch: () => void;
@@ -243,7 +234,7 @@ interface MediaLibraryContextType {
   getQueryParams: URLSearchParams;
   debouncedSearch: string;
 
-  // Simplified selection methods (reduced from 8 to 4 functions)
+  // Selection methods (from useMediaSelection)
   selectionData: {
     count: number;
     totalSize: number;
@@ -258,11 +249,11 @@ interface MediaLibraryContextType {
   isSelected: (assetId: number) => boolean;
 
   // Missing functions needed by MediaSelectionWrapperUnified
-  assets: MediaAsset[]; // Expose assets array for direct access
+  assets: MediaAsset[];
   selectAssets: (assetIds: number[]) => void;
   setSelectedType: (type: string) => void;
 
-  // Upload methods (from useMediaUpload)
+  // Upload methods
   uploadFiles: (files: FileList | File[]) => Promise<void>;
   clearUploadProgress: () => void;
   setSyncStatus: (status: SyncStatus) => void;
@@ -282,42 +273,38 @@ interface MediaLibraryContextType {
   // Error methods
   setErrorState: (error: { hasError: boolean; errorMessage: string }) => void;
 
-  // PRIORITY 2 FIX: Asset synchronization method
+  // Asset synchronization
   updateAssets: (newAssets: MediaAsset[]) => void;
 }
 
 const MediaLibraryContext = createContext<MediaLibraryContextType | null>(null);
+
+// ─── Provider ──────────────────────────────────────────────────────────────────
 
 export function MediaLibraryProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(mediaLibraryReducer, initialState);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // PRIORITY 2 FIX: Get assets from React Query and sync with local state
+  // Asset state from React Query
   const [assets, setAssets] = useState<MediaAsset[]>([]);
 
-  // Get media data from ALL paginated queries using standardized keys
   useEffect(() => {
-    // Use getQueriesData to find ALL media queries across all pages
     const allMediaQueries = queryClient.getQueriesData({
       queryKey: MediaQueryKeys.paginated,
     });
 
     const allAssets: MediaAsset[] = [];
 
-    // Valid response shapes from the API
     type MediaApiResponse = { data: MediaAsset[] } | { success: boolean; data: MediaAsset[] };
 
     for (const [_queryKey, queryData] of allMediaQueries) {
       const data = queryData as MediaApiResponse;
-
-      // Handle standard paginated response format
       if (data && "data" in data && Array.isArray(data.data)) {
         allAssets.push(...data.data);
       }
     }
 
-    // Deduplicate by ID
     const uniqueAssets = Array.from(new Map(allAssets.map((asset) => [asset.id, asset])).values());
 
     if (uniqueAssets.length > 0) {
@@ -325,12 +312,16 @@ export function MediaLibraryProvider({ children }: { children: React.ReactNode }
     } else {
       setAssets([]);
     }
-  }, [queryClient]); // Re-run when page changes to catch new queries
+  }, [queryClient]);
 
-  // Debounced search
-  const debouncedSearch = useDebounce(state.searchTerm, 300);
+  // ─── Extracted Hooks ───────────────────────────────────────────────────────────
 
-  // Consolidated action creator - single function instead of 6 separate ones
+  const filters = useMediaFilters({ state, dispatch });
+  const selection = useMediaSelection({ state, dispatch, assets });
+  useMediaUrlSync({ state, dispatch });
+
+  // ─── State Updater ─────────────────────────────────────────────────────────────
+
   const updateState = useCallback(
     <K extends keyof MediaLibraryState>(key: K, value: MediaLibraryState[K]) => {
       const actionMap = {
@@ -361,205 +352,14 @@ export function MediaLibraryProvider({ children }: { children: React.ReactNode }
 
       const actionType = actionMap[key as keyof typeof actionMap];
       if (actionType) {
-        // We can safely cast here because the key aligns with the value type in MediaLibraryState
-        // and our action definitions match this structure
         dispatch({ type: actionType, payload: value } as MediaLibraryAction);
-      } else {
       }
     },
     [],
   );
 
-  // Advanced filter methods (from useMediaFilters)
-  const updateFilter = useCallback(
-    <K extends keyof MediaLibraryState>(key: K, value: MediaLibraryState[K]) => {
-      if (key === "folderFilter") {
-        dispatch({ type: "SET_FOLDER_FILTER", payload: value as string });
-      } else if (key === "tagFilters") {
-        dispatch({ type: "SET_TAG_FILTERS", payload: value as string[] });
-      } else if (key === "dateRange") {
-        dispatch({
-          type: "SET_DATE_RANGE",
-          payload: value as { from?: Date; to?: Date },
-        });
-      } else if (key === "sizeRange") {
-        dispatch({
-          type: "SET_SIZE_RANGE",
-          payload: value as { min?: number | undefined; max?: number },
-        });
-      }
-    },
-    [],
-  );
+  // ─── Upload Methods ────────────────────────────────────────────────────────────
 
-  const resetFilters = useCallback(() => {
-    dispatch({ type: "RESET_STATE" });
-  }, []);
-
-  const clearSearch = useCallback(() => {
-    updateState("searchTerm", "");
-  }, [updateState]);
-
-  const addTagFilter = useCallback(
-    (tag: string) => {
-      if (!state.tagFilters.includes(tag)) {
-        dispatch({
-          type: "SET_TAG_FILTERS",
-          payload: [...state.tagFilters, tag],
-        });
-      }
-    },
-    [state.tagFilters],
-  );
-
-  const removeTagFilter = useCallback(
-    (tag: string) => {
-      dispatch({
-        type: "SET_TAG_FILTERS",
-        payload: state.tagFilters.filter((t) => t !== tag),
-      });
-    },
-    [state.tagFilters],
-  );
-
-  const toggleSortOrder = useCallback(() => {
-    updateState("sortOrder", state.sortOrder === "asc" ? "desc" : "asc");
-  }, [state.sortOrder, updateState]);
-
-  // Filter calculations
-  const hasActiveFilters = useMemo(() => {
-    return (
-      state.searchTerm !== "" ||
-      state.selectedType !== "all" ||
-      state.folderFilter !== "" ||
-      state.tagFilters.length > 0 ||
-      !!state.dateRange.from ||
-      !!state.dateRange.to ||
-      state.sizeRange.min !== undefined ||
-      state.sizeRange.max !== undefined ||
-      state.sortBy !== "uploadedAt" ||
-      state.sortOrder !== "desc"
-    );
-  }, [state]);
-
-  const activeFilterCount = useMemo(() => {
-    let count = 0;
-    if (state.searchTerm) {
-      count++;
-    }
-    if (state.selectedType !== "all") {
-      count++;
-    }
-    if (state.folderFilter) {
-      count++;
-    }
-    if (state.tagFilters.length > 0) {
-      count++;
-    }
-    if (state.dateRange.from || state.dateRange.to) {
-      count++;
-    }
-    if (state.sizeRange.min !== undefined || state.sizeRange.max !== undefined) {
-      count++;
-    }
-    return count;
-  }, [state]);
-
-  const getQueryParams = useMemo(() => {
-    const params = new URLSearchParams();
-
-    if (debouncedSearch) {
-      params.set("search", debouncedSearch);
-    }
-    if (state.selectedType !== "all") {
-      params.set("type", state.selectedType);
-    }
-    if (state.folderFilter) {
-      params.set("folder", state.folderFilter);
-    }
-    if (state.tagFilters.length > 0) {
-      params.set("tags", state.tagFilters.join(","));
-    }
-    if (state.dateRange.from) {
-      params.set("dateFrom", state.dateRange.from.toISOString());
-    }
-    if (state.dateRange.to) {
-      params.set("dateTo", state.dateRange.to.toISOString());
-    }
-    if (state.sizeRange.min !== undefined) {
-      params.set("sizeMin", state.sizeRange.min.toString());
-    }
-    if (state.sizeRange.max !== undefined) {
-      params.set("sizeMax", state.sizeRange.max.toString());
-    }
-    params.set("sortBy", state.sortBy);
-    params.set("sortOrder", state.sortOrder);
-
-    return params;
-  }, [state, debouncedSearch]);
-
-  // Simplified selection methods - consolidated from 8 functions to 3
-  const toggleAsset = useCallback(
-    (assetId: number) => {
-      const newSelectedAssets = new Set(state.selectedAssets);
-      if (newSelectedAssets.has(assetId)) {
-        newSelectedAssets.delete(assetId);
-      } else {
-        newSelectedAssets.add(assetId);
-      }
-      dispatch({ type: "SET_SELECTED_ASSETS", payload: newSelectedAssets });
-    },
-    [state.selectedAssets],
-  );
-
-  const selectAll = useCallback(() => {
-    dispatch({
-      type: "SET_SELECTED_ASSETS",
-      payload: new Set(assets.map((asset) => asset.id)),
-    });
-  }, [assets]);
-
-  const clearSelection = useCallback(() => {
-    dispatch({ type: "SET_SELECTED_ASSETS", payload: new Set() });
-  }, []);
-
-  const isSelected = useCallback(
-    (assetId: number) => state.selectedAssets.has(assetId),
-    [state.selectedAssets],
-  );
-
-  // Missing functions needed by MediaSelectionWrapperUnified
-  const selectAssets = useCallback((assetIds: number[]) => {
-    dispatch({ type: "SET_SELECTED_ASSETS", payload: new Set(assetIds) });
-  }, []);
-
-  const setSelectedType = useCallback((type: string) => {
-    dispatch({ type: "SET_SELECTED_TYPE", payload: type });
-  }, []);
-
-  // Simplified selection data - combined calculations
-  const selectionData = useMemo(() => {
-    const selected = assets.filter((asset) => state.selectedAssets.has(asset.id));
-    const totalSize = selected.reduce((sum, asset) => sum + (asset.size || 0), 0);
-    const typeCount = selected.reduce(
-      (acc, asset) => {
-        acc[asset.type] = (acc[asset.type] || 0) + 1;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
-
-    return {
-      count: selected.length,
-      totalSize,
-      typeCount,
-      isEmpty: selected.length === 0,
-      isAll: selected.length === assets.length,
-      isPartial: selected.length > 0 && selected.length < assets.length,
-    };
-  }, [assets, state.selectedAssets]);
-
-  // Upload methods (from useMediaUpload) - Simplified version
   const uploadMutation = useMutation({
     mutationFn: async (params: {
       files: FileList | File[];
@@ -583,29 +383,18 @@ export function MediaLibraryProvider({ children }: { children: React.ReactNode }
       return response.json();
     },
     onSuccess: async () => {
-      // SIMPLIFIED: Single invalidation strategy to prevent 429 rate limit errors
-      // Instead of multiple simultaneous cache resets and refetches, use a single
-      // controlled invalidation with a small delay to allow the backend to process
-
       try {
-        // Show success toast immediately for better UX
         toast({
           title: "Upload Complete",
           description: "Files uploaded successfully",
         });
 
-        // Clear upload state
         dispatch({ type: "SET_UPLOAD_PROGRESS", payload: {} });
         dispatch({ type: "SET_IS_UPLOADING", payload: false });
 
-        // Wait a moment before invalidating to let the upload transaction complete
         await new Promise((resolve) => setTimeout(resolve, 500));
-
-        // Single invalidation - this will trigger ONE refetch of active queries
         await invalidateMediaQueries(queryClient);
-      } catch (_error) {
-        // Even if invalidation fails, the upload succeeded, so don't show error
-      }
+      } catch (_error) {}
     },
     onError: (error) => {
       toast({
@@ -626,7 +415,6 @@ export function MediaLibraryProvider({ children }: { children: React.ReactNode }
       dispatch({ type: "SET_IS_UPLOADING", payload: true });
       const fileArray = Array.from(files);
 
-      // Initialize progress tracking
       const initialProgress: Record<
         string,
         { progress: number; status: UploadStatus; error?: string }
@@ -641,9 +429,7 @@ export function MediaLibraryProvider({ children }: { children: React.ReactNode }
 
       try {
         await uploadMutation.mutateAsync({ files });
-      } catch (_error) {
-        // Error handling is done in mutation
-      }
+      } catch (_error) {}
     },
     [uploadMutation],
   );
@@ -656,7 +442,8 @@ export function MediaLibraryProvider({ children }: { children: React.ReactNode }
     dispatch({ type: "SET_SYNC_STATUS", payload: status });
   }, []);
 
-  // Modal methods
+  // ─── Modal Methods ─────────────────────────────────────────────────────────────
+
   const setSelectedAsset = useCallback((asset: MediaAsset | null) => {
     dispatch({ type: "SET_SELECTED_ASSET", payload: asset });
   }, []);
@@ -669,7 +456,16 @@ export function MediaLibraryProvider({ children }: { children: React.ReactNode }
     dispatch({ type: "SET_EDIT_MODAL_OPEN", payload: open });
   }, []);
 
-  // Pagination methods
+  const setSelectedAssetIndex = useCallback((index: number) => {
+    dispatch({ type: "SET_SELECTED_ASSET_INDEX", payload: index });
+  }, []);
+
+  const setDeleteModalOpen = useCallback((open: boolean) => {
+    dispatch({ type: "SET_DELETE_MODAL_OPEN", payload: open });
+  }, []);
+
+  // ─── Pagination Methods ────────────────────────────────────────────────────────
+
   const setCurrentPage = useCallback((page: number) => {
     dispatch({ type: "SET_CURRENT_PAGE", payload: page });
   }, []);
@@ -682,64 +478,42 @@ export function MediaLibraryProvider({ children }: { children: React.ReactNode }
     dispatch({ type: "SET_TOTAL_ASSETS", payload: totalAssets });
   }, []);
 
-  // Error methods
+  // ─── Error & Sync Methods ─────────────────────────────────────────────────────
+
   const setErrorState = useCallback((error: { hasError: boolean; errorMessage: string }) => {
     dispatch({ type: "SET_ERROR_STATE", payload: error });
   }, []);
 
-  // Missing modal methods that components expect
-  const setSelectedAssetIndex = useCallback((index: number) => {
-    dispatch({ type: "SET_SELECTED_ASSET_INDEX", payload: index });
+  const setSelectedType = useCallback((type: string) => {
+    dispatch({ type: "SET_SELECTED_TYPE", payload: type });
   }, []);
 
-  const setDeleteModalOpen = useCallback((open: boolean) => {
-    dispatch({ type: "SET_DELETE_MODAL_OPEN", payload: open });
-  }, []);
-
-  // PRIORITY 2 FIX: Add updateAssets method for external sync
   const updateAssets = useCallback(
     (newAssets: MediaAsset[]) => {
       setAssets(newAssets);
-
-      // Clear selection if assets change dramatically
       if (newAssets.length === 0 && state.selectedAssets.size > 0) {
-        clearSelection();
+        selection.clearSelection();
       }
     },
-    [state.selectedAssets.size, clearSelection],
+    [state.selectedAssets.size, selection.clearSelection],
   );
 
-  // Context value
+  // ─── Context Value ─────────────────────────────────────────────────────────────
+
   const contextValue = useMemo(
     () => ({
       state,
       dispatch,
-
-      // Basic filters (consolidated into updateState)
       updateState,
 
-      // Advanced filter methods
-      updateFilter,
-      resetFilters,
-      clearSearch,
-      addTagFilter,
-      removeTagFilter,
-      toggleSortOrder,
-      hasActiveFilters,
-      activeFilterCount,
-      getQueryParams,
-      debouncedSearch,
+      // From useMediaFilters
+      ...filters,
 
-      // Selection methods (simplified from 8 to 4 functions)
-      selectionData,
-      toggleAsset,
-      selectAll,
-      clearSelection,
-      isSelected,
+      // From useMediaSelection
+      ...selection,
 
       // Missing functions for MediaSelectionWrapperUnified
-      assets, // Expose assets for MediaSelectionWrapperUnified
-      selectAssets,
+      assets,
       setSelectedType,
 
       // Upload methods
@@ -747,8 +521,8 @@ export function MediaLibraryProvider({ children }: { children: React.ReactNode }
       clearUploadProgress,
       setSyncStatus,
 
-      // PRIORITY 2 FIX: Sync methods
-      updateAssets, // PRIORITY 2 FIX: Expose updateAssets method
+      // Sync methods
+      updateAssets,
 
       // Modal methods
       setSelectedAsset,
@@ -768,22 +542,8 @@ export function MediaLibraryProvider({ children }: { children: React.ReactNode }
     [
       state,
       updateState,
-      updateFilter,
-      resetFilters,
-      clearSearch,
-      addTagFilter,
-      removeTagFilter,
-      toggleSortOrder,
-      hasActiveFilters,
-      activeFilterCount,
-      getQueryParams,
-      debouncedSearch,
-      selectionData,
-      toggleAsset,
-      selectAll,
-      clearSelection,
-      isSelected,
-      selectAssets,
+      filters,
+      selection,
       setSelectedType,
       uploadFiles,
       clearUploadProgress,
@@ -796,206 +556,18 @@ export function MediaLibraryProvider({ children }: { children: React.ReactNode }
       setCurrentPage,
       setTotalPages,
       setTotalAssets,
-      setErrorState, // Missing functions for MediaSelectionWrapperUnified
+      setErrorState,
       assets,
       setSyncStatus,
     ],
   );
 
-  // URL Synchronization
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  // Helper function to parse URL parameters and create state updates
-  const parseUrlParamsToUpdates = useCallback(
-    (
-      params: URLSearchParams,
-      currentState: MediaLibraryState,
-    ): Array<{ key: keyof MediaLibraryState; value: unknown }> => {
-      const updates: Array<{ key: keyof MediaLibraryState; value: unknown }> = [];
-
-      if (params.has("search")) {
-        updates.push({ key: "searchTerm", value: params.get("search") || "" });
-      }
-      if (params.has("type")) {
-        updates.push({
-          key: "selectedType",
-          value: params.get("type") || "all",
-        });
-      }
-      if (params.has("folder")) {
-        updates.push({
-          key: "folderFilter",
-          value: params.get("folder") || "",
-        });
-      }
-      if (params.has("tags")) {
-        updates.push({
-          key: "tagFilters",
-          value: params.get("tags")?.split(",") || [],
-        });
-      }
-      if (params.has("dateFrom")) {
-        updates.push({
-          key: "dateRange",
-          value: {
-            ...currentState.dateRange,
-            from: new Date(params.get("dateFrom")!),
-          },
-        });
-      }
-      if (params.has("dateTo")) {
-        updates.push({
-          key: "dateRange",
-          value: {
-            ...currentState.dateRange,
-            to: new Date(params.get("dateTo")!),
-          },
-        });
-      }
-      if (params.has("sizeMin")) {
-        updates.push({
-          key: "sizeRange",
-          value: {
-            ...currentState.sizeRange,
-            min: Number(params.get("sizeMin")),
-          },
-        });
-      }
-      if (params.has("sizeMax")) {
-        updates.push({
-          key: "sizeRange",
-          value: {
-            ...currentState.sizeRange,
-            max: Number(params.get("sizeMax")),
-          },
-        });
-      }
-      if (params.has("sortBy")) {
-        const sortBy = params.get("sortBy");
-        if (["name", "size", "uploadedAt", "type"].includes(sortBy as string)) {
-          updates.push({ key: "sortBy", value: sortBy });
-        }
-      }
-      if (params.has("sortOrder")) {
-        const sortOrder = params.get("sortOrder");
-        if (["asc", "desc"].includes(sortOrder as string)) {
-          updates.push({
-            key: "sortOrder",
-            value: sortOrder,
-          });
-        }
-      }
-      if (params.has("page")) {
-        updates.push({ key: "currentPage", value: Number(params.get("page")) });
-      }
-
-      return updates;
-    },
-    [],
-  );
-
-  // Action map for dispatching updates
-  const ACTION_MAP: Record<string, string> = {
-    searchTerm: "SET_SEARCH_TERM",
-    selectedType: "SET_SELECTED_TYPE",
-    folderFilter: "SET_FOLDER_FILTER",
-    tagFilters: "SET_TAG_FILTERS",
-    dateRange: "SET_DATE_RANGE",
-    sizeRange: "SET_SIZE_RANGE",
-    sortBy: "SET_SORT_BY",
-    sortOrder: "SET_SORT_ORDER",
-    currentPage: "SET_CURRENT_PAGE",
-  };
-
-  // Initialize state from URL on mount
-  useEffect(() => {
-    const params = searchParams;
-
-    // Parse URL params into state updates
-    const updates = parseUrlParamsToUpdates(params, state);
-
-    if (updates.length > 0) {
-      for (const { key, value } of updates) {
-        if (ACTION_MAP[key]) {
-          // We cast to MediaLibraryAction assuming the value type matches key expectations
-          // logic in parseUrlParamsToUpdates ensures value types are correct for keys
-          const type = ACTION_MAP[key];
-          dispatch({ type, payload: value } as MediaLibraryAction);
-        }
-      }
-    }
-
-    setIsInitialized(true);
-  }, [parseUrlParamsToUpdates, state, searchParams]);
-
-  // Sync state to URL
-  useEffect(() => {
-    if (!isInitialized) {
-      return;
-    }
-
-    const params = new URLSearchParams();
-
-    if (state.searchTerm) {
-      params.set("search", state.searchTerm);
-    }
-    if (state.selectedType !== "all") {
-      params.set("type", state.selectedType);
-    }
-    if (state.folderFilter) {
-      params.set("folder", state.folderFilter);
-    }
-    if (state.tagFilters.length > 0) {
-      params.set("tags", state.tagFilters.join(","));
-    }
-    if (state.dateRange.from) {
-      params.set("dateFrom", state.dateRange.from.toISOString());
-    }
-    if (state.dateRange.to) {
-      params.set("dateTo", state.dateRange.to.toISOString());
-    }
-    if (state.sizeRange.min !== undefined) {
-      params.set("sizeMin", state.sizeRange.min.toString());
-    }
-    if (state.sizeRange.max !== undefined) {
-      params.set("sizeMax", state.sizeRange.max.toString());
-    }
-    if (state.sortBy !== "uploadedAt") {
-      params.set("sortBy", state.sortBy);
-    }
-    if (state.sortOrder !== "desc") {
-      params.set("sortOrder", state.sortOrder);
-    }
-    if (state.currentPage > 1) {
-      params.set("page", state.currentPage.toString());
-    }
-
-    const newSearch = params.toString();
-    const currentSearch = searchParams.toString();
-
-    if (newSearch !== currentSearch) {
-      setSearchParams(params);
-    }
-  }, [
-    state.searchTerm,
-    state.selectedType,
-    state.folderFilter,
-    state.tagFilters,
-    state.dateRange,
-    state.sizeRange,
-    state.sortBy,
-    state.sortOrder,
-    state.currentPage,
-    isInitialized,
-    searchParams,
-    setSearchParams,
-  ]);
-
   return (
     <MediaLibraryContext.Provider value={contextValue}>{children}</MediaLibraryContext.Provider>
   );
 }
+
+// ─── Hook Exports ──────────────────────────────────────────────────────────────
 
 export function useMediaLibrary() {
   const context = useContext(MediaLibraryContext);
@@ -1005,11 +577,11 @@ export function useMediaLibrary() {
   return context;
 }
 
-// Backward compatibility alias (remove after updating all imports)
+// Backward compatibility alias
 export const useMediaLibraryEnhanced = useMediaLibrary;
 export const MediaLibraryEnhancedProvider = MediaLibraryProvider;
 
-// Export context for external components that need the consolidated functionality
+// Export context for external components
 export { MediaLibraryContext };
 
 // Export types for external use

@@ -2,7 +2,7 @@ import express from "express";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { unifiedCache } from "../../../lib/cache/unified-cache.js";
-import { pageContentRepository } from "../../../lib/db/repositories/index.js";
+import { homepageRepository } from "../../../lib/db/repositories/index.js";
 import homepageManagementRoutes from "../homepage-management.routes.js";
 
 vi.mock("../../../lib/cache/unified-cache.js", () => ({
@@ -34,7 +34,7 @@ vi.mock("../../../lib/cache/two-tier-batch.js", () => ({
 }));
 
 vi.mock("../../../lib/db/repositories/index.js", () => ({
-  pageContentRepository: {
+  homepageRepository: {
     getHomepageHero: vi.fn(),
     updateHomepageHero: vi.fn(),
   },
@@ -65,14 +65,14 @@ describe("Homepage Management Routes", () => {
       expect(response.status).toBe(200);
       expect(response.body).toEqual(mockHero);
       expect(response.headers["x-cache-hit"]).toBe("true");
-      expect(pageContentRepository.getHomepageHero).not.toHaveBeenCalled();
+      expect(homepageRepository.getHomepageHero).not.toHaveBeenCalled();
     });
 
     it("fetches hero from db if not in cache", async () => {
       vi.mocked(unifiedCache.get).mockResolvedValue(null);
       const mockHero = { title: "DB Hero" };
-      vi.mocked(pageContentRepository.getHomepageHero).mockResolvedValue(
-        mockHero as unknown as Awaited<ReturnType<typeof pageContentRepository.getHomepageHero>>,
+      vi.mocked(homepageRepository.getHomepageHero).mockResolvedValue(
+        mockHero as unknown as Awaited<ReturnType<typeof homepageRepository.getHomepageHero>>,
       );
 
       const response = await request(app).get("/api/homepage-hero");
@@ -87,17 +87,15 @@ describe("Homepage Management Routes", () => {
     it("updates hero and invalidates cache", async () => {
       const updateData = { title: "Updated Hero" };
       const updatedHero = { id: 1, ...updateData };
-      vi.mocked(pageContentRepository.updateHomepageHero).mockResolvedValue(
-        updatedHero as unknown as Awaited<
-          ReturnType<typeof pageContentRepository.updateHomepageHero>
-        >,
+      vi.mocked(homepageRepository.updateHomepageHero).mockResolvedValue(
+        updatedHero as unknown as Awaited<ReturnType<typeof homepageRepository.updateHomepageHero>>,
       );
 
       const response = await request(app).patch("/api/homepage-hero").send(updateData);
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(updatedHero);
-      expect(pageContentRepository.updateHomepageHero).toHaveBeenCalledWith(updateData);
+      expect(homepageRepository.updateHomepageHero).toHaveBeenCalledWith(updateData);
     });
 
     it("returns 400 for invalid data", async () => {

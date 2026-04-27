@@ -10,7 +10,7 @@
 
 import { type Request, Router } from "express";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
-import { miscRepository, pageContentRepository } from "../../lib/db/repositories/index.js";
+import { miscRepository, sustainabilityRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 
@@ -37,22 +37,22 @@ router.get("/", async (req, res) => {
       // Fetch all sustainability data in parallel to minimize NEON connection time
       const [hero, metrics, initiatives, goals, certificates, fabrics] = await Promise.all([
         withTimeout(
-          pageContentRepository.getUnifiedSustainability(),
+          sustainabilityRepository.getUnifiedSustainability(),
           10000,
           "Get unified sustainability",
         ),
         withTimeout(
-          pageContentRepository.getSustainabilityMetrics(),
+          sustainabilityRepository.getSustainabilityMetrics(),
           10000,
           "Get sustainability metrics",
         ),
         withTimeout(
-          pageContentRepository.getSustainabilityInitiatives(),
+          sustainabilityRepository.getSustainabilityInitiatives(),
           10000,
           "Get sustainability initiatives",
         ),
         withTimeout(
-          pageContentRepository.getSustainabilityGoals(),
+          sustainabilityRepository.getSustainabilityGoals(),
           10000,
           "Get sustainability goals",
         ),

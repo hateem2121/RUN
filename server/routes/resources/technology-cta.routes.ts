@@ -14,7 +14,7 @@ import { removeUndefined } from "../../utils.js";
 import { Router } from "express";
 import { insertTechnologyCtaSchema } from "../../../shared/index.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
-import { pageContentRepository } from "../../lib/db/repositories/index.js";
+import { technologyRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { authService } from "../../services/auth-service.js";
@@ -27,7 +27,7 @@ const router = Router();
  */
 router.get("/", async (_req, res) => {
   const cta = await withTimeout(
-    pageContentRepository.getTechnologyCta(),
+    technologyRepository.getTechnologyCta(),
     10000,
     "Get technology CTA",
   );
@@ -52,7 +52,7 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
   }
 
   const updated = await withTimeout(
-    pageContentRepository.updateTechnologyCta(removeUndefined(validation.data)),
+    technologyRepository.updateTechnologyCta(removeUndefined(validation.data)),
     10000,
     "Update technology CTA",
   );

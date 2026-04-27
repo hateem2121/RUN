@@ -169,8 +169,6 @@ export class MemoryStorage implements IStorage {
   private performanceMetrics = new Map<number, PerformanceMetric>();
   private storageAnalysisResults = new Map<number, StorageAnalysisResult>();
   private storageChangeLogs = new Map<number, StorageChangeLog>();
-  private webhookSubscriptions = new Map<number, WebhookSubscription>();
-  private webhookDeliveries = new Map<number, unknown>();
 
   private nextIds = {
     category: 1,
@@ -810,11 +808,10 @@ export class MemoryStorage implements IStorage {
       (p) => p.isActive && !p.deletedAt,
     ) as unknown as ProductSummary[];
   }
-  async getProductsCursor(
-    limit = 100,
-    cursor?: number,
-  ): Promise<ProductSummary[]> {
-    const allProducts = Array.from(this.products.values()).filter((p) => p.isActive && !p.deletedAt);
+  async getProductsCursor(limit = 100, cursor?: number): Promise<ProductSummary[]> {
+    const allProducts = Array.from(this.products.values()).filter(
+      (p) => p.isActive && !p.deletedAt,
+    );
     const startIndex = cursor ? allProducts.findIndex((p) => p.id < cursor) : 0;
     const actualStart = startIndex === -1 ? 0 : startIndex;
     return allProducts.slice(actualStart, actualStart + limit) as unknown as ProductSummary[];
@@ -1250,7 +1247,9 @@ export class MemoryStorage implements IStorage {
     this.aboutHeroes.set(updated.id, updated);
     return updated;
   }
-  async getAboutTimelineEntries(includeInactive?: boolean): Promise<(AboutTimelineEntry & { imageUrl: string | null })[]> {
+  async getAboutTimelineEntries(
+    includeInactive?: boolean,
+  ): Promise<(AboutTimelineEntry & { imageUrl: string | null })[]> {
     return Array.from(this.aboutTimelineEntries.values())
       .filter((e) => includeInactive || e.isActive)
       .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))

@@ -19,7 +19,7 @@ import { type Request, Router } from "express";
 import { z } from "zod";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
-import { pageContentRepository } from "../../lib/db/repositories/index.js";
+import { manufacturingRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { authService } from "../../services/auth-service.js";
@@ -49,7 +49,7 @@ router.get("/", async (req, res) => {
     "manufacturing:processes",
     async () => {
       return await withTimeout(
-        pageContentRepository.getManufacturingProcesses(),
+        manufacturingRepository.getManufacturingProcesses(),
         10000,
         "Get manufacturing processes",
       );
@@ -86,7 +86,7 @@ router.get("/:id", async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
   const process = await withTimeout(
-    pageContentRepository.getManufacturingProcess(id),
+    manufacturingRepository.getManufacturingProcess(id),
     10000,
     "Get manufacturing process",
   );
@@ -108,7 +108,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
   }
 
   const newProcess = await withTimeout(
-    pageContentRepository.createManufacturingProcess(removeUndefined(validation.data)),
+    manufacturingRepository.createManufacturingProcess(removeUndefined(validation.data)),
     10000,
     "Create manufacturing process",
   );
@@ -136,7 +136,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
   }
 
   const updated = await withTimeout(
-    pageContentRepository.updateManufacturingProcess(id, removeUndefined(validation.data)),
+    manufacturingRepository.updateManufacturingProcess(id, removeUndefined(validation.data)),
     10000,
     "Update manufacturing process",
   );
@@ -162,7 +162,7 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
   const deleted = await withTimeout(
-    pageContentRepository.deleteManufacturingProcess(id),
+    manufacturingRepository.deleteManufacturingProcess(id),
     10000,
     "Delete manufacturing process",
   );
@@ -195,7 +195,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
   const updates = await Promise.all(
     removeUndefined(validation.data).processes.map(
       ({ id, position }: { id: number; position: number }) =>
-        pageContentRepository.updateManufacturingProcess(id, { sortOrder: position }),
+        manufacturingRepository.updateManufacturingProcess(id, { sortOrder: position }),
     ),
   );
 

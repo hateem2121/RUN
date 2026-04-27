@@ -24,6 +24,7 @@ const app = express();
 app.use(express.json());
 
 import mediaRoutes from "../../routes/media/routes.js";
+
 app.use("/api/media", mediaRoutes);
 
 // Basic error handler so next(error) calls return JSON (not Express HTML default).

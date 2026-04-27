@@ -27,7 +27,7 @@ test.describe("Public Pages: About & Secondary Content", () => {
         });
         await page.goto(`${BASE_URL}${route}`);
         if (logs.length > 0) {
-          const fs = require("fs");
+          const fs = require("node:fs");
           fs.appendFileSync("e2e-console-logs.txt", `\n--- ${route} ---\n${logs.join("\n")}\n`);
         }
         expect(logs.filter((l) => !l.includes("Hydration")).length).toBe(0);
@@ -104,7 +104,7 @@ test.describe("Public Pages: About & Secondary Content", () => {
           try {
             const response = await request.head(docUrl);
             expect(response.status()).toBeLessThan(400);
-          } catch (e) {
+          } catch (_e) {
             const response = await request.get(docUrl);
             expect(response.status()).toBeLessThan(400);
           }
@@ -158,7 +158,7 @@ test.describe("Admin Modules: About & Secondary Content", () => {
 
     const titleInput = page.getByPlaceholder("Main Title").first();
     await titleInput.waitFor();
-    const originalValue = await titleInput.inputValue();
+    const _originalValue = await titleInput.inputValue();
 
     await titleInput.fill(testValue);
     await page.click('button:has-text("Save Changes")');

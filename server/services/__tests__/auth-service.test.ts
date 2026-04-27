@@ -5,7 +5,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { adminCacheManager } from "../../lib/cache/admin-cache";
 import { logger } from "../../lib/monitoring/logger";
 import { getStorage } from "../../lib/storage-singleton";
-import type { IStorage } from "../../repositories/storage-interfaces";
 import type { SessionUser } from "../../types/session";
 import { AuthErrors, authService } from "../auth-service";
 

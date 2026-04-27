@@ -15,7 +15,12 @@ import {
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
-import { mediaRepository, pageContentRepository } from "../../lib/db/repositories/index.js";
+import {
+  aboutRepository,
+  mediaRepository,
+  sustainabilityRepository,
+  technologyRepository,
+} from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 // Manufacturing imports moved to manufacturing-hero.routes.ts
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
@@ -62,7 +67,7 @@ router.get("/about-batch", async (_req, res) => {
 
   // Fetch all about data via optimized repository batch method
   const aboutData = await withTimeout(
-    pageContentRepository.getAboutBatch(),
+    aboutRepository.getAboutBatch(),
     15000,
     "About batch fetch (repository layer)",
   ).catch((err) => {
@@ -133,7 +138,7 @@ router.get("/sustainability-hero", async (_req, res) => {
   res.setHeader("Vary", "Accept-Encoding");
 
   const hero = await withTimeout(
-    pageContentRepository.getSustainabilityHero(),
+    sustainabilityRepository.getSustainabilityHero(),
     10000,
     "Get sustainability hero",
   );
@@ -146,7 +151,7 @@ router.patch("/admin/sustainability-hero", authService.requireAdmin, async (req,
     return res.status(400).json({ error: validation.error.message });
   }
   const hero = await withTimeout(
-    pageContentRepository.updateSustainabilityHero(removeUndefined(validation.data)),
+    sustainabilityRepository.updateSustainabilityHero(removeUndefined(validation.data)),
     10000,
     "Update sustainability hero",
   );
@@ -195,13 +200,13 @@ router.get("/technology-batch", async (_req, res) => {
   const [hero, innovations, equipment, research, roadmap, cta, gradientSettings] =
     await withTimeout(
       Promise.all([
-        pageContentRepository.getTechnologyHero(),
-        pageContentRepository.getTechnologyInnovations(),
-        pageContentRepository.getTechnologyEquipment(),
-        pageContentRepository.getTechnologyResearch(),
-        pageContentRepository.getTechnologyRoadmap(),
-        pageContentRepository.getTechnologyCta(),
-        pageContentRepository.getTechnologyGradientSettings(),
+        technologyRepository.getTechnologyHero(),
+        technologyRepository.getTechnologyInnovations(),
+        technologyRepository.getTechnologyEquipment(),
+        technologyRepository.getTechnologyResearch(),
+        technologyRepository.getTechnologyRoadmap(),
+        technologyRepository.getTechnologyCta(),
+        technologyRepository.getTechnologyGradientSettings(),
       ]),
       20000,
       "Technology batch fetch (7 parallel queries)",
@@ -252,7 +257,7 @@ router.get("/technology-batch", async (_req, res) => {
 // Technology hero
 router.get("/technology-hero", async (_req, res) => {
   const hero = await withTimeout(
-    pageContentRepository.getTechnologyHero(),
+    technologyRepository.getTechnologyHero(),
     10000,
     "Get technology hero",
   );
@@ -265,7 +270,7 @@ router.patch("/admin/technology-hero", authService.requireAdmin, async (req, res
     return res.status(400).json({ error: validation.error.message });
   }
   const hero = await withTimeout(
-    pageContentRepository.updateTechnologyHero(removeUndefined(validation.data)),
+    technologyRepository.updateTechnologyHero(removeUndefined(validation.data)),
     10000,
     "Update technology hero",
   );

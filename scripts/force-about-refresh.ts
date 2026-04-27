@@ -1,4 +1,3 @@
-import { eq } from "drizzle-orm";
 import { db } from "../server/db.js";
 import { PageContentRepository } from "../server/lib/db/repositories/page-content-repository.js";
 import { aboutHero } from "../shared/schemas/index.js";
@@ -9,7 +8,7 @@ async function forceRefresh() {
 
   if (heroes.length > 0) {
     console.log(`Found ${heroes.length} heroes. Forcing update on first one to clear cache...`);
-    const firstHero = heroes[0];
+    const _firstHero = heroes[0];
     await repo.updateAboutHero({
       isActive: true,
       updatedAt: new Date(),

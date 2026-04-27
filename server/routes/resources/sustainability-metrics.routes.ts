@@ -20,7 +20,7 @@ import { z } from "zod";
 import { insertSustainabilityMetricSchema } from "../../../shared/index.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
-import { pageContentRepository } from "../../lib/db/repositories/index.js";
+import { sustainabilityRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { authService } from "../../services/auth-service.js";
@@ -70,7 +70,7 @@ router.get("/", async (req, res) => {
     logger.info("[SustainabilityMetrics] Cache miss - fetching from database");
   }
   const metrics = await withTimeout(
-    pageContentRepository.getSustainabilityMetrics(),
+    sustainabilityRepository.getSustainabilityMetrics(),
     10000,
     "Get sustainability metrics",
   );
@@ -88,7 +88,7 @@ router.get("/:id", async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
   const metric = await withTimeout(
-    pageContentRepository.getSustainabilityMetric(id),
+    sustainabilityRepository.getSustainabilityMetric(id),
     10000,
     "Get sustainability metric",
   );
@@ -113,7 +113,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
   }
 
   const newMetric = await withTimeout(
-    pageContentRepository.createSustainabilityMetric(removeUndefined(validation.data)),
+    sustainabilityRepository.createSustainabilityMetric(removeUndefined(validation.data)),
     10000,
     "Create sustainability metric",
   );
@@ -141,7 +141,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
   }
 
   const updated = await withTimeout(
-    pageContentRepository.updateSustainabilityMetric(id, removeUndefined(validation.data)),
+    sustainabilityRepository.updateSustainabilityMetric(id, removeUndefined(validation.data)),
     10000,
     "Update sustainability metric",
   );
@@ -164,7 +164,7 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
   const deleted = await withTimeout(
-    pageContentRepository.deleteSustainabilityMetric(id),
+    sustainabilityRepository.deleteSustainabilityMetric(id),
     10000,
     "Delete sustainability metric",
   );
@@ -196,7 +196,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
 
   const orderedIds = removeUndefined(validation.data).metrics.map((m: { id: number }) => m.id);
   await withTimeout(
-    pageContentRepository.reorderSustainabilityMetrics(orderedIds),
+    sustainabilityRepository.reorderSustainabilityMetrics(orderedIds),
     10000,
     "Reorder sustainability metrics",
   );

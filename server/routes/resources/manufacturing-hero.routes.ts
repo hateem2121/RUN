@@ -10,7 +10,7 @@ import { removeUndefined } from "../../utils.js";
 
 import { type Request, type Response, Router } from "express";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
-import { pageContentRepository } from "../../lib/db/repositories/index.js";
+import { manufacturingRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { authService } from "../../services/auth-service.js";
@@ -43,7 +43,7 @@ router.get("/manufacturing-hero", async (_req: Request, res: Response): Promise<
   res.setHeader("Vary", "Accept-Encoding");
 
   const hero = await withTimeout(
-    pageContentRepository.getManufacturingHero(),
+    manufacturingRepository.getManufacturingHero(),
     10000,
     "Get manufacturing hero",
   );
@@ -67,7 +67,7 @@ router.patch(
     }
 
     const hero = await withTimeout(
-      pageContentRepository.updateManufacturingHero(
+      manufacturingRepository.updateManufacturingHero(
         removeUndefined(validation.data) as unknown as Partial<InsertManufacturingHero>,
       ),
       10000,

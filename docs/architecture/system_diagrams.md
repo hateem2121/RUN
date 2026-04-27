@@ -32,7 +32,7 @@ C4Container
 
     Container_Boundary(monorepo, "Monorepo Scope") {
         Container(client, "Client App", "React 19, Vite, RR7", "Delivers UI, Client-side routing")
-        Container(server, "API Server", "Node 22, Express 5", "REST API, SSR Support, Auth")
+        Container(server, "API Server", "Node 24, Express 5", "REST API, SSR Support, Auth")
         Container(shared, "Shared Lib", "TypeScript, Zod", "Schemas, Types, Validation")
     }
 

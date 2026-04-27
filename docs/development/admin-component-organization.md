@@ -5,7 +5,7 @@
 This document provides guidance on organizing and maintaining the admin panel components in RUN Remix. The admin panel is a complex subsystem requiring clear domain boundaries and consistent patterns.
 
 **Status:** Current State Documented  
-**Last Updated:** February 2026  
+**Last Updated:** April 2026  
 **Complexity Level:** High (50+ admin components)
 
 ---
@@ -97,14 +97,26 @@ client/app/components/admin/
 │   │   ├── QualityManagement.tsx
 │   │   └── README.md
 │   │
-│   ├── media-library/          # Media management
+│   ├── media-library/          # Media management (Decomposed Session 8)
 │   │   ├── MediaFiltersPanel.tsx
-│   │   ├── MediaGrid.tsx
+│   │   ├── MediaGrid.tsx         # Pure presentation (143 LOC)
 │   │   ├── MediaLibraryContainerEnhanced.tsx
-│   │   ├── MediaLibraryContextEnhanced.tsx
-│   │   ├── MediaLibraryTabsEnhanced.tsx
-│   │   ├── MediaUploadEnhanced.tsx
-│   │   └── MediaViewerModal.tsx
+│   │   ├── MediaLibraryContextEnhanced.tsx  # Provider shell (588 LOC)
+│   │   ├── MediaUploadEnhanced.tsx          # Upload orchestrator (618 LOC)
+│   │   ├── MediaViewerModal.tsx
+│   │   ├── hooks/               # Extracted hooks
+│   │   │   ├── useMediaFilters.ts
+│   │   │   ├── useMediaGridQuery.ts
+│   │   │   ├── useMediaSelection.ts
+│   │   │   └── useMediaUrlSync.ts
+│   │   ├── upload/              # Extracted upload modules
+│   │   │   ├── upload-utilities.ts
+│   │   │   └── UploadItem.tsx
+│   │   └── components/          # Extracted grid sub-components
+│   │       ├── MediaBulkOperations.tsx
+│   │       ├── MediaGridItem.tsx
+│   │       ├── MediaGridPagination.tsx
+│   │       └── MediaGridToolbar.tsx
 │   │
 │   ├── navigation/             # Navigation management
 │   │   ├── NavigationForm.tsx
@@ -361,12 +373,12 @@ about/
 
 Components exceeding 500 lines should be split:
 
-| Component | Current Lines | Action |
-|-----------|---------------|--------|
-| `CategoryForm.tsx` | ~1,100 | Split into sub-forms |
-| `ProductCreateEditModal.tsx` | ~1,100 | Extract sections |
-| `MediaGrid.tsx` | ~1,000 | Extract grid item component |
-| `MediaUploadEnhanced.tsx` | ~900 | Extract upload zones |
+| Component | Original Lines | Current Lines | Status |
+|-----------|---------------|---------------|--------|
+| `ProductCreateEditModal.tsx` | ~1,235 | ~170 | ✅ Decomposed (Session 8 Path A) |
+| `MediaGrid.tsx` | ~1,120 | 143 | ✅ Decomposed (Session 8 Path D) |
+| `MediaUploadEnhanced.tsx` | ~1,106 | 618 | ✅ Decomposed (Session 8 Path D) |
+| `MediaLibraryContextEnhanced.tsx` | ~1,016 | 588 | ✅ Decomposed (Session 8 Path D) |
 
 ---
 
@@ -426,4 +438,4 @@ fabric/
 
 ---
 
-**Version:** 1.0.0 | **For:** M. Hateem Jamshaid @ RUN APPAREL (PVT) LTD
+**Version:** 2.0.0 | **For:** M. Hateem Jamshaid @ RUN APPAREL (PVT) LTD

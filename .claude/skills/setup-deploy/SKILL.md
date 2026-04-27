@@ -1,1 +1,1 @@
-/Users/hateemjamshaid/Sites/RUN/.claude/worktrees/quirky-wiles/.claude/skills/gstack/setup-deploy/SKILL.md
+/Users/hateemjamshaid/Sites/RUN/.claude/skills/gstack/setup-deploy/SKILL.md

@@ -13,7 +13,7 @@ import type {
   InsertAboutTimelineEntry,
 } from "@run-remix/shared";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
-import { pageContentRepository } from "../lib/db/repositories/index.js";
+import { aboutRepository } from "../lib/db/repositories/index.js";
 import { logger } from "../lib/monitoring/logger.js";
 
 export interface AboutBatchResponse {
@@ -74,12 +74,12 @@ export class AboutService {
   // ===========================================================================
 
   async getHero(includeInactive: boolean = true): Promise<AboutHero | null> {
-    const result = await pageContentRepository.getAboutHero(includeInactive);
+    const result = await aboutRepository.getAboutHero(includeInactive);
     return result ?? null;
   }
 
   async updateHero(data: Partial<InsertAboutHero>): Promise<AboutHero> {
-    const result = await pageContentRepository.updateAboutHero(data);
+    const result = await aboutRepository.updateAboutHero(data);
     await CacheOperations.invalidateAbout();
     return result;
   }
@@ -89,16 +89,16 @@ export class AboutService {
   // ===========================================================================
 
   async getTimeline(includeInactive: boolean = true): Promise<AboutTimelineEntry[]> {
-    return pageContentRepository.getAboutTimelineEntries(includeInactive);
+    return aboutRepository.getAboutTimelineEntries(includeInactive);
   }
 
   async getTimelineEntry(id: number): Promise<AboutTimelineEntry | null> {
-    const result = await pageContentRepository.getAboutTimelineEntry(id);
+    const result = await aboutRepository.getAboutTimelineEntry(id);
     return result ?? null;
   }
 
   async createTimelineEntry(data: InsertAboutTimelineEntry): Promise<AboutTimelineEntry> {
-    const result = await pageContentRepository.createAboutTimelineEntry(data);
+    const result = await aboutRepository.createAboutTimelineEntry(data);
     await CacheOperations.invalidateAbout();
     return result;
   }
@@ -107,13 +107,13 @@ export class AboutService {
     id: number,
     data: Partial<InsertAboutTimelineEntry>,
   ): Promise<AboutTimelineEntry> {
-    const result = await pageContentRepository.updateAboutTimelineEntry(id, data);
+    const result = await aboutRepository.updateAboutTimelineEntry(id, data);
     await CacheOperations.invalidateAbout();
     return result;
   }
 
   async deleteTimelineEntry(id: number): Promise<boolean> {
-    const result = await pageContentRepository.deleteAboutTimelineEntry(id);
+    const result = await aboutRepository.deleteAboutTimelineEntry(id);
     await CacheOperations.invalidateAbout();
     return result;
   }
@@ -123,16 +123,16 @@ export class AboutService {
   // ===========================================================================
 
   async getLocations(includeInactive: boolean = true): Promise<AboutMapLocation[]> {
-    return pageContentRepository.getAboutMapLocations(includeInactive);
+    return aboutRepository.getAboutMapLocations(includeInactive);
   }
 
   async getLocation(id: number): Promise<AboutMapLocation | null> {
-    const result = await pageContentRepository.getAboutMapLocation(id);
+    const result = await aboutRepository.getAboutMapLocation(id);
     return result ?? null;
   }
 
   async createLocation(data: InsertAboutMapLocation): Promise<AboutMapLocation> {
-    const result = await pageContentRepository.createAboutMapLocation(data);
+    const result = await aboutRepository.createAboutMapLocation(data);
     await CacheOperations.invalidateAbout();
     return result;
   }
@@ -141,13 +141,13 @@ export class AboutService {
     id: number,
     data: Partial<InsertAboutMapLocation>,
   ): Promise<AboutMapLocation> {
-    const result = await pageContentRepository.updateAboutMapLocation(id, data);
+    const result = await aboutRepository.updateAboutMapLocation(id, data);
     await CacheOperations.invalidateAbout();
     return result;
   }
 
   async deleteLocation(id: number): Promise<boolean> {
-    const result = await pageContentRepository.deleteAboutMapLocation(id);
+    const result = await aboutRepository.deleteAboutMapLocation(id);
     await CacheOperations.invalidateAbout();
     return result;
   }
@@ -157,28 +157,28 @@ export class AboutService {
   // ===========================================================================
 
   async getSections(includeInactive: boolean = true): Promise<AboutSection[]> {
-    return pageContentRepository.getAboutSections(includeInactive);
+    return aboutRepository.getAboutSections(includeInactive);
   }
 
   async getSection(id: number): Promise<AboutSection | null> {
-    const result = await pageContentRepository.getAboutSection(id);
+    const result = await aboutRepository.getAboutSection(id);
     return result ?? null;
   }
 
   async createSection(data: InsertAboutSection): Promise<AboutSection> {
-    const result = await pageContentRepository.createAboutSection(data);
+    const result = await aboutRepository.createAboutSection(data);
     await CacheOperations.invalidateAbout();
     return result;
   }
 
   async updateSection(id: number, data: Partial<InsertAboutSection>): Promise<AboutSection> {
-    const result = await pageContentRepository.updateAboutSection(id, data);
+    const result = await aboutRepository.updateAboutSection(id, data);
     await CacheOperations.invalidateAbout();
     return result;
   }
 
   async deleteSection(id: number): Promise<boolean> {
-    const result = await pageContentRepository.deleteAboutSection(id);
+    const result = await aboutRepository.deleteAboutSection(id);
     await CacheOperations.invalidateAbout();
     return result;
   }
@@ -188,28 +188,28 @@ export class AboutService {
   // ===========================================================================
 
   async getStatistics(includeInactive: boolean = true): Promise<AboutStatistic[]> {
-    return pageContentRepository.getAboutStatistics(includeInactive);
+    return aboutRepository.getAboutStatistics(includeInactive);
   }
 
   async getStatistic(id: number): Promise<AboutStatistic | null> {
-    const result = await pageContentRepository.getAboutStatistic(id);
+    const result = await aboutRepository.getAboutStatistic(id);
     return result ?? null;
   }
 
   async createStatistic(data: InsertAboutStatistic): Promise<AboutStatistic> {
-    const result = await pageContentRepository.createAboutStatistic(data);
+    const result = await aboutRepository.createAboutStatistic(data);
     await CacheOperations.invalidateAbout();
     return result as AboutStatistic;
   }
 
   async updateStatistic(id: number, data: Partial<InsertAboutStatistic>): Promise<AboutStatistic> {
-    const result = await pageContentRepository.updateAboutStatistic(id, data);
+    const result = await aboutRepository.updateAboutStatistic(id, data);
     await CacheOperations.invalidateAbout();
     return result as AboutStatistic;
   }
 
   async deleteStatistic(id: number): Promise<boolean> {
-    const result = await pageContentRepository.deleteAboutStatistic(id);
+    const result = await aboutRepository.deleteAboutStatistic(id);
     await CacheOperations.invalidateAbout();
     return result;
   }
@@ -219,12 +219,12 @@ export class AboutService {
   // ===========================================================================
 
   async getTeamMessage(includeInactive: boolean = true): Promise<AboutTeamMessage | null> {
-    const result = await pageContentRepository.getAboutTeamMessage(includeInactive);
+    const result = await aboutRepository.getAboutTeamMessage(includeInactive);
     return result ?? null;
   }
 
   async updateTeamMessage(data: Partial<InsertAboutTeamMessage>): Promise<AboutTeamMessage> {
-    const result = await pageContentRepository.updateAboutTeamMessage(data);
+    const result = await aboutRepository.updateAboutTeamMessage(data);
     await CacheOperations.invalidateAbout();
     return result as AboutTeamMessage;
   }

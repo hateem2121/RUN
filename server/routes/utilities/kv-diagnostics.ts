@@ -4,9 +4,9 @@
 import type { Express } from "express";
 import {
   accessoryRepository,
+  homepageRepository,
   mediaRepository,
   miscRepository,
-  pageContentRepository,
   productRepository,
 } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
@@ -41,9 +41,9 @@ export function registerKVDiagnosticsRoutes(app: Express): void {
       accessoryRepository.getAccessories(),
       miscRepository.getSizeCharts(),
       mediaRepository.getMediaAssets(),
-      pageContentRepository.getHomepageHero(),
-      pageContentRepository.getHomepageSections(),
-      pageContentRepository.getHomepageProcessCards(),
+      homepageRepository.getHomepageHero(),
+      homepageRepository.getHomepageSections(),
+      homepageRepository.getHomepageProcessCards(),
 
       miscRepository.getNavigationItems(),
       miscRepository.getContactPageConfiguration(),
@@ -100,9 +100,9 @@ export function registerKVDiagnosticsRoutes(app: Express): void {
       accessories: () => accessoryRepository.getAccessories(),
       sizeCharts: () => miscRepository.getSizeCharts(),
       mediaAssets: () => mediaRepository.getMediaAssets(),
-      homepageHero: () => pageContentRepository.getHomepageHero(),
-      homepageSections: () => pageContentRepository.getHomepageSections(),
-      homepageProcessCards: () => pageContentRepository.getHomepageProcessCards(),
+      homepageHero: () => homepageRepository.getHomepageHero(),
+      homepageSections: () => homepageRepository.getHomepageSections(),
+      homepageProcessCards: () => homepageRepository.getHomepageProcessCards(),
 
       navigationItems: () => miscRepository.getNavigationItems(),
       contactPageConfiguration: () => miscRepository.getContactPageConfiguration(),

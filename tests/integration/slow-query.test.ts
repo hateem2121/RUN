@@ -31,14 +31,11 @@ vi.mock("../../server/lib/cache/unified-cache.js", () => ({
 }));
 
 describe("Slow Query Logging (Unit Tier)", () => {
-  // biome-ignore lint/suspicious/noExplicitAny: using private reset() for test isolation
   let monitor: any;
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    const { QueryPerformanceMonitor } = await import(
-      "../../server/lib/db/query-performance.js"
-    );
+    const { QueryPerformanceMonitor } = await import("../../server/lib/db/query-performance.js");
     monitor = QueryPerformanceMonitor.getInstance();
     // Reset in-class state (consecutiveSlowQueries, lastAlertTime, metrics buffer)
     monitor.reset();
@@ -91,9 +88,9 @@ describe("Slow Query Logging (Unit Tier)", () => {
       cacheHit: false,
     });
 
-    const slowWarnCalls = vi.mocked(logger.warn).mock.calls.filter(([msg]) =>
-      String(msg).includes("SLOW QUERY"),
-    );
+    const slowWarnCalls = vi
+      .mocked(logger.warn)
+      .mock.calls.filter(([msg]) => String(msg).includes("SLOW QUERY"));
 
     expect(slowWarnCalls).toHaveLength(0);
   });

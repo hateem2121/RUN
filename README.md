@@ -1,6 +1,6 @@
 # RUN Remix — The Agentic Sportswear Factory
 
-**Version:** 4.0.1 | **Port:** 5002 (Exclusively) | **Engine:** gstack | **Last Updated:** April 2026
+**Version:** 4.0.3 | **Port:** 5002 (Exclusively) | **Engine:** gstack | **Last Updated:** April 2026
 
 [![Node 24+](https://img.shields.io/badge/Node-24%2B-339933?logo=node.js)](https://nodejs.org)
 [![React 19](https://img.shields.io/badge/React-19.2.4-61DAFB?logo=react)](https://react.dev)
@@ -33,20 +33,26 @@ npm install
 cp .env.example .env
 # Fill in DATABASE_URL, Upstash, Google IDs, etc.
 
-# Build Agentic Skills (gstack)
-cd .claude/skills/gstack && ./setup
-
 # Verify Tech Integrity
 npm run verify:tech-integrity
 ```
 
-### 2. Invoke the Team
+### 2. Run Locally
 
-Open Claude Code and run:
+```bash
+# Start dev server (Client + Server via Turbo)
+npm run dev
+# → Opens on http://localhost:5002
+```
 
-- `/office-hours` — To brainstorm new product features with the CEO role.
-- `/plan-ceo-review` — To get a business-level critique of your architecture.
-- `/review` — To have a senior engineer find and fix bugs in your current branch.
+### 3. Pre-Push Checklist
+
+```bash
+npm run check:apply           # Biome format + lint (auto-fix)
+npm run typecheck             # Must be 0 errors
+npm run verify:tech-integrity # Must exit 0
+npm run test                  # Tests must pass
+```
 
 ---
 
@@ -66,7 +72,6 @@ The factory is staffed by 23+ specialized agent roles:
 | `/retro` | **Team Lead** | Learn from the sprint and update SOPs. |
 | `/investigate` | **Specialist** | Solve the most complex "impossible" bugs. |
 | `/devex-review` | **DX Lead** | Developer experience audit — tooling, workflow, onboarding. |
-| `/plan-devex-review` | **DX Lead** | Review plans for developer experience impact. |
 
 ---
 
@@ -79,7 +84,9 @@ The factory is staffed by 23+ specialized agent roles:
 | **Backend** | Express 5.1.0 | Async-native handlers. NO `try/catch`. |
 | **3D** | `@google/model-viewer` | `LazyUnifiedModelViewer` required. |
 | **Database** | Neon Serverless | HTTP Driver only. |
+| **ORM** | Drizzle 0.45.1 | Parameterized queries. No raw SQL. |
 | **Testing** | Vitest | 80%+ service coverage required. |
+| **Linting** | Biome 2.3.10 | NOT ESLint or Prettier. |
 
 ---
 
@@ -97,13 +104,20 @@ Every task follows the deterministic **B.L.A.S.T.** methodology:
 
 ## 📚 Documentation
 
-- [**Constitution (gemini.md)**](./gemini.md) — The core system invariants.
-- [**Agent Ethos (ETHOS.md)**](./docs/core/ETHOS.md) — The factory manifesto.
-- [**Agent Role Directory (AGENTS.md)**](./docs/core/AGENTS.md) — Detailed role descriptions.
-- [**SOP Repository**](./docs/core/sops/) — Standard Operating Procedures.
-- [**Onboarding Guide**](./docs/ONBOARDING.md) — First-time contributor setup.
-- [**Development Workflow**](./docs/DEVELOPMENT_WORKFLOW.md) — Day-to-day coding protocols.
-- [**Coding Standards**](./docs/CODING_STANDARDS.md) — TypeScript, React, and Express rules.
+| Resource | Path |
+|----------|------|
+| Constitution | [`gemini.md`](./gemini.md) |
+| Agent Ethos | [`docs/core/ETHOS.md`](./docs/core/ETHOS.md) |
+| Agent Roles | [`docs/core/AGENTS.md`](./docs/core/AGENTS.md) |
+| SOPs | [`docs/core/sops/`](./docs/core/sops/) |
+| Onboarding | [`docs/ONBOARDING.md`](./docs/ONBOARDING.md) |
+| Dev Workflow | [`docs/DEVELOPMENT_WORKFLOW.md`](./docs/DEVELOPMENT_WORKFLOW.md) |
+| Coding Standards | [`docs/CODING_STANDARDS.md`](./docs/CODING_STANDARDS.md) |
+| API Reference | [`docs/api/`](./docs/api/) |
+| Architecture | [`docs/core/architecture.md`](./docs/core/architecture.md) |
+| Security | [`SECURITY.md`](./SECURITY.md) |
+| Contributing | [`CONTRIBUTING.md`](./CONTRIBUTING.md) |
+| Changelog | [`CHANGELOG.md`](./CHANGELOG.md) |
 
 ---
 
@@ -114,11 +128,7 @@ Every task follows the deterministic **B.L.A.S.T.** methodology:
 - Zero-tolerance for `any` types or unsafe data patterns.
 - Automated security scanning on every PR.
 
----
-
-Copyright © 2026 RUN APPAREL (PVT) LTD / Durus Industries.
-*Confidential — Proprietary Agentic System*
-ility, see [`SECURITY.md`](./SECURITY.md).
+For vulnerability reporting, see [`SECURITY.md`](./SECURITY.md).
 
 Security tools in use: Trivy, GitHub secret scanning, DAST (`dast-scan.yml`), `npm audit`.
 

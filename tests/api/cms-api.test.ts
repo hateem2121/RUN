@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import request from "supertest";
-import { afterAll, beforeAll, describe, expect, it, test, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
 import { mediaRepository, miscRepository } from "../../server/lib/db/repositories/index.js";
 import { registerRoutes } from "../../server/routes/index.js";
 

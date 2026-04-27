@@ -26,17 +26,20 @@ const store = new Map<string, CachedEntry>();
 export function idempotencyMiddleware(req: Request, res: Response, next: NextFunction): void {
   // Skip GETs — they are naturally idempotent
   if (req.method === "GET") {
-    return next();
+    next();
+    return;
   }
 
   // Skip the health endpoint
   if (req.path === "/api/health") {
-    return next();
+    next();
+    return;
   }
 
   const key = req.headers["idempotency-key"];
   if (!key || typeof key !== "string") {
-    return next();
+    next();
+    return;
   }
 
   // Replay cached response
@@ -49,7 +52,7 @@ export function idempotencyMiddleware(req: Request, res: Response, next: NextFun
 
   // Intercept the outgoing response and cache it
   const originalJson = res.json.bind(res) as typeof res.json;
-  res.json = function (body: unknown) {
+  res.json = (body: unknown) => {
     store.set(key, { status: res.statusCode, body });
     return originalJson(body);
   };

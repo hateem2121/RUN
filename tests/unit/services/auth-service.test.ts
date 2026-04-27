@@ -151,7 +151,9 @@ describe("AuthService", () => {
       process.env.BYPASS_RBAC_FOR_TESTING = "true";
       process.env.NODE_ENV = "production";
       try {
-        const { authService, AuthErrors } = await import("../../../server/services/auth-service.js");
+        const { authService, AuthErrors } = await import(
+          "../../../server/services/auth-service.js"
+        );
         const req = {
           isAuthenticated: () => false,
           user: undefined,

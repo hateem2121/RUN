@@ -16,7 +16,7 @@ import { z } from "zod";
 import { CacheKeys } from "../../lib/cache/cache-strategies.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
-import { pageContentRepository } from "../../lib/db/repositories/index.js";
+import { sustainabilityRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { authService } from "../../services/auth-service.js";
@@ -169,7 +169,7 @@ router.get("/", async (req, res) => {
   }
 
   const config = await withTimeout(
-    pageContentRepository.getUnifiedSustainability(),
+    sustainabilityRepository.getUnifiedSustainability(),
     10000,
     "Get unified sustainability config",
   );
@@ -254,7 +254,7 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
 
   // Update in database with timeout protection
   const updated = await withTimeout(
-    pageContentRepository.updateUnifiedSustainability(removeUndefined(validatedData)),
+    sustainabilityRepository.updateUnifiedSustainability(removeUndefined(validatedData)),
     10000,
     "Update unified sustainability config",
   );

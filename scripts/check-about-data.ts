@@ -1,5 +1,4 @@
 import { db } from "../server/db.js";
-import { logger } from "../server/lib/monitoring/logger.js";
 import { aboutHero, aboutSections, aboutTimelineEntries } from "../shared/schemas/index.js";
 
 async function checkData() {
@@ -11,9 +10,9 @@ async function checkData() {
     console.log("--- About Page Data Check ---");
     console.log(`About Hero: ${heroRows.length} rows`);
     if (heroRows.length > 0) {
-      heroRows.forEach((r) =>
-        console.log(`  Hero ID: ${r.id}, Title: ${r.title}, IsActive: ${r.isActive}`),
-      );
+      for (const r of heroRows) {
+        console.log(`  Hero ID: ${r.id}, Title: ${r.title}, IsActive: ${r.isActive}`);
+      }
     }
 
     console.log(`About Sections: ${sectionRows.length} rows`);

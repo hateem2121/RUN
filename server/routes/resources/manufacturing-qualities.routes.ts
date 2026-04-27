@@ -16,7 +16,7 @@
 import { Router } from "express";
 import { z } from "zod";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
-import { pageContentRepository } from "../../lib/db/repositories/index.js";
+import { manufacturingRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { authService } from "../../services/auth-service.js";
@@ -34,7 +34,7 @@ const idParamSchema = z.object({
 
 router.get("/", async (_req, res) => {
   const qualities = await withTimeout(
-    pageContentRepository.getManufacturingQualities(),
+    manufacturingRepository.getManufacturingQualities(),
     10000,
     "Get manufacturing qualities",
   );
@@ -47,7 +47,7 @@ router.get("/:id", async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
   const quality = await withTimeout(
-    pageContentRepository.getManufacturingQuality(id),
+    manufacturingRepository.getManufacturingQuality(id),
     10000,
     "Get manufacturing quality",
   );
@@ -69,7 +69,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
   }
 
   const newQuality = await withTimeout(
-    pageContentRepository.createManufacturingQuality(validation.data),
+    manufacturingRepository.createManufacturingQuality(validation.data),
     10000,
     "Create manufacturing quality",
   );
@@ -94,7 +94,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
   }
 
   const updated = await withTimeout(
-    pageContentRepository.updateManufacturingQuality(id, validation.data),
+    manufacturingRepository.updateManufacturingQuality(id, validation.data),
     10000,
     "Update manufacturing quality",
   );
@@ -117,7 +117,7 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
   const deleted = await withTimeout(
-    pageContentRepository.deleteManufacturingQuality(id),
+    manufacturingRepository.deleteManufacturingQuality(id),
     10000,
     "Delete manufacturing quality",
   );
@@ -146,7 +146,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
 
   const updates = await Promise.all(
     validation.data.qualities.map(({ id, position }: { id: number; position: number }) =>
-      pageContentRepository.updateManufacturingQuality(id, { sortOrder: position }),
+      manufacturingRepository.updateManufacturingQuality(id, { sortOrder: position }),
     ),
   );
 

@@ -40,8 +40,8 @@ import type {
   InsertContactPageConfiguration,
   InsertFabric,
   InsertFiber,
-  InsertFooterConfiguration,
   InsertFolder,
+  InsertFooterConfiguration,
   InsertHomepageFeaturedProductsSettings,
   InsertHomepageHero,
   InsertHomepageProcessCard,
@@ -191,7 +191,10 @@ export interface IAccessoryRepository {
     offset?: number,
     filters?: { category?: string | undefined; search?: string | undefined },
   ): Promise<Accessory[]>;
-  getAccessoriesCount(filters?: { category?: string | undefined; search?: string | undefined }): Promise<number>;
+  getAccessoriesCount(filters?: {
+    category?: string | undefined;
+    search?: string | undefined;
+  }): Promise<number>;
   getAccessory(id: number): Promise<Accessory | undefined>;
   createAccessory(accessory: InsertAccessory): Promise<Accessory>;
   updateAccessory(id: number, accessory: Partial<InsertAccessory>): Promise<Accessory | undefined>;
@@ -264,10 +267,7 @@ export interface IMediaRepository {
 // Product Repository
 export interface IProductRepository {
   getProducts(limit?: number, offset?: number): Promise<ProductSummary[]>;
-  getProductsCursor(
-    limit?: number,
-    cursor?: number,
-  ): Promise<ProductSummary[]>;
+  getProductsCursor(limit?: number, cursor?: number): Promise<ProductSummary[]>;
   getHomepageFeaturedProducts(limit?: number): Promise<ProductSummary[]>;
   getProductsSummary(
     limit?: number,
@@ -416,13 +416,17 @@ export interface IContentRepository {
   // Footer
   getFooterSections(): Promise<unknown[]>;
   getFooterConfiguration(): Promise<FooterConfiguration | undefined>;
-  updateFooterConfiguration(config: Partial<InsertFooterConfiguration>): Promise<FooterConfiguration>;
+  updateFooterConfiguration(
+    config: Partial<InsertFooterConfiguration>,
+  ): Promise<FooterConfiguration>;
   createFooterLink(link: unknown): Promise<unknown>;
 
   // About
   getAboutHero(includeInactive?: boolean): Promise<AboutHero | undefined>;
   updateAboutHero(hero: Partial<InsertAboutHero>): Promise<AboutHero>;
-  getAboutTimelineEntries(includeInactive?: boolean): Promise<(AboutTimelineEntry & { imageUrl: string | null })[]>;
+  getAboutTimelineEntries(
+    includeInactive?: boolean,
+  ): Promise<(AboutTimelineEntry & { imageUrl: string | null })[]>;
   getAboutTimelineEntry(id: number): Promise<AboutTimelineEntry | undefined>;
   createAboutTimelineEntry(entry: InsertAboutTimelineEntry): Promise<AboutTimelineEntry>;
   updateAboutTimelineEntry(

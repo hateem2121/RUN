@@ -20,8 +20,8 @@ import { RoadAheadTimeline } from "@/components/technology/RoadAheadTimeline";
 import { TechnologyStackSection } from "@/components/technology/TechnologyStackSection";
 import { MarqueeStrip } from "@/components/technology/ui/MarqueeStrip";
 import { Typography } from "@/components/ui/typography";
-import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
 import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
+import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
 import { getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/technology";
 

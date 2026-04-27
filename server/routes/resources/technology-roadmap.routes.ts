@@ -19,7 +19,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { insertTechnologyRoadmapSchema } from "../../../shared/index.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
-import { pageContentRepository } from "../../lib/db/repositories/index.js";
+import { technologyRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { authService } from "../../services/auth-service.js";
@@ -41,7 +41,7 @@ const reorderSchema = z.object({
 
 router.get("/", async (_req, res) => {
   const roadmap = await withTimeout(
-    pageContentRepository.getTechnologyRoadmap(),
+    technologyRepository.getTechnologyRoadmap(),
     10000,
     "Get technology roadmap",
   );
@@ -54,7 +54,7 @@ router.get("/:id", async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
   const item = await withTimeout(
-    pageContentRepository.getTechnologyRoadmapItem(id),
+    technologyRepository.getTechnologyRoadmapItem(id),
     10000,
     "Get technology roadmap item",
   );
@@ -79,7 +79,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
   }
 
   const newItem = await withTimeout(
-    pageContentRepository.createTechnologyRoadmap(removeUndefined(validation.data)),
+    technologyRepository.createTechnologyRoadmap(removeUndefined(validation.data)),
     10000,
     "Create technology roadmap item",
   );
@@ -107,7 +107,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
   }
 
   const updated = await withTimeout(
-    pageContentRepository.updateTechnologyRoadmap(id, removeUndefined(validation.data)),
+    technologyRepository.updateTechnologyRoadmap(id, removeUndefined(validation.data)),
     10000,
     "Update technology roadmap item",
   );
@@ -130,7 +130,7 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
   const deleted = await withTimeout(
-    pageContentRepository.deleteTechnologyRoadmap(id),
+    technologyRepository.deleteTechnologyRoadmap(id),
     10000,
     "Delete technology roadmap item",
   );
@@ -162,7 +162,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
 
   const updates = await Promise.all(
     removeUndefined(validation.data).roadmap.map(({ id, position }) =>
-      pageContentRepository.updateTechnologyRoadmap(id, { sortOrder: position }),
+      technologyRepository.updateTechnologyRoadmap(id, { sortOrder: position }),
     ),
   );
 

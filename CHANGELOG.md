@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.3] - 2026-04-27
+
+### Changed
+
+- **Media Library architecture fully decomposed**: Three monolithic files reduced by ~45% average LOC. `MediaUploadEnhanced.tsx` (1,106→618), `MediaLibraryContextEnhanced.tsx` (1,016→588), `MediaGrid.tsx` (315→143). Six new focused modules created.
+- **Tech debt ledger at zero**: All monoliths from the 5-Lens Review (`ProductCreateEditModal`, `PageContentRepository`, `MediaGrid`, `MediaUploadEnhanced`, `MediaLibraryContextEnhanced`) have been permanently decomposed.
+
+### Added
+
+- `client/app/components/admin/media-library/upload/upload-utilities.ts` — MIME detection, file validation, upload queue manager, performance tracking, and formatting utilities.
+- `client/app/components/admin/media-library/upload/UploadItem.tsx` — Memoized upload queue entry component with status icons, progress bars, speed/ETA metrics.
+- `client/app/components/admin/media-library/hooks/useMediaFilters.ts` — Filter logic, debounced search, query parameter construction.
+- `client/app/components/admin/media-library/hooks/useMediaSelection.ts` — Asset selection, toggle, select-all, selection data calculations.
+- `client/app/components/admin/media-library/hooks/useMediaUrlSync.ts` — Bidirectional URL ↔ state synchronization for deep-linkable filter state.
+- `client/app/components/admin/media-library/hooks/useMediaGridQuery.ts` — Paginated media query with retry logic, abort handling, and batch signed URL fetching.
+
 ## [4.0.2] - 2026-04-26
 
 ### Security

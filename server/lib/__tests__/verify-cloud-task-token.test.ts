@@ -11,9 +11,11 @@ const { mockVerifyIdTokenFn } = vi.hoisted(() => ({
 }));
 
 vi.mock("google-auth-library", () => ({
-  OAuth2Client: vi.fn().mockImplementation(class {
-    verifyIdToken = mockVerifyIdTokenFn;
-  }),
+  OAuth2Client: vi.fn().mockImplementation(
+    class {
+      verifyIdToken = mockVerifyIdTokenFn;
+    },
+  ),
 }));
 
 describe("verifyCloudTaskToken", () => {

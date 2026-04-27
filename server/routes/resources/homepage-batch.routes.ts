@@ -15,7 +15,7 @@ import express from "express";
 import type { HomepageProcessCard } from "../../../shared/schemas/content/home.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
-import { pageContentRepository, productRepository } from "../../lib/db/repositories/index.js";
+import { homepageRepository, productRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 
 const router = express.Router();
@@ -48,14 +48,14 @@ router.get("/homepage-batch", async (req, res) => {
     // Process cards now included in batch (Remediation Feb 15, 2026) to eliminate hydration waterfall
     const [hero, slogans, sections, featuredProductsSettings, products, categories, processCards] =
       await Promise.all([
-        pageContentRepository.getHomepageHero(),
-        pageContentRepository.getHomepageSlogans(),
-        pageContentRepository.getHomepageSections(),
+        homepageRepository.getHomepageHero(),
+        homepageRepository.getHomepageSlogans(),
+        homepageRepository.getHomepageSections(),
 
-        pageContentRepository.getHomepageFeaturedProductsSettings(),
+        homepageRepository.getHomepageFeaturedProductsSettings(),
         productRepository.getProducts(20),
         productRepository.getCategories(),
-        pageContentRepository.getHomepageProcessCards(),
+        homepageRepository.getHomepageProcessCards(),
       ]);
 
     return {
@@ -182,13 +182,14 @@ router.get("/homepage-process-cards", async (req, res) => {
   // Apply same admin-only bypass guard as /homepage-batch — unauthenticated refresh=1 is a DoS vector
   const isAdmin =
     (req as { session?: { user?: { role?: string } } }).session?.user?.role === "admin";
-  const bypassCache = isAdmin && (req.query.refresh === "1" || req.headers["cache-control"] === "no-cache");
+  const bypassCache =
+    isAdmin && (req.query.refresh === "1" || req.headers["cache-control"] === "no-cache");
 
   // PHASE 2A TASK 7: Two-tier cache with SWR
   const { data, benchmark } = (await twoTierBatchCache.get(
     "homepage:process-cards",
     async () => {
-      const processCards = await pageContentRepository.getHomepageProcessCards();
+      const processCards = await homepageRepository.getHomepageProcessCards();
 
       return {
         result: processCards,

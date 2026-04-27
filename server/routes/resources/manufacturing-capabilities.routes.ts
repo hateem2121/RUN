@@ -19,7 +19,7 @@ import { removeUndefined } from "../../utils.js";
 import { Router } from "express";
 import { z } from "zod";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
-import { pageContentRepository } from "../../lib/db/repositories/index.js";
+import { manufacturingRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { authService } from "../../services/auth-service.js";
@@ -37,7 +37,7 @@ const idParamSchema = z.object({
 
 router.get("/", async (_req, res) => {
   const capabilities = await withTimeout(
-    pageContentRepository.getManufacturingCapabilities(),
+    manufacturingRepository.getManufacturingCapabilities(),
     10000,
     "Get manufacturing capabilities",
   );
@@ -50,7 +50,7 @@ router.get("/:id", async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
   const capability = await withTimeout(
-    pageContentRepository.getManufacturingCapability(id),
+    manufacturingRepository.getManufacturingCapability(id),
     10000,
     "Get manufacturing capability",
   );
@@ -72,7 +72,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
   }
 
   const newCapability = await withTimeout(
-    pageContentRepository.createManufacturingCapability(
+    manufacturingRepository.createManufacturingCapability(
       removeUndefined(validation.data) as unknown as InsertManufacturingCapability,
     ),
     10000,
@@ -99,7 +99,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
   }
 
   const updated = await withTimeout(
-    pageContentRepository.updateManufacturingCapability(
+    manufacturingRepository.updateManufacturingCapability(
       id,
       removeUndefined(validation.data) as unknown as Partial<InsertManufacturingCapability>,
     ),
@@ -125,7 +125,7 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
   const deleted = await withTimeout(
-    pageContentRepository.deleteManufacturingCapability(id),
+    manufacturingRepository.deleteManufacturingCapability(id),
     10000,
     "Delete manufacturing capability",
   );
@@ -155,7 +155,7 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
   const updates = await Promise.all(
     removeUndefined(validation.data).capabilities.map(
       ({ id, position }: { id: number; position: number }) =>
-        pageContentRepository.updateManufacturingCapability(id, {
+        manufacturingRepository.updateManufacturingCapability(id, {
           sortOrder: position,
         }),
     ),

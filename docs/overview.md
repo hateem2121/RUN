@@ -77,6 +77,10 @@ npm ci
 │   ├── app/                      # Source Code (Remix Standard)
 │   │   ├── components/ui/        # Atomic Design System (shadcn/ui)
 │   │   ├── components/admin/     # Admin Domain
+│   │   │   └── media-library/    # Media Library Module (Decomposed Session 8)
+│   │   │       ├── hooks/        # useMediaFilters, useMediaSelection, useMediaUrlSync, useMediaGridQuery
+│   │   │       ├── upload/       # upload-utilities.ts, UploadItem.tsx
+│   │   │       └── components/   # MediaGridItem, MediaGridPagination, MediaGridToolbar, MediaBulkOperations
 │   │   └── lib/                  # Tokens & Utils
 │   └── vite.config.ts            # Vite 7 Config
 │
@@ -84,6 +88,14 @@ npm ci
 │   ├── boot/                     # App Startup
 │   ├── routes/                   # API Endpoints
 │   ├── services/                 # Business Logic
+│   ├── lib/db/repositories/      # Data Access Layer
+│   │   ├── page-content/         # Domain Repositories (Session 8)
+│   │   │   ├── homepage.repository.ts
+│   │   │   ├── about.repository.ts
+│   │   │   ├── sustainability.repository.ts
+│   │   │   ├── manufacturing.repository.ts
+│   │   │   └── technology.repository.ts
+│   │   └── index.ts              # Re-exports all repositories
 │   └── db.ts                     # Drizzle Instance
 │
 └── shared/ (@run-remix/shared)   # Zod Schemas & Contracts
@@ -193,4 +205,4 @@ npm ci
 - **Context:** `docs/core/tech-stack.md` provides definitions for AI decision making.
 
 ---
-**Version**: 1.1.0 | **Audit Status**: Verified | **Last Remediated**: 2026-02-12
+**Version**: 1.3.0 | **Audit Status**: Verified | **Last Remediated**: 2026-04-27

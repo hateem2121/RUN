@@ -4,8 +4,8 @@ import { vi } from "vitest";
  * Creates a robust Drizzle ORM mock that supports fluent chaining.
  * @param defaultResult The value to return at the end of the chain.
  */
-export function createDbMock(defaultResult: any = []) {
-  const chainable: any = {};
+export function createDbMock(defaultResult: unknown = []) {
+  const chainable: Record<string, unknown> = {};
 
   const methods = [
     "select",
@@ -35,8 +35,11 @@ export function createDbMock(defaultResult: any = []) {
   });
 
   // Make it a Thenable that resolves to defaultResult
-  chainable.then = (onFulfilled: any) => Promise.resolve(defaultResult).then(onFulfilled);
-  chainable.catch = (onRejected: any) => Promise.resolve(defaultResult).catch(onRejected);
+  // biome-ignore lint/suspicious/noThenProperty: Mocking a promise
+  chainable.then = (onFulfilled: unknown) =>
+    Promise.resolve(defaultResult).then(onFulfilled as never);
+  chainable.catch = (onRejected: unknown) =>
+    Promise.resolve(defaultResult).catch(onRejected as never);
 
   return chainable;
 }

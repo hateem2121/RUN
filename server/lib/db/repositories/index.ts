@@ -33,10 +33,7 @@ export { AccessoryRepository, accessoryRepository } from "./accessory-repository
 export { MediaRepository, mediaRepository } from "./media-repository.js";
 
 // Page content (homepage, about, manufacturing, etc.)
-import { PageContentRepository } from "./page-content-repository.js";
-
-export { PageContentRepository } from "./page-content-repository.js";
-export const pageContentRepository = new PageContentRepository();
+export * from "./page-content/index.js";
 
 // Miscellaneous entities (fibers, fabrics, certificates, size charts)
 import { MiscRepository } from "./misc-repository.js";

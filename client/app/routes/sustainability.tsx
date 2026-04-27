@@ -1,11 +1,11 @@
 import { useGSAP } from "@gsap/react";
 import type { MediaAsset, SustainabilityBatchResponse } from "@shared/index";
-import type {
-  SustainabilityMetric,
-  SustainabilityInitiative,
-  SustainabilityGoal,
-} from "@shared/schemas/content/sustainability";
 import type { Certificate } from "@shared/schemas/catalog";
+import type {
+  SustainabilityGoal,
+  SustainabilityInitiative,
+  SustainabilityMetric,
+} from "@shared/schemas/content/sustainability";
 import type { Fabric } from "@shared/schemas/materials";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import gsap from "gsap";
@@ -334,8 +334,10 @@ function SustainabilityInner() {
   });
 
   const unifiedData = batchData?.hero;
-  const activeImpactMetrics = batchData?.metrics?.filter((m: SustainabilityMetric) => m.isActive) || [];
-  const activeInitiatives = batchData?.initiatives?.filter((i: SustainabilityInitiative) => i.isActive) || [];
+  const activeImpactMetrics =
+    batchData?.metrics?.filter((m: SustainabilityMetric) => m.isActive) || [];
+  const activeInitiatives =
+    batchData?.initiatives?.filter((i: SustainabilityInitiative) => i.isActive) || [];
   const activeGoals = batchData?.goals?.filter((g: SustainabilityGoal) => g.isActive) || [];
   const allCertificates = batchData?.certificates || [];
 
@@ -442,16 +444,18 @@ function SustainabilityInner() {
         return [];
       }
       const results = await batchFetchMediaContent(requiredMediaIds);
-      return results.map((r: { id: number; url?: string; mimeType?: string; filename?: string; type?: string }) => ({
-        id: r.id,
-        url: r.url || "",
-        mimeType: r.mimeType || "image/jpeg",
-        filename: r.filename || "",
-        type: r.type || "image",
-        storagePath: "",
-        bucketName: "",
-        metadata: {},
-      })) as MediaAsset[];
+      return results.map(
+        (r: { id: number; url?: string; mimeType?: string; filename?: string; type?: string }) => ({
+          id: r.id,
+          url: r.url || "",
+          mimeType: r.mimeType || "image/jpeg",
+          filename: r.filename || "",
+          type: r.type || "image",
+          storagePath: "",
+          bucketName: "",
+          metadata: {},
+        }),
+      ) as MediaAsset[];
     },
     enabled: requiredMediaIds.length > 0,
     staleTime: 10 * 60 * 1000,
@@ -578,16 +582,18 @@ function SustainabilityInner() {
 
           {activeImpactMetrics.length > 0 && (
             <div className="grid grid-cols-2 gap-3 w-full md:flex md:flex-row md:flex-wrap md:justify-center md:gap-4 lg:gap-6">
-              {activeImpactMetrics.slice(0, 4).map((metric: SustainabilityMetric, index: number) => (
-                <StatCard
-                  key={metric.id}
-                  label={metric.name}
-                  value={metric.value}
-                  unit={metric.unit}
-                  iconName={metric.iconName}
-                  index={index}
-                />
-              ))}
+              {activeImpactMetrics
+                .slice(0, 4)
+                .map((metric: SustainabilityMetric, index: number) => (
+                  <StatCard
+                    key={metric.id}
+                    label={metric.name}
+                    value={metric.value}
+                    unit={metric.unit}
+                    iconName={metric.iconName}
+                    index={index}
+                  />
+                ))}
             </div>
           )}
         </div>

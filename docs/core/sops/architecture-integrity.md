@@ -53,5 +53,60 @@ All database interactions must use **Drizzle ORM** through the `db` client.
 - Use `Zod` schemas for all input and output validation.
 - All service methods must return typed Results or throw typed Errors.
 
+## 6. Domain Repository Pattern (Established Session 8 — 2026-04-27)
+
+The legacy monolithic `PageContentRepository` (2,400 LOC) has been permanently decomposed. All page-content data access now flows through **five domain-specific repositories** in `server/lib/db/repositories/page-content/`:
+
+| Repository | Domain | Key Methods |
+|---|---|---|
+| `homepage.repository.ts` | Hero, Slogans, Process Cards, Logo, Featured Products | `getHomepageBatch()` |
+| `about.repository.ts` | Hero, Timeline, Map, Sections, Statistics, Team Message | `getAboutBatch()` |
+| `sustainability.repository.ts` | Hero, Goals, Metrics, Initiatives | `getSustainabilityUnifiedData()` |
+| `manufacturing.repository.ts` | Hero, Capabilities, Processes, Qualities | `getManufacturingBatch()` |
+| `technology.repository.ts` | Hero, CTA, Equipment, Innovations, Research, Roadmap | `getTechnologyBatch()` |
+
+- **[RULE] No God Repositories:** Never consolidate multiple domains into a single repository file.
+- **[RULE] Direct Imports:** Services and routes must import the specific domain repository (e.g., `import { homepageRepository } from "./repositories"`).
+- **[RULE] Re-export via Index:** All repositories are centrally re-exported from `server/lib/db/repositories/index.ts`.
+
+## 7. Frontend Modular Decomposition Pattern (Established Session 8 — 2026-04-27)
+
+Large frontend components (>500 LOC) must be decomposed following the patterns established during the Media Library extraction:
+
+### Hook Extraction
+- **[RULE]** Extract data-fetching logic into custom hooks (e.g., `useMediaGridQuery`). Components should be pure presentation.
+- **[RULE]** Extract state-management logic into focused hooks (e.g., `useMediaFilters`, `useMediaSelection`). Each hook manages a single concern.
+- **[RULE]** URL synchronization logic must be isolated into its own hook (e.g., `useMediaUrlSync`).
+
+### Utility Extraction
+- **[RULE]** Pure utility functions, constants, and class instances must live in dedicated `.ts` files (not `.tsx`).
+- **[RULE]** Memoized sub-components with no shared state must be extracted into their own `.tsx` files.
+
+### Directory Convention
+- Hooks go in a `hooks/` subdirectory within the domain module.
+- Utility modules go in a domain-appropriate subdirectory (e.g., `upload/`).
+- Extracted UI sub-components go in a `components/` subdirectory.
+
+### Reference Implementation
+
+```
+media-library/                         # Domain module root
+├── MediaGrid.tsx                      # Lean presentation (143 LOC)
+├── MediaLibraryContextEnhanced.tsx    # Provider shell (588 LOC)
+├── MediaUploadEnhanced.tsx            # Upload orchestrator (618 LOC)
+├── hooks/                             # Extracted hooks
+│   ├── useMediaFilters.ts
+│   ├── useMediaGridQuery.ts
+│   ├── useMediaSelection.ts
+│   └── useMediaUrlSync.ts
+├── upload/                            # Extracted utilities
+│   ├── upload-utilities.ts
+│   └── UploadItem.tsx
+└── components/                        # Extracted sub-components
+    ├── MediaGridItem.tsx
+    ├── MediaGridPagination.tsx
+    └── MediaGridToolbar.tsx
+```
+
 ---
-**Status:** ACTIVE | **Approver:** Antigravity System
+**Status:** ACTIVE | **Approver:** Antigravity System | **Version:** v1.1.0 | **Last Updated:** 2026-04-27

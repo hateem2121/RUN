@@ -32,7 +32,7 @@ describe("useHomepageData", () => {
       slogans: [],
       sections: [],
       products: [],
-      categories: []
+      categories: [],
     };
 
     mockFetch.mockResolvedValueOnce({
@@ -53,7 +53,7 @@ describe("useHomepageData", () => {
   it("should throw error when fetch fails", async () => {
     mockFetch.mockResolvedValueOnce({
       ok: false,
-      status: 500
+      status: 500,
     });
 
     const { result } = renderHook(() => useHomepageData(), {

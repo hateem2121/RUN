@@ -36,7 +36,9 @@ vi.mock("../../../server/services/about.service.js", () => ({
 // prevent real Neon DB hits (the DB is missing the user_email_index column).
 vi.mock("../../../server/lib/db/repositories/system-repository.js", () => ({
   systemRepository: {
-    createAuditLog: vi.fn().mockResolvedValue({ id: 1, action: "INSERT", tableName: "test", recordId: "1" }),
+    createAuditLog: vi
+      .fn()
+      .mockResolvedValue({ id: 1, action: "INSERT", tableName: "test", recordId: "1" }),
   },
 }));
 

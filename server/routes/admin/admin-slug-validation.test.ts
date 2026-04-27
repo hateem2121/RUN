@@ -47,6 +47,7 @@ vi.mock("../../lib/resilience/request-timeout.js", () => ({
 }));
 
 import { adminService } from "../../services/admin/index.js";
+
 const mockCheck = adminService.checkSlugAvailability as ReturnType<typeof vi.fn>;
 
 const app = express();
@@ -111,9 +112,7 @@ describe("Admin Routes — Slug Validation (Fix 6)", () => {
     });
 
     it("returns 400 and does not call service when slug is an empty string", async () => {
-      const response = await request(app)
-        .get("/api/admin/products/check-slug")
-        .query({ slug: "" });
+      const response = await request(app).get("/api/admin/products/check-slug").query({ slug: "" });
 
       expect(response.status).toBe(400);
       expect(mockCheck).not.toHaveBeenCalled();

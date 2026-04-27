@@ -1119,7 +1119,7 @@
 
   /* Disable native smooth scroll when Lenis is active to prevent conflicts */
   html.has-scroll-smooth {
-    scroll-behavior: auto !important;
+    scroll-behavior: auto;
   }
   * {
     @apply border-border;

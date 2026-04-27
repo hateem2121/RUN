@@ -11,14 +11,16 @@
 * **Redundant `as string` Casts Removed**: `products.ts` pagination used `parseInt(page as string, 10)` after Zod had already narrowed the type. Simplified to `Number(page) || 1` / `Math.min(Number(limit) || 20, 100)`.
 * **CustomDropdown Focus Return**: Tab and Escape key handlers closed the dropdown without returning focus to the trigger button. Added `triggerRef` and `triggerRef.current?.focus()` before close in all three key handlers (Escape in trigger, Escape in option, Tab in option).
 * **Tailwind V4 Arbitrary Opacity Removed**: Three components used `opacity-[0.03]`, `opacity-[0.05]`, `opacity-[0.07]` in JSX (violation of "no arbitrary values" constraint). Added `@utility opacity-subtle`, `@utility opacity-faint`, `@utility opacity-muted-decoration`, and `@utility text-logotype` to `client/app/index.css`. Updated `Footer.tsx` and `CertificatesSection.tsx`.
+* **ProductCreateEditModal Monolith Refactored**: Decomposed the ~1,235-line `ProductCreateEditModal.tsx` into a highly maintainable Provider pattern architecture, extracted 8 parallel queries into `useProductQueries`, replaced 300+ lines of custom validation with a native Zod schema, and cleanly isolated the UI shell from the contextual state engine.
 
-### Tech Debt (Scheduled — Not Changed)
+### Tech Debt (Scheduled — All Resolved ✅)
 
-| File | LOC | Debt |
-|------|-----|------|
-| `client/app/components/admin/product-management-unified/admin/ProductCreateEditModal.tsx` | 1,235 | Split into `BasicInfoSection`, `MediaSection`, `PricingSection`, `FormActions` components |
-| `client/app/components/admin/media-library/MediaGrid.tsx` | 1,120 | Extract `MediaGridItem`, `MediaGridFilters`, `MediaGridPagination` |
-| `server/lib/db/repositories/page-content-repository.ts` | 2,367 | Split by domain: `HomepageRepository`, `SustainabilityRepository`, `FooterRepository` |
+*All scheduled monoliths have been fully decomposed. Zero remaining items on the ledger.*
+
+**Resolved 2026-04-27 (Session 8):**
+- `MediaGrid.tsx` (1,120→143 LOC): Extracted `MediaGridItem`, `MediaGridPagination`, `MediaGridToolbar`, `useMediaGridQuery`.
+- `MediaUploadEnhanced.tsx` (1,106→618 LOC): Extracted `upload-utilities.ts`, `UploadItem.tsx`.
+- `MediaLibraryContextEnhanced.tsx` (1,016→588 LOC): Extracted `useMediaFilters`, `useMediaSelection`, `useMediaUrlSync`.
 
 ---
 

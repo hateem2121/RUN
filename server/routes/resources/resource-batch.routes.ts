@@ -6,7 +6,6 @@
 import { type Request, Router } from "express";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { accessoryRepository, miscRepository } from "../../lib/db/repositories/index.js";
-import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 
 const router = Router();
@@ -30,7 +29,7 @@ router.get("/batch", async (req: Request, res) => {
   const { data: batchData, benchmark } = (await twoTierBatchCache.get(
     cacheKey,
     async () => {
-      const promises: Promise<any>[] = [];
+      const promises: Promise<unknown>[] = [];
       const labels: string[] = [];
 
       if (types.includes("accessory")) {
@@ -55,7 +54,7 @@ router.get("/batch", async (req: Request, res) => {
       }
 
       const results = await Promise.all(promises);
-      const data: Record<string, any> = {};
+      const data: Record<string, unknown> = {};
       labels.forEach((label, index) => {
         data[label] = results[index];
       });

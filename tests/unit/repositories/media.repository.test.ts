@@ -32,6 +32,7 @@ vi.mock("../../../server/db.js", () => {
     and: vi.fn(),
     eq: vi.fn(),
     execute: vi.fn(),
+    // biome-ignore lint/suspicious/noThenProperty: Mocking a promise
     then: function (this: any, onFullfilled: any) {
       return Promise.resolve(this.__result || []).then(onFullfilled);
     },

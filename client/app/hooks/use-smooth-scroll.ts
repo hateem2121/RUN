@@ -17,13 +17,19 @@ interface SmoothScrollOptions {
   easing?: (t: number) => number;
   wrapper?: Window | HTMLElement;
   content?: HTMLElement;
-  onScroll?: (instance: { scroll: number; limit: number; velocity: number; direction: number; progress: number }) => void;
+  onScroll?: (instance: {
+    scroll: number;
+    limit: number;
+    velocity: number;
+    direction: number;
+    progress: number;
+  }) => void;
 }
 
 /**
  * Hook to initialize Locomotive Scroll v5 (which uses Lenis)
  * and integrate it with GSAP ScrollTrigger.
- * 
+ *
  * Handles React 19 double-invocations and ensures robust cleanup.
  */
 export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
@@ -38,7 +44,7 @@ export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
     // Add a class to html to signal smooth scroll is active (used for CSS overrides)
     document.documentElement.classList.add("has-scroll-smooth");
 
-    const scrollConfig: any = {
+    const scrollConfig: Record<string, unknown> = {
       lenisOptions: {
         lerp: options.lerp ?? 0.1,
         duration: options.duration ?? 1.2,
@@ -71,7 +77,7 @@ export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
     return () => {
       clearTimeout(refreshTimer);
       document.documentElement.classList.remove("has-scroll-smooth");
-      
+
       if (scrollRef.current) {
         try {
           scrollRef.current.destroy();
