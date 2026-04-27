@@ -1,64 +1,20 @@
-## 5-Lens Review Remediation (2026-04-14)
+# Findings: Performance & Stability Audit (2026-04-27)
 
-### Resolved Issues
+## Core Issues Identified
 
-* **Rate Limiter Stub Replaced**: `checkRateLimit()` in `server/utils.ts` was a stub returning `true` unconditionally. Wired `POST /api/products` and `POST /api/categories` to the existing `createRateLimiter()` middleware (50 req / 15 min per IP). Stub deleted.
-* **Featured Products Pagination**: `GET /api/products?featured=true` previously loaded all featured products into memory then JS-sliced. Added `getFeaturedProducts(limit, offset)` + `getFeaturedProductsCount()` to the repository using DB-level `LIMIT/OFFSET`, matching the existing `getProductsByTag` pattern.
-* **Webhook `z.any()` Removed**: `webhookEventSchema.payload` changed from `z.any()` to `z.record(z.string(), z.unknown())`. Added `WebhookEventName` union and `WebhookPayloadMap` interface to `shared/schemas/webhooks.ts`. `WebhookService.trigger()` is now generic over the event name and enforces the correct payload type at each call site.
-* **Homepage Batch Comment Fixed**: Module comment described `no-cache, no-store, must-revalidate` headers that were not present in the code. Rewritten to describe the actual stale-while-revalidate strategy.
-* **`(p: any)` Cast Eliminated**: `homepage-batch.routes.ts` map now typed as `HomepageProcessCard`. The dead `p.name` fallback (no such column) removed; simplified to `p.title || "Untitled Process"`.
-* **Slug Validation Hardened**: `GET /admin/api/products/check-slug` previously accepted raw query strings with no format or length validation. Added Zod schema (`min(1).max(200)`) + `normalizeSlug()` normalization before DB lookup, following the existing categories route pattern.
-* **Redundant `as string` Casts Removed**: `products.ts` pagination used `parseInt(page as string, 10)` after Zod had already narrowed the type. Simplified to `Number(page) || 1` / `Math.min(Number(limit) || 20, 100)`.
-* **CustomDropdown Focus Return**: Tab and Escape key handlers closed the dropdown without returning focus to the trigger button. Added `triggerRef` and `triggerRef.current?.focus()` before close in all three key handlers (Escape in trigger, Escape in option, Tab in option).
-* **Tailwind V4 Arbitrary Opacity Removed**: Three components used `opacity-[0.03]`, `opacity-[0.05]`, `opacity-[0.07]` in JSX (violation of "no arbitrary values" constraint). Added `@utility opacity-subtle`, `@utility opacity-faint`, `@utility opacity-muted-decoration`, and `@utility text-logotype` to `client/app/index.css`. Updated `Footer.tsx` and `CertificatesSection.tsx`.
-* **ProductCreateEditModal Monolith Refactored**: Decomposed the ~1,235-line `ProductCreateEditModal.tsx` into a highly maintainable Provider pattern architecture, extracted 8 parallel queries into `useProductQueries`, replaced 300+ lines of custom validation with a native Zod schema, and cleanly isolated the UI shell from the contextual state engine.
+### 1. Application Stability (High Priority)
+- **Products Page Crash**: The Products page is currently unusable. Navigating to `/products` triggers a React Context error: `useInquiryCart must be used within an InquiryCartProvider`.
+- **Root Cause**: The `InquiryCartProvider` is missing from the component tree (should be in `root.tsx`).
 
-### Tech Debt (Scheduled — All Resolved ✅)
+### 2. Asset Integrity (Medium Priority)
+- **404 Images**: The homepage contains several broken image links (Unsplash source).
+- **LCP Impact**: Broken images cause layout shifts and degrade the user experience.
 
-*All scheduled monoliths have been fully decomposed. Zero remaining items on the ledger.*
+### 3. Bundle Performance (Medium Priority)
+- **Bundle Size**: `vendor-3d.js` is **1.01 MB**. While this is expected for Google Model Viewer, we need to ensure it's not blocking the main thread during initial hydration of non-3D pages.
+- **Lazy Loading**: `LazyUnifiedModelViewer` is present in assets, suggesting code splitting is partially implemented.
 
-**Resolved 2026-04-27 (Session 8):**
-- `MediaGrid.tsx` (1,120→143 LOC): Extracted `MediaGridItem`, `MediaGridPagination`, `MediaGridToolbar`, `useMediaGridQuery`.
-- `MediaUploadEnhanced.tsx` (1,106→618 LOC): Extracted `upload-utilities.ts`, `UploadItem.tsx`.
-- `MediaLibraryContextEnhanced.tsx` (1,016→588 LOC): Extracted `useMediaFilters`, `useMediaSelection`, `useMediaUrlSync`.
-
----
-
-## CMS Integrity & Performance Audit (2026-04-10)
-
-### Resolved Issues
-
-* **TypeError in Batch Endpoints**: Fixed crash in `manufacturing-processes`, `homepage-batch`, and `sustainability-batch` routes caused by destructuring `undefined` from `twoTierBatchCache.get`.
-* **Data Integrity (Property Aliasing)**: Implemented `title || name` aliasing for manufacturing processes and sustainability metrics to ensure frontend compatibility when DB fields are incomplete.
-* **Route Conflict Resolution**: Fixed 500 ZodError in `/api/media-assets` by reordering router registration in `server/routes/index.ts`. Specific mapped routes now take precedence over parametric ones.
-* **Secondary Content Stabilization**: Hardened Playwright selectors and resolved notification-related timeouts in Admin E2E tests.
-* **UI/UX Polishing**: Standardized Admin CRUD modal interactions and addressed hydration issues across the admin dashboard.
-* **Accessibility Remediation**: Fixed critical aria-label violations in Admin management components (Fabrics, Certificates, Fibers, etc.).
-* **Global Toaster Integration**: Successfully integrated and verified the global Toaster component to ensure form feedback is consistently visible.
-
----
-
-## Smooth Scroll & Hydration Audit (2026-04-22)
-
-### Identified Issues
-
-* **Remediating Smooth Scroll Crash**: Successfully consolidated `LocomotiveScroll` v5 usage across all routes, migrated the homepage, and added a destruction safety net.
-* **TypeError: Cannot read properties of null (reading '__store')**: Runtime crash occurring during navigation or hydration on pages using `LocomotiveScroll` v5 (Lenis). Root cause identified as multiple conflicting instances and improper cleanup (including a `setTimeout` leak in `sustainability.tsx`).
-* **Inconsistent Scroll Initialization**: `LocomotiveScroll` is manually instantiated in `technology.tsx` and `sustainability.tsx` with different configurations, while `manufacturing.tsx` uses a `useSmoothScroll` hook.
-* **Native Scroll Conflict**: `scroll-behavior: smooth` in `index.css` may conflict with Lenis's virtual scroll smoothing.
-
-### Planned Remediation
-
-1. **Consolidate Smooth Scroll**: Migrated all pages (including the Homepage) to a single, robust `useSmoothScroll` hook. Removed conflicting `lenis` package usage from the homepage.
-2. **Fix Instance Leaks**: Removed `setTimeout` from `sustainability.tsx` and ensured `scroll.destroy()` is always called on unmount.
-3. **React 19 Compatibility**: Updated `useSmoothScroll` to handle React 19's stricter effect timing and potential double-invocations.
-4. **Safety Net**: Added a `try/catch` block around `destroy()` to prevent the `__store` crash from surfacing if a race condition occurs during rapid navigation.
-5. **CSS Optimization**: Set `scroll-behavior: auto !important` when Lenis is active to prevent browser-native interference.
-
-### System Health
-
-* **Manufacturing API**: 29/29 tests PASS.
-* **CMS API (Media/Misc)**: 100% tests PASS (9/9).
-* **Repository Unit Tests**: 100% PASS.
-* **E2E Tests (Admin)**: 100% Stability achieved in secondary content suites.
-* **Protocol compliance**: Protocol 0 and Port 5002 verified.
+## Performance Metrics (Homepage)
+- **FCP**: 224ms
+- **TTFB**: 104ms
+- **Animation Smoothness**: 60fps (visual estimation)

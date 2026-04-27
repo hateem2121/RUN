@@ -113,7 +113,7 @@ export const Values: React.FC = () => {
             isMobile={!!isMobile}
             setCursor={setCursor}
             resetCursor={resetCursor}
-            image="https://images.unsplash.com/photo-1598967990158-b12e3e9d8995?q=80&w=2070&auto=format&fit=crop"
+            image="/images/homepage/values-1.png"
           />
           <ValuesCard
             title="Eco-Forward"
@@ -123,7 +123,7 @@ export const Values: React.FC = () => {
             isMobile={!!isMobile}
             setCursor={setCursor}
             resetCursor={resetCursor}
-            image="https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=1976&auto=format&fit=crop"
+            image="/images/homepage/values-2.png"
           />
           <ValuesCard
             title="Global Reach"
@@ -132,7 +132,7 @@ export const Values: React.FC = () => {
             isMobile={!!isMobile}
             setCursor={setCursor}
             resetCursor={resetCursor}
-            image="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
+            image="/images/homepage/values-3.png"
           />
           <ValuesCard
             title="Rapid Prototyping"
@@ -142,7 +142,7 @@ export const Values: React.FC = () => {
             isMobile={!!isMobile}
             setCursor={setCursor}
             resetCursor={resetCursor}
-            image="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop"
+            image="/images/homepage/values-4.png"
           />
         </div>
 

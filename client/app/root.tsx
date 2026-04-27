@@ -63,6 +63,7 @@ export const meta: MetaFunction = () => {
 
 import { API_ROUTES } from "@run-remix/shared";
 import { dehydrate, QueryClient } from "@tanstack/react-query";
+import { InquiryCartProvider } from "@/context/InquiryCartContext";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
@@ -148,19 +149,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <ThemeProvider>
           <HelmetProvider>
             <QueryClientProvider client={queryClient}>
-              <HydrationBoundary state={loaderData?.dehydratedState}>
-                <a
-                  href="#main-content"
-                  className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-max focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:shadow-lg focus:outline-none"
-                >
-                  Skip to main content
-                </a>
-                <FloatingDockHeader />
-                {children}
-                {mounted && <Toaster />}
-                <BackToTop />
-                <OfflineIndicator />
-              </HydrationBoundary>
+              <InquiryCartProvider>
+                <HydrationBoundary state={loaderData?.dehydratedState}>
+                  <a
+                    href="#main-content"
+                    className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-max focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:shadow-lg focus:outline-none"
+                  >
+                    Skip to main content
+                  </a>
+                  <FloatingDockHeader />
+                  {children}
+                  {mounted && <Toaster />}
+                  <BackToTop />
+                  <OfflineIndicator />
+                </HydrationBoundary>
+              </InquiryCartProvider>
             </QueryClientProvider>
           </HelmetProvider>
         </ThemeProvider>

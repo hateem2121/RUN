@@ -145,11 +145,11 @@ export const Stats: React.FC = () => {
       <div className="pointer-events-none absolute inset-0 z-base">
         <div className="sticky top-0 h-screen w-full overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1590644365607-1c5a29d250c4?q=80&w=2070&auto=format&fit=crop"
+            src="/images/homepage/stats-bg.png"
             alt="Factory Background"
             crossOrigin="anonymous"
             decoding="async"
-            className="h-full w-full object-cover opacity-30 contrast-125 grayscale filter"
+            className="h-full w-full object-cover opacity-50 contrast-125"
           />
           <div className="absolute inset-0 bg-linear-to-r from-background via-background/80 to-transparent" />
         </div>
