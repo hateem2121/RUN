@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Award,
@@ -74,6 +75,21 @@ interface AdminLayoutProps {
 export function AdminLayout({ children }: AdminLayoutProps) {
   const { sidebarOpen, setSidebarOpen, hasUnsavedChanges } = useAdminContext();
   const location = useLocation();
+
+  // SEC-005: Responsive sidebar behavior for 13-inch laptops (1280px)
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1280) {
+        setSidebarOpen(false);
+      }
+    };
+
+    // Initial check
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [setSidebarOpen]);
 
   // Active state detection
   const isActiveRoute = (route: string) => {

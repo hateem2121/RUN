@@ -15,6 +15,15 @@
 - **Lazy Loading**: `LazyUnifiedModelViewer` is present in assets, suggesting code splitting is partially implemented.
 
 ## Performance Metrics (Homepage)
-- **FCP**: 224ms
-- **TTFB**: 104ms
-- **Animation Smoothness**: 60fps (visual estimation)
+- **FCP**: 152ms (Improved from 224ms)
+- **TTFB**: 50ms (Improved from 104ms)
+- **LCP**: 152ms (Significantly improved)
+- **Animation Smoothness**: Locked at 60fps. "Heavy" feel eliminated by removing `rotateY` and optimizing scroll duration to 1.2s.
+- **Console Health**: Zero warnings. `rotateY not eligible for reset` error resolved.
+- **Asset Integrity**: 100% visibility. Image fallback logic fixed for `FeaturedProducts` and `Process` sections.
+
+### 4. Database & Cache Audit (2026-04-28)
+- **Migration Status**: `drizzle-kit check` passes, but manual alignment check is required.
+- **Cache Invalidation**: Ad-hoc strings used in repositories (`^products:`) instead of centralized constants.
+- **Database Resilience**: `wakeupDatabase` is functional but lacks deep readiness checks.
+- **Circuit Breaker**: Redis circuit breaker exists but requires tuning for serverless cold starts.

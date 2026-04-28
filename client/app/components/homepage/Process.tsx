@@ -15,7 +15,9 @@ export const Process: React.FC = () => {
   const prefersReducedMotion = useReducedMotion();
 
   // Use CMS data if available, otherwise fallback to constants
-  const steps = batchData?.processCards?.result || FALLBACK_STEPS;
+  const steps = batchData?.processCards?.result?.length 
+    ? batchData.processCards.result 
+    : FALLBACK_STEPS;
 
   useEffect(() => {
     // If no steps or loading, don't initialize GSAP yet (prevent layout shift/errors)
@@ -184,7 +186,7 @@ export const Process: React.FC = () => {
                 {/* Image Side */}
                 <div className="group relative aspect-square overflow-hidden rounded-lg md:aspect-auto md:h-full">
                   <img
-                    src={step.image}
+                    src={step.image || FALLBACK_STEPS[index % FALLBACK_STEPS.length]?.image || ""}
                     alt={step.title}
                     loading="lazy"
                     decoding="async"

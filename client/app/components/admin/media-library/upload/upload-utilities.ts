@@ -17,6 +17,11 @@ export interface UploadQueueItem {
   estimatedTimeRemaining?: number | undefined; // seconds
   retryCount?: number | undefined;
   priority?: "high" | "normal" | "low";
+  // Metadata for early entry & persistence
+  altText?: string;
+  caption?: string;
+  tags?: string[];
+  title?: string;
 }
 
 // ─── MIME Type Detection ───────────────────────────────────────────────────────

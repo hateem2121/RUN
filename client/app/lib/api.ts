@@ -107,7 +107,8 @@ export async function apiRequest<T>(
   let url = endpoint;
   if (typeof window === "undefined" && url.startsWith("/")) {
     const port = parseInt(process.env.PORT || "5002", 10);
-    url = `http://localhost:${port}${url}`;
+    const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+    url = `${protocol}://localhost:${port}${url}`;
   }
 
   const controller = new AbortController();

@@ -93,7 +93,7 @@ export function PerformanceMonitor() {
     score >= 80 ? "text-green-600" : score >= 60 ? "text-yellow-600" : "text-red-600";
 
   return (
-    <Card className="fixed right-4 bottom-4 z-modal max-w-xs bg-white/95 p-4 shadow-lg">
+    <Card className="fixed left-4 bottom-4 z-modal max-w-xs bg-[#111111]/95 border-white/10 p-4 shadow-lg text-white">
       <div className="space-y-2 text-sm">
         <div className="border-b pb-1 font-semibold text-foreground/80">Performance Monitor</div>
 

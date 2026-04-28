@@ -21,6 +21,7 @@ import { folders, mediaAssets } from "@run-remix/shared";
 import { and, asc, desc, eq, ilike, inArray, isNull, or, sql } from "drizzle-orm";
 import { db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../cache/cache-events.js";
+import { CacheKeys, InvalidationPatterns } from "../../cache/cache-keys.js";
 import { UnifiedCache } from "../../cache/unified-cache.js";
 import { CacheInvalidationError, MediaNotFoundError } from "../../errors/media-errors.js";
 import { logger } from "../../monitoring/logger.js";
@@ -733,8 +734,7 @@ export class MediaRepository {
     // PLUS the individual asset cache for update/delete operations
 
     const selectivePatterns = [
-      "media:paginated:", // Clear paginated queries (they might include this asset)
-      "media:batch:", // Clear batch queries (getMediaAssetsWithCount)
+      InvalidationPatterns.media, // Broad clear for media list queries
     ];
 
     // Selective clear: invalidate list queries
@@ -745,7 +745,7 @@ export class MediaRepository {
     // MUST use 'data' namespace to match how the cache was set in getMediaAsset()
     if (operation === "update" || operation === "delete") {
       try {
-        await unifiedCache.delete(`media:asset:${mediaId}`, "data");
+        await unifiedCache.delete(CacheKeys.media.asset(mediaId), "data");
         logger.debug(
           `[MediaRepo] Cleared individual asset cache for media ${mediaId} (data namespace)`,
         );

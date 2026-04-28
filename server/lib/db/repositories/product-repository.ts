@@ -30,7 +30,7 @@ import {
   sizeCharts,
 } from "../../../../shared/index.js";
 import { type DbClient, db } from "../../../db.js";
-import { CacheKeys } from "../../cache/cache-keys.js";
+import { CacheKeys, InvalidationPatterns } from "../../cache/cache-keys.js";
 import type { RepositoryCacheOptions } from "../../cache/cache-strategies.js";
 import { UnifiedCache } from "../../cache/unified-cache.js";
 import { logger } from "../../monitoring/logger.js";
@@ -1584,20 +1584,24 @@ export class ProductRepository {
 
   private async invalidateProductCache(): Promise<void> {
     try {
-      await unifiedCache.clearPattern("^products:");
-      await unifiedCache.clearPattern("^product:by-path:");
-      await unifiedCache.clearPattern("^homepage:featured-products:");
+      // Use standardized invalidation patterns
+      await unifiedCache.clearPattern(InvalidationPatterns.products);
+      // Also clear affected homepage sections (featured products)
+      await unifiedCache.clearPattern(InvalidationPatterns.homepage);
+      logger.info("[ProductRepository] Product cache invalidated selectively");
     } catch (error) {
-      logger.debug("[ProductRepository] Cache invalidation failed (non-critical):", error);
+      logger.error("[ProductRepository] Cache invalidation failed:", error);
     }
   }
 
   private async invalidateCategoryCache(): Promise<void> {
     try {
-      await unifiedCache.clearPattern("categories:active");
-      await unifiedCache.delete("categories:count");
+      // Invalidate all product-related cache when categories change as they often affect lists
+      await unifiedCache.clearPattern(InvalidationPatterns.products);
+      await unifiedCache.delete(CacheKeys.products.categories());
+      await unifiedCache.delete(CacheKeys.products.totalCount());
     } catch (error) {
-      logger.debug("[ProductRepository] Cache invalidation failed (non-critical):", error);
+      logger.error("[ProductRepository] Category cache invalidation failed:", error);
     }
   }
 }

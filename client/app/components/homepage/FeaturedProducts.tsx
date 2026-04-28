@@ -91,7 +91,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {(products || FEATURED_PRODUCTS)
+          {(products?.length ? products : FEATURED_PRODUCTS)
             .slice(0, settings?.maxProducts ?? undefined)
             .map((product, index) => (
               <div
@@ -102,7 +102,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
               >
                 <div className="bg-muted/20 relative mb-8 aspect-3/4 overflow-hidden">
                   <ImageWithSkeleton
-                    src={product.image}
+                    src={product.image || FEATURED_PRODUCTS[index % FEATURED_PRODUCTS.length]?.image || ""}
                     alt={product.name}
                     loading="lazy"
                     decoding="async"

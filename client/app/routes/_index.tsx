@@ -80,54 +80,41 @@ export default function Index() {
   const heroRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // Proxy object to hold animation values - avoids quickTo strictness warnings
-  const skewProxy = useRef({ val: 0 });
+  // Optimization: use quickTo for higher performance updates than gsap.set in a ticker
+  // We'll initialize these inside an effect to ensure refs are ready
+  const xToHero = useRef<((val: number) => void) | null>(null);
+  const xToContent = useRef<((val: number) => void) | null>(null);
+
+  useEffect(() => {
+    if (isMobile) return;
+
+    if (heroRef.current) {
+      xToHero.current = gsap.quickTo(heroRef.current, "skewY", { duration: 0.4, ease: "power3" });
+    }
+    if (contentRef.current) {
+      xToContent.current = gsap.quickTo(contentRef.current, "skewY", { duration: 0.4, ease: "power3" });
+    }
+  }, [isMobile]);
 
   // Use the unified smooth scroll hook with the kinetic skew effect
   const handleScroll = useCallback(({ velocity }: { velocity: number }) => {
-    // Clamp velocity
-    const targetSkew = Math.min(Math.max(velocity * 0.1, -5), 5);
+    if (isMobile) return;
 
-    // Tween the proxy value - this handles the smoothing/easing
-    gsap.to(skewProxy.current, {
-      val: targetSkew,
-      duration: 0.5,
-      ease: "power3.out",
-      overwrite: true,
-    });
-  }, []);
+    // Clamp velocity
+    const targetSkew = Math.min(Math.max(velocity * 0.08, -5), 5);
+
+    // Update via quickTo for smoother, more efficient transforms
+    xToHero.current?.(targetSkew);
+    xToContent.current?.(targetSkew);
+  }, [isMobile]);
 
   useSmoothScroll({
-    duration: 1.5,
+    duration: 1.2, // Reduced from 1.5 for better responsiveness
     touchMultiplier: 2.5,
     onScroll: handleScroll,
   });
 
-  // Animation ticker for skew effects
-  useEffect(() => {
-    if (isMobile) return;
-
-    const handleTicker = () => {
-      const val = skewProxy.current.val;
-      const targets = [heroRef.current, contentRef.current];
-
-      targets.forEach((el) => {
-        if (el) {
-          gsap.set(el, {
-            skewY: val,
-            rotateY: val * 0.2,
-            force3D: true,
-            transformOrigin: "center center",
-          });
-        }
-      });
-    };
-
-    gsap.ticker.add(handleTicker);
-    return () => {
-      gsap.ticker.remove(handleTicker);
-    };
-  }, [isMobile]);
+  // No longer need the manual ticker, quickTo handles the animation loop internally
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>

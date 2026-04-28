@@ -1,10 +1,18 @@
 import { Redis } from "@upstash/redis";
 import { logger } from "../monitoring/logger.js";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
-  logger.warn(
-    "UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is missing. Rate limiting will fall back to in-memory storage.",
-  );
+  if (isProduction) {
+    logger.error(
+      "CRITICAL: UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is missing in PRODUCTION. System will fall back to volatile in-memory storage, which will break rate limiting and global cache consistency across multiple instances.",
+    );
+  } else {
+    logger.warn(
+      "UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is missing. Rate limiting and global caching will fall back to local in-memory storage.",
+    );
+  }
 }
 
 export const redis = new Proxy(

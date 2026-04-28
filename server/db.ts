@@ -82,8 +82,9 @@ if (isTestMode && !enableRealDb) {
         ? `${connectionString}${connectionString.includes("?") ? "&" : "?"}sslnegotiation=direct`
         : connectionString,
     max: poolConfig.maxConnections,
-    idleTimeoutMillis: 30000, // Keep idle timeout standard for serverless
+    idleTimeoutMillis: 10000, // Reduced from 30s to 10s for aggressive serverless pruning
     connectionTimeoutMillis: 5000,
+    allowExitOnIdle: true, // Allow process to exit if only idle pool connections remain
   });
 
   // Error handling for the pool
@@ -155,7 +156,8 @@ export async function checkDatabaseConnection(): Promise<boolean> {
   let client: PoolClient | undefined;
   try {
     client = await pool.connect();
-    await client.query("SELECT 1");
+    // Use a lightweight but real table query for deep health check
+    await client.query("SELECT 1 FROM audit_configuration LIMIT 1");
     metrics.lastHealthCheckAt = new Date();
     return true;
   } catch (error) {
@@ -171,6 +173,7 @@ export async function checkDatabaseConnection(): Promise<boolean> {
 
 /**
  * Wakeup function for "Cold Start" resilience
+ * Now includes a deep readiness check to ensure schema is accessible
  */
 export async function wakeupDatabase(
   retries = 3,
@@ -182,14 +185,18 @@ export async function wakeupDatabase(
     let client: PoolClient | undefined;
     try {
       client = await pool.connect();
-      await client.query("SELECT 1");
+      // DEEP READINESS CHECK: Verify we can read from a core system table
+      // This ensures that not only is the DB up, but the schema is ready
+      await client.query("SELECT 1 FROM audit_configuration LIMIT 1");
       const latency = performance.now() - startTime;
+      logger.info(`[Database] Deep wakeup successful: latency=${Math.round(latency)}ms`);
       return { success: true, latency };
     } catch (error) {
       if (i === retries - 1) {
         logger.error(`[Database] Wakeup failed after ${retries} attempts`, error);
         return { success: false, latency: performance.now() - startTime };
       }
+      logger.warn(`[Database] Wakeup attempt ${i + 1} failed, retrying in ${delay}ms...`);
       await new Promise((r) => setTimeout(r, delay));
     } finally {
       if (client) client.release();

@@ -47,6 +47,44 @@ export function MediaUploadEnhanced() {
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
+  // SEC-006: Restore upload queue from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("run_remix_upload_queue");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Map back to UploadQueueItem, files will be empty blobs (placeholder)
+        const restored = parsed.map((item: any) => ({
+          ...item,
+          file: new File([], item.filename || "restored-file"),
+          status: item.status === "completed" ? "completed" : "error",
+          errorMessage: item.status === "completed" ? undefined : "Session restored. Please re-select file to resume.",
+        }));
+        setUploadQueue(restored);
+      } catch (_e) {
+        localStorage.removeItem("run_remix_upload_queue");
+      }
+    }
+  }, []);
+
+  // SEC-006: Persist upload queue to localStorage (exclude File and AbortController)
+  useEffect(() => {
+    const toSave = uploadQueue
+      .filter((item) => item.status !== "completed")
+      .map(({ file, abortController, optimisticAsset, ...rest }) => ({
+        ...rest,
+        filename: file.name,
+        fileType: file.type,
+        fileSize: file.size,
+      }));
+
+    if (toSave.length > 0) {
+      localStorage.setItem("run_remix_upload_queue", JSON.stringify(toSave));
+    } else {
+      localStorage.removeItem("run_remix_upload_queue");
+    }
+  }, [uploadQueue]);
+
   // Create optimistic media entries for immediate UI feedback
   const createOptimisticEntries = useCallback((items: UploadQueueItem[]) => {
     const optimisticEntries = items.map((item, index) => {
@@ -427,6 +465,12 @@ export function MediaUploadEnhanced() {
     [uploadFiles],
   );
 
+  const updateMetadata = useCallback((id: string, metadata: Partial<UploadQueueItem>): void => {
+    setUploadQueue((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, ...metadata } : item)),
+    );
+  }, []);
+
   // Queue management functions
   const cancelUpload = useCallback((id: string): void => {
     setUploadQueue((prev) => {
@@ -597,6 +641,7 @@ export function MediaUploadEnhanced() {
                   onRetry={retryUpload}
                   onPause={pauseUpload}
                   onResume={resumeUpload}
+                  onUpdateMetadata={updateMetadata}
                 />
               ))}
             </div>
