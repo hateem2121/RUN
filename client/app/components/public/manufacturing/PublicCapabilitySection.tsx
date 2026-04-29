@@ -10,9 +10,9 @@ interface PublicCapabilitySectionProps {
 export function PublicCapabilitySection({}: PublicCapabilitySectionProps) {
   return (
     <ManufacturingErrorBoundary>
-      <section className="py-24 max-w-7xl mx-auto px-6 bg-[#1A0000]">
+      <section className="py-24 max-w-7xl mx-auto px-6 bg-[color:var(--m-bg)]">
         <div className="mb-16 text-center">
-          <span className="text-[#FF4D00] font-mono text-xs uppercase tracking-widest border border-[#FF4D00]/30 px-3 py-1 rounded-none font-bold">
+          <span className="text-[color:var(--m-primary)] font-mono text-xs uppercase tracking-widest border border-[color:var(--m-primary)]/30 px-3 py-1 rounded-none font-bold">
             Core Competencies
           </span>
           <h2 className="text-5xl font-neue-stance font-bold text-white uppercase mt-6 italic tracking-tighter skew-x-[-2deg]">
@@ -23,9 +23,9 @@ export function PublicCapabilitySection({}: PublicCapabilitySectionProps) {
         {/* Bento Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 grid-rows-none lg:grid-rows-2 gap-6 min-h-[800px] lg:min-h-[600px]">
           {/* Card 1: End-to-End Production (Large) */}
-          <div className="col-span-2 row-span-1 lg:row-span-2 border border-white/5 bg-white/[0.04] p-8 relative overflow-hidden group backdrop-blur-xl transition-colors hover:border-[#FF4D00]/40">
+          <div className="col-span-2 row-span-1 lg:row-span-2 border border-white/5 bg-white/[0.04] p-8 relative overflow-hidden group backdrop-blur-xl transition-colors hover:border-[color:var(--m-primary)]/40">
             <div className="absolute top-0 right-0 p-4 opacity-40 group-hover:opacity-100 transition-opacity">
-              <Factory className="size-10 text-[#FF4D00]" />
+              <Factory className="size-10 text-[color:var(--m-primary)]" />
             </div>
             <div className="relative z-10 h-full flex flex-col justify-end">
               <h3 className="text-3xl font-neue-stance font-bold text-white mb-4 italic uppercase tracking-wider">
@@ -36,14 +36,14 @@ export function PublicCapabilitySection({}: PublicCapabilitySectionProps) {
                 aspect of the manufacturing lifecycle with vertical integration.
               </p>
               <a
-                className="text-[#FF4D00] text-sm font-bold uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2 group/link cursor-pointer w-fit"
+                className="text-[color:var(--m-primary)] text-sm font-bold uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2 group/link cursor-pointer w-fit"
                 href="#contact"
               >
                 Learn More{" "}
                 <ArrowRight className="size-4 transform transition-transform group-hover/link:translate-x-1" />
               </a>
             </div>
-            <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#1A0000]/95 via-transparent to-transparent"></div>
+            <div className="absolute inset-0 z-0 bg-gradient-to-t from-[color:var(--m-bg)]/95 via-transparent to-transparent"></div>
             <img
               alt="Factory machinery"
               className="absolute inset-0 w-full h-full object-cover -z-10 opacity-30 mix-blend-overlay group-hover:scale-105 transition-transform duration-700 grayscale group-hover:grayscale-0"
@@ -52,9 +52,9 @@ export function PublicCapabilitySection({}: PublicCapabilitySectionProps) {
           </div>
 
           {/* Card 2: R&D Lab (Small) */}
-          <div className="col-span-2 lg:col-span-1 row-span-1 border border-white/5 bg-white/[0.04] p-6 relative overflow-hidden group backdrop-blur-xl hover:border-[#FF4D00]/60 transition-colors">
+          <div className="col-span-2 lg:col-span-1 row-span-1 border border-white/5 bg-white/[0.04] p-6 relative overflow-hidden group backdrop-blur-xl hover:border-[color:var(--m-primary)]/60 transition-colors">
             <div className="flex flex-col h-full justify-between">
-              <FlaskConical className="size-8 text-[#FF4D00] mb-4" />
+              <FlaskConical className="size-8 text-[color:var(--m-primary)] mb-4" />
               <div>
                 <h3 className="text-xl font-neue-stance font-bold text-white mb-2 italic uppercase tracking-wider">
                   R&D Lab
@@ -67,9 +67,9 @@ export function PublicCapabilitySection({}: PublicCapabilitySectionProps) {
           </div>
 
           {/* Card 3: Sustainable Tech (Small) */}
-          <div className="col-span-2 lg:col-span-1 row-span-1 border border-white/5 bg-white/[0.04] p-6 relative overflow-hidden group backdrop-blur-xl hover:border-[#FF4D00]/60 transition-colors">
+          <div className="col-span-2 lg:col-span-1 row-span-1 border border-white/5 bg-white/[0.04] p-6 relative overflow-hidden group backdrop-blur-xl hover:border-[color:var(--m-primary)]/60 transition-colors">
             <div className="flex flex-col h-full justify-between">
-              <Recycle className="size-8 text-[#FF4D00] mb-4" />
+              <Recycle className="size-8 text-[color:var(--m-primary)] mb-4" />
               <div>
                 <h3 className="text-xl font-neue-stance font-bold text-white mb-2 italic uppercase tracking-wider">
                   Sustainable Tech
@@ -82,9 +82,9 @@ export function PublicCapabilitySection({}: PublicCapabilitySectionProps) {
           </div>
 
           {/* Card 4: Global Logistics (Medium Vertical) */}
-          <div className="col-span-2 lg:col-span-1 row-span-1 lg:row-span-2 border border-white/5 bg-white/[0.04] p-6 relative overflow-hidden group backdrop-blur-xl hover:border-[#FF4D00]/60 transition-colors">
+          <div className="col-span-2 lg:col-span-1 row-span-1 lg:row-span-2 border border-white/5 bg-white/[0.04] p-6 relative overflow-hidden group backdrop-blur-xl hover:border-[color:var(--m-primary)]/60 transition-colors">
             <div className="absolute top-0 right-0 p-4 opacity-40 group-hover:opacity-100 transition-opacity">
-              <Truck className="size-8 text-[#FF4D00]" />
+              <Truck className="size-8 text-[color:var(--m-primary)]" />
             </div>
             <div className="flex flex-col h-full justify-between relative z-10">
               <div className="mt-auto">
@@ -94,15 +94,15 @@ export function PublicCapabilitySection({}: PublicCapabilitySectionProps) {
                 <p className="text-[#E3DFD6] text-sm mb-4 font-light">
                   Optimized supply chain management ensuring on-time delivery across 45 countries.
                 </p>
-                <div className="h-24 w-full bg-[#1A0000]/50 rounded-sm mt-4 relative overflow-hidden border border-[#FF4D00]/10">
-                  <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_#FF4D00_0%,_transparent_70%)]"></div>
-                  <div className="absolute top-1/2 left-1/4 w-1.5 h-1.5 bg-[#FF4D00] rotate-45 animate-pulse"></div>
+                <div className="h-24 w-full bg-[color:var(--m-bg)]/50 rounded-sm mt-4 relative overflow-hidden border border-[color:var(--m-primary)]/10">
+                  <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--m-primary)_0%,_transparent_70%)]"></div>
+                  <div className="absolute top-1/2 left-1/4 w-1.5 h-1.5 bg-[color:var(--m-primary)] rotate-45 animate-pulse"></div>
                   <div
-                    className="absolute top-1/3 left-1/2 w-1.5 h-1.5 bg-[#FF4D00] rotate-45 animate-pulse"
+                    className="absolute top-1/3 left-1/2 w-1.5 h-1.5 bg-[color:var(--m-primary)] rotate-45 animate-pulse"
                     style={{ animationDelay: "0.5s" }}
                   ></div>
                   <div
-                    className="absolute top-2/3 right-1/4 w-1.5 h-1.5 bg-[#FF4D00] rotate-45 animate-pulse"
+                    className="absolute top-2/3 right-1/4 w-1.5 h-1.5 bg-[color:var(--m-primary)] rotate-45 animate-pulse"
                     style={{ animationDelay: "1s" }}
                   ></div>
                 </div>
@@ -111,9 +111,9 @@ export function PublicCapabilitySection({}: PublicCapabilitySectionProps) {
           </div>
 
           {/* Card 5: Robotics (Small) */}
-          <div className="col-span-1 lg:col-span-1 row-span-1 border border-white/5 bg-white/[0.04] p-6 relative overflow-hidden group backdrop-blur-xl hover:border-[#FF4D00]/60 transition-colors">
+          <div className="col-span-1 lg:col-span-1 row-span-1 border border-white/5 bg-white/[0.04] p-6 relative overflow-hidden group backdrop-blur-xl hover:border-[color:var(--m-primary)]/60 transition-colors">
             <div className="flex flex-col h-full justify-between">
-              <Bot className="size-8 text-[#FF4D00] mb-4" />
+              <Bot className="size-8 text-[color:var(--m-primary)] mb-4" />
               <div>
                 <h3 className="text-xl font-neue-stance font-bold text-white mb-2 italic uppercase tracking-wider">
                   Robotics
@@ -126,9 +126,9 @@ export function PublicCapabilitySection({}: PublicCapabilitySectionProps) {
           </div>
 
           {/* Card 6: QC Protocols (Small) */}
-          <div className="col-span-1 lg:col-span-1 row-span-1 border border-white/5 bg-white/[0.04] p-6 relative overflow-hidden group backdrop-blur-xl hover:border-[#FF4D00]/60 transition-colors">
+          <div className="col-span-1 lg:col-span-1 row-span-1 border border-white/5 bg-white/[0.04] p-6 relative overflow-hidden group backdrop-blur-xl hover:border-[color:var(--m-primary)]/60 transition-colors">
             <div className="flex flex-col h-full justify-between">
-              <ShieldCheck className="size-8 text-[#FF4D00] mb-4" />
+              <ShieldCheck className="size-8 text-[color:var(--m-primary)] mb-4" />
               <div>
                 <h3 className="text-xl font-neue-stance font-bold text-white mb-2 italic uppercase tracking-wider">
                   QC Protocols

@@ -43,6 +43,7 @@ function RoadmapItem({
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top 85%",
+          toggleActions: "play none none reverse",
         },
       });
 
@@ -58,6 +59,7 @@ function RoadmapItem({
             scrollTrigger: {
               trigger: containerRef.current,
               start: "top 85%",
+              toggleActions: "play none none reverse",
             },
           },
         );
@@ -74,6 +76,7 @@ function RoadmapItem({
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top 85%",
+            toggleActions: "play none none reverse",
           },
           onUpdate: () => {
             percentEl.textContent = `${Math.floor(pObj.val)}% Complete`;
@@ -109,9 +112,9 @@ function RoadmapItem({
         {isDone ? (
           <div className="w-4 h-4 rounded-full bg-[color:var(--s-primary)] shadow-[0_0_15px_rgba(0,199,123,0.6)]" />
         ) : isInProgress ? (
-          <div className="w-4 h-4 rounded-full border-2 border-[color:var(--s-primary)] bg-[#10291f]" />
+          <div className="w-4 h-4 rounded-full border-2 border-[color:var(--s-primary)] bg-[color:var(--s-bg-card)]" />
         ) : (
-          <div className="w-4 h-4 rounded-full border-2 border-gray-600 bg-[#10291f]" />
+          <div className="w-4 h-4 rounded-full border-2 border-gray-600 bg-[color:var(--s-bg-card)]" />
         )}
       </div>
 
@@ -181,7 +184,7 @@ export function GoalsSection({
   return (
     <section
       ref={containerRef}
-      className="relative py-24 px-6 lg:px-10 overflow-hidden bg-[#10291f] text-white border-t border-[#1a4331]"
+      className="relative py-24 px-6 lg:px-10 overflow-hidden bg-[color:var(--s-bg)] text-white border-t border-[color:var(--s-border-card)]"
     >
       {/* Right-side fade accent */}
       <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[color:var(--s-primary)]/8 to-transparent pointer-events-none" />

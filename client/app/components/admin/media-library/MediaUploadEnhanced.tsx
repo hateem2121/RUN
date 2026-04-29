@@ -58,7 +58,10 @@ export function MediaUploadEnhanced() {
           ...item,
           file: new File([], item.filename || "restored-file"),
           status: item.status === "completed" ? "completed" : "error",
-          errorMessage: item.status === "completed" ? undefined : "Session restored. Please re-select file to resume.",
+          errorMessage:
+            item.status === "completed"
+              ? undefined
+              : "Session restored. Please re-select file to resume.",
         }));
         setUploadQueue(restored);
       } catch (_e) {

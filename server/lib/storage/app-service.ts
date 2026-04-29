@@ -296,6 +296,21 @@ export class AppStorageService {
             errorMessage.includes("Service account") ||
             !this.bucketName
           ) {
+            // Local Fallback: Check if file exists in public/ directory
+            if (process.env.NODE_ENV !== "production") {
+              const fs = await import("node:fs/promises");
+              const path = await import("node:path");
+              const publicPath = path.join(process.cwd(), "public", key);
+
+              try {
+                await fs.access(publicPath);
+                logger.info(`🏠 [Local Fallback] Found asset in public directory: ${key}`);
+                return `/${key}`; // Serve directly from public/
+              } catch (_fsError) {
+                // Not in public/ either
+              }
+            }
+
             const fallbackUrl = `https://storage.googleapis.com/${this.bucketName || "run-dev-assets"}/${key}`;
             logger.warn(`⚠️ GCS Signing failed, falling back to public URL for ${key}`, {
               error: errorMessage,

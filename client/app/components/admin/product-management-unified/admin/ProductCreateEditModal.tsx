@@ -237,9 +237,7 @@ function ProductFormShell({ isOpen }: { isOpen: boolean }) {
                 accessories={queries.accessories || []}
                 products={
                   Array.isArray(queries.allProducts)
-                    ? queries.allProducts.filter(
-                        (p: Product) => String(p.id) !== String(formData.slug),
-                      ) // Simple filter for current edit
+                    ? queries.allProducts.filter((p: Product) => p.slug !== formData.slug) // Simple filter for current edit
                     : []
                 }
               />

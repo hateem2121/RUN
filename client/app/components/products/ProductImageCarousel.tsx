@@ -28,6 +28,7 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+  const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
   const [isNavigating, setIsNavigating] = useState(false);
 
   const hasVideo = !!primaryVideo;
@@ -79,8 +80,21 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
     setLoadedImages((prev) => new Set([...prev, imageId]));
   };
 
-  const handleImageLoadStart = () => {
-    // No-op for now as we don't use loading state
+  const handleImageError = (imageId: number) => {
+    console.warn(`[ImageCarousel] Failed to load image ${imageId} for ${productName}`);
+    setFailedImages((prev) => new Set([...prev, imageId]));
+  };
+
+  const handleImageLoadStart = (imageId: number) => {
+    // Safety timeout: If image doesn't load in 10s, consider it failed to prevent infinite spinner
+    setTimeout(() => {
+      setLoadedImages((prev) => {
+        if (!prev.has(imageId)) {
+          setFailedImages((f) => new Set([...f, imageId]));
+        }
+        return prev;
+      });
+    }, 10000);
   };
 
   if (totalItems === 0) {
@@ -117,11 +131,12 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
       ) : (
         images[imageIndex] && (
           <div className="relative h-full w-full">
-            {!loadedImages.has(images[imageIndex]?.id) && (
-              <div className="absolute inset-0 flex h-full w-full animate-pulse items-center justify-center bg-muted">
-                <LoaderState />
-              </div>
-            )}
+            {!loadedImages.has(images[imageIndex]?.id) &&
+              !failedImages.has(images[imageIndex]?.id) && (
+                <div className="absolute inset-0 flex h-full w-full animate-pulse items-center justify-center bg-muted">
+                  <LoaderState />
+                </div>
+              )}
             <img
               src={getMediaUrl(images[imageIndex]?.id || 0)}
               alt={productName}
@@ -129,11 +144,19 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
                 "h-full w-full object-cover transition-all duration-300",
                 loadedImages.has(images[imageIndex]?.id || 0)
                   ? "opacity-100 group-hover:scale-105"
-                  : "opacity-0",
+                  : failedImages.has(images[imageIndex]?.id || 0)
+                    ? "opacity-50 grayscale"
+                    : "opacity-0",
               )}
               onLoad={() => handleImageLoad(images[imageIndex]?.id || 0)}
-              onLoadStart={handleImageLoadStart}
+              onError={() => handleImageError(images[imageIndex]?.id || 0)}
+              onLoadStart={() => handleImageLoadStart(images[imageIndex]?.id || 0)}
             />
+            {failedImages.has(images[imageIndex]?.id || 0) && (
+              <div className="absolute inset-0 flex items-center justify-center bg-muted/20">
+                <LayoutGrid className="h-8 w-8 text-muted-foreground/30" />
+              </div>
+            )}
           </div>
         )
       )}

@@ -87,28 +87,28 @@ export function FactoryGallery() {
 
   return (
     <ManufacturingErrorBoundary>
-      <section className="py-24 border-t border-white/5 bg-[#1A0000] overflow-hidden relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#FF4D00]/10 via-[#1A0000] to-[#1A0000] pointer-events-none"></div>
+      <section className="py-24 border-t border-white/5 bg-[color:var(--m-bg)] overflow-hidden relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[color:var(--m-primary)]/10 via-[color:var(--m-bg)] to-[color:var(--m-bg)] pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-6 mb-12 flex flex-col md:flex-row justify-between items-end relative z-10 gap-6">
           <div>
             <h2 className="text-4xl font-neue-stance font-bold text-white uppercase mb-2 italic skew-x-[-2deg]">
-              Factory Floor <span className="text-[#FF4D00]">Live</span>
+              Factory Floor <span className="text-[color:var(--m-primary)]">Live</span>
             </h2>
-            <div className="flex items-center gap-2 text-[#68869A] text-xs font-mono uppercase tracking-widest mt-4">
+            <div className="flex items-center gap-2 text-[color:var(--m-text-muted)] text-xs font-mono uppercase tracking-widest mt-4">
               <div className="flex items-center gap-1 border-b border-gray-600 pb-1">
-                <MoveRight className="text-[#FF4D00] w-4 h-4 rotate-180" />
-                <div className="w-8 h-[2px] bg-[#FF4D00]/80"></div>
-                <MoveRight className="text-[#FF4D00] w-4 h-4" />
+                <MoveRight className="text-[color:var(--m-primary)] w-4 h-4 rotate-180" />
+                <div className="w-8 h-[2px] bg-[color:var(--m-primary)]/80"></div>
+                <MoveRight className="text-[color:var(--m-primary)] w-4 h-4" />
               </div>
-              <span className="ml-2 font-bold text-[#FF4D00]">Drag / Scroll to Explore</span>
+              <span className="ml-2 font-bold text-[color:var(--m-primary)]">Drag / Scroll to Explore</span>
             </div>
           </div>
 
           <div className="flex flex-col items-center justify-center pointer-events-none md:pointer-events-auto">
-            <div className="flex items-center space-x-2 text-white font-mono text-sm border-l-4 border-[#FF4D00] px-4 py-2 bg-black/80 backdrop-blur-sm skew-x-[-12deg] shadow-lg shadow-[#FF4D00]/10">
-              <span className="text-[#FF4D00] animate-pulse font-black italic">●</span>
-              <span className="tracking-widest font-black italic text-[#FF4D00] text-lg">
+            <div className="flex items-center space-x-2 text-white font-mono text-sm border-l-4 border-[color:var(--m-primary)] px-4 py-2 bg-black/80 backdrop-blur-sm skew-x-[-12deg] shadow-lg shadow-[color:var(--m-primary)]/10">
+              <span className="text-[color:var(--m-primary)] animate-pulse font-black italic">●</span>
+              <span className="tracking-widest font-black italic text-[color:var(--m-primary)] text-lg">
                 0{currentIndex} / 0{totalSlides}
               </span>
             </div>
@@ -123,9 +123,9 @@ export function FactoryGallery() {
           {galleries.map((item, idx) => (
             <div
               key={idx}
-              className={`min-w-[400px] md:min-w-[500px] ${item.h} relative group snap-center flex-shrink-0 bg-[#121212] border border-white/10 overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(212,168,83,0.1)] hover:border-[#FF4D00]/50`}
+              className={`min-w-[400px] md:min-w-[500px] ${item.h} relative group snap-center flex-shrink-0 bg-[color:var(--m-bg-card)] border border-white/10 overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(212,168,83,0.1)] hover:border-[color:var(--m-primary)]/50`}
             >
-              <div className="absolute top-4 left-4 z-20 text-[10px] font-mono uppercase tracking-widest text-[#FF4D00] border border-[#FF4D00] bg-black/80 px-2 py-1 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-bold">
+              <div className="absolute top-4 left-4 z-20 text-[10px] font-mono uppercase tracking-widest text-[color:var(--m-primary)] border border-[color:var(--m-primary)] bg-black/80 px-2 py-1 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-bold">
                 {item.camMsg}
               </div>
 
@@ -137,13 +137,13 @@ export function FactoryGallery() {
                 src={item.img}
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1A0000] via-[#1A0000]/40 to-transparent opacity-80 z-10"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--m-bg)] via-[color:var(--m-bg)]/40 to-transparent opacity-80 z-10"></div>
 
               <div className="absolute bottom-0 left-0 w-full p-6 z-20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                 <h3 className="text-3xl font-neue-stance font-black text-white uppercase tracking-wider mb-1 italic skew-x-[-5deg]">
                   {item.title}
                 </h3>
-                <p className="text-[#FF4D00] text-xs font-mono uppercase tracking-widest font-bold">
+                <p className="text-[color:var(--m-primary)] text-xs font-mono uppercase tracking-widest font-bold">
                   {item.subtitle}
                 </p>
               </div>

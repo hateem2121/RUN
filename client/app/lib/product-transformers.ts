@@ -135,11 +135,23 @@ export function transformProduct(
 
   // Extract fabric composition
   let fabricComposition = "See product details";
-  if (fullProduct.fiberComposition) {
-    // Try to format fiberComposition object
-    fabricComposition = Object.entries(fullProduct.fiberComposition)
-      .map(([fiber, percentage]) => `${percentage}% ${fiber}`)
-      .join(", ");
+  if (typeof fullProduct.fiberComposition === "string") {
+    fabricComposition = fullProduct.fiberComposition;
+  } else if (
+    fullProduct.fiberComposition &&
+    typeof fullProduct.fiberComposition === "object" &&
+    !Array.isArray(fullProduct.fiberComposition)
+  ) {
+    // Check if it's the { selected: "name" } format or { fiber: percentage } format
+    const fiberObj = fullProduct.fiberComposition as Record<string, unknown>;
+    if ("selected" in fiberObj && typeof fiberObj.selected === "string") {
+      fabricComposition = fiberObj.selected;
+    } else {
+      // Try to format fiber: percentage object
+      fabricComposition = Object.entries(fiberObj)
+        .map(([fiber, percentage]) => `${percentage}% ${fiber}`)
+        .join(", ");
+    }
   } else if (fabric?.properties?.compositions && Array.isArray(fabric.properties.compositions)) {
     // Define interfaces for fabric properties
     interface FabricFiber {
@@ -239,7 +251,7 @@ export function transformProduct(
     specifications,
     isFeatured: product.isFeatured || false,
     detailUrl,
-    media: buildProductMediaItems(fullProduct as Product).map((item) => ({
+    media: buildProductMediaItems(product).map((item) => ({
       id: item.id,
       type: item.type === "video" ? ("video" as const) : ("image" as const),
       url: item.url,
@@ -325,7 +337,7 @@ export function buildProductUrl(product: Product, categories: MinimalCategory[])
  * Build product media items array with proper priority ordering
  * Priority: Primary Image > Other Images > Primary Video > Other Videos > 3D Model
  */
-export function buildProductMediaItems(product: Product): ProductMediaItem[] {
+export function buildProductMediaItems(product: ProductSummary | Product): ProductMediaItem[] {
   const mediaItems: ProductMediaItem[] = [];
 
   // 1. Add primary image first (highest priority)
@@ -390,12 +402,13 @@ export function buildProductMediaItems(product: Product): ProductMediaItem[] {
     }
   }
 
-  // 5. Add 3D Model
-  if (product.modelFileId) {
-    const modelUrl = MediaUrlBuilder.buildUrlSafe(product.modelFileId);
+  // 5. Add 3D Model (modelFileId is only in full Product/ProductDetail, not Summary)
+  const modelFileId = (product as any).modelFileId;
+  if (modelFileId) {
+    const modelUrl = MediaUrlBuilder.buildUrlSafe(modelFileId);
     if (modelUrl) {
       mediaItems.push({
-        id: product.modelFileId,
+        id: modelFileId,
         url: modelUrl,
         type: "image" as const,
         alt: `${product.name} 3D Model`,

@@ -33,7 +33,7 @@ export default [
     route("categories", "routes/categories._index.tsx"),
     route("categories/:slug", "routes/categories.$slug.tsx"),
     route("categories/:slug/products", "routes/categories.$slug.products.tsx"),
-    route("categories/:category/:product", "routes/categories.$category.$product.tsx"),
+    route("categories/*", "routes/categories.$.tsx"),
   ]),
 
   // Admin Layout & Routes (Not wrapped in public footer)

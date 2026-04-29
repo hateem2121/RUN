@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { useInquiryCart } from "@/context/InquiryCartContext";
 import type { TransformedProduct } from "@/lib/product-transformers";
+import { useQuoteStore } from "@/stores/useQuoteStore";
 import { GotsIcon, OekoTexIcon, RcsIcon } from "./ProductBadges";
 
 import { ProductImageCarousel } from "./ProductImageCarousel";
@@ -14,7 +14,8 @@ interface QuickViewModalProps {
 
 export const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const { addItem, isInCart } = useInquiryCart();
+  const addToQuote = useQuoteStore((state) => state.addToQuote);
+  const items = useQuoteStore((state) => state.items);
 
   useEffect(() => {
     if (!isOpen) {
@@ -39,7 +40,7 @@ export const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps
     return null;
   }
 
-  const alreadyInCart = isInCart(product.id);
+  const alreadyInCart = items.some((item) => item.id.toString() === product.id.toString());
 
   return (
     <div
@@ -143,7 +144,13 @@ export const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps
           <div className="space-y-3">
             <Button
               onClick={() => {
-                addItem(product);
+                addToQuote({
+                  id: Number(product.id),
+                  name: product.name,
+                  quantity: product.moq || 100,
+                  minOrderQuantity: product.moq || 100,
+                  imageUrl: product.imageUrl,
+                });
               }}
               disabled={alreadyInCart}
               size="lg"

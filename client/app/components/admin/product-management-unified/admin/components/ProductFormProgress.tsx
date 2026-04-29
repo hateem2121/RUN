@@ -74,21 +74,7 @@ export function ProductFormProgress() {
         const value = formData[field as keyof typeof formData];
 
         if (field === "specifications" && Array.isArray(value)) {
-          return (
-            count +
-            (value.length > 0 &&
-            value.some(
-              (spec) =>
-                typeof spec === "object" &&
-                spec !== null &&
-                "name" in spec &&
-                "value" in spec &&
-                (spec as Record<string, unknown>).name &&
-                (spec as Record<string, unknown>).value,
-            )
-              ? 1
-              : 0)
-          );
+          return count + (value.length > 0 ? 1 : 0);
         }
         if (Array.isArray(value)) return count + (value.length > 0 ? 1 : 0);
         if (typeof value === "string") return count + (value.trim().length > 0 ? 1 : 0);

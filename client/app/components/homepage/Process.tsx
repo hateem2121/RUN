@@ -1,8 +1,8 @@
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { ArrowRight } from "lucide-react";
 import type React from "react";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useHomepageData } from "@/hooks/use-homepage-data";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { PROCESS_STEPS as FALLBACK_STEPS } from "./constants";
@@ -15,27 +15,20 @@ export const Process: React.FC = () => {
   const prefersReducedMotion = useReducedMotion();
 
   // Use CMS data if available, otherwise fallback to constants
-  const steps = batchData?.processCards?.result?.length 
-    ? batchData.processCards.result 
+  const steps = batchData?.processCards?.result?.length
+    ? batchData.processCards.result
     : FALLBACK_STEPS;
 
-  useEffect(() => {
-    // If no steps or loading, don't initialize GSAP yet (prevent layout shift/errors)
-    if (
-      isLoading ||
-      !steps.length ||
-      !sectionRef.current ||
-      !triggerRef.current ||
-      !pathRef.current
-    ) {
-      return;
-    }
+  useGSAP(
+    () => {
+      // If no steps or loading, don't initialize GSAP yet (prevent layout shift/errors)
+      if (isLoading || !steps.length || !sectionRef.current || !triggerRef.current || !pathRef.current) {
+        return;
+      }
 
-    // Capture refs for cleanup usage
-    const triggerEl = triggerRef.current;
-    const pathEl = pathRef.current;
+      const triggerEl = triggerRef.current;
+      const pathEl = pathRef.current;
 
-    const ctx = gsap.context(() => {
       // Safe Scoped Selector with explicit Generic Type
       const sections = gsap.utils.toArray<HTMLElement>(triggerEl.querySelectorAll(".process-card"));
 
@@ -54,78 +47,73 @@ export const Process: React.FC = () => {
         gsap.set(pathEl, { strokeDasharray: length, strokeDashoffset: length });
       }
 
-      ScrollTrigger.matchMedia({
-        // Desktop: Horizontal Scroll
-        "(min-width: 768px)": () => {
-          // Calculate exact scroll distance needed for 1:1 mapping
-          const totalWidth = triggerEl.offsetWidth * (sections.length - 1);
+      const mm = gsap.matchMedia();
 
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: triggerEl,
-              pin: true,
-              scrub: 1,
-              end: () => `+=${totalWidth}`,
-              invalidateOnRefresh: true,
-              anticipatePin: 1,
-            },
-          });
+      mm.add("(min-width: 768px)", () => {
+        // Calculate exact scroll distance needed for 1:1 mapping
+        const totalWidth = triggerEl.offsetWidth * (sections.length - 1);
 
-          // Horizontal Scroll
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: triggerEl,
+            pin: true,
+            scrub: 1,
+            end: () => `+=${totalWidth}`,
+            invalidateOnRefresh: true,
+            anticipatePin: 1,
+          },
+        });
+
+        // Horizontal Scroll
+        tl.to(
+          sections,
+          {
+            xPercent: -100 * (sections.length - 1),
+            ease: "none",
+          },
+          0,
+        );
+
+        // SVG Line Drawing syncs with scroll
+        if (pathEl) {
           tl.to(
-            sections,
+            pathEl,
             {
-              xPercent: -100 * (sections.length - 1),
+              strokeDashoffset: 0,
               ease: "none",
             },
             0,
           );
+        }
+      });
 
-          // SVG Line Drawing syncs with scroll
-          if (pathEl) {
-            tl.to(
-              pathEl,
+      mm.add("(max-width: 767px)", () => {
+        gsap.set(sections, { xPercent: 0 });
+
+        // Simple reveal for mobile cards
+        sections.forEach((section) => {
+          const content = section.querySelector(".content-container");
+          if (content) {
+            gsap.fromTo(
+              content,
+              { y: 50, opacity: 0 },
               {
-                strokeDashoffset: 0,
-                ease: "none",
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: section,
+                  start: "top 85%",
+                },
               },
-              0,
             );
           }
-        },
-
-        // Mobile: Vertical Stack (Reset transforms)
-        "(max-width: 767px)": () => {
-          gsap.set(sections, { xPercent: 0 });
-
-          // Simple reveal for mobile cards
-          sections.forEach((section) => {
-            const content = section.querySelector(".content-container");
-            if (content) {
-              gsap.fromTo(
-                content,
-                { y: 50, opacity: 0 },
-                {
-                  y: 0,
-                  opacity: 1,
-                  duration: 0.8,
-                  ease: "power2.out",
-                  scrollTrigger: {
-                    trigger: section,
-                    start: "top 85%",
-                  },
-                },
-              );
-            }
-          });
-        },
+        });
       });
-    }, triggerEl); // Pass element directly, not ref object
-
-    return () => {
-      ctx.revert();
-    };
-  }, [isLoading, steps, prefersReducedMotion]); // Re-run when steps change or load
+    },
+    { dependencies: [isLoading, steps, prefersReducedMotion], scope: triggerRef },
+  );
 
   // Skeleton state for initial batch fetch to stabilize layout
   if (isLoading) {

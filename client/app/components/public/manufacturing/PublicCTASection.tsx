@@ -5,22 +5,22 @@ import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufa
 export function PublicCTASection() {
   return (
     <ManufacturingErrorBoundary>
-      <section className="py-32 relative bg-[#1A0000] border-t border-[#FF4D00]/20 overflow-hidden">
+      <section className="py-32 relative bg-[color:var(--m-bg)] border-t border-[color:var(--m-primary)]/20 overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 400 400%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')] pointer-events-none mix-blend-overlay"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FF4D00]/5 to-[#1A0000] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[color:var(--m-primary)]/5 to-[color:var(--m-bg)] pointer-events-none"></div>
 
         <div className="max-w-5xl mx-auto px-6 relative z-10 text-center">
-          <div className="inline-flex items-center gap-3 bg-black/40 border border-[#FF4D00]/30 px-4 py-2 mb-8 backdrop-blur-md">
-            <span className="w-2 h-2 bg-[#FF4D00] rounded-none rotate-45 animate-pulse"></span>
-            <span className="text-[#FF4D00] text-[10px] uppercase font-mono tracking-widest font-bold">
+          <div className="inline-flex items-center gap-3 bg-black/40 border border-[color:var(--m-primary)]/30 px-4 py-2 mb-8 backdrop-blur-md">
+            <span className="w-2 h-2 bg-[color:var(--m-primary)] rounded-none rotate-45 animate-pulse"></span>
+            <span className="text-[color:var(--m-primary)] text-[10px] uppercase font-mono tracking-widest font-bold">
               New Accounts Open for Q3
             </span>
           </div>
 
           <h2 className="text-5xl md:text-7xl font-neue-stance font-bold text-white uppercase tracking-tighter mb-8 italic skew-x-[-2deg] leading-[0.9]">
             Ready to Manufacture <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF4D00] to-white">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[color:var(--m-primary)] to-white">
               Excellence?
             </span>
           </h2>
@@ -33,7 +33,7 @@ export function PublicCTASection() {
           <div className="flex flex-col md:flex-row items-center justify-center gap-6">
             <Link
               to="/contact"
-              className="w-full md:w-auto px-10 py-5 bg-[#FF4D00] text-[#0A0A0A] font-bold uppercase tracking-widest text-sm hover:bg-white transition-colors flex items-center justify-center gap-3 group skew-x-[-10deg] hover:shadow-[0_0_30px_rgba(212,168,83,0.4)]"
+              className="w-full md:w-auto px-10 py-5 bg-[color:var(--m-primary)] text-[#0A0A0A] font-bold uppercase tracking-widest text-sm hover:bg-white transition-colors flex items-center justify-center gap-3 group skew-x-[-10deg] hover:shadow-[0_0_30px_rgba(212,168,83,0.4)]"
             >
               <span className="skew-x-[10deg] flex items-center gap-3">
                 Request a Quote
@@ -43,7 +43,7 @@ export function PublicCTASection() {
 
             <Link
               to="/resources/lookbook"
-              className="w-full md:w-auto px-10 py-5 border border-white/20 hover:border-[#FF4D00] text-white hover:text-[#FF4D00] bg-white/[0.02] backdrop-blur-sm transition-all font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-3 group skew-x-[-10deg]"
+              className="w-full md:w-auto px-10 py-5 border border-white/20 hover:border-[color:var(--m-primary)] text-white hover:text-[color:var(--m-primary)] bg-white/[0.02] backdrop-blur-sm transition-all font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-3 group skew-x-[-10deg]"
             >
               <span className="skew-x-[10deg] flex items-center gap-3">
                 <Download className="w-4 h-4" />
@@ -52,12 +52,12 @@ export function PublicCTASection() {
             </Link>
           </div>
 
-          <div className="mt-16 flex items-center justify-center gap-2 text-sm text-[#68869A] font-mono">
+          <div className="mt-16 flex items-center justify-center gap-2 text-sm text-[color:var(--m-text-muted)] font-mono">
             <MessageSquare className="w-4 h-4" />
             <span>Need immediate assistance?</span>
             <a
               href="mailto:production@runapparel.com"
-              className="text-white hover:text-[#FF4D00] underline decoration-white/20 hover:decoration-[#FF4D00] transition-colors font-bold ml-1"
+              className="text-white hover:text-[color:var(--m-primary)] underline decoration-white/20 hover:decoration-[color:var(--m-primary)] transition-colors font-bold ml-1"
             >
               production@runapparel.com
             </a>

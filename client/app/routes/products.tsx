@@ -1,6 +1,6 @@
 import { Grid2X2, Grid3X3, LayoutGrid, Loader2, Search } from "lucide-react";
-import { Suspense, useEffect, useMemo, useState } from "react";
-import { useLoaderData, useSearchParams } from "react-router";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Link, useLoaderData, useSearchParams } from "react-router";
 import { GlobalErrorBoundary } from "@/components/error-boundaries/GlobalErrorBoundary";
 import { ProductFilters } from "@/components/products/ProductFilters";
 import { ProductGrid } from "@/components/products/ProductGrid";
@@ -37,13 +37,33 @@ import {
 } from "@/schemas/product";
 import type { Route } from "./+types/products";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ data, location }: Route.MetaArgs) {
+  const searchParams = new URLSearchParams(location.search);
+  const searchTerm = searchParams.get("search");
+  const categoryId = searchParams.get("category");
+
+  // Find category name if possible from loader data
+  const categories = (data as any)?.categories || [];
+  const category = categories.find((c: any) => c.id.toString() === categoryId);
+
+  let title = "Products | Run Apparel";
+  let description = "Browse our extensive catalog of professional sportswear products and textiles.";
+
+  if (searchTerm) {
+    title = `Search results for "${searchTerm}" | Run Apparel`;
+    description = `Discover ${searchTerm} sportswear and textile solutions in our B2B catalog.`;
+  } else if (category) {
+    title = `${category.name} | Sportswear Manufacturing | Run Apparel`;
+    description = `Premium ${category.name.toLowerCase()} manufacturing solutions. Professional B2B textile production since 1889.`;
+  }
+
   return [
-    { title: "Products | Run Apparel" },
-    {
-      name: "description",
-      content: "Browse our extensive catalog of sportswear products and textiles.",
-    },
+    { title },
+    { name: "description", content: description },
+    { name: "keywords", content: "sportswear, manufacturing, B2B, apparel, textile, wholesale" },
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:type", content: "website" },
   ];
 }
 
@@ -315,13 +335,48 @@ export default function ProductsPage() {
     setHasMore(sortedProducts.length > itemsPerPage);
   }, [sortedProducts]);
 
-  const observerRef = { current: null };
+  // Infinite Scroll Logic
+  const observerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!hasMore || !isHydrated) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry?.isIntersecting) {
+          // Load more
+          setDisplayedProducts((prev) => {
+            const nextBatch = sortedProducts.slice(prev.length, prev.length + itemsPerPage);
+            if (nextBatch.length === 0) {
+              setHasMore(false);
+              return prev;
+            }
+            if (prev.length + nextBatch.length >= sortedProducts.length) {
+              setHasMore(false);
+            }
+            return [...prev, ...nextBatch];
+          });
+        }
+      },
+      { rootMargin: "400px" },
+    );
+
+    const currentTarget = observerRef.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) observer.unobserve(currentTarget);
+    };
+  }, [hasMore, sortedProducts, isHydrated]);
 
   // Get selected category object for SEO
   const selectedCategoryObj = categories.find((c) => c.id.toString() === selectedCategory);
 
   return (
-    <div className="bg-muted/30 pt-production-header min-h-screen">
+    <div className="min-h-screen bg-muted/30 pt-production-header">
       <GlobalErrorBoundary>
         <Suspense fallback={<ProductsLoader />}>
           {/* SEO Component */}
@@ -333,14 +388,14 @@ export default function ProductsPage() {
 
           {/* Header */}
           <div className="z-sticky border-border bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 border-b backdrop-blur-md">
-            <div className="container mx-auto max-w-7xl px-4 md:px-8 py-4">
+            <div className="container mx-auto max-w-7xl px-4 py-4 md:px-8">
               {/* Breadcrumbs Integration */}
               <div className="mb-4 flex justify-start">
                 <Breadcrumb>
                   <BreadcrumbList>
                     <BreadcrumbItem>
                       <BreadcrumbLink asChild>
-                        <a href="/">Home</a>
+                        <Link to="/">Home</Link>
                       </BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
@@ -400,7 +455,7 @@ export default function ProductsPage() {
 
                   {/* View Mode */}
                   <div
-                    className="bg-muted flex gap-1 rounded-md p-1"
+                    className="flex gap-1 rounded-md bg-muted p-1"
                     role="group"
                     aria-label="View mode"
                   >
@@ -449,7 +504,7 @@ export default function ProductsPage() {
 
             {/* Results count */}
             <div
-              className="text-muted-foreground mt-2 text-sm container mx-auto max-w-7xl px-4 md:px-8 pb-2"
+              className="container mx-auto mt-2 max-w-7xl px-4 pb-2 text-sm text-muted-foreground md:px-8"
               role="status"
               aria-live="polite"
             >
@@ -464,7 +519,7 @@ export default function ProductsPage() {
           </div>
 
           {/* Products Grid */}
-          <div className="container mx-auto max-w-7xl px-4 md:px-8 py-8">
+          <div className="container mx-auto max-w-7xl px-4 py-8 md:px-8">
             {/* No isLoading state needed as loader suspense handles it */}
             {sortedProducts.length === 0 ? (
               <div className="py-12 text-center">
@@ -480,12 +535,15 @@ export default function ProductsPage() {
                   />
                 </div>
 
-                {/* Infinite scroll observer (Placeholder) */}
+                {/* Infinite scroll observer */}
                 {hasMore && (
-                  <div ref={observerRef} className="flex justify-center py-8">
-                    <Loader2 className="text-luxury-gray-600 mx-auto mb-3 h-8 w-8 animate-spin" />
-                    <Typography.P className="text-luxury-body text-sm">
-                      "Loading more products..."
+                  <div
+                    ref={observerRef}
+                    className="flex flex-col items-center justify-center gap-3 py-12"
+                  >
+                    <Loader2 className="h-8 w-8 animate-spin text-primary/50" />
+                    <Typography.P className="text-xs font-medium uppercase tracking-widest text-muted-foreground/60">
+                      Loading more products
                     </Typography.P>
                   </div>
                 )}

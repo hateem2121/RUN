@@ -40,6 +40,7 @@ function InitiativeRow({
           scrollTrigger: {
             trigger: rowRef.current,
             start: "top 80%",
+            toggleActions: "play none none reverse",
           },
           opacity: 0,
           x: isEven ? 40 : -40,
@@ -55,6 +56,7 @@ function InitiativeRow({
           scrollTrigger: {
             trigger: rowRef.current,
             start: "top 85%",
+            toggleActions: "play none none reverse",
           },
           opacity: 0,
           scale: 1.05,
@@ -153,6 +155,7 @@ export function InitiativesSection({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top 80%",
+          toggleActions: "play none none reverse",
         },
         opacity: 0,
         y: 30,

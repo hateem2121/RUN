@@ -12,19 +12,23 @@ interface InquiryFormProps {
 export function InquiryForm({ form, onSubmit }: InquiryFormProps) {
   return (
     <Form {...form}>
-      <form id="inquiry-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form id="inquiry-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="contact.name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
+              <FormLabel className="mb-2 block text-xs font-bold uppercase tracking-widest text-muted-foreground">
                 Full Name
               </FormLabel>
               <FormControl>
-                <Input {...field} className="bg-white" />
+                <Input 
+                  {...field} 
+                  className="h-12 bg-background/50 border-border focus:border-foreground transition-colors" 
+                  placeholder="e.g. John Doe"
+                />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-[10px] uppercase tracking-tighter" />
             </FormItem>
           )}
         />
@@ -34,13 +38,17 @@ export function InquiryForm({ form, onSubmit }: InquiryFormProps) {
           name="contact.company"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
+              <FormLabel className="mb-2 block text-xs font-bold uppercase tracking-widest text-muted-foreground">
                 Company Name
               </FormLabel>
               <FormControl>
-                <Input {...field} className="bg-white" />
+                <Input 
+                  {...field} 
+                  className="h-12 bg-background/50 border-border focus:border-foreground transition-colors" 
+                  placeholder="e.g. Acme Corp"
+                />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-[10px] uppercase tracking-tighter" />
             </FormItem>
           )}
         />
@@ -50,13 +58,18 @@ export function InquiryForm({ form, onSubmit }: InquiryFormProps) {
           name="contact.email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
+              <FormLabel className="mb-2 block text-xs font-bold uppercase tracking-widest text-muted-foreground">
                 Work Email
               </FormLabel>
               <FormControl>
-                <Input {...field} className="bg-white" />
+                <Input 
+                  {...field} 
+                  type="email"
+                  className="h-12 bg-background/50 border-border focus:border-foreground transition-colors" 
+                  placeholder="john@company.com"
+                />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-[10px] uppercase tracking-tighter" />
             </FormItem>
           )}
         />
@@ -66,18 +79,18 @@ export function InquiryForm({ form, onSubmit }: InquiryFormProps) {
           name="contact.projectDescription"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="mb-1 block font-medium text-slate-700 text-sm">
-                Project Description (Optional)
+              <FormLabel className="mb-2 block text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                Project Requirements
               </FormLabel>
               <FormControl>
                 <Textarea
                   {...field}
-                  rows={3}
-                  className="resize-none bg-white"
-                  placeholder="Tell us about your project requirements..."
+                  rows={4}
+                  className="resize-none bg-background/50 border-border focus:border-foreground transition-colors"
+                  placeholder="Describe your production needs, fabric preferences, or specific timeline requirements..."
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-[10px] uppercase tracking-tighter" />
             </FormItem>
           )}
         />

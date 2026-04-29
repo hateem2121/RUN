@@ -137,6 +137,11 @@
   /* Feature-Specific Gradients */
   --gradient-manufacturing-hero: linear-gradient(to bottom right, #0a0a0a, #121212);
 
+  /* Manufacturing Perfection System */
+  --color-manufacturing-accent: #ff4d00;
+  --color-manufacturing-bg: #1a0000;
+  --color-manufacturing-card: #121212;
+
   /* =========================================
      Surface & Text Scale (Phase 1 Token Foundation)
      Semantic replacements for raw gray-* colors
@@ -428,6 +433,12 @@
   /* Marquee Animations */
   --animate-marquee: marquee 30s linear infinite;
   --animate-marquee-reverse: marquee-reverse 30s linear infinite;
+  --animate-spin-slow: spin 20s linear infinite;
+
+  /* Custom Backgrounds */
+  --background-image-hero-conic: conic-gradient(from 0deg at 50% 50%, #3b82f6, #1d4ed8, #000000);
+  --background-image-hero-dots: radial-gradient(circle, #ffffff 1px, transparent 1px);
+  --background-image-radial-primary-glow: radial-gradient(circle at 50% 50%, var(--color-primary) 0%, transparent 50%);
 
   @keyframes marquee {
     0% {
@@ -451,4 +462,125 @@
 /* Utilities */
 @utility h-hero-mobile {
   height: 70vh;
+}
+
+@utility perspective-1000 {
+  perspective: 1000px;
+}
+
+@utility dotted-line-manufacturing {
+  background-image: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--color-manufacturing-accent) 30%, transparent) 33%,
+    transparent 0%
+  );
+  background-position: bottom;
+  background-size: 12px 2px;
+  background-repeat: repeat-x;
+}
+
+@utility tech-grid-manufacturing {
+  background-image: linear-gradient(
+      color-mix(in srgb, var(--color-manufacturing-accent) 10%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-manufacturing-accent) 10%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 20px 20px;
+}
+
+@utility blueprint-corner {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border: 2px solid var(--color-manufacturing-accent);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@utility blueprint-corner-tl {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+}
+@utility blueprint-corner-tr {
+  top: 0;
+  right: 0;
+  border-left: none;
+  border-bottom: none;
+}
+@utility blueprint-corner-bl {
+  bottom: 0;
+  left: 0;
+  border-right: none;
+  border-top: none;
+}
+@utility blueprint-corner-br {
+  bottom: 0;
+  right: 0;
+  border-left: none;
+  border-top: none;
+}
+
+@utility wipe-reveal {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #121212;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+    z-index: 10;
+  }
+}
+
+@utility animate-wipe {
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    animation: wipe-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-manufacturing-accent) 50%,
+      transparent
+    );
+    opacity: 0.2;
+    z-index: 11;
+    pointer-events: none;
+  }
+}
+
+@keyframes wipe-in {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.group:hover .wipe-reveal::after {
+  transform: translateX(200%);
+}
+
+.group:hover .blueprint-corner {
+  width: 100%;
+  height: 100%;
+  border-color: color-mix(in srgb, var(--color-manufacturing-accent) 60%, transparent);
+  border-width: 1px;
+  background-color: color-mix(in srgb, var(--color-manufacturing-accent) 5%, transparent);
 }

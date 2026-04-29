@@ -28,6 +28,7 @@ const EXCLUDED_ROUTES = [
   "/api/debug/slow-query", // Integration testing
   "/api/debug/ip-check", // Integration testing
   "/api/test/crash", // Integration testing
+  "/api/inquiries", // Public inquiry/quote submission
 ];
 
 /**

@@ -118,6 +118,7 @@ export class InquiryService {
       message: inquiry.message,
       preferredPlatform: inquiry.preferredPlatform ?? undefined,
       submittedAt: inquiry.submittedAt,
+      items: inquiry.items || undefined,
     };
 
     if (emailQueue) {

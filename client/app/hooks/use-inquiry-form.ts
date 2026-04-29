@@ -25,6 +25,7 @@ export function useInquiryForm({ onClose }: UseInquiryFormProps) {
   const clearQuote = store?.clearQuote ?? (() => {});
 
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<InquiryFormData>({
     resolver: zodResolver(inquiryFormSchema),
@@ -41,22 +42,32 @@ export function useInquiryForm({ onClose }: UseInquiryFormProps) {
         })),
       };
 
-      // Submit via API endpoint
-      return await apiRequest("/api/inquiries", {
-        method: "POST",
-        body: JSON.stringify({
-          ...payload,
-          source: "quote_drawer",
-        }),
-      });
+      try {
+        // Submit via API endpoint
+        return await apiRequest("/api/inquiries", {
+          method: "POST",
+          body: JSON.stringify({
+            ...payload,
+            source: "quote_drawer",
+          }),
+        });
+      } catch (err) {
+        console.error("[useInquiryForm] Submission failed:", err);
+        throw err;
+      }
     },
     onSuccess: () => {
       setSuccess(true);
+      setError(null);
       clearQuote();
       setTimeout(() => {
         setSuccess(false);
         onClose();
-      }, 3000);
+      }, 5000); // Give user more time to see success
+    },
+    onError: (err: Error) => {
+      setError(err.message || "Failed to submit inquiry. Please try again.");
+      setSuccess(false);
     },
   });
 
@@ -70,6 +81,7 @@ export function useInquiryForm({ onClose }: UseInquiryFormProps) {
     removeFromQuote,
     updateQuantity,
     success,
+    error,
     mutation,
     onSubmit,
   };

@@ -664,7 +664,13 @@ export async function getMediaContent(
 
   // Generate signed URL with 5-minute expiry
   // robust fallback is handled inside generateSignedUrl to return public URL if signing fails
-  const signedUrl = await appStorageService.generateSignedUrl(pathToServe, 300);
+  let signedUrl: string;
+  try {
+    signedUrl = await appStorageService.generateSignedUrl(pathToServe, 300);
+  } catch (error) {
+    logger.warn(`Failed to generate signed URL for asset ${id}, using placeholder`, { error });
+    return res.redirect(302, "https://via.placeholder.com/800x600?text=Image+Not+Found");
+  }
 
   // Add ETag for conditional requests
   const versionHash = asset.updatedAt
@@ -706,7 +712,13 @@ export async function getThumbnail(req: Request<{ id: string }>, res: Response) 
   }
 
   // Generate signed URL with 5-minute expiry
-  const signedUrl = await appStorageService.generateSignedUrl(pathToServe, 300);
+  let signedUrl: string;
+  try {
+    signedUrl = await appStorageService.generateSignedUrl(pathToServe, 300);
+  } catch (error) {
+    logger.warn(`Failed to generate signed URL for thumbnail ${id}, using placeholder`, { error });
+    return res.redirect(302, "https://via.placeholder.com/200x200?text=Thumb+Not+Found");
+  }
 
   // Redirect browser to CDN
   res.set("Access-Control-Allow-Origin", "*");

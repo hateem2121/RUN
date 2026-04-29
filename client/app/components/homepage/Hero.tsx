@@ -1,6 +1,7 @@
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useHomepageData } from "@/hooks/use-homepage-data";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { HERO_TEXT as FALLBACK_HERO_TEXT } from "./constants";
@@ -39,86 +40,78 @@ export const Hero: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    if (!textContainerRef.current) {
-      return;
-    }
+  useGSAP(
+    () => {
+      if (!textContainerRef.current) return;
 
-    const scope = textContainerRef.current;
+      const scope = textContainerRef.current;
 
-    const ctx = gsap.context(() => {
       // Intro Animation
       const titles = scope.querySelectorAll(".hero-line");
 
       if (titles.length > 0) {
         if (prefersReducedMotion) {
           gsap.set(titles, { y: 0, opacity: 1, scale: 1 });
-          return;
+        } else {
+          gsap.fromTo(
+            titles,
+            {
+              y: "110%",
+              opacity: 0,
+              scale: 0.85,
+              rotateX: 15,
+              transformOrigin: "center bottom",
+              filter: "blur(12px)",
+            },
+            {
+              y: "0%",
+              opacity: 1,
+              scale: 1,
+              rotateX: 0,
+              filter: "blur(0px)",
+              duration: 1.8,
+              stagger: 0.1,
+              ease: "power3.out",
+              force3D: true,
+            },
+          );
         }
-
-        gsap.fromTo(
-          titles,
-          {
-            y: "110%",
-            opacity: 0,
-            scale: 0.85,
-            rotateX: 15,
-            transformOrigin: "center bottom",
-            filter: "blur(12px)",
-          },
-          {
-            y: "0%",
-            opacity: 1,
-            scale: 1,
-            rotateX: 0,
-            filter: "blur(0px)",
-            duration: 1.8, // Adjusted duration
-            stagger: 0.1, // Adjusted stagger
-            ease: "power3.out", // Refined ease
-            force3D: true,
-          },
-        );
       }
-    }, scope);
 
-    // Optimized Mouse Parallax Logic
-    const lines = scope.querySelectorAll(".hero-line");
-    if (lines.length > 0) {
-      const lineSetters = Array.from(lines).map((line, i) => {
-        gsap.set(line, { x: 0, y: 0 });
-        return {
-          x: gsap.quickTo(line, "x", { duration: 1, ease: "power2.out" }),
-          y: gsap.quickTo(line, "y", { duration: 1, ease: "power2.out" }),
-          speed: (i + 1) * 20,
-        };
-      });
-
-      const handleMouseMove = (e: MouseEvent) => {
-        if (!isInView) {
-          return;
-        }
-
-        const xPos = (e.clientX / window.innerWidth - 0.5) * 2;
-        const yPos = (e.clientY / window.innerHeight - 0.5) * 2;
-
-        lineSetters.forEach(({ x, y, speed }) => {
-          x(xPos * speed);
-          y(yPos * speed);
+      // Optimized Mouse Parallax Logic
+      const lines = scope.querySelectorAll(".hero-line");
+      if (lines.length > 0) {
+        const lineSetters = Array.from(lines).map((line, i) => {
+          gsap.set(line, { x: 0, y: 0 });
+          return {
+            x: gsap.quickTo(line, "x", { duration: 1, ease: "power2.out" }),
+            y: gsap.quickTo(line, "y", { duration: 1, ease: "power2.out" }),
+            speed: (i + 1) * 20,
+          };
         });
-      };
 
-      if (window.innerWidth > 768) {
-        window.addEventListener("mousemove", handleMouseMove);
+        const handleMouseMove = (e: MouseEvent) => {
+          if (!isInView) return;
+
+          const xPos = (e.clientX / window.innerWidth - 0.5) * 2;
+          const yPos = (e.clientY / window.innerHeight - 0.5) * 2;
+
+          lineSetters.forEach(({ x, y, speed }) => {
+            x(xPos * speed);
+            y(yPos * speed);
+          });
+        };
+
+        if (window.innerWidth > 768) {
+          window.addEventListener("mousemove", handleMouseMove);
+          return () => window.removeEventListener("mousemove", handleMouseMove);
+        }
+        return () => {};
       }
-
-      return () => {
-        ctx.revert();
-        window.removeEventListener("mousemove", handleMouseMove);
-      };
-    }
-
-    return () => ctx.revert();
-  }, [isInView, prefersReducedMotion]);
+      return () => {};
+    },
+    { dependencies: [isInView, prefersReducedMotion], scope: textContainerRef },
+  );
 
   return (
     <section
@@ -131,8 +124,8 @@ export const Hero: React.FC = () => {
         Uses a mesh-like gradient effect.
       */}
       <div className="absolute inset-0 z-base overflow-hidden bg-black">
-        <div className="bg-hero-conic absolute inset-[-50%] opacity-40 blur-[100px] animate-[spin_20s_linear_infinite]" />
-        <div className="bg-hero-dots absolute inset-0 opacity-30" />
+        <div className="bg-hero-conic absolute -inset-1/2 opacity-40 blur-[100px] animate-spin-slow" />
+        <div className="bg-hero-dots absolute inset-0 opacity-30 bg-[size:20px_20px]" />
       </div>
 
       {/* Hero Content */}
@@ -140,7 +133,7 @@ export const Hero: React.FC = () => {
         <div className="flex flex-col items-center justify-center px-4 text-center mb-20 md:mb-0">
           <h1
             ref={textContainerRef}
-            className="flex flex-col items-center justify-center perspective-[1000px]"
+            className="flex flex-col items-center justify-center perspective-1000"
           >
             {heroLines.map((line: string, i: number) => (
               <span

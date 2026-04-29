@@ -1,10 +1,12 @@
 import { FocusScope } from "@radix-ui/react-focus-scope";
+import { X, CheckCircle2, Send, AlertCircle } from "lucide-react";
 import { useInquiryForm } from "@/hooks/use-inquiry-form";
 import { InquiryForm } from "./InquiryForm";
 import { QuoteList } from "./QuoteList";
+import { cn } from "@/lib/utils";
 
 export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-  const { form, items, removeFromQuote, updateQuantity, success, mutation, onSubmit } =
+  const { form, items, removeFromQuote, updateQuantity, success, error, mutation, onSubmit } =
     useInquiryForm({ onClose });
 
   if (!isOpen) {
@@ -14,67 +16,58 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
   return (
     <>
       <div
-        className="fixed inset-0 z-modal-backdrop bg-black/40 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 z-modal-backdrop bg-black/60 backdrop-blur-md transition-opacity duration-500 animate-in fade-in"
         onClick={onClose}
       />
 
       {/* Drawer - Wrapped in FocusScope for keyboard accessibility */}
       <FocusScope trapped>
-        <div className="fixed inset-y-0 right-0 z-modal flex h-full w-full transform flex-col border-slate-200 border-l bg-white shadow-2xl transition-transform duration-300 ease-in-out md:w-lg">
+        <div className={cn(
+          "fixed inset-y-0 right-0 z-modal flex h-full w-full transform flex-col border-white/10 border-l bg-background shadow-2xl transition-transform duration-500 ease-out md:w-lg animate-in slide-in-from-right",
+          "dark:bg-[#0A0A0A]"
+        )}>
           {/* Header */}
-          <div className="flex items-center justify-between border-slate-100 border-b bg-slate-50 p-6">
+          <div className="flex items-center justify-between border-border border-b bg-muted/30 p-6 backdrop-blur-xl">
             <div>
-              <h2 className="font-bold text-slate-900 text-xl">Project Inquiry</h2>
-              <p className="mt-1 text-slate-500 text-sm">Review items and request a quote</p>
+              <h2 className="font-neue-stance font-bold text-foreground text-xl tracking-wide uppercase">
+                Project Inquiry
+              </h2>
+              <p className="mt-1 text-muted-foreground text-xs uppercase tracking-widest">
+                Review items and request a quote
+              </p>
             </div>
             <button
               type="button"
               onClick={onClose}
               aria-label="Close inquiry drawer"
-              className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-200"
+              className="rounded-full p-2 text-muted-foreground transition-all hover:bg-muted hover:text-foreground active:scale-95"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
+              <X className="h-5 w-5" />
             </button>
           </div>
 
           {success ? (
-            <div className="fade-in zoom-in flex flex-1 animate-in flex-col items-center justify-center p-8 text-center duration-300">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
+            <div className="fade-in zoom-in flex flex-1 animate-in flex-col items-center justify-center p-8 text-center duration-500">
+              <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500 shadow-inner ring-1 ring-emerald-500/20">
+                <CheckCircle2 className="h-12 w-12" />
               </div>
-              <h3 className="mb-2 font-bold text-2xl text-slate-900">Request Received!</h3>
-              <p className="text-slate-600">
-                We have received your project inquiry. Our engineering team will review your
-                specifications and contact you shortly.
+              <h3 className="font-neue-stance mb-3 font-bold text-3xl text-foreground tracking-tight uppercase">
+                Request Received
+              </h3>
+              <p className="max-w-xs text-balance text-muted-foreground text-sm leading-relaxed tracking-wide">
+                Thank you for your interest. Our engineering team will review your requirements and
+                reach out with a detailed quote shortly.
               </p>
+              <button
+                type="button"
+                onClick={onClose}
+                className="mt-10 rounded-full border border-border bg-muted/50 px-8 py-3 text-xs font-bold uppercase tracking-widest text-foreground transition-all hover:bg-muted hover:border-foreground active:scale-95"
+              >
+                Return to Site
+              </button>
             </div>
           ) : (
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden">
               {/* Items List */}
               <div className="space-y-6 p-6">
                 <QuoteList
@@ -87,8 +80,21 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
               {/* Inquiry Form */}
               {items.length > 0 && (
-                <div className="border-slate-100 border-t bg-slate-50/50 p-6">
-                  <h3 className="mb-4 font-bold text-lg text-slate-900">Contact Details</h3>
+                <div className="border-border border-t bg-muted/20 p-6">
+                  <h3 className="font-neue-stance mb-6 font-bold text-sm text-foreground uppercase tracking-widest">
+                    Contact Details
+                  </h3>
+
+                  {error && (
+                    <div className="mb-6 flex items-start gap-3 rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-red-500 shadow-sm animate-in fade-in slide-in-from-top-2">
+                      <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+                      <div className="text-xs tracking-wide">
+                        <p className="font-bold uppercase mb-1">Submission Error</p>
+                        <p className="opacity-90">{error}</p>
+                      </div>
+                    </div>
+                  )}
+
                   <InquiryForm form={form} onSubmit={onSubmit} />
                 </div>
               )}
@@ -97,30 +103,20 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
           {/* Footer Actions */}
           {!success && items.length > 0 && (
-            <div className="border-slate-200 border-t bg-white p-6">
+            <div className="border-border border-t bg-background/80 p-6 backdrop-blur-xl">
               <button
                 type="submit"
                 form="inquiry-form"
                 disabled={mutation.isPending}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-4 font-bold text-white shadow-blue-600/20 shadow-lg transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {mutation.isPending ? "Processing..." : "Submit Quote Request"}
-                {!mutation.isPending && (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                  </svg>
+                className={cn(
+                  "flex w-full items-center justify-center gap-3 rounded-full bg-foreground px-6 py-5 font-bold text-background transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50",
+                  "hover:bg-foreground/90 hover:shadow-xl hover:shadow-foreground/10"
                 )}
+              >
+                <span className="text-xs uppercase tracking-widest">
+                  {mutation.isPending ? "Processing..." : "Submit Quote Request"}
+                </span>
+                {!mutation.isPending && <Send className="h-4 w-4" />}
               </button>
             </div>
           )}

@@ -139,7 +139,7 @@ function FabricCard({
                 Array.isArray(fabric.certifications) &&
                 fabric.certifications.length > 0 && (
                   <div className="flex justify-between border-b border-white/10 pb-2">
-                    <span className="text-sm text-[#68869A]">Certification</span>
+                    <span className="text-sm text-[color:var(--s-text-muted)]">Certification</span>
                     <span className="text-sm text-[color:var(--s-primary)] font-mono">
                       {(fabric.certifications as string[]).slice(0, 2).join(", ")}
                     </span>
@@ -191,7 +191,7 @@ function FilterBtn({
         "px-5 py-2 text-sm font-medium transition-all duration-300",
         isActive
           ? "bg-[color:var(--s-primary)] text-black font-bold shadow-[0_0_15px_rgba(0,199,123,0.3)] border-transparent"
-          : "bg-white/5 text-[color:var(--s-text-muted)] hover:bg-white/10 hover:text-white border border-white/5",
+          : "bg-[color:var(--s-bg-card)] text-[color:var(--s-text-muted)] hover:bg-[color:var(--s-bg-card-hover)] hover:text-[color:var(--s-text-head)] border border-[color:var(--s-border-card)]",
       )}
       style={{ borderRadius: isAlt ? "0.5rem 2rem 0.5rem 2rem" : "2rem 0.5rem 2rem 0.5rem" }}
     >
@@ -247,6 +247,7 @@ export function FabricPortfolioSection({
         scrollTrigger: {
           trigger: ".fabric-scroll-container",
           start: "top 80%",
+          toggleActions: "play none none reverse",
         },
         opacity: 0,
         x: 30,
@@ -261,7 +262,7 @@ export function FabricPortfolioSection({
   if (sustainableFabrics.length === 0) {
     return (
       <div className="py-8 text-center">
-        <p className="text-[#68869A]">Sustainable fabric portfolio coming soon...</p>
+        <p className="text-[color:var(--s-text-muted)]">Sustainable fabric portfolio coming soon...</p>
       </div>
     );
   }

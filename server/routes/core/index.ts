@@ -4,6 +4,7 @@ import categoriesRouter from "./categories.js";
 import certificatesRouter from "./certificates.js";
 import fabricsRouter from "./fabrics.js";
 import healthRouter from "./health.js";
+import inquiriesRouter from "./inquiries.js";
 import materialsRouter from "./materials.js";
 import productsRouter from "./products.js";
 import sizeChartsRouter from "./size-charts.js";
@@ -11,6 +12,7 @@ import sizeChartsRouter from "./size-charts.js";
 const router = Router();
 
 router.use(healthRouter);
+router.use(inquiriesRouter);
 router.use(categoriesRouter);
 router.use(productsRouter);
 router.use(fabricsRouter);

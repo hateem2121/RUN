@@ -41,12 +41,23 @@ import type { Route } from "./+types/_index";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "RUN Apparel | B2B Sportswear Manufacturing Partner" },
+    { title: "RUN Apparel | Next-Gen B2B Sportswear Manufacturing Partner" },
     {
       name: "description",
       content:
-        "Next-generation B2B sportswear manufacturing. Sustainable, high-performance athletic apparel with precision engineering since 1889.",
+        "High-performance B2B sportswear manufacturing with precision engineering since 1889. Sustainable, scalable, and state-of-the-art apparel solutions for global brands.",
     },
+    {
+      name: "keywords",
+      content: "B2B sportswear, manufacturing, performance apparel, custom teamwear, athletic wear production",
+    },
+    { property: "og:title", content: "RUN Apparel | B2B Sportswear Manufacturing" },
+    {
+      property: "og:description",
+      content: "Premium sportswear manufacturing with 135+ years of heritage craftsmanship.",
+    },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
   ];
 }
 
@@ -92,21 +103,27 @@ export default function Index() {
       xToHero.current = gsap.quickTo(heroRef.current, "skewY", { duration: 0.4, ease: "power3" });
     }
     if (contentRef.current) {
-      xToContent.current = gsap.quickTo(contentRef.current, "skewY", { duration: 0.4, ease: "power3" });
+      xToContent.current = gsap.quickTo(contentRef.current, "skewY", {
+        duration: 0.4,
+        ease: "power3",
+      });
     }
   }, [isMobile]);
 
   // Use the unified smooth scroll hook with the kinetic skew effect
-  const handleScroll = useCallback(({ velocity }: { velocity: number }) => {
-    if (isMobile) return;
+  const handleScroll = useCallback(
+    ({ velocity }: { velocity: number }) => {
+      if (isMobile) return;
 
-    // Clamp velocity
-    const targetSkew = Math.min(Math.max(velocity * 0.08, -5), 5);
+      // Clamp velocity
+      const targetSkew = Math.min(Math.max(velocity * 0.08, -5), 5);
 
-    // Update via quickTo for smoother, more efficient transforms
-    xToHero.current?.(targetSkew);
-    xToContent.current?.(targetSkew);
-  }, [isMobile]);
+      // Update via quickTo for smoother, more efficient transforms
+      xToHero.current?.(targetSkew);
+      xToContent.current?.(targetSkew);
+    },
+    [isMobile],
+  );
 
   useSmoothScroll({
     duration: 1.2, // Reduced from 1.5 for better responsiveness

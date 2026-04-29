@@ -41,7 +41,7 @@ export interface ProductFormState {
   categoryId: number | null;
   fabricId: number | null;
   sizeChartId: number | null;
-  selectedFiberComposition: number[];
+  selectedFiberComposition: string | null;
 
   // Media Assets
   primaryImageId: number | null;
@@ -112,7 +112,7 @@ const initialState: ProductFormState = {
   categoryId: null,
   fabricId: null,
   sizeChartId: null,
-  selectedFiberComposition: [],
+  selectedFiberComposition: null,
   primaryImageId: null,
   primaryVideoId: null,
   imageIds: [],
@@ -166,7 +166,14 @@ function productFormReducer(state: ProductFormState, action: ProductFormAction):
         categoryId: p.categoryId || null,
         fabricId: p.fabricId || null,
         sizeChartId: p.sizeChartId || null,
-        selectedFiberComposition: p.selectedFiberComposition || [],
+        selectedFiberComposition:
+          typeof p.fiberComposition === "string"
+            ? p.fiberComposition
+            : p.fiberComposition &&
+                typeof p.fiberComposition === "object" &&
+                "selected" in p.fiberComposition
+              ? (p.fiberComposition as { selected: string }).selected
+              : null,
         primaryImageId: p.primaryImageId || null,
         primaryVideoId: p.primaryVideoId || null,
         imageIds: p.imageIds || [],

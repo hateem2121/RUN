@@ -34,7 +34,7 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
       className="relative w-full overflow-hidden bg-background px-4 py-32 md:px-8"
       aria-label="Product Categories Catalogue"
     >
-      <div className="pointer-events-none absolute top-0 left-0 h-full w-full bg-[radial-gradient(circle_at_50%_50%,_var(--color-primary)_0%,_transparent_50%)] opacity-5" />
+      <div className="pointer-events-none absolute top-0 left-0 h-full w-full bg-radial-primary-glow opacity-5" />
 
       <div className="flex flex-col gap-0" onMouseLeave={() => setHoveredIndex(null)}>
         {/* Optimized Forward Marquee */}
@@ -59,8 +59,10 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
                     <div
                       key={`${cat.id}-${uniqueIndex}`}
                       role="listitem"
+                      tabIndex={0}
                       className={cn(
-                        "group relative cursor-none px-8 py-4 transition-all duration-500 ease-out md:px-16",
+                        "group relative px-8 py-4 transition-all duration-500 ease-out md:px-16",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime/50 rounded-xl",
                         isBlurred ? "opacity-20 blur-[2px]" : "blur-0 opacity-100",
                       )}
                       onMouseEnter={() => {
@@ -71,9 +73,20 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
                       }}
                       onMouseLeave={() => {
                         resetCursor();
+                        setHoveredIndex(null);
+                      }}
+                      onFocus={() => {
+                        setHoveredIndex(uniqueIndex);
+                        if (!isMobile) {
+                          setCursor("view", cat.image);
+                        }
+                      }}
+                      onBlur={() => {
+                        resetCursor();
+                        setHoveredIndex(null);
                       }}
                     >
-                      <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-foreground md:text-[10vw]">
+                      <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-foreground group-focus:text-foreground md:text-[10vw]">
                         {cat.name}{" "}
                         <span className="text-brand-lime inline-block align-top text-[2vw]">●</span>
                       </h2>

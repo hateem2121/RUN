@@ -95,3 +95,6 @@ tests/e2e/**/*.png
 
 # Self-hosted GitHub Actions runner
 .github/runner/
+
+# Scratch directory for temporary scripts
+scratch/

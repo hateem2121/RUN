@@ -47,12 +47,23 @@ export async function loader() {
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Sustainability | Run Apparel" },
+    { title: "Sustainability | Run Apparel - Eco-Friendly Sportswear Manufacturing" },
     {
       name: "description",
       content:
-        "Discover our dedication to sustainable manufacturing and environmental responsibility.",
+        "Discover our dedication to sustainable manufacturing, eco-friendly materials, and environmental responsibility. Leading the future of responsible B2B sportswear production.",
     },
+    {
+      name: "keywords",
+      content:
+        "sustainable sportswear, eco-friendly manufacturing, recycled polyester, organic cotton, ethical apparel production, green textile manufacturing",
+    },
+    { property: "og:title", content: "Sustainability | Run Apparel" },
+    {
+      property: "og:description",
+      content: "Leading the revolution in eco-conscious performance wear.",
+    },
+    { property: "og:type", content: "website" },
   ];
 }
 
@@ -61,12 +72,9 @@ export function meta({}: Route.MetaArgs) {
    ───────────────────────────────────────────── */
 function HeroHeadline({ text }: { text: string }) {
   const words = text.split(" ");
-  // Line 1: first word ("Sustainability")
   const line1 = words[0] ?? "Sustainability";
-  // Line 2: next two words — "Woven" gets italic emerald accent, "Into" stays standard
   const wovenWord = words[1] ?? "Woven";
   const intoWord = words[2] ?? "Into";
-  // Line 3: remaining words ("Every Thread")
   const line3 = words.slice(3).join(" ") || "Every Thread";
   const containerRef = useRef<HTMLHeadingElement>(null);
 
@@ -119,7 +127,6 @@ function StatCard({ label, value, unit, iconName, index }: StatCardProps) {
   const valueRef = useRef<HTMLSpanElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Count-up fires only when card enters viewport via ScrollTrigger
   useGSAP(
     () => {
       const numericValue = parseFloat(value);
@@ -132,6 +139,7 @@ function StatCard({ label, value, unit, iconName, index }: StatCardProps) {
           scrollTrigger: {
             trigger: cardRef.current,
             start: "top 85%",
+            toggleActions: "play none none reverse",
           },
           onUpdate: () => {
             if (valueRef.current) {
@@ -144,11 +152,9 @@ function StatCard({ label, value, unit, iconName, index }: StatCardProps) {
     { scope: cardRef, dependencies: [value] },
   );
 
-  const numericValue = parseFloat(value);
-  const isNumeric = !Number.isNaN(numericValue);
   const bobClass = BOB_CLASSES[index % BOB_CLASSES.length];
   const mtOffset = MT_OFFSETS[index % MT_OFFSETS.length];
-  const isAccented = index === 3; // Last card gets primary accent treatment
+  const isAccented = index === 3;
 
   return (
     <div
@@ -164,13 +170,14 @@ function StatCard({ label, value, unit, iconName, index }: StatCardProps) {
           : "border border-[color:var(--s-border-card)] bg-[color:var(--s-bg-card)]",
       )}
       style={{ boxShadow: "var(--s-card-shadow)" }}
+      aria-label={`${label}: ${value}${unit || ""}`}
     >
       <div className="mb-2">{getSustainabilityIcon(iconName, "md")}</div>
       <span className="text-xs font-medium uppercase tracking-wider whitespace-nowrap text-[color:var(--s-text-muted)]">
         {label}
       </span>
       <span className="font-neue-stance text-2xl font-bold text-[color:var(--s-text-head)]">
-        {isNumeric ? <span ref={valueRef}>0</span> : value}
+        {!Number.isNaN(parseFloat(value)) ? <span ref={valueRef}>0</span> : value}
         {unit && <span className="text-sm ml-0.5 text-[color:var(--s-primary)]">{unit}</span>}
       </span>
     </div>
@@ -192,7 +199,6 @@ function ImpactCounterCard({ name, value, unit, description, iconName }: ImpactC
   const valueRef = useRef<HTMLSpanElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Scroll-triggered count-up
   useGSAP(
     () => {
       const numericValue = parseFloat(value);
@@ -205,6 +211,7 @@ function ImpactCounterCard({ name, value, unit, description, iconName }: ImpactC
           scrollTrigger: {
             trigger: cardRef.current,
             start: "top 85%",
+            toggleActions: "play none none reverse",
           },
           onUpdate: () => {
             if (valueRef.current) {
@@ -217,13 +224,13 @@ function ImpactCounterCard({ name, value, unit, description, iconName }: ImpactC
     { scope: cardRef, dependencies: [value] },
   );
 
-  const numericValue = parseFloat(value);
-  const isNumeric = !Number.isNaN(numericValue);
+  const isNumeric = !Number.isNaN(parseFloat(value));
 
   return (
     <div
       ref={cardRef}
       className="impact-card group bg-[color:var(--s-bg-card)] p-8 text-center transition-all duration-300 hover:bg-[color:var(--s-bg-card-hover)]"
+      aria-label={`${name}: ${value}${unit || ""}`}
     >
       <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[color:var(--s-primary)]/5 group-hover:bg-[color:var(--s-primary)]/20 transition-colors duration-300 text-gray-400 group-hover:text-[color:var(--s-primary)]">
         {getSustainabilityIcon(iconName, "lg")}
@@ -265,13 +272,14 @@ function SustainabilityInner() {
 
   useGSAP(
     () => {
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
       // Initial Stat Cards Reveal
-      gsap.from(".stat-card", {
+      tl.from(".stat-card", {
         opacity: 0,
         y: 30,
         duration: 0.8,
         stagger: 0.1,
-        ease: "power3.out",
         delay: 0.8,
       });
 
@@ -281,6 +289,7 @@ function SustainabilityInner() {
           scrollTrigger: {
             trigger: card,
             start: "top 85%",
+            toggleActions: "play none none reverse",
           },
           opacity: 0,
           y: 30,
@@ -295,6 +304,7 @@ function SustainabilityInner() {
           scrollTrigger: {
             trigger: card,
             start: "top 85%",
+            toggleActions: "play none none reverse",
           },
           opacity: 0,
           y: 30,
@@ -311,17 +321,18 @@ function SustainabilityInner() {
           scrollTrigger: {
             trigger: el,
             start: "top 85%",
+            toggleActions: "play none none reverse",
           },
           opacity: 0,
           y: 30,
           duration: 0.8,
-          ease: "power3.out",
         });
       });
 
-      gsap.from(".hero-esg", { opacity: 0, y: -15, duration: 0.8, ease: "power3.out", delay: 0.2 });
-      gsap.from(".hero-sub", { opacity: 0, y: 30, duration: 0.8, ease: "power3.out", delay: 0.6 });
-      gsap.from(".hero-btns", { opacity: 0, y: 30, duration: 0.8, ease: "power3.out", delay: 0.8 });
+      // Hero Elements Reveal
+      tl.from(".hero-esg", { opacity: 0, y: -15, duration: 0.8 }, 0.2)
+        .from(".hero-sub", { opacity: 0, y: 30, duration: 0.8 }, 0.6)
+        .from(".hero-btns", { opacity: 0, y: 30, duration: 0.8 }, 0.8);
     },
     { scope: containerRef },
   );
@@ -502,7 +513,7 @@ function SustainabilityInner() {
             className="absolute inset-0 z-0 pointer-events-none"
             style={{
               background:
-                "radial-gradient(circle at 70% 30%, rgba(0, 201, 123, 0.15) 0%, transparent 60%), radial-gradient(circle at 10% 80%, rgba(0, 201, 123, 0.08) 0%, transparent 50%)",
+                "radial-gradient(circle at 70% 30%, color-mix(in srgb, var(--s-primary) 15%, transparent) 0%, transparent 60%), radial-gradient(circle at 10% 80%, color-mix(in srgb, var(--s-primary) 8%, transparent) 0%, transparent 50%)",
             }}
           />
 
@@ -753,7 +764,7 @@ function SustainabilityInner() {
           className="absolute inset-0 opacity-30 pointer-events-none"
           style={{
             background:
-              "radial-gradient(circle at 50% 100%, #00c97b 0%, #003366 50%, transparent 100%)",
+              "radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--s-primary) 30%, transparent) 0%, color-mix(in srgb, #003366 50%, transparent) 50%, transparent 100%)",
           }}
         />
 

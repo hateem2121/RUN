@@ -1,6 +1,7 @@
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import type React from "react";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
@@ -18,15 +19,11 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
   const prefersReducedMotion = useReducedMotion();
   const { setCursor, resetCursor } = useCursorStore();
 
-  useEffect(() => {
-    if (!containerRef.current) {
-      return;
-    }
+  useGSAP(
+    () => {
+      if (!containerRef.current) return;
 
-    // Explicitly use .current
-    const scope = containerRef.current;
-
-    const ctx = gsap.context(() => {
+      const scope = containerRef.current;
       const cards = scope.querySelectorAll(".product-card");
 
       if (cards.length > 0) {
@@ -51,10 +48,9 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
           },
         );
       }
-    }, scope);
-
-    return () => ctx.revert();
-  }, [prefersReducedMotion]);
+    },
+    { dependencies: [prefersReducedMotion], scope: containerRef },
+  );
 
   const isMobile = useIsMobile();
 
@@ -102,7 +98,11 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
               >
                 <div className="bg-muted/20 relative mb-8 aspect-3/4 overflow-hidden">
                   <ImageWithSkeleton
-                    src={product.image || FEATURED_PRODUCTS[index % FEATURED_PRODUCTS.length]?.image || ""}
+                    src={
+                      product.image ||
+                      FEATURED_PRODUCTS[index % FEATURED_PRODUCTS.length]?.image ||
+                      ""
+                    }
                     alt={product.name}
                     loading="lazy"
                     decoding="async"

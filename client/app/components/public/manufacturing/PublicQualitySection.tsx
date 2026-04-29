@@ -24,8 +24,6 @@ export function PublicQualitySection({}: PublicQualitySectionProps) {
       const circles = sectionRef.current.querySelectorAll(".progress-ring-circle");
 
       circles.forEach((circle) => {
-        // In Stitch design, the circles have 'stroke-dasharray="377"'.
-        // We animate stroke-dashoffset from 377 (0%) to its target (10, 94, 188, 0).
         const targetValue = (circle as SVGElement).getAttribute("data-target-offset") || "0";
 
         gsap.fromTo(
@@ -37,7 +35,8 @@ export function PublicQualitySection({}: PublicQualitySectionProps) {
             ease: "power3.out",
             scrollTrigger: {
               trigger: circle,
-              start: "top 80%",
+              start: "top 85%",
+              toggleActions: "play none none reverse",
             },
           },
         );
@@ -48,29 +47,36 @@ export function PublicQualitySection({}: PublicQualitySectionProps) {
 
   return (
     <ManufacturingErrorBoundary>
-      <section ref={sectionRef} className="py-32 relative overflow-hidden bg-[#1A0000]">
-        <div className="absolute inset-0 border-y border-white/5 bg-[#1A0000]/30"></div>
+      <section
+        ref={sectionRef}
+        className="py-32 relative overflow-hidden bg-[var(--color-manufacturing-bg)]"
+        aria-labelledby="quality-title"
+      >
+        <div className="absolute inset-0 border-y border-white/5 bg-[var(--color-manufacturing-bg)]/30"></div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
-            <h2 className="text-6xl md:text-8xl font-neue-stance font-bold text-white uppercase leading-none tracking-tighter mb-8 italic skew-x-[-5deg]">
+            <h2
+              id="quality-title"
+              className="text-6xl md:text-8xl font-neue-stance font-bold text-white uppercase leading-none tracking-tighter mb-8 italic skew-x-[-5deg]"
+            >
               Zero
               <br />
-              <span className="text-[#FF4D00]">Defects</span>
+              <span className="text-[var(--color-manufacturing-accent)]">Defects</span>
             </h2>
             <p className="text-[#E3DFD6] text-lg max-w-md leading-relaxed font-light">
               Our proprietary "Vision-AI" inspection system scans every inch of fabric at 300 frames
               per second, ensuring microscopic imperfections are detected before cutting begins.
             </p>
             <div className="mt-12 flex items-center space-x-4 text-sm text-[#68869A] font-mono">
-              <span className="w-3 h-3 bg-[#FF4D00] rounded-none rotate-45 animate-pulse"></span>
+              <span className="w-3 h-3 bg-[var(--color-manufacturing-accent)] rounded-none rotate-45 animate-pulse"></span>
               <span className="font-bold tracking-wider uppercase">System Status: Operational</span>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-6">
             <div
-              className="bg-white/[0.04] border border-white/10 backdrop-blur-xl p-6 rounded-none text-center transform transition-transform hover:scale-105 hover:bg-white/[0.08] hover:border-[#FF4D00]/30"
+              className="glass-premium p-6 rounded-none text-center transform transition-all hover:scale-105 hover:border-[var(--color-manufacturing-accent)]/30 group"
               role="group"
               aria-label="Quality Metric: First Pass Yield"
             >
@@ -90,7 +96,7 @@ export function PublicQualitySection({}: PublicQualitySectionProps) {
                     strokeWidth="6"
                   ></circle>
                   <circle
-                    className="text-[#FF4D00] progress-ring-circle"
+                    className="text-[var(--color-manufacturing-accent)] progress-ring-circle"
                     data-target-offset="10"
                     cx="64"
                     cy="64"
@@ -107,13 +113,13 @@ export function PublicQualitySection({}: PublicQualitySectionProps) {
                   99.8%
                 </span>
               </div>
-              <h4 className="text-[#68869A] uppercase text-xs tracking-widest font-bold">
+              <h4 className="text-[#68869A] group-hover:text-[var(--color-manufacturing-accent)] transition-colors uppercase text-xs tracking-widest font-bold">
                 First Pass Yield
               </h4>
             </div>
 
             <div
-              className="bg-white/[0.04] border border-white/10 backdrop-blur-xl p-6 rounded-none text-center transform transition-transform hover:scale-105 hover:bg-white/[0.08] hover:border-[#FF4D00]/30"
+              className="glass-premium p-6 rounded-none text-center transform transition-all hover:scale-105 hover:border-[var(--color-manufacturing-accent)]/30 group"
               role="group"
               aria-label="Quality Metric: Automation Level"
             >
@@ -133,7 +139,7 @@ export function PublicQualitySection({}: PublicQualitySectionProps) {
                     strokeWidth="6"
                   ></circle>
                   <circle
-                    className="text-[#FF4D00] progress-ring-circle"
+                    className="text-[var(--color-manufacturing-accent)] progress-ring-circle"
                     data-target-offset="94"
                     cx="64"
                     cy="64"
@@ -150,13 +156,13 @@ export function PublicQualitySection({}: PublicQualitySectionProps) {
                   75%
                 </span>
               </div>
-              <h4 className="text-[#68869A] uppercase text-xs tracking-widest font-bold">
+              <h4 className="text-[#68869A] group-hover:text-[var(--color-manufacturing-accent)] transition-colors uppercase text-xs tracking-widest font-bold">
                 Automation Level
               </h4>
             </div>
 
             <div
-              className="bg-white/[0.04] border border-white/10 backdrop-blur-xl p-6 rounded-none text-center transform transition-transform hover:scale-105 hover:bg-white/[0.08] hover:border-[#FF4D00]/30"
+              className="glass-premium p-6 rounded-none text-center transform transition-all hover:scale-105 hover:border-[var(--color-manufacturing-accent)]/30 group"
               role="group"
               aria-label="Quality Metric: Sample Turnaround"
             >
@@ -176,7 +182,7 @@ export function PublicQualitySection({}: PublicQualitySectionProps) {
                     strokeWidth="6"
                   ></circle>
                   <circle
-                    className="text-[#FF4D00] progress-ring-circle"
+                    className="text-[var(--color-manufacturing-accent)] progress-ring-circle"
                     data-target-offset="188"
                     cx="64"
                     cy="64"
@@ -193,13 +199,13 @@ export function PublicQualitySection({}: PublicQualitySectionProps) {
                   48h
                 </span>
               </div>
-              <h4 className="text-[#68869A] uppercase text-xs tracking-widest font-bold">
+              <h4 className="text-[#68869A] group-hover:text-[var(--color-manufacturing-accent)] transition-colors uppercase text-xs tracking-widest font-bold">
                 Sample Turnaround
               </h4>
             </div>
 
             <div
-              className="bg-white/[0.04] border border-white/10 backdrop-blur-xl p-6 rounded-none text-center transform transition-transform hover:scale-105 hover:bg-white/[0.08] hover:border-[#FF4D00]/30"
+              className="glass-premium p-6 rounded-none text-center transform transition-all hover:scale-105 hover:border-[var(--color-manufacturing-accent)]/30 group"
               role="group"
               aria-label="Quality Metric: Traceability"
             >
@@ -219,7 +225,7 @@ export function PublicQualitySection({}: PublicQualitySectionProps) {
                     strokeWidth="6"
                   ></circle>
                   <circle
-                    className="text-[#FF4D00] progress-ring-circle"
+                    className="text-[var(--color-manufacturing-accent)] progress-ring-circle"
                     data-target-offset="0"
                     cx="64"
                     cy="64"
@@ -236,7 +242,7 @@ export function PublicQualitySection({}: PublicQualitySectionProps) {
                   100%
                 </span>
               </div>
-              <h4 className="text-[#68869A] uppercase text-xs tracking-widest font-bold">
+              <h4 className="text-[#68869A] group-hover:text-[var(--color-manufacturing-accent)] transition-colors uppercase text-xs tracking-widest font-bold">
                 Traceability
               </h4>
             </div>

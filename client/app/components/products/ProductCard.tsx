@@ -2,9 +2,9 @@ import { ExternalLink, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { Card, CardContent, CardFooter, GlassCardDecorations } from "@/components/ui/card";
-import { useInquiryCart } from "@/context/InquiryCartContext";
 import type { TransformedProduct } from "@/lib/product-transformers";
 import { cn } from "@/lib/utils";
+import { useQuoteStore } from "@/stores/useQuoteStore";
 import { GotsIcon, OekoTexIcon, RcsIcon } from "./ProductBadges";
 
 import { ProductImageCarousel } from "./ProductImageCarousel";
@@ -20,8 +20,10 @@ export const ProductCard = ({
   onQuickViewClick,
   viewMode = "medium",
 }: ProductCardProps) => {
-  const { addItem, isInCart } = useInquiryCart();
-  const alreadyInCart = isInCart(product.id);
+  const addToQuote = useQuoteStore((state) => state.addToQuote);
+  const items = useQuoteStore((state) => state.items);
+  const alreadyInCart = items.some((item) => item.id.toString() === product.id.toString());
+
   const [isIntersecting, setIsIntersecting] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -46,7 +48,13 @@ export const ProductCard = ({
 
   const handleRequestQuote = (e: React.MouseEvent) => {
     e.stopPropagation();
-    addItem(product);
+      addToQuote({
+        id: Number(product.id),
+        name: product.name,
+        quantity: product.moq || 100,
+        minOrderQuantity: product.moq || 100,
+        imageUrl: product.imageUrl,
+      });
   };
 
   return (

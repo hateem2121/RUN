@@ -27,7 +27,7 @@ export const productValidationSchema = z
     categoryId: z.number().min(1, "Product category is required for proper organization"),
     fabricId: z.number().nullable(),
     sizeChartId: z.number().nullable(),
-    selectedFiberComposition: z.array(z.number()).default([]),
+    selectedFiberComposition: z.string().nullable().default(null),
 
     // Media Assets
     primaryImageId: z.number().nullable(),
@@ -72,7 +72,7 @@ export const productValidationSchema = z
     // Cross-field validations
     if (
       data.fabricId &&
-      (!data.selectedFiberComposition || data.selectedFiberComposition.length === 0)
+      (!data.selectedFiberComposition || data.selectedFiberComposition.trim().length === 0)
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

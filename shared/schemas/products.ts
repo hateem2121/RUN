@@ -21,10 +21,10 @@ const ProductTechnicalSpecsSchema = z.record(
   z.string(),
   z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]),
 );
-const ProductFiberCompositionSchema = z.record(
+const ProductFiberCompositionSchema = z.union([
+  z.record(z.string(), z.union([z.string(), z.number(), z.array(z.number())])),
   z.string(),
-  z.union([z.string(), z.number(), z.array(z.number())]),
-);
+]);
 const ProductVideoSchema = z.object({
   url: z.string(),
   title: z.string().optional(),

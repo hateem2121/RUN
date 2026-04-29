@@ -129,6 +129,9 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                     className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-blue-500/50 placeholder:text-white/20"
                     placeholder="e.g., Run Your Future"
                   />
+                  <p className="text-[10px] text-[#68869A] mt-2 px-1">
+                    Use <code className="text-blue-400">|</code> to split the headline into multiple lines (e.g., Run | Your | Future).
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <Label

@@ -1,7 +1,8 @@
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { KEY_STATS } from "./constants";
 
@@ -10,53 +11,52 @@ const ScrambleNumber: React.FC<{ value: string }> = ({ value }) => {
   const prefersReducedMotion = useReducedMotion();
   const [displayValue, setDisplayValue] = useState(prefersReducedMotion ? value : "000");
   const elementRef = useRef<HTMLSpanElement>(null);
-  // Use only digits for clean number animation (removed !@#$%^&*)
   const chars = "0123456789";
 
-  useEffect(() => {
-    if (!elementRef.current || prefersReducedMotion) {
-      if (prefersReducedMotion) setDisplayValue(value);
-      return;
-    }
+  useGSAP(
+    () => {
+      if (!elementRef.current || prefersReducedMotion) {
+        if (prefersReducedMotion) setDisplayValue(value);
+        return;
+      }
 
-    let intervalId: ReturnType<typeof setInterval> | null = null;
+      let intervalId: ReturnType<typeof setInterval> | null = null;
 
-    const runScramble = () => {
-      let iterations = 0;
-      if (intervalId) clearInterval(intervalId);
+      const runScramble = () => {
+        let iterations = 0;
+        if (intervalId) clearInterval(intervalId);
 
-      intervalId = setInterval(() => {
-        setDisplayValue((prev) =>
-          prev
-            .split("")
-            .map((_letter, index) => {
-              if (index < iterations) return value[index];
-              return chars[Math.floor(Math.random() * chars.length)];
-            })
-            .join(""),
-        );
+        intervalId = setInterval(() => {
+          setDisplayValue((prev) =>
+            prev
+              .split("")
+              .map((_letter, index) => {
+                if (index < iterations) return value[index];
+                return chars[Math.floor(Math.random() * chars.length)];
+              })
+              .join(""),
+          );
 
-        if (iterations >= value.length) {
-          if (intervalId) clearInterval(intervalId);
-          setDisplayValue(value);
-        }
-        iterations += 1 / 3;
-      }, 50);
-    };
+          if (iterations >= value.length) {
+            if (intervalId) clearInterval(intervalId);
+            setDisplayValue(value);
+          }
+          iterations += 1 / 3;
+        }, 50);
+      };
 
-    const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: elementRef.current,
         start: "top 90%",
         onEnter: () => runScramble(),
       });
-    }, elementRef);
 
-    return () => {
-      ctx.revert();
-      if (intervalId) clearInterval(intervalId);
-    };
-  }, [value, prefersReducedMotion]);
+      return () => {
+        if (intervalId) clearInterval(intervalId);
+      };
+    },
+    { dependencies: [value, prefersReducedMotion], scope: elementRef },
+  );
 
   return (
     <span className="relative inline-block">
@@ -73,37 +73,27 @@ export const Stats: React.FC = () => {
   const rightRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!containerRef.current || !rightRef.current || !leftRef.current) {
-      return;
-    }
+  useGSAP(
+    () => {
+      if (!containerRef.current || !rightRef.current || !leftRef.current) return;
 
-    const scope = containerRef.current;
-    if (!scope) {
-      return;
-    }
-
-    const ctx = gsap.context(() => {
+      const scope = containerRef.current;
       const left = leftRef.current;
       const right = rightRef.current;
-      if (!left || !right) {
-        return;
-      }
 
-      ScrollTrigger.matchMedia({
-        // Desktop
-        "(min-width: 768px)": () => {
-          // Pin logic for left side
-          ScrollTrigger.create({
-            trigger: scope,
-            start: "top top",
-            end: "bottom bottom",
-            pin: left,
-            pinSpacing: false,
-            invalidateOnRefresh: true,
-            anticipatePin: 1,
-          });
-        },
+      const mm = gsap.matchMedia();
+
+      mm.add("(min-width: 768px)", () => {
+        // Pin logic for left side
+        ScrollTrigger.create({
+          trigger: scope,
+          start: "top top",
+          end: "bottom bottom",
+          pin: left,
+          pinSpacing: false,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+        });
       });
 
       // Animate content fade in
@@ -127,12 +117,9 @@ export const Stats: React.FC = () => {
           );
         });
       }
-    }, scope); // Scope to container
-
-    return () => {
-      ctx.revert(); // Safely kill all triggers created in this context
-    };
-  }, []);
+    },
+    { scope: containerRef },
+  );
 
   return (
     <section

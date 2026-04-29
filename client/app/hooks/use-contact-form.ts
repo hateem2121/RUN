@@ -43,7 +43,7 @@ export function useContactForm(config?: UseContactFormConfig) {
 
   const fetcher = useFetcher<ActionState>();
   const isPending = fetcher.state !== "idle";
-  const state = fetcher.data || { status: "idle", message: "", timestamp: Date.now() };
+  const state = fetcher.data || null;
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(ContactFormSchema) as Resolver<ContactFormData>,
@@ -76,7 +76,7 @@ export function useContactForm(config?: UseContactFormConfig) {
   }, []);
 
   const apiError = useMemo(() => {
-    if (state.status === "error" && state.error) {
+    if (state?.status === "error" && state.error) {
       return new ApiError(state.error.status || 500, state.error);
     }
     return null;
@@ -85,6 +85,8 @@ export function useContactForm(config?: UseContactFormConfig) {
   useServerValidation({ form, error: apiError });
 
   useEffect(() => {
+    if (!state) return;
+
     if (state.status === "success") {
       form.reset();
       setShowSuccess(true);
@@ -102,7 +104,7 @@ export function useContactForm(config?: UseContactFormConfig) {
         variant: "destructive",
       });
     }
-  }, [state, form, config, toast]);
+  }, [state, form, config?.successMessage, toast]);
 
   const submitForm = (data: ContactFormData) => {
     if (data.honeypot) return;

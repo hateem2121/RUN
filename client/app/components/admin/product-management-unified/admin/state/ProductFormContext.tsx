@@ -218,7 +218,7 @@ export function ProductFormProvider({
         fabricId: formData.fabricId,
         sizeChartId: formData.sizeChartId,
         fiberComposition:
-          formData.selectedFiberComposition && formData.selectedFiberComposition.length > 0
+          formData.selectedFiberComposition && formData.selectedFiberComposition.trim().length > 0
             ? { selected: formData.selectedFiberComposition }
             : undefined,
 

@@ -19,12 +19,13 @@ interface InquiryEmailData {
   id: number;
   name: string;
   email: string;
-  company?: string | undefined;
-  phone?: string | undefined;
-  country?: string | undefined;
+  company?: string | null | undefined;
+  phone?: string | null | undefined;
+  country?: string | null | undefined;
   message: string;
-  preferredPlatform?: string | undefined;
+  preferredPlatform?: string | null | undefined;
   submittedAt: Date;
+  items?: Array<{ productId: number; quantity: number; notes?: string | null }> | null | undefined;
 }
 
 class EmailService {
@@ -240,6 +241,37 @@ class EmailService {
               <div style="padding: 20px; background-color: #f9f9f9; border-radius: 6px; border-left: 4px solid #000000; margin-bottom: 30px;">
                 <p style="margin: 0; color: #333333; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${inquiry.message}</p>
               </div>
+
+              ${
+                inquiry.items && inquiry.items.length > 0
+                  ? `
+              <!-- Requested Items -->
+              <h2 style="margin: 0 0 16px; color: #000000; font-size: 18px; font-weight: 600;">Requested Items</h2>
+              <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 30px; border: 1px solid #e5e5e5;">
+                <thead style="background-color: #f9f9f9;">
+                  <tr>
+                    <th style="padding: 12px; border: 1px solid #e5e5e5; text-align: left; font-size: 12px; color: #666666; text-transform: uppercase;">Product ID</th>
+                    <th style="padding: 12px; border: 1px solid #e5e5e5; text-align: center; font-size: 12px; color: #666666; text-transform: uppercase;">Qty</th>
+                    <th style="padding: 12px; border: 1px solid #e5e5e5; text-align: left; font-size: 12px; color: #666666; text-transform: uppercase;">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${inquiry.items
+                    .map(
+                      (item) => `
+                  <tr>
+                    <td style="padding: 12px; border: 1px solid #e5e5e5; font-size: 14px; color: #000000;">#${item.productId}</td>
+                    <td style="padding: 12px; border: 1px solid #e5e5e5; font-size: 14px; color: #000000; text-align: center;">${item.quantity}</td>
+                    <td style="padding: 12px; border: 1px solid #e5e5e5; font-size: 13px; color: #666666;">${item.notes || "-"}</td>
+                  </tr>
+                  `,
+                    )
+                    .join("")}
+                </tbody>
+              </table>
+              `
+                  : ""
+              }
 
               <!-- Action Button -->
               <table role="presentation" style="width: 100%; border-collapse: collapse;">

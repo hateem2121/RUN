@@ -14,15 +14,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useOptimistic,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
+import { useEffect, useOptimistic, useRef, useState, useTransition } from "react";
 import { Link, useLoaderData, useParams } from "react-router";
 import { ProductBreadcrumbs } from "@/components/products/ProductBreadcrumbs";
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
@@ -36,24 +28,33 @@ import {
   type ProductDetail,
   ProductDetailSchema,
 } from "@/schemas/product";
-import type { Route } from "./+types/categories.$category.$product";
+import { useQuoteStore } from "@/stores/useQuoteStore";
+import type { Route } from "./+types/categories.$";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const queryClient = getQueryClient();
-  const categoryParam = params.category;
-  const productParam = params.product;
-  const fullPath = `/categories/${categoryParam}/${productParam}`;
+  const splat = params["*"];
+  const fullPath = `/categories/${splat}`;
 
-  if (!categoryParam || !productParam) {
+  if (!splat) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const productData = await queryClient.fetchQuery<ProductDetail>({
-    queryKey: ["/api/products/by-path", fullPath],
-    queryFn: async () => {
-      return apiRequest(`/api/products/by-path?path=${encodeURIComponent(fullPath)}`);
-    },
-  });
+  // Fetch product by the full hierarchical path
+  const productData = await queryClient
+    .fetchQuery<ProductDetail>({
+      queryKey: ["/api/products/by-path", fullPath],
+      queryFn: async () => {
+        return apiRequest(`/api/products/by-path?path=${encodeURIComponent(fullPath)}`);
+      },
+    })
+    .catch(() => null);
+
+  if (!productData) {
+    // If not found as a product, it might be a category path
+    // For now, we throw 404 as this route is primary for product details
+    throw new Response("Product not found", { status: 404 });
+  }
 
   // Preload associated media assets to avoid N+1 loading on render
   if (productData?.media?.length) {
@@ -71,33 +72,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 // --- Types & Contexts ---
 
-type CartItem = {
-  id: string;
-  productId: number;
-  name: string;
-  quantity: number;
-};
-
-// Mock Cart Context for specific user request
-const CartContext = createContext<{
-  cart: CartItem[];
-  addToCart: (item: Omit<CartItem, "id">) => Promise<void>;
-}>({ cart: [], addToCart: async () => {} });
-
-// Mock Provider (In a real app, this would be global)
-export const MockCartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [cart, setCart] = useState<CartItem[]>([]);
-
-  const addToCart = async (item: Omit<CartItem, "id">) => {
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setCart((prev) => [...prev, { ...item, id: Math.random().toString() }]);
-  };
-
-  return <CartContext.Provider value={{ cart, addToCart }}>{children}</CartContext.Provider>;
-};
-
-export const useCart = () => useContext(CartContext);
+// Removal of MockCartContext as we move to useQuoteStore
 
 // --- Components ---
 
@@ -233,7 +208,8 @@ interface AddToCartSectionProps {
 }
 
 function AddToCartSection({ product }: AddToCartSectionProps) {
-  const { addToCart } = useCart();
+  const addToQuote = useQuoteStore((state) => state.addToQuote);
+  const openDrawer = useQuoteStore((state) => state.openDrawer);
   const [isPending, startTransition] = useTransition();
 
   // React 19: useOptimistic
@@ -251,11 +227,20 @@ function AddToCartSection({ product }: AddToCartSectionProps) {
       addOptimisticState("added");
 
       // 2. Actual Server Mutation (Simulated)
-      await addToCart({
-        productId: product.id,
+      addToQuote({
+        id: product.id,
         name: product.name,
         quantity: 1,
+        minOrderQuantity: product.minimumOrderQuantity || 1,
+        ...(product.primaryImageId
+          ? { imageUrl: `/api/media/${product.primaryImageId}/content` }
+          : {}),
       });
+
+      // 3. Open the drawer to show the item was added
+      setTimeout(() => {
+        openDrawer();
+      }, 500);
     });
   };
 
@@ -345,9 +330,8 @@ function ProductDetailContent() {
   );
 
   const params = useParams();
-  const categoryParam = params.category;
-  const productParam = params.product;
-  const fullPath = `/categories/${categoryParam}/${productParam}`;
+  const splat = params["*"];
+  const fullPath = `/categories/${splat}`;
 
   // Image Preloading (React 19 / Browser Native)
   useEffect(() => {
@@ -534,17 +518,36 @@ function ProductDetailContent() {
   );
 }
 
-export function meta({}: Route.MetaArgs) {
-  return [{ title: "Product Detail | Run Apparel" }];
+export function meta({ data }: Route.MetaArgs) {
+  const productData = (data as any)?.dehydratedState?.queries?.[0]?.state?.data as ProductDetail;
+  const product = productData?.product;
+  const category = productData?.context?.category;
+
+  if (!product) {
+    return [{ title: "Product Not Found | Run Apparel" }];
+  }
+
+  const title = `${product.name} | ${category?.name || "Premium Sportswear"} | Run Apparel`;
+  const description =
+    product.description || product.shortDescription || "Premium B2B sportswear manufacturing.";
+
+  return [
+    { title },
+    { name: "description", content: description },
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:type", content: "product" },
+    ...(product.primaryImageId
+      ? [{ property: "og:image", content: `/api/media/${product.primaryImageId}/content` }]
+      : []),
+  ];
 }
 
 export default function ProductDetailRoute() {
   const loaderData = useLoaderData<typeof loader>();
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <MockCartProvider>
-        <ProductDetailContent />
-      </MockCartProvider>
+      <ProductDetailContent />
     </HydrationBoundary>
   );
 }

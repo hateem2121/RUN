@@ -137,6 +137,15 @@ export const inquiries = pgTable(
     // Form data
     preferredPlatform: varchar({ length: 50 }),
     message: text().notNull(), // Encrypted
+    items: jsonb()
+      .$type<
+        Array<{
+          productId: number;
+          quantity: number;
+          notes?: string | null;
+        }>
+      >()
+      .default([]),
 
     // Metadata
     source: varchar({ length: 50 }).default("contact-page").notNull(),

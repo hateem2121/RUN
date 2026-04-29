@@ -23,6 +23,8 @@ export const Slogans: React.FC<SlogansProps> = ({ data }) => {
     return null;
   }
 
+  const sortedSlogans = [...slogans].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+
   return (
     <section
       className="w-full overflow-hidden border-y border-foreground/10 bg-background py-6"
@@ -37,22 +39,21 @@ export const Slogans: React.FC<SlogansProps> = ({ data }) => {
         {/* Repeat 4x for seamless marquee */}
         {[1, 2, 3, 4].map((loop) => (
           <div key={loop} className="flex" aria-hidden={loop > 1}>
-            {slogans
-              .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-              .map((slogan) => (
-                <span
-                  key={`${loop}-${slogan.id}`}
-                  className={cn(
-                    "mx-8 font-bold text-xl tracking-widest uppercase md:mx-16 md:text-2xl",
-                    slogan.color ? `text-[${slogan.color}]` : "text-foreground/70",
-                  )}
-                >
-                  {slogan.text}
-                  <span className="text-brand-lime mx-4 inline-block text-sm" aria-hidden="true">
-                    ●
-                  </span>
+            {sortedSlogans.map((slogan) => (
+              <span
+                key={`${loop}-${slogan.id}`}
+                className={cn(
+                  "mx-8 font-bold text-xl tracking-widest uppercase md:mx-16 md:text-2xl",
+                  !slogan.color && "text-foreground/70",
+                )}
+                style={slogan.color ? { color: slogan.color } : undefined}
+              >
+                {slogan.text}
+                <span className="text-brand-lime mx-4 inline-block text-sm" aria-hidden="true">
+                  ●
                 </span>
-              ))}
+              </span>
+            ))}
           </div>
         ))}
       </div>

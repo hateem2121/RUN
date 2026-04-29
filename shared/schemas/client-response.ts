@@ -113,7 +113,10 @@ export const ProductSummaryResponseSchema = z.object({
     .nullable(),
   customFit: z.string().nullable(),
   fiberComposition: z
-    .record(z.string(), z.union([z.string(), z.number(), z.array(z.number())]))
+    .union([
+      z.record(z.string(), z.union([z.string(), z.number(), z.array(z.number())])),
+      z.string(),
+    ])
     .nullable(),
   specifications: z.array(z.string()).nullable(),
 

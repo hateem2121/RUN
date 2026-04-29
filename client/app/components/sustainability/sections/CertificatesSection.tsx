@@ -84,6 +84,7 @@ export function CertificatesSection({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top 80%",
+          toggleActions: "play none none reverse",
         },
         opacity: 0,
         y: 30,
@@ -96,6 +97,7 @@ export function CertificatesSection({
         scrollTrigger: {
           trigger: ".hex-grid",
           start: "top 85%",
+          toggleActions: "play none none reverse",
         },
         opacity: 0,
         scale: 0.8,
@@ -111,6 +113,7 @@ export function CertificatesSection({
           scrollTrigger: {
             trigger: ".cert-footer-note",
             start: "top 90%",
+            toggleActions: "play none none reverse",
           },
           opacity: 0,
           y: 20,
@@ -129,13 +132,13 @@ export function CertificatesSection({
     >
       {/* Hex pattern SVG background */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <svg className="absolute w-full h-full opacity-faint" height="100%" width="100%">
+        <svg className="absolute w-full h-full opacity-10" height="100%" width="100%">
           <defs>
             <pattern height="40" id="hex-cert-pattern" patternUnits="userSpaceOnUse" width="40">
               <path
                 d="M20 0 L40 10 L40 30 L20 40 L0 30 L0 10 Z"
                 fill="none"
-                stroke="currentColor"
+                stroke="color-mix(in srgb, var(--s-primary) 20%, transparent)"
                 strokeWidth="1"
               />
             </pattern>
