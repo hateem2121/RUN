@@ -9,7 +9,6 @@
     "outDir": "../dist/scripts",
     "tsBuildInfoFile": "../dist/scripts/.tsbuildinfo",
     "rootDir": ".",
-    "baseUrl": ".",
     "paths": {
       "@shared/*": ["../shared/*"]
     }

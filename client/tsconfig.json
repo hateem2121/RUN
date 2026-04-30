@@ -10,9 +10,8 @@
     "composite": true,
     "outDir": "../dist/client",
     "tsBuildInfoFile": "../dist/client/.tsbuildinfo",
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["app/*"],
+      "@/*": ["./app/*"],
       "@shared": ["../shared/index.ts"],
       "@shared/*": ["../shared/*"],
       "@run-remix/shared": ["../shared/index.ts"],

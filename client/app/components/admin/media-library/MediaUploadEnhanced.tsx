@@ -53,8 +53,18 @@ export function MediaUploadEnhanced() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
+
+        interface RestoredUploadItem {
+          id: string;
+          status: string;
+          progress: number;
+          filename?: string;
+          fileType?: string;
+          fileSize?: number;
+        }
+
         // Map back to UploadQueueItem, files will be empty blobs (placeholder)
-        const restored = parsed.map((item: any) => ({
+        const restored = parsed.map((item: RestoredUploadItem) => ({
           ...item,
           file: new File([], item.filename || "restored-file"),
           status: item.status === "completed" ? "completed" : "error",

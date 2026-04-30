@@ -519,7 +519,10 @@ function ProductDetailContent() {
 }
 
 export function meta({ data }: Route.MetaArgs) {
-  const productData = (data as any)?.dehydratedState?.queries?.[0]?.state?.data as ProductDetail;
+  const loaderData = data as unknown as {
+    dehydratedState?: { queries?: Array<{ state?: { data?: ProductDetail } }> };
+  };
+  const productData = loaderData?.dehydratedState?.queries?.[0]?.state?.data as ProductDetail;
   const product = productData?.product;
   const category = productData?.context?.category;
 

@@ -1,7 +1,7 @@
-import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import type React from "react";
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useHomepageData } from "@/hooks/use-homepage-data";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { HERO_TEXT as FALLBACK_HERO_TEXT } from "./constants";
@@ -124,8 +124,8 @@ export const Hero: React.FC = () => {
         Uses a mesh-like gradient effect.
       */}
       <div className="absolute inset-0 z-base overflow-hidden bg-black">
-        <div className="bg-hero-conic absolute -inset-1/2 opacity-40 blur-[100px] animate-spin-slow" />
-        <div className="bg-hero-dots absolute inset-0 opacity-30 bg-[size:20px_20px]" />
+        <div className="bg-hero-conic absolute -inset-1/2 opacity-40 blur-hero-conic animate-spin-slow" />
+        <div className="bg-hero-dots absolute inset-0 opacity-30 bg-hero-dots-size" />
       </div>
 
       {/* Hero Content */}
@@ -177,7 +177,7 @@ export const Hero: React.FC = () => {
               d="M 50 50 m -37 0 a 37 37 0 1 1 74 0 a 37 37 0 1 1 -74 0"
               fill="transparent"
             />
-            <text className="text-[14px] font-bold tracking-widest uppercase">
+            <text className="text-sm font-bold tracking-widest uppercase">
               <textPath href="#curve">Scroll Down • Scroll Down •</textPath>
             </text>
           </svg>

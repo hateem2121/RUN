@@ -43,11 +43,15 @@ export function meta({ data, location }: Route.MetaArgs) {
   const categoryId = searchParams.get("category");
 
   // Find category name if possible from loader data
-  const categories = (data as any)?.categories || [];
-  const category = categories.find((c: any) => c.id.toString() === categoryId);
+  const loaderData = data as { categories?: Array<{ id: number; name: string }> };
+  const categories = loaderData?.categories || [];
+  const category = categories.find(
+    (c: { id: number; name: string }) => c.id.toString() === categoryId,
+  );
 
   let title = "Products | Run Apparel";
-  let description = "Browse our extensive catalog of professional sportswear products and textiles.";
+  let description =
+    "Browse our extensive catalog of professional sportswear products and textiles.";
 
   if (searchTerm) {
     title = `Search results for "${searchTerm}" | Run Apparel`;

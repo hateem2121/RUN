@@ -2,27 +2,25 @@
   /* Map Animations Moved to components/ui/map/map-styles.css */
 }
 
-@layer utilities {
-  /* =========================
+/* =========================
      Performance Utilities
      Migrated from performance-optimizations.css
      ========================= */
 
-  .gpu-accelerated {
-    will-change: transform;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-  }
+@utility gpu-accelerated {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
 
-  .animation-container {
-    contain: layout style paint;
-    will-change: transform;
-  }
+@utility animation-container {
+  contain: layout style paint;
+  will-change: transform;
+}
 
-  /* Interaction Animations */
-  .notification-progress {
-    @apply animate-notification-shrink origin-left;
-  }
+/* Interaction Animations */
+@utility notification-progress {
+  @apply animate-notification-shrink origin-left;
 }
 
 /* Note: Houdini @property declarations are defined in theme.css inside @theme block */

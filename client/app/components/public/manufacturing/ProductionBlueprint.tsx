@@ -207,7 +207,9 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
                   <div
                     className={cn(
                       "text-7xl font-neue-stance font-black transition-colors bg-[var(--color-manufacturing-bg)] pr-6 relative z-10 leading-none italic skew-x-[-5deg]",
-                      idx === 0 ? "text-[var(--color-manufacturing-accent)]" : "text-gray-800 group-hover:text-[var(--color-manufacturing-accent)]",
+                      idx === 0
+                        ? "text-[var(--color-manufacturing-accent)]"
+                        : "text-gray-800 group-hover:text-[var(--color-manufacturing-accent)]",
                     )}
                   >
                     0{idx + 1}
@@ -216,7 +218,9 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
                     <span
                       className={cn(
                         "text-xs font-mono font-bold uppercase tracking-widest mb-1 transition-colors",
-                        idx === 0 ? "text-[var(--color-manufacturing-accent)]" : "text-[#E3DFD6] group-hover:text-[var(--color-manufacturing-accent)]",
+                        idx === 0
+                          ? "text-[var(--color-manufacturing-accent)]"
+                          : "text-[#E3DFD6] group-hover:text-[var(--color-manufacturing-accent)]",
                       )}
                     >
                       {phase.subtitle.split(" ")[0]} {phase.subtitle.split(" ")[1]}

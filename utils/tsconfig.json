@@ -9,7 +9,6 @@
     "outDir": "../dist/utils",
     "tsBuildInfoFile": "../dist/utils/.tsbuildinfo",
     "rootDir": ".",
-    "baseUrl": ".",
     "skipLibCheck": true,
     "paths": {
       "@shared/*": ["../shared/*"]

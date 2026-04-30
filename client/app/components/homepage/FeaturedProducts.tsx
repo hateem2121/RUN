@@ -1,5 +1,5 @@
-import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import type React from "react";
 import { useRef } from "react";
 import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
@@ -133,6 +133,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
         <div className="mt-24 text-center">
           <button
             onClick={handleCatalogueClick}
+            aria-label="View the full product catalogue"
             className="hover:border-primary hover:text-primary border-b border-foreground pb-1 text-sm font-bold tracking-widest uppercase transition-colors"
             onMouseEnter={() => !isMobile && setCursor("button")}
             onMouseLeave={() => resetCursor()}

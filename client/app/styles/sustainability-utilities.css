@@ -3,7 +3,8 @@
    ========================================= */
 
 @utility leaf-vein-bg {
-  background-image: radial-gradient(
+  background-image:
+    radial-gradient(
       ellipse at 20% 30%,
       color-mix(in srgb, var(--s-primary) 6%, transparent) 0%,
       transparent 60%

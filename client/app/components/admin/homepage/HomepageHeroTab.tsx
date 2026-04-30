@@ -130,7 +130,8 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                     placeholder="e.g., Run Your Future"
                   />
                   <p className="text-[10px] text-[#68869A] mt-2 px-1">
-                    Use <code className="text-blue-400">|</code> to split the headline into multiple lines (e.g., Run | Your | Future).
+                    Use <code className="text-blue-400">|</code> to split the headline into multiple
+                    lines (e.g., Run | Your | Future).
                   </p>
                 </div>
                 <div className="space-y-2">

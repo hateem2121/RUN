@@ -1,4 +1,4 @@
-import { Trash2, ShoppingBag, Plus, Minus } from "lucide-react";
+import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import type { QuoteItem } from "../../stores/useQuoteStore";
 
 interface QuoteListProps {
@@ -15,7 +15,9 @@ export function QuoteList({ items, updateQuantity, removeFromQuote, onClose }: Q
         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted/10 text-muted-foreground">
           <ShoppingBag className="h-8 w-8" />
         </div>
-        <p className="text-muted-foreground text-sm font-medium tracking-wide">Your quote list is empty.</p>
+        <p className="text-muted-foreground text-sm font-medium tracking-wide">
+          Your quote list is empty.
+        </p>
         <button
           type="button"
           onClick={onClose}
@@ -51,12 +53,12 @@ export function QuoteList({ items, updateQuantity, removeFromQuote, onClose }: Q
                 <ShoppingBag className="h-8 w-8 opacity-20" />
               </div>
             )}
-            
+
             <div className="flex min-w-0 flex-1 flex-col justify-between py-1">
               <h4 className="truncate font-neue-stance text-sm font-bold uppercase tracking-tight text-foreground">
                 {item.name}
               </h4>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1 overflow-hidden rounded-full border border-border bg-background/50">
                   <button

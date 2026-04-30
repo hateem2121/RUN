@@ -262,7 +262,9 @@ export function FabricPortfolioSection({
   if (sustainableFabrics.length === 0) {
     return (
       <div className="py-8 text-center">
-        <p className="text-[color:var(--s-text-muted)]">Sustainable fabric portfolio coming soon...</p>
+        <p className="text-[color:var(--s-text-muted)]">
+          Sustainable fabric portfolio coming soon...
+        </p>
       </div>
     );
   }

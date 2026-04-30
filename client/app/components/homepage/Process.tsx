@@ -1,5 +1,5 @@
-import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { ArrowRight } from "lucide-react";
 import type React from "react";
 import { useRef } from "react";
@@ -22,7 +22,13 @@ export const Process: React.FC = () => {
   useGSAP(
     () => {
       // If no steps or loading, don't initialize GSAP yet (prevent layout shift/errors)
-      if (isLoading || !steps.length || !sectionRef.current || !triggerRef.current || !pathRef.current) {
+      if (
+        isLoading ||
+        !steps.length ||
+        !sectionRef.current ||
+        !triggerRef.current ||
+        !pathRef.current
+      ) {
         return;
       }
 
@@ -196,8 +202,16 @@ export const Process: React.FC = () => {
                   <p className="mb-8 max-w-md font-light text-base text-muted-foreground leading-relaxed md:text-xl">
                     {step.description}
                   </p>
-                  <div className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-foreground transition-all duration-300 hover:bg-foreground hover:text-background md:h-16 md:w-16">
-                    <ArrowRight className="h-5 w-5 -rotate-45 transition-transform duration-300 group-hover:rotate-0 md:h-6 md:w-6" />
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Proceed to next step: ${step.title}`}
+                    className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-foreground transition-all duration-300 hover:bg-foreground hover:text-background md:h-16 md:w-16"
+                  >
+                    <ArrowRight
+                      aria-hidden="true"
+                      className="h-5 w-5 -rotate-45 transition-transform duration-300 group-hover:rotate-0 md:h-6 md:w-6"
+                    />
                   </div>
                 </div>
               </div>

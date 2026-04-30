@@ -101,13 +101,17 @@ export function FactoryGallery() {
                 <div className="w-8 h-[2px] bg-[color:var(--m-primary)]/80"></div>
                 <MoveRight className="text-[color:var(--m-primary)] w-4 h-4" />
               </div>
-              <span className="ml-2 font-bold text-[color:var(--m-primary)]">Drag / Scroll to Explore</span>
+              <span className="ml-2 font-bold text-[color:var(--m-primary)]">
+                Drag / Scroll to Explore
+              </span>
             </div>
           </div>
 
           <div className="flex flex-col items-center justify-center pointer-events-none md:pointer-events-auto">
             <div className="flex items-center space-x-2 text-white font-mono text-sm border-l-4 border-[color:var(--m-primary)] px-4 py-2 bg-black/80 backdrop-blur-sm skew-x-[-12deg] shadow-lg shadow-[color:var(--m-primary)]/10">
-              <span className="text-[color:var(--m-primary)] animate-pulse font-black italic">●</span>
+              <span className="text-[color:var(--m-primary)] animate-pulse font-black italic">
+                ●
+              </span>
               <span className="tracking-widest font-black italic text-[color:var(--m-primary)] text-lg">
                 0{currentIndex} / 0{totalSlides}
               </span>

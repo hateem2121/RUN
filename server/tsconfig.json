@@ -8,7 +8,6 @@
     "declarationMap": true,
     "outDir": "../dist/server",
     "tsBuildInfoFile": "../dist/server/.tsbuildinfo",
-    "baseUrl": ".",
     "paths": {
       "@shared": ["../shared/index.ts"],
       "@shared/*": ["../shared/*"],

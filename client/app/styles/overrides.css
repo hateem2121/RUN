@@ -109,30 +109,45 @@
   }
 }
 
-@layer utilities {
-  /* WebGL Pointer Events */
-  .webgl-background {
-    pointer-events: none;
-  }
+/* WebGL Pointer Events */
+@utility webgl-background {
+  pointer-events: none;
+}
 
-  .webgl-background a,
-  .webgl-background button,
-  .webgl-background input,
-  .webgl-background select,
-  .webgl-background textarea,
-  .webgl-background [role="button"],
-  .webgl-background [tabindex]:not([tabindex="-1"]) {
-    pointer-events: auto;
-  }
+.webgl-background a,
+.webgl-background button,
+.webgl-background input,
+.webgl-background select,
+.webgl-background textarea,
+.webgl-background [role="button"],
+.webgl-background [tabindex]:not([tabindex="-1"]) {
+  pointer-events: auto;
+}
 
-  /* Technology Page Header Overrides (Fix Broken Logo) */
-  html.technology-page header h1 {
-    color: white;
-  }
-  html.technology-page header p {
-    color: #a1a1aa; /* zinc-400 */
-  }
-  html.technology-page header span.rounded-full {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
+/* Technology Page Header Overrides (Fix Broken Logo) */
+html.technology-page header h1 {
+  color: white;
+}
+html.technology-page header p {
+  color: #a1a1aa; /* zinc-400 */
+}
+html.technology-page header span.rounded-full {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Stabilized CMS Utilities (Arbitrary Value Migration) */
+@utility blur-hero-conic {
+  filter: blur(100px);
+}
+@utility bg-hero-dots-size {
+  background-size: 20px 20px;
+}
+@utility min-h-60vh {
+  min-height: 60vh;
+}
+@utility min-h-80vh {
+  min-height: 80vh;
+}
+@utility min-h-150vh {
+  min-height: 150vh;
 }

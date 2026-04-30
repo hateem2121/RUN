@@ -29,4 +29,5 @@
 - [ ] Verify CI stability
 
 ## 6. Audits
-- [ ] Homepage + CMS full-stack audit → docs/audits/homepage-cms-audit-report.md
+- [x] Homepage + CMS full-stack audit → docs/audits/homepage-cms-audit-report.md
+- [x] Homepage + CMS Stabilization Sprint — resolve audit findings HCA-001 through HCA-010

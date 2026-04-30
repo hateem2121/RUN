@@ -48,13 +48,13 @@ export const ProductCard = ({
 
   const handleRequestQuote = (e: React.MouseEvent) => {
     e.stopPropagation();
-      addToQuote({
-        id: Number(product.id),
-        name: product.name,
-        quantity: product.moq || 100,
-        minOrderQuantity: product.moq || 100,
-        imageUrl: product.imageUrl,
-      });
+    addToQuote({
+      id: Number(product.id),
+      name: product.name,
+      quantity: product.moq || 100,
+      minOrderQuantity: product.moq || 100,
+      imageUrl: product.imageUrl,
+    });
   };
 
   return (

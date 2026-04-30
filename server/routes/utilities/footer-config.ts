@@ -201,33 +201,37 @@ router.patch("/admin/footer", authService.requireAdmin, async (req, res) => {
   const normalizedData: Record<string, unknown> = { ...validatedData };
 
   if (validatedData.navigationColumns) {
-    normalizedData.navigationColumns = (validatedData.navigationColumns as unknown as NavColumn[]).map(
-      (col) => ({
-        title: col.title,
-        links:
-          col.links?.map((link) => ({
-            label: link.label,
-            href: link.href || link.url,
-            external: link.external,
-          })) || [],
+    normalizedData.navigationColumns = (
+      validatedData.navigationColumns as unknown as NavColumn[]
+    ).map((col) => ({
+      title: col.title,
+      links:
+        col.links?.map((link) => ({
+          label: link.label,
+          href: link.href || link.url,
+          external: link.external,
+        })) || [],
+    }));
+  }
+
+  if (validatedData.socialLinks) {
+    normalizedData.socialLinks = (validatedData.socialLinks as unknown as SocialLink[]).map(
+      (social) => ({
+        name: social.name || social.platform,
+        icon: social.icon,
+        href: social.href || social.url,
+        hoverColor: social.hoverColor,
       }),
     );
   }
 
-  if (validatedData.socialLinks) {
-    normalizedData.socialLinks = (validatedData.socialLinks as unknown as SocialLink[]).map((social) => ({
-      name: social.name || social.platform,
-      icon: social.icon,
-      href: social.href || social.url,
-      hoverColor: social.hoverColor,
-    }));
-  }
-
   if (validatedData.legalLinks) {
-    normalizedData.legalLinks = (validatedData.legalLinks as unknown as LegalLink[]).map((link) => ({
-      label: link.label,
-      href: link.href || link.url,
-    }));
+    normalizedData.legalLinks = (validatedData.legalLinks as unknown as LegalLink[]).map(
+      (link) => ({
+        label: link.label,
+        href: link.href || link.url,
+      }),
+    );
   }
 
   // 3. Perform Upsert

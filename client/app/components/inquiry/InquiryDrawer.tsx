@@ -1,9 +1,9 @@
 import { FocusScope } from "@radix-ui/react-focus-scope";
-import { X, CheckCircle2, Send, AlertCircle } from "lucide-react";
+import { AlertCircle, CheckCircle2, Send, X } from "lucide-react";
 import { useInquiryForm } from "@/hooks/use-inquiry-form";
+import { cn } from "@/lib/utils";
 import { InquiryForm } from "./InquiryForm";
 import { QuoteList } from "./QuoteList";
-import { cn } from "@/lib/utils";
 
 export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const { form, items, removeFromQuote, updateQuantity, success, error, mutation, onSubmit } =
@@ -22,10 +22,12 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
       {/* Drawer - Wrapped in FocusScope for keyboard accessibility */}
       <FocusScope trapped>
-        <div className={cn(
-          "fixed inset-y-0 right-0 z-modal flex h-full w-full transform flex-col border-white/10 border-l bg-background shadow-2xl transition-transform duration-500 ease-out md:w-lg animate-in slide-in-from-right",
-          "dark:bg-[#0A0A0A]"
-        )}>
+        <div
+          className={cn(
+            "fixed inset-y-0 right-0 z-modal flex h-full w-full transform flex-col border-white/10 border-l bg-background shadow-2xl transition-transform duration-500 ease-out md:w-lg animate-in slide-in-from-right",
+            "dark:bg-[#0A0A0A]",
+          )}
+        >
           {/* Header */}
           <div className="flex items-center justify-between border-border border-b bg-muted/30 p-6 backdrop-blur-xl">
             <div>
@@ -110,7 +112,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                 disabled={mutation.isPending}
                 className={cn(
                   "flex w-full items-center justify-center gap-3 rounded-full bg-foreground px-6 py-5 font-bold text-background transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50",
-                  "hover:bg-foreground/90 hover:shadow-xl hover:shadow-foreground/10"
+                  "hover:bg-foreground/90 hover:shadow-xl hover:shadow-foreground/10",
                 )}
               >
                 <span className="text-xs uppercase tracking-widest">

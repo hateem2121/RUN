@@ -403,7 +403,7 @@ export function buildProductMediaItems(product: ProductSummary | Product): Produ
   }
 
   // 5. Add 3D Model (modelFileId is only in full Product/ProductDetail, not Summary)
-  const modelFileId = (product as any).modelFileId;
+  const modelFileId = (product as Partial<Product>).modelFileId;
   if (modelFileId) {
     const modelUrl = MediaUrlBuilder.buildUrlSafe(modelFileId);
     if (modelUrl) {

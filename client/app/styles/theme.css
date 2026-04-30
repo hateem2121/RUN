@@ -438,7 +438,11 @@
   /* Custom Backgrounds */
   --background-image-hero-conic: conic-gradient(from 0deg at 50% 50%, #3b82f6, #1d4ed8, #000000);
   --background-image-hero-dots: radial-gradient(circle, #ffffff 1px, transparent 1px);
-  --background-image-radial-primary-glow: radial-gradient(circle at 50% 50%, var(--color-primary) 0%, transparent 50%);
+  --background-image-radial-primary-glow: radial-gradient(
+    circle at 50% 50%,
+    var(--color-primary) 0%,
+    transparent 50%
+  );
 
   @keyframes marquee {
     0% {
@@ -480,7 +484,8 @@
 }
 
 @utility tech-grid-manufacturing {
-  background-image: linear-gradient(
+  background-image:
+    linear-gradient(
       color-mix(in srgb, var(--color-manufacturing-accent) 10%, transparent) 1px,
       transparent 1px
     ),

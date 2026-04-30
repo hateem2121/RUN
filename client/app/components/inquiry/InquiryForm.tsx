@@ -22,9 +22,9 @@ export function InquiryForm({ form, onSubmit }: InquiryFormProps) {
                 Full Name
               </FormLabel>
               <FormControl>
-                <Input 
-                  {...field} 
-                  className="h-12 bg-background/50 border-border focus:border-foreground transition-colors" 
+                <Input
+                  {...field}
+                  className="h-12 bg-background/50 border-border focus:border-foreground transition-colors"
                   placeholder="e.g. John Doe"
                 />
               </FormControl>
@@ -42,9 +42,9 @@ export function InquiryForm({ form, onSubmit }: InquiryFormProps) {
                 Company Name
               </FormLabel>
               <FormControl>
-                <Input 
-                  {...field} 
-                  className="h-12 bg-background/50 border-border focus:border-foreground transition-colors" 
+                <Input
+                  {...field}
+                  className="h-12 bg-background/50 border-border focus:border-foreground transition-colors"
                   placeholder="e.g. Acme Corp"
                 />
               </FormControl>
@@ -62,10 +62,10 @@ export function InquiryForm({ form, onSubmit }: InquiryFormProps) {
                 Work Email
               </FormLabel>
               <FormControl>
-                <Input 
-                  {...field} 
+                <Input
+                  {...field}
                   type="email"
-                  className="h-12 bg-background/50 border-border focus:border-foreground transition-colors" 
+                  className="h-12 bg-background/50 border-border focus:border-foreground transition-colors"
                   placeholder="john@company.com"
                 />
               </FormControl>
