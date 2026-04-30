@@ -1,6 +1,6 @@
 import { Globe, Leaf, ShieldCheck, Zap } from "lucide-react";
-import { memo } from "react";
 import type React from "react";
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import { useIsMobile } from "@/hooks/use-is-mobile";
@@ -19,73 +19,77 @@ interface ValuesCardProps {
   image: string;
 }
 
-const ValuesCard: React.FC<ValuesCardProps> = memo(({
-  title,
-  subtitle,
-  icon: Icon,
-  colSpan = "col-span-1",
-  withRipple = false, // Kept in prop interface but unused
-  isMobile,
-  setCursor,
-  resetCursor,
-  image,
-}) => {
-  const IconComponent = Icon;
+const ValuesCard: React.FC<ValuesCardProps> = memo(
+  ({
+    title,
+    subtitle,
+    icon: Icon,
+    colSpan = "col-span-1",
+    withRipple = false, // Kept in prop interface but unused
+    isMobile,
+    setCursor,
+    resetCursor,
+    image,
+  }) => {
+    const IconComponent = Icon;
 
-  return (
-    <Card
-      className={cn(
-        colSpan,
-        "group relative flex min-h-value-card flex-col justify-between overflow-hidden border-border p-0 transition-all duration-500 will-change-transform hover:-translate-y-1 hover:shadow-2xl motion-reduce:transform-none",
-      )}
-      variant="glass-premium"
-      onMouseEnter={() => !isMobile && setCursor("button")}
-      onMouseLeave={() => resetCursor()}
-    >
-      {/* Background Image Layer */}
-      <div className="absolute inset-0 z-base">
-        <ImageWithSkeleton
-          src={image}
-          alt={title}
-          crossOrigin="anonymous"
-          decoding="async"
-          className="h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-70 group-hover:grayscale-0"
-          containerClassName="h-full w-full"
-        />
-      </div>
+    return (
+      <Card
+        className={cn(
+          colSpan,
+          "group relative flex min-h-value-card flex-col justify-between overflow-hidden border-border p-0 transition-all duration-500 will-change-transform hover:-translate-y-1 hover:shadow-2xl motion-reduce:transform-none",
+        )}
+        variant="glass-premium"
+        onMouseEnter={() => !isMobile && setCursor("button")}
+        onMouseLeave={() => resetCursor()}
+      >
+        {/* Background Image Layer */}
+        <div className="absolute inset-0 z-base">
+          <ImageWithSkeleton
+            src={image}
+            alt={title}
+            crossOrigin="anonymous"
+            decoding="async"
+            className="h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-70 group-hover:grayscale-0"
+            containerClassName="h-full w-full"
+          />
+        </div>
 
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 z-base bg-linear-to-t from-surface-dark via-surface-dark/40 to-transparent dark:from-black dark:via-black/40" />
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 z-base bg-linear-to-t from-surface-dark via-surface-dark/40 to-transparent dark:from-black dark:via-black/40" />
 
-      {/* 
+        {/* 
         Hover Ripple Effect Replacement 
         Simple CSS radial gradient overlay on hover instead of WebGL 
       */}
-      {withRipple && (
-        <div className="absolute inset-0 z-base bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.3)_0%,transparent_70%)] opacity-0 transition-opacity duration-700 pointer-events-none group-hover:opacity-30" />
-      )}
+        {withRipple && (
+          <div className="absolute inset-0 z-base bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.3)_0%,transparent_70%)] opacity-0 transition-opacity duration-700 pointer-events-none group-hover:opacity-30" />
+        )}
 
-      <CardContent className="relative z-elevated flex h-full flex-col justify-between p-8">
-        <div className="flex w-full justify-end">
-          {IconComponent && (
-            <IconComponent
-              className={cn(
-                "h-12 w-12 stroke-1 transition-colors duration-300",
-                withRipple ? "text-blue-400" : "text-muted-foreground/70 group-hover:text-blue-400",
-              )}
-            />
-          )}
-        </div>
-        <div>
-          <h3 className="mb-2 font-bold text-2xl text-foreground uppercase">{title}</h3>
-          <p className="text-muted-foreground/70 transition-colors group-hover:text-foreground/80">
-            {subtitle}
-          </p>
-        </div>
-      </CardContent>
-    </Card>
-  );
-});
+        <CardContent className="relative z-elevated flex h-full flex-col justify-between p-8">
+          <div className="flex w-full justify-end">
+            {IconComponent && (
+              <IconComponent
+                className={cn(
+                  "h-12 w-12 stroke-1 transition-colors duration-300",
+                  withRipple
+                    ? "text-blue-400"
+                    : "text-muted-foreground/70 group-hover:text-blue-400",
+                )}
+              />
+            )}
+          </div>
+          <div>
+            <h3 className="mb-2 font-bold text-2xl text-foreground uppercase">{title}</h3>
+            <p className="text-muted-foreground/70 transition-colors group-hover:text-foreground/80">
+              {subtitle}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  },
+);
 
 export const Values: React.FC = () => {
   const { setCursor, resetCursor } = useCursorStore();

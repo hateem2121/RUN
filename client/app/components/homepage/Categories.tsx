@@ -10,7 +10,7 @@ interface CategoriesProps {
   data: CategoryItem[] | undefined;
 }
 
-const CategoryItem: React.FC<{
+const CategoryMarqueeItem: React.FC<{
   cat: CategoryItem;
   uniqueIndex: string;
   isHovered: boolean;
@@ -18,7 +18,7 @@ const CategoryItem: React.FC<{
   isMobile: boolean;
   onMouseEnter: (index: string, image: string) => void;
   onMouseLeave: () => void;
-}> = memo(({ cat, uniqueIndex, isHovered, isBlurred, isMobile, onMouseEnter, onMouseLeave }) => {
+}> = memo(({ cat, uniqueIndex, isBlurred, onMouseEnter, onMouseLeave }) => {
   return (
     <div
       role="listitem"
@@ -34,8 +34,7 @@ const CategoryItem: React.FC<{
       onBlur={onMouseLeave}
     >
       <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-foreground group-focus:text-foreground md:text-[10vw]">
-        {cat.name}{" "}
-        <span className="text-brand-lime inline-block align-top text-[2vw]">●</span>
+        {cat.name} <span className="text-brand-lime inline-block align-top text-[2vw]">●</span>
       </h2>
     </div>
   );
@@ -95,7 +94,7 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
                 {(data || CATEGORIES).map((cat, index) => {
                   const uniqueIndex = `${loop}-${index}`;
                   return (
-                    <CategoryItem
+                    <CategoryMarqueeItem
                       key={`${cat.id}-${uniqueIndex}`}
                       cat={cat}
                       uniqueIndex={uniqueIndex}

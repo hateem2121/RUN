@@ -28,7 +28,7 @@ interface SmoothScrollOptions {
 }
 
 interface ScrollContextValue {
-  // Use any here to avoid fragile type issues with LocomotiveScroll v5/Lenis internal methods
+  // biome-ignore lint/suspicious/noExplicitAny: Use any to avoid fragile type issues with LocomotiveScroll v5/Lenis internal methods
   scroll: any | null;
 }
 
@@ -42,8 +42,13 @@ export const useScroll = () => useContext(ScrollContext);
 export function ScrollProvider({
   children,
   options = {},
-}: { children: React.ReactNode; options?: SmoothScrollOptions }) {
+}: {
+  children: React.ReactNode;
+  options?: SmoothScrollOptions;
+}) {
+  // biome-ignore lint/suspicious/noExplicitAny: LocomotiveScroll v5 lacks stable public types for its internal instance
   const [scrollInstance, setScrollInstance] = useState<any | null>(null);
+  // biome-ignore lint/suspicious/noExplicitAny: Internal ref for instance management
   const scrollRef = useRef<any | null>(null);
 
   useEffect(() => {
@@ -79,7 +84,9 @@ export function ScrollProvider({
     setScrollInstance(scroll);
 
     const updateScroll = (time: number) => {
+      // biome-ignore lint/suspicious/noExplicitAny: raf is a public method of Lenis within LocomotiveScroll v5
       if (scroll && typeof (scroll as any).raf === "function") {
+        // biome-ignore lint/suspicious/noExplicitAny: manual raf call required for GSAP ticker sync
         (scroll as any).raf(time * 1000);
       }
     };
