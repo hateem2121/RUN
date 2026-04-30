@@ -27,3 +27,6 @@
 ## 5. Deployment
 - [ ] Push changes to `main`
 - [ ] Verify CI stability
+
+## 6. Audits
+- [ ] Homepage + CMS full-stack audit → docs/audits/homepage-cms-audit-report.md

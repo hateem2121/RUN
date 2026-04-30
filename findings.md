@@ -23,3 +23,14 @@
 ## Known Remaining Issues
 - **Unit Tests**: Baseline failures in `about.service.test.ts` and `media.repository.test.ts` persist from the pre-upgrade state. These are unrelated to the tech stack bump and require separate stabilization work.
 - **Biome Lints**: Approximately 24 `any` type lints exist in the codebase.
+
+## Homepage CMS Audit [2026-04-30]
+- **Audit Completed**: A comprehensive full-stack read-only audit of the Homepage and CMS admin infrastructure was executed across 10 dimensions.
+- **Critical Findings**:
+  - **Express 5 Anti-Patterns**: 28 instances of explicit `try/catch` in async route handlers were found (violates tech stack rules).
+  - **Type Safety**: 4 critical `any` type violations found in `MediaUploadEnhanced.tsx` and CMS routes.
+  - **CSS Anti-Patterns**: Widespread use of arbitrary explicit Tailwind pixel/rem values (`w-[340px]`, `text-[10px]`) and `@layer utilities` instead of `@utility` in V4.
+  - **Performance / Hydration**: Duplicate endpoints for `/homepage-process-cards` exist, bypassing the main `/homepage-batch` caching payload.
+  - **Resilience**: The main homepage `_index.tsx` route lacks a top-level React ErrorBoundary.
+  - **DX**: `knip` static analysis identified 55 unused exports/files cluttering the workspace.
+- **Next Steps**: A prioritized 10-point fix plan has been generated in `docs/audits/homepage-cms-audit-report.md`.
