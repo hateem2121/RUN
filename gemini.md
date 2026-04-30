@@ -9,8 +9,8 @@
 
 ## 2. Technical Stack (Non-Negotiable)
 
-- **Frontend**: React 19, Vite 7, Tailwind V4, TypeScript (Strict).
-- **Backend**: Express 5 (Async Native), Node.js 24+.
+- **Frontend**: React 19, Vite 8 (Rolldown), Tailwind v4.2, TypeScript 6 (Strict).
+- **Backend**: Express 5.2 (Async Native), Node.js 24.15+.
 - **Data**: Neon Serverless Postgres via Drizzle ORM.
 - **3D**: `@google/model-viewer` ONLY (LazyUnifiedModelViewer required).
 - **Port**: **5002** (Exclusively for ALL services).

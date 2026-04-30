@@ -10,7 +10,7 @@
 
 This document defines the architectural hard-deck for the RUN Apparel B2B Platform as of January 2026. It supersedes all previous architectural notes.
 
-**Core Thesis**: A strongly typed, monorepo-based B2B platform leveraging the latest stable React ecosystem (React 19) served by a robust Node.js backend (Express 5), prioritizing developer experience (Vite 7) and data integrity (Drizzle/Zod).
+**Core Thesis**: A strongly typed, monorepo-based B2B platform leveraging the latest stable React ecosystem (React 19) served by a robust Node.js backend (Express 5.2), prioritizing developer experience (Vite 8) and data integrity (Drizzle/Zod).
 
 ---
 
@@ -21,8 +21,8 @@ This document defines the architectural hard-deck for the RUN Apparel B2B Platfo
 
 **Key Technologies:**
 
-- **Frontend**: React 19, Vite 7, Tailwind CSS v4
-- **Backend**: Express 5, Node.js 24+
+- **Frontend**: React 19, Vite 8, Tailwind CSS v4.2, TypeScript 6
+- **Backend**: Express 5.2, Node.js v24.15+, Neon Postgres
 - **Data**: PostgreSQL (Neon), Drizzle ORM, Upstash Redis
 - **Testing**: Vitest, Playwright
 

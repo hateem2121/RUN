@@ -21,10 +21,11 @@
       "@run-remix/server/*": ["../server/*"],
       "@assets/*": ["../attached_assets/*"]
     },
+    "rootDirs": [".", "./.react-router/types"],
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["app/**/*", "src/types/**/*", "vite.config.ts"],
+  "include": ["app/**/*", "src/types/**/*", "vite.config.ts", ".react-router/types/**/*"],
   "exclude": ["dist", "node_modules", "**/*.spec.ts", "**/*.test.ts"],
   "references": [{ "path": "../shared" }, { "path": "../server" }]
 }

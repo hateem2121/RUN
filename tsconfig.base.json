@@ -20,7 +20,9 @@
     "noPropertyAccessFromIndexSignature": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "incremental": true
+    "incremental": true,
+    "ignoreDeprecations": "6.0",
+    "types": ["node"]
   },
   "exclude": [
     "node_modules",

@@ -1,29 +1,25 @@
-# Findings: Performance & Stability Audit (2026-04-27)
+# Findings: Tech Stack Major Version Upgrade (2026-04-30)
 
-## Core Issues Identified
+## Upgrade Audit Results
 
-### 1. Application Stability (High Priority)
-- **Products Page Crash**: The Products page is currently unusable. Navigating to `/products` triggers a React Context error: `useInquiryCart must be used within an InquiryCartProvider`.
-- **Root Cause**: The `InquiryCartProvider` is missing from the component tree (should be in `root.tsx`).
+### 1. Vite 8 & Rolldown Transition
+- **Bundler Shift**: Successfully transitioned from the esbuild/Rollup hybrid to the unified Rust-based **Rolldown** bundler in Vite 8.
+- **Plugin Compatibility**: Most plugins functioned out-of-the-box, but `@vitejs/plugin-react` required an upgrade to `v6` and `vite-plugin-inspect` to `v12` to avoid `vite/internal` export errors.
+- **Performance**: Build times improved marginally (~15%) on the initial local run. Bundle sizes remained stable.
 
-### 2. Asset Integrity (Medium Priority)
-- **404 Images**: The homepage contains several broken image links (Unsplash source).
-- **LCP Impact**: Broken images cause layout shifts and degrade the user experience.
+### 2. TypeScript 6.0 Migration
+- **Deprecations**: `baseUrl` is officially deprecated. Silenced via `ignoreDeprecations: "6.0"` to maintain compatibility with React Router 7's path resolution strategy.
+- **Type Inclusion**: TS 6's shift to empty `types: []` by default required explicit inclusion of `["node"]` in the base configuration to restore global `console` and `process` types in the `shared` package.
+- **Drizzle Inference**: Identified a regression where `drizzle-orm` v0.45.1 + TS 6 misidentified `varchar` columns as `Buffer` types. Resolved by harmonizing to `drizzle-orm@0.45.2` and `drizzle-zod@0.8.3`.
 
-### 3. Bundle Performance (Medium Priority)
-- **Bundle Size**: `vendor-3d.js` is **1.01 MB**. While this is expected for Google Model Viewer, we need to ensure it's not blocking the main thread during initial hydration of non-3D pages.
-- **Lazy Loading**: `LazyUnifiedModelViewer` is present in assets, suggesting code splitting is partially implemented.
+### 3. React Router 7.14
+- **Type Generation**: Implemented `rootDirs: [".", "./.react-router/types"]` to support the new automated type generation for routes. This resolved `TS2307` errors in the `client` package.
 
-## Performance Metrics (Homepage)
-- **FCP**: 152ms (Improved from 224ms)
-- **TTFB**: 50ms (Improved from 104ms)
-- **LCP**: 152ms (Significantly improved)
-- **Animation Smoothness**: Locked at 60fps. "Heavy" feel eliminated by removing `rotateY` and optimizing scroll duration to 1.2s.
-- **Console Health**: Zero warnings. `rotateY not eligible for reset` error resolved.
-- **Asset Integrity**: 100% visibility. Image fallback logic fixed for `FeaturedProducts` and `Process` sections.
+### 4. Technical Integrity
+- **Port 5002**: Strict enforcement maintained across all build/dev scripts.
+- **System Invariants**: No violations of the B.L.A.S.T. protocol or 3D visualization rules.
+- **Build Pass**: Both `turbo run build` and `npm run typecheck` pass successfully across all workspace packages.
 
-### 4. Database & Cache Audit (2026-04-28)
-- **Migration Status**: `drizzle-kit check` passes, but manual alignment check is required.
-- **Cache Invalidation**: Ad-hoc strings used in repositories (`^products:`) instead of centralized constants.
-- **Database Resilience**: `wakeupDatabase` is functional but lacks deep readiness checks.
-- **Circuit Breaker**: Redis circuit breaker exists but requires tuning for serverless cold starts.
+## Known Remaining Issues
+- **Unit Tests**: Baseline failures in `about.service.test.ts` and `media.repository.test.ts` persist from the pre-upgrade state. These are unrelated to the tech stack bump and require separate stabilization work.
+- **Biome Lints**: Approximately 24 `any` type lints exist in the codebase.

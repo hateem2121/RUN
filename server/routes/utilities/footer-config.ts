@@ -201,7 +201,7 @@ router.patch("/admin/footer", authService.requireAdmin, async (req, res) => {
   const normalizedData: Record<string, unknown> = { ...validatedData };
 
   if (validatedData.navigationColumns) {
-    normalizedData.navigationColumns = (validatedData.navigationColumns as NavColumn[]).map(
+    normalizedData.navigationColumns = (validatedData.navigationColumns as unknown as NavColumn[]).map(
       (col) => ({
         title: col.title,
         links:
@@ -215,7 +215,7 @@ router.patch("/admin/footer", authService.requireAdmin, async (req, res) => {
   }
 
   if (validatedData.socialLinks) {
-    normalizedData.socialLinks = (validatedData.socialLinks as SocialLink[]).map((social) => ({
+    normalizedData.socialLinks = (validatedData.socialLinks as unknown as SocialLink[]).map((social) => ({
       name: social.name || social.platform,
       icon: social.icon,
       href: social.href || social.url,
@@ -224,7 +224,7 @@ router.patch("/admin/footer", authService.requireAdmin, async (req, res) => {
   }
 
   if (validatedData.legalLinks) {
-    normalizedData.legalLinks = (validatedData.legalLinks as LegalLink[]).map((link) => ({
+    normalizedData.legalLinks = (validatedData.legalLinks as unknown as LegalLink[]).map((link) => ({
       label: link.label,
       href: link.href || link.url,
     }));

@@ -31,14 +31,12 @@ Navigate to [http://localhost:5002](http://localhost:5002).
 
 - **Monorepo**: Powered by npm workspaces (`client/`, `server/`, `shared/`).
 - **SSOT**: `overview.md` for versions and `core/tech-stack.md` for architecture.
-- **Frontend**: React 19 (no `forwardRef`), Vite 7, Tailwind V4.
-- **Backend**: Express 5 (async handlers), Drizzle ORM.
-- **3D**: `@google/model-viewer` ONLY. No R3F/Drei.
-
-## 4. Operational Protocols
-
-- **Planning**: Always create an `implementation_plan.md` for complex tasks.
-- **Port 5002**: Never deviate from Port 5002 for any service or configuration.
+- **Frontend**: React 19 (no `forwardRef`), Vite 8 (Rolldown), Tailwind v4.2, TypeScript 6.
+- **Backend**: Express 5.2 (Async native), Node.js v24.15+, Neon Serverless Postgres.
+- **3D**: Google Model Viewer ONLY.
+- **Styling**: Tailwind v4 Oxide Engine (no arbitrary values).
+- **Tooling**: Biome (Linter), Vitest (Unit), Playwright (E2E), Turbo (Monorepo).
+- **Port**: **5002** (Strict enforcement).r deviate from Port 5002 for any service or configuration.
 - **Verification**: Run `npm run verify:tech-integrity` before any commit.
 - **Coding Standards**: See `.agent/rules/code-standards-patterns.md`.
 
