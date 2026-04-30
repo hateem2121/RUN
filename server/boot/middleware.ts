@@ -35,6 +35,7 @@ export async function setupMiddleware(app: Express) {
           "frame-src": ["'self'", "*.google.com"],
           "connect-src": ["'self'", "*.google.com", "*.gstatic.com", "vitals.vercel-insights.com"],
           "img-src": ["'self'", "data:", "*.google.com", "*.gstatic.com", "https://*"],
+          "font-src": ["'self'", "https:", "data:", "http://localhost:5002", "http://127.0.0.1:5002"],
         },
       },
       crossOriginEmbedderPolicy: false, // Required for some 3D/Media elements

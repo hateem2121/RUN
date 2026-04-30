@@ -19,7 +19,6 @@ import { PublicCTASection } from "@/components/public/manufacturing/PublicCTASec
 import { PublicHeroSection } from "@/components/public/manufacturing/PublicHeroSection";
 import { PublicQualitySection } from "@/components/public/manufacturing/PublicQualitySection";
 import { MarqueeStrip } from "@/components/ui/marquee-strip";
-import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/manufacturing";
 
@@ -216,9 +215,6 @@ export default function Manufacturing() {
 }
 
 function ManufacturingInner() {
-  // Initialize smooth scroll (Locomotive v5)
-  useSmoothScroll();
-
   // Standardized data fetching using optimized hooks
   const { data: heroData, isPending: isHeroLoading } = useQuery<ManufacturingHero>({
     queryKey: ["/api/manufacturing-hero"],

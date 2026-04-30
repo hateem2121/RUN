@@ -1,13 +1,13 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { useGSAP } from "@gsap/react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { isRouteErrorResponse, useRouteError } from "react-router";
 import { Hero } from "@/components/homepage/Hero";
 import { Preloader } from "@/components/homepage/Preloader";
 import CustomCursor from "@/components/ui/CustomCursor";
 import { useHomepageData } from "@/hooks/use-homepage-data";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 
 // Lazy Load Heavy Components (Below Fold)
 const Categories = lazy(() =>
@@ -16,7 +16,6 @@ const Categories = lazy(() =>
 const FeaturedProducts = lazy(() =>
   import("@/components/homepage/FeaturedProducts").then((m) => ({ default: m.FeaturedProducts })),
 );
-// Hero moved to static import
 const Process = lazy(() =>
   import("@/components/homepage/Process").then((m) => ({ default: m.Process })),
 );
@@ -94,46 +93,45 @@ export default function Index() {
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Optimization: use quickTo for higher performance updates than gsap.set in a ticker
-  // We'll initialize these inside an effect to ensure refs are ready
   const xToHero = useRef<((val: number) => void) | null>(null);
   const xToContent = useRef<((val: number) => void) | null>(null);
 
-  useEffect(() => {
-    if (isMobile) return;
-
-    if (heroRef.current) {
-      xToHero.current = gsap.quickTo(heroRef.current, "skewY", { duration: 0.4, ease: "power3" });
-    }
-    if (contentRef.current) {
-      xToContent.current = gsap.quickTo(contentRef.current, "skewY", {
-        duration: 0.4,
-        ease: "power3",
-      });
-    }
-  }, [isMobile]);
-
-  // Use the unified smooth scroll hook with the kinetic skew effect
-  const handleScroll = useCallback(
-    ({ velocity }: { velocity: number }) => {
+  // Use ScrollTrigger for the kinetic skew effect instead of direct scroll instance events
+  // This is more robust and avoids type issues with LocomotiveScroll
+  useGSAP(
+    () => {
       if (isMobile) return;
 
-      // Clamp velocity
-      const targetSkew = Math.min(Math.max(velocity * 0.08, -5), 5);
+      if (heroRef.current) {
+        xToHero.current = gsap.quickTo(heroRef.current, "skewY", { duration: 0.4, ease: "power3" });
+      }
+      if (contentRef.current) {
+        xToContent.current = gsap.quickTo(contentRef.current, "skewY", {
+          duration: 0.4,
+          ease: "power3",
+        });
+      }
 
-      // Update via quickTo for smoother, more efficient transforms
-      xToHero.current?.(targetSkew);
-      xToContent.current?.(targetSkew);
+      ScrollTrigger.create({
+        onUpdate: (self) => {
+          // self.getVelocity() returns pixels per second
+          // We convert it to a small skew angle
+          const velocity = self.getVelocity();
+          const targetSkew = Math.min(Math.max(velocity * 0.005, -5), 5);
+
+          xToHero.current?.(targetSkew);
+          xToContent.current?.(targetSkew);
+
+          // Return to 0 when scrolling stops
+          if (Math.abs(velocity) < 1) {
+            xToHero.current?.(0);
+            xToContent.current?.(0);
+          }
+        },
+      });
     },
-    [isMobile],
+    { dependencies: [isMobile], scope: heroRef },
   );
-
-  useSmoothScroll({
-    duration: 1.2, // Reduced from 1.5 for better responsiveness
-    touchMultiplier: 2.5,
-    onScroll: handleScroll,
-  });
-
-  // No longer need the manual ticker, quickTo handles the animation loop internally
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
@@ -145,11 +143,6 @@ export default function Index() {
         <div ref={heroRef} className="origin-top will-change-transform">
           <Hero />
         </div>
-
-        {/* 
-            Performance Optimization: Independent Suspense Boundaries 
-            Prevents "Waterfall Pop-in" and cumulative layout shift (CLS).
-        */}
 
         {/* Slogans Ticker: CMS-driven scrolling slogans */}
         <Suspense fallback={null}>

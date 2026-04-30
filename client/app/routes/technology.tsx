@@ -20,7 +20,6 @@ import { RoadAheadTimeline } from "@/components/technology/RoadAheadTimeline";
 import { TechnologyStackSection } from "@/components/technology/TechnologyStackSection";
 import { MarqueeStrip } from "@/components/technology/ui/MarqueeStrip";
 import { Typography } from "@/components/ui/typography";
-import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
 import { getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/technology";
@@ -271,9 +270,6 @@ function TechnologyInner() {
       ),
     [hero, innovations, equipment, research, roadmap, cta],
   );
-
-  // Initialize smooth scroll (Locomotive v5) via unified hook
-  useSmoothScroll();
 
   React.useEffect(() => {
     document.documentElement.classList.add("technology-page");

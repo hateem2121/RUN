@@ -1,4 +1,5 @@
 import { Globe, Leaf, ShieldCheck, Zap } from "lucide-react";
+import { memo } from "react";
 import type React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
@@ -18,7 +19,7 @@ interface ValuesCardProps {
   image: string;
 }
 
-const ValuesCard: React.FC<ValuesCardProps> = ({
+const ValuesCard: React.FC<ValuesCardProps> = memo(({
   title,
   subtitle,
   icon: Icon,
@@ -84,7 +85,7 @@ const ValuesCard: React.FC<ValuesCardProps> = ({
       </CardContent>
     </Card>
   );
-};
+});
 
 export const Values: React.FC = () => {
   const { setCursor, resetCursor } = useCursorStore();

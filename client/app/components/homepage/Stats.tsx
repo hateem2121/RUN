@@ -20,40 +20,35 @@ const ScrambleNumber: React.FC<{ value: string }> = ({ value }) => {
         return;
       }
 
-      let intervalId: ReturnType<typeof setInterval> | null = null;
+      // Drive the scramble effect via GSAP instead of setInterval
+      // This ensures it runs in the same frame budget as the scroll/animation loop.
+      const scrambleProxy = { progress: 0 };
+      const totalIterations = value.length;
 
-      const runScramble = () => {
-        let iterations = 0;
-        if (intervalId) clearInterval(intervalId);
-
-        intervalId = setInterval(() => {
-          setDisplayValue((prev) =>
-            prev
-              .split("")
-              .map((_letter, index) => {
-                if (index < iterations) return value[index];
-                return chars[Math.floor(Math.random() * chars.length)];
-              })
-              .join(""),
-          );
-
-          if (iterations >= value.length) {
-            if (intervalId) clearInterval(intervalId);
-            setDisplayValue(value);
-          }
-          iterations += 1 / 3;
-        }, 50);
-      };
-
-      ScrollTrigger.create({
-        trigger: elementRef.current,
-        start: "top 90%",
-        onEnter: () => runScramble(),
+      gsap.to(scrambleProxy, {
+        progress: 1,
+        duration: 1.5,
+        ease: "none",
+        scrollTrigger: {
+          trigger: elementRef.current,
+          start: "top 90%",
+          once: true,
+        },
+        onUpdate: () => {
+          const iterations = scrambleProxy.progress * totalIterations;
+          const nextValue = value
+            .split("")
+            .map((char, index) => {
+              if (index < iterations) return char;
+              return chars[Math.floor(Math.random() * chars.length)];
+            })
+            .join("");
+          setDisplayValue(nextValue);
+        },
+        onComplete: () => {
+          setDisplayValue(value);
+        },
       });
-
-      return () => {
-        if (intervalId) clearInterval(intervalId);
-      };
     },
     { dependencies: [value, prefersReducedMotion], scope: elementRef },
   );

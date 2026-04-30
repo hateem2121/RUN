@@ -31,3 +31,7 @@
 ## 6. Audits
 - [x] Homepage + CMS full-stack audit → docs/audits/homepage-cms-audit-report.md
 - [x] Homepage + CMS Stabilization Sprint — resolve audit findings HCA-001 through HCA-010
+
+## 7. Performance & Smoothness Audit (Diagnosis Phase)
+- [x] Homepage Smoothness Investigation → docs/audits/homepage-smoothness-report.md
+- [x] Homepage smoothness fix sprint — HSR-001 through HSR-007

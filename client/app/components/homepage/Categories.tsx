@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
 import { useCursorStore } from "@/stores/useCursorStore";
@@ -9,6 +9,37 @@ import type { CategoryItem } from "./types";
 interface CategoriesProps {
   data: CategoryItem[] | undefined;
 }
+
+const CategoryItem: React.FC<{
+  cat: CategoryItem;
+  uniqueIndex: string;
+  isHovered: boolean;
+  isBlurred: boolean;
+  isMobile: boolean;
+  onMouseEnter: (index: string, image: string) => void;
+  onMouseLeave: () => void;
+}> = memo(({ cat, uniqueIndex, isHovered, isBlurred, isMobile, onMouseEnter, onMouseLeave }) => {
+  return (
+    <div
+      role="listitem"
+      tabIndex={0}
+      className={cn(
+        "group relative px-8 py-4 transition-all duration-500 ease-out md:px-16",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime/50 rounded-xl",
+        isBlurred ? "opacity-20 blur-[2px]" : "blur-0 opacity-100",
+      )}
+      onMouseEnter={() => onMouseEnter(uniqueIndex, cat.image)}
+      onMouseLeave={onMouseLeave}
+      onFocus={() => onMouseEnter(uniqueIndex, cat.image)}
+      onBlur={onMouseLeave}
+    >
+      <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-foreground group-focus:text-foreground md:text-[10vw]">
+        {cat.name}{" "}
+        <span className="text-brand-lime inline-block align-top text-[2vw]">●</span>
+      </h2>
+    </div>
+  );
+});
 
 export const Categories: React.FC<CategoriesProps> = ({ data }) => {
   const { setCursor, resetCursor } = useCursorStore();
@@ -26,6 +57,18 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
     if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
+
+  const handleMouseEnter = (index: string, image: string) => {
+    setHoveredIndex(index);
+    if (!isMobile) {
+      setCursor("view", image);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    resetCursor();
+    setHoveredIndex(null);
+  };
 
   return (
     <section
@@ -51,46 +94,17 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
               <div key={`loop-${loop}`} aria-hidden={isLoopHidden} className="flex" role="list">
                 {(data || CATEGORIES).map((cat, index) => {
                   const uniqueIndex = `${loop}-${index}`;
-                  const isHovered = hoveredIndex === uniqueIndex;
-                  const isAnyHovered = hoveredIndex !== null;
-                  const isBlurred = isAnyHovered && !isHovered;
-
                   return (
-                    <div
+                    <CategoryItem
                       key={`${cat.id}-${uniqueIndex}`}
-                      role="listitem"
-                      tabIndex={0}
-                      className={cn(
-                        "group relative px-8 py-4 transition-all duration-500 ease-out md:px-16",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime/50 rounded-xl",
-                        isBlurred ? "opacity-20 blur-[2px]" : "blur-0 opacity-100",
-                      )}
-                      onMouseEnter={() => {
-                        setHoveredIndex(uniqueIndex);
-                        if (!isMobile) {
-                          setCursor("view", cat.image);
-                        }
-                      }}
-                      onMouseLeave={() => {
-                        resetCursor();
-                        setHoveredIndex(null);
-                      }}
-                      onFocus={() => {
-                        setHoveredIndex(uniqueIndex);
-                        if (!isMobile) {
-                          setCursor("view", cat.image);
-                        }
-                      }}
-                      onBlur={() => {
-                        resetCursor();
-                        setHoveredIndex(null);
-                      }}
-                    >
-                      <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-foreground group-focus:text-foreground md:text-[10vw]">
-                        {cat.name}{" "}
-                        <span className="text-brand-lime inline-block align-top text-[2vw]">●</span>
-                      </h2>
-                    </div>
+                      cat={cat}
+                      uniqueIndex={uniqueIndex}
+                      isHovered={hoveredIndex === uniqueIndex}
+                      isBlurred={hoveredIndex !== null && hoveredIndex !== uniqueIndex}
+                      isMobile={!!isMobile}
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
+                    />
                   );
                 })}
               </div>

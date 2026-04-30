@@ -137,7 +137,7 @@ html.technology-page header span.rounded-full {
 
 /* Stabilized CMS Utilities (Arbitrary Value Migration) */
 @utility blur-hero-conic {
-  filter: blur(100px);
+  filter: blur(40px);
 }
 @utility bg-hero-dots-size {
   background-size: 20px 20px;

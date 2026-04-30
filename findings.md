@@ -45,3 +45,23 @@
   - Addressed missing dependencies and TS version mismatches in documentation (`FULL_SYSTEM_CONTEXT.json`).
   - Executed `npm run check` (Biome pass) and `npm run build` with zero errors.
   - Achieved `npm run verify:tech-integrity` exit 0 (100% compliance).
+
+## Homepage Smoothness Investigation [2026-04-30]
+- **Status**: Diagnosis Completed (Read-only).
+- **Core Diagnosis**: 
+  - Identified critical lack of `gsap.ticker` integration with `LocomotiveScroll` (Lenis).
+  - High GPU load from 100px blurs and conic gradients in Hero.
+  - Main thread contention from `setInterval` in Stats scramble logic.
+  - Layout shifts from lack of font preloading and backdrop-filters.
+- **Report**: Full details compiled in `docs/audits/homepage-smoothness-report.md`.
++
++## Homepage Smoothness Fix Sprint [2026-04-30]
++- **Status**: Completed & Verified.
++- **Key Remediation**:
++  - **HSR-001**: Unified scroll engine by syncing Lenis `raf` with `gsap.ticker`.
++  - **HSR-002**: Standardized programmatic scrolling via `scroll.scrollTo` to avoid engine conflicts.
++  - **HSR-003**: Reduced hero blur radius from 100px to 40px to alleviate GPU pressure.
++  - **HSR-005**: Refactored Stats scramble logic to run inside GSAP ticker instead of React `setInterval`.
++  - **HSR-006**: Implemented `React.memo` and `useCallback` in `Categories` and `Values` to minimize re-renders during hover interactions.
++  - **HSR-007**: Added `<link rel="preload">` for brand fonts in `root.tsx` to eliminate layout shift.
++- **Results**: Perceptibly smoother scroll experience, zero hydration errors, and stable 60fps hero rendering.

@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { useScroll } from "../../hooks/use-scroll";
 import { useCursorStore } from "@/stores/useCursorStore";
 import { FEATURED_PRODUCTS } from "./constants";
 import type { HomepageFeaturedSettings, ProductItem } from "./types";
@@ -18,6 +19,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const { setCursor, resetCursor } = useCursorStore();
+  const { scroll } = useScroll();
 
   useGSAP(
     () => {
@@ -56,7 +58,14 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
 
   const handleCatalogueClick = () => {
     const catalogueSection = document.getElementById("catalogue");
-    if (catalogueSection) {
+    if (catalogueSection && scroll) {
+      // Use Locomotive/Lenis scrollTo for synchronized movement
+      scroll.scrollTo(catalogueSection, {
+        duration: 1.2,
+        easing: (t: number) => Math.min(1, 1.001 - 2 ** (-10 * t)),
+      });
+    } else if (catalogueSection) {
+      // Fallback if scroll instance is not ready
       catalogueSection.scrollIntoView({ behavior: "smooth" });
     }
   };

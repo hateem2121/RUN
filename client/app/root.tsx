@@ -21,9 +21,24 @@ import "@/index.css";
 import { useEffect } from "react";
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
 import { reportWebVitals } from "@/lib/web-vitals";
+import { ScrollProvider } from "./hooks/use-scroll";
 
 // Load CSP nonce from server context
 export const links: LinksFunction = () => [
+  {
+    rel: "preload",
+    href: "/fonts/NeueStance-Bold.ttf",
+    as: "font",
+    type: "font/ttf",
+    crossOrigin: "anonymous",
+  },
+  {
+    rel: "preload",
+    href: "/fonts/NeueStance-Regular.ttf",
+    as: "font",
+    type: "font/ttf",
+    crossOrigin: "anonymous",
+  },
   {
     rel: "preconnect",
     href: "https://fonts.googleapis.com",
@@ -36,20 +51,6 @@ export const links: LinksFunction = () => [
   {
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap",
-  },
-  {
-    rel: "preload",
-    href: "/fonts/NeueStance-Regular.ttf",
-    as: "font",
-    type: "font/ttf",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "preload",
-    href: "/fonts/NeueStance-Bold.ttf",
-    as: "font",
-    type: "font/ttf",
-    crossOrigin: "anonymous",
   },
 ];
 
@@ -74,8 +75,6 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   const baseUrl = `${url.protocol}//${url.host}`;
 
   try {
-    // ... inside loader ...
-
     // Prefetch navigation items
     await queryClient.prefetchQuery({
       queryKey: [API_ROUTES.CONTENT.NAVIGATION],
@@ -149,17 +148,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <HelmetProvider>
             <QueryClientProvider client={queryClient}>
               <HydrationBoundary state={loaderData?.dehydratedState}>
-                <a
-                  href="#main-content"
-                  className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-max focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:shadow-lg focus:outline-none"
-                >
-                  Skip to main content
-                </a>
-                <FloatingDockHeader />
-                {children}
-                {mounted && <Toaster />}
-                <BackToTop />
-                <OfflineIndicator />
+                <ScrollProvider>
+                  <a
+                    href="#main-content"
+                    className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-max focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:shadow-lg focus:outline-none"
+                  >
+                    Skip to main content
+                  </a>
+                  <FloatingDockHeader />
+                  {children}
+                  {mounted && <Toaster />}
+                  <BackToTop />
+                  <OfflineIndicator />
+                </ScrollProvider>
               </HydrationBoundary>
             </QueryClientProvider>
           </HelmetProvider>

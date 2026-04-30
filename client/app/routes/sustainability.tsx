@@ -26,7 +26,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { MarqueeStrip } from "@/components/ui/marquee-strip";
 import { Typography } from "@/components/ui/typography";
-import { useSmoothScroll } from "@/hooks/use-smooth-scroll";
 import { apiRequest, batchFetchMediaContent, getQueryClient } from "@/lib/queryClient";
 import { getSustainabilityIcon } from "@/lib/sustainability-utils";
 import { cn } from "@/lib/utils";
@@ -266,9 +265,6 @@ export default function Sustainability() {
 
 function SustainabilityInner() {
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Initialize smooth scroll (Locomotive v5) via unified hook
-  useSmoothScroll();
 
   useGSAP(
     () => {
@@ -614,7 +610,6 @@ function SustainabilityInner() {
       </section>
 
       {/* ─── Marquee Strip ─── */}
-      {/* ─── Marquee Strip ─── */}
       <div className="relative w-full overflow-hidden bg-[color:var(--s-primary)]/10 py-4 backdrop-blur-sm border-b border-[color:var(--s-primary)]/20">
         <MarqueeStrip
           text="Organic Cotton • Recycled Polyester • Regenerative Agriculture • Biodegradable Fibers • Circular Economy •"
@@ -801,32 +796,32 @@ function SustainabilityInner() {
                 asChild
               >
                 <Link to={callToActionButtonLink}>
-                  {callToActionButtonText || "Start a Project"}
+                  {callToActionButtonText}
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="h-14 min-w-[200px] rounded-full border border-white/20 bg-black/20 px-8 text-lg font-bold text-[color:var(--s-text-head)] backdrop-blur-md transition hover:bg-white/10"
-                asChild
-              >
-                <Link to="/contact">Contact Sales</Link>
               </Button>
             </div>
           </div>
 
-          {/* Legal footer */}
-          <div className="flex flex-col justify-between border-t border-white/10 pt-8 text-sm text-[color:var(--s-text-muted)] md:flex-row">
-            <p>© {new Date().getFullYear()} RUN APPAREL (PVT) LTD. All rights reserved.</p>
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <Link to="/privacy" className="hover:text-[color:var(--s-primary)] transition-colors">
+          <div className="flex flex-col items-center justify-between gap-6 border-t border-[color:var(--s-border-card)] pt-12 md:flex-row">
+            <div className="flex items-center gap-6">
+              <img src="/logo.png" alt="RUN Logo" className="h-8 w-auto invert" />
+              <p className="text-sm text-[color:var(--s-text-muted)]">
+                © {new Date().getFullYear()} RUN APPAREL (PVT) LTD. All rights reserved.
+              </p>
+            </div>
+            <div className="flex gap-8">
+              <Link
+                to="/privacy"
+                className="text-sm text-[color:var(--s-text-muted)] transition hover:text-[color:var(--s-primary)]"
+              >
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="hover:text-[color:var(--s-primary)] transition-colors">
+              <Link
+                to="/terms"
+                className="text-sm text-[color:var(--s-text-muted)] transition hover:text-[color:var(--s-primary)]"
+              >
                 Terms of Service
-              </Link>
-              <Link to="/sitemap" className="hover:text-[color:var(--s-primary)] transition-colors">
-                Sitemap
               </Link>
             </div>
           </div>
@@ -838,27 +833,18 @@ function SustainabilityInner() {
 
 export function ErrorBoundary() {
   const error = useRouteError();
-  let message = "Oops! Something went wrong.";
-  let details = "An unexpected error occurred while loading this page.";
-
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "Content Not Found" : "Error";
-    details = error.statusText || details;
-  }
-
-  return (
-    <div className="flex bg-[color:var(--s-bg)] text-[color:var(--s-text-head)] min-h-[50vh] items-center justify-center p-4 text-center">
-      <div className="space-y-4">
-        <h1 className="text-2xl font-bold">{message}</h1>
-        <p className="text-[color:var(--s-text-muted)]">{details}</p>
-        <Button
-          asChild
-          variant="outline"
-          className="text-[color:var(--s-text-head)] border-[color:var(--s-border-card)] hover:bg-[color:var(--s-bg-card-hover)]"
-        >
-          <Link to="/">Return Home</Link>
-        </Button>
+    return (
+      <div className="flex h-screen items-center justify-center bg-black text-white">
+        <h1 className="text-4xl font-bold">
+          {error.status} {error.statusText}
+        </h1>
       </div>
+    );
+  }
+  return (
+    <div className="flex h-screen items-center justify-center bg-black text-white">
+      <h1 className="text-4xl font-bold">An unexpected error occurred.</h1>
     </div>
   );
 }

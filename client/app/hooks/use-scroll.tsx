@@ -1,7 +1,8 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import LocomotiveScroll from "locomotive-scroll";
-import { useEffect, useRef } from "react";
+import type React from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,22 +27,30 @@ interface SmoothScrollOptions {
   }) => void;
 }
 
+interface ScrollContextValue {
+  // Use any here to avoid fragile type issues with LocomotiveScroll v5/Lenis internal methods
+  scroll: any | null;
+}
+
+const ScrollContext = createContext<ScrollContextValue>({ scroll: null });
+
+export const useScroll = () => useContext(ScrollContext);
+
 /**
- * Hook to initialize Locomotive Scroll v5 (which uses Lenis)
- * and integrate it with GSAP ScrollTrigger.
- *
- * Handles React 19 double-invocations and ensures robust cleanup.
+ * Provider to make the scroll instance accessible to child components.
  */
-export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
-  const scrollRef = useRef<LocomotiveScroll | null>(null);
+export function ScrollProvider({
+  children,
+  options = {},
+}: { children: React.ReactNode; options?: SmoothScrollOptions }) {
+  const [scrollInstance, setScrollInstance] = useState<any | null>(null);
+  const scrollRef = useRef<any | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // Prevent multiple initializations in the same effect cycle (React 19)
     if (scrollRef.current) return;
 
-    // Add a class to html to signal smooth scroll is active (used for CSS overrides)
     document.documentElement.classList.add("has-scroll-smooth");
 
     const scrollConfig: Record<string, unknown> = {
@@ -57,6 +66,7 @@ export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
         easing: options.easing ?? ((t: number) => Math.min(1, 1.001 - 2 ** (-10 * t))),
         wrapper: options.wrapper ?? window,
         content: options.content ?? document.documentElement,
+        autoRaf: false,
       },
     };
 
@@ -65,11 +75,18 @@ export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
     }
 
     const scroll = new LocomotiveScroll(scrollConfig);
-
     scrollRef.current = scroll;
+    setScrollInstance(scroll);
 
-    // Ensure ScrollTrigger is aware of the new scroller
-    // v5 handles this mostly automatically, but a refresh is safe
+    const updateScroll = (time: number) => {
+      if (scroll && typeof (scroll as any).raf === "function") {
+        (scroll as any).raf(time * 1000);
+      }
+    };
+
+    gsap.ticker.add(updateScroll);
+    gsap.ticker.lagSmoothing(0);
+
     const refreshTimer = setTimeout(() => {
       ScrollTrigger.refresh();
     }, 100);
@@ -77,14 +94,18 @@ export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
     return () => {
       clearTimeout(refreshTimer);
       document.documentElement.classList.remove("has-scroll-smooth");
+      gsap.ticker.remove(updateScroll);
 
       if (scrollRef.current) {
         try {
-          scrollRef.current.destroy();
+          if (typeof scrollRef.current.destroy === "function") {
+            scrollRef.current.destroy();
+          }
         } catch (e) {
           console.warn("LocomotiveScroll destruction error handled:", e);
         }
         scrollRef.current = null;
+        setScrollInstance(null);
       }
     };
   }, [
@@ -101,4 +122,21 @@ export function useSmoothScroll(options: SmoothScrollOptions = {}): void {
     options.content,
     options.onScroll,
   ]);
+
+  return (
+    <ScrollContext.Provider value={{ scroll: scrollInstance }}>
+      <div data-scroll-container>{children}</div>
+    </ScrollContext.Provider>
+  );
+}
+
+/**
+ * Hook to initialize Locomotive Scroll v5 (which uses Lenis)
+ * and integrate it with GSAP ScrollTrigger.
+ * DEPRECATED: Use ScrollProvider and useScroll instead.
+ */
+export function useSmoothScroll(_options: SmoothScrollOptions = {}): void {
+  useEffect(() => {
+    console.warn("useSmoothScroll is deprecated. Use ScrollProvider instead.");
+  }, []);
 }
