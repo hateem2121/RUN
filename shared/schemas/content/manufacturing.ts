@@ -16,10 +16,8 @@ export const manufacturingHero = pgTable(
   "manufacturing_hero",
   {
     id: serial("id").primaryKey(),
-    title: varchar({ length: 255 }).notNull(),
-    subtitle: text(),
-    headline: varchar({ length: 255 }), // Frontend alias for title
-    subheadline: text(), // Frontend alias for subtitle
+    headline: varchar({ length: 255 }).notNull(),
+    subheadline: text(),
     description: text(),
     imageId: integer("image_id").references(() => mediaAssets.id, {
       onDelete: "set null",

@@ -1,25 +1,30 @@
 import { asc, eq, sql } from "drizzle-orm";
 import {
   type InsertManufacturingCapability,
+  type InsertManufacturingCaseStudy,
   type InsertManufacturingHero,
   type InsertManufacturingProcess,
   type InsertManufacturingQuality,
   type ManufacturingCapability,
+  type ManufacturingCaseStudy,
   type ManufacturingHero,
   type ManufacturingProcess,
   type ManufacturingQuality,
   manufacturingCapabilities,
+  manufacturingCaseStudies,
   manufacturingHero,
   manufacturingProcesses,
   manufacturingQualities,
 } from "../../../../../shared/index.js";
 import { db } from "../../../../db.js";
-import { emitCacheInvalidation } from "../../../cache/cache-events.js";
+import { CacheKeys } from "../../../cache/cache-keys.js";
+import { CacheOperations } from "../../../cache/cache-strategies.js";
 import { UnifiedCache } from "../../../cache/unified-cache.js";
 import { StorageSingleton } from "../../../storage-singleton.js";
 
 const unifiedCache = UnifiedCache.getInstance();
 const HOMEPAGE_CACHE_TTL = 3600; // 1 hour (in seconds)
+const CONTENT_CACHE_TTL = 3600; // 1 hour (in seconds)
 
 export class ManufacturingRepository {
   async getManufacturingHero(): Promise<ManufacturingHero | undefined> {
@@ -44,7 +49,7 @@ export class ManufacturingRepository {
       return StorageSingleton.getInstance().updateManufacturingHero(data);
     }
     const existing = await this.getManufacturingHero();
-    await unifiedCache.del("manufacturing:hero");
+    await unifiedCache.del(CacheKeys.manufacturing.hero());
 
     if (existing) {
       const [updated] = await db
@@ -53,7 +58,7 @@ export class ManufacturingRepository {
         .where(eq(manufacturingHero.id, existing.id))
         .returning();
       if (!updated) throw new Error("Failed to update manufacturing hero");
-      await emitCacheInvalidation("manufacturing:hero", "update");
+      await CacheOperations.invalidateManufacturing();
       return updated;
     } else {
       const [created] = await db
@@ -61,7 +66,7 @@ export class ManufacturingRepository {
         .values(data as unknown as InsertManufacturingHero)
         .returning();
       if (!created) throw new Error("Failed to create manufacturing hero");
-      await emitCacheInvalidation("manufacturing:hero", "create");
+      await CacheOperations.invalidateManufacturing();
       return created;
     }
   }
@@ -83,8 +88,7 @@ export class ManufacturingRepository {
       .returning();
 
     if (!created) throw new Error("Failed to create manufacturing capability");
-    await unifiedCache.del("manufacturing:capabilities:*");
-    await emitCacheInvalidation("manufacturing:capabilities", "create");
+    await CacheOperations.invalidateManufacturing();
     return created;
   }
 
@@ -122,7 +126,7 @@ export class ManufacturingRepository {
       if (!result) throw new Error(`updateManufacturingCapability returned undefined for id ${id}`);
       return result;
     }
-    await unifiedCache.del("manufacturing:capabilities:*");
+    await unifiedCache.invalidate(CacheKeys.manufacturing.capabilities());
     const [updated] = await db
       .update(manufacturingCapabilities)
       .set(data)
@@ -130,7 +134,7 @@ export class ManufacturingRepository {
       .returning();
 
     if (!updated) throw new Error(`Failed to update manufacturing capability with id ${id}`);
-    await emitCacheInvalidation("manufacturing:capabilities", "update");
+    await CacheOperations.invalidateManufacturing();
     return updated;
   }
 
@@ -138,11 +142,11 @@ export class ManufacturingRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().deleteManufacturingCapability(id);
     }
-    await unifiedCache.del("manufacturing:capabilities:*");
+    await unifiedCache.invalidate(CacheKeys.manufacturing.capabilities());
     const result = await db
       .delete(manufacturingCapabilities)
       .where(eq(manufacturingCapabilities.id, id));
-    await emitCacheInvalidation("manufacturing:capabilities", "delete");
+    await CacheOperations.invalidateManufacturing();
     return (result.rowCount ?? 0) > 0;
   }
 
@@ -150,7 +154,7 @@ export class ManufacturingRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderManufacturingCapabilities(orderedIds);
     }
-    await unifiedCache.del("manufacturing:capabilities:*");
+    await unifiedCache.invalidate(CacheKeys.manufacturing.capabilities());
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
         await tx
@@ -159,7 +163,7 @@ export class ManufacturingRepository {
           .where(eq(manufacturingCapabilities.id, orderedIds[i] as number));
       }
     });
-    await emitCacheInvalidation("manufacturing:capabilities", "update");
+    await CacheOperations.invalidateManufacturing();
   }
 
   async getManufacturingProcess(id: number): Promise<ManufacturingProcess | undefined> {
@@ -204,8 +208,7 @@ export class ManufacturingRepository {
       .returning();
 
     if (!created) throw new Error("Failed to create manufacturing process");
-    await unifiedCache.del("manufacturing:processes:*");
-    await emitCacheInvalidation("manufacturing:processes", "create");
+    await CacheOperations.invalidateManufacturing();
     return created;
   }
 
@@ -218,7 +221,7 @@ export class ManufacturingRepository {
       if (!result) throw new Error(`updateManufacturingProcess returned undefined for id ${id}`);
       return result;
     }
-    await unifiedCache.del("manufacturing:processes:*");
+    await unifiedCache.invalidate(CacheKeys.manufacturing.processes());
     const [updated] = await db
       .update(manufacturingProcesses)
       .set(data)
@@ -226,7 +229,7 @@ export class ManufacturingRepository {
       .returning();
 
     if (!updated) throw new Error(`Failed to update manufacturing process with id ${id}`);
-    await emitCacheInvalidation("manufacturing:processes", "update");
+    await CacheOperations.invalidateManufacturing();
     return updated;
   }
 
@@ -234,9 +237,9 @@ export class ManufacturingRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().deleteManufacturingProcess(id);
     }
-    await unifiedCache.del("manufacturing:processes:*");
+    await unifiedCache.invalidate(CacheKeys.manufacturing.processes());
     const result = await db.delete(manufacturingProcesses).where(eq(manufacturingProcesses.id, id));
-    await emitCacheInvalidation("manufacturing:processes", "delete");
+    await CacheOperations.invalidateManufacturing();
     return (result.rowCount ?? 0) > 0;
   }
 
@@ -244,7 +247,7 @@ export class ManufacturingRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderManufacturingProcesses(orderedIds);
     }
-    await unifiedCache.del("manufacturing:processes:*");
+    await unifiedCache.invalidate(CacheKeys.manufacturing.processes());
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
         await tx
@@ -253,7 +256,7 @@ export class ManufacturingRepository {
           .where(eq(manufacturingProcesses.id, orderedIds[i] as number));
       }
     });
-    await emitCacheInvalidation("manufacturing:processes", "update");
+    await CacheOperations.invalidateManufacturing();
   }
 
   async getManufacturingQuality(id: number): Promise<ManufacturingQuality | undefined> {
@@ -298,8 +301,7 @@ export class ManufacturingRepository {
       .returning();
 
     if (!created) throw new Error("Failed to create manufacturing quality");
-    await unifiedCache.del("manufacturing:qualities:*");
-    await emitCacheInvalidation("manufacturing:qualities", "create");
+    await CacheOperations.invalidateManufacturing();
     return created;
   }
 
@@ -312,7 +314,7 @@ export class ManufacturingRepository {
       if (!result) throw new Error(`updateManufacturingQuality returned undefined for id ${id}`);
       return result;
     }
-    await unifiedCache.del("manufacturing:qualities:*");
+    await unifiedCache.invalidate(CacheKeys.manufacturing.qualities());
     const [updated] = await db
       .update(manufacturingQualities)
       .set(data)
@@ -320,7 +322,7 @@ export class ManufacturingRepository {
       .returning();
 
     if (!updated) throw new Error(`Failed to update manufacturing quality with id ${id}`);
-    await emitCacheInvalidation("manufacturing:qualities", "update");
+    await CacheOperations.invalidateManufacturing();
     return updated;
   }
 
@@ -328,9 +330,9 @@ export class ManufacturingRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().deleteManufacturingQuality(id);
     }
-    await unifiedCache.del("manufacturing:qualities:*");
+    await unifiedCache.invalidate(CacheKeys.manufacturing.qualities());
     const result = await db.delete(manufacturingQualities).where(eq(manufacturingQualities.id, id));
-    await emitCacheInvalidation("manufacturing:qualities", "delete");
+    await CacheOperations.invalidateManufacturing();
     return (result.rowCount ?? 0) > 0;
   }
 
@@ -338,7 +340,7 @@ export class ManufacturingRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderManufacturingQualities(orderedIds);
     }
-    await unifiedCache.del("manufacturing:qualities:*");
+    await unifiedCache.invalidate(CacheKeys.manufacturing.qualities());
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
         await tx
@@ -347,7 +349,106 @@ export class ManufacturingRepository {
           .where(eq(manufacturingQualities.id, orderedIds[i] as number));
       }
     });
-    await emitCacheInvalidation("manufacturing:qualities", "update");
+    await CacheOperations.invalidateManufacturing();
+  }
+
+  // ============================================================================
+  // MANUFACTURING CASE STUDIES
+  // ============================================================================
+
+  async getManufacturingCaseStudy(id: number): Promise<ManufacturingCaseStudy | undefined> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getManufacturingCaseStudy(id);
+    }
+    const [caseStudy] = await db
+      .select()
+      .from(manufacturingCaseStudies)
+      .where(eq(manufacturingCaseStudies.id, id))
+      .limit(1);
+    return caseStudy ?? undefined;
+  }
+
+  async getManufacturingCaseStudies(includeInactive = false): Promise<ManufacturingCaseStudy[]> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getManufacturingCaseStudies(includeInactive);
+    }
+    let query = db.select().from(manufacturingCaseStudies).$dynamic();
+
+    if (!includeInactive) {
+      query = query.where(eq(manufacturingCaseStudies.isActive, true));
+    }
+
+    return query.orderBy(asc(manufacturingCaseStudies.sortOrder));
+  }
+
+  async createManufacturingCaseStudy(
+    data: InsertManufacturingCaseStudy,
+  ): Promise<ManufacturingCaseStudy> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().createManufacturingCaseStudy(data);
+    }
+    const maxOrder = await db
+      .select({ max: sql<number>`MAX(${manufacturingCaseStudies.sortOrder})` })
+      .from(manufacturingCaseStudies);
+    const newOrder = (Number(maxOrder[0]?.max) || 0) + 1;
+
+    const [created] = await db
+      .insert(manufacturingCaseStudies)
+      .values({ ...data, sortOrder: newOrder })
+      .returning();
+
+    if (!created) throw new Error("Failed to create manufacturing case study");
+    await CacheOperations.invalidateManufacturing();
+    return created;
+  }
+
+  async updateManufacturingCaseStudy(
+    id: number,
+    data: Partial<InsertManufacturingCaseStudy>,
+  ): Promise<ManufacturingCaseStudy> {
+    if (StorageSingleton.hasInstance()) {
+      const result = await StorageSingleton.getInstance().updateManufacturingCaseStudy(id, data);
+      if (!result) throw new Error(`updateManufacturingCaseStudy returned undefined for id ${id}`);
+      return result;
+    }
+    await unifiedCache.invalidate(CacheKeys.manufacturing.caseStudies());
+    const [updated] = await db
+      .update(manufacturingCaseStudies)
+      .set(data)
+      .where(eq(manufacturingCaseStudies.id, id))
+      .returning();
+
+    if (!updated) throw new Error(`Failed to update manufacturing case study with id ${id}`);
+    await CacheOperations.invalidateManufacturing();
+    return updated;
+  }
+
+  async deleteManufacturingCaseStudy(id: number): Promise<boolean> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().deleteManufacturingCaseStudy(id);
+    }
+    await unifiedCache.invalidate(CacheKeys.manufacturing.caseStudies());
+    const result = await db
+      .delete(manufacturingCaseStudies)
+      .where(eq(manufacturingCaseStudies.id, id));
+    await CacheOperations.invalidateManufacturing();
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async reorderManufacturingCaseStudies(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderManufacturingCaseStudies(orderedIds);
+    }
+    await unifiedCache.invalidate(CacheKeys.manufacturing.caseStudies());
+    await db.transaction(async (tx) => {
+      for (let i = 0; i < orderedIds.length; i++) {
+        await tx
+          .update(manufacturingCaseStudies)
+          .set({ sortOrder: i + 1 })
+          .where(eq(manufacturingCaseStudies.id, orderedIds[i] as number));
+      }
+    });
+    await CacheOperations.invalidateManufacturing();
   }
 }
 

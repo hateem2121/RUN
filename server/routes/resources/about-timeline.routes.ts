@@ -35,7 +35,7 @@ const reorderSchema = z.object({
   entries: z.array(
     z.object({
       id: z.number().int().positive(),
-      position: z.number().int().min(0),
+      sortOrder: z.number().int().min(0),
     }),
   ),
 });
@@ -45,10 +45,21 @@ const reorderSchema = z.object({
  * Retrieve all timeline entries
  */
 router.get("/", async (_req, res) => {
-  const entries = await withTimeout(aboutService.getTimeline(), 10000, "Get timeline entries");
+  const result = await withTimeout(aboutService.getTimeline(), 10000, "Get timeline entries");
 
-  logger.info(`[AboutTimeline] Retrieved ${entries.length} entries`);
-  return res.json(entries);
+  return result.match(
+    (entries) => {
+      logger.info(`[AboutTimeline] Retrieved ${entries.length} entries`);
+      return res.json(entries);
+    },
+    (error) => {
+      logger.error("[AboutTimeline] Fetch failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -58,14 +69,24 @@ router.get("/", async (_req, res) => {
 router.get("/:id", async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
-  const entry = await withTimeout(aboutService.getTimelineEntry(id), 10000, "Get timeline entry");
+  const result = await withTimeout(aboutService.getTimelineEntry(id), 10000, "Get timeline entry");
 
-  if (!entry) {
-    return res.status(404).json({ error: "Timeline entry not found" });
-  }
-
-  logger.info(`[AboutTimeline] Retrieved entry ${id}`);
-  return res.json(entry);
+  return result.match(
+    (entry) => {
+      if (!entry) {
+        return res.status(404).json({ error: "Timeline entry not found" });
+      }
+      logger.info(`[AboutTimeline] Retrieved entry ${id}`);
+      return res.json(entry);
+    },
+    (error) => {
+      logger.error("[AboutTimeline] Fetch failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -83,19 +104,25 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     });
   }
 
-  const newEntry = await withTimeout(
+  const result = await withTimeout(
     aboutService.createTimelineEntry(removeUndefined(validation.data)),
     10000,
     "Create timeline entry",
   );
 
-  if (!newEntry) {
-    throw new Error("Failed to create timeline entry");
-  }
-
-  // Invalidation handled by service layer
-  logger.info(`[AboutTimeline] Created entry ${newEntry.id}`);
-  return res.status(201).json(newEntry);
+  return result.match(
+    (newEntry) => {
+      logger.info(`[AboutTimeline] Created entry ${newEntry.id}`);
+      return res.status(201).json(newEntry);
+    },
+    (error) => {
+      logger.error("[AboutTimeline] Create failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -114,19 +141,25 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     });
   }
 
-  const updatedEntry = await withTimeout(
+  const result = await withTimeout(
     aboutService.updateTimelineEntry(id, removeUndefined(validation.data)),
     10000,
     "Update timeline entry",
   );
 
-  if (!updatedEntry) {
-    return res.status(404).json({ error: "Timeline entry not found" });
-  }
-
-  // Invalidation handled by service layer
-  logger.info(`[AboutTimeline] Updated entry ${id}`);
-  return res.json(updatedEntry);
+  return result.match(
+    (updatedEntry) => {
+      logger.info(`[AboutTimeline] Updated entry ${id}`);
+      return res.json(updatedEntry);
+    },
+    (error) => {
+      logger.error("[AboutTimeline] Update failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -136,19 +169,25 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
 router.delete("/:id", authService.requireAdmin, async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
-  const deleted = await withTimeout(
+  const result = await withTimeout(
     aboutService.deleteTimelineEntry(id),
     10000,
     "Delete timeline entry",
   );
 
-  if (!deleted) {
-    return res.status(404).json({ error: "Timeline entry not found" });
-  }
-
-  // Invalidation handled by service layer
-  logger.info(`[AboutTimeline] Deleted entry ${id}`);
-  return res.status(204).send();
+  return result.match(
+    () => {
+      logger.info(`[AboutTimeline] Deleted entry ${id}`);
+      return res.status(204).send();
+    },
+    (error) => {
+      logger.error("[AboutTimeline] Delete failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -166,16 +205,28 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     });
   }
 
-  // Update positions for each entry
-  const updates = await Promise.all(
-    removeUndefined(validation.data).entries.map(({ id, position }) =>
-      aboutService.updateTimelineEntry(id, { sortOrder: position }),
-    ),
+  // Extract ordered IDs
+  const orderedIds = validation.data.entries.map((e) => e.id);
+
+  const result = await withTimeout(
+    aboutService.reorderTimelineEntries(orderedIds),
+    15000,
+    "Reorder timeline entries",
   );
 
-  // Invalidation handled by service layer
-  logger.info(`[AboutTimeline] Reordered ${updates.length} entries`);
-  return res.json({ success: true, updated: updates.length });
+  return result.match(
+    () => {
+      logger.info(`[AboutTimeline] Reordered ${orderedIds.length} entries`);
+      return res.json({ success: true, updated: orderedIds.length });
+    },
+    (error) => {
+      logger.error("[AboutTimeline] Reorder failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 export default router;

@@ -159,11 +159,20 @@ export const NavigationIcon = memo(function NavigationIcon({
     );
   }
 
-  const commonClasses = `${className} text-neutral-500 dark:text-neutral-300`;
   const normalizedInput = fallbackIcon?.toLowerCase().trim() || "home";
-
-  // Try to find icon in map
   let IconComponent = icons[normalizedInput as keyof typeof icons] || Home;
+
+  // Apply specific colors based on icon type/name
+  let iconColorClass = "text-neutral-500 dark:text-neutral-300";
+  if (normalizedInput === "manufacturing") {
+    iconColorClass = "text-[#D4A853]";
+  } else if (normalizedInput === "technology") {
+    iconColorClass = "text-[#00D4FF]";
+  } else if (normalizedInput === "sustainability") {
+    iconColorClass = "text-[#00C97B]";
+  }
+
+  const commonClasses = `${className} ${iconColorClass}`;
 
   // Final check for prefixed input
   if (!icons[normalizedInput as keyof typeof icons] && normalizedInput.startsWith("icon")) {

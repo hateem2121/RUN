@@ -36,7 +36,7 @@ const reorderSchema = z.object({
   entries: z.array(
     z.object({
       id: z.number().int().positive(),
-      position: z.number().int().min(0),
+      sortOrder: z.number().int().min(0),
     }),
   ),
 });
@@ -46,10 +46,21 @@ const reorderSchema = z.object({
  * Retrieve all map locations
  */
 router.get("/", async (_req, res) => {
-  const locations = await withTimeout(aboutService.getLocations(), 10000, "Get map locations");
+  const result = await withTimeout(aboutService.getLocations(), 10000, "Get map locations");
 
-  logger.info(`[AboutLocations] Retrieved ${locations.length} locations`);
-  return res.json(locations);
+  return result.match(
+    (locations) => {
+      logger.info(`[AboutLocations] Retrieved ${locations.length} locations`);
+      return res.json(locations);
+    },
+    (error) => {
+      logger.error("[AboutLocations] Fetch failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -59,14 +70,24 @@ router.get("/", async (_req, res) => {
 router.get("/:id", async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
-  const location = await withTimeout(aboutService.getLocation(id), 10000, "Get map location");
+  const result = await withTimeout(aboutService.getLocation(id), 10000, "Get map location");
 
-  if (!location) {
-    return res.status(404).json({ error: "Location not found" });
-  }
-
-  logger.info(`[AboutLocations] Retrieved location ${id}`);
-  return res.json(location);
+  return result.match(
+    (location) => {
+      if (!location) {
+        return res.status(404).json({ error: "Location not found" });
+      }
+      logger.info(`[AboutLocations] Retrieved location ${id}`);
+      return res.json(location);
+    },
+    (error) => {
+      logger.error("[AboutLocations] Fetch failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -90,19 +111,21 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     longitude: String(validation.data.longitude),
   } as InsertAboutMapLocation;
 
-  const newLocation = await withTimeout(
-    aboutService.createLocation(data),
-    10000,
-    "Create map location",
+  const result = await withTimeout(aboutService.createLocation(data), 10000, "Create map location");
+
+  return result.match(
+    (newLocation) => {
+      logger.info(`[AboutLocations] Created location ${newLocation.id}`);
+      return res.status(201).json(newLocation);
+    },
+    (error) => {
+      logger.error("[AboutLocations] Create failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
   );
-
-  if (!newLocation) {
-    throw new Error("Failed to create location");
-  }
-
-  // Invalidation handled by service layer
-  logger.info(`[AboutLocations] Created location ${newLocation.id}`);
-  return res.status(201).json(newLocation);
 });
 
 /**
@@ -129,19 +152,25 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     data.longitude = String(data.longitude);
   }
 
-  const updatedLocation = await withTimeout(
+  const result = await withTimeout(
     aboutService.updateLocation(id, data),
     10000,
     "Update map location",
   );
 
-  if (!updatedLocation) {
-    return res.status(404).json({ error: "Location not found" });
-  }
-
-  // Invalidation handled by service layer
-  logger.info(`[AboutLocations] Updated location ${id}`);
-  return res.json(updatedLocation);
+  return result.match(
+    (updatedLocation) => {
+      logger.info(`[AboutLocations] Updated location ${id}`);
+      return res.json(updatedLocation);
+    },
+    (error) => {
+      logger.error("[AboutLocations] Update failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -151,15 +180,21 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
 router.delete("/:id", authService.requireAdmin, async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
-  const deleted = await withTimeout(aboutService.deleteLocation(id), 10000, "Delete map location");
+  const result = await withTimeout(aboutService.deleteLocation(id), 10000, "Delete map location");
 
-  if (!deleted) {
-    return res.status(404).json({ error: "Location not found" });
-  }
-
-  // Invalidation handled by service layer
-  logger.info(`[AboutLocations] Deleted location ${id}`);
-  return res.status(204).send();
+  return result.match(
+    () => {
+      logger.info(`[AboutLocations] Deleted location ${id}`);
+      return res.status(204).send();
+    },
+    (error) => {
+      logger.error("[AboutLocations] Delete failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -177,17 +212,28 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     });
   }
 
-  // Update positions
-  // Note: Implicitly relies on sortOrder existing or being ignored if missing
-  const updates = await Promise.all(
-    validation.data.entries.map(({ id, position }) =>
-      aboutService.updateLocation(id, { sortOrder: position }),
-    ),
+  // Extract ordered IDs
+  const orderedIds = validation.data.entries.map((e) => e.id);
+
+  const result = await withTimeout(
+    aboutService.reorderLocations(orderedIds),
+    15000,
+    "Reorder about locations",
   );
 
-  // Invalidation handled by service layer
-  logger.info(`[AboutLocations] Reordered ${updates.length} locations`);
-  return res.json({ success: true, updated: updates.length });
+  return result.match(
+    () => {
+      logger.info(`[AboutLocations] Reordered ${orderedIds.length} locations`);
+      return res.json({ success: true, updated: orderedIds.length });
+    },
+    (error) => {
+      logger.error("[AboutLocations] Reorder failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 export default router;

@@ -1,7 +1,7 @@
 import type { ManufacturingHero, MediaAsset } from "@shared/index";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Image as ImageIcon, Layout, Play, Save } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useActionState, useEffect, useOptimistic, useState } from "react";
 import { MediaPickerModal } from "@/components/admin/shared/MediaPickerModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -106,59 +106,82 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
     }
   }, [hero]);
 
-  const updateHeroMutation = useMutation({
-    mutationFn: (data: Partial<HeroFormData>) => {
-      return apiRequest<ManufacturingHero>("/api/manufacturing-hero", {
-        method: "PATCH",
-        body: JSON.stringify(data),
-      });
-    },
-    onSuccess: (response) => {
-      if (response) {
-        setHeroData({
-          headline: response.headline || "",
-          subheadline: response.subheadline || "",
-          backgroundMediaId: response.backgroundMediaId || null,
-          videoId: response.videoId || null,
-          isActive: response.isActive ?? true,
-          ctaText: response.ctaText || "",
-          ctaLink: response.ctaLink || "",
-          bottomCtaTitle: response.bottomCtaTitle || "",
-          bottomCtaDescription: response.bottomCtaDescription || "",
-          bottomCtaText: response.bottomCtaText || "",
-          bottomCtaLink: response.bottomCtaLink || "",
-        });
-      }
+  const [optimisticHero, setOptimisticHero] = useOptimistic(
+    heroData,
+    (state, newData: Partial<HeroFormData>) => ({ ...state, ...newData }),
+  );
 
-      getQueryClient().invalidateQueries({ queryKey: ["/api/manufacturing-hero"] });
-      toast({
-        title: "Success",
-        description: "Hero section updated successfully",
-      });
+  const [_state, formAction, isPending] = useActionState(
+    async (_prevState: { success: boolean } | null, formData: FormData) => {
+      const data: Partial<HeroFormData> = {
+        headline: formData.get("headline") as string,
+        subheadline: formData.get("subheadline") as string,
+        ctaText: formData.get("ctaText") as string,
+        ctaLink: formData.get("ctaLink") as string,
+        bottomCtaTitle: formData.get("bottomCtaTitle") as string,
+        bottomCtaDescription: formData.get("bottomCtaDescription") as string,
+        bottomCtaText: formData.get("bottomCtaText") as string,
+        bottomCtaLink: formData.get("bottomCtaLink") as string,
+        isActive: formData.get("isActive") === "on",
+        backgroundMediaId: heroData.backgroundMediaId,
+        videoId: heroData.videoId,
+      };
+
+      try {
+        const response = await apiRequest<ManufacturingHero>("/api/manufacturing-hero", {
+          method: "PATCH",
+          body: JSON.stringify(data),
+        });
+
+        if (response) {
+          const updatedData = {
+            headline: response.headline || "",
+            subheadline: response.subheadline || "",
+            backgroundMediaId: response.backgroundMediaId || null,
+            videoId: response.videoId || null,
+            isActive: response.isActive ?? true,
+            ctaText: response.ctaText || "",
+            ctaLink: response.ctaLink || "",
+            bottomCtaTitle: response.bottomCtaTitle || "",
+            bottomCtaDescription: response.bottomCtaDescription || "",
+            bottomCtaText: response.bottomCtaText || "",
+            bottomCtaLink: response.bottomCtaLink || "",
+          };
+          setHeroData(updatedData);
+          getQueryClient().invalidateQueries({ queryKey: ["/api/manufacturing-hero"] });
+          toast({ title: "Success", description: "Hero section updated successfully" });
+        }
+        return { success: true };
+      } catch (_error) {
+        toast({
+          title: "Error",
+          description: "Failed to update hero section",
+          variant: "destructive",
+        });
+        return { success: false };
+      }
     },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update hero section",
-        variant: "destructive",
-      });
-    },
-  });
+    { success: false },
+  );
 
   const selectedBackgroundMedia = Array.isArray(mediaAssets)
-    ? mediaAssets.find((asset) => asset.id === heroData.backgroundMediaId)
+    ? mediaAssets.find((asset) => asset.id === optimisticHero.backgroundMediaId)
     : undefined;
 
   const selectedVideo = Array.isArray(mediaAssets)
-    ? mediaAssets.find((asset) => asset.id === heroData.videoId)
+    ? mediaAssets.find((asset) => asset.id === optimisticHero.videoId)
     : undefined;
 
   const finalSelectedVideo = selectedVideo || specificVideo;
   const finalSelectedBackground = selectedBackgroundMedia || specificBackground;
 
-  const handleHeroSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    updateHeroMutation.mutate(heroData);
+  const handleSave = async (formData: FormData) => {
+    const data = Object.fromEntries(formData.entries());
+    setOptimisticHero({
+      ...data,
+      isActive: formData.get("isActive") === "on",
+    } as Partial<HeroFormData>);
+    formAction(formData);
   };
 
   if (heroLoading) {
@@ -184,30 +207,31 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
     <div className="space-y-6">
       <Card variant="glass-premium">
         <CardContent className="p-8">
-          <div className="mb-8 flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-white tracking-tight">Hero Section</h2>
-              <p className="text-sm text-[#68869A]">
-                Manage the main hero section for the manufacturing page
-              </p>
+          <form action={handleSave} className="space-y-10">
+            <div className="mb-8 flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-white tracking-tight">Hero Section</h2>
+                <p className="text-sm text-[#68869A]">
+                  Manage the main hero section for the manufacturing page
+                </p>
+              </div>
+              <div className="flex items-center space-x-3 bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
+                <Switch
+                  id="hero-active"
+                  name="isActive"
+                  checked={optimisticHero.isActive}
+                  onCheckedChange={(checked) => setHeroData({ ...heroData, isActive: checked })}
+                  className="data-[state=checked]:bg-[#D4A853]"
+                />
+                <Label
+                  htmlFor="hero-active"
+                  className="text-xs font-bold text-slate-300 uppercase tracking-wider cursor-pointer"
+                >
+                  Status: {optimisticHero.isActive ? "Active" : "Hidden"}
+                </Label>
+              </div>
             </div>
-            <div className="flex items-center space-x-3 bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
-              <Switch
-                id="hero-active"
-                checked={heroData.isActive}
-                onCheckedChange={(checked) => setHeroData({ ...heroData, isActive: checked })}
-                className="data-[state=checked]:bg-[#D4A853]"
-              />
-              <Label
-                htmlFor="hero-active"
-                className="text-xs font-bold text-slate-300 uppercase tracking-wider cursor-pointer"
-              >
-                Status: {heroData.isActive ? "Active" : "Hidden"}
-              </Label>
-            </div>
-          </div>
 
-          <form onSubmit={handleHeroSubmit} className="space-y-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <Label
@@ -218,7 +242,8 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                 </Label>
                 <Input
                   id="headline"
-                  value={heroData.headline}
+                  name="headline"
+                  value={optimisticHero.headline}
                   onChange={(e) => setHeroData({ ...heroData, headline: e.target.value })}
                   className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                   placeholder="e.g., Leading the Way in Precision Sportswear"
@@ -233,7 +258,8 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                 </Label>
                 <Input
                   id="subheadline"
-                  value={heroData.subheadline}
+                  name="subheadline"
+                  value={optimisticHero.subheadline}
                   onChange={(e) => setHeroData({ ...heroData, subheadline: e.target.value })}
                   className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                   placeholder="Enter subheadline"
@@ -251,7 +277,8 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                 </Label>
                 <Input
                   id="ctaText"
-                  value={heroData.ctaText}
+                  name="ctaText"
+                  value={optimisticHero.ctaText}
                   onChange={(e) => setHeroData({ ...heroData, ctaText: e.target.value })}
                   className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                   placeholder="e.g., Explore Our Facilities"
@@ -266,7 +293,8 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                 </Label>
                 <Input
                   id="ctaLink"
-                  value={heroData.ctaLink}
+                  name="ctaLink"
+                  value={optimisticHero.ctaLink}
                   onChange={(e) => setHeroData({ ...heroData, ctaLink: e.target.value })}
                   className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                   placeholder="e.g., /contact"
@@ -292,7 +320,8 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                   </Label>
                   <Input
                     id="bottomCtaTitle"
-                    value={heroData.bottomCtaTitle}
+                    name="bottomCtaTitle"
+                    value={optimisticHero.bottomCtaTitle}
                     onChange={(e) => setHeroData({ ...heroData, bottomCtaTitle: e.target.value })}
                     className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                     placeholder="e.g., Experience Precision Manufacturing"
@@ -307,7 +336,8 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                   </Label>
                   <Input
                     id="bottomCtaDescription"
-                    value={heroData.bottomCtaDescription}
+                    name="bottomCtaDescription"
+                    value={optimisticHero.bottomCtaDescription}
                     onChange={(e) =>
                       setHeroData({ ...heroData, bottomCtaDescription: e.target.value })
                     }
@@ -324,7 +354,8 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                   </Label>
                   <Input
                     id="bottomCtaText"
-                    value={heroData.bottomCtaText}
+                    name="bottomCtaText"
+                    value={optimisticHero.bottomCtaText}
                     onChange={(e) => setHeroData({ ...heroData, bottomCtaText: e.target.value })}
                     className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                     placeholder="e.g., Start Your Project"
@@ -339,7 +370,8 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                   </Label>
                   <Input
                     id="bottomCtaLink"
-                    value={heroData.bottomCtaLink}
+                    name="bottomCtaLink"
+                    value={optimisticHero.bottomCtaLink}
                     onChange={(e) => setHeroData({ ...heroData, bottomCtaLink: e.target.value })}
                     className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                     placeholder="e.g., /contact"
@@ -374,6 +406,11 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                         type="button"
                         onClick={() => setShowBackgroundPicker(true)}
                         data-testid="select-background-button"
+                        aria-label={
+                          finalSelectedBackground
+                            ? "Change background asset"
+                            : "Select background asset"
+                        }
                         className="text-[10px] font-bold text-[#D4A853] hover:text-[#D4A853]/80 transition-colors uppercase tracking-wider"
                       >
                         {finalSelectedBackground ? "Change" : "Select"}
@@ -382,6 +419,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                         <button
                           type="button"
                           onClick={() => setHeroData({ ...heroData, backgroundMediaId: null })}
+                          aria-label="Remove background asset"
                           className="text-[10px] font-bold text-red-500/70 hover:text-red-500 transition-colors uppercase tracking-wider"
                         >
                           Remove
@@ -414,6 +452,11 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                         type="button"
                         onClick={() => setShowVideoPicker(true)}
                         data-testid="select-video-button"
+                        aria-label={
+                          finalSelectedVideo
+                            ? "Change hero video overlay"
+                            : "Select hero video overlay"
+                        }
                         className="text-[10px] font-bold text-[#D4A853] hover:text-[#D4A853]/80 transition-colors uppercase tracking-wider"
                       >
                         {finalSelectedVideo ? "Change Video" : "Select Video"}
@@ -422,6 +465,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                         <button
                           type="button"
                           onClick={() => setHeroData({ ...heroData, videoId: null })}
+                          aria-label="Remove hero video overlay"
                           className="text-[10px] font-bold text-red-500/70 hover:text-red-500 transition-colors uppercase tracking-wider"
                         >
                           Remove
@@ -436,10 +480,10 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
             <div className="flex justify-end pt-6 border-t border-white/5">
               <Button
                 type="submit"
-                disabled={updateHeroMutation.isPending}
+                disabled={isPending}
                 className="bg-primary hover:bg-primary/90 text-white px-10 py-7 rounded-xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98] group"
               >
-                {updateHeroMutation.isPending ? (
+                {isPending ? (
                   "Applying Changes..."
                 ) : (
                   <span className="flex items-center gap-2 text-sm uppercase tracking-wider">

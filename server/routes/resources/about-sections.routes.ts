@@ -35,7 +35,7 @@ const reorderSchema = z.object({
   entries: z.array(
     z.object({
       id: z.number().int().positive(),
-      position: z.number().int().min(0),
+      sortOrder: z.number().int().min(0),
     }),
   ),
 });
@@ -45,10 +45,21 @@ const reorderSchema = z.object({
  * Retrieve all sections
  */
 router.get("/", async (_req, res) => {
-  const sections = await withTimeout(aboutService.getSections(), 10000, "Get about sections");
+  const result = await withTimeout(aboutService.getSections(), 10000, "Get about sections");
 
-  logger.info(`[AboutSections] Retrieved ${sections.length} sections`);
-  return res.json(sections);
+  return result.match(
+    (sections) => {
+      logger.info(`[AboutSections] Retrieved ${sections.length} sections`);
+      return res.json(sections);
+    },
+    (error) => {
+      logger.error("[AboutSections] Fetch failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -58,14 +69,24 @@ router.get("/", async (_req, res) => {
 router.get("/:id", async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
-  const section = await withTimeout(aboutService.getSection(id), 10000, "Get about section");
+  const result = await withTimeout(aboutService.getSection(id), 10000, "Get about section");
 
-  if (!section) {
-    return res.status(404).json({ error: "Section not found" });
-  }
-
-  logger.info(`[AboutSections] Retrieved section ${id}`);
-  return res.json(section);
+  return result.match(
+    (section) => {
+      if (!section) {
+        return res.status(404).json({ error: "Section not found" });
+      }
+      logger.info(`[AboutSections] Retrieved section ${id}`);
+      return res.json(section);
+    },
+    (error) => {
+      logger.error("[AboutSections] Fetch failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -83,19 +104,25 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     });
   }
 
-  const newSection = await withTimeout(
+  const result = await withTimeout(
     aboutService.createSection(removeUndefined(validation.data)),
     10000,
     "Create about section",
   );
 
-  if (!newSection) {
-    throw new Error("Failed to create section");
-  }
-
-  // Invalidation handled by service layer
-  logger.info(`[AboutSections] Created section ${newSection.id}`);
-  return res.status(201).json(newSection);
+  return result.match(
+    (newSection) => {
+      logger.info(`[AboutSections] Created section ${newSection.id}`);
+      return res.status(201).json(newSection);
+    },
+    (error) => {
+      logger.error("[AboutSections] Create failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -114,19 +141,25 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     });
   }
 
-  const updatedSection = await withTimeout(
+  const result = await withTimeout(
     aboutService.updateSection(id, removeUndefined(validation.data)),
     10000,
     "Update about section",
   );
 
-  if (!updatedSection) {
-    return res.status(404).json({ error: "Section not found" });
-  }
-
-  // Invalidation handled by service layer
-  logger.info(`[AboutSections] Updated section ${id}`);
-  return res.json(updatedSection);
+  return result.match(
+    (updatedSection) => {
+      logger.info(`[AboutSections] Updated section ${id}`);
+      return res.json(updatedSection);
+    },
+    (error) => {
+      logger.error("[AboutSections] Update failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -136,15 +169,21 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
 router.delete("/:id", authService.requireAdmin, async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
-  const deleted = await withTimeout(aboutService.deleteSection(id), 10000, "Delete about section");
+  const result = await withTimeout(aboutService.deleteSection(id), 10000, "Delete about section");
 
-  if (!deleted) {
-    return res.status(404).json({ error: "Section not found" });
-  }
-
-  // Invalidation handled by service layer
-  logger.info(`[AboutSections] Deleted section ${id}`);
-  return res.status(204).send();
+  return result.match(
+    () => {
+      logger.info(`[AboutSections] Deleted section ${id}`);
+      return res.status(204).send();
+    },
+    (error) => {
+      logger.error("[AboutSections] Delete failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -162,16 +201,28 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     });
   }
 
-  // Update positions
-  const updates = await Promise.all(
-    removeUndefined(validation.data).entries.map(({ id, position }) =>
-      aboutService.updateSection(id, { sortOrder: position }),
-    ),
+  // Extract ordered IDs
+  const orderedIds = validation.data.entries.map((e) => e.id);
+
+  const result = await withTimeout(
+    aboutService.reorderSections(orderedIds),
+    15000,
+    "Reorder about sections",
   );
 
-  // Invalidation handled by service layer
-  logger.info(`[AboutSections] Reordered ${updates.length} sections`);
-  return res.json({ success: true, updated: updates.length });
+  return result.match(
+    () => {
+      logger.info(`[AboutSections] Reordered ${orderedIds.length} sections`);
+      return res.json({ success: true, updated: orderedIds.length });
+    },
+    (error) => {
+      logger.error("[AboutSections] Reorder failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 export default router;

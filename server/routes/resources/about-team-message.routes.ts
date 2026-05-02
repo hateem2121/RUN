@@ -25,10 +25,21 @@ const router = Router();
  * Retrieve the team message
  */
 router.get("/", async (_req, res) => {
-  const message = await withTimeout(aboutService.getTeamMessage(), 10000, "Get team message");
+  const result = await withTimeout(aboutService.getTeamMessage(), 10000, "Get team message");
 
-  logger.info(`[AboutTeamMessage] Retrieved team message`);
-  return res.json(message || null);
+  return result.match(
+    (message) => {
+      logger.info("[AboutTeamMessage] Retrieved team message");
+      return res.json(message || null);
+    },
+    (error) => {
+      logger.error("[AboutTeamMessage] Fetch failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**

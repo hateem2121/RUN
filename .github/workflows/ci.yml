@@ -29,6 +29,23 @@ jobs:
         id: branch_name
         uses: tj-actions/branch-names@dde14ac574a8b9b1cedc59a1cf312788af43d8d8 # v8.2.1
 
+  changes:
+    name: Detect Changes
+    runs-on: [self-hosted, macOS]
+    outputs:
+      db: ${{ steps.filter.outputs.db }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        id: filter
+        with:
+          filters: |
+            db:
+              - 'server/db/**'
+              - 'shared/schemas/**'
+              - 'drizzle/**'
+              - 'server/scripts/migrate.ts'
+
   verify_port:
     name: Verify Port (Strict 5002)
     if: github.event.action != 'closed'
@@ -137,10 +154,11 @@ jobs:
 
       - name: Get branch expiration date
         id: get_expiration_date
-        run: echo "EXPIRES_AT=$(date -u -v+14d +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
+        run: echo "EXPIRES_AT=$(date -u -v+24h +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
 
       - name: Create Neon Branch
         id: create_neon_branch
+        if: needs.changes.outputs.db == 'true'
         continue-on-error: true
         uses: neondatabase/create-branch-action@fb620d43d4c565abaf088b848a4e28e5c4ea4d9c # 6.3.1
         with:
@@ -161,14 +179,14 @@ jobs:
         continue-on-error: ${{ steps.create_neon_branch.outcome == 'failure' }}
         run: npm run db:push
         env:
-          DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url_with_pooler }}
+          DATABASE_URL: ${{ needs.changes.outputs.db == 'true' && steps.create_neon_branch.outputs.db_url_with_pooler || secrets.DATABASE_URL_PREVIEW }}
           CLOUD_TASKS_AUDIENCE: "placeholder"
           CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
 
       - name: Run Tests with Coverage
         run: npx vitest run --coverage
         env:
-          DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url_with_pooler }}
+          DATABASE_URL: ${{ needs.changes.outputs.db == 'true' && steps.create_neon_branch.outputs.db_url_with_pooler || secrets.DATABASE_URL_PREVIEW }}
           CLOUD_TASKS_AUDIENCE: "placeholder"
           CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
 
@@ -241,8 +259,8 @@ jobs:
 
   delete_neon_branch:
     name: Delete Neon Branch
-    needs: setup
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    needs: [setup, changes]
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && needs.changes.outputs.db == 'true'
     runs-on: [self-hosted, macOS]
     steps:
       - name: Delete Neon Branch

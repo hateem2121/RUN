@@ -74,12 +74,6 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     "Create manufacturing quality",
   );
 
-  CacheOperations.invalidateManufacturing()
-    .then(() => logger.info("[ManufacturingQualities] ✅ Cache invalidated after creation"))
-    .catch((cacheError) =>
-      logger.error("[ManufacturingQualities] ❌ Cache invalidation failed:", cacheError),
-    );
-
   logger.info(`[ManufacturingQualities] Created quality item ${newQuality.id}`);
   return res.status(201).json(newQuality);
 });
@@ -103,12 +97,6 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     return res.status(404).json({ error: "Quality item not found" });
   }
 
-  CacheOperations.invalidateManufacturing()
-    .then(() => logger.info("[ManufacturingQualities] ✅ Cache invalidated after update"))
-    .catch((cacheError) =>
-      logger.error("[ManufacturingQualities] ❌ Cache invalidation failed:", cacheError),
-    );
-
   logger.info(`[ManufacturingQualities] Updated quality item ${id}`);
   return res.json(updated);
 });
@@ -126,12 +114,6 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
     return res.status(404).json({ error: "Quality item not found" });
   }
 
-  CacheOperations.invalidateManufacturing()
-    .then(() => logger.info("[ManufacturingQualities] ✅ Cache invalidated after deletion"))
-    .catch((cacheError) =>
-      logger.error("[ManufacturingQualities] ❌ Cache invalidation failed:", cacheError),
-    );
-
   logger.info(`[ManufacturingQualities] Deleted quality item ${id}`);
   return res.status(204).send();
 });
@@ -144,20 +126,17 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     return res.status(400).json(validation.error);
   }
 
-  const updates = await Promise.all(
-    validation.data.qualities.map(({ id, position }: { id: number; position: number }) =>
-      manufacturingRepository.updateManufacturingQuality(id, { sortOrder: position }),
-    ),
+  const { qualities } = validation.data;
+  const orderedIds = qualities.sort((a, b) => a.position - b.position).map((item) => item.id);
+
+  await withTimeout(
+    manufacturingRepository.reorderManufacturingQualities(orderedIds),
+    10000,
+    "Reorder manufacturing qualities",
   );
 
-  CacheOperations.invalidateManufacturing()
-    .then(() => logger.info("[ManufacturingQualities] ✅ Cache invalidated after reorder"))
-    .catch((cacheError) =>
-      logger.error("[ManufacturingQualities] ❌ Cache invalidation failed:", cacheError),
-    );
-
-  logger.info(`[ManufacturingQualities] Reordered ${updates.length} quality items`);
-  return res.json({ success: true, updated: updates.length });
+  logger.info(`[ManufacturingQualities] Reordered ${orderedIds.length} quality items`);
+  return res.json({ success: true, updated: orderedIds.length });
 });
 
 export default router;

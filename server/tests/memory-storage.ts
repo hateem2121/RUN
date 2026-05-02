@@ -52,6 +52,7 @@ import type {
   InsertInquiry,
   InsertLogoAnimationSettings,
   InsertManufacturingCapability,
+  InsertManufacturingCaseStudy,
   InsertManufacturingHero,
   InsertManufacturingProcess,
   InsertManufacturingQuality,
@@ -80,6 +81,7 @@ import type {
   InsertWebhookSubscription,
   LogoAnimationSettings,
   ManufacturingCapability,
+  ManufacturingCaseStudy,
   ManufacturingHero,
   ManufacturingProcess,
   ManufacturingQuality,
@@ -158,6 +160,7 @@ export class MemoryStorage implements IStorage {
   private manufacturingProcesses = new Map<number, ManufacturingProcess>();
   private manufacturingCapabilities = new Map<number, ManufacturingCapability>();
   private manufacturingQualities = new Map<number, ManufacturingQuality>();
+  private manufacturingCaseStudies = new Map<number, ManufacturingCaseStudy>();
   private technologyHero = new Map<number, TechnologyHero>();
   private technologyInnovations = new Map<number, TechnologyInnovation>();
   private technologyEquipment = new Map<number, TechnologyEquipment>();
@@ -200,6 +203,7 @@ export class MemoryStorage implements IStorage {
     manufacturingProcess: 1,
     manufacturingCapability: 1,
     manufacturingQuality: 1,
+    manufacturingCaseStudy: 1,
     technologyHero: 1,
     technologyInnovation: 1,
     technologyEquipment: 1,
@@ -1310,6 +1314,14 @@ export class MemoryStorage implements IStorage {
   async deleteAboutMapLocation(id: number): Promise<boolean> {
     return this.aboutMapLocations.delete(id);
   }
+  async reorderAboutMapLocations(orderedIds: number[]): Promise<void> {
+    orderedIds.forEach((id, index) => {
+      const location = this.aboutMapLocations.get(id);
+      if (location) {
+        this.aboutMapLocations.set(id, { ...location, sortOrder: index + 1 });
+      }
+    });
+  }
   async getAboutSections(includeInactive?: boolean): Promise<AboutSection[]> {
     return Array.from(this.aboutSections.values())
       .filter((s) => includeInactive || s.isActive)
@@ -1405,6 +1417,14 @@ export class MemoryStorage implements IStorage {
       sections: await this.getAboutSections(),
       statistics: await this.getAboutStatistics(),
       teamMessage: (await this.getAboutTeamMessage()) ?? null,
+      mediaAssets: [],
+      _meta: {
+        fetchedAt: new Date().toISOString(),
+        totalRequests: 6,
+        mediaAssetsLoaded: 0,
+        mediaIdsRequested: [],
+        responseTime: 0,
+      },
     };
   }
 
@@ -1839,6 +1859,56 @@ export class MemoryStorage implements IStorage {
       if (q) {
         q.sortOrder = i;
         this.manufacturingQualities.set(q.id, q);
+      }
+    }
+  }
+
+  async getManufacturingCaseStudies(): Promise<ManufacturingCaseStudy[]> {
+    return Array.from(this.manufacturingCaseStudies.values()).sort(
+      (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0),
+    );
+  }
+
+  async getManufacturingCaseStudy(id: number): Promise<ManufacturingCaseStudy | undefined> {
+    return this.manufacturingCaseStudies.get(id);
+  }
+
+  async createManufacturingCaseStudy(
+    caseStudy: InsertManufacturingCaseStudy,
+  ): Promise<ManufacturingCaseStudy> {
+    const id = this.nextIds.manufacturingCaseStudy++;
+    const newCaseStudy: ManufacturingCaseStudy = {
+      ...caseStudy,
+      id,
+      sortOrder: caseStudy.sortOrder ?? id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as unknown as ManufacturingCaseStudy;
+    this.manufacturingCaseStudies.set(id, newCaseStudy);
+    return newCaseStudy;
+  }
+
+  async updateManufacturingCaseStudy(
+    id: number,
+    caseStudy: Partial<InsertManufacturingCaseStudy>,
+  ): Promise<ManufacturingCaseStudy | undefined> {
+    const existing = this.manufacturingCaseStudies.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...caseStudy, updatedAt: new Date() };
+    this.manufacturingCaseStudies.set(id, updated as ManufacturingCaseStudy);
+    return updated as ManufacturingCaseStudy;
+  }
+
+  async deleteManufacturingCaseStudy(id: number): Promise<boolean> {
+    return this.manufacturingCaseStudies.delete(id);
+  }
+
+  async reorderManufacturingCaseStudies(orderedIds: number[]): Promise<void> {
+    for (let i = 0; i < orderedIds.length; i++) {
+      const id = orderedIds[i];
+      const existing = this.manufacturingCaseStudies.get(id!);
+      if (existing) {
+        this.manufacturingCaseStudies.set(id!, { ...existing, sortOrder: i + 1 });
       }
     }
   }
