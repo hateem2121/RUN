@@ -100,6 +100,7 @@ export const ProductCard = ({
           {viewMode !== "small" && (
             <div className="absolute inset-0 hidden items-center justify-center bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
               <button
+                type="button"
                 onClick={() => onQuickViewClick(product)}
                 className="flex min-h-11 items-center justify-center bg-background/90 px-6 py-3 text-foreground text-xs uppercase tracking-widest backdrop-blur-xs transition-colors hover:bg-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 data-testid={`quick-view-${product.id}`}
@@ -112,6 +113,7 @@ export const ProductCard = ({
 
           {/* Mobile quick view button */}
           <button
+            type="button"
             onClick={() => onQuickViewClick(product)}
             className={cn(
               "absolute bottom-3 left-3 flex min-h-11 min-w-11 items-center justify-center rounded-full bg-background p-2 text-foreground shadow-lg transition-colors hover:bg-muted focus:ring-2 focus:ring-ring focus:ring-offset-2 md:hidden",
@@ -167,6 +169,7 @@ export const ProductCard = ({
             <ExternalLink className="h-4 w-4" />
           </Link>
           <button
+            type="button"
             onClick={handleRequestQuote}
             disabled={alreadyInCart}
             className="flex min-h-11 w-full items-center justify-center bg-primary px-4 py-3 text-primary-foreground text-xs uppercase tracking-widest transition-colors focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"

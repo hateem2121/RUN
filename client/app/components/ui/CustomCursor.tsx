@@ -8,7 +8,7 @@ import { useCursorStore } from "../../stores/useCursorStore";
  * Provides a premium interactive feel with GSAP-powered smooth following.
  * Hidden on mobile/touch devices.
  */
-const CustomCursor: React.FC = () => {
+export const CustomCursor: React.FC = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   const followerRef = useRef<HTMLDivElement>(null);
   const { cursorVariant, cursorImage } = useCursorStore();
@@ -134,5 +134,3 @@ const CustomCursor: React.FC = () => {
     </>
   );
 };
-
-export default CustomCursor;

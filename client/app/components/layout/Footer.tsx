@@ -30,7 +30,7 @@ const footerLinkVariants = cva(
   },
 );
 
-const Footer: React.FC = () => {
+export const Footer: React.FC = () => {
   // Navigation Columns Fetching
   const { data: footerConfig, isLoading } = useQuery<
     FooterConfiguration & {
@@ -336,5 +336,3 @@ const Footer: React.FC = () => {
     </footer>
   );
 };
-
-export default Footer;

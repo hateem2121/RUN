@@ -51,6 +51,8 @@ export function MarqueeStrip({
       )}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      role="group"
+      aria-label="Scrolling marquee"
     >
       <div ref={contentRef} className="flex whitespace-nowrap items-center will-change-transform">
         {/* We duplicate the content to ensure a seamless infinite scroll */}

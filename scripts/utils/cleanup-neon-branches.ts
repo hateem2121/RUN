@@ -8,6 +8,12 @@ if (!NEON_API_KEY || !PROJECT_ID) {
   process.exit(1);
 }
 
+interface NeonBranch {
+  id: string;
+  name: string;
+  created_at: string;
+}
+
 async function cleanupBranches() {
   console.log("🔍 Fetching branches for project:", PROJECT_ID);
 
@@ -26,7 +32,7 @@ async function cleanupBranches() {
       throw new Error(`Failed to fetch branches: ${response.statusText}`);
     }
 
-    const data = (await response.json()) as { branches: any[] };
+    const data = (await response.json()) as { branches: NeonBranch[] };
     const branches = data.branches;
 
     console.log(`📊 Found ${branches.length} branches total.`);

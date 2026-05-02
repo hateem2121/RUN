@@ -4,18 +4,19 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "build/**"]
+      "inputs": ["**/*.ts", "**/*.tsx", "**/*.css", "package.json", "tsconfig.json"],
+      "outputs": ["dist/**", "build/**", ".next/**"]
     },
     "test": {
       "dependsOn": ["build"],
-      "outputs": ["coverage/**"],
-      "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts"]
+      "inputs": ["app/**/*.tsx", "app/**/*.ts", "server/**/*.ts", "shared/**/*.ts", "tests/**/*.ts"],
+      "outputs": ["coverage/**"]
     },
     "lint": {
-      "dependsOn": ["^build"]
+      "inputs": ["**/*.ts", "**/*.tsx", "biome.json"]
     },
     "typecheck": {
-      "dependsOn": ["^build"]
+      "inputs": ["**/*.ts", "**/*.tsx", "tsconfig.json"]
     },
     "check": {
       "dependsOn": ["^build"]

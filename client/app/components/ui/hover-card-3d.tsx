@@ -56,6 +56,7 @@ export function HoverCard3D({ children, className = "", maxRotation = 15 }: Hove
       className={`hover-card-3d ${className}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      role="presentation"
       style={{
         transformStyle: "preserve-3d",
         perspective: "var(--perspective-standard)",

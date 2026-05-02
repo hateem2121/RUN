@@ -385,6 +385,7 @@ export const StaggeredMenu = ({
         >
           <button
             ref={toggleBtnRef}
+            type="button"
             className={cn(
               "sm-toggle pointer-events-auto relative my-0 flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full border-0 shadow-lg backdrop-blur-xs transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               open
@@ -503,5 +504,3 @@ export const StaggeredMenu = ({
     </div>
   );
 };
-
-export default StaggeredMenu;

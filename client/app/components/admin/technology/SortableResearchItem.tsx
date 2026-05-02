@@ -125,6 +125,7 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
         </div>
 
         <button
+          type="button"
           onClick={() => onEdit(research)}
           className="flex h-10 w-10 items-center justify-center rounded-lg text-[#E3DFD6]/40 transition-all hover:bg-[#00D4FF]/10 hover:text-[#00D4FF]"
           title="Edit item"
@@ -139,6 +140,7 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
           description="Are you sure you want to deprioritize and archive this research initiative?"
           trigger={
             <button
+              type="button"
               className="flex h-10 w-10 items-center justify-center rounded-lg text-[#E3DFD6]/40 transition-all hover:bg-rose-500/10 hover:text-rose-500"
               title="Delete item"
               aria-label="Delete item"

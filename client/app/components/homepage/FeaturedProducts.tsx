@@ -141,6 +141,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
 
         <div className="mt-24 text-center">
           <button
+            type="button"
             onClick={handleCatalogueClick}
             aria-label="View the full product catalogue"
             className="hover:border-primary hover:text-primary border-b border-foreground pb-1 text-sm font-bold tracking-widest uppercase transition-colors"

@@ -162,7 +162,10 @@ function FabricCard({
               )}
             </div>
           </div>
-          <button className="w-full py-3 rounded-xl bg-[color:var(--s-primary)] text-black font-bold text-sm hover:bg-white transition-colors flex items-center justify-center gap-2">
+          <button
+            type="button"
+            className="w-full py-3 rounded-xl bg-[color:var(--s-primary)] text-black font-bold text-sm hover:bg-white transition-colors flex items-center justify-center gap-2"
+          >
             Request Swatch <span className="material-symbols-outlined text-lg">arrow_forward</span>
           </button>
         </div>

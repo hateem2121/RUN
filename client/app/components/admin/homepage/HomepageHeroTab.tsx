@@ -201,6 +201,15 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                       : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10",
                   )}
                   onClick={() => setIsMediaPickerOpen(true)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setIsMediaPickerOpen(true);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Select cinematic background"
                 >
                   {formData.backgroundImageId ? (
                     <>

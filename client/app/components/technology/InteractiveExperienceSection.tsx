@@ -139,6 +139,7 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
                 {isIntersecting ? "INITIALIZING SUBSYSTEMS..." : "SCROLL TO ACTIVATE"}
               </Typography.P>
               <button
+                type="button"
                 onClick={() => setUserRequestedLoad(true)}
                 className="bg-[#0047AB] dark:bg-[#00D4FF] hover:bg-[#002F75] dark:hover:bg-white text-white dark:text-black rounded-sm px-6 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-md shadow-[#0047AB]/20 dark:shadow-[#00D4FF]/20"
               >
@@ -226,18 +227,21 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
       <div className="absolute bottom-6 left-0 right-0 flex justify-center z-30">
         <div className="flex items-center gap-1 bg-white dark:bg-black/80 border border-slate-200 dark:border-white/20 shadow-xl rounded-sm p-1 dark:backdrop-blur-md">
           <button
+            type="button"
             className="p-2 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-400 hover:text-[#0047AB] dark:hover:text-[#00D4FF] transition-colors border-r border-slate-100 dark:border-white/10"
             aria-label="Rotate model"
           >
             <span className="material-symbols-outlined text-lg">rotate_right</span>
           </button>
           <button
+            type="button"
             className="p-2 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-400 hover:text-[#0047AB] dark:hover:text-[#00D4FF] transition-colors border-r border-slate-100 dark:border-white/10"
             aria-label="Zoom in"
           >
             <span className="material-symbols-outlined text-lg">zoom_in</span>
           </button>
           <button
+            type="button"
             className="p-2 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-400 hover:text-[#0047AB] dark:hover:text-[#00D4FF] transition-colors"
             aria-label="Fullscreen"
           >
@@ -390,6 +394,7 @@ export function InteractiveExperienceSection({
                   {layers.map((layer) => (
                     <button
                       key={layer.id}
+                      type="button"
                       onClick={() => setActiveLayer(layer.id)}
                       className={cn("control-btn group", activeLayer === layer.id && "active")}
                     >

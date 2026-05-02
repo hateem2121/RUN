@@ -161,10 +161,14 @@ export const MobileSidebar = ({ className, children, ...props }: React.Component
       {...props}
     >
       <div className="flex w-full justify-end">
-        <IconMenu2
-          className="text-neutral-800 dark:text-neutral-200"
+        <button
+          type="button"
           onClick={() => setOpen(!open)}
-        />
+          className="text-neutral-800 dark:text-neutral-200 p-1 rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700"
+          aria-label={open ? "Close sidebar" : "Open sidebar"}
+        >
+          <IconMenu2 />
+        </button>
       </div>
       {shouldRender && (
         <div
@@ -174,12 +178,14 @@ export const MobileSidebar = ({ className, children, ...props }: React.Component
             className,
           )}
         >
-          <div
-            className="absolute top-10 right-10 z-modal text-neutral-800 dark:text-neutral-200"
+          <button
+            type="button"
+            className="absolute top-10 right-10 z-modal text-neutral-800 dark:text-neutral-200 p-2 rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-800"
             onClick={() => setOpen(!open)}
+            aria-label="Close sidebar"
           >
             <IconX />
-          </div>
+          </button>
           {children}
         </div>
       )}

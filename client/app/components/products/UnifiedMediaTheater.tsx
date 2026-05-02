@@ -672,6 +672,7 @@ export function UnifiedMediaTheater({
                     )}
                   >
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         setIsPlaying(!isPlaying);
@@ -725,6 +726,7 @@ export function UnifiedMediaTheater({
                   {/* Zoom button for desktop */}
                   {onZoom && !isMobile && (
                     <button
+                      type="button"
                       onClick={handleZoom}
                       className={cn(
                         "absolute right-3 bottom-3 rounded-lg bg-white/90 p-2 shadow-lg hover:bg-white",
@@ -744,6 +746,7 @@ export function UnifiedMediaTheater({
           {sortedMedia.length > 1 && !isMobile && (
             <>
               <button
+                type="button"
                 onClick={handlePrevious}
                 className={cn(
                   "absolute top-1/2 left-4 -translate-y-1/2 border p-3 transition-opacity",
@@ -755,6 +758,7 @@ export function UnifiedMediaTheater({
                 <ChevronLeft className="h-5 w-5 text-(--product-text)" />
               </button>
               <button
+                type="button"
                 onClick={handleNext}
                 className={cn(
                   "absolute top-1/2 right-4 -translate-y-1/2 border p-3 transition-opacity",
@@ -780,11 +784,12 @@ export function UnifiedMediaTheater({
             {/* Fullscreen button */}
             {!isMobile && (
               <button
+                type="button"
                 onClick={toggleFullscreen}
                 className={cn(
                   "border p-2 transition-opacity",
-                  isFullscreen ? "opacity-100" : "opacity-0 group-hover:opacity-100",
                   "border-(--product-border) bg-(--product-background)",
+                  isFullscreen ? "opacity-100" : "opacity-0 group-hover:opacity-100",
                 )}
                 aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
               >
@@ -801,6 +806,7 @@ export function UnifiedMediaTheater({
               navigator.share &&
               typeof navigator.share === "function" && (
                 <button
+                  type="button"
                   onClick={handleShare}
                   className={cn(
                     "border p-2 opacity-0 transition-opacity group-hover:opacity-100",
@@ -815,6 +821,7 @@ export function UnifiedMediaTheater({
             {/* PiP button for videos */}
             {isVideo && "pictureInPictureEnabled" in document && (
               <button
+                type="button"
                 onClick={togglePiP}
                 className={cn(
                   "border p-2 opacity-0 transition-opacity group-hover:opacity-100",
@@ -842,6 +849,7 @@ export function UnifiedMediaTheater({
           >
             {sortedMedia.map((item, index) => (
               <button
+                type="button"
                 key={item.id}
                 onClick={() => {
                   setSelectedIndex(index);

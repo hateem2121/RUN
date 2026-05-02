@@ -5,7 +5,7 @@ import { lazy, Suspense, useRef, useState } from "react";
 import { isRouteErrorResponse, useRouteError } from "react-router";
 import { Hero } from "@/components/homepage/Hero";
 import { Preloader } from "@/components/homepage/Preloader";
-import CustomCursor from "@/components/ui/CustomCursor";
+import { CustomCursor } from "@/components/ui/CustomCursor";
 import { useHomepageData } from "@/hooks/use-homepage-data";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 

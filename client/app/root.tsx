@@ -13,7 +13,7 @@ import {
 } from "react-router";
 import FloatingDockHeader from "@/components/navigation/floating-dock-header";
 import { ThemeProvider } from "@/components/shared/theme-provider";
-import BackToTop from "@/components/ui/back-to-top";
+import { BackToTop } from "@/components/ui/back-to-top";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
 import { Toaster } from "@/components/ui/toaster";
 import { getQueryClient } from "@/lib/queryClient";

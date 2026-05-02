@@ -183,6 +183,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 RUN APPAREL
               </h1>
               <button
+                type="button"
                 onClick={() => setSidebarOpen(false)}
                 className="rounded-md p-1 text-[#68869A] transition-colors hover:bg-white/[0.06] hover:text-white"
                 aria-label="Collapse sidebar"
@@ -192,6 +193,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           ) : (
             <button
+              type="button"
               onClick={() => setSidebarOpen(true)}
               className="mx-auto rounded-md p-1 text-[#68869A] transition-colors hover:bg-white/[0.06] hover:text-white"
               aria-label="Expand sidebar"
@@ -222,6 +224,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 </div>
               </div>
               <button
+                type="button"
                 className="rounded-md p-1.5 text-[#68869A] transition-colors hover:text-white"
                 title="Logout"
               >
@@ -236,7 +239,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               >
                 M
               </div>
-              <button className="text-[#68869A] transition-colors hover:text-white" title="Logout">
+              <button type="button" className="text-[#68869A] transition-colors hover:text-white" title="Logout">
                 <LogOut size={16} />
               </button>
             </div>
@@ -290,6 +293,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
             {/* Notifications */}
             <button
+              type="button"
               className="relative text-[#68869A] transition-colors hover:text-white"
               title="View Notifications"
               aria-label="View Notifications"
@@ -303,6 +307,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
             {/* Avatar */}
             <button
+              type="button"
               className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/10 text-sm font-medium text-white transition-colors hover:bg-white/20"
               aria-label="User menu"
             >

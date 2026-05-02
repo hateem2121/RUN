@@ -68,5 +68,3 @@ export function BackToTop() {
     </div>
   );
 }
-
-export default BackToTop;

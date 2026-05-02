@@ -136,6 +136,7 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
           <Layers className="h-4 w-4" />
         </div>
         <button
+          type="button"
           onClick={() => onEdit(equipment)}
           className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0A0A0A]/80 text-white backdrop-blur-md transition-colors hover:bg-[#00D4FF] hover:text-[#0A0A0A]"
           title="Edit Equipment"
@@ -149,6 +150,7 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
           description="Are you sure you want to decommission this asset?"
           trigger={
             <button
+              type="button"
               className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0A0A0A]/80 text-white backdrop-blur-md transition-colors hover:bg-rose-500"
               title="Delete Equipment"
               aria-label="Delete Equipment"

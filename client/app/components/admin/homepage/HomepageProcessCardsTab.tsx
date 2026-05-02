@@ -306,6 +306,15 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                       : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10",
                   )}
                   onClick={() => openMediaPicker("create")}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      openMediaPicker("create");
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Select phase visual"
                 >
                   {newCard.imageId ? (
                     <>
@@ -424,6 +433,15 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                         : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10",
                     )}
                     onClick={() => openMediaPicker("edit")}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        openMediaPicker("edit");
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Change phase visual"
                   >
                     {editingCard.imageId ? (
                       <>

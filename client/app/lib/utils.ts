@@ -71,13 +71,14 @@ export function sanitizeContent(content: string | undefined | null): string {
 /**
  * Sanitizes an object by applying sanitizeContent to all string properties.
  */
-export function sanitizeObj<T extends Record<string, any>>(obj: T): T {
+export function sanitizeObj<T extends Record<string, unknown>>(obj: T): T {
   if (!obj) return obj;
-  const sanitized = { ...obj } as any;
+  const sanitized = { ...obj };
   for (const key in sanitized) {
-    if (typeof sanitized[key] === "string") {
-      sanitized[key] = sanitizeContent(sanitized[key]);
+    const value = sanitized[key];
+    if (typeof value === "string") {
+      (sanitized as Record<string, unknown>)[key] = sanitizeContent(value);
     }
   }
-  return sanitized;
+  return sanitized as T;
 }
