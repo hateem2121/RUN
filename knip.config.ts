@@ -6,7 +6,7 @@ const config: KnipConfig = {
     "server/index.ts", // Express entry
     "client/app/root.tsx", // Root layout
   ],
-  project: ["client/app/**/*.{ts,tsx}", "server/**/*.{ts,tsx}"],
+  project: ["client/app/**/*.{ts,tsx}", "server/**/*.{ts,tsx}", "shared/**/*.{ts,tsx}", "utils/**/*.{ts,tsx}"],
   ignore: ["**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}", "**/node_modules/**"],
   ignoreDependencies: [],
 };

@@ -9,7 +9,12 @@ import { removeUndefined } from "../../utils.js";
 import { type Request, type Response, Router } from "express";
 import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
-import { insertProductSchema, type ProductSummary } from "../../../shared/index.js";
+import {
+  insertProductSchema,
+  productByPathSchema,
+  productsQuerySchema,
+  type ProductSummary,
+} from "@run-remix/shared";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
 import { productRepository } from "../../lib/db/repositories/index.js";
@@ -253,17 +258,7 @@ router.get("/products", async (req, res): Promise<undefined | Response> => {
     res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
   }
 
-  const ProductsQuerySchema = z.object({
-    category: z.string().optional(),
-    active: z.string().optional(),
-    featured: z.string().optional(),
-    tag: z.string().optional(),
-    search: z.string().optional(),
-    page: z.string().optional(),
-    limit: z.string().optional(),
-  });
-
-  const query = ProductsQuerySchema.parse(req.query);
+  const query = productsQuerySchema.parse(req.query);
   const { category, active, featured, tag, search, page, limit } = query;
 
   // Parse pagination parameters
@@ -361,11 +356,7 @@ router.get("/products", async (req, res): Promise<undefined | Response> => {
 
 // GET /api/products/by-path - Get product by hierarchical URL path
 router.get("/products/by-path", async (req, res): Promise<undefined | Response> => {
-  const ProductByPathSchema = z.object({
-    path: z.string(),
-  });
-
-  const { path } = ProductByPathSchema.parse(req.query);
+  const { path } = productByPathSchema.parse(req.query);
 
   if (!path || typeof path !== "string") {
     logger.warn(`[URL Validation] ❌ Missing or invalid path parameter`);

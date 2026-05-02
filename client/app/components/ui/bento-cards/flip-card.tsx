@@ -14,7 +14,7 @@ interface FlipCardProps {
   link?: string | undefined;
 }
 
-const FlipCard = memo(function FlipCard({
+export const FlipCard = memo(function FlipCard({
   title,
   subtitle,
   description,
@@ -210,4 +210,4 @@ const FlipCard = memo(function FlipCard({
   );
 });
 
-export default FlipCard;
+

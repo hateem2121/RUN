@@ -297,4 +297,4 @@ function ProductFormShell({ isOpen }: { isOpen: boolean }) {
   );
 }
 
-export default ProductCreateEditModal;
+

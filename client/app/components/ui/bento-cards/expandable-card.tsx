@@ -20,7 +20,7 @@ interface ExpandableCardProps {
   cardId?: string | undefined;
 }
 
-const ExpandableCard = memo(function ExpandableCard({
+export const ExpandableCard = memo(function ExpandableCard({
   title,
   description,
   mediaUrl,
@@ -276,4 +276,4 @@ const ExpandableCard = memo(function ExpandableCard({
   );
 });
 
-export default ExpandableCard;
+

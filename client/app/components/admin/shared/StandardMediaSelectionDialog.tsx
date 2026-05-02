@@ -159,4 +159,4 @@ export function StandardMediaSelectionDialog({
  * - Use contentType='media-library' for automatic optimal sizing
  */
 
-export default StandardMediaSelectionDialog;
+

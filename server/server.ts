@@ -11,6 +11,7 @@ import { setupErrorHandling, setupHealthChecks, setupMiddleware } from "./boot/m
 import { setupRoutes } from "./boot/routes.js";
 import { startServices } from "./boot/services.js";
 import { getConfig } from "./config/production.js";
+import { env } from "./lib/env.js";
 import { logger } from "./lib/monitoring/logger.js";
 import { setupGracefulShutdown } from "./lib/shutdown-manager.js";
 // SEC-002: Environment is validated in index.ts before this file is loaded.
@@ -44,8 +45,8 @@ export const serverReady: Promise<void> = (async () => {
     setupHealthChecks(app);
 
     // 4.5. Start Server early (Async Bootstrap)
-    // Port 5002 is strictly enforced for dev/prod, but can be overridden in tests to avoid EADDRINUSE
-    const PORT = process.env.PORT !== undefined ? parseInt(process.env.PORT, 10) : 5002;
+    // Port 5002 is strictly enforced for dev/prod via env.schema.ts
+    const PORT = env.PORT;
 
     // Only listen if we are not in a test environment, or if specifically forced (integration tests)
     const shouldListen = process.env.NODE_ENV !== "test" || process.env.FORCE_LISTEN === "true";

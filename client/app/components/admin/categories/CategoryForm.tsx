@@ -81,7 +81,7 @@ interface FormData {
   };
 }
 
-export default function CategoryForm({
+export function CategoryForm({
   open,
   onClose,
   onSubmit,

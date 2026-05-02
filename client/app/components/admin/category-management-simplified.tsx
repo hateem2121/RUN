@@ -33,8 +33,8 @@ import { Switch } from "@/components/ui/switch";
 import useCategoryOperationsConsolidated from "@/hooks/admin/categories/useCategoryOperationsConsolidated";
 
 // New consolidated components
-import CategoryForm from "./categories/CategoryForm";
-import CategoryList from "./categories/CategoryList";
+import { CategoryForm } from "./categories/CategoryForm";
+import { CategoryList } from "./categories/CategoryList";
 
 export function CategoryManagementSimplified() {
   const {

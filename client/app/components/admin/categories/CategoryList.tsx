@@ -10,7 +10,7 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-ki
 import type { Category } from "@shared/index";
 import React, { memo, useCallback, useState } from "react";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import CategoryDisplay from "./CategoryDisplay";
+import { CategoryDisplay } from "./CategoryDisplay";
 
 interface CategoryListProps {
   categories: Category[];
@@ -186,7 +186,7 @@ const CategoryTreeView = memo(
 );
 
 // Main list component with drag and drop support
-export default function CategoryList(props: CategoryListProps) {
+export function CategoryList(props: CategoryListProps) {
   const { categories, viewMode, onReorder } = props;
   const [activeId, setActiveId] = useState<number | null>(null);
   const [localCategories, setLocalCategories] = useState<Category[]>(categories);

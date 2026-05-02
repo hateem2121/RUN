@@ -8,7 +8,7 @@ import { removeUndefined } from "../../utils.js";
 
 import { Router } from "express";
 import { z } from "zod";
-import { type Category, insertCategorySchema } from "../../../shared/index.js";
+import { type Category, categoryReorderSchema, insertCategorySchema } from "../../../shared/index.js";
 import { db } from "../../db.js";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
@@ -239,17 +239,7 @@ router.get("/categories", async (req, res) => {
 
 // Bulk reorder categories
 router.patch("/categories/reorder", authService.requireAdmin, async (req, res) => {
-  const reorderSchema = z.object({
-    categories: z.array(
-      z.object({
-        id: z.number(),
-        sortOrder: z.number(),
-        parentId: z.number().nullable().optional(),
-      }),
-    ),
-  });
-
-  const validatedData = reorderSchema.parse(req.body);
+  const validatedData = categoryReorderSchema.parse(req.body);
 
   const startTime = Date.now();
   const results = await withTimeout(

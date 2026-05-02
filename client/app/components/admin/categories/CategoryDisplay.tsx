@@ -394,7 +394,7 @@ const CategoryTreeItem = memo((props: CategoryDisplayProps) => {
 });
 
 // Main display component
-const CategoryDisplay = memo(function CategoryDisplay(props: CategoryDisplayProps) {
+export const CategoryDisplay = memo(function CategoryDisplay(props: CategoryDisplayProps) {
   switch (props.mode) {
     case "grid":
       return <CategoryGridCard {...props} />;
@@ -405,7 +405,7 @@ const CategoryDisplay = memo(function CategoryDisplay(props: CategoryDisplayProp
   }
 });
 
-export default CategoryDisplay;
+
 
 // Export individual components for specific use cases
 export { CategoryTableRow, CategoryGridCard, CategoryTreeItem };
