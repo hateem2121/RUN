@@ -22,10 +22,6 @@ export const aboutHero = pgTable(
     subtitle: text(),
     description: text(),
 
-    // Added for component compatibility
-    headline: varchar({ length: 255 }),
-    subheadline: text(),
-
     imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
@@ -64,9 +60,6 @@ export const aboutTimelineEntries = pgTable(
     imageId: integer().references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-
-    // Added for component compatibility
-    position: integer().default(0),
 
     isActive: boolean().default(true),
     sortOrder: integer().default(0),
@@ -127,9 +120,6 @@ export const aboutSections = pgTable(
     data: jsonb().$type<Record<string, unknown>>(),
     mediaIds: jsonb().$type<number[]>(),
 
-    // Added for component compatibility
-    position: integer().default(0),
-
     isActive: boolean().default(true),
     sortOrder: integer().default(0),
     createdAt: timestamp({
@@ -158,10 +148,6 @@ export const aboutStatistics = pgTable(
     unit: varchar({ length: 50 }),
     description: text(),
     iconName: varchar({ length: 100 }),
-
-    // Added for component compatibility
-    icon: varchar({ length: 100 }), // alias for iconName
-    position: integer().default(0),
 
     isActive: boolean().default(true),
     sortOrder: integer().default(0),

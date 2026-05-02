@@ -9,7 +9,8 @@ export type ManufacturingEntity =
   | "technique"
   | "capabilities"
   | "processes"
-  | "qualities";
+  | "qualities"
+  | "case-studies";
 
 // Simple fallback cache invalidation
 const invalidateManufacturingCache = async (

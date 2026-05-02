@@ -1,3 +1,4 @@
+import { ABOUT_API } from "@shared/api-constants";
 import type { AboutMapLocation, InsertAboutMapLocation } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Building2, Download, Edit, MapPin, Plus, Trash2 } from "lucide-react";
@@ -36,12 +37,12 @@ export function AboutLocationsTab() {
   });
 
   const { data: locations = [], isLoading } = useQuery<AboutMapLocation[]>({
-    queryKey: ["/api/about-locations"],
+    queryKey: [ABOUT_API.LOCATIONS],
   });
 
   const createMutation = useMutation({
     mutationFn: async (data: InsertAboutMapLocation) => {
-      return apiRequest("/api/about-locations", {
+      return apiRequest(ABOUT_API.LOCATIONS, {
         method: "POST",
         body: JSON.stringify(data),
       }) as Promise<AboutMapLocation>;
@@ -49,9 +50,9 @@ export function AboutLocationsTab() {
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
       getQueryClient().invalidateQueries({
-        queryKey: ["/api/about-locations"],
+        queryKey: [ABOUT_API.LOCATIONS],
       });
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-batch"] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
       toast({ title: "Success", description: "Location added successfully" });
       handleCloseDialog();
     },
@@ -74,9 +75,9 @@ export function AboutLocationsTab() {
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
       getQueryClient().invalidateQueries({
-        queryKey: ["/api/about-locations"],
+        queryKey: [ABOUT_API.LOCATIONS],
       });
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-batch"] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
       toast({ title: "Success", description: "Location updated successfully" });
       handleCloseDialog();
     },
@@ -96,9 +97,9 @@ export function AboutLocationsTab() {
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
       getQueryClient().invalidateQueries({
-        queryKey: ["/api/about-locations"],
+        queryKey: [ABOUT_API.LOCATIONS],
       });
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-batch"] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
       toast({ title: "Success", description: "Location deleted successfully" });
     },
     onError: () => {
@@ -254,15 +255,21 @@ export function AboutLocationsTab() {
                           </p>
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="ghost" onClick={() => handleEdit(location)}>
-                            <Edit className="h-4 w-4" />
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleEdit(location)}
+                            aria-label={`Edit ${location.name}`}
+                          >
+                            <Edit className="h-4 w-4" aria-hidden="true" />
                           </Button>
                           <Button
                             size="sm"
                             variant="ghost"
                             onClick={() => handleDelete(location.id)}
+                            aria-label={`Delete ${location.name}`}
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4" aria-hidden="true" />
                           </Button>
                         </div>
                       </div>
@@ -296,15 +303,21 @@ export function AboutLocationsTab() {
                           </p>
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="ghost" onClick={() => handleEdit(location)}>
-                            <Edit className="h-4 w-4" />
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleEdit(location)}
+                            aria-label={`Edit ${location.name}`}
+                          >
+                            <Edit className="h-4 w-4" aria-hidden="true" />
                           </Button>
                           <Button
                             size="sm"
                             variant="ghost"
                             onClick={() => handleDelete(location.id)}
+                            aria-label={`Delete ${location.name}`}
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4" aria-hidden="true" />
                           </Button>
                         </div>
                       </div>

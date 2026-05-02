@@ -24,7 +24,7 @@ npm run build                    # Turborepo production build
 
 Confirm these workflows are green before promoting:
 
-- `ci.yml` — lint, typecheck, Neon branch, migration, coverage (40% min)
+- `ci.yml` — lint, typecheck, Neon branch (if schema changes), migration, coverage (40% min)
 - `quality-gate.yml` — CSS lint, npm audit, Trivy, React Scan, Lighthouse CI
 - `e2e.yml` — Playwright E2E on port 5002
 
@@ -81,7 +81,16 @@ gcloud run services update-traffic run-remix \
   --to-revisions=LATEST=100 --region=us-central1
 ```
 
-### Step 4: Health check gate
+#---
+
+## Safety & Rollbacks
+
+> [!IMPORTANT]
+> **Neon PITR Recovery**: We no longer create manual backup branches on every deploy to conserve resources. In case of migration failure, use **Neon Point-in-Time Recovery (PITR)** via the Neon Console or CLI to restore the `main` branch to the state exactly before the deployment.
+
+---
+
+## Step 4: Health check gate
 
 ```bash
 curl https://wear-run.com/api/health

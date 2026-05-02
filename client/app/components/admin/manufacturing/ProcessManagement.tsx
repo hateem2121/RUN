@@ -18,7 +18,7 @@ import { CSS } from "@dnd-kit/utilities";
 import type { ManufacturingProcess, MediaAsset } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { Edit, Eye, EyeOff, GripVertical, LayoutTemplate, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useActionState, useOptimistic, useState } from "react";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { MediaPickerModal } from "@/components/admin/shared/MediaPickerModal";
 import { ProcessCard } from "@/components/shared/manufacturing";
@@ -202,6 +202,32 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
     refetchOnMount: false,
   });
 
+  const [optimisticProcesses, setOptimisticProcesses] = useOptimistic(
+    processes,
+    (
+      state,
+      action: {
+        type: "add" | "update" | "delete" | "reorder";
+        payload: ManufacturingProcess | number | ManufacturingProcess[];
+      },
+    ) => {
+      switch (action.type) {
+        case "add":
+          return [...state, action.payload as ManufacturingProcess];
+        case "update": {
+          const updated = action.payload as ManufacturingProcess;
+          return state.map((item) => (item.id === updated.id ? updated : item));
+        }
+        case "delete":
+          return state.filter((item) => item.id !== (action.payload as number));
+        case "reorder":
+          return action.payload as ManufacturingProcess[];
+        default:
+          return state;
+      }
+    },
+  );
+
   const {
     createMutation: createProcessMutation,
     updateMutation: updateProcessMutation,
@@ -218,6 +244,37 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
       resetProcessForm();
     },
   });
+
+  const [_formState, formAction, isPending] = useActionState(
+    async (_prevState: { success: boolean } | null, formData: FormData) => {
+      const data = {
+        title: formData.get("title") as string,
+        name: formData.get("title") as string,
+        step: Number(formData.get("step")),
+        category: formData.get("category") as string,
+        iconName: processForm.iconName,
+        efficiency: Number(formData.get("efficiency")),
+        duration: formData.get("duration") as string,
+        description: formData.get("description") as string,
+        isActive: formData.get("isActive") === "on",
+        mediaIds: processForm.mediaIds,
+      };
+
+      if (editingProcess) {
+        setOptimisticProcesses({ type: "update", payload: { ...editingProcess, ...data } });
+        await updateProcessMutation.mutateAsync({ id: editingProcess.id, data });
+      } else {
+        const tempId = Date.now();
+        setOptimisticProcesses({
+          type: "add",
+          payload: { ...data, id: tempId, sortOrder: processes.length } as ManufacturingProcess,
+        });
+        await createProcessMutation.mutateAsync({ ...data, sortOrder: processes.length });
+      }
+      return { success: true };
+    },
+    { success: false },
+  );
 
   const { data: specificProcessMedia } = useQuery({
     queryKey: [`/api/media/bulk`, processForm.mediaIds],
@@ -257,26 +314,6 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
     setShowPreview(false);
   };
 
-  const handleProcessSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = {
-      ...processForm,
-      name: processForm.name || processForm.title || "Untitled Process",
-    };
-
-    if (editingProcess) {
-      updateProcessMutation.mutate({
-        id: editingProcess.id,
-        data: formData,
-      });
-    } else {
-      createProcessMutation.mutate({
-        ...formData,
-        position: processes.length,
-      });
-    }
-  };
-
   const handleEditProcess = (process: ManufacturingProcess) => {
     setEditingProcess(process);
     setProcessForm({
@@ -297,9 +334,12 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
   const handleProcessDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      const oldIndex = processes.findIndex((p) => p.id === active.id);
-      const newIndex = processes.findIndex((p) => p.id === over.id);
-      const newProcesses = arrayMove(processes, oldIndex, newIndex);
+      const oldIndex = optimisticProcesses.findIndex((p) => p.id === active.id);
+      const newIndex = optimisticProcesses.findIndex((p) => p.id === over.id);
+      const newProcesses = arrayMove(optimisticProcesses, oldIndex, newIndex);
+
+      setOptimisticProcesses({ type: "reorder", payload: newProcesses });
+
       const updates = newProcesses.map((process, index) => ({
         id: process.id,
         position: index,
@@ -384,16 +424,19 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
               onDragEnd={handleProcessDragEnd}
             >
               <SortableContext
-                items={processes.map((p) => p.id)}
+                items={optimisticProcesses.map((p) => p.id)}
                 strategy={verticalListSortingStrategy}
               >
                 <div className="grid gap-3">
-                  {processes.map((process) => (
+                  {optimisticProcesses.map((process) => (
                     <SortableProcessItem
                       key={process.id}
                       process={process}
                       onEdit={handleEditProcess}
-                      onDelete={deleteProcessMutation.mutate}
+                      onDelete={(id) => {
+                        setOptimisticProcesses({ type: "delete", payload: id });
+                        deleteProcessMutation.mutate(id);
+                      }}
                     />
                   ))}
                 </div>
@@ -431,7 +474,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
               </div>
             </div>
 
-            <form onSubmit={handleProcessSubmit} className="flex-1 overflow-y-auto max-h-[70vh]">
+            <form action={formAction} className="flex-1 overflow-y-auto max-h-[70vh]">
               <div className="p-8 space-y-8">
                 <div className={cn("grid gap-10", showPreview ? "lg:grid-cols-2" : "grid-cols-1")}>
                   <div className="space-y-8">
@@ -445,6 +488,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                         </Label>
                         <Input
                           id="process-title"
+                          name="title"
                           value={processForm.title || ""}
                           onChange={(e) =>
                             setProcessForm({
@@ -467,6 +511,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                         </Label>
                         <Input
                           id="process-step"
+                          name="step"
                           type="number"
                           value={processForm.step}
                           onChange={(e) =>
@@ -491,6 +536,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                         </Label>
                         <Input
                           id="process-category"
+                          name="category"
                           value={processForm.category || ""}
                           onChange={(e) =>
                             setProcessForm({
@@ -544,6 +590,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                         <div className="relative">
                           <Input
                             id="process-efficiency"
+                            name="efficiency"
                             type="number"
                             min="0"
                             max="100"
@@ -570,6 +617,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                         </Label>
                         <Input
                           id="process-duration"
+                          name="duration"
                           value={processForm.duration || ""}
                           onChange={(e) =>
                             setProcessForm({
@@ -592,6 +640,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                       </Label>
                       <Textarea
                         id="process-description"
+                        name="description"
                         value={processForm.description || ""}
                         onChange={(e) =>
                           setProcessForm({
@@ -607,6 +656,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                     <div className="flex items-center space-x-3 bg-white/5 border border-white/10 p-4 rounded-xl">
                       <Switch
                         id="process-active"
+                        name="isActive"
                         checked={processForm.isActive ?? true}
                         onCheckedChange={(checked) =>
                           setProcessForm({ ...processForm, isActive: checked })
@@ -715,10 +765,10 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                 </Button>
                 <Button
                   type="submit"
-                  disabled={createProcessMutation.isPending || updateProcessMutation.isPending}
+                  disabled={isPending}
                   className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl px-8 py-6 font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all"
                 >
-                  {editingProcess ? "Update Process" : "Create Process"}
+                  {isPending ? "Syncing..." : editingProcess ? "Update Process" : "Create Process"}
                 </Button>
               </div>
             </form>

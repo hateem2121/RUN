@@ -59,3 +59,25 @@ export function formatFileSize(bytes: number | undefined | null): string {
  * - [ ] Performance Metrics (LCP, CLS, TTI)
  * - [ ] Cache & Asset Loading
  */
+
+/**
+ * Sanitizes content by removing [QA-AUTO] artifacts.
+ */
+export function sanitizeContent(content: string | undefined | null): string {
+  if (!content) return "";
+  return content.replace(/\[QA-AUTO-?\d*\]/g, "").trim();
+}
+
+/**
+ * Sanitizes an object by applying sanitizeContent to all string properties.
+ */
+export function sanitizeObj<T extends Record<string, any>>(obj: T): T {
+  if (!obj) return obj;
+  const sanitized = { ...obj } as any;
+  for (const key in sanitized) {
+    if (typeof sanitized[key] === "string") {
+      sanitized[key] = sanitizeContent(sanitized[key]);
+    }
+  }
+  return sanitized;
+}

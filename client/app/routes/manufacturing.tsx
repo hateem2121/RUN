@@ -1,5 +1,6 @@
 import type {
   ManufacturingCapability,
+  ManufacturingCaseStudy,
   ManufacturingHero,
   ManufacturingProcess,
   ManufacturingQuality,
@@ -197,6 +198,10 @@ export async function loader() {
       queryFn: () => apiRequest("/api/manufacturing-qualities"),
     }),
     queryClient.prefetchQuery({
+      queryKey: ["/api/manufacturing-case-studies"],
+      queryFn: () => apiRequest("/api/manufacturing-case-studies"),
+    }),
+    queryClient.prefetchQuery({
       queryKey: ["/api/media"],
       queryFn: () => apiRequest("/api/media"),
     }),
@@ -242,6 +247,14 @@ function ManufacturingInner() {
     staleTime: 5 * 60 * 1000,
   });
 
+  const { data: caseStudiesData, isPending: isCaseStudiesLoading } = useQuery<
+    ManufacturingCaseStudy[]
+  >({
+    queryKey: ["/api/manufacturing-case-studies"],
+    queryFn: () => apiRequest("/api/manufacturing-case-studies"),
+    staleTime: 5 * 60 * 1000,
+  });
+
   const { data: mediaData, isPending: isMediaLoading } = useQuery<{ data: MediaAsset[] }>({
     queryKey: ["/api/media"],
     queryFn: () => apiRequest("/api/media"),
@@ -253,6 +266,7 @@ function ManufacturingInner() {
     isProcessesLoading ||
     isCapabilitiesLoading ||
     isQualitiesLoading ||
+    isCaseStudiesLoading ||
     isMediaLoading;
 
   // Global loading state for initial content
@@ -265,6 +279,7 @@ function ManufacturingInner() {
   const processes = processesData || [];
   const capabilities = capabilitiesData || [];
   const qualityItems = qualitiesData || [];
+  const caseStudies = caseStudiesData || [];
   const mediaAssets = mediaData?.data || [];
 
   // Calculate real manufacturing stats from database data
@@ -332,7 +347,7 @@ function ManufacturingInner() {
         </ManufacturingErrorBoundary>
 
         {/* Case Study Section */}
-        <PublicCaseStudySection mediaAssets={mediaAssets} />
+        <PublicCaseStudySection mediaAssets={mediaAssets} caseStudies={caseStudies} />
 
         {/* Call to Action */}
         <PublicCTASection />

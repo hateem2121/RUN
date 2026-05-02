@@ -51,6 +51,7 @@ import type {
   InsertInquiry,
   InsertLogoAnimationSettings,
   InsertManufacturingCapability,
+  InsertManufacturingCaseStudy,
   InsertManufacturingHero,
   InsertManufacturingProcess,
   InsertManufacturingQuality,
@@ -78,6 +79,7 @@ import type {
   InsertWebhookSubscription,
   LogoAnimationSettings,
   ManufacturingCapability,
+  ManufacturingCaseStudy,
   ManufacturingHero,
   ManufacturingProcess,
   ManufacturingQuality,
@@ -443,6 +445,7 @@ export interface IContentRepository {
     location: Partial<InsertAboutMapLocation>,
   ): Promise<AboutMapLocation | undefined>;
   deleteAboutMapLocation(id: number): Promise<boolean>;
+  reorderAboutMapLocations(orderedIds: number[]): Promise<void>;
   getAboutSections(includeInactive?: boolean): Promise<AboutSection[]>;
   getAboutSection(id: number): Promise<AboutSection | undefined>;
   createAboutSection(section: InsertAboutSection): Promise<AboutSection>;
@@ -547,6 +550,17 @@ export interface IManufacturingRepository {
   ): Promise<ManufacturingQuality | undefined>;
   deleteManufacturingQuality(id: number): Promise<boolean>;
   reorderManufacturingQualities(orderedIds: number[]): Promise<void>;
+  getManufacturingCaseStudies(includeInactive?: boolean): Promise<ManufacturingCaseStudy[]>;
+  getManufacturingCaseStudy(id: number): Promise<ManufacturingCaseStudy | undefined>;
+  createManufacturingCaseStudy(
+    caseStudy: InsertManufacturingCaseStudy,
+  ): Promise<ManufacturingCaseStudy>;
+  updateManufacturingCaseStudy(
+    id: number,
+    caseStudy: Partial<InsertManufacturingCaseStudy>,
+  ): Promise<ManufacturingCaseStudy | undefined>;
+  deleteManufacturingCaseStudy(id: number): Promise<boolean>;
+  reorderManufacturingCaseStudies(orderedIds: number[]): Promise<void>;
 }
 
 export interface ITechnologyRepository {

@@ -1,0 +1,51 @@
+name: Neon Database Garbage Collector
+
+on:
+  schedule:
+    - cron: '0 */12 * * *' # Run every 12 hours
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  cleanup:
+    name: Purge Stale Branches
+    runs-on: [self-hosted, macOS]
+    steps:
+      - name: Cleanup Stale Preview/Backup Branches
+        run: |
+          echo "🔍 Starting Neon Branch Garbage Collection..."
+          
+          # Get all branches from the project
+          BRANCHES_JSON=$(curl -s -X GET "https://console.neon.tech/api/v2/projects/${{ secrets.NEON_PROJECT_ID }}/branches" \
+            -H "Authorization: Bearer ${{ secrets.NEON_API_KEY }}" \
+            -H "Content-Type: application/json")
+          
+          if [ -z "$BRANCHES_JSON" ]; then
+            echo "❌ Failed to fetch branches from Neon API"
+            exit 1
+          fi
+
+          # Current time in seconds
+          NOW=$(date +%s)
+          # Threshold: 3 days (259200 seconds)
+          THRESHOLD=259200
+
+          echo "$BRANCHES_JSON" | jq -c '.branches[]' | while read -r branch; do
+            NAME=$(echo "$branch" | jq -r '.name')
+            ID=$(echo "$branch" | jq -r '.id')
+            CREATED_AT=$(echo "$branch" | jq -r '.created_at')
+            CREATED_TS=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$CREATED_AT" +%s 2>/dev/null || date -d "$CREATED_AT" +%s)
+            
+            AGE=$((NOW - CREATED_TS))
+
+            # Only target preview or backup branches older than threshold
+            if [[ "$NAME" =~ ^(preview/|backup/) ]] && [ "$AGE" -gt "$THRESHOLD" ]; then
+              echo "🗑️ Deleting stale branch: $NAME (ID: $ID, Age: $((AGE / 3600))h)"
+              curl -s -X DELETE "https://console.neon.tech/api/v2/projects/${{ secrets.NEON_PROJECT_ID }}/branches/$ID" \
+                -H "Authorization: Bearer ${{ secrets.NEON_API_KEY }}" \
+                -H "Content-Type: application/json"
+            else
+              echo "✅ Skipping branch: $NAME (Age: $((AGE / 3600))h)"
+            fi
+          done
+
+          echo "✨ Garbage Collection complete."

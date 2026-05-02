@@ -1,22 +1,12 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { AboutHero, InsertAboutHero, MediaAsset } from "@shared/index";
-import { insertAboutHeroSchema } from "@shared/index";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import type { AboutHero, MediaAsset } from "@run-remix/shared";
+import { ABOUT_API } from "@shared/api-constants";
+import { useQuery } from "@tanstack/react-query";
 import { Eye, Save, Trash2, Upload } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useActionState, useEffect, useOptimistic, useState, useTransition } from "react";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,107 +17,85 @@ export function AboutHeroTab() {
   const { toast } = useToast();
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<MediaAsset | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const { data: heroData, isLoading } = useQuery<AboutHero>({
-    queryKey: ["/api/about-hero"],
+    queryKey: [ABOUT_API.HERO],
   });
 
-  const form = useForm({
-    resolver: zodResolver(insertAboutHeroSchema),
-    defaultValues: {
-      title: "",
-      subtitle: "",
-      description: "",
-      backgroundMediaId: undefined as number | undefined,
-      isActive: true,
-    },
-  });
+  const [optimisticHero, setOptimisticHero] = useOptimistic<AboutHero | null, Partial<AboutHero>>(
+    heroData || null,
+    (state, updated) => (state ? { ...state, ...updated } : (updated as AboutHero)),
+  );
 
-  // Watch values for preview
-  const watchedValues = form.watch();
-
-  // Load initial data
+  // Sync selected media when heroData or optimisticHero changes
   useEffect(() => {
-    if (heroData) {
-      form.reset({
-        title: heroData.title || "",
-        subtitle: heroData.subtitle || "",
-        description: heroData.description || "",
-        backgroundMediaId: heroData.backgroundMediaId || undefined,
-        isActive: heroData.isActive ?? true,
-      });
-
-      if (heroData.backgroundMediaId) {
-        // We'll let the media fetcher below handle resolving the asset
-      }
-    }
-  }, [heroData, form]);
-
-  // Fetch selected/background media details for preview
-  const mediaIdToFetch = watchedValues.backgroundMediaId || heroData?.backgroundMediaId;
-  const { data: mediaResponse } = useQuery<{
-    success: boolean;
-    data: MediaAsset;
-  }>({
-    queryKey: ["/api/media", mediaIdToFetch],
-    queryFn: async () => {
-      const res = await fetch(`/api/media/${mediaIdToFetch}`);
-      if (!res.ok) {
-        return null;
-      }
-      return res.json();
-    },
-    enabled: !!mediaIdToFetch,
-  });
-
-  useEffect(() => {
-    if (mediaResponse?.data) {
-      setSelectedMedia(mediaResponse.data);
-    } else if (!mediaIdToFetch) {
+    const mediaId = optimisticHero?.backgroundMediaId;
+    if (mediaId) {
+      fetch(`/api/media/${mediaId}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data?.success && data?.data) {
+            setSelectedMedia(data.data);
+          }
+        })
+        .catch(() => setSelectedMedia(null));
+    } else {
       setSelectedMedia(null);
     }
-  }, [mediaResponse, mediaIdToFetch]);
+  }, [optimisticHero?.backgroundMediaId]);
 
-  const updateMutation = useMutation({
-    mutationFn: async (data: Partial<AboutHero>) => {
-      // Ensure specific types
+  const [_state, formAction] = useActionState(
+    async (_prevState: { success: boolean } | null, formData: FormData) => {
       const payload = {
-        ...data,
-        backgroundMediaId: data.backgroundMediaId ? Number(data.backgroundMediaId) : null,
+        title: formData.get("title") as string,
+        subtitle: formData.get("subtitle") as string,
+        description: formData.get("description") as string,
+        backgroundMediaId: formData.get("backgroundMediaId")
+          ? Number(formData.get("backgroundMediaId"))
+          : null,
+        isActive: true,
       };
-      return apiRequest("/api/about-hero", {
-        method: "PATCH",
-        body: JSON.stringify(payload),
-      }) as Promise<AboutHero>;
-    },
-    onSuccess: () => {
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-hero"] });
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-batch"] });
-      toast({
-        title: "Success",
-        description: "Hero section updated successfully",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update hero section",
-        variant: "destructive",
-      });
-    },
-  });
 
-  const onSubmit = (data: InsertAboutHero) => {
-    updateMutation.mutate(data as unknown as Record<string, unknown>);
-  };
+      startTransition(() => {
+        setOptimisticHero(payload as AboutHero);
+      });
+
+      try {
+        await apiRequest(ABOUT_API.HERO, {
+          method: "PATCH",
+          body: JSON.stringify(payload),
+        });
+
+        getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.HERO] });
+        getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
+
+        toast({
+          title: "Success",
+          description: "Hero section updated successfully",
+        });
+        return { success: true };
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to update hero section",
+          variant: "destructive",
+        });
+        return { success: false, error };
+      }
+    },
+    null,
+  );
 
   const handleRemoveMedia = () => {
-    form.setValue("backgroundMediaId", undefined, { shouldDirty: true });
     setSelectedMedia(null);
+    // We can't easily trigger formAction here without a submit,
+    // but we can update the optimistic state or just let the user hit Save.
+    // For React 19 forms, it's better to have a hidden input for the mediaId.
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="py-8 text-center text-muted-foreground">Loading hero data...</div>;
   }
 
   return (
@@ -141,95 +109,91 @@ export function AboutHeroTab() {
               <CardDescription>Edit content and background</CardDescription>
             </CardHeader>
             <CardContent>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                  <FormField
-                    control={form.control}
+              <form action={formAction} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title">Title</Label>
+                  <Input
+                    id="title"
                     name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Title</FormLabel>
-                        <FormControl>
-                          <Input {...field} value={field.value ?? ""} placeholder="Main Title" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    defaultValue={optimisticHero?.title || ""}
+                    placeholder="Main Title"
                   />
+                </div>
 
-                  <FormField
-                    control={form.control}
+                <div className="space-y-2">
+                  <Label htmlFor="subtitle">Subtitle</Label>
+                  <Input
+                    id="subtitle"
                     name="subtitle"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Subtitle</FormLabel>
-                        <FormControl>
-                          <Input {...field} value={field.value ?? ""} placeholder="Subtitle" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    defaultValue={optimisticHero?.subtitle || ""}
+                    placeholder="Subtitle"
                   />
+                </div>
 
-                  <FormField
-                    control={form.control}
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
                     name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Description</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            {...field}
-                            value={field.value ?? ""}
-                            placeholder="Description"
-                            rows={4}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    defaultValue={optimisticHero?.description || ""}
+                    placeholder="Description"
+                    rows={4}
                   />
+                </div>
 
-                  <div className="space-y-2">
-                    <Label>Background Media</Label>
-                    <div className="flex items-center gap-4">
-                      {selectedMedia ? (
-                        <div className="group relative">
+                <div className="space-y-2">
+                  <Label>Background Media</Label>
+                  <input type="hidden" name="backgroundMediaId" value={selectedMedia?.id || ""} />
+                  <div className="flex items-center gap-4">
+                    {selectedMedia ? (
+                      <div className="group relative">
+                        {selectedMedia.type === "video" ? (
+                          <video
+                            src={`/api/media/${selectedMedia.id}/content`}
+                            className="h-20 w-32 rounded-md border object-cover"
+                            aria-label="Background video preview"
+                          />
+                        ) : (
                           <img
                             src={`/api/media/${selectedMedia.id}/content`}
-                            alt="Preview"
+                            alt={selectedMedia.altText || "Background preview"}
                             className="h-20 w-32 rounded-md border object-cover"
                           />
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 transition-opacity group-hover:opacity-100"
-                            onClick={handleRemoveMedia}
-                            aria-label="Remove background media"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="flex h-20 w-32 items-center justify-center rounded-md border border-dashed bg-white/[0.03]">
-                          <span className="text-[#68869A] text-xs">No media</span>
-                        </div>
-                      )}
+                        )}
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 transition-opacity group-hover:opacity-100"
+                          onClick={handleRemoveMedia}
+                          aria-label="Remove background media"
+                        >
+                          <Trash2 className="h-3 w-3" aria-hidden="true" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex h-20 w-32 items-center justify-center rounded-md border border-dashed bg-white/[0.03]">
+                        <span className="text-[#68869A] text-xs">No media</span>
+                      </div>
+                    )}
 
-                      <Button type="button" variant="outline" onClick={() => setIsPickerOpen(true)}>
-                        <Upload className="mr-2 h-4 w-4" />
-                        Select Media
-                      </Button>
-                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsPickerOpen(true)}
+                      aria-label="Select background media"
+                    >
+                      <Upload className="mr-2 h-4 w-4" aria-hidden="true" />
+                      Select Media
+                    </Button>
                   </div>
+                </div>
 
-                  <Button type="submit" disabled={updateMutation.isPending}>
-                    <Save className="mr-2 h-4 w-4" />
-                    {updateMutation.isPending ? "Saving..." : "Save Changes"}
-                  </Button>
-                </form>
-              </Form>
+                <Button type="submit" disabled={isPending}>
+                  <Save className="mr-2 h-4 w-4" aria-hidden="true" />
+                  {isPending ? "Saving..." : "Save Changes"}
+                </Button>
+              </form>
             </CardContent>
           </Card>
         </div>
@@ -239,7 +203,7 @@ export function AboutHeroTab() {
           <Card className="flex h-full flex-col">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Eye className="h-5 w-5" />
+                <Eye className="h-5 w-5" aria-hidden="true" />
                 Live Preview
               </CardTitle>
               <CardDescription>Real-time preview of the hero section</CardDescription>
@@ -249,9 +213,9 @@ export function AboutHeroTab() {
                 <div className="w-[125%] origin-top scale-[0.8] transform md:w-[125%] md:origin-top-left">
                   <HeroSection
                     heroData={{
-                      title: watchedValues.title,
-                      subtitle: watchedValues.subtitle || null,
-                      description: watchedValues.description || null,
+                      title: optimisticHero?.title || "",
+                      subtitle: optimisticHero?.subtitle || null,
+                      description: optimisticHero?.description || null,
                       isActive: true,
                     }}
                     mediaUrl={selectedMedia ? `/api/media/${selectedMedia.id}/content` : undefined}
@@ -270,9 +234,6 @@ export function AboutHeroTab() {
         onSelect={(asset: MediaAsset | MediaAsset[]) => {
           const selected = Array.isArray(asset) ? asset[0] : asset;
           if (selected) {
-            form.setValue("backgroundMediaId", selected.id, {
-              shouldDirty: true,
-            });
             setSelectedMedia(selected);
           }
         }}

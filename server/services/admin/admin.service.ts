@@ -871,12 +871,12 @@ export class AdminService {
   // =============================================================================
 
   async getAboutTimelineEntries(): Promise<AboutTimelineEntry[]> {
-    return this.about.getTimeline(true);
+    return (await this.about.getTimeline(true)).unwrapOr([]);
   }
 
   async createAboutTimelineEntry(audit: AuditContext, data: unknown): Promise<AboutTimelineEntry> {
     const validated = insertAboutTimelineEntrySchema.parse(data);
-    const result = await this.about.createTimelineEntry(validated);
+    const result = (await this.about.createTimelineEntry(validated))._unsafeUnwrap();
 
     await this.logAudit({
       action: "INSERT",
@@ -896,8 +896,8 @@ export class AdminService {
     id: number,
     data: Partial<InsertAboutTimelineEntry>,
   ): Promise<AboutTimelineEntry | undefined> {
-    const original = await this.about.getTimelineEntry(id);
-    const result = await this.about.updateTimelineEntry(id, data);
+    const original = (await this.about.getTimelineEntry(id)).unwrapOr(null);
+    const result = (await this.about.updateTimelineEntry(id, data))._unsafeUnwrap();
 
     await this.logAudit({
       action: "UPDATE",
@@ -914,8 +914,8 @@ export class AdminService {
   }
 
   async deleteAboutTimelineEntry(audit: AuditContext, id: number): Promise<boolean> {
-    const original = await this.about.getTimelineEntry(id);
-    const result = await this.about.deleteTimelineEntry(id);
+    const original = (await this.about.getTimelineEntry(id)).unwrapOr(null);
+    const result = (await this.about.deleteTimelineEntry(id)).unwrapOr(false);
 
     if (result) {
       await this.logAudit({

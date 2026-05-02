@@ -240,7 +240,38 @@ export class UnifiedCache {
    * Invalidate keys matching a pattern (alias for clearPattern)
    */
   async invalidate(pattern: string): Promise<void> {
-    return this.clearPattern(pattern);
+    // 1. Clear L1 Memory Cache immediately for the CURRENT instance
+    const isRegex = pattern.startsWith("^") || pattern.includes("*");
+    const regex = isRegex ? new RegExp(pattern.replace("*", ".*")) : null;
+
+    for (const key of this.memoryCache.keys()) {
+      if (regex) {
+        if (regex.test(key)) {
+          this.memoryCache.delete(key);
+        }
+      } else {
+        if (key.includes(pattern)) {
+          this.memoryCache.delete(key);
+        }
+      }
+    }
+
+    // 2. Offload L2 (Redis) invalidation to BullMQ for background processing
+    // This makes the initiating request MUCH faster by avoiding synchronous SCAN/DEL
+    if (isRedisEnabled) {
+      import("../queue/cache-invalidation-queue.js").then(({ queueCacheInvalidation }) => {
+        queueCacheInvalidation(pattern).catch((err) =>
+          logger.warn(`[UnifiedCache] Failed to queue background invalidation for ${pattern}`, err),
+        );
+      });
+    }
+
+    // 3. Emit invalidation event for frontend polling
+    import("./cache-events.js").then(({ emitCacheInvalidation }) => {
+      emitCacheInvalidation(pattern, "delete").catch((err) =>
+        logger.warn("[UnifiedCache] Failed to emit invalidation event", err),
+      );
+    });
   }
 
   /**

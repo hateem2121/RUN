@@ -3,6 +3,7 @@ import { AboutLocationsTab } from "@/components/admin/about-locations-tab";
 import { AboutSectionsTab } from "@/components/admin/about-sections-tab";
 import { AboutStatisticsTab } from "@/components/admin/about-statistics-tab";
 import { AboutTeamMessageTab } from "@/components/admin/about-team-message-tab";
+import { AboutTimelineTab } from "@/components/admin/about-timeline-tab";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -22,9 +23,10 @@ export function AboutManagement() {
         defaultValue="hero"
         className="fade-in-50 slide-in-from-bottom-4 animate-in space-y-4 duration-500"
       >
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="hero">Hero Section</TabsTrigger>
           <TabsTrigger value="statistics">Statistics</TabsTrigger>
+          <TabsTrigger value="timeline">Timeline</TabsTrigger>
           <TabsTrigger value="team">Team Message</TabsTrigger>
           <TabsTrigger value="locations">Locations</TabsTrigger>
           <TabsTrigger value="sections">Content Sections</TabsTrigger>
@@ -39,6 +41,12 @@ export function AboutManagement() {
         <TabsContent value="statistics" className="space-y-4">
           <ErrorBoundary componentName="About Statistics Tab">
             <AboutStatisticsTab />
+          </ErrorBoundary>
+        </TabsContent>
+
+        <TabsContent value="timeline" className="space-y-4">
+          <ErrorBoundary componentName="About Timeline Tab">
+            <AboutTimelineTab />
           </ErrorBoundary>
         </TabsContent>
 

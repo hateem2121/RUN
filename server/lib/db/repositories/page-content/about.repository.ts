@@ -19,6 +19,7 @@ import {
   type InsertAboutStatistic,
   type InsertAboutTeamMessage,
   type InsertAboutTimelineEntry,
+  type MediaAsset,
   mediaAssets,
 } from "../../../../../shared/index.js";
 import { db } from "../../../../db.js";
@@ -284,6 +285,28 @@ export class AboutRepository {
     return (result.rowCount ?? 0) > 0;
   }
 
+  async reorderAboutMapLocations(orderedIds: number[]): Promise<void> {
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().reorderAboutMapLocations(orderedIds);
+    }
+    await unifiedCache.del("about:batch");
+    await db.transaction(async (tx) => {
+      for (let i = 0; i < orderedIds.length; i++) {
+        const id = orderedIds[i] as number;
+        await tx
+          .update(aboutMapLocations)
+          .set({ sortOrder: i + 1 })
+          .where(eq(aboutMapLocations.id, id));
+      }
+    });
+
+    try {
+      await emitCacheInvalidation("about:", "update");
+    } catch (error) {
+      logger.debug("[Cache] Failed to emit invalidation event:", error);
+    }
+  }
+
   async getAboutSections(includeInactive: boolean = false): Promise<AboutSection[]> {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getAboutSections(includeInactive);
@@ -539,6 +562,7 @@ export class AboutRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getAboutBatch();
     }
+    const startTime = Date.now();
     const cacheKey = "about:batch";
     const cached = await unifiedCache.get<AboutBatchResponse>(cacheKey, "data");
     if (cached) return cached;
@@ -552,6 +576,38 @@ export class AboutRepository {
       this.getAboutTeamMessage(false),
     ]);
 
+    // Resolve media assets
+    const mediaIds = new Set<number>();
+
+    // Hero media
+    if (hero?.imageId) mediaIds.add(hero.imageId);
+    if (hero?.videoId) mediaIds.add(hero.videoId);
+    if (hero?.backgroundMediaId) mediaIds.add(hero.backgroundMediaId);
+
+    // Timeline media
+    timeline.forEach((entry) => {
+      if (entry.imageId) mediaIds.add(entry.imageId);
+    });
+
+    // Sections media
+    sections.forEach((section) => {
+      if (section.imageId) mediaIds.add(section.imageId);
+      if (Array.isArray(section.mediaIds)) {
+        section.mediaIds.forEach((id) => {
+          if (typeof id === "number") mediaIds.add(id);
+        });
+      }
+    });
+
+    // Team message media
+    if (teamMessage?.imageId) mediaIds.add(teamMessage.imageId);
+
+    let mediaAssets: MediaAsset[] = [];
+    if (mediaIds.size > 0) {
+      const { mediaRepository } = await import("../../repositories/index.js");
+      mediaAssets = await mediaRepository.getMediaAssetsByIds(Array.from(mediaIds).map(String));
+    }
+
     const result: AboutBatchResponse = {
       hero: (hero as AboutHero) || null,
       timeline: timeline as AboutTimelineEntry[],
@@ -559,6 +615,14 @@ export class AboutRepository {
       sections: sections as AboutSection[],
       statistics: statistics as AboutStatistic[],
       teamMessage: (teamMessage as AboutTeamMessage) || null,
+      mediaAssets,
+      _meta: {
+        fetchedAt: new Date().toISOString(),
+        totalRequests: 7, // 6 about tables + 1 media table
+        mediaAssetsLoaded: mediaAssets.length,
+        mediaIdsRequested: Array.from(mediaIds),
+        responseTime: Date.now() - startTime,
+      },
     };
 
     // Cache for 30 minutes

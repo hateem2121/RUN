@@ -33,6 +33,7 @@ import homepageBatchRouter from "./homepage-batch.routes.js";
 import homepageManagementRouter from "./homepage-management.routes.js";
 import logoSettingsRouter from "./logo-settings.routes.js";
 import manufacturingCapabilitiesRouter from "./manufacturing-capabilities.routes.js";
+import manufacturingCaseStudiesRouter from "./manufacturing-case-studies.routes.js";
 import manufacturingHeroRouter from "./manufacturing-hero.routes.js";
 // Manufacturing Page Resources
 import manufacturingProcessesRouter from "./manufacturing-processes.routes.js";
@@ -99,6 +100,7 @@ router.use("/sustainability-goals", sustainabilityGoalsRouter);
 router.use("/manufacturing-processes", manufacturingProcessesRouter);
 router.use("/manufacturing-capabilities", manufacturingCapabilitiesRouter);
 router.use("/manufacturing-qualities", manufacturingQualitiesRouter);
+router.use("/manufacturing-case-studies", manufacturingCaseStudiesRouter);
 
 // ============================================================================
 // TECHNOLOGY PAGE RESOURCES

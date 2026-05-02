@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { countUpAnimation } from "@/lib/gsap-animations";
-import { cn } from "@/lib/utils";
+import { cn, sanitizeContent } from "@/lib/utils";
 
 interface PublicHeroSectionProps {
   mediaAssets: MediaAsset[];
@@ -39,7 +39,7 @@ export function PublicHeroSection({
         .map((word) => {
           const isHighlighted = word.startsWith("**") && word.endsWith("**");
           const cleanWord = isHighlighted ? word.slice(2, -2) : word;
-          return `<span class="inline-block overflow-hidden pb-2"><span class="word inline-block ${
+          return `<span class="inline-block overflow-hidden pb-2 pr-4"><span class="word inline-block ${
             isHighlighted ? "text-[var(--color-manufacturing-accent)] relative" : ""
           }">${cleanWord}${
             isHighlighted
@@ -191,7 +191,7 @@ export function PublicHeroSection({
           </div>
 
           <div className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col justify-center h-full pb-20 mt-10">
-            <div className="max-w-5xl">
+            <div className="max-w-6xl">
               <div className="inline-flex items-center space-x-3 border-l-4 border-[var(--color-manufacturing-accent)] pl-4 mb-8">
                 <span className="text-xs font-mono uppercase tracking-widest text-[var(--color-manufacturing-accent)] font-bold">
                   Est. 1889
@@ -204,17 +204,17 @@ export function PublicHeroSection({
               <h1
                 id="hero-title"
                 ref={headlineRef}
-                className="text-6xl md:text-8xl lg:text-9xl font-neue-stance font-bold tracking-tighter uppercase italic leading-[0.85] mb-8 text-white relative transform skew-x-[-2deg]"
-                aria-label={displayHeadline.replace(/\*\*/g, "")}
+                className="text-[clamp(2.5rem,8vw,5rem)] md:text-[clamp(3.5rem,9vw,7rem)] lg:text-[clamp(4.5rem,10vw,8rem)] font-neue-stance font-bold tracking-tighter uppercase italic leading-[0.85] mb-8 text-white relative transform skew-x-[-2deg] break-words text-balance pr-10"
+                aria-label={sanitizeContent(displayHeadline.replace(/\*\*/g, ""))}
               >
-                {displayHeadline}
+                {sanitizeContent(displayHeadline)}
               </h1>
 
               <p
                 ref={subheadlineRef}
-                className="text-lg md:text-xl text-[#E3DFD6] max-w-2xl font-light leading-relaxed mb-12 border-l border-white/10 pl-6"
+                className="text-base md:text-xl text-manufacturing-light max-w-2xl font-light leading-relaxed mb-12 border-l border-white/10 pl-6"
               >
-                {hero.subheadline ||
+                {sanitizeContent(hero.subheadline) ||
                   "193,000 sq ft of cutting-edge manufacturing space dedicated to the future of technical apparel. Where algorithmic precision meets artisanal expertise."}
               </p>
 

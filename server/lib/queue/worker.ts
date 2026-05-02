@@ -1,10 +1,16 @@
 import { type Job, Worker } from "bullmq";
+import { unifiedCache } from "../cache/unified-cache.js";
 import { emailService, type InquiryEmailData } from "../integrations/email-service.js";
 import { logger } from "../monitoring/logger.js";
+import {
+  CACHE_INVALIDATION_QUEUE_NAME,
+  type CacheInvalidationJobData,
+} from "./cache-invalidation-queue.js";
 import { isRedisConfigured, redisConnection } from "./connection.js";
 import { EMAIL_QUEUE_NAME } from "./email-queue.js";
 
-let worker: Worker<InquiryEmailData> | null = null;
+let emailWorker: Worker<InquiryEmailData> | null = null;
+let cacheWorker: Worker<CacheInvalidationJobData> | null = null;
 
 export function startWorker() {
   if (!isRedisConfigured || !redisConnection) {
@@ -12,38 +18,45 @@ export function startWorker() {
     return;
   }
 
-  if (worker) {
-    logger.info("[Worker] Worker already running");
-    return;
+  // 1. Email Worker
+  if (!emailWorker) {
+    emailWorker = new Worker<InquiryEmailData>(
+      EMAIL_QUEUE_NAME,
+      async (job: Job<InquiryEmailData>) => {
+        logger.info(`[Worker:Email] Processing job ${job.id}`);
+        try {
+          await emailService.sendAdminNotification(job.data);
+          await emailService.sendCustomerConfirmation(job.data);
+          logger.info(`[Worker:Email] Completed job ${job.id}`);
+        } catch (error) {
+          logger.error(`[Worker:Email] Failed job ${job.id}:`, error);
+          throw error;
+        }
+      },
+      { connection: redisConnection, concurrency: 5 },
+    );
   }
 
-  worker = new Worker<InquiryEmailData>(
-    EMAIL_QUEUE_NAME,
-    async (job: Job<InquiryEmailData>) => {
-      logger.info(`[Worker] Processing email job ${job.id}`);
+  // 2. Cache Invalidation Worker
+  if (!cacheWorker) {
+    cacheWorker = new Worker<CacheInvalidationJobData>(
+      CACHE_INVALIDATION_QUEUE_NAME,
+      async (job: Job<CacheInvalidationJobData>) => {
+        const { pattern } = job.data;
+        logger.info(`[Worker:Cache] Invalidating pattern: ${pattern}`);
+        try {
+          // Perform the actual invalidation in the background
+          // We use clearPattern directly to avoid re-queuing
+          await unifiedCache.clearPattern(pattern);
+          logger.info(`[Worker:Cache] Completed invalidation: ${pattern}`);
+        } catch (error) {
+          logger.error(`[Worker:Cache] Failed invalidation ${pattern}:`, error);
+          throw error;
+        }
+      },
+      { connection: redisConnection, concurrency: 10 },
+    );
+  }
 
-      try {
-        await emailService.sendAdminNotification(job.data);
-        await emailService.sendCustomerConfirmation(job.data);
-        logger.info(`[Worker] Completed email job ${job.id}`);
-      } catch (error) {
-        logger.error(`[Worker] Failed email job ${job.id}:`, error);
-        throw error;
-      }
-    },
-    {
-      connection: redisConnection,
-      concurrency: 5,
-    },
-  );
-
-  worker.on("completed", (job) => {
-    logger.debug(`[Worker] Job ${job.id} completed`);
-  });
-
-  worker.on("failed", (job, err) => {
-    logger.error(`[Worker] Job ${job?.id} failed:`, err);
-  });
-
-  logger.info("[Worker] Email worker started");
+  logger.info("[Worker] All workers started (Email, Cache)");
 }

@@ -113,15 +113,6 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     "Create manufacturing process",
   );
 
-  Promise.all([
-    twoTierBatchCache.invalidate("manufacturing:processes"),
-    CacheOperations.invalidateManufacturing(),
-  ])
-    .then(() => logger.info("[ManufacturingProcesses] ✅ Cache invalidated after creation"))
-    .catch((cacheError) =>
-      logger.error("[ManufacturingProcesses] ❌ Cache invalidation failed:", cacheError),
-    );
-
   logger.info(`[ManufacturingProcesses] Created process ${newProcess.id}`);
   return res.status(201).json(newProcess);
 });
@@ -145,15 +136,6 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     return res.status(404).json({ error: "Process not found" });
   }
 
-  Promise.all([
-    twoTierBatchCache.invalidate("manufacturing:processes"),
-    CacheOperations.invalidateManufacturing(),
-  ])
-    .then(() => logger.info("[ManufacturingProcesses] ✅ Cache invalidated after update"))
-    .catch((cacheError) =>
-      logger.error("[ManufacturingProcesses] ❌ Cache invalidation failed:", cacheError),
-    );
-
   logger.info(`[ManufacturingProcesses] Updated process ${id}`);
   return res.json(updated);
 });
@@ -171,15 +153,6 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
     return res.status(404).json({ error: "Process not found" });
   }
 
-  Promise.all([
-    twoTierBatchCache.invalidate("manufacturing:processes"),
-    CacheOperations.invalidateManufacturing(),
-  ])
-    .then(() => logger.info("[ManufacturingProcesses] ✅ Cache invalidated after deletion"))
-    .catch((cacheError) =>
-      logger.error("[ManufacturingProcesses] ❌ Cache invalidation failed:", cacheError),
-    );
-
   logger.info(`[ManufacturingProcesses] Deleted process ${id}`);
   return res.status(204).send();
 });
@@ -192,24 +165,17 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     return res.status(400).json(validation.error);
   }
 
-  const updates = await Promise.all(
-    removeUndefined(validation.data).processes.map(
-      ({ id, position }: { id: number; position: number }) =>
-        manufacturingRepository.updateManufacturingProcess(id, { sortOrder: position }),
-    ),
+  const { processes } = validation.data;
+  const orderedIds = processes.sort((a, b) => a.position - b.position).map((item) => item.id);
+
+  await withTimeout(
+    manufacturingRepository.reorderManufacturingProcesses(orderedIds),
+    10000,
+    "Reorder manufacturing processes",
   );
 
-  Promise.all([
-    twoTierBatchCache.invalidate("manufacturing:processes"),
-    CacheOperations.invalidateManufacturing(),
-  ])
-    .then(() => logger.info("[ManufacturingProcesses] ✅ Cache invalidated after reorder"))
-    .catch((cacheError) =>
-      logger.error("[ManufacturingProcesses] ❌ Cache invalidation failed:", cacheError),
-    );
-
-  logger.info(`[ManufacturingProcesses] Reordered ${updates.length} processes`);
-  return res.json({ success: true, updated: updates.length });
+  logger.info(`[ManufacturingProcesses] Reordered ${orderedIds.length} processes`);
+  return res.json({ success: true, updated: orderedIds.length });
 });
 
 /**

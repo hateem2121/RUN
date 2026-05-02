@@ -1,6 +1,7 @@
 import type { MediaAsset } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { CapabilityManagement } from "@/components/admin/manufacturing/CapabilityManagement";
+import { CaseStudyManagement } from "@/components/admin/manufacturing/CaseStudyManagement";
 import { HeroManagement } from "@/components/admin/manufacturing/HeroManagement";
 import { ProcessManagement } from "@/components/admin/manufacturing/ProcessManagement";
 import { QualityManagement } from "@/components/admin/manufacturing/QualityManagement";
@@ -47,7 +48,7 @@ export function ManufacturingManagement() {
           defaultValue="hero"
           className="fade-in-50 slide-in-from-bottom-4 animate-in space-y-6 duration-500"
         >
-          <TabsList className="bg-white/5 border border-white/10 p-1 h-12 rounded-xl grid w-full grid-cols-4 lg:max-w-2xl overflow-hidden mb-8">
+          <TabsList className="bg-white/5 border border-white/10 p-1 h-12 rounded-xl grid w-full grid-cols-5 lg:max-w-3xl overflow-hidden mb-8">
             <TabsTrigger
               value="hero"
               className="rounded-lg data-[state=active]:bg-[#D4A853] data-[state=active]:text-black text-[#68869A] transition-all font-medium"
@@ -72,6 +73,12 @@ export function ManufacturingManagement() {
             >
               Quality
             </TabsTrigger>
+            <TabsTrigger
+              value="cases"
+              className="rounded-lg data-[state=active]:bg-[#D4A853] data-[state=active]:text-black text-[#68869A] transition-all font-medium"
+            >
+              Stories
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="hero" className="outline-none focus-visible:ring-0">
@@ -95,6 +102,12 @@ export function ManufacturingManagement() {
           <TabsContent value="quality" className="outline-none focus-visible:ring-0">
             <ErrorBoundary componentName="Quality Standards Management">
               <QualityManagement mediaAssets={mediaAssets} />
+            </ErrorBoundary>
+          </TabsContent>
+
+          <TabsContent value="cases" className="outline-none focus-visible:ring-0">
+            <ErrorBoundary componentName="Case Study Management">
+              <CaseStudyManagement mediaAssets={mediaAssets} />
             </ErrorBoundary>
           </TabsContent>
         </Tabs>

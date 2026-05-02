@@ -7,6 +7,7 @@ import { removeUndefined } from "../../utils.js";
  * Extracted from main routes.ts for better organization
  */
 
+import type { AboutBatchResponse } from "@run-remix/shared";
 import { Router } from "express";
 import {
   insertSustainabilityHeroSchema,
@@ -25,6 +26,7 @@ import { logger } from "../../lib/monitoring/logger.js";
 // Manufacturing imports moved to manufacturing-hero.routes.ts
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { extractMediaIds } from "../../lib/utilities/media-utils.js";
+import { aboutService } from "../../services/about.service.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
@@ -49,79 +51,38 @@ const CACHE_TTL_NAVIGATION = 7200; // 120 minutes - for batch/navigation data
 
 // About batch API - optimized endpoint for all about page data
 // Force restart for response-tracker middleware update
+// Optimized batch route using AboutService
 router.get("/about-batch", async (_req, res) => {
   const startTime = performance.now();
-  // CHUNK 3: Check cache first
   const cacheKey = CacheKeys.about.batch();
-  const cached = await unifiedCache.get<BatchResponse>(cacheKey);
 
+  // 1. Check cache first
+  const cached = await unifiedCache.get<AboutBatchResponse>(cacheKey);
   if (cached) {
     logger.info("[About] Returning cached batch data");
     res.setHeader("X-Cache-Hit", "true");
-    res.setHeader("X-Response-Time", (performance.now() - startTime).toString());
-    res.setHeader("X-Media-Assets-Loaded", (cached.mediaAssets?.length || 0).toString());
+    res.setHeader("X-Response-Time", (performance.now() - startTime).toFixed(2));
     return res.json(cached);
   }
 
-  logger.info("[About] Cache miss - fetching from database");
+  // 2. Fetch from service (which uses repository + circuit breaker)
+  const result = await aboutService.getAllAboutData();
 
-  // Fetch all about data via optimized repository batch method
-  const aboutData = await withTimeout(
-    aboutRepository.getAboutBatch(),
-    15000,
-    "About batch fetch (repository layer)",
-  ).catch((err) => {
-    logger.error("[About] Aggregate fetch failed, returning empty set", err);
-    return {
-      hero: null,
-      timeline: [],
-      locations: [],
-      sections: [],
-      statistics: [],
-      teamMessage: null,
-    };
-  });
+  if (result.isErr()) {
+    logger.error("[About] Aggregate fetch failed", result.error);
+    return res.status(result.error.statusCode || 500).json({
+      error: result.error.message,
+      code: result.error.code,
+    });
+  }
 
-  const { hero, timeline, locations, sections, statistics, teamMessage } = aboutData;
+  const batchData = result.value;
 
-  // Collect all media IDs used in about content
-  const dataToScan = [hero, timeline, locations, sections, statistics, teamMessage];
-  const mediaIds = extractMediaIds(dataToScan);
-
-  // Fetch only the specific media assets that are actually used
-  const mediaAssets =
-    mediaIds.size > 0
-      ? await withTimeout(
-          mediaRepository.getMediaAssetsByIds(Array.from(mediaIds).map((id) => id.toString())),
-          10000,
-          "Fetch about media assets by IDs",
-        )
-      : [];
-
-  const batchData = {
-    hero,
-    timeline,
-    locations,
-    sections,
-    statistics,
-    teamMessage,
-    mediaAssets: mediaAssets || [],
-    _meta: {
-      fetchedAt: new Date().toISOString(),
-      totalRequests: 1, // Single batch call to repo
-      mediaAssetsLoaded: mediaAssets.length,
-      mediaIdsRequested: Array.from(mediaIds),
-      responseTime: performance.now() - startTime,
-    },
-  };
-
-  // CHUNK 3: Cache the batch data for 120 minutes (7200s)
+  // 3. Cache the result
   await unifiedCache.set(cacheKey, batchData, CACHE_TTL_NAVIGATION);
-  logger.info("[About] Batch data cached for 120 minutes / 2 hours");
 
-  res.setHeader("X-Response-Time", (performance.now() - startTime).toString());
-  res.setHeader("X-Media-Assets-Loaded", mediaAssets.length.toString());
   res.setHeader("X-Cache-Hit", "false");
+  res.setHeader("X-Response-Time", (performance.now() - startTime).toFixed(2));
   return res.json(batchData);
 });
 

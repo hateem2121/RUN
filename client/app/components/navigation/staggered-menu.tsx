@@ -2,6 +2,7 @@ import { gsap } from "gsap";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { cn } from "@/lib/utils";
 
 export interface StaggeredMenuItem {
   label: string;
@@ -344,11 +345,11 @@ export const StaggeredMenu = ({
   // though we can use style prop for env vars which is safer.
 
   return (
-    <div className="sm-scope pointer-events-none fixed top-0 left-0 z-(--z-index-sticky) h-screen w-screen overflow-hidden">
+    <div className="sm-scope pointer-events-none fixed top-0 left-0 z-(--z-index-max) h-screen w-screen overflow-hidden">
       <div
         className={`${
           className ? `${className} ` : ""
-        }staggered-menu-wrapper relative z-(--z-index-sticky) h-full w-full`}
+        }staggered-menu-wrapper relative z-(--z-index-max) h-full w-full`}
         style={accentColor ? ({ "--sm-accent": accentColor } as React.CSSProperties) : undefined}
         data-position={position}
         data-open={open || undefined}
@@ -378,13 +379,18 @@ export const StaggeredMenu = ({
         </div>
 
         <header
-          className="staggered-menu-header absolute top-0 left-0 z-(--z-index-dock) flex w-full items-center justify-center bg-transparent p-4 pt-(--pt)"
+          className="staggered-menu-header absolute top-0 left-0 z-(--z-index-modal-nested) flex w-full items-center justify-center bg-transparent p-4 pt-(--pt)"
           aria-label="Main navigation header"
           style={{ "--pt": "max(1rem, env(safe-area-inset-top))" } as React.CSSProperties}
         >
           <button
             ref={toggleBtnRef}
-            className="sm-toggle pointer-events-auto relative my-0 flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full border-0 bg-white/50 py-6 text-black/60 shadow-lg backdrop-blur-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-black/40 dark:text-white/60"
+            className={cn(
+              "sm-toggle pointer-events-auto relative my-0 flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full border-0 shadow-lg backdrop-blur-xs transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              open
+                ? "bg-white text-black dark:bg-white dark:text-black scale-110"
+                : "bg-white/50 text-black/60 dark:bg-black/40 dark:text-white/60",
+            )}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open ? "true" : "false"}
             aria-controls="staggered-menu-panel"
@@ -438,13 +444,22 @@ export const StaggeredMenu = ({
                     key={it.label + idx}
                   >
                     <Link
-                      className="sm-panel-item relative inline-block cursor-pointer rounded-lg pr-[1.2em] font-bold text-4xl text-foreground uppercase leading-tight tracking-tight no-underline outline-none transition-all duration-200 ease-out hover:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring active:scale-95 sm:text-5xl"
+                      className="sm-panel-item relative inline-block cursor-pointer rounded-lg pr-[1.5rem] font-bold text-[clamp(1.5rem,7vw,3rem)] text-foreground uppercase leading-[1.05] tracking-tighter no-underline outline-none transition-all duration-200 ease-out hover:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring active:scale-95"
                       to={it.link}
                       aria-label={it.ariaLabel}
                       data-index={idx + 1}
                       data-testid={`mobile-nav-link-${it.label.toLowerCase().replace(/\s+/g, "-")}`}
                       onClick={() => {
                         toggleMenu();
+                      }}
+                      style={{
+                        color: it.label.toLowerCase().includes("manufacturing")
+                          ? "#D4A853"
+                          : it.label.toLowerCase().includes("technology")
+                            ? "#00D4FF"
+                            : it.label.toLowerCase().includes("sustainability")
+                              ? "#00C97B"
+                              : undefined,
                       }}
                     >
                       <span className="sm-panel-itemLabel inline-block will-change-transform [transform-origin:50%_100%]">
@@ -475,13 +490,14 @@ export const StaggeredMenu = ({
   content: "0" attr(data-index);
   position: absolute;
   right: 0;
-  top: 0;
-  font-size: 0.35em;
-  font-weight: 500;
+  top: 0.1em;
+  font-size: 0.25em;
+  font-weight: 700;
   color: var(--sm-accent, var(--color-primary));
   opacity: var(--sm-num-opacity, 0);
   pointer-events: none;
   user-select: none;
+  font-family: var(--font-mono);
 }
       `}</style>
     </div>

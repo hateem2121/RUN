@@ -15,7 +15,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ADMIN_MEDIA_QUERIES, buildMediaApiParams } from "@shared/api-constants";
+import { ABOUT_API, ADMIN_MEDIA_QUERIES, buildMediaApiParams } from "@shared/api-constants";
 import type { AboutSection, InsertAboutSection, MediaAsset } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Edit, GripVertical, Image, Plus, Trash2, X } from "lucide-react";
@@ -74,8 +74,13 @@ function SortableSectionItem({ section, onEdit, onDelete }: SectionItemProps) {
       className={`rounded-lg border bg-white/[0.03] p-4 ${isDragging ? "shadow-lg" : ""}`}
     >
       <div className="flex items-start gap-4">
-        <button className="mt-1 cursor-grab" {...attributes} {...listeners}>
-          <GripVertical className="h-5 w-5 text-[#68869A]/70" />
+        <button
+          className="mt-1 cursor-grab"
+          aria-label="Drag to reorder section"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="h-5 w-5 text-[#68869A]/70" aria-hidden="true" />
         </button>
 
         <div className="flex-1">
@@ -102,11 +107,21 @@ function SortableSectionItem({ section, onEdit, onDelete }: SectionItemProps) {
         </div>
 
         <div className="flex gap-2">
-          <Button size="sm" variant="ghost" onClick={() => onEdit(section)}>
-            <Edit className="h-4 w-4" />
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => onEdit(section)}
+            aria-label={`Edit ${section.title || "section"}`}
+          >
+            <Edit className="h-4 w-4" aria-hidden="true" />
           </Button>
-          <Button size="sm" variant="ghost" onClick={() => onDelete(section.id)}>
-            <Trash2 className="h-4 w-4" />
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => onDelete(section.id)}
+            aria-label={`Delete ${section.title || "section"}`}
+          >
+            <Trash2 className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
       </div>
@@ -136,7 +151,7 @@ export function AboutSectionsTab() {
   );
 
   const { data: sections = [], isLoading } = useQuery<AboutSection[]>({
-    queryKey: ["/api/about-sections"],
+    queryKey: [ABOUT_API.SECTIONS],
   });
 
   const { data: mediaResponse } = useQuery<{
@@ -160,15 +175,15 @@ export function AboutSectionsTab() {
 
   const createMutation = useMutation({
     mutationFn: (data: InsertAboutSection) => {
-      return apiRequest("/api/about-sections", {
+      return apiRequest(ABOUT_API.SECTIONS, {
         method: "POST",
         body: JSON.stringify(data),
       }) as Promise<AboutSection>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-sections"] });
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-batch"] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.SECTIONS] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
       toast({ title: "Success", description: "Section created successfully" });
       handleCloseDialog();
     },
@@ -190,8 +205,8 @@ export function AboutSectionsTab() {
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-sections"] });
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-batch"] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.SECTIONS] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
       toast({ title: "Success", description: "Section updated successfully" });
       handleCloseDialog();
     },
@@ -210,8 +225,8 @@ export function AboutSectionsTab() {
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-sections"] });
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-batch"] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.SECTIONS] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
       toast({ title: "Success", description: "Section deleted successfully" });
     },
     onError: () => {
@@ -224,16 +239,16 @@ export function AboutSectionsTab() {
   });
 
   const reorderMutation = useMutation({
-    mutationFn: (sections: { id: number; position: number }[]) => {
-      return apiRequest("/api/about-sections/reorder", {
+    mutationFn: (sections: { id: number; sortOrder: number }[]) => {
+      return apiRequest(ABOUT_API.SECTIONS_REORDER, {
         method: "PATCH",
-        body: JSON.stringify({ sections }),
+        body: JSON.stringify({ entries: sections }),
       }) as Promise<AboutSection[]>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-sections"] });
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-batch"] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.SECTIONS] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
     },
   });
 
@@ -251,10 +266,10 @@ export function AboutSectionsTab() {
       const newSections = arrayMove(sections, oldIndex, newIndex);
       const reorderedSections = newSections.map((section, index) => ({
         id: section.id,
-        position: index,
+        sortOrder: index,
       }));
 
-      getQueryClient().setQueryData(["/api/about-sections"], newSections);
+      getQueryClient().setQueryData([ABOUT_API.SECTIONS], newSections);
       reorderMutation.mutate(reorderedSections);
     }
   };
@@ -344,7 +359,7 @@ export function AboutSectionsTab() {
     });
   };
 
-  const sortedSections = [...sections].sort((a, b) => (a.position || 0) - (b.position || 0));
+  const sortedSections = [...sections].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -465,11 +480,12 @@ export function AboutSectionsTab() {
                             <video
                               src={`/api/media/${media.id}/content`}
                               className="h-24 w-full rounded-lg object-cover"
+                              aria-label={`Preview of ${media.filename || "video"}`}
                             />
                           ) : (
                             <img
                               src={`/api/media/${media.id}/content`}
-                              alt=""
+                              alt={media.altText || media.filename || "Section media"}
                               className="h-24 w-full rounded-lg object-cover"
                             />
                           )}
@@ -478,8 +494,9 @@ export function AboutSectionsTab() {
                             variant="destructive"
                             className="absolute -top-2 -right-2 h-6 w-6 p-0 opacity-0 transition-opacity group-hover:opacity-100"
                             onClick={() => removeMedia(media.id)}
+                            aria-label="Remove media"
                           >
-                            <X className="h-3 w-3" />
+                            <X className="h-3 w-3" aria-hidden="true" />
                           </Button>
                         </div>
                       ))}

@@ -1,4 +1,5 @@
 import type {
+  AboutBatchResponse,
   AboutHero,
   AboutMapLocation,
   AboutSection,
@@ -12,18 +13,14 @@ import type {
   InsertAboutTeamMessage,
   InsertAboutTimelineEntry,
 } from "@run-remix/shared";
+import { err, ok, type Result } from "neverthrow";
+import { safeQuery } from "../db.js";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { aboutRepository } from "../lib/db/repositories/index.js";
+import { type AppError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
-
-export interface AboutBatchResponse {
-  hero: AboutHero | null;
-  timeline: AboutTimelineEntry[];
-  locations: AboutMapLocation[];
-  sections: AboutSection[];
-  statistics: AboutStatistic[];
-  teamMessage: AboutTeamMessage | null;
-}
+import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
+import { withTimeout } from "../lib/resilience/request-timeout.js";
 
 /**
  * AboutService - Centralized business logic for About page management
@@ -39,48 +36,32 @@ export class AboutService {
    * Get all About page data in a single optimized aggregate call
    * Used by: /api/about-batch (public route)
    */
-  async getAllAboutData(): Promise<AboutBatchResponse> {
-    // Use Promise.allSettled for resilience: a single failing query
-    // (e.g., missing DB column after schema change) won't crash the entire batch
-    const results = await Promise.allSettled([
-      this.getHero(true),
-      this.getTimeline(true),
-      this.getLocations(true),
-      this.getSections(true),
-      this.getStatistics(true),
-      this.getTeamMessage(true),
-    ]);
-
-    const getValue = <T>(result: PromiseSettledResult<T>, fallback: T): T => {
-      if (result.status === "fulfilled") return result.value;
-      logger.warn("[AboutService] Partial batch failure, using fallback", {
-        reason: result.reason instanceof Error ? result.reason.message : String(result.reason),
-      });
-      return fallback;
+  async getAllAboutData(): Promise<Result<AboutBatchResponse, AppError>> {
+    const operation = async () => {
+      return await aboutRepository.getAboutBatch();
     };
 
-    return {
-      hero: getValue(results[0], null),
-      timeline: getValue(results[1], []),
-      locations: getValue(results[2], []),
-      sections: getValue(results[3], []),
-      statistics: getValue(results[4], []),
-      teamMessage: getValue(results[5], null),
-    };
+    return safeQuery(withCircuit("about-batch-get", operation, DB_CIRCUIT_OPTIONS));
   }
 
   // ===========================================================================
   // HERO SECTION
   // ===========================================================================
 
-  async getHero(includeInactive: boolean = true): Promise<AboutHero | null> {
-    const result = await aboutRepository.getAboutHero(includeInactive);
-    return result ?? null;
+  async getHero(includeInactive: boolean = true): Promise<Result<AboutHero | null, AppError>> {
+    const operation = async () => {
+      const data = await aboutRepository.getAboutHero(includeInactive);
+      return data ? (data as AboutHero) : null;
+    };
+
+    return safeQuery(withCircuit("about-hero-get", operation, DB_CIRCUIT_OPTIONS));
   }
 
-  async updateHero(data: Partial<InsertAboutHero>): Promise<AboutHero> {
-    const result = await aboutRepository.updateAboutHero(data);
-    await CacheOperations.invalidateAbout();
+  async updateHero(data: Partial<InsertAboutHero>): Promise<Result<AboutHero, AppError>> {
+    const result = await safeQuery(aboutRepository.updateAboutHero(data));
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
     return result;
   }
 
@@ -88,33 +69,69 @@ export class AboutService {
   // TIMELINE
   // ===========================================================================
 
-  async getTimeline(includeInactive: boolean = true): Promise<AboutTimelineEntry[]> {
-    return aboutRepository.getAboutTimelineEntries(includeInactive);
+  async getTimeline(
+    includeInactive: boolean = true,
+  ): Promise<Result<AboutTimelineEntry[], AppError>> {
+    const operation = async () => {
+      const data = await aboutRepository.getAboutTimelineEntries(includeInactive);
+      return (data as AboutTimelineEntry[]) || [];
+    };
+
+    return safeQuery(withCircuit("about-timeline-get", operation, DB_CIRCUIT_OPTIONS));
   }
 
-  async getTimelineEntry(id: number): Promise<AboutTimelineEntry | null> {
-    const result = await aboutRepository.getAboutTimelineEntry(id);
-    return result ?? null;
+  async getTimelineEntry(id: number): Promise<Result<AboutTimelineEntry | null, AppError>> {
+    const operation = async () => {
+      const data = await aboutRepository.getAboutTimelineEntry(id);
+      return data ? (data as AboutTimelineEntry) : null;
+    };
+
+    return safeQuery(withCircuit("about-timeline-entry-get", operation, DB_CIRCUIT_OPTIONS));
   }
 
-  async createTimelineEntry(data: InsertAboutTimelineEntry): Promise<AboutTimelineEntry> {
-    const result = await aboutRepository.createAboutTimelineEntry(data);
-    await CacheOperations.invalidateAbout();
+  async createTimelineEntry(
+    data: InsertAboutTimelineEntry,
+  ): Promise<Result<AboutTimelineEntry, AppError>> {
+    const result = await safeQuery(aboutRepository.createAboutTimelineEntry(data));
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
     return result;
   }
 
   async updateTimelineEntry(
     id: number,
     data: Partial<InsertAboutTimelineEntry>,
-  ): Promise<AboutTimelineEntry> {
-    const result = await aboutRepository.updateAboutTimelineEntry(id, data);
-    await CacheOperations.invalidateAbout();
+  ): Promise<Result<AboutTimelineEntry, AppError>> {
+    const result = await safeQuery(aboutRepository.updateAboutTimelineEntry(id, data));
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
     return result;
   }
 
-  async deleteTimelineEntry(id: number): Promise<boolean> {
-    const result = await aboutRepository.deleteAboutTimelineEntry(id);
-    await CacheOperations.invalidateAbout();
+  async deleteTimelineEntry(id: number): Promise<Result<boolean, AppError>> {
+    const result = await safeQuery(aboutRepository.deleteAboutTimelineEntry(id));
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
+    return result;
+  }
+
+  async reorderTimelineEntries(orderedIds: number[]): Promise<Result<boolean, AppError>> {
+    const operation = async () => {
+      await aboutRepository.reorderAboutTimelineEntries(orderedIds);
+      return true;
+    };
+
+    const result = await safeQuery(
+      withCircuit("about-timeline-reorder", operation, DB_CIRCUIT_OPTIONS),
+    );
+
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
+
     return result;
   }
 
@@ -122,33 +139,67 @@ export class AboutService {
   // LOCATIONS
   // ===========================================================================
 
-  async getLocations(includeInactive: boolean = true): Promise<AboutMapLocation[]> {
-    return aboutRepository.getAboutMapLocations(includeInactive);
+  async getLocations(
+    includeInactive: boolean = true,
+  ): Promise<Result<AboutMapLocation[], AppError>> {
+    const operation = async () => {
+      const data = await aboutRepository.getAboutMapLocations(includeInactive);
+      return (data as AboutMapLocation[]) || [];
+    };
+
+    return safeQuery(withCircuit("about-locations-get", operation, DB_CIRCUIT_OPTIONS));
   }
 
-  async getLocation(id: number): Promise<AboutMapLocation | null> {
-    const result = await aboutRepository.getAboutMapLocation(id);
-    return result ?? null;
+  async getLocation(id: number): Promise<Result<AboutMapLocation | null, AppError>> {
+    const operation = async () => {
+      const data = await aboutRepository.getAboutMapLocation(id);
+      return data ? (data as AboutMapLocation) : null;
+    };
+
+    return safeQuery(withCircuit("about-location-get", operation, DB_CIRCUIT_OPTIONS));
   }
 
-  async createLocation(data: InsertAboutMapLocation): Promise<AboutMapLocation> {
-    const result = await aboutRepository.createAboutMapLocation(data);
-    await CacheOperations.invalidateAbout();
+  async createLocation(data: InsertAboutMapLocation): Promise<Result<AboutMapLocation, AppError>> {
+    const result = await safeQuery(aboutRepository.createAboutMapLocation(data));
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
     return result;
   }
 
   async updateLocation(
     id: number,
     data: Partial<InsertAboutMapLocation>,
-  ): Promise<AboutMapLocation> {
-    const result = await aboutRepository.updateAboutMapLocation(id, data);
-    await CacheOperations.invalidateAbout();
+  ): Promise<Result<AboutMapLocation, AppError>> {
+    const result = await safeQuery(aboutRepository.updateAboutMapLocation(id, data));
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
     return result;
   }
 
-  async deleteLocation(id: number): Promise<boolean> {
-    const result = await aboutRepository.deleteAboutMapLocation(id);
-    await CacheOperations.invalidateAbout();
+  async deleteLocation(id: number): Promise<Result<boolean, AppError>> {
+    const result = await safeQuery(aboutRepository.deleteAboutMapLocation(id));
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
+    return result;
+  }
+
+  async reorderLocations(orderedIds: number[]): Promise<Result<boolean, AppError>> {
+    const operation = async () => {
+      await aboutRepository.reorderAboutMapLocations(orderedIds);
+      return true;
+    };
+
+    const result = await safeQuery(
+      withCircuit("about-locations-reorder", operation, DB_CIRCUIT_OPTIONS),
+    );
+
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
+
     return result;
   }
 
@@ -156,30 +207,65 @@ export class AboutService {
   // SECTIONS
   // ===========================================================================
 
-  async getSections(includeInactive: boolean = true): Promise<AboutSection[]> {
-    return aboutRepository.getAboutSections(includeInactive);
+  async getSections(includeInactive: boolean = true): Promise<Result<AboutSection[], AppError>> {
+    const operation = async () => {
+      const data = await aboutRepository.getAboutSections(includeInactive);
+      return (data as AboutSection[]) || [];
+    };
+
+    return safeQuery(withCircuit("about-sections-get", operation, DB_CIRCUIT_OPTIONS));
   }
 
-  async getSection(id: number): Promise<AboutSection | null> {
-    const result = await aboutRepository.getAboutSection(id);
-    return result ?? null;
+  async getSection(id: number): Promise<Result<AboutSection | null, AppError>> {
+    const operation = async () => {
+      const data = await aboutRepository.getAboutSection(id);
+      return data ? (data as AboutSection) : null;
+    };
+
+    return safeQuery(withCircuit("about-section-get", operation, DB_CIRCUIT_OPTIONS));
   }
 
-  async createSection(data: InsertAboutSection): Promise<AboutSection> {
-    const result = await aboutRepository.createAboutSection(data);
-    await CacheOperations.invalidateAbout();
+  async createSection(data: InsertAboutSection): Promise<Result<AboutSection, AppError>> {
+    const result = await safeQuery(aboutRepository.createAboutSection(data));
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
     return result;
   }
 
-  async updateSection(id: number, data: Partial<InsertAboutSection>): Promise<AboutSection> {
-    const result = await aboutRepository.updateAboutSection(id, data);
-    await CacheOperations.invalidateAbout();
+  async updateSection(
+    id: number,
+    data: Partial<InsertAboutSection>,
+  ): Promise<Result<AboutSection, AppError>> {
+    const result = await safeQuery(aboutRepository.updateAboutSection(id, data));
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
     return result;
   }
 
-  async deleteSection(id: number): Promise<boolean> {
-    const result = await aboutRepository.deleteAboutSection(id);
-    await CacheOperations.invalidateAbout();
+  async deleteSection(id: number): Promise<Result<boolean, AppError>> {
+    const result = await safeQuery(aboutRepository.deleteAboutSection(id));
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
+    return result;
+  }
+
+  async reorderSections(orderedIds: number[]): Promise<Result<boolean, AppError>> {
+    const operation = async () => {
+      await aboutRepository.reorderAboutSections(orderedIds);
+      return true;
+    };
+
+    const result = await safeQuery(
+      withCircuit("about-sections-reorder", operation, DB_CIRCUIT_OPTIONS),
+    );
+
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
+
     return result;
   }
 
@@ -187,30 +273,67 @@ export class AboutService {
   // STATISTICS
   // ===========================================================================
 
-  async getStatistics(includeInactive: boolean = true): Promise<AboutStatistic[]> {
-    return aboutRepository.getAboutStatistics(includeInactive);
+  async getStatistics(
+    includeInactive: boolean = true,
+  ): Promise<Result<AboutStatistic[], AppError>> {
+    const operation = async () => {
+      const data = await aboutRepository.getAboutStatistics(includeInactive);
+      return (data as AboutStatistic[]) || [];
+    };
+
+    return safeQuery(withCircuit("about-statistics-get", operation, DB_CIRCUIT_OPTIONS));
   }
 
-  async getStatistic(id: number): Promise<AboutStatistic | null> {
-    const result = await aboutRepository.getAboutStatistic(id);
-    return result ?? null;
+  async getStatistic(id: number): Promise<Result<AboutStatistic | null, AppError>> {
+    const operation = async () => {
+      const data = await aboutRepository.getAboutStatistic(id);
+      return data ? (data as AboutStatistic) : null;
+    };
+
+    return safeQuery(withCircuit("about-statistic-get", operation, DB_CIRCUIT_OPTIONS));
   }
 
-  async createStatistic(data: InsertAboutStatistic): Promise<AboutStatistic> {
-    const result = await aboutRepository.createAboutStatistic(data);
-    await CacheOperations.invalidateAbout();
-    return result as AboutStatistic;
+  async createStatistic(data: InsertAboutStatistic): Promise<Result<AboutStatistic, AppError>> {
+    const result = await safeQuery(aboutRepository.createAboutStatistic(data));
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
+    return result as Result<AboutStatistic, AppError>;
   }
 
-  async updateStatistic(id: number, data: Partial<InsertAboutStatistic>): Promise<AboutStatistic> {
-    const result = await aboutRepository.updateAboutStatistic(id, data);
-    await CacheOperations.invalidateAbout();
-    return result as AboutStatistic;
+  async updateStatistic(
+    id: number,
+    data: Partial<InsertAboutStatistic>,
+  ): Promise<Result<AboutStatistic, AppError>> {
+    const result = await safeQuery(aboutRepository.updateAboutStatistic(id, data));
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
+    return result as Result<AboutStatistic, AppError>;
   }
 
-  async deleteStatistic(id: number): Promise<boolean> {
-    const result = await aboutRepository.deleteAboutStatistic(id);
-    await CacheOperations.invalidateAbout();
+  async deleteStatistic(id: number): Promise<Result<boolean, AppError>> {
+    const result = await safeQuery(aboutRepository.deleteAboutStatistic(id));
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
+    return result;
+  }
+
+  async reorderStatistics(orderedIds: number[]): Promise<Result<boolean, AppError>> {
+    const operation = async () => {
+      await aboutRepository.reorderAboutStatistics(orderedIds);
+      return true;
+    };
+
+    const result = await safeQuery(
+      withCircuit("about-statistics-reorder", operation, DB_CIRCUIT_OPTIONS),
+    );
+
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
+
     return result;
   }
 
@@ -218,15 +341,25 @@ export class AboutService {
   // TEAM MESSAGE
   // ===========================================================================
 
-  async getTeamMessage(includeInactive: boolean = true): Promise<AboutTeamMessage | null> {
-    const result = await aboutRepository.getAboutTeamMessage(includeInactive);
-    return result ?? null;
+  async getTeamMessage(
+    includeInactive: boolean = true,
+  ): Promise<Result<AboutTeamMessage | null, AppError>> {
+    const operation = async () => {
+      const data = await aboutRepository.getAboutTeamMessage(includeInactive);
+      return data ? (data as AboutTeamMessage) : null;
+    };
+
+    return safeQuery(withCircuit("about-team-message-get", operation, DB_CIRCUIT_OPTIONS));
   }
 
-  async updateTeamMessage(data: Partial<InsertAboutTeamMessage>): Promise<AboutTeamMessage> {
-    const result = await aboutRepository.updateAboutTeamMessage(data);
-    await CacheOperations.invalidateAbout();
-    return result as AboutTeamMessage;
+  async updateTeamMessage(
+    data: Partial<InsertAboutTeamMessage>,
+  ): Promise<Result<AboutTeamMessage, AppError>> {
+    const result = await safeQuery(aboutRepository.updateAboutTeamMessage(data));
+    if (result.isOk()) {
+      await CacheOperations.invalidateAbout();
+    }
+    return result as Result<AboutTeamMessage, AppError>;
   }
 }
 

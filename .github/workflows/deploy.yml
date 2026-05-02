@@ -13,21 +13,8 @@ permissions:
   contents: read
 
 jobs:
-  backup:
-    name: Create Safety Backup
-    runs-on: [self-hosted, macOS]
-    steps:
-      - name: Create Backup Branch
-        uses: neondatabase/create-branch-action@34f619c41c6e67b4f2f13f1c6eae90827a5f2cf4 # v5
-        with:
-          project_id: ${{ secrets.NEON_PROJECT_ID }}
-          # Create a branch from main endpoint to serve as an instant backup
-          branch_name: backup/deploy-${{ github.run_id }}
-          api_key: ${{ secrets.NEON_API_KEY }}
-
   deploy_db:
     name: Apply Database Migrations
-    needs: backup
     runs-on: [self-hosted, macOS]
     environment: production
     steps:

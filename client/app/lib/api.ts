@@ -107,7 +107,7 @@ export async function apiRequest<T>(
   let url = endpoint;
   if (typeof window === "undefined" && url.startsWith("/")) {
     const port = parseInt(process.env.PORT || "5002", 10);
-    const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+    const protocol = "http"; // Internal calls to localhost should always be http
     url = `${protocol}://localhost:${port}${url}`;
   }
 

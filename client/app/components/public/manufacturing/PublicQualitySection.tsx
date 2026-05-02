@@ -4,6 +4,7 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { useRef } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
+import { cn, sanitizeContent } from "@/lib/utils";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -14,7 +15,7 @@ interface PublicQualitySectionProps {
   mediaAssets?: MediaAsset[];
 }
 
-export function PublicQualitySection({}: PublicQualitySectionProps) {
+export function PublicQualitySection({ qualities = [] }: PublicQualitySectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -42,8 +43,55 @@ export function PublicQualitySection({}: PublicQualitySectionProps) {
         );
       });
     },
-    { scope: sectionRef },
+    { scope: sectionRef, dependencies: [qualities] },
   );
+
+  // Define default metrics as fallback
+  const defaultQualities = [
+    {
+      title: "First Pass Yield",
+      description: "99.8%",
+      targetOffset: "10",
+      displayValue: "99.8%",
+    },
+    {
+      title: "Automation Level",
+      description: "75%",
+      targetOffset: "94",
+      displayValue: "75%",
+    },
+    {
+      title: "Sample Turnaround",
+      description: "48h",
+      targetOffset: "188",
+      displayValue: "48h",
+    },
+    {
+      title: "Traceability",
+      description: "100%",
+      targetOffset: "0",
+      displayValue: "100%",
+    },
+  ];
+
+  // Map dynamic data or use defaults
+  const displayQualities =
+    qualities.length > 0
+      ? qualities.slice(0, 4).map((q, i) => {
+          const defaultQ = (defaultQualities[i] || defaultQualities[0])!;
+          // Simple logic to calculate offset if description contains a percentage
+          const percentageMatch = q.description?.match(/(\d+(\.\d+)?)%/);
+          const percentage = percentageMatch ? parseFloat(percentageMatch[1] || "0") : 100;
+          const targetOffset = Math.round(377 * (1 - percentage / 100)).toString();
+
+          return {
+            title: q.title || defaultQ.title,
+            description: q.description || defaultQ.description,
+            targetOffset: targetOffset || defaultQ.targetOffset,
+            displayValue: q.description || defaultQ.displayValue,
+          };
+        })
+      : defaultQualities;
 
   return (
     <ManufacturingErrorBoundary>
@@ -75,177 +123,64 @@ export function PublicQualitySection({}: PublicQualitySectionProps) {
           </div>
 
           <div className="grid grid-cols-2 gap-6">
-            <div
-              className="glass-premium p-6 rounded-none text-center transform transition-all hover:scale-105 hover:border-[var(--color-manufacturing-accent)]/30 group"
-              role="group"
-              aria-label="Quality Metric: First Pass Yield"
-            >
-              <div className="relative w-32 h-32 mx-auto mb-4 flex items-center justify-center">
-                <svg
-                  className="transform -rotate-90 w-32 h-32"
-                  role="img"
-                  aria-label="99.8% First Pass Yield"
-                >
-                  <circle
-                    className="text-[#0A0A0A]"
-                    cx="64"
-                    cy="64"
-                    fill="transparent"
-                    r="60"
-                    stroke="currentColor"
-                    strokeWidth="6"
-                  ></circle>
-                  <circle
-                    className="text-[var(--color-manufacturing-accent)] progress-ring-circle"
-                    data-target-offset="10"
-                    cx="64"
-                    cy="64"
-                    fill="transparent"
-                    r="60"
-                    stroke="currentColor"
-                    strokeDasharray="377"
-                    strokeDashoffset="377"
-                    strokeLinecap="butt"
-                    strokeWidth="6"
-                  ></circle>
-                </svg>
-                <span className="absolute text-2xl font-black italic text-white" aria-hidden="true">
-                  99.8%
-                </span>
+            {displayQualities.map((q, idx) => (
+              <div
+                key={idx}
+                className="glass-premium p-6 rounded-none text-center transform transition-all hover:scale-105 hover:border-[var(--color-manufacturing-accent)]/30 group"
+                role="group"
+                aria-label={`Quality Metric: ${q.title}`}
+              >
+                <div className="relative w-32 h-32 mx-auto mb-4 flex items-center justify-center">
+                  <svg
+                    className="transform -rotate-90 w-32 h-32"
+                    role="img"
+                    aria-label={`${q.displayValue} ${q.title}`}
+                  >
+                    <circle
+                      className="text-[#0A0A0A]"
+                      cx="64"
+                      cy="64"
+                      fill="transparent"
+                      r="60"
+                      stroke="currentColor"
+                      strokeWidth="6"
+                    ></circle>
+                    <circle
+                      className="text-[var(--color-manufacturing-accent)] progress-ring-circle"
+                      data-target-offset={q.targetOffset}
+                      cx="64"
+                      cy="64"
+                      fill="transparent"
+                      r="60"
+                      stroke="currentColor"
+                      strokeDasharray="377"
+                      strokeDashoffset="377"
+                      strokeLinecap="butt"
+                      strokeWidth="6"
+                    ></circle>
+                  </svg>
+                  <span
+                    className={cn(
+                      "absolute font-black italic text-white text-center px-2",
+                      q.displayValue.length > 5 ? "text-sm" : "text-2xl",
+                    )}
+                    aria-hidden="true"
+                  >
+                    {q.displayValue.length > 8
+                      ? `${q.displayValue.substring(0, 8)}...`
+                      : q.displayValue}
+                  </span>
+                </div>
+                <h4 className="text-[#68869A] group-hover:text-[var(--color-manufacturing-accent)] transition-colors uppercase text-xs tracking-widest font-bold mb-2">
+                  {sanitizeContent(q.title)}
+                </h4>
+                {q.description && q.description !== q.displayValue && (
+                  <p className="text-[#E3DFD6] text-[10px] leading-tight font-light opacity-0 group-hover:opacity-100 transition-opacity">
+                    {sanitizeContent(q.description)}
+                  </p>
+                )}
               </div>
-              <h4 className="text-[#68869A] group-hover:text-[var(--color-manufacturing-accent)] transition-colors uppercase text-xs tracking-widest font-bold">
-                First Pass Yield
-              </h4>
-            </div>
-
-            <div
-              className="glass-premium p-6 rounded-none text-center transform transition-all hover:scale-105 hover:border-[var(--color-manufacturing-accent)]/30 group"
-              role="group"
-              aria-label="Quality Metric: Automation Level"
-            >
-              <div className="relative w-32 h-32 mx-auto mb-4 flex items-center justify-center">
-                <svg
-                  className="transform -rotate-90 w-32 h-32"
-                  role="img"
-                  aria-label="75% Automation Level"
-                >
-                  <circle
-                    className="text-[#0A0A0A]"
-                    cx="64"
-                    cy="64"
-                    fill="transparent"
-                    r="60"
-                    stroke="currentColor"
-                    strokeWidth="6"
-                  ></circle>
-                  <circle
-                    className="text-[var(--color-manufacturing-accent)] progress-ring-circle"
-                    data-target-offset="94"
-                    cx="64"
-                    cy="64"
-                    fill="transparent"
-                    r="60"
-                    stroke="currentColor"
-                    strokeDasharray="377"
-                    strokeDashoffset="377"
-                    strokeLinecap="butt"
-                    strokeWidth="6"
-                  ></circle>
-                </svg>
-                <span className="absolute text-2xl font-black italic text-white" aria-hidden="true">
-                  75%
-                </span>
-              </div>
-              <h4 className="text-[#68869A] group-hover:text-[var(--color-manufacturing-accent)] transition-colors uppercase text-xs tracking-widest font-bold">
-                Automation Level
-              </h4>
-            </div>
-
-            <div
-              className="glass-premium p-6 rounded-none text-center transform transition-all hover:scale-105 hover:border-[var(--color-manufacturing-accent)]/30 group"
-              role="group"
-              aria-label="Quality Metric: Sample Turnaround"
-            >
-              <div className="relative w-32 h-32 mx-auto mb-4 flex items-center justify-center">
-                <svg
-                  className="transform -rotate-90 w-32 h-32"
-                  role="img"
-                  aria-label="48 hour Sample Turnaround"
-                >
-                  <circle
-                    className="text-[#0A0A0A]"
-                    cx="64"
-                    cy="64"
-                    fill="transparent"
-                    r="60"
-                    stroke="currentColor"
-                    strokeWidth="6"
-                  ></circle>
-                  <circle
-                    className="text-[var(--color-manufacturing-accent)] progress-ring-circle"
-                    data-target-offset="188"
-                    cx="64"
-                    cy="64"
-                    fill="transparent"
-                    r="60"
-                    stroke="currentColor"
-                    strokeDasharray="377"
-                    strokeDashoffset="377"
-                    strokeLinecap="butt"
-                    strokeWidth="6"
-                  ></circle>
-                </svg>
-                <span className="absolute text-2xl font-black italic text-white" aria-hidden="true">
-                  48h
-                </span>
-              </div>
-              <h4 className="text-[#68869A] group-hover:text-[var(--color-manufacturing-accent)] transition-colors uppercase text-xs tracking-widest font-bold">
-                Sample Turnaround
-              </h4>
-            </div>
-
-            <div
-              className="glass-premium p-6 rounded-none text-center transform transition-all hover:scale-105 hover:border-[var(--color-manufacturing-accent)]/30 group"
-              role="group"
-              aria-label="Quality Metric: Traceability"
-            >
-              <div className="relative w-32 h-32 mx-auto mb-4 flex items-center justify-center">
-                <svg
-                  className="transform -rotate-90 w-32 h-32"
-                  role="img"
-                  aria-label="100% Traceability"
-                >
-                  <circle
-                    className="text-[#0A0A0A]"
-                    cx="64"
-                    cy="64"
-                    fill="transparent"
-                    r="60"
-                    stroke="currentColor"
-                    strokeWidth="6"
-                  ></circle>
-                  <circle
-                    className="text-[var(--color-manufacturing-accent)] progress-ring-circle"
-                    data-target-offset="0"
-                    cx="64"
-                    cy="64"
-                    fill="transparent"
-                    r="60"
-                    stroke="currentColor"
-                    strokeDasharray="377"
-                    strokeDashoffset="377"
-                    strokeLinecap="butt"
-                    strokeWidth="6"
-                  ></circle>
-                </svg>
-                <span className="absolute text-2xl font-black italic text-white" aria-hidden="true">
-                  100%
-                </span>
-              </div>
-              <h4 className="text-[#68869A] group-hover:text-[var(--color-manufacturing-accent)] transition-colors uppercase text-xs tracking-widest font-bold">
-                Traceability
-              </h4>
-            </div>
+            ))}
           </div>
         </div>
       </section>

@@ -74,12 +74,7 @@ router.patch(
       "Update manufacturing hero",
     );
 
-    // Invalidate cache
-    CacheOperations.invalidateManufacturing()
-      .then(() => logger.info("[ManufacturingHero] ✅ Cache invalidated after update"))
-      .catch((cacheError) =>
-        logger.error("[ManufacturingHero] ❌ Cache invalidation failed:", cacheError),
-      );
+    // Audit Logging
 
     // Audit Logging
     const user = req.user as SessionUser | undefined;

@@ -1,13 +1,6 @@
 import { useGSAP } from "@gsap/react";
-import type {
-  AboutHero,
-  AboutMapLocation,
-  AboutSection,
-  AboutStatistic,
-  AboutTeamMessage,
-  AboutTimelineEntry,
-  MediaAsset,
-} from "@shared/index";
+import type { AboutBatchResponse } from "@run-remix/shared";
+import { ABOUT_API } from "@shared/api-constants";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -21,9 +14,10 @@ import { GlowingShadow } from "@/components/ui/glowing-shadow";
 import { LoadingState } from "@/components/ui/loading-state";
 import { ClientOnlyMap, type MapLocation } from "@/components/ui/map";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import StackingCards from "@/components/ui/stacking-cards";
+import { StackingCards } from "@/components/ui/stacking-cards";
 import { Timeline } from "@/components/ui/timeline";
 import { Typography } from "@/components/ui/typography";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useMediaResolver } from "@/lib/media-resolver";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { resolveIcon } from "@/utils/icon-resolver";
@@ -32,8 +26,8 @@ import type { Route } from "./+types/about";
 export async function loader() {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["/api/about-batch"],
-    queryFn: () => apiRequest("/api/about-batch"),
+    queryKey: [ABOUT_API.BATCH],
+    queryFn: () => apiRequest(ABOUT_API.BATCH),
   });
   return { dehydratedState: dehydrate(queryClient) };
 }
@@ -47,9 +41,6 @@ export function meta({}: Route.MetaArgs) {
     },
   ];
 }
-
-// Hook to detect mobile devices
-import { useIsMobile } from "@/hooks/use-is-mobile";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -120,24 +111,9 @@ function AboutPageContent() {
   }, []);
   // Fetch all about data in one optimized batch call
   // This will now correctly find data in the cache from the HydrationBoundary
-  const { data: batchData, isLoading: batchLoading } = useQuery<{
-    hero: AboutHero | null;
-    timeline: AboutTimelineEntry[];
-    locations: AboutMapLocation[];
-    sections: AboutSection[];
-    statistics: AboutStatistic[];
-    teamMessage: AboutTeamMessage | null;
-    mediaAssets: MediaAsset[];
-    _meta: {
-      fetchedAt: string;
-      totalRequests: number;
-      mediaAssetsLoaded: number;
-      mediaIdsRequested: number[];
-      responseTime: number;
-    };
-  }>({
-    queryKey: ["/api/about-batch"],
-    queryFn: () => apiRequest("/api/about-batch"),
+  const { data: batchData, isLoading: batchLoading } = useQuery<AboutBatchResponse>({
+    queryKey: [ABOUT_API.BATCH],
+    queryFn: () => apiRequest(ABOUT_API.BATCH),
     retry: 3,
     staleTime: 1000 * 60 * 5, // 5 minutes (standard CMS staleTime)
   });
@@ -158,13 +134,13 @@ function AboutPageContent() {
   const isDataReady = !batchLoading;
 
   // Sorted arrays
-  const sortedTimeline = [...timeline].sort((a, b) => (a.position || 0) - (b.position || 0));
+  const sortedTimeline = [...timeline].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
   const sortedSections = [...sections]
     .filter((s) => s.isActive)
-    .sort((a, b) => (a.position || 0) - (b.position || 0));
+    .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
   const sortedStatistics = [...statistics]
     .filter((s) => s.isActive)
-    .sort((a, b) => (a.position || 0) - (b.position || 0));
+    .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
   // Transform locations to match the optimized map interface
   const mapLocations: MapLocation[] = locations.map((location) => ({
@@ -326,7 +302,7 @@ function AboutPageContent() {
               className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4"
             >
               {sortedStatistics.map((stat) => {
-                const IconComponent = resolveIcon(stat.icon);
+                const IconComponent = resolveIcon(stat.iconName || "Activity");
                 return (
                   <div key={stat.id} className="h-full stat-item">
                     <GlowingShadow>

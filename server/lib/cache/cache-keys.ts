@@ -64,6 +64,9 @@ export const CacheKeys = {
     batch: () => "manufacturing:batch",
     hero: () => "manufacturing:hero",
     processes: () => "manufacturing:processes",
+    capabilities: () => "manufacturing:capabilities",
+    qualities: () => "manufacturing:qualities",
+    caseStudies: () => "manufacturing:case-studies",
   },
 
   technology: {
@@ -145,7 +148,7 @@ export const InvalidationPatterns = {
   navigation: "^navigation:.*",
   about: "^about:.*",
   sustainability: "^sustainability:.*",
-  manufacturing: "^manufacturing:.*",
+  manufacturing: ".*manufacturing:.*",
   technology: "^technology:.*",
   contact: "^contact:.*",
   inquiries: "^inquiries:.*",

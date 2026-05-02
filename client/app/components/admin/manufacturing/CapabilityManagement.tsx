@@ -35,7 +35,7 @@ import {
   Wrench,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useActionState, useOptimistic, useState } from "react";
 import { LivePreviewGrid } from "@/components/admin/manufacturing/LivePreviewGrid";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { MediaPickerModal } from "@/components/admin/shared/MediaPickerModal";
@@ -259,6 +259,32 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
     refetchOnMount: false,
   });
 
+  const [optimisticCapabilities, setOptimisticCapabilities] = useOptimistic(
+    capabilities,
+    (
+      state,
+      action: {
+        type: "add" | "update" | "delete" | "reorder";
+        payload: ManufacturingCapability | number | ManufacturingCapability[];
+      },
+    ) => {
+      switch (action.type) {
+        case "add":
+          return [...state, action.payload as ManufacturingCapability];
+        case "update": {
+          const updated = action.payload as ManufacturingCapability;
+          return state.map((item) => (item.id === updated.id ? updated : item));
+        }
+        case "delete":
+          return state.filter((item) => item.id !== (action.payload as number));
+        case "reorder":
+          return action.payload as ManufacturingCapability[];
+        default:
+          return state;
+      }
+    },
+  );
+
   const {
     createMutation: createCapabilityMutation,
     updateMutation: updateCapabilityMutation,
@@ -275,6 +301,53 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
       resetCapabilityForm();
     },
   });
+
+  const [_formState, formAction, isPending] = useActionState(
+    async (_prevState: { success: boolean } | null, formData: FormData) => {
+      const data = {
+        name: formData.get("title") as string,
+        title: formData.get("title") as string,
+        description: formData.get("description") as string,
+        capacity: formData.get("capacity") as string,
+        category: formData.get("category") as string,
+        icon: capabilityForm.icon,
+        imageId: capabilityForm.imageId,
+        isActive: formData.get("isActive") === "on",
+        specifications: capabilityForm.specifications,
+        equipment: capabilityForm.equipment,
+      };
+
+      if (editingCapability) {
+        setOptimisticCapabilities({
+          type: "update",
+          payload: {
+            ...editingCapability,
+            ...data,
+            specifications: data.specifications as unknown as Record<string, unknown>,
+            unit: editingCapability.unit,
+            createdAt: editingCapability.createdAt,
+          },
+        });
+        await updateCapabilityMutation.mutateAsync({ id: editingCapability.id, data });
+      } else {
+        const tempId = Date.now();
+        setOptimisticCapabilities({
+          type: "add",
+          payload: {
+            ...data,
+            id: tempId,
+            sortOrder: capabilities.length,
+            specifications: data.specifications as unknown as Record<string, unknown>,
+            unit: null,
+            createdAt: new Date(),
+          } as ManufacturingCapability,
+        });
+        await createCapabilityMutation.mutateAsync({ ...data, sortOrder: capabilities.length });
+      }
+      return { success: true };
+    },
+    { success: false },
+  );
 
   const { data: specificCapabilityImage } = useQuery({
     queryKey: [`/api/media/${capabilityForm.imageId}`, capabilityForm.imageId],
@@ -312,26 +385,6 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
     setShowPreview(false);
   };
 
-  const handleCapabilitySubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = {
-      ...capabilityForm,
-      name: capabilityForm.name || capabilityForm.title || "Untitled Capability",
-    };
-
-    if (editingCapability) {
-      updateCapabilityMutation.mutate({
-        id: editingCapability.id,
-        data: formData,
-      });
-    } else {
-      createCapabilityMutation.mutate({
-        ...formData,
-        position: capabilities.length,
-      });
-    }
-  };
-
   const handleEditCapability = (capability: ManufacturingCapability) => {
     setEditingCapability(capability);
     setCapabilityForm({
@@ -353,9 +406,12 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
   const handleCapabilityDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      const oldIndex = capabilities.findIndex((c) => c.id === active.id);
-      const newIndex = capabilities.findIndex((c) => c.id === over.id);
-      const newCapabilities = arrayMove(capabilities, oldIndex, newIndex);
+      const oldIndex = optimisticCapabilities.findIndex((c) => c.id === active.id);
+      const newIndex = optimisticCapabilities.findIndex((c) => c.id === over.id);
+      const newCapabilities = arrayMove(optimisticCapabilities, oldIndex, newIndex);
+
+      setOptimisticCapabilities({ type: "reorder", payload: newCapabilities });
+
       const updates = newCapabilities.map((capability, index) => ({
         id: capability.id,
         position: index,
@@ -468,16 +524,19 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
               onDragEnd={handleCapabilityDragEnd}
             >
               <SortableContext
-                items={capabilities.map((c) => c.id)}
+                items={optimisticCapabilities.map((c) => c.id)}
                 strategy={verticalListSortingStrategy}
               >
                 <div className="grid gap-3">
-                  {capabilities.map((capability) => (
+                  {optimisticCapabilities.map((capability) => (
                     <SortableCapabilityItem
                       key={capability.id}
                       capability={capability}
                       onEdit={handleEditCapability}
-                      onDelete={deleteCapabilityMutation.mutate}
+                      onDelete={(id) => {
+                        setOptimisticCapabilities({ type: "delete", payload: id });
+                        deleteCapabilityMutation.mutate(id);
+                      }}
                     />
                   ))}
                 </div>
@@ -515,7 +574,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
               </div>
             </div>
 
-            <form onSubmit={handleCapabilitySubmit} className="flex-1 overflow-y-auto max-h-[70vh]">
+            <form action={formAction} className="flex-1 overflow-y-auto max-h-[70vh]">
               <div className="p-8 space-y-8">
                 <div className={cn("grid gap-10", showPreview ? "lg:grid-cols-2" : "grid-cols-1")}>
                   <div className="space-y-8">
@@ -529,6 +588,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                         </Label>
                         <Input
                           id="capability-title"
+                          name="title"
                           value={capabilityForm.title || ""}
                           onChange={(e) =>
                             setCapabilityForm({
@@ -586,6 +646,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                         </Label>
                         <Input
                           id="capability-capacity"
+                          name="capacity"
                           value={capabilityForm.capacity || ""}
                           onChange={(e) =>
                             setCapabilityForm({
@@ -606,6 +667,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                         </Label>
                         <Input
                           id="capability-category"
+                          name="category"
                           value={capabilityForm.category || ""}
                           onChange={(e) =>
                             setCapabilityForm({
@@ -628,6 +690,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                       </Label>
                       <Textarea
                         id="capability-description"
+                        name="description"
                         value={capabilityForm.description || ""}
                         onChange={(e) =>
                           setCapabilityForm({
@@ -643,6 +706,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                     <div className="flex items-center space-x-3 bg-white/5 border border-white/10 p-4 rounded-xl">
                       <Switch
                         id="capability-active"
+                        name="isActive"
                         checked={capabilityForm.isActive ?? true}
                         onCheckedChange={(checked) =>
                           setCapabilityForm({
@@ -834,12 +898,14 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                 </Button>
                 <Button
                   type="submit"
-                  disabled={
-                    createCapabilityMutation.isPending || updateCapabilityMutation.isPending
-                  }
+                  disabled={isPending}
                   className="bg-primary hover:bg-primary/90 text-white rounded-xl px-8 py-6 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all outline-none ring-0 border-0"
                 >
-                  {editingCapability ? "Update Capability" : "Create Capability"}
+                  {isPending
+                    ? "Syncing..."
+                    : editingCapability
+                      ? "Update Capability"
+                      : "Create Capability"}
                 </Button>
               </div>
             </form>

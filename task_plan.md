@@ -1,37 +1,50 @@
-# Task Plan: Tech Stack Major Version Upgrade (v4.1.0)
+# Task Plan — Manufacturing Page Comprehensive Audit
 
-## 1. Phase 0: Baseline & Infrastructure
-- [x] Update Node.js requirement to `v24.15.0` (.nvmrc)
-- [x] Upgrade root tooling: Turbo `v2.9.6`, Playwright `v1.59.1`
-- [x] Baseline verification: `npm install` and test pass check
+## Session: 2026-05-01
 
-## 2. Phase 1: Vite 8 & Ecosystem Migration
-- [x] Upgrade React Router to `^7.14.2` (Monorepo-wide)
-- [x] Upgrade Vite to `^8.0.10` and `@vitejs/plugin-react` to `^6.0.0`
-- [x] Upgrade Tailwind CSS to `^4.2.4` (Oxide Engine)
-- [x] Update critical Vite plugins: `inspect`, `sentry`, `visualizer`
-- [x] Configure `tsconfig.json` for RR v7 type generation (`rootDirs`)
+### Objective
+Read-only investigative audit of the `/manufacturing` public page and `/admin/manufacturing` admin route, including CMS schema, API, and service layers.
 
-## 3. Phase 2: TypeScript 6.0 Migration
-- [x] Upgrade TypeScript to `^6.0.3` (Monorepo-wide)
-- [x] Update `tsconfig.base.json` for TS 6 deprecations (`ignoreDeprecations: "6.0"`)
-- [x] Add explicit `types: ["node"]` to base configuration
-- [x] Resolve inference regressions in Drizzle schemas via version harmonization
+### Protocol 0 — Session Bookends
+- [ ] START: Read and update `task_plan.md` (Current)
+- [ ] END: Update `findings.md` and run `npm run verify:tech-integrity`
 
-## 4. Phase 3: Final Verification & Docs
-- [x] Update `gemini.md` Technical Stack invariants
-- [x] Update `docs/core/tech-stack.md` and `docs/ONBOARDING.md`
-- [x] Execute `npm run verify:tech-integrity`
-- [x] Full build verification (`turbo run build`)
+### Investigation Phases (B.L.A.S.T.)
 
-## 5. Deployment
-- [ ] Push changes to `main`
-- [ ] Verify CI stability
+- [x] Phase 1: Environment & Initialization
+- [x] Phase 2: Blueprint & Data Layer Audit
+- [x] Phase 3: Visual & Functional Sweep
+- [x] Phase 4: CMS & Admin CRUD Verification
+- [x] Phase 5: Technical Integrity & Security Audit
+- [x] Phase 6: Final Consolidation & Report Generation
 
-## 6. Audits
-- [x] Homepage + CMS full-stack audit → docs/audits/homepage-cms-audit-report.md
-- [x] Homepage + CMS Stabilization Sprint — resolve audit findings HCA-001 through HCA-010
+#### Phase 1: Blueprint & Link (Data & API Mapping)
+- [x] Map Drizzle tables and Zod schemas for manufacturing content
+- [x] Verify API routes and service methods
+- [x] Check `.env` requirements
 
-## 7. Performance & Smoothness Audit (Diagnosis Phase)
-- [x] Homepage Smoothness Investigation → docs/audits/homepage-smoothness-report.md
-- [x] Homepage smoothness fix sprint — HSR-001 through HSR-007
+#### Phase 2: Architect (Routing & Cache)
+- [x] Trace L1/L2/L3 routing chain
+- [x] Confirm SSR cache behavior (L1: lru-cache, L2: redis)
+
+#### Phase 3: Stylize (UI & UX Audit)
+- [x] Visual inspection of `/manufacturing` at 5 breakpoints
+- [x] Check layout, typography, and section spacing
+- [x] Audit animations (GSAP, ScrollTrigger, Locomotive Scroll)
+- [x] Mobile responsiveness check (375px to 768px)
+
+#### Phase 4: CMS & Admin UI
+- [ ] Verify React 19 form patterns (action, useOptimistic, useActionState)
+- [ ] Check TipTap modules and Media Library bindings
+
+#### Phase 5: Performance, SEO & Accessibility
+- [ ] Run benchmark (TTFB, LCP, CLS, INP)
+- [ ] Verify SEO metadata and heading hierarchy
+- [ ] Accessibility audit (WCAG AA, ARIA labels, focus rings)
+
+#### Phase 6: Security & Tech Integrity
+- [ ] Security pass (CSRF, Authentication, Sanitization)
+- [ ] Code quality check (TypeScript, Biome, React 19 violations)
+- [ ] Verify no forbidden libraries (framer-motion, r3f, etc.)
+
+### Status: [/] IN PROGRESS

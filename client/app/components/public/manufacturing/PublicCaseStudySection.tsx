@@ -1,19 +1,11 @@
-import type { MediaAsset } from "@shared/index";
+import type { ManufacturingCaseStudy, MediaAsset } from "@shared/index";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
-
-interface CaseStudyItem {
-  title: string;
-  type?: string;
-  description?: string;
-  imageId?: string | number;
-  client?: string;
-  year?: string;
-}
+import { sanitizeContent } from "@/lib/utils";
 
 interface PublicCaseStudySectionProps {
-  caseStudies?: CaseStudyItem[];
+  caseStudies?: ManufacturingCaseStudy[];
   mediaAssets?: MediaAsset[];
 }
 
@@ -58,16 +50,18 @@ export function PublicCaseStudySection({
 
   const displayProjects =
     caseStudies.length > 0
-      ? caseStudies.map((cs) => ({
-          title: cs.title,
-          tag: cs.type || "Case Study",
-          desc: cs.description || "High performance apparel manufacturing.",
-          img: getAssetUrl(cs.imageId) || defaultProjects[0]?.img || "",
-          stats: [
-            { label: "Client", val: cs.client || "Confidential" },
-            { label: "Year", val: cs.year || "2024" },
-          ],
-        }))
+      ? caseStudies
+          .map((cs) => ({
+            title: sanitizeContent(cs.client),
+            tag: sanitizeContent(cs.type),
+            desc: sanitizeContent(cs.description),
+            img: getAssetUrl(cs.imageId) || defaultProjects[0]?.img || "",
+            stats: [
+              { label: "Metric", val: sanitizeContent(cs.metric) },
+              { label: "Author", val: sanitizeContent(cs.author) },
+            ],
+          }))
+          .filter((p) => p.title !== "" || p.desc !== "")
       : defaultProjects;
 
   const currentProject = displayProjects[activeIdx];

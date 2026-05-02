@@ -15,6 +15,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { ABOUT_API } from "@shared/api-constants";
 import type { AboutStatistic, InsertAboutStatistic } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
@@ -88,12 +89,17 @@ function SortableStatisticItem({ statistic, onEdit, onDelete }: StatisticItemPro
       className={`rounded-lg border bg-white/[0.03] p-4 ${isDragging ? "shadow-lg" : ""}`}
     >
       <div className="flex items-center gap-4">
-        <button className="cursor-grab" {...attributes} {...listeners}>
-          <GripVertical className="h-5 w-5 text-[#68869A]/70" />
+        <button
+          className="cursor-grab"
+          aria-label="Drag to reorder statistic"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="h-5 w-5 text-[#68869A]/70" aria-hidden="true" />
         </button>
 
         <div className="flex flex-1 items-center gap-3">
-          <div className="text-primary">{getIcon(statistic.icon || "BarChart3")}</div>
+          <div className="text-primary">{getIcon(statistic.iconName || "BarChart3")}</div>
           <div>
             <div className="font-semibold">{statistic.label}</div>
             <div className="font-bold text-2xl text-primary">
@@ -109,11 +115,21 @@ function SortableStatisticItem({ statistic, onEdit, onDelete }: StatisticItemPro
               Hidden
             </span>
           )}
-          <Button size="sm" variant="ghost" onClick={() => onEdit(statistic)}>
-            <Edit className="h-4 w-4" />
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => onEdit(statistic)}
+            aria-label={`Edit ${statistic.label}`}
+          >
+            <Edit className="h-4 w-4" aria-hidden="true" />
           </Button>
-          <Button size="sm" variant="ghost" onClick={() => onDelete(statistic.id)}>
-            <Trash2 className="h-4 w-4" />
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => onDelete(statistic.id)}
+            aria-label={`Delete ${statistic.label}`}
+          >
+            <Trash2 className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
       </div>
@@ -129,7 +145,7 @@ export function AboutStatisticsTab() {
     label: "",
     value: "",
     unit: "",
-    icon: "BarChart3" as string,
+    iconName: "BarChart3" as string,
     isActive: true,
   });
 
@@ -141,12 +157,12 @@ export function AboutStatisticsTab() {
   );
 
   const { data: statistics = [], isLoading } = useQuery<AboutStatistic[]>({
-    queryKey: ["/api/about-statistics"],
+    queryKey: [ABOUT_API.STATISTICS],
   });
 
   const createMutation = useMutation({
     mutationFn: (data: InsertAboutStatistic) => {
-      return apiRequest("/api/about-statistics", {
+      return apiRequest(ABOUT_API.STATISTICS, {
         method: "POST",
         body: JSON.stringify(data),
       }) as Promise<AboutStatistic>;
@@ -154,9 +170,9 @@ export function AboutStatisticsTab() {
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
       getQueryClient().invalidateQueries({
-        queryKey: ["/api/about-statistics"],
+        queryKey: [ABOUT_API.STATISTICS],
       });
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-batch"] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
       toast({
         title: "Success",
         description: "Statistic created successfully",
@@ -182,9 +198,9 @@ export function AboutStatisticsTab() {
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
       getQueryClient().invalidateQueries({
-        queryKey: ["/api/about-statistics"],
+        queryKey: [ABOUT_API.STATISTICS],
       });
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-batch"] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
       toast({
         title: "Success",
         description: "Statistic updated successfully",
@@ -210,9 +226,9 @@ export function AboutStatisticsTab() {
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
       getQueryClient().invalidateQueries({
-        queryKey: ["/api/about-statistics"],
+        queryKey: [ABOUT_API.STATISTICS],
       });
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-batch"] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
       toast({
         title: "Success",
         description: "Statistic deleted successfully",
@@ -228,18 +244,18 @@ export function AboutStatisticsTab() {
   });
 
   const reorderMutation = useMutation({
-    mutationFn: (statistics: { id: number; position: number }[]) => {
-      return apiRequest("/api/about-statistics/reorder", {
+    mutationFn: (statistics: { id: number; sortOrder: number }[]) => {
+      return apiRequest(ABOUT_API.STATISTICS_REORDER, {
         method: "PATCH",
-        body: JSON.stringify({ statistics }),
+        body: JSON.stringify({ entries: statistics }),
       }) as Promise<AboutStatistic[]>;
     },
     onSuccess: () => {
       // Invalidate both individual and batch cache for sync
       getQueryClient().invalidateQueries({
-        queryKey: ["/api/about-statistics"],
+        queryKey: [ABOUT_API.STATISTICS],
       });
-      getQueryClient().invalidateQueries({ queryKey: ["/api/about-batch"] });
+      getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
     },
   });
 
@@ -257,10 +273,10 @@ export function AboutStatisticsTab() {
       const newStatistics = arrayMove(statistics, oldIndex, newIndex);
       const reorderedStatistics = newStatistics.map((stat: AboutStatistic, index: number) => ({
         id: stat.id,
-        position: index,
+        sortOrder: index,
       }));
 
-      getQueryClient().setQueryData(["/api/about-statistics"], newStatistics);
+      getQueryClient().setQueryData([ABOUT_API.STATISTICS], newStatistics);
       reorderMutation.mutate(reorderedStatistics);
     }
   };
@@ -271,7 +287,7 @@ export function AboutStatisticsTab() {
       label: statistic.label,
       value: statistic.value,
       unit: statistic.unit || "",
-      icon: statistic.icon || "BarChart3",
+      iconName: statistic.iconName || "BarChart3",
       isActive: statistic.isActive !== false,
     });
     setIsDialogOpen(true);
@@ -298,14 +314,14 @@ export function AboutStatisticsTab() {
       label: "",
       value: "",
       unit: "",
-      icon: "BarChart3",
+      iconName: "BarChart3",
       isActive: true,
     });
   };
 
   const sortedStatistics = Array.isArray(statistics)
     ? [...statistics].sort(
-        (a: AboutStatistic, b: AboutStatistic) => (a.position || 0) - (b.position || 0),
+        (a: AboutStatistic, b: AboutStatistic) => (a.sortOrder || 0) - (b.sortOrder || 0),
       )
     : [];
 
@@ -407,9 +423,9 @@ export function AboutStatisticsTab() {
             </div>
 
             <IconSelector
-              value={formData.icon || "BarChart3"}
+              value={formData.iconName || "BarChart3"}
               onChange={(value) => {
-                setFormData((prev) => ({ ...prev, icon: value as string }));
+                setFormData((prev) => ({ ...prev, iconName: value as string }));
               }}
               label="Icon"
               placeholder="Select an icon"

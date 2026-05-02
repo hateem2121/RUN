@@ -35,7 +35,7 @@ const reorderSchema = z.object({
   entries: z.array(
     z.object({
       id: z.number().int().positive(),
-      position: z.number().int().min(0),
+      sortOrder: z.number().int().min(0),
     }),
   ),
 });
@@ -45,10 +45,21 @@ const reorderSchema = z.object({
  * Retrieve all statistics
  */
 router.get("/", async (_req, res) => {
-  const statistics = await withTimeout(aboutService.getStatistics(), 10000, "Get about statistics");
+  const result = await withTimeout(aboutService.getStatistics(), 10000, "Get about statistics");
 
-  logger.info(`[AboutStatistics] Retrieved ${statistics.length} statistics`);
-  return res.json(statistics);
+  return result.match(
+    (statistics) => {
+      logger.info(`[AboutStatistics] Retrieved ${statistics.length} statistics`);
+      return res.json(statistics);
+    },
+    (error) => {
+      logger.error("[AboutStatistics] Fetch failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -58,14 +69,24 @@ router.get("/", async (_req, res) => {
 router.get("/:id", async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
-  const statistic = await aboutService.getStatistic(id);
+  const result = await withTimeout(aboutService.getStatistic(id), 10000, "Get about statistic");
 
-  if (!statistic) {
-    return res.status(404).json({ error: "Statistic not found" });
-  }
-
-  logger.info(`[AboutStatistics] Retrieved statistic ${id}`);
-  return res.json(statistic);
+  return result.match(
+    (statistic) => {
+      if (!statistic) {
+        return res.status(404).json({ error: "Statistic not found" });
+      }
+      logger.info(`[AboutStatistics] Retrieved statistic ${id}`);
+      return res.json(statistic);
+    },
+    (error) => {
+      logger.error("[AboutStatistics] Fetch failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -83,19 +104,25 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     });
   }
 
-  const newStatistic = await withTimeout(
+  const result = await withTimeout(
     aboutService.createStatistic(removeUndefined(validation.data)),
     10000,
     "Create about statistic",
   );
 
-  if (!newStatistic) {
-    throw new Error("Failed to create statistic");
-  }
-
-  // Invalidation handled by service layer
-  logger.info(`[AboutStatistics] Created statistic ${newStatistic.id}`);
-  return res.status(201).json(newStatistic);
+  return result.match(
+    (newStatistic) => {
+      logger.info(`[AboutStatistics] Created statistic ${newStatistic.id}`);
+      return res.status(201).json(newStatistic);
+    },
+    (error) => {
+      logger.error("[AboutStatistics] Create failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -114,19 +141,25 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     });
   }
 
-  const updatedStatistic = await withTimeout(
+  const result = await withTimeout(
     aboutService.updateStatistic(id, removeUndefined(validation.data)),
     10000,
     "Update about statistic",
   );
 
-  if (!updatedStatistic) {
-    return res.status(404).json({ error: "Statistic not found" });
-  }
-
-  // Invalidation handled by service layer
-  logger.info(`[AboutStatistics] Updated statistic ${id}`);
-  return res.json(updatedStatistic);
+  return result.match(
+    (updatedStatistic) => {
+      logger.info(`[AboutStatistics] Updated statistic ${id}`);
+      return res.json(updatedStatistic);
+    },
+    (error) => {
+      logger.error("[AboutStatistics] Update failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -136,19 +169,25 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
 router.delete("/:id", authService.requireAdmin, async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
 
-  const deleted = await withTimeout(
+  const result = await withTimeout(
     aboutService.deleteStatistic(id),
     10000,
     "Delete about statistic",
   );
 
-  if (!deleted) {
-    return res.status(404).json({ error: "Statistic not found" });
-  }
-
-  // Invalidation handled by service layer
-  logger.info(`[AboutStatistics] Deleted statistic ${id}`);
-  return res.status(204).send();
+  return result.match(
+    () => {
+      logger.info(`[AboutStatistics] Deleted statistic ${id}`);
+      return res.status(204).send();
+    },
+    (error) => {
+      logger.error("[AboutStatistics] Delete failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -166,16 +205,28 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     });
   }
 
-  // Update positions
-  const updates = await Promise.all(
-    removeUndefined(validation.data).entries.map(({ id, position }) =>
-      aboutService.updateStatistic(id, { sortOrder: position }),
-    ),
+  // Extract ordered IDs
+  const orderedIds = validation.data.entries.map((e) => e.id);
+
+  const result = await withTimeout(
+    aboutService.reorderStatistics(orderedIds),
+    15000,
+    "Reorder about statistics",
   );
 
-  // Invalidation handled by service layer
-  logger.info(`[AboutStatistics] Reordered ${updates.length} statistics`);
-  return res.json({ success: true, updated: updates.length });
+  return result.match(
+    () => {
+      logger.info(`[AboutStatistics] Reordered ${orderedIds.length} statistics`);
+      return res.json({ success: true, updated: orderedIds.length });
+    },
+    (error) => {
+      logger.error("[AboutStatistics] Reorder failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 export default router;

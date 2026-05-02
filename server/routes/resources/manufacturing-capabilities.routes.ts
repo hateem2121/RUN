@@ -79,12 +79,6 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     "Create manufacturing capability",
   );
 
-  CacheOperations.invalidateManufacturing()
-    .then(() => logger.info("[ManufacturingCapabilities] ✅ Cache invalidated after creation"))
-    .catch((cacheError) =>
-      logger.error("[ManufacturingCapabilities] ❌ Cache invalidation failed:", cacheError),
-    );
-
   logger.info(`[ManufacturingCapabilities] Created capability ${newCapability.id}`);
   return res.status(201).json(newCapability);
 });
@@ -111,12 +105,6 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
     return res.status(404).json({ error: "Capability not found" });
   }
 
-  CacheOperations.invalidateManufacturing()
-    .then(() => logger.info("[ManufacturingCapabilities] ✅ Cache invalidated after update"))
-    .catch((cacheError) =>
-      logger.error("[ManufacturingCapabilities] ❌ Cache invalidation failed:", cacheError),
-    );
-
   logger.info(`[ManufacturingCapabilities] Updated capability ${id}`);
   return res.json(updated);
 });
@@ -134,12 +122,6 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
     return res.status(404).json({ error: "Capability not found" });
   }
 
-  CacheOperations.invalidateManufacturing()
-    .then(() => logger.info("[ManufacturingCapabilities] ✅ Cache invalidated after deletion"))
-    .catch((cacheError) =>
-      logger.error("[ManufacturingCapabilities] ❌ Cache invalidation failed:", cacheError),
-    );
-
   logger.info(`[ManufacturingCapabilities] Deleted capability ${id}`);
   return res.status(204).send();
 });
@@ -152,23 +134,17 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     return res.status(400).json(validation.error);
   }
 
-  const updates = await Promise.all(
-    removeUndefined(validation.data).capabilities.map(
-      ({ id, position }: { id: number; position: number }) =>
-        manufacturingRepository.updateManufacturingCapability(id, {
-          sortOrder: position,
-        }),
-    ),
+  const { capabilities } = validation.data;
+  const orderedIds = capabilities.sort((a, b) => a.position - b.position).map((item) => item.id);
+
+  await withTimeout(
+    manufacturingRepository.reorderManufacturingCapabilities(orderedIds),
+    10000,
+    "Reorder manufacturing capabilities",
   );
 
-  CacheOperations.invalidateManufacturing()
-    .then(() => logger.info("[ManufacturingCapabilities] ✅ Cache invalidated after reorder"))
-    .catch((cacheError) =>
-      logger.error("[ManufacturingCapabilities] ❌ Cache invalidation failed:", cacheError),
-    );
-
-  logger.info(`[ManufacturingCapabilities] Reordered ${updates.length} capabilities`);
-  return res.json({ success: true, updated: updates.length });
+  logger.info(`[ManufacturingCapabilities] Reordered ${orderedIds.length} capabilities`);
+  return res.json({ success: true, updated: orderedIds.length });
 });
 
 export default router;

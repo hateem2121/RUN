@@ -37,9 +37,9 @@ curl https://wear-run.com/api/health
 
 ## Step 2: Database Schema Rollback (if migration was applied)
 
-### Option A: Neon Branch Rollback (Recommended)
+### Option A: Neon PITR (Primary Method)
 
-Neon preserves point-in-time restore for 7 days.
+Neon preserves point-in-time restore for 7 days (Pro) or 24 hours (Free). This is the preferred method as it requires no pre-created backup branches.
 
 ```bash
 # Create restore branch from pre-migration timestamp

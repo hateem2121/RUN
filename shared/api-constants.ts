@@ -90,3 +90,18 @@ export const ADMIN_MEDIA_QUERIES = {
     all: true,
   },
 } as const;
+
+// About Module API Routes
+export const ABOUT_API = {
+  BATCH: "/api/about-batch",
+  HERO: "/api/about-hero",
+  STATISTICS: "/api/about-statistics",
+  STATISTICS_REORDER: "/api/about-statistics/reorder",
+  TIMELINE: "/api/about-timeline",
+  TIMELINE_REORDER: "/api/about-timeline/reorder",
+  LOCATIONS: "/api/about-map-locations",
+  LOCATIONS_REORDER: "/api/about-map-locations/reorder",
+  SECTIONS: "/api/about-sections",
+  SECTIONS_REORDER: "/api/about-sections/reorder",
+  TEAM_MESSAGE: "/api/about-team-messages",
+} as const;

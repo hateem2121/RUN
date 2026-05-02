@@ -29,16 +29,25 @@ const router = Router();
  * Retrieve the About page hero section
  */
 router.get("/", async (_req, res) => {
-  const hero = await withTimeout(aboutService.getHero(), 10000, "Get about hero");
+  const result = await withTimeout(aboutService.getHero(), 10000, "Get about hero");
 
-  // Log result
-  if (hero) {
-    logger.info(`[AboutHero] Retrieved hero: ${hero.title}`);
-  } else {
-    logger.info("[AboutHero] No hero found");
-  }
-
-  return res.json(hero || null);
+  return result.match(
+    (hero) => {
+      if (hero) {
+        logger.info(`[AboutHero] Retrieved hero: ${hero.title}`);
+      } else {
+        logger.info("[AboutHero] No hero found");
+      }
+      return res.json(hero || null);
+    },
+    (error) => {
+      logger.error("[AboutHero] Fetch failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 /**
@@ -58,15 +67,25 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
   }
 
   // Update hero
-  const updatedHero = await withTimeout(
+  const result = await withTimeout(
     aboutService.updateHero(removeUndefined(validation.data)),
     10000,
     "Update about hero",
   );
 
-  // Invalidation handled by service layer
-  logger.info("[AboutHero] Hero updated successfully");
-  return res.json(updatedHero);
+  return result.match(
+    (updatedHero) => {
+      logger.info("[AboutHero] Hero updated successfully");
+      return res.json(updatedHero);
+    },
+    (error) => {
+      logger.error("[AboutHero] Update failed", error);
+      return res.status(error.statusCode || 500).json({
+        error: error.message,
+        code: error.code,
+      });
+    },
+  );
 });
 
 export default router;

@@ -8,7 +8,9 @@ import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 interface StackingCard {
   title: string;
@@ -49,7 +51,7 @@ const getSectionColor = (sectionType: string): string => {
   return colors[sectionType] ?? "var(--color-primary)";
 };
 
-export const Card: React.FC<CardProps> = ({
+export function Card({
   i,
   total,
   title,
@@ -59,7 +61,7 @@ export const Card: React.FC<CardProps> = ({
   targetScale,
   getAssetUrl,
   getAsset,
-}) => {
+}: CardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const imageWrapperRef = useRef<HTMLDivElement>(null);
@@ -216,15 +218,15 @@ export const Card: React.FC<CardProps> = ({
       </div>
     </div>
   );
-};
+}
 
-export default function StackingCards({ sections, getAssetUrl, getAsset }: StackingCardsProps) {
+export function StackingCards({ sections, getAssetUrl, getAsset }: StackingCardsProps) {
   const headerRef = useRef<HTMLDivElement>(null);
 
   // Sort sections by position and filter active ones
   const sortedSections = sections
     .filter((section) => section.isActive)
-    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
   // Transform sections into stacking cards data
   const stackingCards: StackingCard[] = sortedSections.map((section) => ({

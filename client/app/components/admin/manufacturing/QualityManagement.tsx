@@ -34,7 +34,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useActionState, useOptimistic, useState } from "react";
 import { LivePreviewGrid } from "@/components/admin/manufacturing/LivePreviewGrid";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { MediaPickerModal } from "@/components/admin/shared/MediaPickerModal";
@@ -251,6 +251,32 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
     refetchOnMount: false,
   });
 
+  const [optimisticQualities, setOptimisticQualities] = useOptimistic(
+    qualityStandards,
+    (
+      state,
+      action: {
+        type: "add" | "update" | "delete" | "reorder";
+        payload: ManufacturingQuality | number | ManufacturingQuality[];
+      },
+    ) => {
+      switch (action.type) {
+        case "add":
+          return [...state, action.payload as ManufacturingQuality];
+        case "update": {
+          const updated = action.payload as ManufacturingQuality;
+          return state.map((item) => (item.id === updated.id ? updated : item));
+        }
+        case "delete":
+          return state.filter((item) => item.id !== (action.payload as number));
+        case "reorder":
+          return action.payload as ManufacturingQuality[];
+        default:
+          return state;
+      }
+    },
+  );
+
   const {
     createMutation: createQualityMutation,
     updateMutation: updateQualityMutation,
@@ -267,6 +293,40 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
       resetQualityForm();
     },
   });
+
+  const [_formState, formAction, isPending] = useActionState(
+    async (_prevState: { success: boolean } | null, formData: FormData) => {
+      const data = {
+        title: formData.get("title") as string,
+        description: formData.get("description") as string,
+        category: formData.get("category") as string,
+        frequency: formData.get("frequency") as string,
+        icon: qualityForm.icon,
+        imageId: qualityForm.imageId,
+        isActive: formData.get("isActive") === "on",
+        checkpoints: qualityForm.checkpoints,
+        standards: qualityForm.standards,
+      };
+
+      if (editingQuality) {
+        setOptimisticQualities({ type: "update", payload: { ...editingQuality, ...data } });
+        await updateQualityMutation.mutateAsync({ id: editingQuality.id, data });
+      } else {
+        const tempId = Date.now();
+        setOptimisticQualities({
+          type: "add",
+          payload: {
+            ...data,
+            id: tempId,
+            sortOrder: qualityStandards.length,
+          } as ManufacturingQuality,
+        });
+        await createQualityMutation.mutateAsync({ ...data, sortOrder: qualityStandards.length });
+      }
+      return { success: true };
+    },
+    { success: false },
+  );
 
   const { data: specificQualityImage } = useQuery({
     queryKey: [`/api/media/${qualityForm.imageId}`, qualityForm.imageId],
@@ -302,25 +362,6 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
     setShowPreview(false);
   };
 
-  const handleQualitySubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = {
-      ...qualityForm,
-    };
-
-    if (editingQuality) {
-      updateQualityMutation.mutate({
-        id: editingQuality.id,
-        data: formData,
-      });
-    } else {
-      createQualityMutation.mutate({
-        ...formData,
-        position: qualityStandards.length,
-      });
-    }
-  };
-
   const handleEditQuality = (quality: ManufacturingQuality) => {
     setEditingQuality(quality);
     setQualityForm({
@@ -340,9 +381,12 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
   const handleQualityDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      const oldIndex = qualityStandards.findIndex((q) => q.id === active.id);
-      const newIndex = qualityStandards.findIndex((q) => q.id === over.id);
-      const newQualities = arrayMove(qualityStandards, oldIndex, newIndex);
+      const oldIndex = optimisticQualities.findIndex((q) => q.id === active.id);
+      const newIndex = optimisticQualities.findIndex((q) => q.id === over.id);
+      const newQualities = arrayMove(optimisticQualities, oldIndex, newIndex);
+
+      setOptimisticQualities({ type: "reorder", payload: newQualities });
+
       const updates = newQualities.map((quality, index) => ({
         id: quality.id,
         position: index,
@@ -459,16 +503,19 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
               onDragEnd={handleQualityDragEnd}
             >
               <SortableContext
-                items={qualityStandards.map((q) => q.id)}
+                items={optimisticQualities.map((q) => q.id)}
                 strategy={verticalListSortingStrategy}
               >
                 <div className="grid gap-3">
-                  {qualityStandards.map((quality) => (
+                  {optimisticQualities.map((quality) => (
                     <SortableQualityItem
                       key={quality.id}
                       quality={quality}
                       onEdit={handleEditQuality}
-                      onDelete={deleteQualityMutation.mutate}
+                      onDelete={(id) => {
+                        setOptimisticQualities({ type: "delete", payload: id });
+                        deleteQualityMutation.mutate(id);
+                      }}
                     />
                   ))}
                 </div>
@@ -506,7 +553,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
               </div>
             </div>
 
-            <form onSubmit={handleQualitySubmit} className="flex-1 overflow-y-auto max-h-[70vh]">
+            <form action={formAction} className="flex-1 overflow-y-auto max-h-[70vh]">
               <div className="p-8 space-y-8">
                 <div className={cn("grid gap-10", showPreview ? "lg:grid-cols-2" : "grid-cols-1")}>
                   <div className="space-y-8">
@@ -520,6 +567,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                         </Label>
                         <Input
                           id="quality-title"
+                          name="title"
                           value={qualityForm.title || ""}
                           onChange={(e) =>
                             setQualityForm({
@@ -571,6 +619,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                         </Label>
                         <Input
                           id="quality-category"
+                          name="category"
                           value={qualityForm.category || ""}
                           onChange={(e) =>
                             setQualityForm({
@@ -591,6 +640,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                         </Label>
                         <Input
                           id="quality-frequency"
+                          name="frequency"
                           value={qualityForm.frequency || ""}
                           onChange={(e) =>
                             setQualityForm({
@@ -613,6 +663,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                       </Label>
                       <Textarea
                         id="quality-description"
+                        name="description"
                         value={qualityForm.description || ""}
                         onChange={(e) =>
                           setQualityForm({
@@ -628,6 +679,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                     <div className="flex items-center space-x-3 bg-white/5 border border-white/10 p-4 rounded-xl">
                       <Switch
                         id="quality-active"
+                        name="isActive"
                         checked={qualityForm.isActive ?? true}
                         onCheckedChange={(checked) =>
                           setQualityForm({ ...qualityForm, isActive: checked })
@@ -794,10 +846,14 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                 </Button>
                 <Button
                   type="submit"
-                  disabled={createQualityMutation.isPending || updateQualityMutation.isPending}
+                  disabled={isPending}
                   className="bg-primary hover:bg-primary/90 text-white rounded-xl px-8 py-6 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all outline-none ring-0 border-0"
                 >
-                  {editingQuality ? "Update Standard" : "Establish Standard"}
+                  {isPending
+                    ? "Syncing..."
+                    : editingQuality
+                      ? "Update Standard"
+                      : "Establish Standard"}
                 </Button>
               </div>
             </form>
