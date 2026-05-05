@@ -2,7 +2,7 @@ import type { MediaAsset } from "@shared/index";
 import { AlertCircle, Check, FileIcon, Image, Video, X } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import { MediaLibraryContainerEnhanced } from "@/components/admin/media-library/MediaLibraryContainerEnhanced";
-import { useMediaLibraryEnhanced } from "@/components/admin/media-library/MediaLibraryContextEnhanced";
+import { useMediaLibrary } from "@/components/admin/media-library/MediaLibraryContextEnhanced";
 import { Button } from "@/components/ui/button";
 
 interface UnifiedMediaSelectionProps {
@@ -84,7 +84,7 @@ export function MediaSelectionWrapperUnified({
     setSelectedType,
     selectAssets,
     clearSelection,
-  } = useMediaLibraryEnhanced();
+  } = useMediaLibrary();
 
   // Initialize selection state with provided IDs
   React.useEffect(() => {

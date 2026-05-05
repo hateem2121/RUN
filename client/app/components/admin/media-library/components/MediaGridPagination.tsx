@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { useMediaLibraryEnhanced } from "../MediaLibraryContextEnhanced";
+import { useMediaLibrary } from "../MediaLibraryContextEnhanced";
 
 export interface MediaGridPaginationProps {
   totalPages: number;
@@ -11,7 +11,7 @@ export interface MediaGridPaginationProps {
 
 export const MediaGridPagination = React.memo(
   ({ totalPages, totalAssets, displayCount }: MediaGridPaginationProps) => {
-    const { state, setCurrentPage } = useMediaLibraryEnhanced();
+    const { state, setCurrentPage } = useMediaLibrary();
 
     if (totalPages <= 1) {
       if (displayCount > 0) {

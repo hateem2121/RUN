@@ -105,31 +105,3 @@ export const invalidateMediaQueries = (queryClient: QueryClient) => {
     refetchType: "all",
   });
 };
-
-/**
- * @deprecated Use invalidateMediaQueries instead
- * Legacy class kept for backward compatibility during transition
- */
-// biome-ignore lint/complexity/noStaticOnlyClass: legacy support
-export class MediaCacheInvalidator {
-  static async invalidateAll(queryClient: QueryClient): Promise<void> {
-    return invalidateMediaQueries(queryClient);
-  }
-
-  static async invalidateItem(queryClient: QueryClient, _mediaId?: number | string): Promise<void> {
-    return invalidateMediaQueries(queryClient);
-  }
-
-  static async invalidatePaginated(queryClient: QueryClient): Promise<void> {
-    return invalidateMediaQueries(queryClient);
-  }
-
-  static async invalidateBatch(queryClient: QueryClient): Promise<void> {
-    return invalidateMediaQueries(queryClient);
-  }
-}
-
-// Convenience exports
-export const invalidateAllMedia = invalidateMediaQueries;
-export const invalidateMediaItem = invalidateMediaQueries;
-export const invalidatePaginatedMedia = invalidateMediaQueries;

@@ -15,6 +15,7 @@ import {
   setupGlobalErrorHandlers,
 } from "../middleware/production-error-handler.js";
 import { requestSanitization } from "../middleware/sanitization.js";
+import { idempotencyMiddleware } from "../middleware/idempotency.js";
 import { authService } from "../services/auth-service.js";
 
 
@@ -65,7 +66,10 @@ export async function setupMiddleware(app: Express) {
   // 7. Sanitization (Must be after body parsers)
   app.use(requestSanitization);
 
-  // 8. Audit Logging for Admin Mutations
+  // 8. Idempotency (Must be after body parsers to catch response JSON)
+  app.use(idempotencyMiddleware);
+
+  // 9. Audit Logging for Admin Mutations
   app.use("/api/admin", (req, _res, next) => {
     if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
       const user = (req as Request & { user?: { id: string; email: string } }).user;

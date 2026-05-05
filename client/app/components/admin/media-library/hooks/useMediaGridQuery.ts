@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useCacheInvalidationListener } from "@/hooks/useCacheInvalidation";
 import { createMediaQueryKey } from "@/lib/media-query-keys";
 import { batchFetchMediaContent } from "@/lib/queryClient";
-import { useMediaLibraryEnhanced } from "../MediaLibraryContextEnhanced";
+import { useMediaLibrary } from "../MediaLibraryContextEnhanced";
 
 interface MediaGridQueryResult {
   displayAssets: MediaAsset[];
@@ -20,7 +20,7 @@ interface MediaGridQueryResult {
 }
 
 export function useMediaGridQuery(): MediaGridQueryResult {
-  const { state, setTotalPages } = useMediaLibraryEnhanced();
+  const { state, setTotalPages } = useMediaLibrary();
 
   // Event-driven cache invalidation
   useCacheInvalidationListener("media:");

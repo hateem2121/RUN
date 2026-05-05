@@ -83,10 +83,6 @@ export const QuoteSubmissionSchema = z.object({
 
 export type QuoteSubmissionData = z.infer<typeof QuoteSubmissionSchema>;
 
-// Inquiry (quote cart) form schema (LEGACY/Alias)
-export const inquiryFormSchema = QuoteSubmissionSchema;
-
-export type InquiryFormData = z.infer<typeof inquiryFormSchema>;
 
 // Admin contact page CMS settings form schema
 export const contactContentFormSchema = z.object({

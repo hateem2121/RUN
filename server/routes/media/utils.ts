@@ -21,7 +21,7 @@ import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-proces
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { appStorageService } from "../../lib/storage/app-service.js";
 import { correctMimeType } from "../../lib/utilities/core-utils.js";
-import UPLOAD_CONFIG from "../../lib/utilities/upload-config.js";
+import { UPLOAD_CONFIG } from "../../lib/utilities/upload-config.js";
 import type { MediaMetadata, ValidationResult } from "./types.js";
 
 const execFilePromise = promisify(execFile);

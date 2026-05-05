@@ -45,13 +45,13 @@ function buildApp() {
 }
 
 describe("Idempotency Middleware", () => {
-  beforeEach(() => {
-    clearIdempotencyStore();
+  beforeEach(async () => {
+    await clearIdempotencyStore();
     vi.clearAllMocks();
   });
 
-  afterEach(() => {
-    clearIdempotencyStore();
+  afterEach(async () => {
+    await clearIdempotencyStore();
   });
 
   it("should process request normally without idempotency key", async () => {
@@ -135,7 +135,7 @@ describe("Idempotency Middleware", () => {
     await request(app).post("/api/orders").set("Idempotency-Key", "clear-2").send({});
     expect(getIdempotencyStoreSize()).toBe(2);
 
-    clearIdempotencyStore();
+    await clearIdempotencyStore();
     expect(getIdempotencyStoreSize()).toBe(0);
   });
 

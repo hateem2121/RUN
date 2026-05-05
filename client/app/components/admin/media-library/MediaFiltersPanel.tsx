@@ -10,11 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
+import { useMediaLibrary } from "./MediaLibraryContextEnhanced";
 
 // Phase 1: Search and Filtering Interface (90 lines target)
 export function MediaFiltersPanel() {
-  const { state, updateState } = useMediaLibraryEnhanced();
+  const { state, updateState } = useMediaLibrary();
 
   // PHASE 3 OPTIMIZATION: Local state for search to prevent global context updates on every keystroke (INP fix)
   const [localSearch, setLocalSearch] = useState(state.searchTerm);

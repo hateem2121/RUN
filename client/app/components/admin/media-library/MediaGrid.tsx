@@ -7,7 +7,7 @@ import { MediaGridItem } from "./components/MediaGridItem";
 import { MediaGridPagination } from "./components/MediaGridPagination";
 import { MediaGridToolbar } from "./components/MediaGridToolbar";
 import { useMediaGridQuery } from "./hooks/useMediaGridQuery";
-import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
+import { useMediaLibrary } from "./MediaLibraryContextEnhanced";
 
 export interface MediaGridProps {
   selectionMode?: boolean;
@@ -20,7 +20,7 @@ export function MediaGrid({
   isStandalone = false,
   onAssetSelect,
 }: MediaGridProps) {
-  const { state, setSelectedAsset, setLightboxOpen, toggleAsset } = useMediaLibraryEnhanced();
+  const { state, setSelectedAsset, setLightboxOpen, toggleAsset } = useMediaLibrary();
 
   const containerRef = useRef<HTMLDivElement>(null);
 

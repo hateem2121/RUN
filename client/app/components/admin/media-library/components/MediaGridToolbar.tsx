@@ -8,11 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useMediaLibraryEnhanced } from "../MediaLibraryContextEnhanced";
+import { useMediaLibrary } from "../MediaLibraryContextEnhanced";
 import { MediaBulkOperations } from "./MediaBulkOperations";
 
 export const MediaGridToolbar = React.memo(() => {
-  const { state, updateState } = useMediaLibraryEnhanced();
+  const { state, updateState } = useMediaLibrary();
 
   return (
     <div className="flex items-center justify-between">

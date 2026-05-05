@@ -73,5 +73,3 @@ export const UPLOAD_CONFIG = {
     ".pdf",
   ],
 };
-
-export default UPLOAD_CONFIG;

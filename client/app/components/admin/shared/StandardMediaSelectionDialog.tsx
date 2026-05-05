@@ -16,7 +16,7 @@
 
 import type { MediaAsset } from "@shared/index";
 import { lazy, Suspense } from "react";
-import { MediaLibraryEnhancedProvider } from "@/components/admin/media-library/MediaLibraryContextEnhanced";
+import { MediaLibraryProvider } from "@/components/admin/media-library/MediaLibraryContextEnhanced";
 import {
   Dialog,
   DialogBody,
@@ -66,7 +66,7 @@ interface StandardMediaSelectionDialogProps {
  * REQUIRED ELEMENTS:
  * 1. Dialog with open/onOpenChange props
  * 2. DialogContent with contentType='media-library'
- * 3. MediaLibraryEnhancedProvider wrapper
+ * 3. MediaLibraryProvider wrapper
  * 4. MediaSelectionWrapperUnified with className="h-full"
  * 5. Proper event handlers
  */
@@ -98,7 +98,7 @@ export function StandardMediaSelectionDialog({
 
         {/* ARCHITECTURAL FIX: Bounded height container for scroll ownership */}
         <DialogBody className="p-0">
-          <MediaLibraryEnhancedProvider>
+          <MediaLibraryProvider>
             <Suspense
               fallback={
                 <div className="flex h-modal-md items-center justify-center">
@@ -119,7 +119,7 @@ export function StandardMediaSelectionDialog({
                 className="h-full"
               />
             </Suspense>
-          </MediaLibraryEnhancedProvider>
+          </MediaLibraryProvider>
         </DialogBody>
       </DialogContent>
     </Dialog>
@@ -155,6 +155,6 @@ export function StandardMediaSelectionDialog({
  * MIGRATION GUIDE:
  * - Replace all custom media picker implementations with this pattern
  * - Remove hardcoded sizing (max-w-6xl, h-modal-lg, etc.)
- * - Replace MediaLibraryEnhancedProvider + MediaSelectionWrapperUnified boilerplate
+ * - Replace MediaLibraryProvider + MediaSelectionWrapperUnified boilerplate
  * - Use contentType='media-library' for automatic optimal sizing
  */

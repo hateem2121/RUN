@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { invalidateMediaQueries } from "@/lib/media-query-keys";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
-import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
+import { useMediaLibrary } from "./MediaLibraryContextEnhanced";
 
 // Import extracted modules
 import { UploadItem } from "./upload/UploadItem";
@@ -40,7 +40,7 @@ const getUploadWorker = (): Worker => {
 };
 
 export function MediaUploadEnhanced() {
-  const { setErrorState, setSyncStatus, uploadFiles } = useMediaLibraryEnhanced();
+  const { setErrorState, setSyncStatus, uploadFiles } = useMediaLibrary();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadQueue, setUploadQueue] = useState<UploadQueueItem[]>([]);

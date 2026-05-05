@@ -14,7 +14,7 @@
 ## 3. Motion (Soul)
 
 - Add 60fps micro-animations for hover/active states.
-- Use `framer-motion` or CSS transitions with `will-change: transform`.
+- Use GSAP / ScrollTrigger or CSS transitions with `will-change: transform`.
 - Implement Scroll Reveal for landing sections.
 
 ## 4. Verification

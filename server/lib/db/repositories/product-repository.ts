@@ -345,7 +345,9 @@ export class ProductRepository {
   async invalidateProductCount(): Promise<void> {
     const cacheKey = CacheKeys.products.totalCount();
     await unifiedCache.delete(cacheKey);
-    logger.info("[ProductRepo] Product count cache invalidated");
+    // Also invalidate featured count as featured products change frequently
+    await unifiedCache.delete("products:count:featured");
+    logger.info("[ProductRepo] Product count caches invalidated");
   }
 
   async getProductsByCategoryCount(categoryId: number): Promise<number> {

@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { invalidateMediaQueries } from "@/lib/media-query-keys";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
-import { useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
+import { useMediaLibrary } from "./MediaLibraryContextEnhanced";
 
 // PHASE 1: Progressive Loading Integration
 declare global {
@@ -95,7 +95,7 @@ export function MediaViewerModal() {
     setDeleteModalOpen,
     setSelectedAsset,
     setSelectedAssetIndex,
-  } = useMediaLibraryEnhanced();
+  } = useMediaLibrary();
 
   const { selectedAsset, lightboxOpen, editModalOpen, deleteModalOpen } = state;
   const { toast } = useToast();

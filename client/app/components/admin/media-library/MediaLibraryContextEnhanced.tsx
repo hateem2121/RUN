@@ -577,10 +577,6 @@ export function useMediaLibrary() {
   return context;
 }
 
-// Backward compatibility alias
-export const useMediaLibraryEnhanced = useMediaLibrary;
-export const MediaLibraryEnhancedProvider = MediaLibraryProvider;
-
 // Export context for external components
 export { MediaLibraryContext };
 

@@ -12,10 +12,10 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { invalidateMediaQueries } from "@/lib/media-query-keys";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
-import { useMediaLibraryEnhanced } from "../MediaLibraryContextEnhanced";
+import { useMediaLibrary } from "../MediaLibraryContextEnhanced";
 
 export const MediaBulkOperations = React.memo(() => {
-  const { state, clearSelection } = useMediaLibraryEnhanced();
+  const { state, clearSelection } = useMediaLibrary();
   const { toast } = useToast();
 
   const selectedCount = state.selectedAssets.size;

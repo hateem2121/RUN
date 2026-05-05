@@ -2,7 +2,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useToast } from "@/hooks/use-toast";
 import { getQueryClient } from "@/lib/queryClient";
-import { MediaLibraryProvider, useMediaLibraryEnhanced } from "./MediaLibraryContextEnhanced";
+import { MediaLibraryProvider, useMediaLibrary } from "./MediaLibraryContextEnhanced";
 
 const MediaGrid = React.lazy(() => import("./MediaGrid").then((m) => ({ default: m.MediaGrid })));
 const MediaFiltersPanel = React.lazy(() =>
@@ -267,7 +267,7 @@ export function MediaLibraryContainerEnhanced({
   );
 
   const AutoFilterInitializer = () => {
-    const { state, updateState } = useMediaLibraryEnhanced();
+    const { state, updateState } = useMediaLibrary();
 
     React.useEffect(() => {
       if (initialFilter !== "all" && state.selectedType !== initialFilter) {
@@ -301,7 +301,7 @@ function MediaLibraryMainContent({
   paginationMode?: "traditional";
   isStandalone: boolean;
 }) {
-  const { state, updateState } = useMediaLibraryEnhanced();
+  const { state, updateState } = useMediaLibrary();
 
   // Phase 3: Development-mode validation warnings
   useEffect(() => {
