@@ -114,7 +114,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
               </div>
               <div>
                 <h2 className="text-xl font-bold text-white tracking-tight">Process Phases</h2>
-                <p className="text-sm text-[#68869A]">
+                <p className="text-sm text-admin-muted">
                   Sequence and manage the manufacturing methodology.
                 </p>
               </div>
@@ -124,7 +124,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                 setNewCard({ ...newCard, step: cards.length + 1 });
                 setIsCreateOpen(true);
               }}
-              className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none border-0"
+              className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none border-0"
             >
               <Plus className="mr-2 h-4 w-4" /> Add Phase
             </Button>
@@ -185,26 +185,26 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                           />
                         ) : (
                           <div className="flex flex-col items-center">
-                            <ImageIcon className="h-8 w-8 text-[#68869A] mb-2 opacity-30 group-hover:opacity-50 transition-opacity" />
-                            <span className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+                            <ImageIcon className="h-8 w-8 text-admin-muted mb-2 opacity-30 group-hover:opacity-50 transition-opacity" />
+                            <span className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                               No Media
                             </span>
                           </div>
                         )}
                         <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10" />
 
-                        <div className="absolute top-3 right-3 px-2 py-1 bg-black/60 backdrop-blur-md rounded border border-white/10 text-[10px] font-bold text-[#68869A] group-hover:opacity-0 transition-opacity z-10">
+                        <div className="absolute top-3 right-3 px-2 py-1 bg-black/60 backdrop-blur-md rounded border border-white/10 text-xxs font-bold text-admin-muted group-hover:opacity-0 transition-opacity z-10">
                           Phase {card.step}
                         </div>
                       </div>
 
                       <div className="p-6 flex-1 flex flex-col">
                         <div className="flex items-center justify-between mb-3">
-                          <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">
+                          <span className="text-xxs font-bold text-blue-400 uppercase tracking-widest">
                             Phase {card.step}
                           </span>
                           {!card.isActive && (
-                            <span className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+                            <span className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                               Inactive
                             </span>
                           )}
@@ -212,7 +212,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                         <h3 className="text-lg font-bold text-white tracking-tight mb-2 line-clamp-1">
                           {card.title}
                         </h3>
-                        <p className="text-sm text-[#68869A] line-clamp-3 flex-1">
+                        <p className="text-sm text-admin-muted line-clamp-3 flex-1">
                           {card.description}
                         </p>
                       </div>
@@ -222,9 +222,9 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
               })}
               {orderedCards.length === 0 && (
                 <div className="col-span-full py-16 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-white/[0.01]">
-                  <Layers className="h-10 w-10 text-[#68869A] mb-4 opacity-50" />
+                  <Layers className="h-10 w-10 text-admin-muted mb-4 opacity-50" />
                   <p className="text-white font-medium mb-1">No Process Phases</p>
-                  <p className="text-sm text-[#68869A] max-w-sm text-center">
+                  <p className="text-sm text-admin-muted max-w-sm text-center">
                     Add phases to illustrate your manufacturing methodology on the global
                     storefront.
                   </p>
@@ -236,12 +236,12 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
 
         {/* Create Dialog */}
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogContent className="max-w-2xl bg-[#0A0A0A] border-white/10 text-white">
+          <DialogContent className="max-w-2xl bg-surface-black border-white/10 text-white">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold tracking-tight">
                 Deploy Process Phase
               </DialogTitle>
-              <DialogDescription className="text-[#68869A]">
+              <DialogDescription className="text-admin-muted">
                 Define a new step in the manufacturing methodology.
               </DialogDescription>
             </DialogHeader>
@@ -250,7 +250,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                 <div className="space-y-2">
                   <Label
                     htmlFor="title"
-                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                    className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                   >
                     Phase Title
                   </Label>
@@ -264,7 +264,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                 <div className="space-y-2">
                   <Label
                     htmlFor="step"
-                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                    className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                   >
                     Sequence Number
                   </Label>
@@ -282,7 +282,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
               <div className="space-y-2">
                 <Label
                   htmlFor="description"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Phase Description
                 </Label>
@@ -295,10 +295,11 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
               </div>
 
               <div className="space-y-4">
-                <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1 flex items-center gap-2">
+                <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1 flex items-center gap-2">
                   <ImageIcon className="size-3 text-blue-400" /> Phase Visual
                 </Label>
-                <div
+                <button
+                  type="button"
                   className={cn(
                     "group relative overflow-hidden rounded-2xl border-2 border-dashed transition-all cursor-pointer h-32",
                     newCard.imageId
@@ -306,14 +307,6 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                       : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10",
                   )}
                   onClick={() => openMediaPicker("create")}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      openMediaPicker("create");
-                    }
-                  }}
-                  role="button"
-                  tabIndex={0}
                   aria-label="Select phase visual"
                 >
                   {newCard.imageId ? (
@@ -337,13 +330,13 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                     </>
                   ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                      <div className="rounded-full bg-white/5 p-3 text-[#68869A] group-hover:scale-110 group-hover:bg-white/10 group-hover:text-white transition-all">
+                      <div className="rounded-full bg-white/5 p-3 text-admin-muted group-hover:scale-110 group-hover:bg-white/10 group-hover:text-white transition-all">
                         <ImageIcon className="h-5 w-5" />
                       </div>
                       <p className="text-xs font-bold text-white">Select Visual</p>
                     </div>
                   )}
-                </div>
+                </button>
               </div>
             </div>
             <DialogFooter className="border-t border-white/10 pt-4 mt-2">
@@ -361,12 +354,12 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
         {/* Edit Dialog */}
         {editingCard && (
           <Dialog open={!!editingCard} onOpenChange={(open) => !open && setEditingCard(null)}>
-            <DialogContent className="max-w-2xl bg-[#0A0A0A] border-white/10 text-white">
+            <DialogContent className="max-w-2xl bg-surface-black border-white/10 text-white">
               <DialogHeader>
                 <DialogTitle className="text-xl font-bold tracking-tight">
                   Modify Process Phase
                 </DialogTitle>
-                <DialogDescription className="text-[#68869A]">
+                <DialogDescription className="text-admin-muted">
                   Update sequence, content, or visuals for this step.
                 </DialogDescription>
               </DialogHeader>
@@ -375,7 +368,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                   <div className="space-y-2">
                     <Label
                       htmlFor="edit-title"
-                      className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                      className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                     >
                       Phase Title
                     </Label>
@@ -389,7 +382,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                   <div className="space-y-2">
                     <Label
                       htmlFor="edit-step"
-                      className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                      className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                     >
                       Sequence Number
                     </Label>
@@ -407,7 +400,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                 <div className="space-y-2">
                   <Label
                     htmlFor="edit-description"
-                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                    className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                   >
                     Phase Description
                   </Label>
@@ -422,10 +415,11 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1 flex items-center gap-2">
+                  <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1 flex items-center gap-2">
                     <ImageIcon className="size-3 text-blue-400" /> Phase Visual
                   </Label>
-                  <div
+                  <button
+                    type="button"
                     className={cn(
                       "group relative overflow-hidden rounded-2xl border-2 border-dashed transition-all cursor-pointer h-32",
                       editingCard.imageId
@@ -433,14 +427,6 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                         : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10",
                     )}
                     onClick={() => openMediaPicker("edit")}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        openMediaPicker("edit");
-                      }
-                    }}
-                    role="button"
-                    tabIndex={0}
                     aria-label="Change phase visual"
                   >
                     {editingCard.imageId ? (
@@ -464,13 +450,13 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                       </>
                     ) : (
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                        <div className="rounded-full bg-white/5 p-3 text-[#68869A] group-hover:scale-110 group-hover:bg-white/10 group-hover:text-white transition-all">
+                        <div className="rounded-full bg-white/5 p-3 text-admin-muted group-hover:scale-110 group-hover:bg-white/10 group-hover:text-white transition-all">
                           <ImageIcon className="h-5 w-5" />
                         </div>
                         <p className="text-xs font-bold text-white">Select Visual</p>
                       </div>
                     )}
-                  </div>
+                  </button>
                 </div>
 
                 <div className="flex items-center space-x-3 p-4 rounded-xl border border-white/5 bg-white/[0.02]">
@@ -489,7 +475,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                     >
                       Broadcast Status
                     </Label>
-                    <p className="text-xs text-[#68869A]">
+                    <p className="text-xs text-admin-muted">
                       Activate this phase on the global storefront
                     </p>
                   </div>

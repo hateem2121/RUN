@@ -9,7 +9,7 @@ export const meta: MetaFunction = () => {
 
 export default function TermsOfService() {
   return (
-    <main className="container-centered py-32">
+    <main id="main-content" className="container-centered py-32 outline-none">
       <h1 className="mb-8 text-4xl font-bold font-neue-stance tracking-tighter uppercase sm:text-5xl md:text-6xl">
         Terms of Service
       </h1>

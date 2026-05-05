@@ -129,7 +129,7 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
         <div
           {...attributes}
           {...listeners}
-          className="flex h-8 w-8 cursor-grab items-center justify-center rounded-lg bg-[#0A0A0A]/80 text-white backdrop-blur-md transition-colors hover:bg-white/20 active:cursor-grabbing"
+          className="flex h-8 w-8 cursor-grab items-center justify-center rounded-lg bg-surface-black/80 text-white backdrop-blur-md transition-colors hover:bg-white/20 active:cursor-grabbing"
           title="Drag to reorder"
           aria-label="Drag to reorder"
         >
@@ -138,7 +138,7 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
         <button
           type="button"
           onClick={() => onEdit(equipment)}
-          className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0A0A0A]/80 text-white backdrop-blur-md transition-colors hover:bg-[#00D4FF] hover:text-[#0A0A0A]"
+          className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-black/80 text-white backdrop-blur-md transition-colors hover:bg-[#00D4FF] hover:text-[#0A0A0A]"
           title="Edit Equipment"
           aria-label="Edit Equipment"
         >
@@ -151,7 +151,7 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
           trigger={
             <button
               type="button"
-              className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0A0A0A]/80 text-white backdrop-blur-md transition-colors hover:bg-rose-500"
+              className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-black/80 text-white backdrop-blur-md transition-colors hover:bg-rose-500"
               title="Delete Equipment"
               aria-label="Delete Equipment"
             >
@@ -178,7 +178,7 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
 
         {/* Category Badge */}
         <div className="absolute bottom-3 left-3 z-[2]">
-          <span className="rounded border border-[#00D4FF]/30 bg-[#00D4FF]/20 px-2 py-0.5 text-[10px] font-bold tracking-wider text-[#00D4FF] uppercase backdrop-blur-md">
+          <span className="rounded border border-[#00D4FF]/30 bg-[#00D4FF]/20 px-2 py-0.5 text-xxs font-bold tracking-wider text-[#00D4FF] uppercase backdrop-blur-md">
             {equipment.category || "General"}
           </span>
         </div>
@@ -196,13 +196,13 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
                 equipment.isActive && "animate-pulse",
               )}
             />
-            <span className={cn("text-[10px] font-medium tracking-wide", status.color)}>
+            <span className={cn("text-xxs font-medium tracking-wide", status.color)}>
               {status.label}
             </span>
           </div>
         </div>
 
-        <p className="mb-4 line-clamp-2 text-xs leading-relaxed text-[#E3DFD6]/60">
+        <p className="mb-4 line-clamp-2 text-xs leading-relaxed text-admin-foreground/60">
           {equipment.description ||
             "Sophisticated technological asset utilized in high-precision apparel manufacturing flows."}
         </p>
@@ -211,25 +211,25 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
         <div className="mt-auto grid grid-cols-2 gap-x-4 gap-y-2 border-t border-white/[0.05] pt-4">
           <div className="flex items-center gap-2">
             <Settings2 className="h-3 w-3 text-[#00D4FF]/60" />
-            <span className="truncate text-[10px] text-[#E3DFD6]/40 uppercase tracking-wider">
+            <span className="truncate text-xxs text-admin-foreground/40 uppercase tracking-wider">
               {equipment.manufacturer || "OEM"}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <Box className="h-3 w-3 text-[#00D4FF]/60" />
-            <span className="truncate text-[10px] text-[#E3DFD6]/40 uppercase tracking-wider">
+            <span className="truncate text-xxs text-admin-foreground/40 uppercase tracking-wider">
               QTY: {equipment.quantity || 1}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <Activity className="h-3 w-3 text-[#00D4FF]/60" />
-            <span className="truncate text-[10px] text-[#E3DFD6]/40 uppercase tracking-wider">
+            <span className="truncate text-xxs text-admin-foreground/40 uppercase tracking-wider">
               {equipment.capacity || "STNDRD"}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="h-3 w-3 text-[#00D4FF]/60" />
-            <span className="truncate text-[10px] text-[#E3DFD6]/40 uppercase tracking-wider">
+            <span className="truncate text-xxs text-admin-foreground/40 uppercase tracking-wider">
               {equipment.maintenanceSchedule || "MNTNCE"}
             </span>
           </div>
@@ -429,7 +429,7 @@ export function TechnologyEquipmentManagement({
               Technology <span className="text-[#00D4FF]">Equipment</span>
             </h2>
           </div>
-          <p className="text-sm leading-relaxed text-[#E3DFD6]/60">
+          <p className="text-sm leading-relaxed text-admin-foreground/60">
             Advanced manufacturing ecosystem control. Monitor hardware status, maintenance cycles,
             and quality orientation across the production floor.
           </p>
@@ -437,7 +437,7 @@ export function TechnologyEquipmentManagement({
 
         <div className="flex items-center gap-4">
           <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#E3DFD6]/40" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-foreground/40" />
             <Input
               placeholder="Filter assets..."
               className="h-10 border-white/[0.08] bg-white/[0.03] pl-9 text-xs focus-visible:ring-[#00D4FF]/30"
@@ -487,7 +487,7 @@ export function TechnologyEquipmentManagement({
             </div>
             <div className="text-center">
               <h3 className="text-lg font-bold text-white">No Assets Detected</h3>
-              <p className="max-w-[300px] text-xs leading-relaxed text-[#E3DFD6]/40">
+              <p className="max-w-[300px] text-xs leading-relaxed text-admin-foreground/40">
                 Your manufacturing grid is currently offline. Add equipment to begin tracking
                 performance.
               </p>
@@ -525,41 +525,41 @@ export function TechnologyEquipmentManagement({
       {/* Footer Ecosystem Stats - Bento Style */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-xl transition-all hover:bg-white/[0.05]">
-          <p className="mb-1 text-[10px] font-bold tracking-[0.2em] text-[#E3DFD6]/40 uppercase">
+          <p className="mb-1 text-xxs font-bold tracking-[0.2em] text-admin-foreground/40 uppercase">
             Total Assets
           </p>
           <div className="flex items-end gap-2">
             <span className="text-3xl font-black text-white">{equipment.length}</span>
-            <span className="mb-1 text-[10px] font-medium text-[#00D4FF]">SYSTEMS</span>
+            <span className="mb-1 text-xxs font-medium text-[#00D4FF]">SYSTEMS</span>
           </div>
         </div>
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-xl transition-all hover:bg-white/[0.05]">
-          <p className="mb-1 text-[10px] font-bold tracking-[0.2em] text-[#E3DFD6]/40 uppercase">
+          <p className="mb-1 text-xxs font-bold tracking-[0.2em] text-admin-foreground/40 uppercase">
             Ecosystem Health
           </p>
           <div className="flex items-end gap-2">
             <span className="text-3xl font-black text-emerald-400">98.2%</span>
-            <span className="mb-1 text-[10px] font-medium text-emerald-400">CALIBRATED</span>
+            <span className="mb-1 text-xxs font-medium text-emerald-400">CALIBRATED</span>
           </div>
         </div>
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-xl transition-all hover:bg-white/[0.05]">
-          <p className="mb-1 text-[10px] font-bold tracking-[0.2em] text-[#E3DFD6]/40 uppercase">
+          <p className="mb-1 text-xxs font-bold tracking-[0.2em] text-admin-foreground/40 uppercase">
             Active Units
           </p>
           <div className="flex items-end gap-2">
             <span className="text-3xl font-black text-white">
               {equipment.filter((e) => e.isActive).length}
             </span>
-            <span className="mb-1 text-[10px] font-medium text-[#00D4FF]">ONLINE</span>
+            <span className="mb-1 text-xxs font-medium text-[#00D4FF]">ONLINE</span>
           </div>
         </div>
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-xl transition-all hover:bg-white/[0.05]">
-          <p className="mb-1 text-[10px] font-bold tracking-[0.2em] text-[#E3DFD6]/40 uppercase">
+          <p className="mb-1 text-xxs font-bold tracking-[0.2em] text-admin-foreground/40 uppercase">
             System Uptime
           </p>
           <div className="flex items-end gap-2">
             <span className="text-3xl font-black text-[#00D4FF]">99.9%</span>
-            <span className="mb-1 text-[10px] font-medium text-[#00D4FF]">VERIFIED</span>
+            <span className="mb-1 text-xxs font-medium text-[#00D4FF]">VERIFIED</span>
           </div>
         </div>
       </div>
@@ -569,7 +569,7 @@ export function TechnologyEquipmentManagement({
         <DialogContent
           contentType="form"
           preferredSize="4xl"
-          className="overflow-hidden bg-[#0A0A0A] border-[#00D4FF]/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+          className="overflow-hidden bg-surface-black border-[#00D4FF]/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
         >
           <DialogHeader className="border-b border-white/[0.08] bg-white/[0.02] px-8 py-6">
             <div className="flex items-center gap-3">
@@ -585,7 +585,7 @@ export function TechnologyEquipmentManagement({
                   {editingEquipment ? "Configure" : "Initialize"}{" "}
                   <span className="text-[#00D4FF]">Asset</span>
                 </DialogTitle>
-                <DialogDescription className="text-xs text-[#E3DFD6]/40">
+                <DialogDescription className="text-xs text-admin-foreground/40">
                   Update high-precision equipment specifications for the digital ecosystem.
                 </DialogDescription>
               </div>
@@ -600,14 +600,14 @@ export function TechnologyEquipmentManagement({
               {/* Primary Configuration */}
               <div className="space-y-6">
                 <div className="flex items-center gap-2 border-l-2 border-[#00D4FF] pl-4">
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#00D4FF]">
+                  <h4 className="text-xxs font-black uppercase tracking-[0.2em] text-[#00D4FF]">
                     Primary Configuration
                   </h4>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                    <Label className="text-xxs font-bold uppercase tracking-widest text-admin-foreground/60">
                       Asset Name *
                     </Label>
                     <Input
@@ -619,7 +619,7 @@ export function TechnologyEquipmentManagement({
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                    <Label className="text-xxs font-bold uppercase tracking-widest text-admin-foreground/60">
                       Asset Category
                     </Label>
                     <Input
@@ -634,7 +634,7 @@ export function TechnologyEquipmentManagement({
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                  <Label className="text-xxs font-bold uppercase tracking-widest text-admin-foreground/60">
                     System Description
                   </Label>
                   <Textarea
@@ -651,14 +651,14 @@ export function TechnologyEquipmentManagement({
               {/* Technical Specifications */}
               <div className="space-y-6">
                 <div className="flex items-center gap-2 border-l-2 border-[#00D4FF] pl-4">
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#00D4FF]">
+                  <h4 className="text-xxs font-black uppercase tracking-[0.2em] text-[#00D4FF]">
                     Technical Specs
                   </h4>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                    <Label className="text-xxs font-bold uppercase tracking-widest text-admin-foreground/60">
                       Manufacturer
                     </Label>
                     <Input
@@ -671,7 +671,7 @@ export function TechnologyEquipmentManagement({
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                    <Label className="text-xxs font-bold uppercase tracking-widest text-admin-foreground/60">
                       Model Version
                     </Label>
                     <Input
@@ -684,7 +684,7 @@ export function TechnologyEquipmentManagement({
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                    <Label className="text-xxs font-bold uppercase tracking-widest text-admin-foreground/60">
                       Asset Quantity
                     </Label>
                     <Input
@@ -700,7 +700,7 @@ export function TechnologyEquipmentManagement({
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                    <Label className="text-xxs font-bold uppercase tracking-widest text-admin-foreground/60">
                       Capacity Rating
                     </Label>
                     <Input
@@ -718,14 +718,14 @@ export function TechnologyEquipmentManagement({
               {/* Maintenance & Certification */}
               <div className="space-y-6">
                 <div className="flex items-center gap-2 border-l-2 border-[#00D4FF] pl-4">
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#00D4FF]">
+                  <h4 className="text-xxs font-black uppercase tracking-[0.2em] text-[#00D4FF]">
                     Lifecycle Management
                   </h4>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                    <Label className="text-xxs font-bold uppercase tracking-widest text-admin-foreground/60">
                       Maintenance Frequency
                     </Label>
                     <Input
@@ -738,7 +738,7 @@ export function TechnologyEquipmentManagement({
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                    <Label className="text-xxs font-bold uppercase tracking-widest text-admin-foreground/60">
                       Initialization Date
                     </Label>
                     <Input
@@ -761,11 +761,11 @@ export function TechnologyEquipmentManagement({
 
                 {/* Media Handling */}
                 <div className="space-y-4 rounded-xl border border-white/[0.05] bg-white/[0.02] p-6">
-                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#00D4FF]">
+                  <Label className="text-xxs font-black uppercase tracking-[0.2em] text-[#00D4FF]">
                     Visual Identification
                   </Label>
                   <div className="flex items-center gap-6">
-                    <div className="group relative h-24 w-40 shrink-0 overflow-hidden rounded-lg border border-white/[0.08] bg-[#0A0A0A]">
+                    <div className="group relative h-24 w-40 shrink-0 overflow-hidden rounded-lg border border-white/[0.08] bg-surface-black">
                       {equipmentForm.imageId ? (
                         <img
                           src={mediaAssets?.find((a) => a.id === equipmentForm.imageId)?.url}
@@ -780,13 +780,13 @@ export function TechnologyEquipmentManagement({
                       <button
                         type="button"
                         onClick={() => setIsImagePickerOpen(true)}
-                        className="absolute inset-0 flex items-center justify-center bg-[#0A0A0A]/60 opacity-0 transition-opacity group-hover:opacity-100"
+                        className="absolute inset-0 flex items-center justify-center bg-surface-black/60 opacity-0 transition-opacity group-hover:opacity-100"
                       >
                         <Layers className="h-5 w-5 text-white" />
                       </button>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <p className="text-xs text-[#E3DFD6]/40">
+                      <p className="text-xs text-admin-foreground/40">
                         High-resolution reference image for asset tracking and dashboard
                         visualizations.
                       </p>
@@ -794,7 +794,7 @@ export function TechnologyEquipmentManagement({
                         type="button"
                         variant="ghost"
                         onClick={() => setIsImagePickerOpen(true)}
-                        className="h-8 w-fit border border-white/[0.1] text-[10px] font-bold tracking-widest text-[#00D4FF] hover:bg-[#00D4FF]/10"
+                        className="h-8 w-fit border border-white/[0.1] text-xxs font-bold tracking-widest text-[#00D4FF] hover:bg-[#00D4FF]/10"
                       >
                         SELECT REFERENCE MEDIA
                       </Button>
@@ -806,15 +806,15 @@ export function TechnologyEquipmentManagement({
                 <div className="flex items-center justify-between rounded-xl border border-white/[0.05] bg-white/[0.02] p-6">
                   <div>
                     <h5 className="text-sm font-bold text-white">System Visibility</h5>
-                    <p className="text-xs text-[#E3DFD6]/40">
+                    <p className="text-xs text-admin-foreground/40">
                       Toggle public visibility for this specific piece of technology.
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
                     <span
                       className={cn(
-                        "text-[10px] font-black tracking-widest uppercase transition-colors",
-                        equipmentForm.isActive ? "text-[#00D4FF]" : "text-[#E3DFD6]/20",
+                        "text-xxs font-black tracking-widest uppercase transition-colors",
+                        equipmentForm.isActive ? "text-[#00D4FF]" : "text-admin-foreground/20",
                       )}
                     >
                       {equipmentForm.isActive ? "Online" : "Decommissioned"}
@@ -836,7 +836,7 @@ export function TechnologyEquipmentManagement({
                 type="button"
                 variant="ghost"
                 onClick={() => setShowEquipmentDialog(false)}
-                className="text-[#E3DFD6]/60 hover:text-white"
+                className="text-admin-foreground/60 hover:text-white"
               >
                 DISCARD
               </Button>

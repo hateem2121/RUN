@@ -39,7 +39,7 @@ export function InquiryDetails({ inquiryId, onUpdate }: InquiryDetailsProps) {
 
   if (!inquiryId) {
     return (
-      <div className="flex h-full flex-col items-center justify-center text-center text-[#68869A] py-12">
+      <div className="flex h-full flex-col items-center justify-center text-center text-admin-muted py-12">
         <MessageSquare className="h-12 w-12 opacity-20 mb-4" />
         <Typography.P>Select an inquiry to view details and respond.</Typography.P>
       </div>
@@ -64,7 +64,7 @@ export function InquiryDetails({ inquiryId, onUpdate }: InquiryDetailsProps) {
             <Badge
               variant="outline"
               className={cn(
-                "text-[10px] uppercase font-bold",
+                "text-xxs uppercase font-bold",
                 inquiry.priority === "urgent"
                   ? "bg-red-500/10 text-red-500 border-red-500/20"
                   : inquiry.priority === "high"
@@ -74,13 +74,13 @@ export function InquiryDetails({ inquiryId, onUpdate }: InquiryDetailsProps) {
             >
               {inquiry.priority}
             </Badge>
-            <div className="flex items-center gap-1 text-[10px] font-bold text-[#68869A] bg-white/[0.03] px-2 py-0.5 rounded-full border border-white/5">
+            <div className="flex items-center gap-1 text-xxs font-bold text-admin-muted bg-white/[0.03] px-2 py-0.5 rounded-full border border-white/5">
               <TrendingUp className="h-2 w-2" />
               Score: {inquiry.leadScore}
             </div>
           </div>
           <Typography.H4 className="font-bold text-xl">{inquiry.name}</Typography.H4>
-          <div className="flex items-center gap-2 text-xs text-[#68869A] mt-0.5">
+          <div className="flex items-center gap-2 text-xs text-admin-muted mt-0.5">
             <Clock className="h-3 w-3" />
             {(() => {
               const date = new Date(inquiry.createdAt);
@@ -104,22 +104,22 @@ export function InquiryDetails({ inquiryId, onUpdate }: InquiryDetailsProps) {
         >
           <div className="space-y-4">
             <div className="flex items-center gap-3 text-sm">
-              <div className="p-2 rounded-md bg-white/[0.03] text-[#68869A]">
+              <div className="p-2 rounded-md bg-white/[0.03] text-admin-muted">
                 <Mail className="h-4 w-4" />
               </div>
               <div className="flex flex-col">
-                <span className="text-[10px] uppercase font-bold text-[#68869A]/60">Email</span>
+                <span className="text-xxs uppercase font-bold text-admin-muted/60">Email</span>
                 <span className="font-medium">{inquiry.email}</span>
               </div>
             </div>
 
             {inquiry.phone && (
               <div className="flex items-center gap-3 text-sm">
-                <div className="p-2 rounded-md bg-white/[0.03] text-[#68869A]">
+                <div className="p-2 rounded-md bg-white/[0.03] text-admin-muted">
                   <Phone className="h-4 w-4" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] uppercase font-bold text-[#68869A]/60">
+                  <span className="text-xxs uppercase font-bold text-admin-muted/60">
                     Phone / Platform
                   </span>
                   <span className="font-medium">
@@ -131,11 +131,11 @@ export function InquiryDetails({ inquiryId, onUpdate }: InquiryDetailsProps) {
 
             {inquiry.company && (
               <div className="flex items-center gap-3 text-sm">
-                <div className="p-2 rounded-md bg-white/[0.03] text-[#68869A]">
+                <div className="p-2 rounded-md bg-white/[0.03] text-admin-muted">
                   <Building2 className="h-4 w-4" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] uppercase font-bold text-[#68869A]/60">Company</span>
+                  <span className="text-xxs uppercase font-bold text-admin-muted/60">Company</span>
                   <span className="font-medium">{inquiry.company}</span>
                 </div>
               </div>
@@ -147,7 +147,7 @@ export function InquiryDetails({ inquiryId, onUpdate }: InquiryDetailsProps) {
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <MessageSquare className="h-4 w-4 text-primary" />
-              <span className="text-[10px] uppercase font-bold tracking-widest text-[#68869A]">
+              <span className="text-xxs uppercase font-bold tracking-widest text-admin-muted">
                 Original Message
               </span>
             </div>
@@ -157,15 +157,15 @@ export function InquiryDetails({ inquiryId, onUpdate }: InquiryDetailsProps) {
           </div>
 
           <div className="pt-4 space-y-4">
-            <span className="text-[10px] uppercase font-bold tracking-widest text-[#68869A]">
+            <span className="text-xxs uppercase font-bold tracking-widest text-admin-muted">
               Quick Controls
             </span>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <span className="text-[10px] text-[#68869A] ml-1">Priority</span>
+                <span className="text-xxs text-admin-muted ml-1">Priority</span>
                 <select
                   title="Priority"
-                  className="w-full bg-[#0A0A0A] border-white/10 rounded-md text-xs px-3 py-2 outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full bg-surface-black border-white/10 rounded-md text-xs px-3 py-2 outline-none focus:ring-1 focus:ring-primary"
                   value={inquiry.priority}
                   onChange={(e) =>
                     onUpdate({ priority: e.target.value as "low" | "medium" | "high" | "urgent" })
@@ -178,10 +178,10 @@ export function InquiryDetails({ inquiryId, onUpdate }: InquiryDetailsProps) {
                 </select>
               </div>
               <div className="space-y-1.5">
-                <span className="text-[10px] text-[#68869A] ml-1">Assign User</span>
+                <span className="text-xxs text-admin-muted ml-1">Assign User</span>
                 <select
                   title="Assign User"
-                  className="w-full bg-[#0A0A0A] border-white/10 rounded-md text-xs px-3 py-2 outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full bg-surface-black border-white/10 rounded-md text-xs px-3 py-2 outline-none focus:ring-1 focus:ring-primary"
                   value={inquiry.assignedTo || ""}
                   onChange={(e) => onUpdate({ assignedTo: e.target.value })}
                 >

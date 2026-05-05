@@ -29,7 +29,7 @@ export function SectionHeadersTabContent({
         <div className="mb-10 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-white tracking-tight">Global Section Headers</h2>
-            <p className="text-sm text-[#68869A]">
+            <p className="text-sm text-admin-muted">
               Sovereign narrative control for sustainability module headlines and subheadlines
             </p>
           </div>
@@ -37,10 +37,10 @@ export function SectionHeadersTabContent({
             onClick={onSave}
             disabled={!hasUnsavedChanges || isPending}
             className={cn(
-              "font-bold uppercase text-[10px] tracking-widest h-11 px-6 rounded-xl transition-all active:scale-95 shadow-lg",
+              "font-bold uppercase text-xxs tracking-widest h-11 px-6 rounded-xl transition-all active:scale-95 shadow-lg",
               hasUnsavedChanges
                 ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20"
-                : "bg-white/5 text-[#68869A] border border-white/10 cursor-not-allowed",
+                : "bg-white/5 text-admin-muted border border-white/10 cursor-not-allowed",
             )}
           >
             {isPending ? (
@@ -59,7 +59,7 @@ export function SectionHeadersTabContent({
               <div className="size-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <TrendingUp className="size-4" />
               </div>
-              <h3 className="text-[10px] font-bold text-white uppercase tracking-[0.2em]">
+              <h3 className="text-xxs font-bold text-white uppercase tracking-[0.2em]">
                 Impact Metrics Section
               </h3>
             </div>
@@ -68,7 +68,7 @@ export function SectionHeadersTabContent({
               <div className="space-y-2">
                 <Label
                   htmlFor="metricsTitle"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Primary Headline
                 </Label>
@@ -83,7 +83,7 @@ export function SectionHeadersTabContent({
               <div className="space-y-2">
                 <Label
                   htmlFor="metricsDescription"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Supporting Narrative
                 </Label>
@@ -105,7 +105,7 @@ export function SectionHeadersTabContent({
               <div className="size-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <Leaf className="size-4" />
               </div>
-              <h3 className="text-[10px] font-bold text-white uppercase tracking-[0.2em]">
+              <h3 className="text-xxs font-bold text-white uppercase tracking-[0.2em]">
                 Active Initiatives Section
               </h3>
             </div>
@@ -114,7 +114,7 @@ export function SectionHeadersTabContent({
               <div className="space-y-2">
                 <Label
                   htmlFor="initiativesTitle"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Primary Headline
                 </Label>
@@ -129,7 +129,7 @@ export function SectionHeadersTabContent({
               <div className="space-y-2">
                 <Label
                   htmlFor="initiativesDescription"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Supporting Narrative
                 </Label>
@@ -151,7 +151,7 @@ export function SectionHeadersTabContent({
               <div className="size-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <Award className="size-4" />
               </div>
-              <h3 className="text-[10px] font-bold text-white uppercase tracking-[0.2em]">
+              <h3 className="text-xxs font-bold text-white uppercase tracking-[0.2em]">
                 Compliance Section
               </h3>
             </div>
@@ -160,7 +160,7 @@ export function SectionHeadersTabContent({
               <div className="space-y-2">
                 <Label
                   htmlFor="certificationsTitle"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Primary Headline
                 </Label>
@@ -175,7 +175,7 @@ export function SectionHeadersTabContent({
               <div className="space-y-2">
                 <Label
                   htmlFor="certificationsDescription"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Supporting Narrative
                 </Label>
@@ -191,7 +191,7 @@ export function SectionHeadersTabContent({
               <div className="space-y-2">
                 <Label
                   htmlFor="certificationsFooterNote"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Compliance Legal Note
                 </Label>
@@ -200,7 +200,7 @@ export function SectionHeadersTabContent({
                   value={localForm.certificationsFooterNote || ""}
                   onChange={(e) => onLocalUpdate({ certificationsFooterNote: e.target.value })}
                   rows={2}
-                  className="bg-white/5 border-white/10 text-[#68869A] rounded-xl focus:ring-emerald-500/50 resize-none min-h-[80px] text-xs"
+                  className="bg-white/5 border-white/10 text-admin-muted rounded-xl focus:ring-emerald-500/50 resize-none min-h-[80px] text-xs"
                   placeholder="Additional context on validity or auditing bodies..."
                 />
               </div>
@@ -213,7 +213,7 @@ export function SectionHeadersTabContent({
               <div className="size-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <Target className="size-4" />
               </div>
-              <h3 className="text-[10px] font-bold text-white uppercase tracking-[0.2em]">
+              <h3 className="text-xxs font-bold text-white uppercase tracking-[0.2em]">
                 Mission Goals Section
               </h3>
             </div>
@@ -222,7 +222,7 @@ export function SectionHeadersTabContent({
               <div className="space-y-2">
                 <Label
                   htmlFor="goalsTitle"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Primary Headline
                 </Label>
@@ -237,7 +237,7 @@ export function SectionHeadersTabContent({
               <div className="space-y-2">
                 <Label
                   htmlFor="goalsDescription"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Supporting Narrative
                 </Label>
@@ -262,7 +262,7 @@ export function SectionHeadersTabContent({
             <h4 className="text-sm font-bold text-white tracking-tight">
               Narrative Synchronization
             </h4>
-            <p className="text-xs text-[#68869A] leading-relaxed">
+            <p className="text-xs text-admin-muted leading-relaxed">
               These headers govern the tone and authority of their respective sections. Changing
               them will update the live public sustainability page immediately upon sync.
             </p>

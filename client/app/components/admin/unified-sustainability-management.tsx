@@ -77,7 +77,7 @@ const SortableMetricItem = memo(function SortableMetricItem({
         <div
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing text-[#68869A] hover:text-emerald-400 transition-colors"
+          className="cursor-grab active:cursor-grabbing text-admin-muted hover:text-emerald-400 transition-colors"
         >
           <GripVertical className="h-5 w-5" />
         </div>
@@ -92,7 +92,7 @@ const SortableMetricItem = memo(function SortableMetricItem({
             <span className="text-emerald-400 font-bold text-sm">
               {metric.value} {metric.unit}
             </span>
-            <span className="text-[10px] uppercase tracking-widest text-[#68869A] font-bold">
+            <span className="text-xxs uppercase tracking-widest text-admin-muted font-bold">
               {metric.category}
             </span>
           </div>
@@ -151,7 +151,7 @@ const SortableInitiativeItem = memo(function SortableInitiativeItem({
         <div
           {...attributes}
           {...listeners}
-          className="mt-1 cursor-grab active:cursor-grabbing text-[#68869A] hover:text-emerald-400 transition-colors"
+          className="mt-1 cursor-grab active:cursor-grabbing text-admin-muted hover:text-emerald-400 transition-colors"
         >
           <GripVertical className="h-5 w-5" />
         </div>
@@ -163,7 +163,7 @@ const SortableInitiativeItem = memo(function SortableInitiativeItem({
         <div className="flex-1 min-w-0">
           <h4 className="font-bold text-white tracking-tight truncate mb-1">{initiative.title}</h4>
           {initiative.description && (
-            <p className="text-[#68869A] text-sm leading-relaxed line-clamp-2">
+            <p className="text-admin-muted text-sm leading-relaxed line-clamp-2">
               {initiative.description}
             </p>
           )}
@@ -225,7 +225,7 @@ const SortableGoalItem = memo(function SortableGoalItem({
         <div
           {...attributes}
           {...listeners}
-          className="mt-1 cursor-grab active:cursor-grabbing text-[#68869A] hover:text-emerald-400 transition-colors"
+          className="mt-1 cursor-grab active:cursor-grabbing text-admin-muted hover:text-emerald-400 transition-colors"
         >
           <GripVertical className="h-5 w-5" />
         </div>
@@ -237,23 +237,23 @@ const SortableGoalItem = memo(function SortableGoalItem({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-2">
             <h4 className="font-bold text-white tracking-tight truncate">{goal.title}</h4>
-            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded-md">
+            <span className="text-xxs font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded-md">
               Target: {goal.targetYear || "TBD"}
             </span>
           </div>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-[#68869A]">
+              <span className="text-admin-muted">
                 <span className="text-white font-bold">{goal.currentValue}</span> /{" "}
                 {goal.targetValue}{" "}
-                <span className="text-[10px] uppercase font-bold text-white/40 ml-1">
+                <span className="text-xxs uppercase font-bold text-white/40 ml-1">
                   {goal.unit}
                 </span>
               </span>
               <span
                 className={cn(
-                  "font-bold uppercase tracking-widest text-[10px]",
+                  "font-bold uppercase tracking-widest text-xxs",
                   progressPercentage >= 100 ? "text-emerald-400" : "text-emerald-400/70",
                 )}
               >
@@ -526,7 +526,7 @@ export function UnifiedSustainabilityManagement() {
           <div className="h-2 w-2 animate-bounce rounded-full bg-emerald-500 [animation-delay:-0.15s]"></div>
           <div className="h-2 w-2 animate-bounce rounded-full bg-emerald-500"></div>
         </div>
-        <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+        <p className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
           Initialising Ecosystem Data...
         </p>
       </div>
@@ -544,14 +544,14 @@ export function UnifiedSustainabilityManagement() {
             <h1 className="text-xl font-bold text-white tracking-tight">
               Eco-System Configuration
             </h1>
-            <p className="text-sm text-[#68869A]">
+            <p className="text-sm text-admin-muted">
               Sovereign oversight of global sustainability protocols and metrics
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           {hasUnsavedChanges && (
-            <span className="mr-2 text-[10px] font-bold text-emerald-400 uppercase tracking-widest animate-pulse">
+            <span className="mr-2 text-xxs font-bold text-emerald-400 uppercase tracking-widest animate-pulse">
               Unsaved Ecosystem Changes
             </span>
           )}
@@ -559,7 +559,7 @@ export function UnifiedSustainabilityManagement() {
             variant="ghost"
             onClick={resetForm}
             disabled={!hasUnsavedChanges || updateMutation.isPending}
-            className="text-[#68869A] hover:bg-white/5 text-[10px] font-bold uppercase tracking-widest h-11"
+            className="text-admin-muted hover:bg-white/5 text-xxs font-bold uppercase tracking-widest h-11"
           >
             <Undo2 className="h-4 w-4 mr-2" />
             Reset
@@ -567,7 +567,7 @@ export function UnifiedSustainabilityManagement() {
           <Button
             onClick={handleSave}
             disabled={!hasUnsavedChanges || updateMutation.isPending}
-            className="h-11 bg-emerald-600 hover:bg-emerald-700 text-white px-8 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-emerald-500/20 active:scale-95 transition-all outline-none border-0"
+            className="h-11 bg-emerald-600 hover:bg-emerald-700 text-white px-8 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-emerald-500/20 active:scale-95 transition-all outline-none border-0"
           >
             {updateMutation.isPending ? (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white" />
@@ -596,7 +596,7 @@ export function UnifiedSustainabilityManagement() {
               <TabsTrigger
                 key={tab.id}
                 value={tab.id}
-                className="flex-1 py-3 text-[10px] uppercase font-bold tracking-widest data-[state=active]:bg-emerald-600 data-[state=active]:text-white transition-all rounded-xl"
+                className="flex-1 py-3 text-xxs uppercase font-bold tracking-widest data-[state=active]:bg-emerald-600 data-[state=active]:text-white transition-all rounded-xl"
               >
                 {tab.label}
               </TabsTrigger>

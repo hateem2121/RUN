@@ -1,4 +1,4 @@
-import { boolean, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, integer, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { pgTable } from "./common";
 
 // =============================================================================
@@ -35,7 +35,7 @@ export const users = pgTable("users", {
   isAdmin: boolean().default(false).notNull(),
 
   // SECURITY: Account Lockout
-  failedLoginAttempts: text({}).default("0").notNull(), // Stored as string to avoid precision issues if needed, but int is better. Wait, drizzle has integer.
+  failedLoginAttempts: integer().default(0).notNull(),
   lockoutUntil: timestamp({ mode: "date", precision: 3 }),
 
   // Timestamps for audit trail

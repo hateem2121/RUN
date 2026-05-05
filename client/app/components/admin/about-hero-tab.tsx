@@ -173,7 +173,7 @@ export function AboutHeroTab() {
                       </div>
                     ) : (
                       <div className="flex h-20 w-32 items-center justify-center rounded-md border border-dashed bg-white/[0.03]">
-                        <span className="text-[#68869A] text-xs">No media</span>
+                        <span className="text-admin-muted text-xs">No media</span>
                       </div>
                     )}
 

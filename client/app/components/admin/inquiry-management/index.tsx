@@ -91,13 +91,14 @@ export function InquiryManagement() {
           { id: "archived", label: "Archived", icon: Archive },
         ].map((tab) => (
           <button
+            type="button"
             key={tab.id}
             onClick={() => setStatusFilter(tab.id)}
             className={cn(
               "flex items-center px-4 py-2 rounded-md text-xs font-bold transition-all duration-200",
               statusFilter === tab.id
                 ? "bg-primary/20 text-primary border border-primary/20 shadow-[0_0_15px_-3px_rgba(0,212,255,0.2)]"
-                : "text-[#68869A] hover:text-white hover:bg-white/5 border border-transparent",
+                : "text-admin-muted hover:text-white hover:bg-white/5 border border-transparent",
             )}
           >
             <tab.icon className="mr-2 h-4 w-4" />

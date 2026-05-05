@@ -39,6 +39,7 @@ export function AdminPageHeader({
       <div className="flex items-start gap-4">
         {showBackButton && (
           <button
+            type="button"
             onClick={() => navigate(-1)}
             className="mt-1 flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10"
             aria-label="Go back"
@@ -48,7 +49,7 @@ export function AdminPageHeader({
         )}
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">{title}</h1>
-          {description && <p className="mt-1 text-[#68869A]">{description}</p>}
+          {description && <p className="mt-1 text-admin-muted">{description}</p>}
         </div>
       </div>
 
@@ -56,6 +57,7 @@ export function AdminPageHeader({
         {children}
         {onAction && actionLabel && (
           <button
+            type="button"
             onClick={onAction}
             className="flex items-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition-all hover:bg-blue-600 hover:shadow-blue-500/40 active:scale-[0.98]"
           >

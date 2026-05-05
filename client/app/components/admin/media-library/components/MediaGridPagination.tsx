@@ -16,7 +16,7 @@ export const MediaGridPagination = React.memo(
     if (totalPages <= 1) {
       if (displayCount > 0) {
         return (
-          <div className="text-[#68869A] border-t border-white/5 py-4 text-center text-sm">
+          <div className="text-admin-muted border-t border-white/5 py-4 text-center text-sm">
             {displayCount} media {displayCount === 1 ? "item" : "items"}
           </div>
         );
@@ -29,7 +29,7 @@ export const MediaGridPagination = React.memo(
         className="flex items-center justify-between border-t border-white/5 px-4 py-6"
         data-testid="pagination-controls"
       >
-        <div className="text-[#68869A] text-sm">
+        <div className="text-admin-muted text-sm">
           Showing {displayCount} of {totalAssets} media items
         </div>
 
@@ -40,7 +40,7 @@ export const MediaGridPagination = React.memo(
             size="sm"
             onClick={() => setCurrentPage(Math.max(1, state.currentPage - 1))}
             disabled={state.currentPage <= 1}
-            className="flex items-center gap-1 border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white disabled:opacity-50 transition-colors"
+            className="flex items-center gap-1 border-white/10 bg-white/5 text-admin-foreground hover:bg-white/10 hover:text-white disabled:opacity-50 transition-colors"
           >
             <ChevronLeft className="h-4 w-4" />
             Previous
@@ -75,7 +75,7 @@ export const MediaGridPagination = React.memo(
 
             {totalPages > 5 && state.currentPage < totalPages - 2 && (
               <>
-                <span className="text-[#68869A] px-2">...</span>
+                <span className="text-admin-muted px-2">...</span>
                 <Button
                   variant="outline"
                   size="sm"
@@ -94,7 +94,7 @@ export const MediaGridPagination = React.memo(
             size="sm"
             onClick={() => setCurrentPage(Math.min(totalPages, state.currentPage + 1))}
             disabled={state.currentPage >= totalPages}
-            className="flex items-center gap-1 border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white disabled:opacity-50 transition-colors"
+            className="flex items-center gap-1 border-white/10 bg-white/5 text-admin-foreground hover:bg-white/10 hover:text-white disabled:opacity-50 transition-colors"
           >
             Next
             <ChevronRight className="h-4 w-4" />

@@ -146,7 +146,7 @@ export function CategoryManagementSimplified() {
           </div>
           <div>
             <h1 className="text-xl font-bold text-white tracking-tight">Category Architecture</h1>
-            <p className="text-sm text-[#68869A]">
+            <p className="text-sm text-admin-muted">
               {filteredCategories.length} of {categories?.length || 0} categories
               {selectedCount > 0 && ` • ${selectedCount} selected`}
             </p>
@@ -158,12 +158,12 @@ export function CategoryManagementSimplified() {
             onClick={() => updateUIState({ showAdvancedMode: !uiState.showAdvancedMode })}
             className="bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl h-11"
           >
-            <Settings className="mr-2 h-4 w-4 text-[#68869A]" />
+            <Settings className="mr-2 h-4 w-4 text-admin-muted" />
             {uiState.showAdvancedMode ? "Simple" : "Advanced"}
           </Button>
           <Button
             onClick={openCreateDialog}
-            className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none border-0"
+            className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none border-0"
           >
             <Plus className="mr-2 h-4 w-4" />
             New Category
@@ -174,7 +174,7 @@ export function CategoryManagementSimplified() {
       {/* Search & Filters - Clean */}
       <GlassCard className="p-6">
         <div className="flex items-center gap-2 mb-6 border-b border-white/5 pb-4">
-          <Search className="h-4 w-4 text-[#68869A]" />
+          <Search className="h-4 w-4 text-admin-muted" />
           <h2 className="text-sm font-bold text-white uppercase tracking-wider">
             Search & Filters
           </h2>
@@ -195,7 +195,7 @@ export function CategoryManagementSimplified() {
               onChange={(e) =>
                 updateUIState({ filterStatus: e.target.value as "all" | "active" | "inactive" })
               }
-              className="rounded-xl border border-white/10 bg-[#0A0A0A] text-white px-3 py-2 h-11 focus:ring-blue-500/50 outline-none"
+              className="rounded-xl border border-white/10 bg-surface-black text-white px-3 py-2 h-11 focus:ring-blue-500/50 outline-none"
             >
               <option value="all">All Categories</option>
               <option value="active">Active Only</option>
@@ -211,7 +211,7 @@ export function CategoryManagementSimplified() {
               />
               <Label
                 htmlFor="show-deleted"
-                className="cursor-pointer whitespace-nowrap text-xs font-bold text-[#68869A] uppercase tracking-wider"
+                className="cursor-pointer whitespace-nowrap text-xs font-bold text-admin-muted uppercase tracking-wider"
               >
                 Show Deleted
               </Label>
@@ -221,7 +221,7 @@ export function CategoryManagementSimplified() {
           {/* View Mode & Bulk Actions */}
           <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-white/5">
             <div className="flex items-center gap-3">
-              <span className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+              <span className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                 View:
               </span>
               <div className="flex gap-1 p-1 bg-white/5 rounded-lg border border-white/10">
@@ -232,7 +232,7 @@ export function CategoryManagementSimplified() {
                   className={
                     uiState.viewMode === "list"
                       ? "bg-white/10 text-white hover:bg-white/20"
-                      : "text-[#68869A] hover:text-white hover:bg-white/5"
+                      : "text-admin-muted hover:text-white hover:bg-white/5"
                   }
                 >
                   <List className="h-4 w-4" />
@@ -244,7 +244,7 @@ export function CategoryManagementSimplified() {
                   className={
                     uiState.viewMode === "grid"
                       ? "bg-white/10 text-white hover:bg-white/20"
-                      : "text-[#68869A] hover:text-white hover:bg-white/5"
+                      : "text-admin-muted hover:text-white hover:bg-white/5"
                   }
                 >
                   <Grid3X3 className="h-4 w-4" />
@@ -256,7 +256,7 @@ export function CategoryManagementSimplified() {
                   className={
                     uiState.viewMode === "tree"
                       ? "bg-white/10 text-white hover:bg-white/20"
-                      : "text-[#68869A] hover:text-white hover:bg-white/5"
+                      : "text-admin-muted hover:text-white hover:bg-white/5"
                   }
                 >
                   <TreePine className="h-4 w-4" />
@@ -301,7 +301,7 @@ export function CategoryManagementSimplified() {
                   variant="ghost"
                   size="sm"
                   onClick={clearSelection}
-                  className="text-[#68869A] hover:text-white hover:bg-white/5 mr-1"
+                  className="text-admin-muted hover:text-white hover:bg-white/5 mr-1"
                 >
                   Clear
                 </Button>
@@ -316,7 +316,7 @@ export function CategoryManagementSimplified() {
               size="sm"
               onClick={selectAll}
               disabled={filteredCategories.length === 0}
-              className="text-[#68869A] hover:text-white hover:bg-white/5 text-[10px] font-bold uppercase tracking-widest"
+              className="text-admin-muted hover:text-white hover:bg-white/5 text-xxs font-bold uppercase tracking-widest"
             >
               Select All ({filteredCategories.length})
             </Button>
@@ -325,7 +325,7 @@ export function CategoryManagementSimplified() {
                 variant="ghost"
                 size="sm"
                 onClick={clearSelection}
-                className="text-[#68869A] hover:text-white hover:bg-white/5 text-[10px] font-bold uppercase tracking-widest"
+                className="text-admin-muted hover:text-white hover:bg-white/5 text-xxs font-bold uppercase tracking-widest"
               >
                 Clear Selection
               </Button>
@@ -343,7 +343,7 @@ export function CategoryManagementSimplified() {
               Advanced Features
             </h2>
           </div>
-          <p className="text-[#68869A] text-sm mb-6">
+          <p className="text-admin-muted text-sm mb-6">
             Additional tools for power users. These features are being simplified.
           </p>
           <div className="grid gap-4 md:grid-cols-3">
@@ -372,7 +372,7 @@ export function CategoryManagementSimplified() {
               Bulk Content
             </Button>
           </div>
-          <p className="mt-4 text-[10px] text-blue-400 font-bold uppercase tracking-widest">
+          <p className="mt-4 text-xxs text-blue-400 font-bold uppercase tracking-widest">
             Advanced features are being consolidated for a cleaner experience.
           </p>
         </GlassCard>
@@ -421,7 +421,7 @@ export function CategoryManagementSimplified() {
             {deletedCategoriesError ? (
               <div className="py-8 text-center bg-black/20 rounded-xl border border-white/5">
                 <p className="font-bold text-red-400">Failed to load deleted categories</p>
-                <p className="mt-2 text-[#68869A] text-sm">
+                <p className="mt-2 text-admin-muted text-sm">
                   {(deletedCategoriesError as Error)?.message ||
                     "An error occurred while fetching deleted categories"}
                 </p>
@@ -433,7 +433,7 @@ export function CategoryManagementSimplified() {
                     className="border-white/10 text-white hover:bg-white/10 rounded-xl h-9"
                     data-testid="button-retry-deleted-categories"
                   >
-                    <RotateCcw className="mr-2 h-4 w-4 text-[#68869A]" />
+                    <RotateCcw className="mr-2 h-4 w-4 text-admin-muted" />
                     Retry
                   </Button>
                   <Button
@@ -451,7 +451,7 @@ export function CategoryManagementSimplified() {
                 <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-red-500/20 border-t-red-500" />
               </div>
             ) : deletedCategories.length === 0 ? (
-              <p className="py-12 text-center text-[#68869A] bg-black/20 rounded-xl border border-white/5">
+              <p className="py-12 text-center text-admin-muted bg-black/20 rounded-xl border border-white/5">
                 No deleted categories
               </p>
             ) : (
@@ -464,9 +464,9 @@ export function CategoryManagementSimplified() {
                   >
                     <div className="flex-1">
                       <h3 className="font-bold text-white">{category.name}</h3>
-                      <p className="text-[#68869A] text-sm mt-0.5">{category.slug}</p>
+                      <p className="text-admin-muted text-sm mt-0.5">{category.slug}</p>
                       {category.deletedAt && (
-                        <p className="mt-2 text-red-400 text-[10px] font-bold uppercase tracking-widest">
+                        <p className="mt-2 text-red-400 text-xxs font-bold uppercase tracking-widest">
                           Deleted: {new Date(category.deletedAt).toLocaleDateString()}
                         </p>
                       )}
@@ -519,10 +519,10 @@ export function CategoryManagementSimplified() {
       />
 
       <Dialog open={uiState.showDeleteDialog} onOpenChange={(open) => !open && closeDialogs()}>
-        <DialogContent contentType="form" className="bg-[#0A0A0A] border-white/10 text-white">
+        <DialogContent contentType="form" className="bg-surface-black border-white/10 text-white">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold tracking-tight">Delete Category</DialogTitle>
-            <DialogDescription className="text-[#68869A]">
+            <DialogDescription className="text-admin-muted">
               Are you sure you want to delete "{uiState.deletingCategory?.name}
               "? This category will be moved to the deleted items and can be restored later.
             </DialogDescription>
@@ -551,10 +551,10 @@ export function CategoryManagementSimplified() {
       </Dialog>
 
       <Dialog open={uiState.showRestoreDialog} onOpenChange={(open) => !open && closeDialogs()}>
-        <DialogContent contentType="form" className="bg-[#0A0A0A] border-white/10 text-white">
+        <DialogContent contentType="form" className="bg-surface-black border-white/10 text-white">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold tracking-tight">Restore Category</DialogTitle>
-            <DialogDescription className="text-[#68869A]">
+            <DialogDescription className="text-admin-muted">
               Are you sure you want to restore "{uiState.restoringCategory?.name}"? This will make
               the category active again.
             </DialogDescription>
@@ -584,12 +584,12 @@ export function CategoryManagementSimplified() {
       </Dialog>
 
       <Dialog open={uiState.showHardDeleteDialog} onOpenChange={(open) => !open && closeDialogs()}>
-        <DialogContent contentType="form" className="bg-[#0A0A0A] border-white/10 text-white">
+        <DialogContent contentType="form" className="bg-surface-black border-white/10 text-white">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold tracking-tight text-red-400">
               Permanently Delete Category
             </DialogTitle>
-            <DialogDescription className="text-[#68869A]">
+            <DialogDescription className="text-admin-muted">
               <div className="space-y-4">
                 <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm font-medium">
                   ⚠️ WARNING: This action is irreversible!

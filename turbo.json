@@ -9,7 +9,13 @@
     },
     "test": {
       "dependsOn": ["build"],
-      "inputs": ["app/**/*.tsx", "app/**/*.ts", "server/**/*.ts", "shared/**/*.ts", "tests/**/*.ts"],
+      "inputs": [
+        "app/**/*.tsx",
+        "app/**/*.ts",
+        "server/**/*.ts",
+        "shared/**/*.ts",
+        "tests/**/*.ts"
+      ],
       "outputs": ["coverage/**"]
     },
     "lint": {

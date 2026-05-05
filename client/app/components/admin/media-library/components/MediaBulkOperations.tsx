@@ -155,7 +155,7 @@ export const MediaBulkOperations = React.memo(() => {
         onClick={handleBulkDownload}
         variant="outline"
         size="sm"
-        className="action-button-sidebar border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white transition-colors"
+        className="action-button-sidebar border-white/10 bg-white/5 text-admin-foreground hover:bg-white/10 hover:text-white transition-colors"
       >
         <Download className="mr-2 h-4 w-4" />
         Download
@@ -166,7 +166,7 @@ export const MediaBulkOperations = React.memo(() => {
           <Button
             variant="outline"
             size="sm"
-            className="border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white transition-colors"
+            className="border-white/10 bg-white/5 text-admin-foreground hover:bg-white/10 hover:text-white transition-colors"
           >
             <MoreHorizontal className="h-4 w-4" />
           </Button>

@@ -13,14 +13,12 @@ import type {
   InsertAboutTeamMessage,
   InsertAboutTimelineEntry,
 } from "@run-remix/shared";
-import { err, ok, type Result } from "neverthrow";
+import type { Result } from "neverthrow";
 import { safeQuery } from "../db.js";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { aboutRepository } from "../lib/db/repositories/index.js";
-import { type AppError, NotFoundError } from "../lib/errors.js";
-import { logger } from "../lib/monitoring/logger.js";
+import type { AppError } from "../lib/errors.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
-import { withTimeout } from "../lib/resilience/request-timeout.js";
 
 /**
  * AboutService - Centralized business logic for About page management

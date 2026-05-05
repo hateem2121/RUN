@@ -29,11 +29,7 @@ export const Sections: React.FC<SectionsProps> = ({ data }) => {
   }
 
   return (
-    <section
-      className="w-full bg-background px-4 py-32 md:px-8"
-      role="region"
-      aria-labelledby="sections-heading"
-    >
+    <section className="w-full bg-background px-4 py-32 md:px-8" aria-labelledby="sections-heading">
       <div className="mx-auto max-w-container-2xl">
         <h2 id="sections-heading" className="sr-only">
           About RUN Apparel

@@ -228,25 +228,25 @@ export function TechnologyRoadmapManagement() {
   return (
     <div className="flex flex-col gap-8">
       {/* Header Panel */}
-      <div className="sticky top-0 z-30 -mx-4 mb-4 flex flex-col gap-6 border-b border-white/10 bg-[#0A0A0A]/80 p-6 backdrop-blur-xl sm:-mx-8 sm:px-8">
+      <div className="sticky top-0 z-30 -mx-4 mb-4 flex flex-col gap-6 border-b border-white/10 bg-surface-black/80 p-6 backdrop-blur-xl sm:-mx-8 sm:px-8">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="space-y-1">
             <h2 className="text-3xl font-black tracking-tight text-white uppercase sm:text-4xl">
               Technology <span className="text-[#00D4FF]">Roadmap</span>
             </h2>
-            <p className="text-[#E3DFD6]/60 text-sm font-medium tracking-wide italic">
+            <p className="text-admin-foreground/60 text-sm font-medium tracking-wide italic">
               Future pipeline and strategic milestones
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <div className="relative group">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#E3DFD6]/30 transition-colors group-focus-within:text-[#00D4FF]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-foreground/30 transition-colors group-focus-within:text-[#00D4FF]" />
               <Input
                 placeholder="Search milestones..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-11 w-[240px] border-white/5 bg-white/[0.03] pl-10 text-[#E3DFD6] transition-all focus:border-[#00D4FF]/40 focus:bg-white/[0.06] focus:ring-0"
+                className="h-11 w-[240px] border-white/5 bg-white/[0.03] pl-10 text-admin-foreground transition-all focus:border-[#00D4FF]/40 focus:bg-white/[0.06] focus:ring-0"
               />
             </div>
 
@@ -270,7 +270,7 @@ export function TechnologyRoadmapManagement() {
                   "h-8 px-2 rounded-md transition-all",
                   view === "list"
                     ? "bg-[#00D4FF] text-[#0A0A0A] font-bold"
-                    : "text-[#68869A] hover:text-white",
+                    : "text-admin-muted hover:text-white",
                 )}
               >
                 <List className="h-4 w-4" />
@@ -283,7 +283,7 @@ export function TechnologyRoadmapManagement() {
                   "h-8 px-2 rounded-md transition-all",
                   view === "kanban"
                     ? "bg-[#00D4FF] text-[#0A0A0A] font-bold"
-                    : "text-[#68869A] hover:text-white",
+                    : "text-admin-muted hover:text-white",
                 )}
               >
                 <LayoutGrid className="h-4 w-4" />
@@ -292,7 +292,7 @@ export function TechnologyRoadmapManagement() {
 
             <Button
               variant="outline"
-              className="h-11 border-white/10 bg-white/5 px-4 text-[#E3DFD6] hover:bg-white/10"
+              className="h-11 border-white/10 bg-white/5 px-4 text-admin-foreground hover:bg-white/10"
             >
               <Settings2 className="h-5 w-5" />
             </Button>
@@ -310,10 +310,10 @@ export function TechnologyRoadmapManagement() {
           </div>
         ) : filteredRoadmap.length === 0 ? (
           <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.1] bg-white/[0.02] p-12 text-center backdrop-blur-xl">
-            <div className="mb-4 rounded-full bg-white/[0.05] p-4 text-[#E3DFD6]/20">
+            <div className="mb-4 rounded-full bg-white/[0.05] p-4 text-admin-foreground/20">
               <Milestone className="h-12 w-12" />
             </div>
-            <p className="max-w-xs text-sm font-medium text-[#E3DFD6]/40">
+            <p className="max-w-xs text-sm font-medium text-admin-foreground/40">
               No strategic milestones matching your search. Add a new roadmap target to visualize
               the future.
             </p>
@@ -358,16 +358,16 @@ export function TechnologyRoadmapManagement() {
             <Zap className="h-5 w-5" />
           </div>
           <div className="text-2xl font-black text-white">{activeCount}</div>
-          <div className="text-xs font-bold uppercase tracking-wider text-[#68869A]">
+          <div className="text-xs font-bold uppercase tracking-wider text-admin-muted">
             Active Milestones
           </div>
         </div>
         <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5 backdrop-blur-xl">
-          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-[#E3DFD6]/40">
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-admin-foreground/40">
             <FastForward className="h-5 w-5" />
           </div>
           <div className="text-2xl font-black text-white">{roadmap.length - activeCount}</div>
-          <div className="text-xs font-bold uppercase tracking-wider text-[#68869A]">
+          <div className="text-xs font-bold uppercase tracking-wider text-admin-muted">
             Future Pipeline
           </div>
         </div>
@@ -376,7 +376,7 @@ export function TechnologyRoadmapManagement() {
             <Target className="h-5 w-5" />
           </div>
           <div className="text-2xl font-black text-white">94%</div>
-          <div className="text-xs font-bold uppercase tracking-wider text-[#68869A]">
+          <div className="text-xs font-bold uppercase tracking-wider text-admin-muted">
             Impact Accuracy
           </div>
         </div>
@@ -385,7 +385,7 @@ export function TechnologyRoadmapManagement() {
             <Clock className="h-5 w-5" />
           </div>
           <div className="text-2xl font-black text-white">18M</div>
-          <div className="text-xs font-bold uppercase tracking-wider text-[#68869A]">
+          <div className="text-xs font-bold uppercase tracking-wider text-admin-muted">
             Avg. Roadmap Horizon
           </div>
         </div>
@@ -393,7 +393,7 @@ export function TechnologyRoadmapManagement() {
 
       {/* Roadmap Form Dialog */}
       <Dialog open={showRoadmapDialog} onOpenChange={setShowRoadmapDialog}>
-        <DialogContent className="max-w-2xl border-white/10 bg-[#0A0A0A]/95 text-[#E3DFD6] backdrop-blur-2xl">
+        <DialogContent className="max-w-2xl border-white/10 bg-surface-black/95 text-admin-foreground backdrop-blur-2xl">
           <DialogHeader className="border-b border-white/10 pb-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#00D4FF]/10 text-[#00D4FF] mb-4">
               <Zap className="h-6 w-6" />
@@ -402,7 +402,7 @@ export function TechnologyRoadmapManagement() {
               {editingRoadmap ? "Update" : "Initialize"}{" "}
               <span className="text-[#00D4FF]">Milestone</span>
             </DialogTitle>
-            <DialogDescription className="text-[#68869A] font-medium tracking-wide">
+            <DialogDescription className="text-admin-muted font-medium tracking-wide">
               Define the strategic objectives and expected impact for this roadmap target.
             </DialogDescription>
           </DialogHeader>
@@ -411,7 +411,7 @@ export function TechnologyRoadmapManagement() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                  <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
                     Milestone Title
                   </Label>
                   <Input
@@ -423,7 +423,7 @@ export function TechnologyRoadmapManagement() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                  <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
                     Timeline Horizon
                   </Label>
                   <Input
@@ -439,7 +439,7 @@ export function TechnologyRoadmapManagement() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                    <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
                       Current Status
                     </Label>
                     <select
@@ -455,7 +455,7 @@ export function TechnologyRoadmapManagement() {
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                    <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
                       Priority Level
                     </Label>
                     <select
@@ -471,7 +471,7 @@ export function TechnologyRoadmapManagement() {
                   </div>
                 </div>
 
-                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
                   Executive Summary
                 </Label>
                 <Textarea
@@ -486,10 +486,10 @@ export function TechnologyRoadmapManagement() {
             {/* Impact Section */}
             <div className="space-y-4 rounded-2xl bg-white/[0.02] p-6 ring-1 ring-white/5">
               <div className="flex items-center justify-between">
-                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
                   Strategic Impact
                 </Label>
-                <Badge variant="outline" className="border-[#00D4FF]/20 text-[#00D4FF] text-[10px]">
+                <Badge variant="outline" className="border-[#00D4FF]/20 text-[#00D4FF] text-xxs">
                   {roadmapForm.impact.length} Targets Defined
                 </Badge>
               </div>
@@ -500,7 +500,7 @@ export function TechnologyRoadmapManagement() {
                     key={index}
                     className="flex items-center gap-2 rounded-lg bg-[#00D4FF]/5 px-3 py-1.5 ring-1 ring-[#00D4FF]/20"
                   >
-                    <span className="text-sm font-medium text-[#E3DFD6]">{impact}</span>
+                    <span className="text-sm font-medium text-admin-foreground">{impact}</span>
                     <button
                       type="button"
                       onClick={() =>
@@ -512,7 +512,7 @@ export function TechnologyRoadmapManagement() {
                       title="Remove Target"
                       aria-label="Remove Target"
                     >
-                      <X className="h-3 w-3 text-[#68869A] hover:text-red-400" />
+                      <X className="h-3 w-3 text-admin-muted hover:text-red-400" />
                     </button>
                   </div>
                 ))}
@@ -561,7 +561,7 @@ export function TechnologyRoadmapManagement() {
                 <Label className="text-sm font-bold text-white uppercase italic">
                   Active Phase
                 </Label>
-                <p className="text-xs text-[#68869A]">Toggle visibility in public roadmap</p>
+                <p className="text-xs text-admin-muted">Toggle visibility in public roadmap</p>
               </div>
               <Switch
                 checked={roadmapForm.isActive}
@@ -575,7 +575,7 @@ export function TechnologyRoadmapManagement() {
                 type="button"
                 variant="ghost"
                 onClick={() => setShowRoadmapDialog(false)}
-                className="text-[#68869A]"
+                className="text-admin-muted"
               >
                 CANCEL
               </Button>

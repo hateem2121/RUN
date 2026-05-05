@@ -143,7 +143,7 @@ export function FooterManagement() {
   };
 
   if (isLoading) {
-    return <div className="p-8 text-center text-[#68869A]">Loading footer configuration...</div>;
+    return <div className="p-8 text-center text-admin-muted">Loading footer configuration...</div>;
   }
 
   return (
@@ -151,12 +151,12 @@ export function FooterManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="font-bold text-3xl tracking-tight text-white">Footer Management</h2>
-          <p className="text-[#68869A]">Configure public footer content, links, and branding.</p>
+          <p className="text-admin-muted">Configure public footer content, links, and branding.</p>
         </div>
         <Button
           onClick={handleSubmit(onSubmit)}
           disabled={updateMutation.isPending}
-          className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-[0_0_20px_rgba(37,99,235,0.2)] font-bold uppercase tracking-widest text-[10px] h-11 px-6 transition-all active:scale-95 border-0"
+          className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-[0_0_20px_rgba(37,99,235,0.2)] font-bold uppercase tracking-widest text-xxs h-11 px-6 transition-all active:scale-95 border-0"
         >
           <Save className="mr-2 h-4 w-4" />
           {updateMutation.isPending ? "Saving..." : "Save Changes"}
@@ -199,7 +199,7 @@ export function FooterManagement() {
                 <CardTitle className="flex items-center gap-2 text-white">
                   <Building2 className="h-5 w-5 text-blue-400" /> Company Information
                 </CardTitle>
-                <CardDescription className="text-[#68869A]">
+                <CardDescription className="text-admin-muted">
                   Main contact details displayed in the footer.
                 </CardDescription>
               </CardHeader>
@@ -220,7 +220,7 @@ export function FooterManagement() {
                       Contact Email
                     </Label>
                     <div className="relative">
-                      <Mail className="absolute top-3 left-3 h-5 w-5 text-[#68869A]" />
+                      <Mail className="absolute top-3 left-3 h-5 w-5 text-admin-muted" />
                       <Input
                         id="companyEmail"
                         className="pl-10 bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50"
@@ -233,7 +233,7 @@ export function FooterManagement() {
                       Contact Phone
                     </Label>
                     <div className="relative">
-                      <Phone className="absolute top-3 left-3 h-5 w-5 text-[#68869A]" />
+                      <Phone className="absolute top-3 left-3 h-5 w-5 text-admin-muted" />
                       <Input
                         id="companyPhone"
                         className="pl-10 bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50"
@@ -247,7 +247,7 @@ export function FooterManagement() {
                     Physical Address
                   </Label>
                   <div className="relative">
-                    <MapPin className="absolute top-3 left-3 h-5 w-5 text-[#68869A]" />
+                    <MapPin className="absolute top-3 left-3 h-5 w-5 text-admin-muted" />
                     <Textarea
                       id="companyAddress"
                       className="min-h-[100px] pl-10 pt-3 bg-white/5 border-white/10 text-white rounded-xl focus:ring-blue-500/50"
@@ -263,7 +263,7 @@ export function FooterManagement() {
                 <CardTitle className="flex items-center gap-2 text-white">
                   <Mail className="h-5 w-5 text-blue-400" /> Lead Generation Form
                 </CardTitle>
-                <CardDescription className="text-[#68869A]">
+                <CardDescription className="text-admin-muted">
                   Configure the "Start Your Order" section.
                 </CardDescription>
               </CardHeader>
@@ -274,7 +274,7 @@ export function FooterManagement() {
                     className="flex flex-col gap-1 cursor-pointer"
                   >
                     <span className="text-white font-medium">Show Order Form</span>
-                    <span className="font-normal text-[#68869A] text-sm">
+                    <span className="font-normal text-admin-muted text-sm">
                       Enable/disable the global lead generation form in footer.
                     </span>
                   </Label>
@@ -354,7 +354,7 @@ export function FooterManagement() {
                 <CardTitle className="flex items-center gap-2 text-white">
                   <ShieldCheck className="h-5 w-5 text-blue-400" /> Legal & Policy Links
                 </CardTitle>
-                <CardDescription className="text-[#68869A]">
+                <CardDescription className="text-admin-muted">
                   Small links appearing at the very bottom (Privacy, Terms).
                 </CardDescription>
               </CardHeader>
@@ -475,7 +475,7 @@ export function FooterManagement() {
                 <CardTitle className="flex items-center gap-2 text-white">
                   <Type className="h-5 w-5 text-blue-400" /> Branding & Decorative Text
                 </CardTitle>
-                <CardDescription className="text-[#68869A]">
+                <CardDescription className="text-admin-muted">
                   Control the massive logotype and decorative elements.
                 </CardDescription>
               </CardHeader>
@@ -490,7 +490,7 @@ export function FooterManagement() {
                     placeholder="RUN APPAREL"
                     className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50"
                   />
-                  <p className="text-[#68869A] text-xs italic">
+                  <p className="text-admin-muted text-xs italic">
                     This is the massive parallax text behind the footer.
                   </p>
                 </div>
@@ -540,7 +540,7 @@ function NavigationLinksEditor({ control, index, register }: NavigationLinksEdit
 
   return (
     <div className="space-y-2 mt-4">
-      <Label className="text-[#68869A] text-xs uppercase tracking-wider">Links</Label>
+      <Label className="text-admin-muted text-xs uppercase tracking-wider">Links</Label>
       {fields.map((linkField, linkIndex) => (
         <div key={linkField.id} className="flex gap-2">
           <Input

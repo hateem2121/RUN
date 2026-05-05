@@ -116,7 +116,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const renderNavGroup = (title: string, items: NavItem[]) => (
     <div className="mb-6 flex flex-col gap-0.5" key={title}>
       {sidebarOpen && (
-        <span className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-[#68869A]">
+        <span className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-admin-muted">
           {title}
         </span>
       )}
@@ -135,7 +135,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             className={`group relative flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
               isActive
                 ? "border-l-2 border-primary bg-primary/10 text-primary"
-                : "border-l-2 border-transparent text-[#68869A] hover:bg-white/5 hover:text-white"
+                : "border-l-2 border-transparent text-admin-muted hover:bg-white/5 hover:text-white"
             }`}
             title={!sidebarOpen ? item.label : undefined}
           >
@@ -149,10 +149,10 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             {/* Badges */}
             {sidebarOpen && currentBadge && (
               <span
-                className={`inline-flex items-center justify-center rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none tracking-wide ${
+                className={`inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xxs font-semibold leading-none tracking-wide ${
                   currentBadge.toString().includes("NEW")
                     ? "bg-red-500/10 text-red-500"
-                    : "bg-white/10 text-[#E3DFD6]"
+                    : "bg-white/10 text-admin-foreground"
                 }`}
               >
                 {currentBadge}
@@ -168,10 +168,10 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   );
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0A0A0A] font-sans text-white antialiased">
+    <div className="flex h-screen overflow-hidden bg-surface-black font-sans text-white antialiased">
       {/* Sidebar */}
       <aside
-        className={`flex flex-shrink-0 flex-col border-r border-white/10 bg-[#111111] transition-[width] duration-200 ease-in-out ${
+        className={`flex flex-shrink-0 flex-col border-r border-white/10 bg-admin-surface transition-[width] duration-200 ease-in-out ${
           sidebarOpen ? "w-[240px]" : "w-[64px]"
         }`}
       >
@@ -185,7 +185,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               <button
                 type="button"
                 onClick={() => setSidebarOpen(false)}
-                className="rounded-md p-1 text-[#68869A] transition-colors hover:bg-white/[0.06] hover:text-white"
+                className="rounded-md p-1 text-admin-muted transition-colors hover:bg-white/[0.06] hover:text-white"
                 aria-label="Collapse sidebar"
               >
                 <Menu size={18} />
@@ -195,7 +195,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
-              className="mx-auto rounded-md p-1 text-[#68869A] transition-colors hover:bg-white/[0.06] hover:text-white"
+              className="mx-auto rounded-md p-1 text-admin-muted transition-colors hover:bg-white/[0.06] hover:text-white"
               aria-label="Expand sidebar"
             >
               <Menu size={18} />
@@ -211,7 +211,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         </nav>
 
         {/* User Footer */}
-        <div className="flex-shrink-0 border-t border-white/10 bg-[#0A0A0A]/50 p-4">
+        <div className="flex-shrink-0 border-t border-white/10 bg-surface-black/50 p-4">
           {sidebarOpen ? (
             <div className="group flex cursor-pointer items-center justify-between rounded-md p-2 transition-colors hover:bg-white/[0.05]">
               <div className="flex items-center gap-3">
@@ -220,12 +220,12 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-white">M. Hateem</span>
-                  <span className="text-xs text-[#68869A]">Admin</span>
+                  <span className="text-xs text-admin-muted">Admin</span>
                 </div>
               </div>
               <button
                 type="button"
-                className="rounded-md p-1.5 text-[#68869A] transition-colors hover:text-white"
+                className="rounded-md p-1.5 text-admin-muted transition-colors hover:text-white"
                 title="Logout"
               >
                 <LogOut size={16} />
@@ -239,7 +239,11 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               >
                 M
               </div>
-              <button type="button" className="text-[#68869A] transition-colors hover:text-white" title="Logout">
+              <button
+                type="button"
+                className="text-admin-muted transition-colors hover:text-white"
+                title="Logout"
+              >
                 <LogOut size={16} />
               </button>
             </div>
@@ -250,7 +254,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* Main Area */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Top Header Bar */}
-        <header className="flex h-14 flex-shrink-0 items-center justify-between border-b border-white/10 bg-[#0A0A0A] px-6">
+        <header className="flex h-14 flex-shrink-0 items-center justify-between border-b border-white/10 bg-surface-black px-6">
           {/* Left: Breadcrumb */}
           <div className="flex flex-1 items-center">
             <AdminBreadcrumb />
@@ -273,13 +277,14 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           <div className="flex flex-1 items-center justify-end gap-3">
             {/* Unsaved Changes Indicator */}
             {hasUnsavedChanges && (
-              <div className="hidden items-center gap-1.5 rounded-md border border-[#D4A853]/20 bg-[#D4A853]/10 px-2.5 py-1 text-xs font-medium text-[#D4A853] lg:flex">
+              <div className="hidden items-center gap-1.5 rounded-md border border-brand-manufacturing/20 bg-brand-manufacturing/10 px-2.5 py-1 text-xs font-medium text-brand-manufacturing lg:flex">
                 <svg
                   className="h-3.5 w-3.5"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   strokeWidth={2}
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -294,12 +299,12 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             {/* Notifications */}
             <button
               type="button"
-              className="relative text-[#68869A] transition-colors hover:text-white"
+              className="relative text-admin-muted transition-colors hover:text-white"
               title="View Notifications"
               aria-label="View Notifications"
             >
               <Bell size={20} />
-              <span className="absolute right-0 top-0 h-2 w-2 rounded-full border border-[#0A0A0A] bg-blue-500" />
+              <span className="absolute right-0 top-0 h-2 w-2 rounded-full border border-surface-black bg-blue-500" />
             </button>
 
             {/* Separator */}
@@ -317,7 +322,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-8">
+        <main id="main-content" className="flex-1 overflow-y-auto p-8 outline-none">
           <div className="mx-auto w-full max-w-7xl text-base">{children}</div>
         </main>
       </div>

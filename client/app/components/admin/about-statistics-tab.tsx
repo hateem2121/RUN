@@ -95,7 +95,7 @@ function SortableStatisticItem({ statistic, onEdit, onDelete }: StatisticItemPro
           {...attributes}
           {...listeners}
         >
-          <GripVertical className="h-5 w-5 text-[#68869A]/70" aria-hidden="true" />
+          <GripVertical className="h-5 w-5 text-admin-muted/70" aria-hidden="true" />
         </button>
 
         <div className="flex flex-1 items-center gap-3">
@@ -348,7 +348,7 @@ export function AboutStatisticsTab() {
         </CardHeader>
         <CardContent>
           {sortedStatistics.length === 0 ? (
-            <div className="py-12 text-center text-[#68869A]">
+            <div className="py-12 text-center text-admin-muted">
               No statistics yet. Add your first key metric!
             </div>
           ) : (

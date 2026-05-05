@@ -215,7 +215,7 @@ export function ContentDashboard() {
       {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-white">Dashboard</h1>
-        <p className="mt-1 text-[#68869A]">Welcome back. Here's your content overview.</p>
+        <p className="mt-1 text-admin-muted">Welcome back. Here's your content overview.</p>
       </div>
 
       {/* Stat Cards Grid */}
@@ -231,7 +231,7 @@ export function ContentDashboard() {
             >
               <Link to={card.route} className="flex h-full flex-col justify-between p-5">
                 {card.badge && (
-                  <div className="absolute right-4 top-4 rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold text-white">
+                  <div className="absolute right-4 top-4 rounded-full bg-red-500 px-2 py-0.5 text-xxs font-bold text-white">
                     {card.badge}
                   </div>
                 )}

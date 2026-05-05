@@ -101,7 +101,7 @@ function ProductDisplay({
 
   const PaginationControls = () => (
     <div className="mt-6 flex items-center justify-between border-t border-white/5 pt-6">
-      <p className="text-[#68869A] text-sm font-bold tracking-wider uppercase">
+      <p className="text-admin-muted text-sm font-bold tracking-wider uppercase">
         Showing {startIndex + 1}-{Math.min(endIndex, products.length)} of {products.length} products
       </p>
       <div className="flex items-center gap-2">
@@ -323,7 +323,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
       <div className="flex h-64 items-center justify-center">
         <div className="text-center">
           <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-white/10 border-t-blue-500" />
-          <p className="text-[#68869A] text-sm font-bold uppercase tracking-wider">
+          <p className="text-admin-muted text-sm font-bold uppercase tracking-wider">
             Loading products...
           </p>
         </div>
@@ -341,13 +341,13 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
           </div>
           <div>
             <h1 className="text-xl font-bold text-white tracking-tight">Product Architecture</h1>
-            <p className="text-sm text-[#68869A]">{displayProducts.length} synchronized products</p>
+            <p className="text-sm text-admin-muted">{displayProducts.length} synchronized products</p>
           </div>
         </div>
         <Button
           data-testid="new-product-button"
           onClick={onProductCreate}
-          className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none border-0"
+          className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none border-0"
         >
           <Plus className="mr-2 h-4 w-4" />
           New Product
@@ -376,7 +376,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
       <GlassCard className="p-4">
         <div className="flex flex-col gap-4 sm:flex-row">
           <div className="relative flex-1">
-            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-[#68869A]" />
+            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-admin-muted" />
             <Input
               data-testid="search-products-input"
               placeholder="Search products..."
@@ -390,11 +390,11 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger
                 data-testid="category-filter-select"
-                className="w-40 h-11 bg-[#0A0A0A] border-white/10 text-white rounded-xl focus:ring-blue-500/50"
+                className="w-40 h-11 bg-surface-black border-white/10 text-white rounded-xl focus:ring-blue-500/50"
               >
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
-              <SelectContent className="bg-[#0A0A0A] border-white/10 text-white rounded-xl">
+              <SelectContent className="bg-surface-black border-white/10 text-white rounded-xl">
                 <SelectItem
                   data-testid="category-filter-all"
                   value="all"
@@ -407,7 +407,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
                     key={category.id}
                     data-testid={`category-filter-${category.id}`}
                     value={category.id.toString()}
-                    className="focus:bg-white/10 cursor-pointer text-[#E3DFD6]"
+                    className="focus:bg-white/10 cursor-pointer text-admin-foreground"
                   >
                     {category.name}
                   </SelectItem>
@@ -418,11 +418,11 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger
                 data-testid="status-filter-select"
-                className="w-32 h-11 bg-[#0A0A0A] border-white/10 text-white rounded-xl focus:ring-blue-500/50"
+                className="w-32 h-11 bg-surface-black border-white/10 text-white rounded-xl focus:ring-blue-500/50"
               >
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
-              <SelectContent className="bg-[#0A0A0A] border-white/10 text-white rounded-xl">
+              <SelectContent className="bg-surface-black border-white/10 text-white rounded-xl">
                 <SelectItem
                   data-testid="status-filter-all"
                   value="all"
@@ -452,7 +452,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
               data-testid="toggle-advanced-filters-button"
               variant="outline"
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              className={`whitespace-nowrap h-11 rounded-xl border-white/10 transition-colors ${showAdvancedFilters ? "bg-white/10 text-white hover:bg-white/20" : "bg-white/5 text-[#68869A] hover:bg-white/10 hover:text-white"}`}
+              className={`whitespace-nowrap h-11 rounded-xl border-white/10 transition-colors ${showAdvancedFilters ? "bg-white/10 text-white hover:bg-white/20" : "bg-white/5 text-admin-muted hover:bg-white/10 hover:text-white"}`}
             >
               <Filter className="mr-2 h-4 w-4" />
               {showAdvancedFilters ? "Basic" : "Advanced"}
@@ -464,7 +464,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
                 variant="ghost"
                 size="sm"
                 onClick={() => setViewMode("grid")}
-                className={`px-3 h-full rounded-lg transition-colors ${viewMode === "grid" ? "bg-white/10 text-white" : "text-[#68869A] hover:bg-white/10 hover:text-white"}`}
+                className={`px-3 h-full rounded-lg transition-colors ${viewMode === "grid" ? "bg-white/10 text-white" : "text-admin-muted hover:bg-white/10 hover:text-white"}`}
               >
                 <Grid className="h-4 w-4" />
               </Button>
@@ -473,7 +473,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
                 variant="ghost"
                 size="sm"
                 onClick={() => setViewMode("list")}
-                className={`px-3 h-full rounded-lg transition-colors ${viewMode === "list" ? "bg-white/10 text-white" : "text-[#68869A] hover:bg-white/10 hover:text-white"}`}
+                className={`px-3 h-full rounded-lg transition-colors ${viewMode === "list" ? "bg-white/10 text-white" : "text-admin-muted hover:bg-white/10 hover:text-white"}`}
               >
                 <List className="h-4 w-4" />
               </Button>
@@ -489,8 +489,9 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
                 variant="outline"
                 className="gap-1 bg-white/5 border-white/10 text-white rounded-lg px-3 py-1 font-normal"
               >
-                <span className="text-[#68869A] mr-1">Search:</span> {searchQuery}
+                <span className="text-admin-muted mr-1">Search:</span> {searchQuery}
                 <button
+                  type="button"
                   data-testid="clear-search-filter-button"
                   onClick={() => setSearchQuery("")}
                   className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs hover:bg-white/10 text-white/70 hover:text-white"
@@ -504,9 +505,10 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
                 variant="outline"
                 className="gap-1 bg-white/5 border-white/10 text-white rounded-lg px-3 py-1 font-normal"
               >
-                <span className="text-[#68869A] mr-1">Category:</span>{" "}
+                <span className="text-admin-muted mr-1">Category:</span>{" "}
                 {categories.find((c) => c.id.toString() === categoryFilter)?.name}
                 <button
+                  type="button"
                   data-testid="clear-category-filter-button"
                   onClick={() => setCategoryFilter("all")}
                   className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs hover:bg-white/10 text-white/70 hover:text-white"
@@ -520,8 +522,9 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
                 variant="outline"
                 className="gap-1 bg-white/5 border-white/10 text-white rounded-lg px-3 py-1 font-normal"
               >
-                <span className="text-[#68869A] mr-1">Status:</span> {statusFilter}
+                <span className="text-admin-muted mr-1">Status:</span> {statusFilter}
                 <button
+                  type="button"
                   data-testid="clear-status-filter-button"
                   onClick={() => setStatusFilter("all")}
                   className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-xs hover:bg-white/10 text-white/70 hover:text-white"
@@ -537,9 +540,9 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
       {/* Products Grid/List */}
       {displayProducts.length === 0 ? (
         <GlassCard className="py-16 text-center">
-          <Package className="mx-auto mb-6 h-16 w-16 text-[#68869A]/30" />
+          <Package className="mx-auto mb-6 h-16 w-16 text-admin-muted/30" />
           <h3 className="mb-2 font-bold text-white text-xl tracking-tight">No products found</h3>
-          <p className="mb-8 text-[#68869A]">
+          <p className="mb-8 text-admin-muted">
             {products.length === 0
               ? "Get started by creating your first product."
               : "Try adjusting your search or filters."}
@@ -548,7 +551,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
             <Button
               data-testid="create-first-product-button"
               onClick={onProductCreate}
-              className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-11 px-8 font-bold uppercase tracking-widest text-[10px]"
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-11 px-8 font-bold uppercase tracking-widest text-xxs"
             >
               Create First Product
             </Button>
@@ -569,7 +572,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
       {/* Pagination Controls */}
       {pagination && pagination.totalPages > 1 && (
         <GlassCard className="mt-8 flex flex-col pt-0 pb-0 gap-6 sm:flex-row items-center justify-between p-4">
-          <div className="text-[#68869A] text-sm font-bold uppercase tracking-wider">
+          <div className="text-admin-muted text-sm font-bold uppercase tracking-wider">
             Showing {(currentPage - 1) * pageSize + 1} to{" "}
             {Math.min(currentPage * pageSize, pagination.total)} of {pagination.total}
           </div>
@@ -607,7 +610,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
                     variant={pageNum === currentPage ? "default" : "ghost"}
                     size="sm"
                     onClick={() => setCurrentPage(pageNum)}
-                    className={`h-8 w-8 rounded transition-all ${pageNum === currentPage ? "bg-white/20 text-white font-bold" : "text-[#68869A] hover:bg-white/10 hover:text-white"}`}
+                    className={`h-8 w-8 rounded transition-all ${pageNum === currentPage ? "bg-white/20 text-white font-bold" : "text-admin-muted hover:bg-white/10 hover:text-white"}`}
                   >
                     {pageNum}
                   </Button>
@@ -636,11 +639,11 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
           >
             <SelectTrigger
               data-testid="page-size-select"
-              className="w-32 sm:w-36 h-10 bg-[#0A0A0A] border-white/10 text-white rounded-lg focus:ring-blue-500/50"
+              className="w-32 sm:w-36 h-10 bg-surface-black border-white/10 text-white rounded-lg focus:ring-blue-500/50"
             >
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-[#0A0A0A] border-white/10 text-white rounded-lg">
+            <SelectContent className="bg-surface-black border-white/10 text-white rounded-lg">
               <SelectItem
                 data-testid="page-size-10"
                 value="10"

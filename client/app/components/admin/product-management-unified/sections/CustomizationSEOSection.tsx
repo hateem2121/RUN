@@ -88,7 +88,7 @@ export const CustomizationSEOSection = memo(function CustomizationSEOSection({
           <Palette className="h-5 w-5 text-indigo-600" />
           <div className="text-left">
             <h3 className="font-semibold text-white">Customization & SEO</h3>
-            <p className="text-[#68869A] text-sm">
+            <p className="text-admin-muted text-sm">
               {(formData.customizationOptions || []).length} customization options, SEO optimization
             </p>
           </div>
@@ -102,9 +102,9 @@ export const CustomizationSEOSection = memo(function CustomizationSEOSection({
             <div className="h-5 w-5 rounded-full border-2 border-white/20" />
           )}
           {isOpen ? (
-            <ChevronDown className="h-4 w-4 text-[#68869A]" />
+            <ChevronDown className="h-4 w-4 text-admin-muted" />
           ) : (
-            <ChevronRight className="h-4 w-4 text-[#68869A]" />
+            <ChevronRight className="h-4 w-4 text-admin-muted" />
           )}
         </div>
       </CollapsibleTrigger>
@@ -122,7 +122,7 @@ export const CustomizationSEOSection = memo(function CustomizationSEOSection({
 
           {/* Preset Options */}
           <div className="mb-4">
-            <h4 className="mb-2 font-medium text-[#68869A] text-sm">Quick Add Options</h4>
+            <h4 className="mb-2 font-medium text-admin-muted text-sm">Quick Add Options</h4>
             <div className="flex flex-wrap gap-2">
               {presetOptions.map((option) => (
                 <button
@@ -132,7 +132,7 @@ export const CustomizationSEOSection = memo(function CustomizationSEOSection({
                   disabled={(formData.customizationOptions || []).includes(option)}
                   className={`rounded-full border px-3 py-1 text-sm transition-colors ${
                     (formData.customizationOptions || []).includes(option)
-                      ? "border-white/10 bg-white/[0.05] text-[#68869A]/70"
+                      ? "border-white/10 bg-white/[0.05] text-admin-muted/70"
                       : "border-white/10 bg-white/[0.03] text-white/80 hover:border-indigo-400 hover:bg-indigo-500/10"
                   }`}
                 >
@@ -163,8 +163,8 @@ export const CustomizationSEOSection = memo(function CustomizationSEOSection({
               </div>
             ))}
             {(formData.customizationOptions || []).length === 0 && (
-              <div className="py-6 text-center text-[#68869A]">
-                <Palette className="mx-auto mb-2 h-12 w-12 text-[#68869A]/70" />
+              <div className="py-6 text-center text-admin-muted">
+                <Palette className="mx-auto mb-2 h-12 w-12 text-admin-muted/70" />
                 <p>No customization options added yet</p>
                 <p className="text-sm">
                   Add options to showcase your B2B customization capabilities.
@@ -202,7 +202,7 @@ export const CustomizationSEOSection = memo(function CustomizationSEOSection({
             {formErrors.metaTitle && (
               <p className="mt-1 text-red-600 text-sm">{formErrors.metaTitle}</p>
             )}
-            <p className="mt-1 text-[#68869A] text-sm">
+            <p className="mt-1 text-admin-muted text-sm">
               {formData.metaTitle.length}/60 characters
               {formData.metaTitle.length > 60 && (
                 <span className="ml-2 text-red-600">Too long for optimal SEO</span>
@@ -232,7 +232,7 @@ export const CustomizationSEOSection = memo(function CustomizationSEOSection({
             {formErrors.metaDescription && (
               <p className="mt-1 text-red-600 text-sm">{formErrors.metaDescription}</p>
             )}
-            <p className="mt-1 text-[#68869A] text-sm">
+            <p className="mt-1 text-admin-muted text-sm">
               {formData.metaDescription.length}/160 characters
               {formData.metaDescription.length > 160 && (
                 <span className="ml-2 text-red-600">Too long for optimal SEO</span>

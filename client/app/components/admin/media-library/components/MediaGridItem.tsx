@@ -61,10 +61,8 @@ export const MediaGridItem = React.memo(
             selectionMode ? "opacity-100" : "opacity-0 group-hover:opacity-100",
           )}
         >
-          <div
-            role="checkbox"
-            aria-checked={isSelected ? "true" : "false"}
-            tabIndex={0}
+          <button
+            type="button"
             className={cn(
               "flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-2 transition-all",
               isSelected
@@ -75,16 +73,11 @@ export const MediaGridItem = React.memo(
               e.stopPropagation();
               onSelect?.(asset.id, asset);
             }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                e.stopPropagation();
-                onSelect?.(asset.id, asset);
-              }
-            }}
+            aria-label={isSelected ? "Deselect asset" : "Select asset"}
+            aria-pressed={isSelected}
           >
             {isSelected && <Check className="h-4 w-4 text-white" />}
-          </div>
+          </button>
         </div>
 
         {/* Status badges */}
@@ -105,17 +98,10 @@ export const MediaGridItem = React.memo(
         </div>
 
         {/* Enhanced Media preview */}
-        <div
-          className="group z-elevated bg-white/[0.03] relative flex aspect-square w-full cursor-pointer items-center justify-center"
+        <button
+          type="button"
+          className="group z-elevated bg-white/[0.03] relative flex aspect-square w-full cursor-pointer items-center justify-center border-0 p-0"
           onClick={() => onClick(asset, index)}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              onClick(asset, index);
-            }
-          }}
           aria-label={`Preview ${asset.originalName || asset.filename}`}
         >
           {isImage ? (
@@ -170,7 +156,7 @@ export const MediaGridItem = React.memo(
                 <React.Suspense
                   fallback={
                     <div className="bg-white/[0.03] flex h-full w-full items-center justify-center">
-                      <Loader2 className="text-[#68869A]/70 h-6 w-6 animate-spin" />
+                      <Loader2 className="text-admin-muted/70 h-6 w-6 animate-spin" />
                     </div>
                   }
                 >
@@ -247,7 +233,7 @@ export const MediaGridItem = React.memo(
               </Button>
             </div>
           </div>
-        </div>
+        </button>
 
         {/* File information */}
         <div className="space-y-2 p-3">
@@ -258,7 +244,7 @@ export const MediaGridItem = React.memo(
             {asset.originalName || asset.filename}
           </div>
 
-          <div className="text-[#68869A] flex items-center justify-between text-xs">
+          <div className="text-admin-muted flex items-center justify-between text-xs">
             <span className="text-subtle">{formatFileSize(asset.size || 0)}</span>
             <Badge variant="outline" className="text-xs">
               {asset.type}

@@ -134,13 +134,13 @@ export function TechnologyCtaManagement() {
   return (
     <div className="flex flex-col gap-8">
       {/* Header Panel */}
-      <div className="sticky top-0 z-30 -mx-4 mb-4 flex flex-col gap-6 border-b border-white/10 bg-[#0A0A0A]/80 p-6 backdrop-blur-xl sm:-mx-8 sm:px-8">
+      <div className="sticky top-0 z-30 -mx-4 mb-4 flex flex-col gap-6 border-b border-white/10 bg-surface-black/80 p-6 backdrop-blur-xl sm:-mx-8 sm:px-8">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="space-y-1">
             <h2 className="text-3xl font-black tracking-tight text-white uppercase sm:text-4xl">
               CTA <span className="text-[#00D4FF]">Configuration</span>
             </h2>
-            <p className="text-[#E3DFD6]/60 text-sm font-medium tracking-wide italic">
+            <p className="text-admin-foreground/60 text-sm font-medium tracking-wide italic">
               Final conversion point for technology solutions
             </p>
           </div>
@@ -176,7 +176,7 @@ export function TechnologyCtaManagement() {
                   <h3 className="text-xl font-black text-white uppercase tracking-tight italic">
                     Content & Headline
                   </h3>
-                  <p className="text-xs font-medium text-[#68869A]">
+                  <p className="text-xs font-medium text-admin-muted">
                     Define the primary value proposition
                   </p>
                 </div>
@@ -184,7 +184,7 @@ export function TechnologyCtaManagement() {
 
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                  <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
                     Primary Headline
                   </Label>
                   <Input
@@ -195,13 +195,13 @@ export function TechnologyCtaManagement() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                  <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
                     Supporting Content
                   </Label>
                   <Textarea
                     value={ctaForm.content}
                     onChange={(e) => setCtaForm((prev) => ({ ...prev, content: e.target.value }))}
-                    className="h-[200px] resize-none border-white/5 bg-white/[0.03] text-[#E3DFD6] focus:border-[#00D4FF]/40"
+                    className="h-[200px] resize-none border-white/5 bg-white/[0.03] text-admin-foreground focus:border-[#00D4FF]/40"
                     placeholder="Describe the solution in detail..."
                   />
                 </div>
@@ -218,7 +218,7 @@ export function TechnologyCtaManagement() {
                   <h3 className="text-xl font-black text-white uppercase tracking-tight italic">
                     Action Triggers
                   </h3>
-                  <p className="text-xs font-medium text-[#68869A]">
+                  <p className="text-xs font-medium text-admin-muted">
                     Configure buttons and landing paths
                   </p>
                 </div>
@@ -226,7 +226,7 @@ export function TechnologyCtaManagement() {
 
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                  <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
                     Button Descriptor
                   </Label>
                   <Input
@@ -239,11 +239,11 @@ export function TechnologyCtaManagement() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#68869A]">
+                  <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
                     Destination Link
                   </Label>
                   <div className="relative">
-                    <LinkIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#68869A]" />
+                    <LinkIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-muted" />
                     <Input
                       value={ctaForm.buttonLink}
                       onChange={(e) =>
@@ -263,12 +263,12 @@ export function TechnologyCtaManagement() {
             {/* Status Section */}
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-xl shadow-2xl">
               <div className="mb-6 flex items-center justify-between">
-                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[#68869A]">
+                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-admin-muted">
                   Ecosystem Status
                 </h3>
                 <Badge
                   className={
-                    ctaForm.isActive ? "bg-[#00D4FF] text-[#0A0A0A]" : "bg-white/5 text-[#68869A]"
+                    ctaForm.isActive ? "bg-[#00D4FF] text-[#0A0A0A]" : "bg-white/5 text-admin-muted"
                   }
                 >
                   {ctaForm.isActive ? "LIVE" : "DRAFT"}
@@ -283,7 +283,7 @@ export function TechnologyCtaManagement() {
                       ctaForm.isActive ? "bg-[#00D4FF]" : "bg-white/20",
                     )}
                   />
-                  <span className="text-sm font-bold text-[#E3DFD6]">Public Visibility</span>
+                  <span className="text-sm font-bold text-admin-foreground">Public Visibility</span>
                 </div>
                 <Switch
                   checked={ctaForm.isActive}
@@ -301,7 +301,7 @@ export function TechnologyCtaManagement() {
                 <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] italic">
                   Solution Benefits
                 </h3>
-                <p className="text-xs text-[#68869A]">Key takeaways for B2B manufacturers</p>
+                <p className="text-xs text-admin-muted">Key takeaways for B2B manufacturers</p>
               </div>
 
               <div className="mb-6 space-y-3">
@@ -312,7 +312,7 @@ export function TechnologyCtaManagement() {
                   >
                     <div className="flex items-center gap-3">
                       <CheckCircle2 className="h-4 w-4 text-[#00D4FF]/60" />
-                      <span className="text-sm text-[#E3DFD6]/80">{benefit}</span>
+                      <span className="text-sm text-admin-foreground/80">{benefit}</span>
                     </div>
                     <button
                       type="button"
@@ -344,7 +344,7 @@ export function TechnologyCtaManagement() {
                   type="button"
                   onClick={handleAddBenefit}
                   disabled={!newBenefit.trim()}
-                  className="w-full bg-[#E3DFD6]/10 text-[#E3DFD6] hover:bg-[#E3DFD6]/20"
+                  className="w-full bg-[#E3DFD6]/10 text-admin-foreground hover:bg-[#E3DFD6]/20"
                 >
                   ADD BENEFIT VECTOR
                 </Button>
@@ -361,14 +361,14 @@ export function TechnologyCtaManagement() {
             <Zap className="h-5 w-5" />
           </div>
           <div className="text-2xl font-black text-white">4.2%</div>
-          <div className="text-xs font-bold uppercase tracking-wider text-[#68869A]">Avg. CTR</div>
+          <div className="text-xs font-bold uppercase tracking-wider text-admin-muted">Avg. CTR</div>
         </div>
         <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5 backdrop-blur-xl">
           <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10 text-green-400">
             <Monitor className="h-5 w-5" />
           </div>
           <div className="text-2xl font-black text-white">12.5k</div>
-          <div className="text-xs font-bold uppercase tracking-wider text-[#68869A]">
+          <div className="text-xs font-bold uppercase tracking-wider text-admin-muted">
             Total Impressions
           </div>
         </div>
@@ -377,7 +377,7 @@ export function TechnologyCtaManagement() {
             <Layout className="h-5 w-5" />
           </div>
           <div className="text-2xl font-black text-white">A/B</div>
-          <div className="text-xs font-bold uppercase tracking-wider text-[#68869A]">
+          <div className="text-xs font-bold uppercase tracking-wider text-admin-muted">
             Test Variant
           </div>
         </div>
@@ -386,7 +386,7 @@ export function TechnologyCtaManagement() {
             <Clock className="h-5 w-5" />
           </div>
           <div className="text-2xl font-black text-white">320ms</div>
-          <div className="text-xs font-bold uppercase tracking-wider text-[#68869A]">
+          <div className="text-xs font-bold uppercase tracking-wider text-admin-muted">
             Avg. Interaction Time
           </div>
         </div>

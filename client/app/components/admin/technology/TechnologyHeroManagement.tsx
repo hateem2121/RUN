@@ -140,7 +140,7 @@ export function TechnologyHeroManagement({
           <div className="h-2 w-2 animate-bounce rounded-full bg-cyan-500 [animation-delay:-0.15s]"></div>
           <div className="h-2 w-2 animate-bounce rounded-full bg-cyan-500"></div>
         </div>
-        <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+        <p className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
           Calibrating Hero Systems...
         </p>
       </div>
@@ -160,7 +160,7 @@ export function TechnologyHeroManagement({
                 <h2 className="text-xl font-bold text-white tracking-tight">
                   Tech-Hero Infrastructure
                 </h2>
-                <p className="text-sm text-[#68869A]">
+                <p className="text-sm text-admin-muted">
                   Configure high-impact visual narratives and primary action triggers
                 </p>
               </div>
@@ -170,7 +170,7 @@ export function TechnologyHeroManagement({
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowPreview(!showPreview)}
-                className="flex gap-2 text-[10px] font-bold uppercase tracking-widest hover:bg-white/5 h-11 px-4"
+                className="flex gap-2 text-xxs font-bold uppercase tracking-widest hover:bg-white/5 h-11 px-4"
                 title={showPreview ? "Hide Preview" : "Show Preview"}
               >
                 {showPreview ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -179,7 +179,7 @@ export function TechnologyHeroManagement({
               <Button
                 onClick={handleHeroSubmit}
                 disabled={!hasChanges || updateHeroMutation.isPending}
-                className="h-11 bg-cyan-600 hover:bg-cyan-700 text-white px-8 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-cyan-500/20 active:scale-95 transition-all outline-none border-0"
+                className="h-11 bg-cyan-600 hover:bg-cyan-700 text-white px-8 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-cyan-500/20 active:scale-95 transition-all outline-none border-0"
               >
                 {updateHeroMutation.isPending ? (
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white" />
@@ -197,7 +197,7 @@ export function TechnologyHeroManagement({
                 <div className="space-y-2">
                   <Label
                     htmlFor="title"
-                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                    className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                   >
                     Primary Innovation Headline
                   </Label>
@@ -213,7 +213,7 @@ export function TechnologyHeroManagement({
                 <div className="space-y-2">
                   <Label
                     htmlFor="subtitle"
-                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                    className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                   >
                     Strategic Subheader
                   </Label>
@@ -230,7 +230,7 @@ export function TechnologyHeroManagement({
               <div className="space-y-2">
                 <Label
                   htmlFor="description"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Technical Manifesto
                 </Label>
@@ -245,7 +245,7 @@ export function TechnologyHeroManagement({
               </div>
 
               <div className="space-y-4">
-                <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1 flex items-center gap-2">
+                <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1 flex items-center gap-2">
                   <Zap className="size-3 text-cyan-400" /> Action Protocols
                 </Label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-6 rounded-2xl bg-white/[0.02] border border-white/5">
@@ -253,7 +253,7 @@ export function TechnologyHeroManagement({
                     <div className="space-y-2">
                       <Label
                         htmlFor="primaryButtonText"
-                        className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest"
+                        className="text-xxs font-bold text-admin-muted uppercase tracking-widest"
                       >
                         Primary Action
                       </Label>
@@ -269,7 +269,7 @@ export function TechnologyHeroManagement({
                     <div className="space-y-2">
                       <Label
                         htmlFor="primaryButtonLink"
-                        className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest"
+                        className="text-xxs font-bold text-admin-muted uppercase tracking-widest"
                       >
                         Route (Primary)
                       </Label>
@@ -288,7 +288,7 @@ export function TechnologyHeroManagement({
                     <div className="space-y-2">
                       <Label
                         htmlFor="secondaryButtonText"
-                        className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest"
+                        className="text-xxs font-bold text-admin-muted uppercase tracking-widest"
                       >
                         Secondary Action
                       </Label>
@@ -303,7 +303,7 @@ export function TechnologyHeroManagement({
                     <div className="space-y-2">
                       <Label
                         htmlFor="secondaryButtonLink"
-                        className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest"
+                        className="text-xxs font-bold text-admin-muted uppercase tracking-widest"
                       >
                         Route (Secondary)
                       </Label>
@@ -320,7 +320,7 @@ export function TechnologyHeroManagement({
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                   Cinematic Tech-Asset
                 </Label>
                 <div className="flex gap-3">
@@ -328,7 +328,7 @@ export function TechnologyHeroManagement({
                     type="button"
                     variant="outline"
                     onClick={() => setShowHeroBackgroundPicker(true)}
-                    className="flex-1 bg-white/5 border-white/10 h-14 rounded-xl justify-start px-4 text-[#68869A] hover:bg-white/10 hover:text-white transition-all border-0 shadow-none ring-offset-0 focus:ring-0"
+                    className="flex-1 bg-white/5 border-white/10 h-14 rounded-xl justify-start px-4 text-admin-muted hover:bg-white/10 hover:text-white transition-all border-0 shadow-none ring-offset-0 focus:ring-0"
                   >
                     <ImageIcon className="mr-3 h-5 w-5 text-cyan-500" />
                     <span className="truncate">
@@ -342,7 +342,7 @@ export function TechnologyHeroManagement({
                       type="button"
                       variant="ghost"
                       onClick={() => handleInputChange({ backgroundMediaId: null })}
-                      className="h-14 w-14 rounded-xl border border-white/10 hover:bg-red-500/10 hover:text-red-400 text-[#68869A]"
+                      className="h-14 w-14 rounded-xl border border-white/10 hover:bg-red-500/10 hover:text-red-400 text-admin-muted"
                       title="Remove Background"
                     >
                       <Plus className="h-5 w-5 rotate-45" />
@@ -361,7 +361,7 @@ export function TechnologyHeroManagement({
                   />
                   <Label
                     htmlFor="isActive"
-                    className="text-[10px] font-bold text-white uppercase tracking-widest"
+                    className="text-xxs font-bold text-white uppercase tracking-widest"
                   >
                     System Visibility
                   </Label>
@@ -379,11 +379,11 @@ export function TechnologyHeroManagement({
               <div className="space-y-6">
                 <div className="flex items-center gap-2 mb-2 p-3 bg-cyan-500/10 rounded-xl border border-cyan-500/20">
                   <LayoutTemplate className="h-4 w-4 text-cyan-400" />
-                  <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">
+                  <span className="text-xxs font-bold text-cyan-400 uppercase tracking-widest">
                     Mobile Viewport Simulation
                   </span>
                 </div>
-                <div className="aspect-[9/16] max-w-[300px] mx-auto rounded-[32px] border-[8px] border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5">
+                <div className="aspect-[9/16] max-w-[300px] mx-auto rounded-huge border-[8px] border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5">
                   <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 z-10" />
                   <div className="absolute inset-0 z-0 bg-cyan-900/20 animate-pulse" />
                   {selectedBackgroundMedia?.type === "image" && (
@@ -403,13 +403,13 @@ export function TechnologyHeroManagement({
                         "The next frontier of manufacturing technology."}
                     </p>
                     <div className="flex flex-col gap-2 pt-2">
-                      <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-bold h-10 rounded-full text-[10px] uppercase tracking-widest">
+                      <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-bold h-10 rounded-full text-xxs uppercase tracking-widest">
                         {heroData.primaryButtonText || "Get Started"}
                       </Button>
                       {heroData.secondaryButtonText && (
                         <Button
                           variant="outline"
-                          className="w-full bg-transparent border-white/20 text-white font-bold h-10 rounded-full text-[10px] uppercase tracking-widest"
+                          className="w-full bg-transparent border-white/20 text-white font-bold h-10 rounded-full text-xxs uppercase tracking-widest"
                         >
                           {heroData.secondaryButtonText}
                         </Button>
@@ -417,7 +417,7 @@ export function TechnologyHeroManagement({
                     </div>
                   </div>
                 </div>
-                <p className="text-[10px] text-center text-[#68869A] italic">
+                <p className="text-xxs text-center text-admin-muted italic">
                   Simulated high-performance rendering for mobile deployments.
                 </p>
               </div>

@@ -51,7 +51,7 @@ export const UploadItem = React.memo(function UploadItem({
           <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
         );
       default:
-        return <Icon className="text-[#68869A] h-4 w-4" />;
+        return <Icon className="text-admin-muted h-4 w-4" />;
     }
   };
 
@@ -78,10 +78,10 @@ export const UploadItem = React.memo(function UploadItem({
 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <p className="truncate text-sm font-medium text-[#E3DFD6]">
+              <p className="truncate text-sm font-medium text-admin-foreground">
                 {item.title || item.file.name}
               </p>
-              <Badge variant="outline" className="text-xs border-white/10 text-[#68869A]">
+              <Badge variant="outline" className="text-xs border-white/10 text-admin-muted">
                 {formatFileSize(item.file.size)}
               </Badge>
             </div>
@@ -89,7 +89,7 @@ export const UploadItem = React.memo(function UploadItem({
             {item.status === "uploading" && (
               <div className="mt-1">
                 <Progress value={item.progress} className="h-1" />
-                <div className="text-[#68869A] mt-1 flex justify-between text-xs">
+                <div className="text-admin-muted mt-1 flex justify-between text-xs">
                   <span>{item.progress.toFixed(1)}% uploaded</span>
                   <div className="flex gap-2">
                     {item.uploadSpeed && <span>{formatUploadSpeed(item.uploadSpeed)}</span>}
@@ -105,13 +105,13 @@ export const UploadItem = React.memo(function UploadItem({
               <div className="mt-1">
                 <p className="text-xs text-red-500">{item.errorMessage}</p>
                 {item.retryCount && item.retryCount > 0 && (
-                  <p className="text-[#68869A] text-xs">Retry attempts: {item.retryCount}/3</p>
+                  <p className="text-admin-muted text-xs">Retry attempts: {item.retryCount}/3</p>
                 )}
               </div>
             )}
 
             {item.status === "pending" && queueManager.peekNextInQueue()?.id !== item.id && (
-              <p className="text-[#68869A] mt-1 text-xs">
+              <p className="text-admin-muted mt-1 text-xs">
                 Queued • Position: {queueManager.getQueuePosition(item.id)}
               </p>
             )}
@@ -124,7 +124,7 @@ export const UploadItem = React.memo(function UploadItem({
               variant="ghost"
               size="sm"
               onClick={() => setIsEditing(!isEditing)}
-              className={`h-8 w-8 p-0 ${isEditing ? "text-primary" : "text-[#68869A]"}`}
+              className={`h-8 w-8 p-0 ${isEditing ? "text-primary" : "text-admin-muted"}`}
               title="Edit Metadata"
             >
               <Edit2 className="h-3 w-3" />
@@ -181,7 +181,7 @@ export const UploadItem = React.memo(function UploadItem({
         <div className="px-3 pb-3 pt-0 animate-in fade-in slide-in-from-top-1 duration-200">
           <div className="grid grid-cols-2 gap-3 border-t border-white/5 pt-3">
             <div className="space-y-1.5">
-              <Label htmlFor={`title-${item.id}`} className="text-[10px] text-[#68869A] uppercase">
+              <Label htmlFor={`title-${item.id}`} className="text-xxs text-admin-muted uppercase">
                 Title
               </Label>
               <Input
@@ -192,7 +192,7 @@ export const UploadItem = React.memo(function UploadItem({
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor={`alt-${item.id}`} className="text-[10px] text-[#68869A] uppercase">
+              <Label htmlFor={`alt-${item.id}`} className="text-xxs text-admin-muted uppercase">
                 Alt Text
               </Label>
               <Input
@@ -208,7 +208,7 @@ export const UploadItem = React.memo(function UploadItem({
               variant="ghost"
               size="sm"
               onClick={handleSave}
-              className="h-6 text-[10px] gap-1"
+              className="h-6 text-xxs gap-1"
             >
               <Save className="h-3 w-3" />
               Save Metadata

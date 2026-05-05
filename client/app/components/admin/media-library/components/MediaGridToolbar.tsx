@@ -25,7 +25,7 @@ export const MediaGridToolbar = React.memo(() => {
             className={`action-button-icon ${
               state.viewMode === "grid"
                 ? "bg-primary text-white"
-                : "border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white"
+                : "border-white/10 bg-white/5 text-admin-foreground hover:bg-white/10 hover:text-white"
             }`}
           >
             <Grid3X3 className="h-4 w-4" />
@@ -37,7 +37,7 @@ export const MediaGridToolbar = React.memo(() => {
             className={`action-button-icon ${
               state.viewMode === "list"
                 ? "bg-primary text-white"
-                : "border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white"
+                : "border-white/10 bg-white/5 text-admin-foreground hover:bg-white/10 hover:text-white"
             }`}
           >
             <List className="h-4 w-4" />
@@ -63,7 +63,7 @@ export const MediaGridToolbar = React.memo(() => {
           variant="outline"
           size="sm"
           onClick={() => updateState("sortOrder", state.sortOrder === "asc" ? "desc" : "asc")}
-          className="action-button-icon border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white transition-colors"
+          className="action-button-icon border-white/10 bg-white/5 text-admin-foreground hover:bg-white/10 hover:text-white transition-colors"
         >
           {state.sortOrder === "asc" ? "↑" : "↓"}
         </Button>

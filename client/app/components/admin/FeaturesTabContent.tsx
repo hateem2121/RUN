@@ -65,7 +65,7 @@ export function FeaturesTabContent(props: FeaturesTabContentProps) {
           <CardTitle className="text-xl font-bold text-white tracking-tight">
             Sustainability Features
           </CardTitle>
-          <CardDescription className="text-sm text-[#68869A]">
+          <CardDescription className="text-sm text-admin-muted">
             Manage the highlighted sustainability features section.
           </CardDescription>
         </CardHeader>
@@ -74,7 +74,7 @@ export function FeaturesTabContent(props: FeaturesTabContentProps) {
             <div>
               <Label
                 htmlFor="featuresTitle"
-                className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
               >
                 Section Title
               </Label>
@@ -89,7 +89,7 @@ export function FeaturesTabContent(props: FeaturesTabContentProps) {
             <div>
               <Label
                 htmlFor="featuresDescription"
-                className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
               >
                 Section Description
               </Label>
@@ -106,14 +106,14 @@ export function FeaturesTabContent(props: FeaturesTabContentProps) {
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+              <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                 Highlighted Features
               </Label>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={addFeature}
-                className="bg-white/5 border-white/10 text-[#68869A] hover:bg-white/10 hover:text-white rounded-xl"
+                className="bg-white/5 border-white/10 text-admin-muted hover:bg-white/10 hover:text-white rounded-xl"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Feature
@@ -121,7 +121,7 @@ export function FeaturesTabContent(props: FeaturesTabContentProps) {
             </div>
 
             {highlightedFeatures.length === 0 ? (
-              <div className="rounded-xl border border-white/5 bg-white/[0.02] py-8 text-center text-[#68869A] backdrop-blur-xl">
+              <div className="rounded-xl border border-white/5 bg-white/[0.02] py-8 text-center text-admin-muted backdrop-blur-xl">
                 No features added yet. Click "Add Feature" to start.
               </div>
             ) : (
@@ -143,7 +143,7 @@ export function FeaturesTabContent(props: FeaturesTabContentProps) {
                     </div>
                     <div className="space-y-4 max-w-[90%]">
                       <div>
-                        <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                        <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                           Title
                         </Label>
                         <Input
@@ -153,7 +153,7 @@ export function FeaturesTabContent(props: FeaturesTabContentProps) {
                         />
                       </div>
                       <div>
-                        <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                        <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                           Description
                         </Label>
                         <Textarea
@@ -174,7 +174,7 @@ export function FeaturesTabContent(props: FeaturesTabContentProps) {
           <Button
             onClick={onSave}
             disabled={!hasUnsavedChanges || isPending}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold tracking-widest uppercase text-[10px] h-11 px-6 rounded-xl shadow-lg shadow-emerald-500/20 active:scale-95 transition-all"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold tracking-widest uppercase text-xxs h-11 px-6 rounded-xl shadow-lg shadow-emerald-500/20 active:scale-95 transition-all"
           >
             {isPending ? "Connecting..." : "Sync Feature Config"}
           </Button>

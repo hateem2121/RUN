@@ -41,16 +41,22 @@ export class ProductErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-red-200 bg-red-50 p-8">
-          <AlertCircle className="mb-4 h-12 w-12 text-red-600" />
-          <h2 className="mb-2 text-lg font-semibold text-red-900">Something went wrong</h2>
-          <p className="mb-4 max-w-md text-center text-sm text-red-700">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/5 p-12 backdrop-blur-xl">
+          <div className="size-16 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-6 shadow-red-glow">
+            <AlertCircle className="h-8 w-8 text-red-500" />
+          </div>
+          <h2 className="mb-2 text-xl font-bold text-white tracking-tight">System Protocol Violation</h2>
+          <p className="mb-6 max-w-md text-center text-sm text-admin-muted">
             {this.state.error?.message ||
-              "An unexpected error occurred in the product management system"}
+              "An unexpected exception has occurred in the product management subsystem."}
           </p>
-          <Button onClick={this.handleReset} variant="outline" className="flex items-center gap-2">
+          <Button
+            onClick={this.handleReset}
+            variant="outline"
+            className="flex items-center gap-2 h-11 px-6 rounded-xl border-white/10 hover:bg-white/5 text-admin-foreground transition-all active:scale-95"
+          >
             <RefreshCw className="h-4 w-4" />
-            Try Again
+            Re-initiate Module
           </Button>
           {process.env.NODE_ENV === "development" && this.state.errorInfo && (
             <details className="bg-muted mt-4 rounded p-4 text-xs">

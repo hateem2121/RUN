@@ -76,13 +76,13 @@ export function MediaPickerModal({
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div
         data-testid="media-picker"
-        className="w-full max-w-[1100px] h-[80vh] bg-[#0A0A0A]/90 backdrop-blur-2xl border border-white/10 rounded-2xl flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200"
+        className="w-full max-w-[1100px] h-[80vh] bg-surface-black/90 backdrop-blur-2xl border border-white/10 rounded-2xl flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200"
       >
         {/* Header */}
         <header className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/[0.02]">
           <div>
             <h2 className="text-xl font-bold text-white tracking-tight">{title}</h2>
-            <p className="text-xs text-[#68869A]">
+            <p className="text-xs text-admin-muted">
               Showing:{" "}
               {selectedTypes.length === allowedTypes.length
                 ? "All assets"
@@ -90,8 +90,9 @@ export function MediaPickerModal({
             </p>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-2 hover:bg-white/5 rounded-lg text-[#68869A] hover:text-white transition-colors"
+            className="p-2 hover:bg-white/5 rounded-lg text-admin-muted hover:text-white transition-colors"
             title="Close"
             aria-label="Close"
           >
@@ -104,19 +105,19 @@ export function MediaPickerModal({
           <aside className="w-[240px] border-r border-white/5 p-5 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#68869A] w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-admin-muted w-4 h-4" />
               <input
                 type="text"
                 placeholder="Search assets..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-[#68869A]"
+                className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-admin-muted"
               />
             </div>
 
             {/* Filters */}
             <div className="space-y-4">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[#68869A] flex items-center gap-2">
+              <p className="text-xxs font-bold uppercase tracking-widest text-admin-muted flex items-center gap-2">
                 <Filter className="w-3 h-3" />
                 Type Filter
               </p>
@@ -141,7 +142,7 @@ export function MediaPickerModal({
                         "text-sm capitalize transition-colors",
                         selectedTypes.includes(type)
                           ? "text-white font-medium"
-                          : "text-[#68869A] group-hover:text-white/60",
+                          : "text-admin-muted group-hover:text-white/60",
                       )}
                     >
                       {type}s
@@ -156,10 +157,13 @@ export function MediaPickerModal({
           <main className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-black/20">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {filteredAssets.map((asset) => (
-                <div
+                <button
+                  type="button"
                   key={asset.id}
                   onClick={() => setSelectedAssetId(asset.id)}
-                  className="group relative flex flex-col gap-2 cursor-pointer"
+                  className="group relative flex flex-col gap-2 cursor-pointer w-full text-left bg-transparent border-none p-0 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl"
+                  aria-pressed={selectedAssetId === asset.id}
+                  aria-label={`Select ${asset.filename}`}
                 >
                   <div
                     className={cn(
@@ -182,11 +186,11 @@ export function MediaPickerModal({
                       />
                     ) : asset.type === "video" ? (
                       <div className="flex flex-col items-center gap-2">
-                        <FileVideo className="w-12 h-12 text-[#68869A]" />
+                        <FileVideo className="w-12 h-12 text-admin-muted" />
                       </div>
                     ) : (
                       <div className="flex flex-col items-center gap-2">
-                        <Box className="w-12 h-12 text-[#68869A]" />
+                        <Box className="w-12 h-12 text-admin-muted" />
                       </div>
                     )}
 
@@ -207,14 +211,14 @@ export function MediaPickerModal({
                     >
                       {asset.filename}
                     </p>
-                    <p className="text-[10px] text-[#68869A]">{asset.size}</p>
+                    <p className="text-xxs text-admin-muted">{asset.size}</p>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
 
             {filteredAssets.length === 0 && (
-              <div className="flex flex-col items-center justify-center h-full text-[#68869A] gap-4 py-20">
+              <div className="flex flex-col items-center justify-center h-full text-admin-muted gap-4 py-20">
                 <ImageIcon className="w-12 h-12 opacity-20" />
                 <p>No assets found matching your criteria</p>
               </div>
@@ -236,19 +240,21 @@ export function MediaPickerModal({
           </div>
           <div className="flex items-center gap-3">
             <button
+              type="button"
               onClick={onClose}
               className="px-5 py-2 rounded-lg border border-white/10 text-slate-300 text-sm font-medium hover:bg-white/5 transition-all"
             >
               Cancel
             </button>
             <button
+              type="button"
               disabled={!selectedAssetId}
               onClick={() => selectedAsset && onSelect(selectedAsset)}
               className={cn(
                 "px-6 py-2 rounded-lg text-sm font-semibold transition-all shadow-lg",
                 selectedAssetId
                   ? "bg-blue-500 text-white hover:bg-blue-600 shadow-blue-500/20 active:scale-[0.98]"
-                  : "bg-white/5 text-[#68869A] cursor-not-allowed border border-white/5",
+                  : "bg-white/5 text-admin-muted cursor-not-allowed border border-white/5",
               )}
             >
               Confirm Selection

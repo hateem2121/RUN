@@ -1,6 +1,6 @@
 import type { Request } from "express";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
-import { verifyCloudTaskToken } from "../verify-cloud-task-token.js";
+import { verifyCloudTaskToken } from "../../../lib/verify-cloud-task-token.js";
 
 // vi.hoisted() runs before mock factories AND before static imports, so this
 // shared vi.fn() is guaranteed to exist when the factory below executes.

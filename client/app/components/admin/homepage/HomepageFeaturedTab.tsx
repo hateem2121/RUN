@@ -68,7 +68,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
                 <h2 className="text-xl font-bold text-white tracking-tight">
                   Showcase Configuration
                 </h2>
-                <p className="text-sm text-[#68869A]">
+                <p className="text-sm text-admin-muted">
                   Configure the primary product spotlight on the global storefront.
                 </p>
               </div>
@@ -76,7 +76,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
             <Button
               onClick={handleSave}
               disabled={!isDirty || updateFeaturedSettings.isPending}
-              className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none border-0"
+              className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none border-0"
             >
               {updateFeaturedSettings.isPending ? (
                 "Deploying Configuration..."
@@ -105,7 +105,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
                   >
                     Broadcast Status
                   </Label>
-                  <p className="text-xs text-[#68869A]">
+                  <p className="text-xs text-admin-muted">
                     Activate the product showcase section on the homepage
                   </p>
                 </div>
@@ -113,7 +113,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
 
               <div className="grid gap-6 p-6 rounded-2xl border border-white/10 bg-white/[0.01]">
                 <div className="flex items-center gap-2 mb-2">
-                  <Settings2 className="h-4 w-4 text-[#68869A]" />
+                  <Settings2 className="h-4 w-4 text-admin-muted" />
                   <h3 className="text-sm font-bold text-white uppercase tracking-wider">
                     Display Parameters
                   </h3>
@@ -122,7 +122,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
                 <div className="space-y-2">
                   <Label
                     htmlFor="title"
-                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                    className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                   >
                     Showcase Heading
                   </Label>
@@ -138,7 +138,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
                   <div className="space-y-2">
                     <Label
                       htmlFor="maxProducts"
-                      className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                      className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                     >
                       Inventory Limit
                     </Label>
@@ -156,7 +156,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
                   <div className="space-y-2">
                     <Label
                       htmlFor="sortBy"
-                      className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                      className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                     >
                       Curation Logic
                     </Label>
@@ -170,7 +170,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
                       >
                         <SelectValue placeholder="Select logic" />
                       </SelectTrigger>
-                      <SelectContent className="bg-[#0A0A0A] border-white/10 text-white">
+                      <SelectContent className="bg-surface-black border-white/10 text-white">
                         <SelectItem
                           value="featured"
                           className="focus:bg-white/10 focus:text-white cursor-pointer"
@@ -203,7 +203,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
                       >
                         Dynamic Curation
                       </Label>
-                      <p className="text-xs text-[#68869A]">
+                      <p className="text-xs text-admin-muted">
                         Automatically select products based on the defined curation logic
                       </p>
                     </div>

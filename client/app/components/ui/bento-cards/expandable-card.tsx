@@ -275,5 +275,3 @@ export const ExpandableCard = memo(function ExpandableCard({
     </EnhancedBentoCardErrorBoundary>
   );
 });
-
-

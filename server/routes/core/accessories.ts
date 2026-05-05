@@ -1,4 +1,4 @@
-import { removeUndefined } from "../../utils.js";
+import { removeUndefined } from "../../lib/utilities/core-utils.js";
 
 /**
  * ACCESSORIES ROUTER MODULE
@@ -10,8 +10,8 @@ import { Router } from "express";
 import { insertAccessorySchema } from "../../../shared/index.js";
 import { accessoryRepository } from "../../lib/db/repositories/accessory-repository.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
-import { validateIdParam } from "../../utils.js";
 
 const router = Router();
 

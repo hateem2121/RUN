@@ -50,7 +50,7 @@ export const ApiErrorFallback = React.memo(function ApiErrorFallback({
                 <summary className="cursor-pointer font-medium outline-none">
                   Technical details
                 </summary>
-                <div className="mt-2 max-h-32 overflow-auto font-mono text-[10px] leading-relaxed opacity-80 decoration-0">
+                <div className="mt-2 max-h-32 overflow-auto font-mono text-xxs leading-relaxed opacity-80 decoration-0">
                   {error.message}
                 </div>
               </details>

@@ -287,7 +287,7 @@ export function MetricsTabContent({
               Add Metric
             </Button>
           </CardTitle>
-          <CardDescription className="text-sm text-[#68869A]">
+          <CardDescription className="text-sm text-admin-muted">
             Manage sustainability metrics with drag-and-drop reordering
           </CardDescription>
         </CardHeader>

@@ -85,7 +85,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
             onClick={() => editor.chain().focus().toggleBold().run()}
             className={cn(
               "h-8 w-8",
-              editor.isActive("bold") ? "bg-[#00D4FF]/20 text-[#00D4FF]" : "text-[#E3DFD6]/60",
+              editor.isActive("bold") ? "bg-[#00D4FF]/20 text-[#00D4FF]" : "text-admin-foreground/60",
             )}
           >
             <Bold className="h-4 w-4" />
@@ -97,7 +97,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
             onClick={() => editor.chain().focus().toggleItalic().run()}
             className={cn(
               "h-8 w-8",
-              editor.isActive("italic") ? "bg-[#00D4FF]/20 text-[#00D4FF]" : "text-[#E3DFD6]/60",
+              editor.isActive("italic") ? "bg-[#00D4FF]/20 text-[#00D4FF]" : "text-admin-foreground/60",
             )}
           >
             <Italic className="h-4 w-4" />
@@ -109,7 +109,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
             onClick={() => editor.chain().focus().toggleStrike().run()}
             className={cn(
               "h-8 w-8",
-              editor.isActive("strike") ? "bg-[#00D4FF]/20 text-[#00D4FF]" : "text-[#E3DFD6]/60",
+              editor.isActive("strike") ? "bg-[#00D4FF]/20 text-[#00D4FF]" : "text-admin-foreground/60",
             )}
           >
             <Strikethrough className="h-4 w-4" />
@@ -126,7 +126,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
               "h-8 w-8",
               editor.isActive("heading", { level: 1 })
                 ? "bg-[#00D4FF]/20 text-[#00D4FF]"
-                : "text-[#E3DFD6]/60",
+                : "text-admin-foreground/60",
             )}
           >
             <Heading1 className="h-4 w-4" />
@@ -140,7 +140,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
               "h-8 w-8",
               editor.isActive("heading", { level: 2 })
                 ? "bg-[#00D4FF]/20 text-[#00D4FF]"
-                : "text-[#E3DFD6]/60",
+                : "text-admin-foreground/60",
             )}
           >
             <Heading2 className="h-4 w-4" />
@@ -157,7 +157,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
               "h-8 w-8",
               editor.isActive("bulletList")
                 ? "bg-[#00D4FF]/20 text-[#00D4FF]"
-                : "text-[#E3DFD6]/60",
+                : "text-admin-foreground/60",
             )}
           >
             <List className="h-4 w-4" />
@@ -171,7 +171,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
               "h-8 w-8",
               editor.isActive("orderedList")
                 ? "bg-[#00D4FF]/20 text-[#00D4FF]"
-                : "text-[#E3DFD6]/60",
+                : "text-admin-foreground/60",
             )}
           >
             <ListOrdered className="h-4 w-4" />
@@ -188,7 +188,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
               "h-8 w-8",
               editor.isActive("blockquote")
                 ? "bg-[#00D4FF]/20 text-[#00D4FF]"
-                : "text-[#E3DFD6]/60",
+                : "text-admin-foreground/60",
             )}
           >
             <Quote className="h-4 w-4" />
@@ -200,7 +200,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
             className={cn(
               "h-8 w-8",
-              editor.isActive("codeBlock") ? "bg-[#00D4FF]/20 text-[#00D4FF]" : "text-[#E3DFD6]/60",
+              editor.isActive("codeBlock") ? "bg-[#00D4FF]/20 text-[#00D4FF]" : "text-admin-foreground/60",
             )}
           >
             <CodeIcon className="h-4 w-4" />
@@ -215,7 +215,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
             onClick={toggleLink}
             className={cn(
               "h-8 w-8",
-              editor.isActive("link") ? "bg-[#00D4FF]/20 text-[#00D4FF]" : "text-[#E3DFD6]/60",
+              editor.isActive("link") ? "bg-[#00D4FF]/20 text-[#00D4FF]" : "text-admin-foreground/60",
             )}
           >
             <LinkIcon className="h-4 w-4" />
@@ -225,7 +225,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
             variant="ghost"
             size="icon"
             onClick={addImage}
-            className="h-8 w-8 text-[#E3DFD6]/60"
+            className="h-8 w-8 text-admin-foreground/60"
           >
             <ImageIcon className="h-4 w-4" />
           </Button>
@@ -238,7 +238,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
             size="icon"
             onClick={() => editor.chain().focus().undo().run()}
             disabled={!editor.can().undo()}
-            className="h-8 w-8 text-[#E3DFD6]/40 disabled:opacity-20"
+            className="h-8 w-8 text-admin-foreground/40 disabled:opacity-20"
           >
             <Undo className="h-4 w-4" />
           </Button>
@@ -248,7 +248,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
             size="icon"
             onClick={() => editor.chain().focus().redo().run()}
             disabled={!editor.can().redo()}
-            className="h-8 w-8 text-[#E3DFD6]/40 disabled:opacity-20"
+            className="h-8 w-8 text-admin-foreground/40 disabled:opacity-20"
           >
             <Redo className="h-4 w-4" />
           </Button>

@@ -1,4 +1,4 @@
-import { removeUndefined } from "../../utils.js";
+import { removeUndefined } from "../../lib/utilities/core-utils.js";
 
 /**
  * CATEGORIES ROUTER MODULE
@@ -8,7 +8,11 @@ import { removeUndefined } from "../../utils.js";
 
 import { Router } from "express";
 import { z } from "zod";
-import { type Category, categoryReorderSchema, insertCategorySchema } from "../../../shared/index.js";
+import {
+  type Category,
+  categoryReorderSchema,
+  insertCategorySchema,
+} from "../../../shared/index.js";
 import { db } from "../../db.js";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
@@ -16,11 +20,15 @@ import { retryDbOperation } from "../../lib/db/db-retry.js";
 import { productRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import {
+  shouldBypassCache,
+  validateAndSanitizeInput,
+  validateIdParam,
+} from "../../lib/utilities/core-utils.js";
 import { normalizeSlug } from "../../lib/utilities/slug-utils.js";
 import { createRateLimiter } from "../../middleware/rateLimiter.js";
 import { authService } from "../../services/auth-service.js";
 import { webhookService } from "../../services/webhook-service.js";
-import { shouldBypassCache, validateAndSanitizeInput, validateIdParam } from "../../utils.js";
 
 const writeRateLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,

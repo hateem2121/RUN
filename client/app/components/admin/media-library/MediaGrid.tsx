@@ -98,7 +98,7 @@ export function MediaGrid({
       <div className="fallback-content py-12">
         <FileImage className="mb-4 h-12 w-12" />
         <h3 className="mb-2 text-lg font-medium">No media found</h3>
-        <p className="text-[#68869A]">
+        <p className="text-admin-muted">
           {state.searchTerm || state.selectedType !== "all"
             ? "Try adjusting your search or filters"
             : "Upload some media to get started"}

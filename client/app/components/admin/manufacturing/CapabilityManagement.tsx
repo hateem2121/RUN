@@ -114,13 +114,13 @@ function SortableCapabilityItem({
         <div
           {...attributes}
           {...listeners}
-          className="mt-1 cursor-grab active:cursor-grabbing text-[#68869A] hover:text-[#D4A853] transition-colors"
+          className="mt-1 cursor-grab active:cursor-grabbing text-admin-muted hover:text-brand-manufacturing transition-colors"
         >
           <GripVertical className="h-5 w-5" />
         </div>
 
-        <div className="size-12 rounded-xl bg-[#D4A853]/10 border border-[#D4A853]/20 flex items-center justify-center flex-shrink-0">
-          <IconComponent className="size-6 text-[#D4A853]" />
+        <div className="size-12 rounded-xl bg-brand-manufacturing/10 border border-brand-manufacturing/20 flex items-center justify-center flex-shrink-0">
+          <IconComponent className="size-6 text-brand-manufacturing" />
         </div>
 
         <div className="flex-1 min-w-0">
@@ -131,22 +131,22 @@ function SortableCapabilityItem({
             <Badge
               variant="outline"
               className={cn(
-                "text-[10px] uppercase tracking-wider border-0 py-0 h-4",
+                "text-xxs uppercase tracking-wider border-0 py-0 h-4",
                 (capability.isActive ?? true)
                   ? "bg-emerald-500/10 text-emerald-400"
-                  : "bg-white/5 text-[#68869A]",
+                  : "bg-white/5 text-admin-muted",
               )}
             >
               {(capability.isActive ?? true) ? "Active" : "Inactive"}
             </Badge>
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[#68869A] text-xs">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-admin-muted text-xs">
             {capability.category && (
               <span className="flex items-center gap-1.5 capitalize">{capability.category}</span>
             )}
             {capability.capacity && (
-              <span className="flex items-center gap-1.5 font-medium text-[#D4A853]/80">
+              <span className="flex items-center gap-1.5 font-medium text-brand-manufacturing/80">
                 <span className="text-white/20">•</span>
                 {capability.capacity}
               </span>
@@ -157,30 +157,30 @@ function SortableCapabilityItem({
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
               {specs.length > 0 && (
                 <div className="space-y-1.5">
-                  <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest pl-0.5">
+                  <p className="text-xxs font-bold text-white/40 uppercase tracking-widest pl-0.5">
                     Specifications
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {specs.slice(0, 3).map((spec, i) => (
                       <span
                         key={i}
-                        className="text-[10px] bg-white/5 border border-white/5 px-2 py-0.5 rounded text-[#68869A]"
+                        className="text-xxs bg-white/5 border border-white/5 px-2 py-0.5 rounded text-admin-muted"
                       >
                         {spec.label}: <span className="text-white/60">{spec.value}</span>
                       </span>
                     ))}
                     {specs.length > 3 && (
-                      <span className="text-[10px] text-white/20">+{specs.length - 3}</span>
+                      <span className="text-xxs text-white/20">+{specs.length - 3}</span>
                     )}
                   </div>
                 </div>
               )}
               {capability.equipment && capability.equipment.length > 0 && (
                 <div className="space-y-1.5">
-                  <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest pl-0.5">
+                  <p className="text-xxs font-bold text-white/40 uppercase tracking-widest pl-0.5">
                     Asset Registry
                   </p>
-                  <p className="text-xs text-[#68869A] leading-relaxed truncate">
+                  <p className="text-xs text-admin-muted leading-relaxed truncate">
                     {capability.equipment.join(", ")}
                   </p>
                 </div>
@@ -194,7 +194,7 @@ function SortableCapabilityItem({
             size="icon"
             variant="ghost"
             onClick={() => onEdit(capability)}
-            className="size-8 rounded-lg hover:bg-[#D4A853]/10 hover:text-[#D4A853]"
+            className="size-8 rounded-lg hover:bg-brand-manufacturing/10 hover:text-brand-manufacturing"
             title="Edit Capability"
             aria-label="Edit Capability"
           >
@@ -479,7 +479,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
             <h2 className="text-xl font-bold text-white tracking-tight">
               Manufacturing Capabilities
             </h2>
-            <p className="text-sm text-[#68869A]">
+            <p className="text-sm text-admin-muted">
               Manage manufacturing capabilities and technical specifications
             </p>
           </div>
@@ -488,7 +488,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
               resetCapabilityForm();
               setShowCapabilityDialog(true);
             }}
-            className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl font-bold transition-all px-6 py-5 uppercase text-[10px] tracking-widest"
+            className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl font-bold transition-all px-6 py-5 uppercase text-xxs tracking-widest"
           >
             <Plus className="mr-2 h-4 w-4" />
             Add Capability
@@ -499,11 +499,11 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
           {capabilitiesLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="flex space-x-2">
-                <div className="h-2 w-2 animate-bounce rounded-full bg-[#D4A853] [animation-delay:-0.3s]"></div>
-                <div className="h-2 w-2 animate-bounce rounded-full bg-[#D4A853] [animation-delay:-0.15s]"></div>
-                <div className="h-2 w-2 animate-bounce rounded-full bg-[#D4A853]"></div>
+                <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing [animation-delay:-0.3s]"></div>
+                <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing [animation-delay:-0.15s]"></div>
+                <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing"></div>
               </div>
-              <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+              <p className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                 Initialising Assets...
               </p>
             </div>
@@ -513,7 +513,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                 <CircuitBoard className="size-8 text-white/10" />
               </div>
               <p className="text-white/40 font-medium">No manufacturing capabilities found.</p>
-              <p className="text-[#68869A] text-sm mt-1">
+              <p className="text-admin-muted text-sm mt-1">
                 Create your first capability to get started.
               </p>
             </div>
@@ -548,7 +548,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
         <Dialog open={showCapabilityDialog} onOpenChange={setShowCapabilityDialog}>
           <DialogContent
             className={cn(
-              "bg-[#0A0A0A]/95 border-white/10 backdrop-blur-2xl text-white rounded-3xl p-0 overflow-hidden",
+              "bg-surface-black/95 border-white/10 backdrop-blur-2xl text-white rounded-3xl p-0 overflow-hidden",
               showPreview ? "max-w-6xl" : "max-w-xl",
             )}
           >
@@ -558,7 +558,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                   <DialogTitle className="text-2xl font-bold tracking-tight">
                     {editingCapability ? "Edit Capability" : "Add New Capability"}
                   </DialogTitle>
-                  <DialogDescription className="text-[#68869A]">
+                  <DialogDescription className="text-admin-muted">
                     Configure manufacturing capability details and specifications
                   </DialogDescription>
                 </div>
@@ -566,7 +566,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowPreview(!showPreview)}
-                  className="hidden gap-2 sm:flex text-[10px] font-bold uppercase tracking-widest hover:bg-white/5"
+                  className="hidden gap-2 sm:flex text-xxs font-bold uppercase tracking-widest hover:bg-white/5"
                 >
                   {showPreview ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   {showPreview ? "Hide Preview" : "Show Preview"}
@@ -582,7 +582,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                       <div className="space-y-2">
                         <Label
                           htmlFor="capability-title"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Title
                         </Label>
@@ -605,7 +605,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                       <div className="space-y-2">
                         <Label
                           htmlFor="capability-icon"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Visual Icon
                         </Label>
@@ -621,12 +621,12 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                           <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-[50px] focus:ring-[#D4A853]/50">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className="bg-[#0A0A0A] border-white/10 text-white">
+                          <SelectContent className="bg-surface-black border-white/10 text-white">
                             {Object.keys(capabilityIcons).map((icon) => (
                               <SelectItem
                                 key={icon}
                                 value={icon}
-                                className="hover:bg-[#D4A853]/10 focus:bg-[#D4A853]/10"
+                                className="hover:bg-brand-manufacturing/10 focus:bg-brand-manufacturing/10"
                               >
                                 {icon}
                               </SelectItem>
@@ -640,7 +640,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                       <div className="space-y-2">
                         <Label
                           htmlFor="capability-capacity"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Production Capacity
                         </Label>
@@ -661,7 +661,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                       <div className="space-y-2">
                         <Label
                           htmlFor="capability-category"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Service Category
                         </Label>
@@ -684,7 +684,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                     <div className="space-y-2">
                       <Label
                         htmlFor="capability-description"
-                        className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                        className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                       >
                         Description
                       </Label>
@@ -714,7 +714,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                             isActive: checked,
                           })
                         }
-                        className="data-[state=checked]:bg-[#D4A853]"
+                        className="data-[state=checked]:bg-brand-manufacturing"
                       />
                       <Label
                         htmlFor="capability-active"
@@ -726,7 +726,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
 
                     <div className="space-y-6 pt-6 border-t border-white/5">
                       <div className="space-y-4">
-                        <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                        <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                           Technical Specifications
                         </Label>
                         <div className="grid gap-3">
@@ -736,7 +736,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                               className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10"
                             >
                               <div className="flex-1 flex gap-2 text-sm">
-                                <span className="font-bold text-[#D4A853]">{spec.label}:</span>
+                                <span className="font-bold text-brand-manufacturing">{spec.label}:</span>
                                 <span className="text-white/70">{spec.value}</span>
                               </div>
                               <button
@@ -777,7 +777,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                           <Button
                             type="button"
                             onClick={handleAddSpecification}
-                            className="h-11 bg-white/10 hover:bg-white/20 text-white font-bold text-[10px] uppercase tracking-widest px-6"
+                            className="h-11 bg-white/10 hover:bg-white/20 text-white font-bold text-xxs uppercase tracking-widest px-6"
                           >
                             Add Spec
                           </Button>
@@ -785,14 +785,14 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                       </div>
 
                       <div className="space-y-4 pt-6 border-t border-white/5">
-                        <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                        <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                           Asset Registry (Equipment)
                         </Label>
                         <div className="flex flex-wrap gap-2">
                           {capabilityForm.equipment.map((item, index) => (
                             <Badge
                               key={index}
-                              className="bg-[#D4A853]/10 text-[#D4A853] border-[#D4A853]/20 px-3 py-1 gap-2 rounded-lg"
+                              className="bg-brand-manufacturing/10 text-brand-manufacturing border-brand-manufacturing/20 px-3 py-1 gap-2 rounded-lg"
                             >
                               {item}
                               <button
@@ -817,7 +817,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                           <Button
                             type="button"
                             onClick={handleAddEquipment}
-                            className="h-11 bg-white/10 hover:bg-white/20 text-white font-bold text-[10px] uppercase tracking-widest px-6 whitespace-nowrap"
+                            className="h-11 bg-white/10 hover:bg-white/20 text-white font-bold text-xxs uppercase tracking-widest px-6 whitespace-nowrap"
                           >
                             Add Asset
                           </Button>
@@ -825,7 +825,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                       </div>
 
                       <div className="space-y-4 pt-6 border-t border-white/5">
-                        <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                        <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                           Hero Asset
                         </Label>
                         <div className="flex gap-3">
@@ -833,9 +833,9 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                             type="button"
                             variant="outline"
                             onClick={() => setShowCapabilityImagePicker(true)}
-                            className="flex-1 bg-white/5 border-white/10 h-14 rounded-xl justify-start px-4 text-[#68869A] hover:bg-white/10 hover:text-white transition-all border-0 shadow-none ring-offset-0 focus:ring-0"
+                            className="flex-1 bg-white/5 border-white/10 h-14 rounded-xl justify-start px-4 text-admin-muted hover:bg-white/10 hover:text-white transition-all border-0 shadow-none ring-offset-0 focus:ring-0"
                           >
-                            <ImageIcon className="mr-3 h-5 w-5 text-[#D4A853]" />
+                            <ImageIcon className="mr-3 h-5 w-5 text-brand-manufacturing" />
                             <span className="truncate">
                               {finalSelectedCapabilityImage
                                 ? finalSelectedCapabilityImage.filename
@@ -852,7 +852,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                                   imageId: null,
                                 })
                               }
-                              className="h-14 w-14 rounded-xl border border-white/10 hover:bg-red-500/10 hover:text-red-400 text-[#68869A]"
+                              className="h-14 w-14 rounded-xl border border-white/10 hover:bg-red-500/10 hover:text-red-400 text-admin-muted"
                             >
                               <Trash2 className="h-5 w-5" />
                             </Button>
@@ -864,9 +864,9 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
 
                   {showPreview && (
                     <div className="sticky top-0 h-fit space-y-4">
-                      <div className="flex items-center gap-2 mb-2 p-3 bg-[#D4A853]/10 rounded-xl border border-[#D4A853]/20">
-                        <LayoutTemplate className="h-4 w-4 text-[#D4A853]" />
-                        <span className="text-[10px] font-bold text-[#D4A853] uppercase tracking-widest">
+                      <div className="flex items-center gap-2 mb-2 p-3 bg-brand-manufacturing/10 rounded-xl border border-brand-manufacturing/20">
+                        <LayoutTemplate className="h-4 w-4 text-brand-manufacturing" />
+                        <span className="text-xxs font-bold text-brand-manufacturing uppercase tracking-widest">
                           Live Component Preview
                         </span>
                       </div>
@@ -879,7 +879,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                           />
                         </LivePreviewGrid>
                       </div>
-                      <p className="text-[10px] font-medium text-[#68869A] text-center italic">
+                      <p className="text-xxs font-medium text-admin-muted text-center italic">
                         This card will represent this capability on the public Manufacturing page.
                       </p>
                     </div>
@@ -892,14 +892,14 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                   type="button"
                   variant="ghost"
                   onClick={() => setShowCapabilityDialog(false)}
-                  className="text-[#68869A] hover:bg-white/5"
+                  className="text-admin-muted hover:bg-white/5"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
-                  className="bg-primary hover:bg-primary/90 text-white rounded-xl px-8 py-6 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all outline-none ring-0 border-0"
+                  className="bg-primary hover:bg-primary/90 text-white rounded-xl px-8 py-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all outline-none ring-0 border-0"
                 >
                   {isPending
                     ? "Syncing..."

@@ -1,5 +1,3 @@
-import { logger } from "../../server/lib/monitoring/logger.js";
-
 const NEON_API_KEY = process.env.NEON_API_KEY;
 const PROJECT_ID = process.env.NEON_PROJECT_ID;
 

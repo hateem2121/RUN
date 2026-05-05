@@ -186,7 +186,7 @@ export function BlogManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Blog Management</h1>
-          <p className="text-[#68869A] mt-1">Manage global content and storytelling.</p>
+          <p className="text-admin-muted mt-1">Manage global content and storytelling.</p>
         </div>
         <Button
           className="gap-2"
@@ -218,7 +218,7 @@ export function BlogManagement() {
         <CardHeader>
           <CardTitle>Content Pipeline</CardTitle>
           <div className="relative mt-2">
-            <IconSearch className="absolute top-2.5 left-2.5 h-4 w-4 text-[#68869A]" />
+            <IconSearch className="absolute top-2.5 left-2.5 h-4 w-4 text-admin-muted" />
             <Input
               placeholder="Search posts..."
               className="pl-8"
@@ -229,7 +229,7 @@ export function BlogManagement() {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-10 text-[#68869A]">
+            <div className="flex flex-col items-center justify-center py-10 text-admin-muted">
               <IconLoader2 className="h-10 w-10 animate-spin mb-4" />
               <p>Syncing blog content...</p>
             </div>
@@ -269,7 +269,7 @@ export function BlogManagement() {
                       <TableCell className="text-sm">
                         {categories.find((c) => c.id === post.categoryId)?.name || "Uncategorized"}
                       </TableCell>
-                      <TableCell className="text-sm text-[#68869A]">
+                      <TableCell className="text-sm text-admin-muted">
                         {new Date(post.updatedAt || post.createdAt).toLocaleDateString()}
                       </TableCell>
                       <TableCell className="text-right">
@@ -296,7 +296,7 @@ export function BlogManagement() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={5} className="h-24 text-center text-[#68869A]">
+                    <TableCell colSpan={5} className="h-24 text-center text-admin-muted">
                       No blog posts found. Capture the narrative by creating one.
                     </TableCell>
                   </TableRow>

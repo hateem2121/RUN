@@ -218,7 +218,7 @@ export function FiberManagement() {
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-white">Fiber Management</h1>
-          <p className="text-[#68869A]">
+          <p className="text-admin-muted">
             Manage raw material fibers, their properties and sustainability impact.
           </p>
         </div>
@@ -272,7 +272,7 @@ export function FiberManagement() {
         <CardContent className="p-4">
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#68869A]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-muted" />
               <Input
                 placeholder="Search fibers..."
                 className="pl-10"

@@ -54,7 +54,7 @@ export function TechnologyManagement() {
               Technology Management - Legacy Mode
             </h2>
           </div>
-          <p className="text-[#68869A] leading-relaxed">
+          <p className="text-admin-muted leading-relaxed">
             Modular technology components are currently disabled. Please enable the modular
             components feature flag to access the high-performance cyan-themed interface.
           </p>
@@ -75,7 +75,7 @@ export function TechnologyManagement() {
             <h1 className="text-xl font-bold text-white tracking-tight">
               Technology Orchestration
             </h1>
-            <p className="text-sm text-[#68869A]">
+            <p className="text-sm text-admin-muted">
               Managing innovation lifecycles, R&D assets, and strategic roadmaps
             </p>
           </div>
@@ -83,7 +83,7 @@ export function TechnologyManagement() {
 
         <div className="flex items-center gap-6">
           <div className="relative group hidden md:block">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#68869A] group-focus-within:text-cyan-400 transition-colors" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-admin-muted group-focus-within:text-cyan-400 transition-colors" />
             <input
               type="text"
               placeholder="Search tech stack..."
@@ -92,7 +92,7 @@ export function TechnologyManagement() {
           </div>
           <div className="flex items-center gap-3">
             <button
-              className="size-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#68869A] hover:bg-white/10 hover:text-white transition-all"
+              className="size-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-admin-muted hover:bg-white/10 hover:text-white transition-all"
               title="Notifications"
               aria-label="Notifications"
             >
@@ -101,7 +101,7 @@ export function TechnologyManagement() {
             <div className="h-10 w-px bg-white/10 mx-2" />
             <div className="px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center gap-2">
               <div className="size-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] font-black text-green-500 uppercase tracking-widest">
+              <span className="text-xxs font-black text-green-500 uppercase tracking-widest">
                 Modular Active
               </span>
             </div>
@@ -123,9 +123,9 @@ export function TechnologyManagement() {
               key={tab.id}
               value={tab.id}
               className={cn(
-                "flex-1 flex flex-col sm:flex-row items-center justify-center gap-2 py-3 px-4 text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all rounded-xl",
+                "flex-1 flex flex-col sm:flex-row items-center justify-center gap-2 py-3 px-4 text-xxs sm:text-xs font-bold uppercase tracking-widest transition-all rounded-xl",
                 "data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=active]:shadow-[0_0_20px_rgba(8,145,178,0.3)]",
-                "text-[#68869A] hover:text-white hover:bg-white/5",
+                "text-admin-muted hover:text-white hover:bg-white/5",
               )}
             >
               <tab.icon className="size-4 shrink-0" />

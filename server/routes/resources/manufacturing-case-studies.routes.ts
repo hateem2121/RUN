@@ -4,8 +4,8 @@ import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { manufacturingRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { removeUndefined } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
-import { removeUndefined } from "../../utils.js";
 import {
   validateManufacturingCaseStudy,
   validateManufacturingCaseStudyPartial,

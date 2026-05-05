@@ -135,13 +135,13 @@ const SizeChartList = ({
                 {validation.total > 0 && (
                   <div className="mb-2">
                     <div className="mb-1 flex items-center gap-2">
-                      <span className="text-xs text-[#68869A]">Completeness:</span>
+                      <span className="text-xs text-admin-muted">Completeness:</span>
                       {validation.incomplete > 0 && (
                         <AlertTriangle className="h-3 w-3 text-amber-500" />
                       )}
                     </div>
                     <Progress value={validation.completeness} className="h-2" />
-                    <p className="mt-1 text-xs text-[#68869A]">
+                    <p className="mt-1 text-xs text-admin-muted">
                       {validation.total - validation.incomplete}/{validation.total} measurements
                       complete
                     </p>
@@ -512,7 +512,7 @@ export function SizeChartManagementEnhanced() {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="font-bold font-neue-stance text-3xl text-white">Size Chart Management</h1>
-          <p className="mt-2 text-[#68869A]">
+          <p className="mt-2 text-admin-muted">
             Create and manage size charts for different regions and product categories
           </p>
         </div>

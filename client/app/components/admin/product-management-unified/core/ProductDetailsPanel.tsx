@@ -86,7 +86,7 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
             onClick={onClose}
             variant="ghost"
             size="sm"
-            className="text-[#68869A] hover:text-white hover:bg-white/5"
+            className="text-admin-muted hover:text-white hover:bg-white/5"
           >
             <X className="h-4 w-4" />
           </Button>
@@ -123,7 +123,7 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
         <div className="px-5 pb-5 space-y-4">
           <div>
             <h3 className="font-semibold text-lg text-white">{product.name}</h3>
-            <p className="text-[#68869A] text-sm">SKU: {product.sku}</p>
+            <p className="text-admin-muted text-sm">SKU: {product.sku}</p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -132,7 +132,7 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
               className={
                 product.isActive
                   ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                  : "bg-white/5 text-[#68869A] border border-white/10"
+                  : "bg-white/5 text-admin-muted border border-white/10"
               }
             >
               {product.isActive ? "Active" : "Inactive"}
@@ -146,15 +146,15 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
 
           {product.description && (
             <div>
-              <h4 className="mb-2 font-medium text-[#E3DFD6] text-sm">Description</h4>
-              <p className="text-[#68869A] text-sm">{product.description}</p>
+              <h4 className="mb-2 font-medium text-admin-foreground text-sm">Description</h4>
+              <p className="text-admin-muted text-sm">{product.description}</p>
             </div>
           )}
 
           {product.shortDescription && (
             <div>
-              <h4 className="mb-2 font-medium text-[#E3DFD6] text-sm">Short Description</h4>
-              <p className="text-[#68869A] text-sm">{product.shortDescription}</p>
+              <h4 className="mb-2 font-medium text-admin-foreground text-sm">Short Description</h4>
+              <p className="text-admin-muted text-sm">{product.shortDescription}</p>
             </div>
           )}
         </div>
@@ -170,8 +170,8 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
             <div className="flex items-center gap-3">
               <Tag className="h-4 w-4 text-emerald-400" />
               <div>
-                <span className="font-medium text-[#E3DFD6]">Category:</span>
-                <span className="ml-2 text-[#68869A]">{category.name}</span>
+                <span className="font-medium text-admin-foreground">Category:</span>
+                <span className="ml-2 text-admin-muted">{category.name}</span>
               </div>
             </div>
           )}
@@ -180,8 +180,8 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
             <div className="flex items-center gap-3">
               <Layers className="h-4 w-4 text-purple-400" />
               <div>
-                <span className="font-medium text-[#E3DFD6]">Fabric:</span>
-                <span className="ml-2 text-[#68869A]">{fabric.name}</span>
+                <span className="font-medium text-admin-foreground">Fabric:</span>
+                <span className="ml-2 text-admin-muted">{fabric.name}</span>
               </div>
             </div>
           )}
@@ -192,31 +192,31 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div className="flex items-center gap-2">
               <ImageIcon className="h-4 w-4 text-blue-400" />
-              <span className="text-[#E3DFD6]">{allImages.length} Images</span>
+              <span className="text-admin-foreground">{allImages.length} Images</span>
             </div>
             <div className="flex items-center gap-2">
               <Video className="h-4 w-4 text-purple-400" />
-              <span className="text-[#E3DFD6]">{allVideos.length} Videos</span>
+              <span className="text-admin-foreground">{allVideos.length} Videos</span>
             </div>
             <div className="flex items-center gap-2">
               <Box className="h-4 w-4 text-indigo-400" />
-              <span className="text-[#E3DFD6]">{model3D ? "1" : "0"} 3D Model</span>
+              <span className="text-admin-foreground">{model3D ? "1" : "0"} 3D Model</span>
             </div>
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-amber-400" />
-              <span className="text-[#E3DFD6]">
+              <span className="text-admin-foreground">
                 {product.accessoryIds?.length || 0} Accessories
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Award className="h-4 w-4 text-emerald-400" />
-              <span className="text-[#E3DFD6]">
+              <span className="text-admin-foreground">
                 {product.certificateIds?.length || 0} Certificates
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <LinkIcon className="h-4 w-4 text-[#68869A]" />
-              <span className="text-[#E3DFD6]">
+              <LinkIcon className="h-4 w-4 text-admin-muted" />
+              <span className="text-admin-foreground">
                 {product.relatedProductIds?.length || 0} Related
               </span>
             </div>
@@ -266,10 +266,10 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
             <div className="space-y-2">
               {Object.entries(product.technicalSpecs).map(([key, value]) => (
                 <div key={key} className="flex items-center justify-between text-sm">
-                  <span className="font-medium capitalize text-[#E3DFD6]">
+                  <span className="font-medium capitalize text-admin-foreground">
                     {key.replace(/([A-Z])/g, " $1").trim()}:
                   </span>
-                  <span className="text-[#68869A]">{value}</span>
+                  <span className="text-admin-muted">{value}</span>
                 </div>
               ))}
             </div>
@@ -289,7 +289,7 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
                 <Badge
                   key={index}
                   variant="outline"
-                  className="text-xs text-[#E3DFD6] border-white/10 bg-white/[0.03]"
+                  className="text-xs text-admin-foreground border-white/10 bg-white/[0.03]"
                 >
                   {tag}
                 </Badge>
@@ -310,25 +310,25 @@ export function ProductDetailsPanel({ product, onClose, onEdit }: ProductDetails
           <div className="px-5 pb-5 space-y-3">
             {product.minimumOrderQuantity && (
               <div className="text-sm">
-                <span className="font-medium text-[#E3DFD6]">Minimum Order Quantity:</span>
-                <span className="ml-2 text-[#68869A]">{product.minimumOrderQuantity}</span>
+                <span className="font-medium text-admin-foreground">Minimum Order Quantity:</span>
+                <span className="ml-2 text-admin-muted">{product.minimumOrderQuantity}</span>
               </div>
             )}
             {product.leadTime && (
               <div className="text-sm">
-                <span className="font-medium text-[#E3DFD6]">Lead Time:</span>
-                <span className="ml-2 text-[#68869A]">{product.leadTime}</span>
+                <span className="font-medium text-admin-foreground">Lead Time:</span>
+                <span className="ml-2 text-admin-muted">{product.leadTime}</span>
               </div>
             )}
             {product.customizationOptions && product.customizationOptions.length > 0 && (
               <div className="text-sm">
-                <span className="font-medium text-[#E3DFD6]">Customization Options:</span>
+                <span className="font-medium text-admin-foreground">Customization Options:</span>
                 <div className="mt-1 flex flex-wrap gap-1">
                   {product.customizationOptions.map((option: string, index: number) => (
                     <Badge
                       key={index}
                       variant="outline"
-                      className="text-xs text-[#E3DFD6] border-white/10 bg-white/[0.03]"
+                      className="text-xs text-admin-foreground border-white/10 bg-white/[0.03]"
                     >
                       {option}
                     </Badge>

@@ -23,10 +23,10 @@ export function UnsavedChangesDialog({
 }: UnsavedChangesDialogProps) {
   return (
     <AlertDialog open={isOpen}>
-      <AlertDialogContent className="border border-white/[0.08] bg-[#111111] text-[#E3DFD6] backdrop-blur-xl">
+      <AlertDialogContent className="border border-white/[0.08] bg-admin-surface text-admin-foreground backdrop-blur-xl">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-white">Unsaved Changes</AlertDialogTitle>
-          <AlertDialogDescription className="text-[#68869A]">
+          <AlertDialogDescription className="text-admin-muted">
             You have unsaved changes. If you leave now, you will lose your work.
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -34,7 +34,7 @@ export function UnsavedChangesDialog({
           <Button
             variant="ghost"
             onClick={onStay}
-            className="border-white/20 text-[#E3DFD6] hover:bg-white/[0.06] hover:text-white"
+            className="border-white/20 text-admin-foreground hover:bg-white/[0.06] hover:text-white"
           >
             Stay
           </Button>

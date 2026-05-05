@@ -1,5 +1,5 @@
 import type { InsertManufacturingHero } from "@run-remix/shared";
-import { removeUndefined } from "../../utils.js";
+import { removeUndefined } from "../../lib/utilities/core-utils.js";
 
 /**
  * MANUFACTURING HERO RESOURCES
@@ -9,7 +9,6 @@ import { removeUndefined } from "../../utils.js";
  */
 
 import { type Request, type Response, Router } from "express";
-import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { manufacturingRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";

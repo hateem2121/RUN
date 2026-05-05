@@ -158,5 +158,3 @@ export function StandardMediaSelectionDialog({
  * - Replace MediaLibraryEnhancedProvider + MediaSelectionWrapperUnified boilerplate
  * - Use contentType='media-library' for automatic optimal sizing
  */
-
-

@@ -4,16 +4,16 @@ import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-proces
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { appStorageService } from "../../lib/storage/app-service.js";
+import { correctMimeType } from "../../lib/utilities/core-utils.js";
 import UPLOAD_CONFIG from "../../lib/utilities/upload-config.js";
 import { UploadRateLimiter } from "../../middleware/rateLimiter.js";
-import { correctMimeType } from "../../utils.js";
 import { CHUNK_STORAGE_BASE, CHUNK_STORAGE_IS_PUBLIC } from "./chunk-config.js";
 import {
   buildInsertMediaAsset,
   detectMediaType,
   generateOrganizedStoragePath,
   slugifyFilename,
-} from "./utils.js";
+} from "./lib/utilities/core-utils.js";
 
 /**
  * Upload session management for chunk tracking

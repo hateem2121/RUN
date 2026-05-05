@@ -38,7 +38,7 @@ export function ManufacturingManagement() {
               <div className="h-3 w-3 animate-bounce rounded-full bg-blue-500 [animation-delay:-0.15s]"></div>
               <div className="h-3 w-3 animate-bounce rounded-full bg-blue-500"></div>
             </div>
-            <p className="text-xs font-medium text-[#68869A] uppercase tracking-widest">
+            <p className="text-xs font-medium text-admin-muted uppercase tracking-widest">
               Loading assets...
             </p>
           </div>
@@ -51,31 +51,31 @@ export function ManufacturingManagement() {
           <TabsList className="bg-white/5 border border-white/10 p-1 h-12 rounded-xl grid w-full grid-cols-5 lg:max-w-3xl overflow-hidden mb-8">
             <TabsTrigger
               value="hero"
-              className="rounded-lg data-[state=active]:bg-[#D4A853] data-[state=active]:text-black text-[#68869A] transition-all font-medium"
+              className="rounded-lg data-[state=active]:bg-brand-manufacturing data-[state=active]:text-black text-admin-muted transition-all font-medium"
             >
               Hero
             </TabsTrigger>
             <TabsTrigger
               value="processes"
-              className="rounded-lg data-[state=active]:bg-[#D4A853] data-[state=active]:text-black text-[#68869A] transition-all font-medium"
+              className="rounded-lg data-[state=active]:bg-brand-manufacturing data-[state=active]:text-black text-admin-muted transition-all font-medium"
             >
               Processes
             </TabsTrigger>
             <TabsTrigger
               value="capabilities"
-              className="rounded-lg data-[state=active]:bg-[#D4A853] data-[state=active]:text-black text-[#68869A] transition-all font-medium"
+              className="rounded-lg data-[state=active]:bg-brand-manufacturing data-[state=active]:text-black text-admin-muted transition-all font-medium"
             >
               Capabilities
             </TabsTrigger>
             <TabsTrigger
               value="quality"
-              className="rounded-lg data-[state=active]:bg-[#D4A853] data-[state=active]:text-black text-[#68869A] transition-all font-medium"
+              className="rounded-lg data-[state=active]:bg-brand-manufacturing data-[state=active]:text-black text-admin-muted transition-all font-medium"
             >
               Quality
             </TabsTrigger>
             <TabsTrigger
               value="cases"
-              className="rounded-lg data-[state=active]:bg-[#D4A853] data-[state=active]:text-black text-[#68869A] transition-all font-medium"
+              className="rounded-lg data-[state=active]:bg-brand-manufacturing data-[state=active]:text-black text-admin-muted transition-all font-medium"
             >
               Stories
             </TabsTrigger>

@@ -44,7 +44,7 @@ export function HomepageSectionsTab({ sections }: HomepageSectionsTabProps) {
               </div>
               <div>
                 <h2 className="text-xl font-bold text-white tracking-tight">Content Regions</h2>
-                <p className="text-sm text-[#68869A]">
+                <p className="text-sm text-admin-muted">
                   Manage content blocks across the global storefront.
                 </p>
               </div>
@@ -62,11 +62,11 @@ export function HomepageSectionsTab({ sections }: HomepageSectionsTabProps) {
                     <h3 className="text-lg font-bold text-white tracking-tight">
                       {getFriendlyName(section.name)}
                     </h3>
-                    <div className="px-2 py-0.5 rounded bg-black/40 border border-white/10 text-[10px] font-bold tracking-widest uppercase text-[#68869A]">
+                    <div className="px-2 py-0.5 rounded bg-black/40 border border-white/10 text-xxs font-bold tracking-widest uppercase text-admin-muted">
                       {section.name}
                     </div>
                   </div>
-                  <p className="text-sm text-[#68869A] line-clamp-2 pr-8">
+                  <p className="text-sm text-admin-muted line-clamp-2 pr-8">
                     {section.content || "No content defined."}
                   </p>
                 </div>
@@ -81,11 +81,11 @@ export function HomepageSectionsTab({ sections }: HomepageSectionsTabProps) {
                       className="data-[state=checked]:bg-blue-500"
                     />
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+                      <span className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                         Status
                       </span>
                       <span
-                        className={`text-sm font-medium ${section.isActive ? "text-white" : "text-[#68869A]"}`}
+                        className={`text-sm font-medium ${section.isActive ? "text-white" : "text-admin-muted"}`}
                       >
                         {section.isActive ? "Broadcasting" : "Inactive"}
                       </span>
@@ -103,9 +103,9 @@ export function HomepageSectionsTab({ sections }: HomepageSectionsTabProps) {
 
             {sections.length === 0 && (
               <div className="py-16 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-white/[0.01]">
-                <LayoutTemplate className="h-10 w-10 text-[#68869A] mb-4 opacity-50" />
+                <LayoutTemplate className="h-10 w-10 text-admin-muted mb-4 opacity-50" />
                 <p className="text-white font-medium mb-1">No Regions Found</p>
-                <p className="text-sm text-[#68869A] max-w-sm text-center">
+                <p className="text-sm text-admin-muted max-w-sm text-center">
                   Content regions are typically pre-seeded by the system.
                 </p>
               </div>
@@ -116,7 +116,7 @@ export function HomepageSectionsTab({ sections }: HomepageSectionsTabProps) {
         {/* Edit Dialog */}
         {editingSection && (
           <Dialog open={!!editingSection} onOpenChange={(open) => !open && setEditingSection(null)}>
-            <DialogContent className="max-w-2xl bg-[#0A0A0A] border-white/10 text-white">
+            <DialogContent className="max-w-2xl bg-surface-black border-white/10 text-white">
               <DialogHeader>
                 <div className="flex items-center gap-3 mb-2">
                   <div className="size-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
@@ -126,7 +126,7 @@ export function HomepageSectionsTab({ sections }: HomepageSectionsTabProps) {
                     Modify {getFriendlyName(editingSection.name)}
                   </DialogTitle>
                 </div>
-                <DialogDescription className="text-[#68869A]">
+                <DialogDescription className="text-admin-muted">
                   Update the localized content payload for this structural region.
                 </DialogDescription>
               </DialogHeader>
@@ -134,7 +134,7 @@ export function HomepageSectionsTab({ sections }: HomepageSectionsTabProps) {
                 <div className="space-y-2">
                   <Label
                     htmlFor="edit-content"
-                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                    className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                   >
                     Region Payload
                   </Label>
@@ -146,7 +146,7 @@ export function HomepageSectionsTab({ sections }: HomepageSectionsTabProps) {
                       setEditingSection({ ...editingSection, content: e.target.value })
                     }
                   />
-                  <p className="text-[10px] text-[#68869A] mt-2 ml-1">
+                  <p className="text-xxs text-admin-muted mt-2 ml-1">
                     Supports plain text content depending on the region's rendering structure.
                   </p>
                 </div>

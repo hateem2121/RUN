@@ -81,7 +81,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                 <h2 className="text-xl font-bold text-white tracking-tight">
                   Global Hero Infrastructure
                 </h2>
-                <p className="text-sm text-[#68869A]">
+                <p className="text-sm text-admin-muted">
                   Configure high-impact frontpage narrative and primary action triggers
                 </p>
               </div>
@@ -91,7 +91,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowPreview(!showPreview)}
-                className="flex gap-2 text-[10px] font-bold uppercase tracking-widest hover:bg-white/5 h-11 px-4"
+                className="flex gap-2 text-xxs font-bold uppercase tracking-widest hover:bg-white/5 h-11 px-4"
                 title={showPreview ? "Hide Preview" : "Show Preview"}
               >
                 {showPreview ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -100,7 +100,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
               <Button
                 onClick={handleSave}
                 disabled={!isDirty || updateHomepageHero.isPending}
-                className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-8 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none border-0"
+                className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-8 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none border-0"
               >
                 {updateHomepageHero.isPending ? (
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white" />
@@ -118,7 +118,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                 <div className="space-y-2">
                   <Label
                     htmlFor="title"
-                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                    className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                   >
                     Primary Headline
                   </Label>
@@ -129,7 +129,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                     className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-blue-500/50 placeholder:text-white/20"
                     placeholder="e.g., Run Your Future"
                   />
-                  <p className="text-[10px] text-[#68869A] mt-2 px-1">
+                  <p className="text-xxs text-admin-muted mt-2 px-1">
                     Use <code className="text-blue-400">|</code> to split the headline into multiple
                     lines (e.g., Run | Your | Future).
                   </p>
@@ -137,7 +137,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                 <div className="space-y-2">
                   <Label
                     htmlFor="subtitle"
-                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                    className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                   >
                     Secondary Tagline
                   </Label>
@@ -152,14 +152,14 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
               </div>
 
               <div className="space-y-4">
-                <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1 flex items-center gap-2">
+                <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1 flex items-center gap-2">
                   <Zap className="size-3 text-blue-400" /> Action Protocols
                 </Label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-6 rounded-2xl bg-white/[0.02] border border-white/5">
                   <div className="space-y-2">
                     <Label
                       htmlFor="ctaText"
-                      className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest"
+                      className="text-xxs font-bold text-admin-muted uppercase tracking-widest"
                     >
                       Primary Action
                     </Label>
@@ -174,7 +174,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                   <div className="space-y-2">
                     <Label
                       htmlFor="ctaLink"
-                      className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest"
+                      className="text-xxs font-bold text-admin-muted uppercase tracking-widest"
                     >
                       Route URI
                     </Label>
@@ -190,10 +190,11 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
               </div>
 
               <div className="space-y-4">
-                <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1 flex items-center gap-2">
+                <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1 flex items-center gap-2">
                   <ImageIcon className="size-3 text-blue-400" /> Cinematic Background
                 </Label>
-                <div
+                <button
+                  type="button"
                   className={cn(
                     "group relative overflow-hidden rounded-2xl border-2 border-dashed transition-all cursor-pointer h-48",
                     formData.backgroundImageId
@@ -201,14 +202,6 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                       : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10",
                   )}
                   onClick={() => setIsMediaPickerOpen(true)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      setIsMediaPickerOpen(true);
-                    }
-                  }}
-                  role="button"
-                  tabIndex={0}
                   aria-label="Select cinematic background"
                 >
                   {formData.backgroundImageId ? (
@@ -238,28 +231,28 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                         </span>
                       </div>
                       <div className="absolute bottom-3 left-3 flex gap-2">
-                        <span className="rounded-md border border-blue-500/20 bg-blue-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-400 backdrop-blur-md">
+                        <span className="rounded-md border border-blue-500/20 bg-blue-500/10 px-2 py-1 text-xxs font-bold uppercase tracking-wider text-blue-400 backdrop-blur-md">
                           {selectedBackgroundMedia?.type || "Media"}
                         </span>
-                        <span className="rounded-md border border-white/10 bg-black/40 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-md">
+                        <span className="rounded-md border border-white/10 bg-black/40 px-2 py-1 text-xxs font-bold uppercase tracking-wider text-white backdrop-blur-md">
                           ID: {formData.backgroundImageId}
                         </span>
                       </div>
                     </>
                   ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                      <div className="rounded-full bg-white/5 p-4 text-[#68869A] group-hover:scale-110 group-hover:bg-white/10 group-hover:text-white transition-all">
+                      <div className="rounded-full bg-white/5 p-4 text-admin-muted group-hover:scale-110 group-hover:bg-white/10 group-hover:text-white transition-all">
                         <ImageIcon className="h-6 w-6" />
                       </div>
                       <div className="text-center">
                         <p className="text-sm font-bold text-white">Select Cinematic Media</p>
-                        <p className="text-xs text-[#68869A] mt-1">
+                        <p className="text-xs text-admin-muted mt-1">
                           High-resolution video or image
                         </p>
                       </div>
                     </div>
                   )}
-                </div>
+                </button>
               </div>
 
               <div className="flex items-center space-x-3 p-4 rounded-xl border border-white/5 bg-white/[0.02]">
@@ -276,7 +269,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                   >
                     Broadcast Status
                   </Label>
-                  <p className="text-xs text-[#68869A]">
+                  <p className="text-xs text-admin-muted">
                     Activate this module on the global storefront
                   </p>
                 </div>
@@ -285,7 +278,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
 
             {/* Mobile Viewport Simulation */}
             {showPreview && (
-              <div className="relative mx-auto w-full max-w-[340px] h-[680px] rounded-[40px] border-[8px] border-black bg-[#0A0A0A] shadow-2xl overflow-hidden mt-4 lg:mt-0 xl:max-w-[380px] xl:h-[760px] animate-in fade-in zoom-in-95 duration-500 hidden sm:block">
+              <div className="relative mx-auto w-full max-w-[340px] h-[680px] rounded-[40px] border-[8px] border-black bg-surface-black shadow-2xl overflow-hidden mt-4 lg:mt-0 xl:max-w-[380px] xl:h-[760px] animate-in fade-in zoom-in-95 duration-500 hidden sm:block">
                 {/* Dynamic Island Simulation */}
                 <div className="absolute top-0 inset-x-0 h-7 flex justify-center z-50">
                   <div className="w-1/3 h-5 bg-black rounded-b-3xl"></div>

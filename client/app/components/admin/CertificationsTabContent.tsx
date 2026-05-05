@@ -43,7 +43,7 @@ export function CertificationsTabContent({
             <h2 className="text-xl font-bold text-white tracking-tight">
               Sovereign Certifications
             </h2>
-            <p className="text-sm text-[#68869A]">
+            <p className="text-sm text-admin-muted">
               Select validated compliance protocols to showcase on the global ecosystem overview
             </p>
           </div>
@@ -51,7 +51,7 @@ export function CertificationsTabContent({
             {selectedIds.length > 0 && (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                 <Check className="h-3.5 w-3.5 text-emerald-400" />
-                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+                <span className="text-xxs font-bold text-emerald-400 uppercase tracking-widest">
                   {selectedIds.length} Initialised
                 </span>
               </div>
@@ -60,10 +60,10 @@ export function CertificationsTabContent({
               onClick={onSave}
               disabled={!hasUnsavedChanges || isPending}
               className={cn(
-                "font-bold uppercase text-[10px] tracking-widest h-11 px-6 rounded-xl transition-all active:scale-95 shadow-lg",
+                "font-bold uppercase text-xxs tracking-widest h-11 px-6 rounded-xl transition-all active:scale-95 shadow-lg",
                 hasUnsavedChanges
                   ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20"
-                  : "bg-white/5 text-[#68869A] border border-white/10 cursor-not-allowed",
+                  : "bg-white/5 text-admin-muted border border-white/10 cursor-not-allowed",
               )}
             >
               {isPending ? (
@@ -79,15 +79,17 @@ export function CertificationsTabContent({
             {availableCertificates.map((certificate) => {
               const isSelected = selectedIds.includes(certificate.id!);
               return (
-                <div
+                <button
+                  type="button"
                   key={certificate.id}
                   onClick={() => toggleCertificate(certificate.id!)}
                   className={cn(
-                    "group relative cursor-pointer overflow-hidden rounded-2xl border transition-all duration-300",
+                    "group relative cursor-pointer overflow-hidden rounded-2xl border transition-all duration-300 w-full text-left bg-transparent p-0 focus:outline-none focus:ring-2 focus:ring-emerald-500/50",
                     isSelected
-                      ? "bg-emerald-500/10 border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.1)] py-6 px-5"
+                      ? "bg-emerald-500/10 border-emerald-500/40 shadow-emerald-glow py-6 px-5"
                       : "bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10 py-6 px-5",
                   )}
+                  aria-pressed={isSelected}
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div
@@ -95,7 +97,7 @@ export function CertificationsTabContent({
                         "size-12 rounded-xl flex items-center justify-center transition-colors shadow-sm",
                         isSelected
                           ? "bg-emerald-500/20 text-emerald-400"
-                          : "bg-white/5 text-[#68869A] group-hover:text-white",
+                          : "bg-white/5 text-admin-muted group-hover:text-white",
                       )}
                     >
                       <ShieldCheck className="h-6 w-6" />
@@ -111,19 +113,19 @@ export function CertificationsTabContent({
                     <h3
                       className={cn(
                         "font-bold tracking-tight transition-colors",
-                        isSelected ? "text-white" : "text-[#E3DFD6]",
+                        isSelected ? "text-white" : "text-admin-foreground",
                       )}
                     >
                       {certificate.name}
                     </h3>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+                      <span className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                         {certificate.issueDate
                           ? new Date(certificate.issueDate).getFullYear()
                           : "N/A"}
                       </span>
                       <span className="size-1 rounded-full bg-[#68869A]/30" />
-                      <span className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+                      <span className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                         Valid until{" "}
                         {certificate.expiryDate
                           ? new Date(certificate.expiryDate).getFullYear()
@@ -137,17 +139,17 @@ export function CertificationsTabContent({
                       <Award className="size-24 text-emerald-400" />
                     </div>
                   )}
-                </div>
+                </button>
               );
             })}
           </div>
         ) : (
           <div className="py-20 flex flex-col items-center justify-center text-center bg-white/[0.02] border border-dashed border-white/10 rounded-2xl">
             <div className="size-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-              <Award className="h-8 w-8 text-[#68869A]/40" />
+              <Award className="h-8 w-8 text-admin-muted/40" />
             </div>
             <h3 className="text-white font-bold mb-1">No Compliance Records Found</h3>
-            <p className="text-[#68869A] text-sm max-w-[280px]">
+            <p className="text-admin-muted text-sm max-w-[280px]">
               Validation certificates must be initialised in the central Registry first.
             </p>
           </div>

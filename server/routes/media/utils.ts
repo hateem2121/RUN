@@ -20,8 +20,8 @@ import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { appStorageService } from "../../lib/storage/app-service.js";
+import { correctMimeType } from "../../lib/utilities/core-utils.js";
 import UPLOAD_CONFIG from "../../lib/utilities/upload-config.js";
-import { correctMimeType } from "../../utils.js";
 import type { MediaMetadata, ValidationResult } from "./types.js";
 
 const execFilePromise = promisify(execFile);

@@ -9,8 +9,8 @@ import {
 import { db } from "../../db.js";
 import { blogRepository } from "../../lib/db/repositories/index.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { removeUndefined, validateIdParam } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
-import { removeUndefined, validateIdParam } from "../../utils.js";
 
 const router = Router();
 

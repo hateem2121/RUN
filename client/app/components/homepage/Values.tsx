@@ -98,7 +98,6 @@ export const Values: React.FC = () => {
   return (
     <section
       className="w-full bg-background-alt px-4 py-32 md:px-8"
-      role="region"
       aria-labelledby="values-heading"
     >
       <div className="mx-auto max-w-container-2xl">

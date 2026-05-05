@@ -55,7 +55,7 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
 
           <div className="space-y-2">
             <p className="font-medium text-red-400 text-sm">Recovery Options:</p>
-            <ul className="space-y-1 text-[#68869A] text-sm">
+            <ul className="space-y-1 text-admin-muted text-sm">
               <li>• Try refreshing the page</li>
               <li>• Clear browser cache</li>
               <li>• Check internet connection</li>
@@ -100,7 +100,7 @@ function LoadingFallback() {
     <div className="center-flex p-8">
       <div className="text-center">
         <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-blue-500 border-b-2"></div>
-        <p className="text-[#68869A] text-sm">Loading media library...</p>
+        <p className="text-admin-muted text-sm">Loading media library...</p>
       </div>
     </div>
   );
@@ -227,7 +227,7 @@ export function MediaLibraryContainerEnhanced({
         <div className="flex items-center justify-between p-4">
           <div>
             <h2 className="text-3xl font-bold tracking-tight text-white">Media Library</h2>
-            <p className="text-sm text-[#68869A]">
+            <p className="text-sm text-admin-muted">
               Manage your brand assets and sustainable storytelling media.
             </p>
           </div>
@@ -237,7 +237,7 @@ export function MediaLibraryContainerEnhanced({
               size="sm"
               onClick={handleDatabaseCleanup}
               disabled={isCleaningUp}
-              className="hidden sm:flex border border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white transition-colors"
+              className="hidden sm:flex border border-white/10 bg-white/5 text-admin-foreground hover:bg-white/10 hover:text-white transition-colors"
             >
               <RefreshCw className={cn("mr-2 h-4 w-4", isCleaningUp && "animate-spin")} />
               {isCleaningUp ? "Cleaning..." : "Sync & Repair"}
@@ -333,15 +333,11 @@ function MediaLibraryMainContent({
           </div>
 
           {/* Mobile/Tablet modal overlay with proper accessibility */}
-          <div
-            className="fixed inset-0 z-modal-nested cursor-default bg-black/50 lg:hidden"
+          <button
+            type="button"
+            className="fixed inset-0 z-modal-nested bg-black/50 lg:hidden border-none outline-none"
             onClick={() => updateState("showFiltersPanel", false)}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") {
-                updateState("showFiltersPanel", false);
-              }
-            }}
-            role="presentation"
+            aria-label="Close filters panel"
           >
             <div
               role="dialog"
@@ -367,7 +363,7 @@ function MediaLibraryMainContent({
                 </Suspense>
               </ErrorBoundary>
             </div>
-          </div>
+          </button>
         </>
       )}
 

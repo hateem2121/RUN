@@ -428,9 +428,9 @@ export class AuthService {
     const user = await userRepository.getUserByEmail(email);
     if (!user) return;
 
-    const attempts = Number.parseInt(user.failedLoginAttempts || "0", 10) + 1;
+    const attempts = (user.failedLoginAttempts || 0) + 1;
     const updates: Partial<User> = {
-      failedLoginAttempts: attempts.toString(),
+      failedLoginAttempts: attempts,
       updatedAt: new Date(),
     };
 
@@ -448,7 +448,7 @@ export class AuthService {
     if (!user) return;
 
     await userRepository.updateUser(user.id, {
-      failedLoginAttempts: "0",
+      failedLoginAttempts: 0,
       lockoutUntil: null,
       updatedAt: new Date(),
     });
@@ -456,7 +456,7 @@ export class AuthService {
 
   public async getFailedAttempts(email: string): Promise<number> {
     const user = await userRepository.getUserByEmail(email);
-    return user ? Number.parseInt(user.failedLoginAttempts || "0", 10) : 0;
+    return user ? user.failedLoginAttempts : 0;
   }
 
   /**

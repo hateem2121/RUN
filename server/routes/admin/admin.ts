@@ -9,11 +9,11 @@ import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
 import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { normalizeSlug } from "../../lib/utilities/slug-utils.js";
+import { getAuditContext } from "../../middleware/request-context.js";
 import { adminService } from "../../services/admin/index.js";
 import { authService } from "../../services/auth-service.js";
-import { getAuditContext } from "../../utils/request-context.js";
-import { validateIdParam } from "../../utils.js";
 import blogRouter from "./blog.routes.js";
 
 const router = Router();

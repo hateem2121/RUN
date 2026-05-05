@@ -15,7 +15,7 @@ export const FabricStats: React.FC<FabricStatsProps> = ({ fabrics }) => {
         <div className="flex items-center gap-2">
           <Shirt className="h-5 w-5 text-blue-400" />
           <div>
-            <p className="text-[#68869A] text-sm">Total Fabrics</p>
+            <p className="text-admin-muted text-sm">Total Fabrics</p>
             <p className="text-2xl font-bold text-white">{fabrics.length}</p>
           </div>
         </div>
@@ -24,7 +24,7 @@ export const FabricStats: React.FC<FabricStatsProps> = ({ fabrics }) => {
         <div className="flex items-center gap-2">
           <Activity className="h-5 w-5 text-green-400" />
           <div>
-            <p className="text-[#68869A] text-sm">Active Fabrics</p>
+            <p className="text-admin-muted text-sm">Active Fabrics</p>
             <p className="text-2xl font-bold text-white">
               {fabrics.filter((f) => f.isActive).length}
             </p>
@@ -35,7 +35,7 @@ export const FabricStats: React.FC<FabricStatsProps> = ({ fabrics }) => {
         <div className="flex items-center gap-2">
           <Award className="h-5 w-5 text-purple-400" />
           <div>
-            <p className="text-[#68869A] text-sm">Certified</p>
+            <p className="text-admin-muted text-sm">Certified</p>
             <p className="text-2xl font-bold text-white">
               {fabrics.filter((f) => f.certifications && f.certifications.length > 0).length}
             </p>
@@ -46,7 +46,7 @@ export const FabricStats: React.FC<FabricStatsProps> = ({ fabrics }) => {
         <div className="flex items-center gap-2">
           <Globe className="h-5 w-5 text-emerald-400" />
           <div>
-            <p className="text-[#68869A] text-sm">Sustainable</p>
+            <p className="text-admin-muted text-sm">Sustainable</p>
             <p className="text-2xl font-bold text-white">
               {
                 fabrics.filter((f) => {

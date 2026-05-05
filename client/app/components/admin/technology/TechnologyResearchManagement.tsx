@@ -304,7 +304,7 @@ export function TechnologyResearchManagement({
               <h2 className="text-3xl font-black tracking-tight text-white uppercase sm:text-4xl">
                 Research <span className="text-[#00D4FF]">&</span> Development
               </h2>
-              <p className="text-sm font-medium tracking-wide text-[#E3DFD6]/40">
+              <p className="text-sm font-medium tracking-wide text-admin-foreground/40">
                 Manage core scientific initiatives and material innovation streams.
               </p>
             </div>
@@ -313,7 +313,7 @@ export function TechnologyResearchManagement({
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <div className="relative group">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#E3DFD6]/20 transition-colors group-focus-within:text-[#00D4FF]" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-foreground/20 transition-colors group-focus-within:text-[#00D4FF]" />
             <Input
               placeholder="Filter by title or focus area..."
               value={searchQuery}
@@ -344,7 +344,7 @@ export function TechnologyResearchManagement({
           <h3 className="text-sm font-black tracking-[0.2em] text-[#00D4FF] uppercase">
             Active Research Streams
           </h3>
-          <span className="text-[10px] font-mono font-bold text-[#E3DFD6]/40 uppercase tracking-widest">
+          <span className="text-xxs font-mono font-bold text-admin-foreground/40 uppercase tracking-widest">
             {filteredResearch.length} INITIATIVES IDENTIFIED
           </span>
         </div>
@@ -353,17 +353,17 @@ export function TechnologyResearchManagement({
           <div className="flex h-64 items-center justify-center rounded-2xl border border-white/[0.05] bg-white/[0.02] backdrop-blur-xl">
             <div className="flex flex-col items-center gap-4">
               <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#00D4FF] border-t-transparent" />
-              <p className="text-[10px] font-black uppercase tracking-widest text-[#00D4FF]">
+              <p className="text-xxs font-black uppercase tracking-widest text-[#00D4FF]">
                 Syncing Ecosystem Data...
               </p>
             </div>
           </div>
         ) : filteredResearch.length === 0 ? (
           <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.1] bg-white/[0.02] p-12 text-center backdrop-blur-xl">
-            <div className="mb-4 rounded-full bg-white/[0.05] p-4 text-[#E3DFD6]/20">
+            <div className="mb-4 rounded-full bg-white/[0.05] p-4 text-admin-foreground/20">
               <FlaskConical className="h-12 w-12" />
             </div>
-            <p className="max-w-xs text-sm font-medium text-[#E3DFD6]/40">
+            <p className="max-w-xs text-sm font-medium text-admin-foreground/40">
               No research initiatives matching your search filters. Adjust parameters or initialize
               a new asset.
             </p>
@@ -397,7 +397,7 @@ export function TechnologyResearchManagement({
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 font-display pt-8 border-t border-white/[0.08]">
         <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:border-[#00D4FF]/30 backdrop-blur-xl">
           <div className="absolute left-0 top-0 h-full w-1.5 bg-[#00D4FF]/20 group-hover:bg-[#00D4FF] transition-all" />
-          <p className="text-[10px] font-black uppercase tracking-widest text-[#E3DFD6]/40 mb-1">
+          <p className="text-xxs font-black uppercase tracking-widest text-admin-foreground/40 mb-1">
             R&D Budget Allocation
           </p>
           <div className="text-3xl font-black text-white">64.2%</div>
@@ -408,22 +408,22 @@ export function TechnologyResearchManagement({
 
         <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:border-[#00D4FF]/30 backdrop-blur-xl">
           <div className="absolute left-0 top-0 h-full w-1.5 bg-[#00D4FF]/20 group-hover:bg-[#00D4FF] transition-all" />
-          <p className="text-[10px] font-black uppercase tracking-widest text-[#E3DFD6]/40 mb-1">
+          <p className="text-xxs font-black uppercase tracking-widest text-admin-foreground/40 mb-1">
             Active Researchers
           </p>
           <div className="text-3xl font-black text-white">24</div>
-          <p className="mt-2 text-[10px] font-black uppercase tracking-widest text-[#00D4FF]">
+          <p className="mt-2 text-xxs font-black uppercase tracking-widest text-[#00D4FF]">
             +3 since last cycle
           </p>
         </div>
 
         <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:border-[#00D4FF]/30 backdrop-blur-xl">
           <div className="absolute left-0 top-0 h-full w-1.5 bg-[#00D4FF]/20 group-hover:bg-[#00D4FF] transition-all" />
-          <p className="text-[10px] font-black uppercase tracking-widest text-[#E3DFD6]/40 mb-1">
+          <p className="text-xxs font-black uppercase tracking-widest text-admin-foreground/40 mb-1">
             Pending IP/Patents
           </p>
           <div className="text-3xl font-black text-white">09</div>
-          <p className="mt-2 text-[10px] font-black uppercase tracking-widest text-emerald-400">
+          <p className="mt-2 text-xxs font-black uppercase tracking-widest text-emerald-400">
             2 Approved this month
           </p>
         </div>
@@ -434,7 +434,7 @@ export function TechnologyResearchManagement({
         <DialogContent
           contentType="form"
           preferredSize="4xl"
-          className="overflow-hidden bg-[#0A0A0A] border-[#00D4FF]/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+          className="overflow-hidden bg-surface-black border-[#00D4FF]/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
         >
           <DialogHeader className="border-b border-white/[0.08] bg-white/[0.02] px-8 py-6">
             <div className="flex items-center gap-3">
@@ -446,7 +446,7 @@ export function TechnologyResearchManagement({
                   {editingResearch ? "Reconfigure" : "Initialize"}{" "}
                   <span className="text-[#00D4FF]">Research</span>
                 </DialogTitle>
-                <DialogDescription className="text-[10px] uppercase font-bold tracking-widest text-[#E3DFD6]/40">
+                <DialogDescription className="text-xxs uppercase font-bold tracking-widest text-admin-foreground/40">
                   Document and track high-impact scientific initiatives.
                 </DialogDescription>
               </div>
@@ -461,14 +461,14 @@ export function TechnologyResearchManagement({
               {/* Primary Configuration */}
               <div className="space-y-6">
                 <div className="flex items-center gap-2 border-l-2 border-[#00D4FF] pl-4">
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#00D4FF]">
+                  <h4 className="text-xxs font-black uppercase tracking-[0.2em] text-[#00D4FF]">
                     Primary Stream
                   </h4>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   <div className="space-y-2 col-span-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                    <Label className="text-xxs font-bold uppercase tracking-widest text-admin-foreground/60">
                       Initiative Title *
                     </Label>
                     <Input
@@ -480,7 +480,7 @@ export function TechnologyResearchManagement({
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                    <Label className="text-xxs font-bold uppercase tracking-widest text-admin-foreground/60">
                       Research Focus
                     </Label>
                     <Input
@@ -493,7 +493,7 @@ export function TechnologyResearchManagement({
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                    <Label className="text-xxs font-bold uppercase tracking-widest text-admin-foreground/60">
                       Current Status
                     </Label>
                     <Select
@@ -503,7 +503,7 @@ export function TechnologyResearchManagement({
                       <SelectTrigger className="border-white/[0.08] bg-white/[0.03] text-sm">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-[#0A0A0A] border-white/[0.1]">
+                      <SelectContent className="bg-surface-black border-white/[0.1]">
                         <SelectItem value="Planning">Planned / Theoretical</SelectItem>
                         <SelectItem value="In Progress">Active Benchwork</SelectItem>
                         <SelectItem value="Testing" className="text-amber-400">
@@ -519,7 +519,7 @@ export function TechnologyResearchManagement({
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold uppercase tracking-widest text-[#E3DFD6]/60">
+                  <Label className="text-xxs font-bold uppercase tracking-widest text-admin-foreground/60">
                     Research Abstract
                   </Label>
                   <Textarea
@@ -538,7 +538,7 @@ export function TechnologyResearchManagement({
                 {/* Objectives Section */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-2 border-l-2 border-[#00D4FF] pl-4">
-                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#00D4FF]">
+                    <h4 className="text-xxs font-black uppercase tracking-[0.2em] text-[#00D4FF]">
                       Key Objectives
                     </h4>
                   </div>
@@ -570,7 +570,7 @@ export function TechnologyResearchManagement({
                           key={i}
                           className="flex items-center justify-between rounded-lg bg-white/[0.02] border border-white/[0.05] px-4 py-2"
                         >
-                          <span className="text-xs text-[#E3DFD6]/60 line-clamp-1">{obj}</span>
+                          <span className="text-xs text-admin-foreground/60 line-clamp-1">{obj}</span>
                           <Button
                             type="button"
                             variant="ghost"
@@ -594,7 +594,7 @@ export function TechnologyResearchManagement({
                 {/* Outcomes Section */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-2 border-l-2 border-emerald-500 pl-4">
-                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500">
+                    <h4 className="text-xxs font-black uppercase tracking-[0.2em] text-emerald-500">
                       Targeted Outcomes
                     </h4>
                   </div>
@@ -626,7 +626,7 @@ export function TechnologyResearchManagement({
                           key={i}
                           className="flex items-center justify-between rounded-lg bg-white/[0.02] border border-white/[0.05] px-4 py-2"
                         >
-                          <span className="text-xs text-[#E3DFD6]/60 line-clamp-1">{out}</span>
+                          <span className="text-xs text-admin-foreground/60 line-clamp-1">{out}</span>
                           <Button
                             type="button"
                             variant="ghost"
@@ -652,13 +652,13 @@ export function TechnologyResearchManagement({
               <div className="flex items-center justify-between rounded-xl border border-white/[0.05] bg-white/[0.02] p-6">
                 <div className="flex items-center gap-4">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/[0.05]">
-                    <Layout className="h-5 w-5 text-[#E3DFD6]/40" />
+                    <Layout className="h-5 w-5 text-admin-foreground/40" />
                   </div>
                   <div>
                     <h5 className="text-sm font-bold text-white uppercase tracking-wider">
                       Ecosystem Visibility
                     </h5>
-                    <p className="text-[10px] font-medium text-[#E3DFD6]/40">
+                    <p className="text-xxs font-medium text-admin-foreground/40">
                       Toggle public indexing for this research stream.
                     </p>
                   </div>
@@ -666,8 +666,8 @@ export function TechnologyResearchManagement({
                 <div className="flex items-center gap-4">
                   <span
                     className={cn(
-                      "text-[10px] font-black tracking-widest uppercase transition-colors",
-                      researchForm.isActive ? "text-[#00D4FF]" : "text-[#E3DFD6]/20",
+                      "text-xxs font-black tracking-widest uppercase transition-colors",
+                      researchForm.isActive ? "text-[#00D4FF]" : "text-admin-foreground/20",
                     )}
                   >
                     {researchForm.isActive ? "Indexed" : "Hidden"}
@@ -688,7 +688,7 @@ export function TechnologyResearchManagement({
                 type="button"
                 variant="ghost"
                 onClick={() => setShowResearchDialog(false)}
-                className="text-[#E3DFD6]/60 hover:text-white"
+                className="text-admin-foreground/60 hover:text-white"
               >
                 DISCARD CHANGES
               </Button>

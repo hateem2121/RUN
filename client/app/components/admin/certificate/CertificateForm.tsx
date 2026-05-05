@@ -93,10 +93,10 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 alt="Certificate logo preview"
                 className="h-16 w-16 rounded border object-contain"
               />
-              <span className="text-[#68869A] text-sm">Image ID: {formData.imageId}</span>
+              <span className="text-admin-muted text-sm">Image ID: {formData.imageId}</span>
             </div>
           )}
-          <div className="text-[#68869A] text-sm">Or use URL instead:</div>
+          <div className="text-admin-muted text-sm">Or use URL instead:</div>
           <Input
             type="url"
             value={formData.imageUrl}
@@ -125,7 +125,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
           }
           placeholder="https://example.com/certificate.pdf"
         />
-        <p className="mt-1 text-[#68869A] text-sm">Link to the certificate document (PDF, etc.)</p>
+        <p className="mt-1 text-admin-muted text-sm">Link to the certificate document (PDF, etc.)</p>
       </div>
 
       <div className="flex items-center space-x-2">

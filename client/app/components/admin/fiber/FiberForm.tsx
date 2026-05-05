@@ -50,7 +50,7 @@ const SustainabilityRatingInput = ({
             className={`rounded p-1 transition-colors ${
               (value || 0) >= score
                 ? "text-amber-400 hover:text-amber-300"
-                : "text-[#68869A]/50 hover:text-[#68869A]/70"
+                : "text-admin-muted/50 hover:text-admin-muted/70"
             }`}
           >
             <Star className="h-6 w-6 fill-current" />
@@ -64,7 +64,7 @@ const SustainabilityRatingInput = ({
           variant="ghost"
           size="sm"
           onClick={() => onChange(undefined)}
-          className="text-[#68869A]/70 hover:text-[#68869A] h-6 w-6 p-0"
+          className="text-admin-muted/70 hover:text-admin-muted h-6 w-6 p-0"
         >
           <X className="h-3 w-3" />
         </Button>

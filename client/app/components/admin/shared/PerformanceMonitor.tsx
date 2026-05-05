@@ -65,7 +65,7 @@ export function PerformanceMonitor() {
   }
 
   return (
-    <Card className="fixed left-4 bottom-4 z-modal w-80 shadow-lg bg-[#111111] border-white/10">
+    <Card className="fixed left-4 bottom-4 z-modal w-80 shadow-lg bg-admin-surface border-white/10">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm">Performance Monitor</CardTitle>

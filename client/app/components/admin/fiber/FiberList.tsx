@@ -65,7 +65,7 @@ export const FiberList: React.FC<FiberListProps> = ({
 
   if (fibers.length === 0) {
     return (
-      <div className="py-8 text-center text-[#68869A]">
+      <div className="py-8 text-center text-admin-muted">
         <div className="mb-2 text-2xl">🧬</div>
         <p>
           {searchTerm || filterType !== "all" || filterStatus !== "all"
@@ -154,7 +154,7 @@ export const FiberList: React.FC<FiberListProps> = ({
                     Active
                   </Badge>
                 ) : (
-                  <Badge variant="secondary" className="bg-white/[0.05] text-[#68869A] text-xs">
+                  <Badge variant="secondary" className="bg-white/[0.05] text-admin-muted text-xs">
                     Inactive
                   </Badge>
                 )}
@@ -169,7 +169,7 @@ export const FiberList: React.FC<FiberListProps> = ({
                 )}
               </div>
               {fiber.properties && getPropertiesArray(fiber.properties).length > 0 && (
-                <div className="text-xs text-[#68869A]">
+                <div className="text-xs text-admin-muted">
                   {getPropertiesArray(fiber.properties).length} propert
                   {getPropertiesArray(fiber.properties).length === 1 ? "y" : "ies"}
                 </div>
@@ -212,7 +212,7 @@ export const FiberList: React.FC<FiberListProps> = ({
                   <h4 className="mb-2 text-lg font-medium text-white">{fiber.name}</h4>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-[#68869A]">Type:</span>
+                      <span className="text-admin-muted">Type:</span>
                       <Badge
                         variant="outline"
                         className={`ml-2 text-xs ${getFiberTypeColor(fiber.type)}`}
@@ -221,7 +221,7 @@ export const FiberList: React.FC<FiberListProps> = ({
                       </Badge>
                     </div>
                     <div>
-                      <span className="text-[#68869A]">Status:</span>
+                      <span className="text-admin-muted">Status:</span>
                       {fiber.isActive ? (
                         <Badge className="ml-2 border border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-400">
                           Active
@@ -229,7 +229,7 @@ export const FiberList: React.FC<FiberListProps> = ({
                       ) : (
                         <Badge
                           variant="secondary"
-                          className="bg-white/[0.05] text-[#68869A] ml-2 text-xs"
+                          className="bg-white/[0.05] text-admin-muted ml-2 text-xs"
                         >
                           Inactive
                         </Badge>
@@ -237,19 +237,19 @@ export const FiberList: React.FC<FiberListProps> = ({
                     </div>
                     {fiber.createdAt && (
                       <div>
-                        <span className="text-[#68869A]">Created:</span>
+                        <span className="text-admin-muted">Created:</span>
                         <span className="ml-2">
                           {new Date(fiber.createdAt).toLocaleDateString()}
                         </span>
                       </div>
                     )}
                     <div>
-                      <span className="text-[#68869A]">Properties:</span>
+                      <span className="text-admin-muted">Properties:</span>
                       <span className="ml-2">{getPropertiesArray(fiber.properties).length}</span>
                     </div>
                     {fiber.sustainabilityScore && (
                       <div>
-                        <span className="text-[#68869A]">Sustainability:</span>
+                        <span className="text-admin-muted">Sustainability:</span>
                         <Badge
                           variant="outline"
                           className={`ml-2 flex w-fit items-center gap-1 text-xs ${getSustainabilityColor(fiber.sustainabilityScore)}`}
@@ -266,12 +266,12 @@ export const FiberList: React.FC<FiberListProps> = ({
             </div>
             {fiber.description && (
               <div className="mt-3 border-t pt-3">
-                <p className="text-sm text-[#68869A]">{fiber.description}</p>
+                <p className="text-sm text-admin-muted">{fiber.description}</p>
               </div>
             )}
             {fiber.properties && getPropertiesArray(fiber.properties).length > 0 && (
               <div className="mt-3 border-t pt-3">
-                <p className="mb-2 text-xs text-[#68869A]">Properties:</p>
+                <p className="mb-2 text-xs text-admin-muted">Properties:</p>
                 <div className="flex flex-wrap gap-1">
                   {getPropertiesArray(fiber.properties).map((prop: string) => (
                     <Badge key={prop} variant="secondary" className="text-xs">
@@ -324,7 +324,7 @@ export const FiberList: React.FC<FiberListProps> = ({
                       Active
                     </Badge>
                   ) : (
-                    <Badge variant="secondary" className="bg-white/[0.05] text-[#68869A] text-xs">
+                    <Badge variant="secondary" className="bg-white/[0.05] text-admin-muted text-xs">
                       Inactive
                     </Badge>
                   )}
@@ -342,10 +342,10 @@ export const FiberList: React.FC<FiberListProps> = ({
             </div>
             {renderFiberActions(fiber)}
           </div>
-          {fiber.description && <p className="mb-2 text-sm text-[#68869A]">{fiber.description}</p>}
+          {fiber.description && <p className="mb-2 text-sm text-admin-muted">{fiber.description}</p>}
           {fiber.properties && getPropertiesArray(fiber.properties).length > 0 && (
             <div className="mb-2">
-              <p className="mb-1 text-xs text-[#68869A]">Properties:</p>
+              <p className="mb-1 text-xs text-admin-muted">Properties:</p>
               <div className="flex flex-wrap gap-1">
                 {getPropertiesArray(fiber.properties)
                   .slice(0, 3)

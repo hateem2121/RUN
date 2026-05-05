@@ -77,6 +77,7 @@ export function IconPicker({
 
               return (
                 <button
+                  type="button"
                   key={icon.name}
                   onClick={() => setSelectedIcon(icon.name)}
                   className={`flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-all hover:scale-105 ${

@@ -171,7 +171,7 @@ export const ProductCard = memo(function ProductCard({
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <Package className="h-8 w-8 text-[#68869A]/70" />
+                  <Package className="h-8 w-8 text-admin-muted/70" />
                 )}
                 {/* 3D Model Toggle for List View */}
                 {model3D && (
@@ -200,11 +200,11 @@ export const ProductCard = memo(function ProductCard({
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="truncate font-bold text-white tracking-tight">{product.name}</h3>
-                    <p className="text-[#68869A] text-sm tracking-wider">SKU: {product.sku}</p>
+                    <p className="text-admin-muted text-sm tracking-wider">SKU: {product.sku}</p>
                     {category && (
                       <Badge
                         variant="outline"
-                        className="mt-1 text-[10px] bg-white/5 border-white/10 text-[#E3DFD6] tracking-wider uppercase"
+                        className="mt-1 text-xxs bg-white/5 border-white/10 text-admin-foreground tracking-wider uppercase"
                       >
                         {category.name}
                       </Badge>
@@ -216,8 +216,8 @@ export const ProductCard = memo(function ProductCard({
                       variant="outline"
                       className={
                         product.isActive
-                          ? "bg-green-500/10 border-green-500/30 text-green-400 font-bold uppercase tracking-wider text-[10px]"
-                          : "bg-white/5 border-white/10 text-[#68869A] font-bold uppercase tracking-wider text-[10px]"
+                          ? "bg-green-500/10 border-green-500/30 text-green-400 font-bold uppercase tracking-wider text-xxs"
+                          : "bg-white/5 border-white/10 text-admin-muted font-bold uppercase tracking-wider text-xxs"
                       }
                     >
                       {product.isActive ? "Active" : "Inactive"}
@@ -229,14 +229,14 @@ export const ProductCard = memo(function ProductCard({
                           data-testid={`product-actions-menu-${product.id}`}
                           variant="ghost"
                           size="sm"
-                          className="h-8 w-8 p-0 text-[#68869A] hover:bg-white/10 hover:text-white rounded-lg"
+                          className="h-8 w-8 p-0 text-admin-muted hover:bg-white/10 hover:text-white rounded-lg"
                         >
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent
                         align="end"
-                        className="bg-[#0A0A0A] border-white/10 text-white rounded-xl"
+                        className="bg-surface-black border-white/10 text-white rounded-xl"
                       >
                         <DropdownMenuItem
                           data-testid={`view-product-${product.id}`}
@@ -246,7 +246,7 @@ export const ProductCard = memo(function ProductCard({
                           }}
                           className="focus:bg-white/10 cursor-pointer rounded-lg"
                         >
-                          <Eye className="mr-2 h-4 w-4 text-[#68869A]" />
+                          <Eye className="mr-2 h-4 w-4 text-admin-muted" />
                           View Details
                         </DropdownMenuItem>
                         <DropdownMenuItem
@@ -257,7 +257,7 @@ export const ProductCard = memo(function ProductCard({
                           }}
                           className="focus:bg-white/10 cursor-pointer rounded-lg"
                         >
-                          <Edit className="mr-2 h-4 w-4 text-[#68869A]" />
+                          <Edit className="mr-2 h-4 w-4 text-admin-muted" />
                           Edit Product
                         </DropdownMenuItem>
                         <DropdownMenuSeparator className="bg-white/10" />
@@ -342,7 +342,7 @@ export const ProductCard = memo(function ProductCard({
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <Package className="h-12 w-12 text-[#68869A]/30" />
+              <Package className="h-12 w-12 text-admin-muted/30" />
             </div>
           )}
 
@@ -378,10 +378,10 @@ export const ProductCard = memo(function ProductCard({
           <div className="absolute top-2 left-2">
             <Badge
               variant="outline"
-              className={`text-[10px] font-bold uppercase tracking-wider ${
+              className={`text-xxs font-bold uppercase tracking-wider ${
                 product.isActive
                   ? "bg-green-500/20 border-green-500/30 text-green-400"
-                  : "bg-black/60 border-white/10 text-[#68869A]"
+                  : "bg-black/60 border-white/10 text-admin-muted"
               }`}
             >
               {product.isActive ? "Active" : "Inactive"}
@@ -437,7 +437,7 @@ export const ProductCard = memo(function ProductCard({
               <h3 className="truncate font-bold text-white text-base tracking-tight">
                 {product.name}
               </h3>
-              <p className="text-[#68869A] text-xs font-mono mt-1 opacity-70">SKU: {product.sku}</p>
+              <p className="text-admin-muted text-xs font-mono mt-1 opacity-70">SKU: {product.sku}</p>
             </div>
           </div>
         </div>
@@ -449,16 +449,16 @@ export const ProductCard = memo(function ProductCard({
               {category && (
                 <Badge
                   variant="outline"
-                  className="text-[10px] bg-white/5 border-white/10 text-[#E3DFD6] tracking-wider uppercase"
+                  className="text-xxs bg-white/5 border-white/10 text-admin-foreground tracking-wider uppercase"
                 >
-                  <Tag className="mr-1.5 h-3 w-3 text-[#68869A]" />
+                  <Tag className="mr-1.5 h-3 w-3 text-admin-muted" />
                   {category.name}
                 </Badge>
               )}
               {fabric && (
                 <Badge
                   variant="outline"
-                  className="text-[10px] bg-blue-500/10 border-blue-500/20 text-blue-400 tracking-wider uppercase"
+                  className="text-xxs bg-blue-500/10 border-blue-500/20 text-blue-400 tracking-wider uppercase"
                 >
                   <Layers className="mr-1.5 h-3 w-3 text-blue-500" />
                   {fabric.name}
@@ -468,7 +468,7 @@ export const ProductCard = memo(function ProductCard({
 
             {/* Description */}
             {product.description && (
-              <p className="line-clamp-2 text-[#68869A] text-xs leading-relaxed mt-2">
+              <p className="line-clamp-2 text-admin-muted text-xs leading-relaxed mt-2">
                 {product.description}
               </p>
             )}

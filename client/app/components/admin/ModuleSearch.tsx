@@ -44,18 +44,18 @@ export function ModuleSearch({ links }: ModuleSearchProps) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 rounded-md border border-white/[0.10] bg-white/[0.04] px-3 py-1.5 text-muted-foreground text-sm hover:border-[#D4A853] hover:text-white transition-colors"
+        className="flex items-center gap-2 rounded-md border border-white/[0.10] bg-white/[0.04] px-3 py-1.5 text-muted-foreground text-sm hover:border-brand-manufacturing hover:text-white transition-colors"
       >
         <Search className="h-4 w-4" />
         <span className="hidden lg:inline-flex">Search modules...</span>
         <span className="inline-flex lg:hidden">Search...</span>
-        <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border border-white/[0.10] bg-black/40 px-1.5 font-medium font-mono text-[10px] opacity-100 sm:flex">
+        <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border border-white/[0.10] bg-black/40 px-1.5 font-medium font-mono text-xxs opacity-100 sm:flex">
           <span className="text-xs">⌘</span>K
         </kbd>
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="overflow-hidden p-0 shadow-2xl sm:max-w-[640px] border border-white/[0.08] bg-[#0A0A0A]/80 backdrop-blur-xl [&>button]:text-white [&>button]:hover:bg-white/10">
+        <DialogContent className="overflow-hidden p-0 shadow-2xl sm:max-w-[640px] border border-white/[0.08] bg-surface-black/80 backdrop-blur-xl [&>button]:text-white [&>button]:hover:bg-white/10">
           <DialogTitle className="sr-only">Command Palette</DialogTitle>
           <Command className="bg-transparent text-white [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
             <CommandInput
@@ -83,7 +83,7 @@ export function ModuleSearch({ links }: ModuleSearchProps) {
                   onSelect={() => onSelect("/admin/media")}
                   className="data-[selected=true]:bg-white/[0.06] data-[selected=true]:text-white cursor-pointer rounded-md my-1"
                 >
-                  <div className="mr-3 flex h-6 w-6 items-center justify-center rounded-sm bg-[#D4A853]/20 text-[#D4A853]">
+                  <div className="mr-3 flex h-6 w-6 items-center justify-center rounded-sm bg-brand-manufacturing/20 text-brand-manufacturing">
                     <Upload className="h-4 w-4" />
                   </div>
                   <span>Upload Media</span>

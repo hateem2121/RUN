@@ -71,7 +71,7 @@ export function FabricPortfolioTabContent({
             <h2 className="text-xl font-bold text-white tracking-tight">
               Sovereign Fabric Portfolio
             </h2>
-            <p className="text-sm text-[#68869A]">
+            <p className="text-sm text-admin-muted">
               Curate the premium material library to showcase sustainable textile innovation
             </p>
           </div>
@@ -79,10 +79,10 @@ export function FabricPortfolioTabContent({
             onClick={onSave}
             disabled={!hasUnsavedChanges || isPending}
             className={cn(
-              "font-bold uppercase text-[10px] tracking-widest h-11 px-6 rounded-xl transition-all active:scale-95 shadow-lg",
+              "font-bold uppercase text-xxs tracking-widest h-11 px-6 rounded-xl transition-all active:scale-95 shadow-lg",
               hasUnsavedChanges
                 ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20"
-                : "bg-white/5 text-[#68869A] border border-white/10 cursor-not-allowed",
+                : "bg-white/5 text-admin-muted border border-white/10 cursor-not-allowed",
             )}
           >
             {isPending ? (
@@ -100,7 +100,7 @@ export function FabricPortfolioTabContent({
               <div className="space-y-2">
                 <Label
                   htmlFor="fabricPortfolioTitle"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Section Headline
                 </Label>
@@ -115,7 +115,7 @@ export function FabricPortfolioTabContent({
               <div className="space-y-2">
                 <Label
                   htmlFor="fabricPortfolioDescription"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Narrative Context
                 </Label>
@@ -135,11 +135,11 @@ export function FabricPortfolioTabContent({
                 <div className="size-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                   <Shield className="size-4" />
                 </div>
-                <span className="text-[10px] font-bold text-white uppercase tracking-widest">
+                <span className="text-xxs font-bold text-white uppercase tracking-widest">
                   Global Selection Sync
                 </span>
               </div>
-              <p className="text-xs text-[#68869A] leading-relaxed">
+              <p className="text-xs text-admin-muted leading-relaxed">
                 Changes made here influence the public fabric gallery. Ensure all selected materials
                 meet the current sustainability compliance protocols.
               </p>
@@ -149,17 +149,17 @@ export function FabricPortfolioTabContent({
           <div className="lg:col-span-7 flex flex-col h-full">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                   Material Index
                 </Label>
                 <div className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10">
-                  <span className="text-[10px] font-bold text-white">
+                  <span className="text-xxs font-bold text-white">
                     {selectedFabricIds.length} Initialised
                   </span>
                 </div>
               </div>
               <div className="relative w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#68869A]" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-admin-muted" />
                 <Input
                   placeholder="Search materials..."
                   className="pl-10 h-10 bg-white/5 border-white/10 text-white rounded-xl focus:ring-emerald-500/50 text-xs placeholder:text-white/20"
@@ -174,16 +174,16 @@ export function FabricPortfolioTabContent({
                 {isLoadingFabrics ? (
                   <div className="p-20 flex flex-col items-center justify-center text-center">
                     <div className="h-6 w-6 animate-spin rounded-full border-2 border-emerald-500/50 border-t-emerald-500 mb-4" />
-                    <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+                    <p className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                       Accessing Material Database...
                     </p>
                   </div>
                 ) : filteredFabrics.length === 0 ? (
                   <div className="p-20 flex flex-col items-center justify-center text-center">
                     <div className="size-12 rounded-xl bg-white/5 flex items-center justify-center mb-4">
-                      <Layers className="h-6 w-6 text-[#68869A]/40" />
+                      <Layers className="h-6 w-6 text-admin-muted/40" />
                     </div>
-                    <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+                    <p className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                       No matching materials found
                     </p>
                   </div>
@@ -224,13 +224,13 @@ export function FabricPortfolioTabContent({
                               "text-sm font-bold tracking-tight transition-colors",
                               selectedFabricIds.includes(fabric.id)
                                 ? "text-white"
-                                : "text-[#E3DFD6]",
+                                : "text-admin-foreground",
                             )}
                           >
                             {fabric.name}
                           </h4>
                           {fabric.fabricType && (
-                            <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest mt-0.5">
+                            <p className="text-xxs font-bold text-admin-muted uppercase tracking-widest mt-0.5">
                               {fabric.fabricType}
                             </p>
                           )}
@@ -250,10 +250,10 @@ export function FabricPortfolioTabContent({
               </ScrollArea>
 
               <div className="p-4 border-t border-white/5 bg-white/[0.02] flex items-center justify-between">
-                <span className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+                <span className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                   Total Indexed: {fabrics.length}
                 </span>
-                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+                <span className="text-xxs font-bold text-emerald-400 uppercase tracking-widest">
                   Showing: {filteredFabrics.length}
                 </span>
               </div>

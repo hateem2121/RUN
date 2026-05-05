@@ -115,7 +115,7 @@ function ProductFormShell({ isOpen }: { isOpen: boolean }) {
           <form onSubmit={handleSubmit} className="space-y-4">
             <Suspense
               fallback={
-                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-[#68869A]">
+                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-admin-muted">
                   Loading...
                 </div>
               }
@@ -143,7 +143,7 @@ function ProductFormShell({ isOpen }: { isOpen: boolean }) {
 
             <Suspense
               fallback={
-                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-[#68869A]">
+                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-admin-muted">
                   Loading...
                 </div>
               }
@@ -170,7 +170,7 @@ function ProductFormShell({ isOpen }: { isOpen: boolean }) {
 
             <Suspense
               fallback={
-                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-[#68869A]">
+                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-admin-muted">
                   Loading...
                 </div>
               }
@@ -193,7 +193,7 @@ function ProductFormShell({ isOpen }: { isOpen: boolean }) {
 
             <Suspense
               fallback={
-                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-[#68869A]">
+                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-admin-muted">
                   Loading...
                 </div>
               }
@@ -218,7 +218,7 @@ function ProductFormShell({ isOpen }: { isOpen: boolean }) {
 
             <Suspense
               fallback={
-                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-[#68869A]">
+                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-admin-muted">
                   Loading...
                 </div>
               }
@@ -245,7 +245,7 @@ function ProductFormShell({ isOpen }: { isOpen: boolean }) {
 
             <Suspense
               fallback={
-                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-[#68869A]">
+                <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-admin-muted">
                   Loading...
                 </div>
               }
@@ -296,5 +296,3 @@ function ProductFormShell({ isOpen }: { isOpen: boolean }) {
     </Dialog>
   );
 }
-
-

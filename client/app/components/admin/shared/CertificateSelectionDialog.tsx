@@ -124,7 +124,7 @@ export function CertificateSelectionDialog({
           <DialogTitle>{title}</DialogTitle>
           <div className="mt-4">
             <div className="relative">
-              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-[#68869A]" />
+              <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-admin-muted" />
               <Input
                 placeholder="Search by name, type, or organization..."
                 value={searchQuery}
@@ -140,12 +140,12 @@ export function CertificateSelectionDialog({
           <ScrollArea className="h-full">
             {isLoading ? (
               <div className="flex h-64 items-center justify-center">
-                <div className="text-[#68869A]">Loading certificates...</div>
+                <div className="text-admin-muted">Loading certificates...</div>
               </div>
             ) : filteredCertificates.length === 0 ? (
               <div className="flex h-64 flex-col items-center justify-center text-center">
-                <Award className="mb-4 h-12 w-12 text-[#68869A]/50" />
-                <div className="text-[#68869A]">
+                <Award className="mb-4 h-12 w-12 text-admin-muted/50" />
+                <div className="text-admin-muted">
                   {searchQuery
                     ? "No certificates found matching your search"
                     : "No certificates available"}
@@ -157,15 +157,17 @@ export function CertificateSelectionDialog({
                   const isSelected = selectedIds.includes(cert.id);
 
                   return (
-                    <div
+                    <button
+                      type="button"
                       key={cert.id}
                       onClick={() => handleToggleSelection(cert.id)}
-                      className={`relative cursor-pointer rounded-lg border p-4 transition-all ${
+                      className={`relative cursor-pointer rounded-lg border p-4 transition-all text-left w-full ${
                         isSelected
                           ? "border-primary bg-primary/5 ring-2 ring-primary/20"
                           : "border-white/10 hover:border-blue-500/50 hover:bg-white/[0.03]"
                       }
                       `}
+                      aria-pressed={isSelected}
                       data-testid={`certificate-item-${cert.id}`}
                     >
                       {selectionMode === "multiple" && (
@@ -195,7 +197,7 @@ export function CertificateSelectionDialog({
                               data-testid={`img-certificate-${cert.id}`}
                             />
                           ) : (
-                            <Award className="h-8 w-8 text-[#68869A]" />
+                            <Award className="h-8 w-8 text-admin-muted" />
                           )}
                         </div>
 
@@ -215,14 +217,14 @@ export function CertificateSelectionDialog({
                             )}
 
                             {cert.issuingOrganization && (
-                              <p className="truncate text-[#68869A] text-xs">
+                              <p className="truncate text-admin-muted text-xs">
                                 {cert.issuingOrganization}
                               </p>
                             )}
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -232,7 +234,7 @@ export function CertificateSelectionDialog({
 
         <DialogFooter className="shrink-0 border-white/5 border-t pt-4">
           <div className="flex w-full items-center justify-between">
-            <div className="text-[#68869A] text-sm">
+            <div className="text-admin-muted text-sm">
               {selectedIds.length > 0 && (
                 <span>
                   {selectedIds.length} {selectionMode === "single" ? "certificate" : "certificates"}{" "}

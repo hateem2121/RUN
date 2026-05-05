@@ -56,7 +56,7 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
         <div
           {...attributes}
           {...listeners}
-          className="mr-2 flex cursor-grab items-center justify-center self-stretch text-[#E3DFD6]/20 transition-colors hover:text-[#00D4FF]/40 active:cursor-grabbing"
+          className="mr-2 flex cursor-grab items-center justify-center self-stretch text-admin-foreground/20 transition-colors hover:text-[#00D4FF]/40 active:cursor-grabbing"
           title="Drag to reorder"
           aria-label="Drag to reorder"
         >
@@ -69,7 +69,7 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
             {item.isActive ? (
               <Zap className="h-6 w-6" />
             ) : (
-              <Milestone className="h-6 w-6 text-[#68869A]" />
+              <Milestone className="h-6 w-6 text-admin-muted" />
             )}
           </div>
 
@@ -78,21 +78,21 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
               <h3 className="text-lg font-bold tracking-tight text-white">{item.title}</h3>
               <Badge
                 variant="outline"
-                className="border-[#00D4FF]/20 bg-[#00D4FF]/5 text-[#00D4FF] text-[10px] uppercase tracking-widest"
+                className="border-[#00D4FF]/20 bg-[#00D4FF]/5 text-[#00D4FF] text-xxs uppercase tracking-widest"
               >
                 {item.timeline}
               </Badge>
               {!item.isActive && (
                 <Badge
                   variant="outline"
-                  className="border-white/10 bg-white/5 text-[#E3DFD6]/40 text-[10px] uppercase tracking-widest"
+                  className="border-white/10 bg-white/5 text-admin-foreground/40 text-xxs uppercase tracking-widest"
                 >
                   Archived
                 </Badge>
               )}
             </div>
 
-            <p className="line-clamp-2 max-w-2xl text-[#E3DFD6]/60 text-sm leading-relaxed">
+            <p className="line-clamp-2 max-w-2xl text-admin-foreground/60 text-sm leading-relaxed">
               {item.description ||
                 "Future technology milestone focusing on platform ecosystem growth and manufacturer integration."}
             </p>
@@ -105,11 +105,11 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
                     className="flex items-center gap-1.5 rounded-full bg-white/[0.03] px-2.5 py-1 ring-1 ring-white/5"
                   >
                     <Target className="h-3 w-3 text-[#00D4FF]/60" />
-                    <span className="text-[#E3DFD6]/50 text-[11px] font-medium">{imp}</span>
+                    <span className="text-admin-foreground/50 text-[11px] font-medium">{imp}</span>
                   </div>
                 ))}
                 {item.impact.length > 3 && (
-                  <span className="text-[#E3DFD6]/30 text-[10px] font-medium">
+                  <span className="text-admin-foreground/30 text-xxs font-medium">
                     +{item.impact.length - 3} More
                   </span>
                 )}
@@ -122,7 +122,7 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 bg-white/[0.03] text-[#E3DFD6]/40 transition-all hover:bg-[#00D4FF]/10 hover:text-[#00D4FF] active:scale-95"
+              className="h-9 w-9 bg-white/[0.03] text-admin-foreground/40 transition-all hover:bg-[#00D4FF]/10 hover:text-[#00D4FF] active:scale-95"
               onClick={() => onEdit(item)}
               title="Edit Milestone"
               aria-label="Edit Milestone"
@@ -132,7 +132,7 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 bg-white/[0.03] text-[#E3DFD6]/40 transition-all hover:bg-red-500/10 hover:text-red-400 active:scale-95"
+              className="h-9 w-9 bg-white/[0.03] text-admin-foreground/40 transition-all hover:bg-red-500/10 hover:text-red-400 active:scale-95"
               onClick={() => onDelete(item.id)}
               title="Delete Milestone"
               aria-label="Delete Milestone"

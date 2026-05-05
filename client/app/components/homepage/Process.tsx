@@ -133,7 +133,6 @@ export const Process: React.FC = () => {
   return (
     <section
       className="overflow-hidden bg-background text-foreground"
-      role="region"
       aria-labelledby="process-heading"
     >
       <div

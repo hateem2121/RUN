@@ -174,7 +174,7 @@ export function AboutTeamMessageTab() {
                 className="resize-none"
                 required
               />
-              <p className="text-[#68869A] text-sm">
+              <p className="text-admin-muted text-sm">
                 Write a compelling message that showcases your company's values and commitment
               </p>
             </div>
@@ -213,7 +213,7 @@ export function AboutTeamMessageTab() {
                   </div>
                 ) : (
                   <div className="flex h-32 w-32 items-center justify-center rounded-lg bg-white/[0.03]">
-                    <Upload className="h-6 w-6 text-[#68869A]/70" aria-hidden="true" />
+                    <Upload className="h-6 w-6 text-admin-muted/70" aria-hidden="true" />
                   </div>
                 )}
                 <Button
@@ -243,7 +243,7 @@ export function AboutTeamMessageTab() {
           <CardDescription>See how your message will appear on the About page</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="rounded-lg bg-background p-6 dark:bg-[#0A0A0A] border">
+          <div className="rounded-lg bg-background p-6 dark:bg-surface-black border">
             <div className="mx-auto max-w-3xl">
               {optimisticMessage?.title && (
                 <h3 className="mb-6 font-bold text-2xl">{optimisticMessage.title}</h3>
@@ -260,11 +260,11 @@ export function AboutTeamMessageTab() {
 
                 <div className="flex-1">
                   {optimisticMessage?.message ? (
-                    <p className="mb-6 whitespace-pre-wrap text-[#68869A] leading-relaxed">
+                    <p className="mb-6 whitespace-pre-wrap text-admin-muted leading-relaxed">
                       {optimisticMessage.message}
                     </p>
                   ) : (
-                    <p className="mb-6 text-[#68869A]/70 italic">
+                    <p className="mb-6 text-admin-muted/70 italic">
                       Your message will appear here...
                     </p>
                   )}
@@ -275,7 +275,7 @@ export function AboutTeamMessageTab() {
                         {optimisticMessage.signature || optimisticMessage.name}
                       </p>
                       {optimisticMessage.position && (
-                        <p className="text-[#68869A] text-sm">{optimisticMessage.position}</p>
+                        <p className="text-admin-muted text-sm">{optimisticMessage.position}</p>
                       )}
                     </div>
                   )}

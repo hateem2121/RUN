@@ -9,13 +9,13 @@ import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-proces
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { appStorageService } from "../../lib/storage/app-service.js";
+import {
+  removeUndefined,
+  safeSerialize,
+  shouldBypassCache,
+} from "../../lib/utilities/core-utils.js";
 import { webhookService } from "../../services/webhook-service.js";
-import { removeUndefined, safeSerialize, shouldBypassCache } from "../../utils.js";
 import { CHUNK_STORAGE_BASE, CHUNK_STORAGE_IS_PUBLIC } from "./chunk-config.js";
-import { backendUploadManager, uploadMetrics } from "./middleware.js";
-import { MediaIdParamSchema, MediaListQuerySchema, MediaUpdateSchema } from "./schemas.js";
-import { enhancedUploadService, uploadSessions } from "./services.js";
-import type { MediaAsset, MediaMetadata, UploadSession } from "./types.js";
 import {
   buildInsertMediaAsset,
   createErrorResponse,
@@ -26,7 +26,11 @@ import {
   processUploadedFile,
   slugifyFilename,
   type UploadOptions,
-} from "./utils.js";
+} from "./lib/utilities/core-utils.js";
+import { backendUploadManager, uploadMetrics } from "./middleware.js";
+import { MediaIdParamSchema, MediaListQuerySchema, MediaUpdateSchema } from "./schemas.js";
+import { enhancedUploadService, uploadSessions } from "./services.js";
+import type { MediaAsset, MediaMetadata, UploadSession } from "./types.js";
 
 // Session cleanup - remove stale uploads after 1 hour
 setInterval(

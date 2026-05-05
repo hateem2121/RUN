@@ -97,7 +97,7 @@ export const FabricForm: React.FC<FabricFormProps> = ({
                   }
                   placeholder="e.g., 200 or 180-220"
                 />
-                <div className="text-[#68869A] text-xs">
+                <div className="text-admin-muted text-xs">
                   Enter single value (e.g., 200) or range (e.g., 180-220)
                 </div>
               </div>
@@ -320,7 +320,7 @@ export const FabricForm: React.FC<FabricFormProps> = ({
                           <SelectItem
                             value="no-fibers"
                             disabled
-                            className="text-[#68869A]/70 h-12 px-4 text-sm"
+                            className="text-admin-muted/70 h-12 px-4 text-sm"
                           >
                             No fibers available
                           </SelectItem>
@@ -349,7 +349,7 @@ export const FabricForm: React.FC<FabricFormProps> = ({
                       placeholder="e.g., 60 %"
                       className="w-32"
                     />
-                    <span className="text-[#68869A] text-sm">%</span>
+                    <span className="text-admin-muted text-sm">%</span>
                     <Button
                       variant="ghost"
                       size="sm"

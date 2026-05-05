@@ -25,7 +25,7 @@ export function RoadmapColumn({ id, title, color, items, onEdit, onDelete }: Roa
       <div className="flex items-center gap-2 px-2">
         <div className={cn("size-2 rounded-full", color.replace("text-", "bg-"))} title={title} />
         <h3 className={cn("text-xs font-black uppercase tracking-widest", color)}>{title}</h3>
-        <span className="ml-auto text-[10px] font-bold text-[#68869A] bg-white/5 px-1.5 py-0.5 rounded">
+        <span className="ml-auto text-xxs font-bold text-admin-muted bg-white/5 px-1.5 py-0.5 rounded">
           {items.length}
         </span>
       </div>
@@ -40,7 +40,7 @@ export function RoadmapColumn({ id, title, color, items, onEdit, onDelete }: Roa
           ))}
           {items.length === 0 && (
             <div className="flex flex-1 items-center justify-center p-8 text-center border-2 border-dashed border-white/5 rounded-xl">
-              <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest leading-relaxed">
+              <p className="text-xxs font-bold text-admin-muted uppercase tracking-widest leading-relaxed">
                 Drop milestones here to prioritize
               </p>
             </div>

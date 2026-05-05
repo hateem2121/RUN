@@ -120,7 +120,6 @@ export const Stats: React.FC = () => {
     <section
       ref={containerRef}
       className="relative flex min-h-screen w-full flex-col border-border border-t bg-background md:min-h-[150vh] md:flex-row"
-      role="region"
       aria-labelledby="stats-heading"
     >
       {/* Sticky Background Image */}

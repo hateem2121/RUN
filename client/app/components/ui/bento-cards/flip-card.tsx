@@ -209,5 +209,3 @@ export const FlipCard = memo(function FlipCard({
     </EnhancedBentoCardErrorBoundary>
   );
 });
-
-

@@ -126,7 +126,7 @@ const AccessoryList = ({
               </div>
 
               {accessory.description && (
-                <p className="mb-2 line-clamp-2 text-sm text-[#68869A]">{accessory.description}</p>
+                <p className="mb-2 line-clamp-2 text-sm text-admin-muted">{accessory.description}</p>
               )}
 
               {/* Media Preview */}
@@ -469,7 +469,7 @@ export function AccessoryManagementEnhanced() {
           <h1 className="font-bold font-neue-stance text-3xl text-white">
             Accessory & Customization Management
           </h1>
-          <p className="mt-2 text-[#68869A]">
+          <p className="mt-2 text-admin-muted">
             Manage printing services, hardware, finishing touches, and packaging options
           </p>
         </div>

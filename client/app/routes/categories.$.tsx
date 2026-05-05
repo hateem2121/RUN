@@ -395,8 +395,8 @@ function ProductDetailContent() {
 
   return (
     <main
-      ref={containerRef}
       id="main-content"
+      ref={containerRef}
       className="min-h-screen bg-white pb-24 dark:bg-zinc-950"
     >
       <div className="container mx-auto max-w-7xl px-4 md:px-8 pt-24 lg:pt-32">

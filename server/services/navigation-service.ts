@@ -11,7 +11,7 @@ import { miscRepository } from "../lib/db/repositories/index.js";
 import { type AppError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { withTimeout } from "../lib/resilience/request-timeout.js";
-import { removeUndefined } from "../utils.js";
+import { removeUndefined } from "../lib/utilities/core-utils.js";
 
 const CACHE_TTL_NAVIGATION = 7200; // 2 hours
 const CACHE_TTL_STATIC = 10800; // 3 hours

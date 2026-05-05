@@ -1,10 +1,10 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { HeroManagement } from "./HeroManagement";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import * as queryClientModule from "@/lib/queryClient";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as useToastModule from "@/hooks/use-toast";
+import * as queryClientModule from "@/lib/queryClient";
+import { HeroManagement } from "./HeroManagement";
 
 // Mock ResizeObserver
 class MockResizeObserver {
@@ -54,10 +54,10 @@ vi.mock("lucide-react", () => ({
 }));
 
 const mockMediaAssets = [
-  { 
-    id: 1, 
-    filename: "test-image.jpg", 
-    url: "/test-image.jpg", 
+  {
+    id: 1,
+    filename: "test-image.jpg",
+    url: "/test-image.jpg",
     type: "image" as const,
     tags: [],
     caption: null,
@@ -68,10 +68,10 @@ const mockMediaAssets = [
     updatedAt: new Date(),
     deletedAt: null,
   },
-  { 
-    id: 2, 
-    filename: "test-video.mp4", 
-    url: "/test-video.mp4", 
+  {
+    id: 2,
+    filename: "test-video.mp4",
+    url: "/test-video.mp4",
     type: "video" as const,
     tags: [],
     caption: null,
@@ -103,7 +103,7 @@ describe("HeroManagement", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Configure QueryClient with a default queryFn that uses our mocked apiRequest
     queryClient = new QueryClient({
       defaultOptions: {
@@ -130,7 +130,7 @@ describe("HeroManagement", () => {
     return render(
       <QueryClientProvider client={queryClient}>
         <HeroManagement mediaAssets={mockMediaAssets} />
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   };
 
@@ -163,12 +163,12 @@ describe("HeroManagement", () => {
 
   it("submits form data and shows success toast", async () => {
     const mockToast = vi.fn();
-    vi.mocked(useToastModule.useToast).mockReturnValue({ 
+    vi.mocked(useToastModule.useToast).mockReturnValue({
       toast: mockToast,
       dismiss: vi.fn(),
       toasts: [],
     });
-    
+
     // Mock successful PATCH
     vi.mocked(queryClientModule.apiRequest).mockImplementation(async (url, options) => {
       if (url === "/api/manufacturing-hero" && options?.method === "PATCH") {
@@ -191,21 +191,23 @@ describe("HeroManagement", () => {
     fireEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(mockToast).toHaveBeenCalledWith(expect.objectContaining({
-        title: "Success",
-        description: "Hero section updated successfully",
-      }));
+      expect(mockToast).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Success",
+          description: "Hero section updated successfully",
+        }),
+      );
     });
   });
 
   it("handles submission errors", async () => {
     const mockToast = vi.fn();
-    vi.mocked(useToastModule.useToast).mockReturnValue({ 
+    vi.mocked(useToastModule.useToast).mockReturnValue({
       toast: mockToast,
       dismiss: vi.fn(),
       toasts: [],
     });
-    
+
     vi.mocked(queryClientModule.apiRequest).mockImplementation(async (url, options) => {
       if (url === "/api/manufacturing-hero" && options?.method === "PATCH") {
         throw new Error("Failed");
@@ -224,11 +226,13 @@ describe("HeroManagement", () => {
     fireEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(mockToast).toHaveBeenCalledWith(expect.objectContaining({
-        title: "Error",
-        description: "Failed to update hero section",
-        variant: "destructive",
-      }));
+      expect(mockToast).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Error",
+          description: "Failed to update hero section",
+          variant: "destructive",
+        }),
+      );
     });
   });
 });

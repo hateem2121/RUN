@@ -371,7 +371,7 @@ export function FabricManagementEnhancedV2() {
           <h1 className="text-3xl font-bold text-white tracking-tight">
             Enhanced Fabric Management
           </h1>
-          <p className="text-[#68869A]">
+          <p className="text-admin-muted">
             Comprehensive fabric management with structured properties
           </p>
         </div>
@@ -402,7 +402,7 @@ export function FabricManagementEnhancedV2() {
       ) : fabrics.length === 0 ? (
         <Card className="glass-premium">
           <CardContent className="p-12 text-center">
-            <Shirt className="mx-auto mb-4 h-12 w-12 text-[#68869A]" />
+            <Shirt className="mx-auto mb-4 h-12 w-12 text-admin-muted" />
             <h3 className="text-xl font-semibold">No Fabrics Found</h3>
             <Button className="mt-4" onClick={() => setIsCreateModalOpen(true)}>
               Create First Fabric

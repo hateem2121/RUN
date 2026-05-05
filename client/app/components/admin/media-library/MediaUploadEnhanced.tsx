@@ -572,9 +572,10 @@ export function MediaUploadEnhanced() {
   return (
     <div className="space-y-4">
       {/* Upload area */}
-      <div
+      <button
+        type="button"
         className={cn(
-          "cursor-pointer rounded-xl border border-dashed p-10 flex flex-col items-center justify-center transition-all bg-white/[0.02]",
+          "cursor-pointer rounded-xl border border-dashed p-10 flex flex-col items-center justify-center transition-all bg-white/[0.02] w-full",
           isDragging
             ? "border-primary bg-primary/5"
             : "border-white/10 hover:border-white/20 hover:bg-white/[0.04]",
@@ -586,6 +587,7 @@ export function MediaUploadEnhanced() {
         onClick={() => {
           fileInputRef.current?.click();
         }}
+        aria-label="Upload area: Drag & drop files or click to browse"
       >
         <input
           ref={fileInputRef}
@@ -600,25 +602,25 @@ export function MediaUploadEnhanced() {
 
         <div className="flex flex-col items-center gap-3 text-center">
           <div className="h-12 w-12 rounded-full bg-white/[0.05] flex items-center justify-center mb-2">
-            <Upload className="text-[#68869A] h-6 w-6" />
+            <Upload className="text-admin-muted h-6 w-6" />
           </div>
           <div>
-            <p className="text-base font-medium text-[#E3DFD6]">
+            <p className="text-base font-medium text-admin-foreground">
               {isDragging ? "Drop files here" : "Drag & drop files or click to browse"}
             </p>
-            <p className="text-[#68869A] mt-1 text-sm">Supports GLB, PNG, JPG, MP4 up to 50MB</p>
+            <p className="text-admin-muted mt-1 text-sm">Supports GLB, PNG, JPG, MP4 up to 50MB</p>
           </div>
 
           <Button
             variant="outline"
             size="sm"
             disabled={hasActiveUploads}
-            className="mt-2 border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white transition-colors"
+            className="mt-2 border-white/10 bg-white/5 text-admin-foreground hover:bg-white/10 hover:text-white transition-colors"
           >
             Select Files
           </Button>
         </div>
-      </div>
+      </button>
 
       {/* Upload queue */}
       {uploadQueue.length > 0 && (
@@ -665,7 +667,7 @@ export function MediaUploadEnhanced() {
       {/* Overall progress */}
       {hasActiveUploads && (
         <div className="text-center">
-          <div className="text-[#68869A] inline-flex items-center gap-2 text-sm">
+          <div className="text-admin-muted inline-flex items-center gap-2 text-sm">
             <div className="border-primary h-4 w-4 animate-spin rounded-full border-b-2"></div>
             Processing uploads...
           </div>

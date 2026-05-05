@@ -60,21 +60,21 @@ function SortableCaseStudyItem({
         <div
           {...attributes}
           {...listeners}
-          className="mt-1 cursor-grab active:cursor-grabbing text-[#68869A] hover:text-blue-400 transition-colors"
+          className="mt-1 cursor-grab active:cursor-grabbing text-admin-muted hover:text-blue-400 transition-colors"
         >
           <GripVertical className="h-5 w-5" />
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-1">
-            <span className="text-[10px] font-bold text-[#D4A853] uppercase tracking-widest bg-[#D4A853]/10 px-2 py-0.5 rounded-full border border-[#D4A853]/20">
+            <span className="text-xxs font-bold text-brand-manufacturing uppercase tracking-widest bg-brand-manufacturing/10 px-2 py-0.5 rounded-full border border-brand-manufacturing/20">
               {caseStudy.metric}
             </span>
             <h4 className="font-bold text-white tracking-tight truncate">
               {caseStudy.client} — {caseStudy.type}
             </h4>
           </div>
-          <p className="mt-2 text-[#68869A] text-xs leading-relaxed line-clamp-2 max-w-2xl italic">
+          <p className="mt-2 text-admin-muted text-xs leading-relaxed line-clamp-2 max-w-2xl italic">
             "{caseStudy.quote}" — {caseStudy.author}
           </p>
         </div>
@@ -83,10 +83,10 @@ function SortableCaseStudyItem({
           <Badge
             variant="outline"
             className={cn(
-              "text-[10px] uppercase tracking-wider border-0",
+              "text-xxs uppercase tracking-wider border-0",
               caseStudy.isActive
                 ? "bg-emerald-500/10 text-emerald-400"
-                : "bg-white/5 text-[#68869A]",
+                : "bg-white/5 text-admin-muted",
             )}
           >
             {caseStudy.isActive ? "Active" : "Inactive"}
@@ -95,7 +95,7 @@ function SortableCaseStudyItem({
             size="icon"
             variant="ghost"
             onClick={() => onEdit(caseStudy)}
-            className="size-8 rounded-lg hover:bg-[#D4A853]/10 hover:text-[#D4A853]"
+            className="size-8 rounded-lg hover:bg-brand-manufacturing/10 hover:text-brand-manufacturing"
           >
             <Edit className="h-4 w-4" />
           </Button>
@@ -279,7 +279,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-white tracking-tight">Success Stories</h2>
-            <p className="text-sm text-[#68869A]">
+            <p className="text-sm text-admin-muted">
               Highlight manufacturing wins and B2B partnerships
             </p>
           </div>
@@ -288,7 +288,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
               resetCaseStudyForm();
               setShowCaseStudyDialog(true);
             }}
-            className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl font-bold transition-all px-6 py-5 uppercase text-[10px] tracking-widest"
+            className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl font-bold transition-all px-6 py-5 uppercase text-xxs tracking-widest"
           >
             <Plus className="mr-2 h-4 w-4" />
             Add Story
@@ -299,11 +299,11 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
           {caseStudiesLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="flex space-x-2">
-                <div className="h-2 w-2 animate-bounce rounded-full bg-[#D4A853] [animation-delay:-0.3s]"></div>
-                <div className="h-2 w-2 animate-bounce rounded-full bg-[#D4A853] [animation-delay:-0.15s]"></div>
-                <div className="h-2 w-2 animate-bounce rounded-full bg-[#D4A853]"></div>
+                <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing [animation-delay:-0.3s]"></div>
+                <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing [animation-delay:-0.15s]"></div>
+                <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing"></div>
               </div>
-              <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+              <p className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                 Retrieving Stories...
               </p>
             </div>
@@ -313,7 +313,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
                 <Trophy className="size-8 text-white/10" />
               </div>
               <p className="text-white/40 font-medium">No success stories found.</p>
-              <p className="text-[#68869A] text-sm mt-1">
+              <p className="text-admin-muted text-sm mt-1">
                 Share your first manufacturing partnership win.
               </p>
             </div>
@@ -346,12 +346,12 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
         </div>
 
         <Dialog open={showCaseStudyDialog} onOpenChange={setShowCaseStudyDialog}>
-          <DialogContent className="bg-[#0A0A0A]/95 border-white/10 backdrop-blur-2xl text-white rounded-3xl p-0 overflow-hidden max-w-xl">
+          <DialogContent className="bg-surface-black/95 border-white/10 backdrop-blur-2xl text-white rounded-3xl p-0 overflow-hidden max-w-xl">
             <div className="p-8 border-b border-white/5">
               <DialogTitle className="text-2xl font-bold tracking-tight">
                 {editingCaseStudy ? "Edit Success Story" : "Add Success Story"}
               </DialogTitle>
-              <DialogDescription className="text-[#68869A]">
+              <DialogDescription className="text-admin-muted">
                 Configure case study details and partnership highlights
               </DialogDescription>
             </div>
@@ -360,7 +360,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
               <div className="p-8 space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                    <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                       Client Name
                     </Label>
                     <Input
@@ -375,7 +375,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                    <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                       Project Type
                     </Label>
                     <Input
@@ -390,7 +390,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                  <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                     Key Performance Metric
                   </Label>
                   <Input
@@ -404,7 +404,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                  <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                     Client Quote
                   </Label>
                   <Textarea
@@ -418,7 +418,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                  <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                     Quote Author
                   </Label>
                   <Input
@@ -432,7 +432,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                  <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                     Detailed Description
                   </Label>
                   <Textarea
@@ -455,7 +455,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
                     onCheckedChange={(checked) =>
                       setCaseStudyData({ ...caseStudyData, isActive: checked })
                     }
-                    className="data-[state=checked]:bg-[#D4A853]"
+                    className="data-[state=checked]:bg-brand-manufacturing"
                   />
                   <Label
                     htmlFor="case-active"
@@ -466,7 +466,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
                 </div>
 
                 <div className="space-y-3 pt-6 border-t border-white/5">
-                  <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                  <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                     Cover Image
                   </Label>
                   <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
@@ -488,7 +488,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
                       <button
                         type="button"
                         onClick={() => setShowCaseStudyImagePicker(true)}
-                        className="text-[10px] font-bold text-[#D4A853] uppercase tracking-wider"
+                        className="text-xxs font-bold text-brand-manufacturing uppercase tracking-wider"
                       >
                         {selectedImage ? "Change" : "Select Image"}
                       </button>
@@ -502,14 +502,14 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
                   type="button"
                   variant="ghost"
                   onClick={() => setShowCaseStudyDialog(false)}
-                  className="text-[#68869A] hover:bg-white/5"
+                  className="text-admin-muted hover:bg-white/5"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
-                  className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl px-8 py-6 font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all"
+                  className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl px-8 py-6 font-bold uppercase text-xxs tracking-widest active:scale-95 transition-all"
                 >
                   {isPending ? "Syncing..." : editingCaseStudy ? "Update Story" : "Publish Story"}
                 </Button>

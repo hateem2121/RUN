@@ -129,6 +129,10 @@
   --color-background-alt: var(--background-alt);
   --color-surface-black: #0a0a0a;
   --color-brand-accent: #3300ff;
+  --color-admin-muted: #68869a;
+  --color-admin-surface: #111111;
+  --color-admin-card: #161616;
+  --color-admin-foreground: #e3dfd6;
 
   /* Legacy Colors (To be migrated) */
   --color-brand-purple-light: #ff9ffc;
@@ -221,6 +225,7 @@
   --container-2xl: 1600px;
   --width-sidebar: 140px;
   --width-dock-item: 140px;
+  --spacing-admin-dialog-offset: 52px;
 
   /* Height Tokens (for arbitrary value replacement) */
   --height-tab: 48px;
@@ -267,6 +272,7 @@
   --radius-card: var(--radius);
   --radius-modal: calc(var(--radius) + 4px);
   --radius-pill: 9999px;
+  --radius-huge: 32px;
 
   /* Semantic Shadow Tokens */
   --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.08);

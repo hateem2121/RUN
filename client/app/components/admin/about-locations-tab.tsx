@@ -233,7 +233,7 @@ export function AboutLocationsTab() {
 
             <TabsContent value="facility" className="mt-4">
               {facilityLocations.length === 0 ? (
-                <div className="py-12 text-center text-[#68869A]">
+                <div className="py-12 text-center text-admin-muted">
                   No manufacturing facilities added yet.
                 </div>
               ) : (
@@ -243,14 +243,14 @@ export function AboutLocationsTab() {
                       <div className="flex items-start justify-between">
                         <div>
                           <h3 className="font-semibold">{location.name}</h3>
-                          <p className="text-[#68869A] text-sm">
+                          <p className="text-admin-muted text-sm">
                             {location.city ? `${location.city}, ` : ""}
                             {location.country}
                           </p>
                           {location.details && (
-                            <p className="mt-1 text-[#68869A] text-sm">{location.details}</p>
+                            <p className="mt-1 text-admin-muted text-sm">{location.details}</p>
                           )}
-                          <p className="mt-2 text-[#68869A]/70 text-xs">
+                          <p className="mt-2 text-admin-muted/70 text-xs">
                             Coordinates: {location.latitude}, {location.longitude}
                           </p>
                         </div>
@@ -281,7 +281,7 @@ export function AboutLocationsTab() {
 
             <TabsContent value="client" className="mt-4">
               {clientLocations.length === 0 ? (
-                <div className="py-12 text-center text-[#68869A]">
+                <div className="py-12 text-center text-admin-muted">
                   No client locations added yet.
                 </div>
               ) : (
@@ -291,14 +291,14 @@ export function AboutLocationsTab() {
                       <div className="flex items-start justify-between">
                         <div>
                           <h3 className="font-semibold">{location.name}</h3>
-                          <p className="text-[#68869A] text-sm">
+                          <p className="text-admin-muted text-sm">
                             {location.city ? `${location.city}, ` : ""}
                             {location.country}
                           </p>
                           {location.details && (
-                            <p className="mt-1 text-[#68869A] text-sm">{location.details}</p>
+                            <p className="mt-1 text-admin-muted text-sm">{location.details}</p>
                           )}
-                          <p className="mt-2 text-[#68869A]/70 text-xs">
+                          <p className="mt-2 text-admin-muted/70 text-xs">
                             Coordinates: {location.latitude}, {location.longitude}
                           </p>
                         </div>

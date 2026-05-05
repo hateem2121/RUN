@@ -137,10 +137,10 @@ export function ProductFormProgress() {
                     ? "text-emerald-400"
                     : percentage > 0
                       ? "text-amber-400"
-                      : "text-[#68869A]/70"
+                      : "text-admin-muted/70"
                 }`}
               />
-              <p className="text-[#E3DFD6]/80 mb-1 text-xs font-medium">{typedSection.name}</p>
+              <p className="text-admin-foreground/80 mb-1 text-xs font-medium">{typedSection.name}</p>
               <div className="center-flex gap-1 text-xs">
                 <span
                   className={
@@ -148,7 +148,7 @@ export function ProductFormProgress() {
                       ? "font-semibold text-emerald-400"
                       : percentage > 0
                         ? "text-amber-400"
-                        : "text-[#68869A]"
+                        : "text-admin-muted"
                   }
                 >
                   {typedSection.completed}/{typedSection.total}

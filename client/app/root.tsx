@@ -22,6 +22,7 @@ import { useEffect } from "react";
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
 import { reportWebVitals } from "@/lib/web-vitals";
 import { ScrollProvider } from "./hooks/use-scroll";
+import { SkipLink } from "@/components/ui/skip-link";
 
 // Load CSP nonce from server context
 export const links: LinksFunction = () => [
@@ -149,12 +150,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <QueryClientProvider client={queryClient}>
               <HydrationBoundary state={loaderData?.dehydratedState}>
                 <ScrollProvider>
-                  <a
-                    href="#main-content"
-                    className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-max focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:shadow-lg focus:outline-none"
-                  >
-                    Skip to main content
-                  </a>
+                  <SkipLink targetId="main-content" />
                   <FloatingDockHeader />
                   {children}
                   {mounted && <Toaster />}
@@ -209,7 +205,7 @@ export function ErrorBoundary() {
   }
 
   return (
-    <main className="container mx-auto p-4 pt-16">
+    <main id="main-content" className="container mx-auto p-4 pt-16">
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (

@@ -68,7 +68,7 @@ function SortableTimelineItem({ entry, onEdit, onDelete }: TimelineItemProps) {
           {...attributes}
           {...listeners}
         >
-          <GripVertical className="h-5 w-5 text-[#68869A]/70" aria-hidden="true" />
+          <GripVertical className="h-5 w-5 text-admin-muted/70" aria-hidden="true" />
         </button>
 
         <div className="flex-1">
@@ -82,7 +82,7 @@ function SortableTimelineItem({ entry, onEdit, onDelete }: TimelineItemProps) {
             )}
           </div>
           {entry.description && (
-            <p className="line-clamp-2 text-[#68869A] text-sm">{entry.description}</p>
+            <p className="line-clamp-2 text-admin-muted text-sm">{entry.description}</p>
           )}
         </div>
 
@@ -260,7 +260,7 @@ export function AboutTimelineTab() {
           </div>
         ) : optimisticEntries.length === 0 ? (
           <div className="rounded-lg border border-dashed p-8 text-center">
-            <p className="text-[#68869A]">No timeline events found. Start by adding one.</p>
+            <p className="text-admin-muted">No timeline events found. Start by adding one.</p>
           </div>
         ) : (
           <DndContext
@@ -341,7 +341,7 @@ export function AboutTimelineTab() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full justify-start gap-2 text-[#68869A]"
+                    className="w-full justify-start gap-2 text-admin-muted"
                     onClick={() => setIsMediaPickerOpen(true)}
                     aria-label="Select event image"
                   >

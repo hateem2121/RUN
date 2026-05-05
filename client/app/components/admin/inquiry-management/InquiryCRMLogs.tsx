@@ -68,7 +68,7 @@ export function InquiryCRMLogs({ inquiry }: InquiryCRMLogsProps) {
           <div className="grid grid-cols-2 gap-3">
             <select
               title="Action Type"
-              className="bg-[#0A0A0A] border-white/10 rounded-md text-xs px-3 py-2 outline-none focus:ring-1 focus:ring-primary h-9"
+              className="bg-surface-black border-white/10 rounded-md text-xs px-3 py-2 outline-none focus:ring-1 focus:ring-primary h-9"
               value={action}
               onChange={(e) => setAction(e.target.value)}
             >
@@ -103,7 +103,7 @@ export function InquiryCRMLogs({ inquiry }: InquiryCRMLogsProps) {
             <div key={index} className="relative pl-6 pb-6 last:pb-0 border-l border-white/10">
               <div className="absolute left-[-5px] top-0 h-2.5 w-2.5 rounded-full bg-primary" />
               <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between text-[10px] text-[#68869A] font-medium">
+                <div className="flex items-center justify-between text-xxs text-admin-muted font-medium">
                   <div className="flex items-center gap-1.5">
                     <span className="uppercase tracking-widest text-primary/80">{log.action}</span>
                     <span>•</span>
@@ -123,7 +123,7 @@ export function InquiryCRMLogs({ inquiry }: InquiryCRMLogsProps) {
             </div>
           ))
         ) : (
-          <div className="text-center py-8 text-[#68869A] text-sm opacity-50 italic">
+          <div className="text-center py-8 text-admin-muted text-sm opacity-50 italic">
             No interactions logged yet.
           </div>
         )}

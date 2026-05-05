@@ -18,7 +18,7 @@ export function StorageOptimizationDashboard() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h2 className="text-3xl font-black tracking-tight text-white">Storage Optimization</h2>
-          <p className="mt-1 flex items-center gap-2 text-sm text-[#68869A]">
+          <p className="mt-1 flex items-center gap-2 text-sm text-admin-muted">
             <History className="h-4 w-4" />
             Last scanned: 2 minutes ago
           </p>
@@ -34,27 +34,27 @@ export function StorageOptimizationDashboard() {
         {/* Total Storage */}
         <Card variant="glass-premium" className="flex flex-col justify-between">
           <CardContent className="p-5">
-            <p className="text-sm font-medium text-[#68869A]">Total Storage Used</p>
+            <p className="text-sm font-medium text-admin-muted">Total Storage Used</p>
             <div className="mt-1 flex items-baseline gap-2">
               <span className="text-2xl font-bold text-white">2.4 GB</span>
-              <span className="text-sm text-[#68869A]">/ 10 GB</span>
+              <span className="text-sm text-admin-muted">/ 10 GB</span>
             </div>
             <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
               <div className="h-full w-[24%] bg-primary" />
             </div>
-            <p className="mt-2 text-xs text-[#68869A]">24% capacity used</p>
+            <p className="mt-2 text-xs text-admin-muted">24% capacity used</p>
           </CardContent>
         </Card>
 
         {/* Orphaned Files */}
         <Card variant="glass-premium" className="flex flex-col justify-between border-amber-500/30">
           <CardContent className="p-5">
-            <p className="text-sm font-medium text-[#68869A]">Orphaned Files</p>
+            <p className="text-sm font-medium text-admin-muted">Orphaned Files</p>
             <div className="mt-1 flex items-baseline gap-2">
               <span className="text-2xl font-bold text-amber-500">47 files</span>
             </div>
             <p className="mt-1 text-sm font-medium text-amber-500/80">890 MB total waste</p>
-            <div className="mt-3 flex items-center gap-1 text-[10px] font-bold uppercase tracking-tighter text-amber-500">
+            <div className="mt-3 flex items-center gap-1 text-xxs font-bold uppercase tracking-tighter text-amber-500">
               <AlertCircle className="h-4 w-4" />
               Warning
             </div>
@@ -64,13 +64,13 @@ export function StorageOptimizationDashboard() {
         {/* Optimized Assets */}
         <Card variant="glass-premium" className="flex flex-col justify-between">
           <CardContent className="p-5">
-            <p className="text-sm font-medium text-[#68869A]">Optimized Assets</p>
+            <p className="text-sm font-medium text-admin-muted">Optimized Assets</p>
             <div className="mt-1 flex items-baseline gap-2">
               <span className="text-2xl font-bold text-white">376</span>
-              <span className="text-sm text-[#68869A]">/ 423</span>
+              <span className="text-sm text-admin-muted">/ 423</span>
             </div>
             <p className="mt-1 font-medium text-emerald-500 text-sm">89% completion</p>
-            <div className="mt-3 flex items-center gap-1 text-[10px] font-bold uppercase tracking-tighter text-emerald-500">
+            <div className="mt-3 flex items-center gap-1 text-xxs font-bold uppercase tracking-tighter text-emerald-500">
               <CheckCircle className="h-4 w-4" />
               Healthy
             </div>
@@ -80,12 +80,12 @@ export function StorageOptimizationDashboard() {
         {/* Pending Optimization */}
         <Card variant="glass-premium" className="flex flex-col justify-between">
           <CardContent className="p-5">
-            <p className="text-sm font-medium text-[#68869A]">Pending Optimization</p>
+            <p className="text-sm font-medium text-admin-muted">Pending Optimization</p>
             <div className="mt-1 flex items-baseline gap-2">
               <span className="text-2xl font-bold text-white">12 files</span>
             </div>
-            <p className="mt-1 text-sm font-medium text-[#68869A]">Processing queued</p>
-            <div className="mt-3 flex items-center gap-1 text-[10px] font-bold uppercase tracking-tighter text-[#68869A]">
+            <p className="mt-1 text-sm font-medium text-admin-muted">Processing queued</p>
+            <div className="mt-3 flex items-center gap-1 text-xxs font-bold uppercase tracking-tighter text-admin-muted">
               <RefreshCw className="h-4 w-4" />
               Pending
             </div>
@@ -155,7 +155,7 @@ export function StorageOptimizationDashboard() {
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-2xl font-bold tracking-tighter text-white">2.4</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#68869A]">
+                <span className="text-xxs font-bold uppercase tracking-widest text-admin-muted">
                   GB Total
                 </span>
               </div>
@@ -165,28 +165,28 @@ export function StorageOptimizationDashboard() {
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded-sm bg-primary" />
-                  <span className="text-[#E3DFD6]">Images</span>
+                  <span className="text-admin-foreground">Images</span>
                 </div>
                 <span className="font-bold text-white">45%</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded-sm bg-purple-500" />
-                  <span className="text-[#E3DFD6]">Videos</span>
+                  <span className="text-admin-foreground">Videos</span>
                 </div>
                 <span className="font-bold text-white">35%</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded-sm bg-amber-500" />
-                  <span className="text-[#E3DFD6]">3D Models</span>
+                  <span className="text-admin-foreground">3D Models</span>
                 </div>
                 <span className="font-bold text-white">10%</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded-sm bg-emerald-500" />
-                  <span className="text-[#E3DFD6]">Documents</span>
+                  <span className="text-admin-foreground">Documents</span>
                 </div>
                 <span className="font-bold text-white">10%</span>
               </div>
@@ -205,7 +205,7 @@ export function StorageOptimizationDashboard() {
           <CardContent className="flex flex-1 flex-col">
             <div className="flex-1 overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="border-b border-white/10 text-xs uppercase tracking-wider text-[#68869A]">
+                <thead className="border-b border-white/10 text-xs uppercase tracking-wider text-admin-muted">
                   <tr>
                     <th className="pb-3 font-semibold">Filename</th>
                     <th className="pb-3 font-semibold">Type</th>
@@ -242,17 +242,17 @@ export function StorageOptimizationDashboard() {
                     },
                   ].map((file) => (
                     <tr key={file.name} className="group border-b border-white/5 hover:bg-white/5">
-                      <td className="py-4 font-medium text-[#E3DFD6]">{file.name}</td>
+                      <td className="py-4 font-medium text-admin-foreground">{file.name}</td>
                       <td className="py-4">
-                        <span className="rounded-full bg-[#111111] px-2 py-0.5 text-[10px] font-bold text-[#68869A] border border-white/10">
+                        <span className="rounded-full bg-admin-surface px-2 py-0.5 text-xxs font-bold text-admin-muted border border-white/10">
                           {file.type}
                         </span>
                       </td>
-                      <td className="py-4 text-[#68869A]">{file.size}</td>
-                      <td className="py-4 text-[#68869A]">{file.date}</td>
+                      <td className="py-4 text-admin-muted">{file.size}</td>
+                      <td className="py-4 text-admin-muted">{file.date}</td>
                       <td className="py-4 text-right">
                         <button
-                          className="text-[#68869A] transition-colors hover:text-red-500"
+                          className="text-admin-muted transition-colors hover:text-red-500"
                           aria-label={`Delete ${file.name}`}
                           title={`Delete ${file.name}`}
                         >
@@ -279,7 +279,7 @@ export function StorageOptimizationDashboard() {
                 Delete All Orphaned
               </Button>
               <div className="flex-1" />
-              <div className="flex items-center gap-1 text-xs text-[#68869A]">
+              <div className="flex items-center gap-1 text-xs text-admin-muted">
                 <AlertCircle className="h-4 w-4" />
                 Deleting orphaned files cannot be undone.
               </div>
@@ -329,8 +329,8 @@ export function StorageOptimizationDashboard() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-white">{activity.title}</p>
-                  <p className="text-xs text-[#68869A]">{activity.desc}</p>
-                  <p className="mt-1 text-[10px] font-bold uppercase tracking-tighter text-[#68869A]">
+                  <p className="text-xs text-admin-muted">{activity.desc}</p>
+                  <p className="mt-1 text-xxs font-bold uppercase tracking-tighter text-admin-muted">
                     {activity.date}
                   </p>
                 </div>

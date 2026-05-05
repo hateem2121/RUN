@@ -46,11 +46,13 @@ export function MarqueeStrip({
     <div
       ref={containerRef}
       className={cn(
-        "relative w-full overflow-hidden py-4 border-y border-white/[0.08] bg-white/[0.02] backdrop-blur-sm",
+        "relative w-full overflow-hidden py-4 border-y border-white/[0.08] bg-white/[0.02] backdrop-blur-sm focus:outline-none focus:ring-1 focus:ring-white/20",
         className,
       )}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onFocus={handleMouseEnter}
+      onBlur={handleMouseLeave}
       role="group"
       aria-label="Scrolling marquee"
     >

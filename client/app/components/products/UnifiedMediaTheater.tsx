@@ -521,10 +521,12 @@ export function UnifiedMediaTheater({
             {imageAssets.length > 0 ? (
               <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                 {imageAssets.map((asset, index) => (
-                  <div
+                  <button
+                    type="button"
                     key={asset.id}
-                    className="group relative cursor-pointer"
+                    className="group relative cursor-pointer w-full text-left"
                     onClick={() => onZoom?.(asset)}
+                    aria-label={`View ${productName} image ${index + 1}`}
                   >
                     <OptimizedImage
                       mediaId={Number(asset.id)}
@@ -538,7 +540,7 @@ export function UnifiedMediaTheater({
                         <Eye className="h-6 w-6 text-white" />
                       </div>
                     )}
-                  </div>
+                  </button>
                 ))}
               </div>
             ) : (
@@ -710,9 +712,11 @@ export function UnifiedMediaTheater({
               ) : (
                 <div className="relative h-full w-full">
                   {/* PHASE 3.1 FIX: Remove onClick from OptimizedImage and wrap with div */}
-                  <div
+                  <button
+                    type="button"
                     className={cn("h-full w-full", onZoom && "cursor-pointer")}
                     onClick={handleZoom}
+                    aria-label={`Zoom ${productName} image`}
                   >
                     <OptimizedImage
                       mediaId={currentMedia.id}
@@ -721,7 +725,7 @@ export function UnifiedMediaTheater({
                       priority={true}
                       className="h-full w-full object-contain"
                     />
-                  </div>
+                  </button>
 
                   {/* Zoom button for desktop */}
                   {onZoom && !isMobile && (

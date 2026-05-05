@@ -37,7 +37,7 @@ export function RoadmapCard({ item, onEdit, onDelete }: RoadmapCardProps) {
           <div
             {...attributes}
             {...listeners}
-            className="mt-0.5 cursor-grab text-[#E3DFD6]/20 transition-colors hover:text-[#00D4FF]/40 active:cursor-grabbing"
+            className="mt-0.5 cursor-grab text-admin-foreground/20 transition-colors hover:text-[#00D4FF]/40 active:cursor-grabbing"
             title="Drag to reorder"
           >
             <GripVertical className="h-4 w-4" />
@@ -51,7 +51,7 @@ export function RoadmapCard({ item, onEdit, onDelete }: RoadmapCardProps) {
             <button
               type="button"
               onClick={() => onEdit(item)}
-              className="text-[#E3DFD6]/40 hover:text-[#00D4FF]"
+              className="text-admin-foreground/40 hover:text-[#00D4FF]"
               title="Edit Milestone"
             >
               <Edit2 className="h-3.5 w-3.5" />
@@ -59,7 +59,7 @@ export function RoadmapCard({ item, onEdit, onDelete }: RoadmapCardProps) {
             <button
               type="button"
               onClick={() => onDelete(item.id)}
-              className="text-[#E3DFD6]/40 hover:text-red-400"
+              className="text-admin-foreground/40 hover:text-red-400"
               title="Delete Milestone"
             >
               <Trash2 className="h-3.5 w-3.5" />
@@ -82,7 +82,7 @@ export function RoadmapCard({ item, onEdit, onDelete }: RoadmapCardProps) {
                 item.priority === "high"
                   ? "bg-red-500/10 text-red-400 border-red-500/20"
                   : item.priority === "medium"
-                    ? "bg-[#D4A853]/10 text-[#D4A853] border-[#D4A853]/20"
+                    ? "bg-brand-manufacturing/10 text-brand-manufacturing border-brand-manufacturing/20"
                     : "bg-blue-500/10 text-blue-400 border-blue-500/20",
               )}
             >
@@ -91,13 +91,13 @@ export function RoadmapCard({ item, onEdit, onDelete }: RoadmapCardProps) {
           )}
         </div>
 
-        <p className="line-clamp-2 text-[#E3DFD6]/40 text-[11px] leading-relaxed italic">
+        <p className="line-clamp-2 text-admin-foreground/40 text-[11px] leading-relaxed italic">
           {item.description}
         </p>
 
         <div className="flex items-center justify-between pt-1 border-t border-white/5">
           <div className="flex -space-x-1.5 overflow-hidden">
-            <div className="size-5 rounded-full border border-[#0A0A0A] bg-white/5 flex items-center justify-center">
+            <div className="size-5 rounded-full border border-surface-black bg-white/5 flex items-center justify-center">
               <Zap className="size-2.5 text-[#00D4FF]/60" />
             </div>
           </div>

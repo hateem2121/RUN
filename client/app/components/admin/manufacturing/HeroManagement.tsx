@@ -190,11 +190,11 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
         <CardContent className="p-12 w-full flex items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <div className="flex space-x-2">
-              <div className="h-2 w-2 animate-bounce rounded-full bg-[#D4A853] [animation-delay:-0.3s]"></div>
-              <div className="h-2 w-2 animate-bounce rounded-full bg-[#D4A853] [animation-delay:-0.15s]"></div>
-              <div className="h-2 w-2 animate-bounce rounded-full bg-[#D4A853]"></div>
+              <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing [animation-delay:-0.3s]"></div>
+              <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing [animation-delay:-0.15s]"></div>
+              <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing"></div>
             </div>
-            <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+            <p className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
               Orchestrating Hero Tab...
             </p>
           </div>
@@ -211,7 +211,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
             <div className="mb-8 flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold text-white tracking-tight">Hero Section</h2>
-                <p className="text-sm text-[#68869A]">
+                <p className="text-sm text-admin-muted">
                   Manage the main hero section for the manufacturing page
                 </p>
               </div>
@@ -221,7 +221,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                   name="isActive"
                   checked={optimisticHero.isActive}
                   onCheckedChange={(checked) => setHeroData({ ...heroData, isActive: checked })}
-                  className="data-[state=checked]:bg-[#D4A853]"
+                  className="data-[state=checked]:bg-brand-manufacturing"
                 />
                 <Label
                   htmlFor="hero-active"
@@ -236,7 +236,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="headline"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Headline
                 </Label>
@@ -252,7 +252,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="subheadline"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Subheadline
                 </Label>
@@ -271,7 +271,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="ctaText"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Main Button Text
                 </Label>
@@ -287,7 +287,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="ctaLink"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Main Button Link
                 </Label>
@@ -304,7 +304,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
 
             <div className="space-y-6 pt-8 border-t border-white/5">
               <div className="flex items-center gap-2 mb-4">
-                <Layout className="w-4 h-4 text-[#D4A853]" />
+                <Layout className="w-4 h-4 text-brand-manufacturing" />
                 <h3 className="text-sm font-bold text-white uppercase tracking-wider">
                   Bottom Conversion Banner
                 </h3>
@@ -314,7 +314,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                 <div className="space-y-2">
                   <Label
                     htmlFor="bottomCtaTitle"
-                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                    className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                   >
                     Banner Title
                   </Label>
@@ -330,7 +330,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                 <div className="space-y-2">
                   <Label
                     htmlFor="bottomCtaDescription"
-                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                    className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                   >
                     Banner Description
                   </Label>
@@ -348,7 +348,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                 <div className="space-y-2">
                   <Label
                     htmlFor="bottomCtaText"
-                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                    className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                   >
                     Banner Button Text
                   </Label>
@@ -364,7 +364,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                 <div className="space-y-2">
                   <Label
                     htmlFor="bottomCtaLink"
-                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                    className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                   >
                     Banner Button Link
                   </Label>
@@ -382,7 +382,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-white/5">
               <div className="space-y-3">
-                <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                   Background Asset
                 </Label>
                 <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all group">
@@ -411,7 +411,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                             ? "Change background asset"
                             : "Select background asset"
                         }
-                        className="text-[10px] font-bold text-[#D4A853] hover:text-[#D4A853]/80 transition-colors uppercase tracking-wider"
+                        className="text-xxs font-bold text-brand-manufacturing hover:text-brand-manufacturing/80 transition-colors uppercase tracking-wider"
                       >
                         {finalSelectedBackground ? "Change" : "Select"}
                       </button>
@@ -420,7 +420,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                           type="button"
                           onClick={() => setHeroData({ ...heroData, backgroundMediaId: null })}
                           aria-label="Remove background asset"
-                          className="text-[10px] font-bold text-red-500/70 hover:text-red-500 transition-colors uppercase tracking-wider"
+                          className="text-xxs font-bold text-red-500/70 hover:text-red-500 transition-colors uppercase tracking-wider"
                         >
                           Remove
                         </button>
@@ -431,7 +431,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
               </div>
 
               <div className="space-y-3">
-                <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                   Hero Video Overlay
                 </Label>
                 <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all group">
@@ -439,7 +439,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                     <Play
                       className={cn(
                         "w-6 h-6",
-                        finalSelectedVideo ? "text-[#D4A853]" : "text-white/10",
+                        finalSelectedVideo ? "text-brand-manufacturing" : "text-white/10",
                       )}
                     />
                   </div>
@@ -457,7 +457,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                             ? "Change hero video overlay"
                             : "Select hero video overlay"
                         }
-                        className="text-[10px] font-bold text-[#D4A853] hover:text-[#D4A853]/80 transition-colors uppercase tracking-wider"
+                        className="text-xxs font-bold text-brand-manufacturing hover:text-brand-manufacturing/80 transition-colors uppercase tracking-wider"
                       >
                         {finalSelectedVideo ? "Change Video" : "Select Video"}
                       </button>
@@ -466,7 +466,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                           type="button"
                           onClick={() => setHeroData({ ...heroData, videoId: null })}
                           aria-label="Remove hero video overlay"
-                          className="text-[10px] font-bold text-red-500/70 hover:text-red-500 transition-colors uppercase tracking-wider"
+                          className="text-xxs font-bold text-red-500/70 hover:text-red-500 transition-colors uppercase tracking-wider"
                         >
                           Remove
                         </button>

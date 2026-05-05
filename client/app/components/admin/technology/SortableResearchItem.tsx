@@ -92,7 +92,7 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
           <h4 className="text-lg font-bold text-white tracking-wide truncate">{research.title}</h4>
           <span
             className={cn(
-              "rounded-full border px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest",
+              "rounded-full border px-2.5 py-0.5 text-xxs font-black uppercase tracking-widest",
               statusConfig.badge,
             )}
           >
@@ -101,12 +101,12 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
         </div>
 
         {research.researchArea && (
-          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.15em] text-[#00D4FF]/70">
+          <p className="mb-2 text-xxs font-bold uppercase tracking-[0.15em] text-[#00D4FF]/70">
             Focus: {research.researchArea}
           </p>
         )}
 
-        <p className="line-clamp-2 max-w-2xl text-sm leading-relaxed text-[#E3DFD6]/60">
+        <p className="line-clamp-2 max-w-2xl text-sm leading-relaxed text-admin-foreground/60">
           {research.description ||
             "Experimental research initiative exploring advanced material properties and biomechanical integration for high-performance footwear."}
         </p>
@@ -127,7 +127,7 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
         <button
           type="button"
           onClick={() => onEdit(research)}
-          className="flex h-10 w-10 items-center justify-center rounded-lg text-[#E3DFD6]/40 transition-all hover:bg-[#00D4FF]/10 hover:text-[#00D4FF]"
+          className="flex h-10 w-10 items-center justify-center rounded-lg text-admin-foreground/40 transition-all hover:bg-[#00D4FF]/10 hover:text-[#00D4FF]"
           title="Edit item"
           aria-label="Edit item"
         >
@@ -141,7 +141,7 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
           trigger={
             <button
               type="button"
-              className="flex h-10 w-10 items-center justify-center rounded-lg text-[#E3DFD6]/40 transition-all hover:bg-rose-500/10 hover:text-rose-500"
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-admin-foreground/40 transition-all hover:bg-rose-500/10 hover:text-rose-500"
               title="Delete item"
               aria-label="Delete item"
             >

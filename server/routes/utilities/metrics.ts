@@ -1,4 +1,4 @@
-import { removeUndefined } from "../../utils.js";
+import { removeUndefined } from "../../lib/utilities/core-utils.js";
 
 // Unified Metrics Endpoint
 // Aggregates metrics from cache, database, and performance monitoring systems

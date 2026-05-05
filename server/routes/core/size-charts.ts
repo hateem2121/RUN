@@ -1,4 +1,4 @@
-import { removeUndefined } from "../../utils.js";
+import { removeUndefined } from "../../lib/utilities/core-utils.js";
 
 /**
  * SIZE CHARTS ROUTER MODULE
@@ -10,8 +10,8 @@ import { Router } from "express";
 import { insertSizeChartSchema } from "../../../shared/index.js";
 import { miscRepository } from "../../lib/db/repositories/index.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
-import { validateIdParam } from "../../utils.js";
 
 const router = Router();
 

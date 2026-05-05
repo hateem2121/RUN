@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sanitizeForLogging } from "../sanitize-for-logging.js";
+import { sanitizeForLogging } from "../../../lib/sanitize-for-logging.js";
 
 describe("sanitizeForLogging", () => {
   it("should sanitize exact and partial PII key names", () => {

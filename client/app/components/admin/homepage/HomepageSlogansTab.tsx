@@ -80,14 +80,14 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
               </div>
               <div>
                 <h2 className="text-xl font-bold text-white tracking-tight">Kinetic Slogans</h2>
-                <p className="text-sm text-[#68869A]">
+                <p className="text-sm text-admin-muted">
                   Manage animated text sequences. Drag to reorder.
                 </p>
               </div>
             </div>
             <Button
               onClick={() => setIsCreateOpen(true)}
-              className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all border-0"
+              className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all border-0"
             >
               <Plus className="mr-2 h-4 w-4" /> Add Sequence
             </Button>
@@ -120,7 +120,7 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
                             {slogan.isActive ? (
                               <span className="text-blue-400">Active Broadcast</span>
                             ) : (
-                              <span className="text-[#68869A]">Inactive</span>
+                              <span className="text-admin-muted">Inactive</span>
                             )}
                           </div>
                         </div>
@@ -131,7 +131,7 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
                           size="sm"
                           onClick={() => setEditingSlogan(slogan)}
                           aria-label={`Edit slogan: ${slogan.text}`}
-                          className="h-9 px-3 text-[#68869A] hover:text-white hover:bg-white/10"
+                          className="h-9 px-3 text-admin-muted hover:text-white hover:bg-white/10"
                         >
                           <Edit className="h-4 w-4 mr-2" /> Edit
                         </Button>
@@ -150,9 +150,9 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
                 ))}
                 {orderedSlogans.length === 0 && (
                   <div className="text-center py-12 rounded-2xl border border-dashed border-white/10">
-                    <MessageSquareText className="h-8 w-8 text-[#68869A] mx-auto mb-3 opacity-50" />
+                    <MessageSquareText className="h-8 w-8 text-admin-muted mx-auto mb-3 opacity-50" />
                     <p className="text-sm font-medium text-white mb-1">No sequences active</p>
-                    <p className="text-xs text-[#68869A] max-w-sm mx-auto">
+                    <p className="text-xs text-admin-muted max-w-sm mx-auto">
                       Add kinetic slogans to engage users during initial page load and idle states.
                     </p>
                   </div>
@@ -164,12 +164,12 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
 
         {/* Create Dialog */}
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogContent className="bg-[#0A0A0A] border-white/10 text-white">
+          <DialogContent className="bg-surface-black border-white/10 text-white">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold tracking-tight">
                 Deploy New Sequence
               </DialogTitle>
-              <DialogDescription className="text-[#68869A]">
+              <DialogDescription className="text-admin-muted">
                 Configure a new kinetic text sequence for the hero section.
               </DialogDescription>
             </DialogHeader>
@@ -177,7 +177,7 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
               <div className="grid gap-2">
                 <Label
                   htmlFor="text"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Sequence Text
                 </Label>
@@ -205,12 +205,12 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
         {/* Edit Dialog */}
         {editingSlogan && (
           <Dialog open={!!editingSlogan} onOpenChange={(open) => !open && setEditingSlogan(null)}>
-            <DialogContent className="bg-[#0A0A0A] border-white/10 text-white">
+            <DialogContent className="bg-surface-black border-white/10 text-white">
               <DialogHeader>
                 <DialogTitle className="text-xl font-bold tracking-tight">
                   Modify Sequence
                 </DialogTitle>
-                <DialogDescription className="text-[#68869A]">
+                <DialogDescription className="text-admin-muted">
                   Update sequence text and broadcast status.
                 </DialogDescription>
               </DialogHeader>
@@ -218,7 +218,7 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
                 <div className="grid gap-2">
                   <Label
                     htmlFor="edit-text"
-                    className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                    className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                   >
                     Sequence Text
                   </Label>
@@ -245,7 +245,7 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
                     >
                       Broadcast Status
                     </Label>
-                    <p className="text-xs text-[#68869A]">
+                    <p className="text-xs text-admin-muted">
                       Activate this sequence on the global storefront
                     </p>
                   </div>

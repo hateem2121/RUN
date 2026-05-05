@@ -1,4 +1,4 @@
-import { removeUndefined } from "../../utils.js";
+import { removeUndefined } from "../../lib/utilities/core-utils.js";
 
 /**
  * PRODUCTS ROUTER MODULE
@@ -6,23 +6,23 @@ import { removeUndefined } from "../../utils.js";
  * Handles all product CRUD operations, pagination, filtering, and search
  */
 
+import {
+  insertProductSchema,
+  type ProductSummary,
+  productByPathSchema,
+  productsQuerySchema,
+} from "@run-remix/shared";
 import { type Request, type Response, Router } from "express";
 import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
-import {
-  insertProductSchema,
-  productByPathSchema,
-  productsQuerySchema,
-  type ProductSummary,
-} from "@run-remix/shared";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
 import { productRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { shouldBypassCache, validateIdParam } from "../../lib/utilities/core-utils.js";
 import { createRateLimiter } from "../../middleware/rateLimiter.js";
 import { webhookService } from "../../services/webhook-service.js";
-import { shouldBypassCache, validateIdParam } from "../../utils.js";
 
 const writeRateLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,

@@ -132,20 +132,17 @@ export function CustomSelect<T>({
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search..."
                 className="w-full rounded-md border border-border bg-background p-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-hidden"
-                autoFocus
               />
             </div>
           )}
           <ul
             ref={listRef}
-            role="listbox"
             aria-labelledby={ariaLabelledBy || id}
             className="max-h-40 overflow-y-auto py-1"
           >
             {filtered.map((option, index) => (
               <li
                 key={getKey(option)}
-                role="option"
                 aria-selected={value === option ? "true" : "false"}
                 onClick={() => {
                   onChange(option);
@@ -162,11 +159,7 @@ export function CustomSelect<T>({
               </li>
             ))}
             {filtered.length === 0 && (
-              <li
-                role="option"
-                aria-disabled="true"
-                className="px-3 py-2 text-muted-foreground text-sm"
-              >
+              <li aria-disabled="true" className="px-3 py-2 text-muted-foreground text-sm">
                 No results
               </li>
             )}

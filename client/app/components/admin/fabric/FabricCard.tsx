@@ -92,7 +92,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
         </div>
 
         {/* Basic info always visible */}
-        <p className="text-[#68869A] mb-4">{fabric.description}</p>
+        <p className="text-admin-muted mb-4">{fabric.description}</p>
 
         {/* Expandable detailed view */}
         <Collapsible open={isExpanded} onOpenChange={() => onToggleExpand(fabric.id)}>
@@ -118,7 +118,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
                       )}
                     </div>
                   </div>
-                  <p className="text-[#68869A]">{fabric.description}</p>
+                  <p className="text-admin-muted">{fabric.description}</p>
                 </div>
 
                 {/* Classification */}
@@ -167,7 +167,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   {fabric.weight && (
                     <div className="flex justify-between">
-                      <span className="text-[#68869A]">Weight:</span>
+                      <span className="text-admin-muted">Weight:</span>
                       <Badge
                         variant={(() => {
                           const weight = parseNumericValue(fabric.weight);
@@ -188,7 +188,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
                   )}
                   {fabric.properties?.yarnCountConstruction && (
                     <div className="flex justify-between">
-                      <span className="text-[#68869A]">Construction:</span>
+                      <span className="text-admin-muted">Construction:</span>
                       <span className="text-xs font-medium">
                         {fabric.properties?.yarnCountConstruction}
                       </span>
@@ -200,7 +200,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
                 {fabric.properties?.performanceFeatures &&
                   fabric.properties.performanceFeatures.length > 0 && (
                     <div className="space-y-2">
-                      <span className="text-[#68869A] text-sm">Performance Features:</span>
+                      <span className="text-admin-muted text-sm">Performance Features:</span>
                       <div className="flex flex-wrap gap-1">
                         {fabric.properties.performanceFeatures.map(
                           (feature: string, idx: number) => (
@@ -222,7 +222,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   {fabric.properties?.stretchPercentage && (
                     <div className="rounded-lg bg-blue-500/10 border border-blue-500/20 p-2">
-                      <div className="text-[#68869A]">Stretch</div>
+                      <div className="text-admin-muted">Stretch</div>
                       <div className="font-semibold text-white">
                         {fabric.properties.stretchPercentage}%
                       </div>
@@ -230,7 +230,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
                   )}
                   {fabric.properties?.airPermeability && (
                     <div className="rounded-lg bg-green-500/10 border border-green-500/20 p-2">
-                      <div className="text-[#68869A]">Air Perm.</div>
+                      <div className="text-admin-muted">Air Perm.</div>
                       <div className="font-semibold text-white">
                         {fabric.properties.airPermeability} mm/s
                       </div>
@@ -238,7 +238,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
                   )}
                   {fabric.properties?.waterColumn && (
                     <div className="rounded-lg bg-purple-500/10 border border-purple-500/20 p-2">
-                      <div className="text-[#68869A]">Waterproof</div>
+                      <div className="text-admin-muted">Waterproof</div>
                       <div className="font-semibold text-white">
                         {fabric.properties.waterColumn} mm
                       </div>
@@ -246,7 +246,7 @@ export const FabricCard: React.FC<FabricCardProps> = ({
                   )}
                   {fabric.sustainabilityScore && (
                     <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-2">
-                      <div className="text-[#68869A]">Sustainability</div>
+                      <div className="text-admin-muted">Sustainability</div>
                       <div className="font-semibold text-white">
                         {"★".repeat(parseNumericValue(fabric.sustainabilityScore) || 0)}
                       </div>

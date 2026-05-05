@@ -22,7 +22,6 @@ const CategoryMarqueeItem: React.FC<{
   return (
     <div
       role="listitem"
-      tabIndex={0}
       className={cn(
         "group relative px-8 py-4 transition-all duration-500 ease-out md:px-16",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime/50 rounded-xl",

@@ -89,14 +89,14 @@ function SortableProcessItem({
         <div
           {...attributes}
           {...listeners}
-          className="mt-1 cursor-grab active:cursor-grabbing text-[#68869A] hover:text-blue-400 transition-colors"
+          className="mt-1 cursor-grab active:cursor-grabbing text-admin-muted hover:text-blue-400 transition-colors"
         >
           <GripVertical className="h-5 w-5" />
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-1">
-            <span className="text-[10px] font-bold text-[#D4A853] uppercase tracking-widest bg-[#D4A853]/10 px-2 py-0.5 rounded-full border border-[#D4A853]/20">
+            <span className="text-xxs font-bold text-brand-manufacturing uppercase tracking-widest bg-brand-manufacturing/10 px-2 py-0.5 rounded-full border border-brand-manufacturing/20">
               Step {process.step}
             </span>
             <h4 className="font-bold text-white tracking-tight truncate">
@@ -104,7 +104,7 @@ function SortableProcessItem({
             </h4>
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[#68869A] text-xs">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-admin-muted text-xs">
             <span className="flex items-center gap-1.5 underline decoration-white/10 underline-offset-4 decoration-dotted">
               {process.duration}
             </span>
@@ -119,7 +119,7 @@ function SortableProcessItem({
           </div>
 
           {process.description && (
-            <p className="mt-3 text-[#68869A] text-xs leading-relaxed line-clamp-2 max-w-2xl">
+            <p className="mt-3 text-admin-muted text-xs leading-relaxed line-clamp-2 max-w-2xl">
               {process.description}
             </p>
           )}
@@ -129,10 +129,10 @@ function SortableProcessItem({
           <Badge
             variant="outline"
             className={cn(
-              "text-[10px] uppercase tracking-wider border-0",
+              "text-xxs uppercase tracking-wider border-0",
               (process.isActive ?? true)
                 ? "bg-emerald-500/10 text-emerald-400"
-                : "bg-white/5 text-[#68869A]",
+                : "bg-white/5 text-admin-muted",
             )}
           >
             {(process.isActive ?? true) ? "Active" : "Inactive"}
@@ -141,7 +141,7 @@ function SortableProcessItem({
             size="icon"
             variant="ghost"
             onClick={() => onEdit(process)}
-            className="size-8 rounded-lg hover:bg-[#D4A853]/10 hover:text-[#D4A853]"
+            className="size-8 rounded-lg hover:bg-brand-manufacturing/10 hover:text-brand-manufacturing"
           >
             <Edit className="h-4 w-4" />
           </Button>
@@ -381,14 +381,14 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-white tracking-tight">Manufacturing Processes</h2>
-            <p className="text-sm text-[#68869A]">Manage production steps and efficiency metrics</p>
+            <p className="text-sm text-admin-muted">Manage production steps and efficiency metrics</p>
           </div>
           <Button
             onClick={() => {
               resetProcessForm();
               setShowProcessDialog(true);
             }}
-            className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl font-bold transition-all px-6 py-5 uppercase text-[10px] tracking-widest"
+            className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl font-bold transition-all px-6 py-5 uppercase text-xxs tracking-widest"
           >
             <Plus className="mr-2 h-4 w-4" />
             Add Process
@@ -399,11 +399,11 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
           {processesLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="flex space-x-2">
-                <div className="h-2 w-2 animate-bounce rounded-full bg-[#D4A853] [animation-delay:-0.3s]"></div>
-                <div className="h-2 w-2 animate-bounce rounded-full bg-[#D4A853] [animation-delay:-0.15s]"></div>
-                <div className="h-2 w-2 animate-bounce rounded-full bg-[#D4A853]"></div>
+                <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing [animation-delay:-0.3s]"></div>
+                <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing [animation-delay:-0.15s]"></div>
+                <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing"></div>
               </div>
-              <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+              <p className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                 Orchestrating Processes Tab...
               </p>
             </div>
@@ -413,7 +413,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                 <LayoutTemplate className="size-8 text-white/10" />
               </div>
               <p className="text-white/40 font-medium">No manufacturing processes found.</p>
-              <p className="text-[#68869A] text-sm mt-1">
+              <p className="text-admin-muted text-sm mt-1">
                 Create your first process to get started.
               </p>
             </div>
@@ -448,7 +448,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
         <Dialog open={showProcessDialog} onOpenChange={setShowProcessDialog}>
           <DialogContent
             className={cn(
-              "bg-[#0A0A0A]/95 border-white/10 backdrop-blur-2xl text-white rounded-3xl p-0 overflow-hidden",
+              "bg-surface-black/95 border-white/10 backdrop-blur-2xl text-white rounded-3xl p-0 overflow-hidden",
               showPreview ? "max-w-6xl" : "max-w-xl",
             )}
           >
@@ -458,7 +458,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                   <DialogTitle className="text-2xl font-bold tracking-tight">
                     {editingProcess ? "Edit Process" : "Add New Process"}
                   </DialogTitle>
-                  <DialogDescription className="text-[#68869A]">
+                  <DialogDescription className="text-admin-muted">
                     Configure manufacturing process step and details
                   </DialogDescription>
                 </div>
@@ -466,7 +466,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowPreview(!showPreview)}
-                  className="hidden gap-2 sm:flex text-[10px] font-bold uppercase tracking-widest hover:bg-white/5"
+                  className="hidden gap-2 sm:flex text-xxs font-bold uppercase tracking-widest hover:bg-white/5"
                 >
                   {showPreview ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   {showPreview ? "Hide Preview" : "Show Preview"}
@@ -482,7 +482,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                       <div className="space-y-2">
                         <Label
                           htmlFor="process-title"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Title
                         </Label>
@@ -505,7 +505,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                       <div className="space-y-2">
                         <Label
                           htmlFor="process-step"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Step Number
                         </Label>
@@ -530,7 +530,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                       <div className="space-y-2">
                         <Label
                           htmlFor="process-category"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Category
                         </Label>
@@ -551,7 +551,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                       <div className="space-y-2">
                         <Label
                           htmlFor="process-icon"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Visual Icon
                         </Label>
@@ -564,12 +564,12 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                           <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-[50px] focus:ring-[#D4A853]/50">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className="bg-[#0A0A0A] border-white/10 text-white">
+                          <SelectContent className="bg-surface-black border-white/10 text-white">
                             {processIcons.map((icon) => (
                               <SelectItem
                                 key={icon}
                                 value={icon}
-                                className="hover:bg-[#D4A853]/10 focus:bg-[#D4A853]/10"
+                                className="hover:bg-brand-manufacturing/10 focus:bg-brand-manufacturing/10"
                               >
                                 {icon}
                               </SelectItem>
@@ -583,7 +583,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                       <div className="space-y-2">
                         <Label
                           htmlFor="process-efficiency"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Process Efficiency
                         </Label>
@@ -603,7 +603,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                             }
                             className="bg-white/5 border-white/10 text-white rounded-xl py-6 pr-12 focus:ring-[#D4A853]/50"
                           />
-                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#68869A] font-bold text-xs">
+                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-admin-muted font-bold text-xs">
                             %
                           </span>
                         </div>
@@ -611,7 +611,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                       <div className="space-y-2">
                         <Label
                           htmlFor="process-duration"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Active Duration
                         </Label>
@@ -634,7 +634,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                     <div className="space-y-2">
                       <Label
                         htmlFor="process-description"
-                        className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                        className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                       >
                         Process Description
                       </Label>
@@ -661,7 +661,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                         onCheckedChange={(checked) =>
                           setProcessForm({ ...processForm, isActive: checked })
                         }
-                        className="data-[state=checked]:bg-[#D4A853]"
+                        className="data-[state=checked]:bg-brand-manufacturing"
                       />
                       <Label
                         htmlFor="process-active"
@@ -672,7 +672,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                     </div>
 
                     <div className="space-y-3 pt-6 border-t border-white/5">
-                      <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                      <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                         Process Media
                       </Label>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -692,7 +692,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                               <p className="truncate font-bold text-xs text-white uppercase tracking-tight">
                                 {media.filename}
                               </p>
-                              <p className="text-[#68869A] text-[10px] uppercase font-medium">
+                              <p className="text-admin-muted text-xxs uppercase font-medium">
                                 {media.type}
                               </p>
                             </div>
@@ -719,8 +719,8 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                           data-testid="select-process-media"
                           className="flex items-center justify-center gap-2 h-[66px] rounded-xl border-2 border-dashed border-white/5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/10 transition-all group"
                         >
-                          <Plus className="size-4 text-[#68869A] group-hover:text-[#D4A853] transition-colors" />
-                          <span className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest group-hover:text-white transition-colors">
+                          <Plus className="size-4 text-admin-muted group-hover:text-brand-manufacturing transition-colors" />
+                          <span className="text-xxs font-bold text-admin-muted uppercase tracking-widest group-hover:text-white transition-colors">
                             Add Asset
                           </span>
                           <span className="sr-only">Select Process Media</span>
@@ -731,9 +731,9 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
 
                   {showPreview && (
                     <div className="sticky top-0 h-fit space-y-4">
-                      <div className="flex items-center gap-2 mb-2 p-3 bg-[#D4A853]/10 rounded-xl border border-[#D4A853]/20">
-                        <LayoutTemplate className="h-4 w-4 text-[#D4A853]" />
-                        <span className="text-[10px] font-bold text-[#D4A853] uppercase tracking-widest">
+                      <div className="flex items-center gap-2 mb-2 p-3 bg-brand-manufacturing/10 rounded-xl border border-brand-manufacturing/20">
+                        <LayoutTemplate className="h-4 w-4 text-brand-manufacturing" />
+                        <span className="text-xxs font-bold text-brand-manufacturing uppercase tracking-widest">
                           Live Component Preview
                         </span>
                       </div>
@@ -746,7 +746,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                           />
                         </LivePreviewGrid>
                       </div>
-                      <p className="text-[10px] font-medium text-[#68869A] text-center italic">
+                      <p className="text-xxs font-medium text-admin-muted text-center italic">
                         This is how the card will appear on the public manufacturing page.
                       </p>
                     </div>
@@ -759,14 +759,14 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                   type="button"
                   variant="ghost"
                   onClick={() => setShowProcessDialog(false)}
-                  className="text-[#68869A] hover:bg-white/5"
+                  className="text-admin-muted hover:bg-white/5"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
-                  className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl px-8 py-6 font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all"
+                  className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl px-8 py-6 font-bold uppercase text-xxs tracking-widest active:scale-95 transition-all"
                 >
                   {isPending ? "Syncing..." : editingProcess ? "Update Process" : "Create Process"}
                 </Button>

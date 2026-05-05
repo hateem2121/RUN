@@ -120,7 +120,7 @@ function SortableInnovationItem({
       <div
         {...attributes}
         {...listeners}
-        className="cursor-move p-1 text-[#68869A] hover:text-cyan-400 transition-colors"
+        className="cursor-move p-1 text-admin-muted hover:text-cyan-400 transition-colors"
         onClick={(e) => e.stopPropagation()}
       >
         <GripVertical className="h-5 w-5" />
@@ -135,7 +135,7 @@ function SortableInnovationItem({
             {innovation.category}
           </Badge>
           {innovation.developmentYear && (
-            <span className="text-[10px] text-[#68869A] font-mono">
+            <span className="text-xxs text-admin-muted font-mono">
               {innovation.developmentYear}
             </span>
           )}
@@ -143,7 +143,7 @@ function SortableInnovationItem({
         <h4 className="font-bold text-white text-sm truncate uppercase tracking-tight group-hover:text-cyan-400 transition-colors">
           {innovation.name}
         </h4>
-        <p className="text-xs text-[#68869A] line-clamp-1 mt-0.5">
+        <p className="text-xs text-admin-muted line-clamp-1 mt-0.5">
           {innovation.shortDescription || "No tech specs defined."}
         </p>
       </div>
@@ -157,7 +157,7 @@ function SortableInnovationItem({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-[#68869A] hover:text-red-400 hover:bg-red-400/10"
+              className="h-8 w-8 text-admin-muted hover:text-red-400 hover:bg-red-400/10"
               onClick={(e) => e.stopPropagation()}
             >
               <Trash2 className="h-4 w-4" />
@@ -368,7 +368,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
           <div className="h-2 w-2 animate-bounce rounded-full bg-cyan-500 [animation-delay:-0.15s]"></div>
           <div className="h-2 w-2 animate-bounce rounded-full bg-cyan-500"></div>
         </div>
-        <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest text-center">
+        <p className="text-xxs font-bold text-admin-muted uppercase tracking-widest text-center">
           Calibrating Innovation Matrices...
         </p>
       </div>
@@ -399,7 +399,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
             </div>
 
             <div className="relative group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#68869A] group-focus-within:text-cyan-400 transition-colors" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-admin-muted group-focus-within:text-cyan-400 transition-colors" />
               <Input
                 placeholder="Filter innovations..."
                 value={searchQuery}
@@ -433,7 +433,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                 {filteredInnovations.length === 0 && (
                   <div className="py-12 text-center">
                     <History className="h-8 w-8 text-white/5 mx-auto mb-3" />
-                    <p className="text-[10px] text-[#68869A] font-medium uppercase tracking-widest">
+                    <p className="text-xxs text-admin-muted font-medium uppercase tracking-widest">
                       No matching archives
                     </p>
                   </div>
@@ -458,7 +458,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                     <h2 className="text-2xl font-bold text-white tracking-tight">
                       {isNewInnovation ? "Initialize Innovation" : selectedInnovation?.name}
                     </h2>
-                    <p className="text-sm text-[#68869A]">
+                    <p className="text-sm text-admin-muted">
                       {isNewInnovation
                         ? "Defining parameters for a new technological breakthrough."
                         : "Specifying technical data and ecosystem integration."}
@@ -472,7 +472,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                       setIsNewInnovation(false);
                     }}
                     variant="ghost"
-                    className="text-[10px] font-bold uppercase tracking-widest hover:bg-white/5 h-11 px-4 text-[#68869A]"
+                    className="text-xxs font-bold uppercase tracking-widest hover:bg-white/5 h-11 px-4 text-admin-muted"
                   >
                     <X className="mr-2 h-4 w-4" />
                     Dismiss
@@ -480,7 +480,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                   <Button
                     onClick={handleSubmit}
                     disabled={!hasChanges || createMutation.isPending || updateMutation.isPending}
-                    className="h-11 bg-cyan-600 hover:bg-cyan-700 text-white px-8 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-cyan-500/20 active:scale-95 transition-all outline-none border-0"
+                    className="h-11 bg-cyan-600 hover:bg-cyan-700 text-white px-8 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-cyan-500/20 active:scale-95 transition-all outline-none border-0"
                   >
                     {createMutation.isPending || updateMutation.isPending ? (
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white mr-2" />
@@ -500,7 +500,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                   <section className="space-y-6">
                     <div className="flex items-center gap-2">
                       <Info className="size-4 text-cyan-400" />
-                      <h3 className="text-[10px] font-bold text-white uppercase tracking-widest">
+                      <h3 className="text-xxs font-bold text-white uppercase tracking-widest">
                         Base specifications
                       </h3>
                     </div>
@@ -508,7 +508,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                       <div className="space-y-2">
                         <Label
                           htmlFor="name"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Protocol Name
                         </Label>
@@ -524,7 +524,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                       <div className="space-y-2">
                         <Label
                           htmlFor="category"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Sector Class
                         </Label>
@@ -553,7 +553,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                     <div className="space-y-2">
                       <Label
                         htmlFor="shortDescription"
-                        className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                        className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                       >
                         Brief Technical Abstract
                       </Label>
@@ -569,7 +569,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                     <div className="space-y-2">
                       <Label
                         htmlFor="description"
-                        className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                        className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                       >
                         Full Technical Documentation
                       </Label>
@@ -587,13 +587,13 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                   <section className="space-y-6 pt-10 border-t border-white/5">
                     <div className="flex items-center gap-2">
                       <Settings2 className="size-4 text-cyan-400" />
-                      <h3 className="text-[10px] font-bold text-white uppercase tracking-widest">
+                      <h3 className="text-xxs font-bold text-white uppercase tracking-widest">
                         Digital Specs & Assets
                       </h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="space-y-4">
-                        <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                        <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                           Innovation Visual
                         </Label>
                         <div
@@ -611,8 +611,8 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                             />
                           ) : (
                             <div className="text-center">
-                              <ImageIcon className="size-8 text-[#68869A] mx-auto mb-2" />
-                              <p className="text-[10px] uppercase font-bold text-[#68869A] tracking-widest">
+                              <ImageIcon className="size-8 text-admin-muted mx-auto mb-2" />
+                              <p className="text-xxs uppercase font-bold text-admin-muted tracking-widest">
                                 Sync Media
                               </p>
                             </div>
@@ -623,7 +623,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                         <div className="space-y-2">
                           <Label
                             htmlFor="developmentYear"
-                            className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                            className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                           >
                             R&D Release Year
                           </Label>
@@ -636,7 +636,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                           />
                         </div>
                         <div className="space-y-4">
-                          <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                          <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                             System Operationality
                           </Label>
                           <div className="flex items-center justify-between p-4 rounded-xl bg-white/[0.03] border border-white/5">
@@ -660,7 +660,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                   <section className="space-y-6 p-6 rounded-2xl bg-white/[0.02] border border-white/5">
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="size-4 text-cyan-400" />
-                      <h3 className="text-[10px] font-bold text-white uppercase tracking-widest">
+                      <h3 className="text-xxs font-bold text-white uppercase tracking-widest">
                         Protocol Benefits
                       </h3>
                     </div>
@@ -705,7 +705,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                           key={idx}
                           className="flex items-center justify-between p-3 rounded-xl bg-white/[0.04] border border-white/5 group hover:border-cyan-500/20 transition-colors"
                         >
-                          <span className="text-xs text-[#E3DFD6]">{benefit}</span>
+                          <span className="text-xs text-admin-foreground">{benefit}</span>
                           <Button
                             variant="ghost"
                             size="icon"
@@ -727,7 +727,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                   <section className="space-y-6 p-6 rounded-2xl bg-white/[0.02] border border-white/5">
                     <div className="flex items-center gap-2">
                       <Zap className="size-4 text-cyan-400" />
-                      <h3 className="text-[10px] font-bold text-white uppercase tracking-widest">
+                      <h3 className="text-xxs font-bold text-white uppercase tracking-widest">
                         Matrix Parameters
                       </h3>
                     </div>
@@ -737,13 +737,13 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                           placeholder="Spec (e.g., Weight)"
                           value={newDetailKey}
                           onChange={(e) => setNewDetailKey(e.target.value)}
-                          className="bg-white/5 border-white/10 text-[10px] h-9"
+                          className="bg-white/5 border-white/10 text-xxs h-9"
                         />
                         <Input
                           placeholder="Value (e.g., 200g)"
                           value={newDetailValue}
                           onChange={(e) => setNewDetailValue(e.target.value)}
-                          className="bg-white/5 border-white/10 text-[10px] h-9"
+                          className="bg-white/5 border-white/10 text-xxs h-9"
                         />
                       </div>
                       <Button
@@ -806,7 +806,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                 <Zap className="size-10 text-cyan-500/40" />
               </div>
               <h3 className="text-lg font-bold text-white uppercase tracking-tight">System Idle</h3>
-              <p className="text-sm text-[#68869A] max-w-[300px] mx-auto">
+              <p className="text-sm text-admin-muted max-w-[300px] mx-auto">
                 Select a technological breakthrough from the index to begin technical
                 synchronization.
               </p>

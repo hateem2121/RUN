@@ -279,13 +279,13 @@ export function InitiativesTabContent({
               <h2 className="text-xl font-bold text-white tracking-tight">
                 Active Ecosystem Initiatives
               </h2>
-              <p className="text-sm text-[#68869A]">
+              <p className="text-sm text-admin-muted">
                 Strategic programs driving regenerative change across the production cycle
               </p>
             </div>
             <Button
               onClick={() => handleOpenDialog()}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase text-[10px] tracking-widest h-11 px-6 rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-95"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase text-xxs tracking-widest h-11 px-6 rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-95"
             >
               <Plus className="mr-2 h-4 w-4" />
               Launch Initiative
@@ -324,7 +324,7 @@ export function InitiativesTabContent({
                         <PaginationPrevious
                           onClick={() => onSetInitiativesPage(Math.max(1, initiativesPage - 1))}
                           className={cn(
-                            "rounded-lg text-[#68869A] hover:bg-white/10 hover:text-white",
+                            "rounded-lg text-admin-muted hover:bg-white/10 hover:text-white",
                             initiativesPage === 1 && "pointer-events-none opacity-30",
                           )}
                         />
@@ -335,10 +335,10 @@ export function InitiativesTabContent({
                             onClick={() => onSetInitiativesPage(i + 1)}
                             isActive={initiativesPage === i + 1}
                             className={cn(
-                              "rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all",
+                              "rounded-lg text-xxs font-bold uppercase tracking-widest transition-all",
                               initiativesPage === i + 1
                                 ? "bg-emerald-600 text-white shadow-lg shadow-emerald-500/20"
-                                : "text-[#68869A] hover:bg-white/10",
+                                : "text-admin-muted hover:bg-white/10",
                             )}
                           >
                             {i + 1}
@@ -353,7 +353,7 @@ export function InitiativesTabContent({
                             )
                           }
                           className={cn(
-                            "rounded-lg text-[#68869A] hover:bg-white/10 hover:text-white",
+                            "rounded-lg text-admin-muted hover:bg-white/10 hover:text-white",
                             initiativesPage === initiativesTotalPages &&
                               "pointer-events-none opacity-30",
                           )}
@@ -367,10 +367,10 @@ export function InitiativesTabContent({
           ) : (
             <div className="py-20 flex flex-col items-center justify-center text-center bg-white/[0.02] border border-dashed border-white/10 rounded-2xl">
               <div className="size-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-                <Sparkles className="h-8 w-8 text-[#68869A]/40" />
+                <Sparkles className="h-8 w-8 text-admin-muted/40" />
               </div>
               <h3 className="text-white font-bold mb-1">No Initiatives Operational</h3>
-              <p className="text-[#68869A] text-sm max-w-[280px]">
+              <p className="text-admin-muted text-sm max-w-[280px]">
                 New sustainability programs have not been initialised.
               </p>
             </div>
@@ -381,7 +381,7 @@ export function InitiativesTabContent({
       <Dialog open={showInitiativeDialog} onOpenChange={setShowInitiativeDialog}>
         <DialogContent
           contentType="form"
-          className="max-w-2xl bg-[#0A0A0A] border-white/10 p-0 overflow-hidden rounded-[32px] shadow-2xl ring-1 ring-white/10"
+          className="max-w-2xl bg-surface-black border-white/10 p-0 overflow-hidden rounded-huge shadow-2xl ring-1 ring-white/10"
         >
           <DialogHeader className="p-8 pb-0">
             <div className="flex items-center justify-between mb-2">
@@ -397,12 +397,12 @@ export function InitiativesTabContent({
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowInitiativeDialog(false)}
-                className="rounded-full hover:bg-white/5 text-[#68869A]"
+                className="rounded-full hover:bg-white/5 text-admin-muted"
               >
                 <X className="h-5 w-5" />
               </Button>
             </div>
-            <DialogDescription className="text-[#68869A] ml-13">
+            <DialogDescription className="text-admin-muted ml-admin-dialog-offset">
               Configure strategic protocols for regenerative manufacturing and environmental health.
             </DialogDescription>
           </DialogHeader>
@@ -412,7 +412,7 @@ export function InitiativesTabContent({
               <div className="space-y-2">
                 <Label
                   htmlFor="title"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Initiative Title
                 </Label>
@@ -433,7 +433,7 @@ export function InitiativesTabContent({
                   )}
                 />
                 {!initiativeValidation.title.isValid && (
-                  <p className="mt-1 text-red-400 text-[10px] font-bold uppercase tracking-widest ml-1">
+                  <p className="mt-1 text-red-400 text-xxs font-bold uppercase tracking-widest ml-1">
                     {initiativeValidation.title.message}
                   </p>
                 )}
@@ -441,7 +441,7 @@ export function InitiativesTabContent({
               <div className="space-y-2">
                 <Label
                   htmlFor="category"
-                  className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                  className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                 >
                   Strategic Sector
                 </Label>
@@ -462,7 +462,7 @@ export function InitiativesTabContent({
                   )}
                 />
                 {!initiativeValidation.category.isValid && (
-                  <p className="mt-1 text-red-400 text-[10px] font-bold uppercase tracking-widest ml-1">
+                  <p className="mt-1 text-red-400 text-xxs font-bold uppercase tracking-widest ml-1">
                     {initiativeValidation.category.message}
                   </p>
                 )}
@@ -472,7 +472,7 @@ export function InitiativesTabContent({
             <div className="space-y-2">
               <Label
                 htmlFor="description"
-                className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
               >
                 Initiative Scope
               </Label>
@@ -494,7 +494,7 @@ export function InitiativesTabContent({
                 )}
               />
               {!initiativeValidation.description.isValid && (
-                <p className="mt-1 text-red-400 text-[10px] font-bold uppercase tracking-widest ml-1">
+                <p className="mt-1 text-red-400 text-xxs font-bold uppercase tracking-widest ml-1">
                   {initiativeValidation.description.message}
                 </p>
               )}
@@ -503,7 +503,7 @@ export function InitiativesTabContent({
             <div className="space-y-2">
               <Label
                 htmlFor="impact"
-                className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
               >
                 Environmental Impact Forecast
               </Label>
@@ -525,7 +525,7 @@ export function InitiativesTabContent({
                 )}
               />
               {!initiativeValidation.impact.isValid && (
-                <p className="mt-1 text-red-400 text-[10px] font-bold uppercase tracking-widest ml-1">
+                <p className="mt-1 text-red-400 text-xxs font-bold uppercase tracking-widest ml-1">
                   {initiativeValidation.impact.message}
                 </p>
               )}
@@ -533,7 +533,7 @@ export function InitiativesTabContent({
 
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                   Visual Symbology
                 </Label>
                 <div
@@ -549,14 +549,14 @@ export function InitiativesTabContent({
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                   Key Visual Asset
                 </Label>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setIsInitiativeMediaPickerOpen(true)}
-                  className="w-full h-[66px] bg-white/5 border-white/10 text-[#68869A] rounded-xl hover:bg-white/10 hover:text-white transition-all border shadow-none"
+                  className="w-full h-[66px] bg-white/5 border-white/10 text-admin-muted rounded-xl hover:bg-white/10 hover:text-white transition-all border shadow-none"
                 >
                   <ImageIcon className="mr-3 h-5 w-5 text-emerald-400" />
                   <span className="truncate">
@@ -576,7 +576,7 @@ export function InitiativesTabContent({
                 >
                   Active Protocol
                 </Label>
-                <p className="text-[10px] text-[#68869A] uppercase font-bold tracking-widest">
+                <p className="text-xxs text-admin-muted uppercase font-bold tracking-widest">
                   Visibility in Ecosystem Overview
                 </p>
               </div>
@@ -596,7 +596,7 @@ export function InitiativesTabContent({
               <Button
                 variant="ghost"
                 onClick={() => setShowInitiativePreview(true)}
-                className="h-12 px-6 rounded-xl text-[#68869A] hover:bg-white/5 font-bold uppercase text-[10px] tracking-widest"
+                className="h-12 px-6 rounded-xl text-admin-muted hover:bg-white/5 font-bold uppercase text-xxs tracking-widest"
               >
                 <Eye className="mr-2 h-4 w-4" />
                 Live Preview
@@ -605,7 +605,7 @@ export function InitiativesTabContent({
                 <Button
                   variant="ghost"
                   onClick={() => setShowInitiativeDialog(false)}
-                  className="h-12 px-6 rounded-xl text-[#68869A] hover:bg-white/5 font-bold uppercase text-[10px] tracking-widest"
+                  className="h-12 px-6 rounded-xl text-admin-muted hover:bg-white/5 font-bold uppercase text-xxs tracking-widest"
                 >
                   Cancel
                 </Button>
@@ -614,7 +614,7 @@ export function InitiativesTabContent({
                   disabled={
                     createInitiativeMutation.isPending || updateInitiativeMutation.isPending
                   }
-                  className="h-12 px-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-emerald-500/20 active:scale-95 transition-all outline-none border-0"
+                  className="h-12 px-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase text-xxs tracking-widest shadow-lg shadow-emerald-500/20 active:scale-95 transition-all outline-none border-0"
                 >
                   {createInitiativeMutation.isPending || updateInitiativeMutation.isPending ? (
                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white mr-2" />
@@ -635,12 +635,12 @@ export function InitiativesTabContent({
       <Dialog open={showInitiativePreview} onOpenChange={setShowInitiativePreview}>
         <DialogContent
           contentType="form"
-          className="max-w-md bg-[#0A0A0A] border-white/10 p-0 overflow-hidden rounded-[32px] shadow-2xl ring-1 ring-white/10"
+          className="max-w-md bg-surface-black border-white/10 p-0 overflow-hidden rounded-huge shadow-2xl ring-1 ring-white/10"
         >
           <DialogHeader className="p-8 pb-4">
             <div className="mx-auto mb-2 inline-flex w-fit items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3">
               <LayoutTemplate className="h-4 w-4 text-emerald-400" />
-              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+              <span className="text-xxs font-bold text-emerald-400 uppercase tracking-widest">
                 Mobile Viewport Simulation
               </span>
             </div>
@@ -650,7 +650,7 @@ export function InitiativesTabContent({
           </DialogHeader>
 
           <div className="px-8 pb-8 flex justify-center">
-            <div className="aspect-[9/16] w-full max-w-[280px] rounded-[32px] border-[8px] border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5 p-6 flex flex-col items-start">
+            <div className="aspect-[9/16] w-full max-w-[280px] rounded-huge border-[8px] border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5 p-6 flex flex-col items-start">
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-transparent to-black z-0" />
 
               <div className="relative z-10 space-y-6 flex flex-col w-full h-full">
@@ -667,7 +667,7 @@ export function InitiativesTabContent({
                   <h3 className="text-xl font-bold text-white tracking-tight leading-tight">
                     {initiativeForm.title || "Next-Gen Sustainability"}
                   </h3>
-                  <p className="text-[10px] text-white/50 leading-relaxed line-clamp-6">
+                  <p className="text-xxs text-white/50 leading-relaxed line-clamp-6">
                     {initiativeForm.description ||
                       "Advancing environmental health through precision engineering and sovereign resource oversight."}
                   </p>
@@ -678,7 +678,7 @@ export function InitiativesTabContent({
                     <Sparkles className="size-2" />
                     Environmental Impact
                   </span>
-                  <p className="text-[10px] font-bold text-white leading-relaxed">
+                  <p className="text-xxs font-bold text-white leading-relaxed">
                     {initiativeForm.impact ||
                       "Projected 35% reduction in total operational carbon output."}
                   </p>
@@ -690,7 +690,7 @@ export function InitiativesTabContent({
           <DialogFooter className="p-8 pt-0 border-0">
             <Button
               onClick={() => setShowInitiativePreview(false)}
-              className="w-full h-12 rounded-xl bg-white/5 border border-white/10 text-white font-bold uppercase text-[10px] tracking-widest hover:bg-white/10"
+              className="w-full h-12 rounded-xl bg-white/5 border border-white/10 text-white font-bold uppercase text-xxs tracking-widest hover:bg-white/10"
             >
               Terminate Preview
             </Button>

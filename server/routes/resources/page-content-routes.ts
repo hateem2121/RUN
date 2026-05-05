@@ -1,4 +1,4 @@
-import { removeUndefined } from "../../utils.js";
+import { removeUndefined } from "../../lib/utilities/core-utils.js";
 
 /**
  * PHASE 3.2: PAGE CONTENT ROUTES EXTRACTION
@@ -17,7 +17,6 @@ import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js"
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import {
-  aboutRepository,
   mediaRepository,
   sustainabilityRepository,
   technologyRepository,

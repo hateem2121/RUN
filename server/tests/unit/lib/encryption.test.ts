@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { decrypt, encrypt, getBlindIndex } from "../encryption";
+import { decrypt, encrypt, getBlindIndex } from "../../../lib/encryption";
 
-vi.mock("../lib/monitoring/logger.js", () => ({
+vi.mock("../../../lib/monitoring/logger.js", () => ({
   logger: {
     error: vi.fn(),
   },

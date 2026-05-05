@@ -80,13 +80,13 @@ function SortableSectionItem({ section, onEdit, onDelete }: SectionItemProps) {
           {...attributes}
           {...listeners}
         >
-          <GripVertical className="h-5 w-5 text-[#68869A]/70" aria-hidden="true" />
+          <GripVertical className="h-5 w-5 text-admin-muted/70" aria-hidden="true" />
         </button>
 
         <div className="flex-1">
           <div className="mb-2 flex items-center gap-2">
             <h3 className="font-semibold text-lg">{section.title || "Untitled Section"}</h3>
-            <span className="rounded bg-white/[0.05] px-2 py-1 text-[#68869A] text-sm">
+            <span className="rounded bg-white/[0.05] px-2 py-1 text-admin-muted text-sm">
               {getSectionTypeLabel(section.sectionType)}
             </span>
             {section.isActive === false && (
@@ -96,10 +96,10 @@ function SortableSectionItem({ section, onEdit, onDelete }: SectionItemProps) {
             )}
           </div>
           {section.content && (
-            <p className="line-clamp-2 text-[#68869A] text-sm">{section.content}</p>
+            <p className="line-clamp-2 text-admin-muted text-sm">{section.content}</p>
           )}
           {section.mediaIds && section.mediaIds.length > 0 && (
-            <p className="mt-1 text-[#68869A] text-sm">
+            <p className="mt-1 text-admin-muted text-sm">
               {section.mediaIds.length} media item
               {section.mediaIds.length > 1 ? "s" : ""} attached
             </p>
@@ -391,7 +391,7 @@ export function AboutSectionsTab() {
         </CardHeader>
         <CardContent>
           {sortedSections.length === 0 ? (
-            <div className="py-12 text-center text-[#68869A]">
+            <div className="py-12 text-center text-admin-muted">
               No sections yet. Add your first content section!
             </div>
           ) : (

@@ -48,25 +48,25 @@ const CategoryTableView = memo(
       <Table>
         <TableHeader className="border-b border-white/5 bg-white/5">
           <TableRow className="hover:bg-transparent border-none">
-            <TableHead className="w-16 text-[#68869A] font-bold uppercase tracking-wider text-[10px]">
+            <TableHead className="w-16 text-admin-muted font-bold uppercase tracking-wider text-xxs">
               Order
             </TableHead>
-            <TableHead className="w-16 text-[#68869A] font-bold uppercase tracking-wider text-[10px]">
+            <TableHead className="w-16 text-admin-muted font-bold uppercase tracking-wider text-xxs">
               Image
             </TableHead>
-            <TableHead className="text-[#68869A] font-bold uppercase tracking-wider text-[10px]">
+            <TableHead className="text-admin-muted font-bold uppercase tracking-wider text-xxs">
               Name
             </TableHead>
-            <TableHead className="text-[#68869A] font-bold uppercase tracking-wider text-[10px]">
+            <TableHead className="text-admin-muted font-bold uppercase tracking-wider text-xxs">
               Parent
             </TableHead>
-            <TableHead className="text-[#68869A] font-bold uppercase tracking-wider text-[10px]">
+            <TableHead className="text-admin-muted font-bold uppercase tracking-wider text-xxs">
               Products
             </TableHead>
-            <TableHead className="text-[#68869A] font-bold uppercase tracking-wider text-[10px]">
+            <TableHead className="text-admin-muted font-bold uppercase tracking-wider text-xxs">
               Status
             </TableHead>
-            <TableHead className="w-16 text-[#68869A] font-bold uppercase tracking-wider text-[10px]">
+            <TableHead className="w-16 text-admin-muted font-bold uppercase tracking-wider text-xxs">
               Actions
             </TableHead>
           </TableRow>
@@ -273,7 +273,7 @@ export function CategoryList(props: CategoryListProps) {
       </SortableContext>
       <DragOverlay>
         {activeCategory && (
-          <div className="rounded-xl border border-blue-500/50 bg-[#0A0A0A] p-2 opacity-90 shadow-2xl shadow-blue-500/20">
+          <div className="rounded-xl border border-blue-500/50 bg-surface-black p-2 opacity-90 shadow-2xl shadow-blue-500/20">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-black/50 border border-white/10 overflow-hidden">
                 {(activeCategory as Category & { imageUrl?: string }).imageUrl ? (

@@ -72,7 +72,7 @@ const CategoryImage = memo(({ category }: { category: Category }) => (
         }}
       />
     ) : (
-      <div className="flex h-full w-full items-center justify-center text-[#68869A]/70">
+      <div className="flex h-full w-full items-center justify-center text-admin-muted/70">
         <Image className="h-5 w-5" />
       </div>
     )}
@@ -97,7 +97,7 @@ const CategoryActions = memo(
           <MoreVertical className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-[#0A0A0A] border-white/10 text-white">
+      <DropdownMenuContent align="end" className="bg-surface-black border-white/10 text-white">
         <DropdownMenuItem
           onClick={() => onEdit(category)}
           className="hover:bg-white/10 focus:bg-white/10 cursor-pointer"
@@ -152,7 +152,7 @@ const CategoryTableRow = memo((props: CategoryDisplayProps) => {
         <div className="flex items-center gap-2">
           {enableDragDrop && (
             <button
-              className="cursor-grab text-[#68869A]/70 transition-colors hover:text-white active:cursor-grabbing"
+              className="cursor-grab text-admin-muted/70 transition-colors hover:text-white active:cursor-grabbing"
               {...attributes}
               {...listeners}
               title="Drag to reorder"
@@ -174,11 +174,11 @@ const CategoryTableRow = memo((props: CategoryDisplayProps) => {
       <td className="px-4 py-3">
         <div className="flex flex-col">
           <span className="font-bold text-white">{category.name}</span>
-          <span className="text-[#68869A] text-sm">{category.slug}</span>
+          <span className="text-admin-muted text-sm">{category.slug}</span>
         </div>
       </td>
       <td className="px-4 py-3">
-        <span className="text-[#68869A] text-sm">{parentName || "No parent"}</span>
+        <span className="text-admin-muted text-sm">{parentName || "No parent"}</span>
       </td>
       <td className="px-4 py-3">
         <Badge className={getProductCountColor(productCount)}>{productCount}</Badge>
@@ -242,7 +242,7 @@ const CategoryGridCard = memo((props: CategoryDisplayProps) => {
               />
               {enableDragDrop && (
                 <button
-                  className="cursor-grab p-1 text-[#68869A]/70 transition-colors hover:text-white active:cursor-grabbing"
+                  className="cursor-grab p-1 text-admin-muted/70 transition-colors hover:text-white active:cursor-grabbing"
                   {...attributes}
                   {...listeners}
                   title="Drag to reorder"
@@ -264,13 +264,13 @@ const CategoryGridCard = memo((props: CategoryDisplayProps) => {
             <CategoryImage category={category} />
             <div className="min-w-0 flex-1">
               <h3 className="truncate font-bold text-white">{category.name}</h3>
-              <p className="truncate text-[#68869A] text-sm">{category.slug}</p>
+              <p className="truncate text-admin-muted text-sm">{category.slug}</p>
             </div>
           </div>
 
           <div className="space-y-2">
             {category.description && (
-              <p className="line-clamp-2 text-[#68869A] text-sm">{category.description}</p>
+              <p className="line-clamp-2 text-admin-muted text-sm">{category.description}</p>
             )}
 
             <div className="flex items-center justify-between">
@@ -349,7 +349,7 @@ const CategoryTreeItem = memo((props: CategoryDisplayProps) => {
       <div className="mr-3 flex items-center gap-2" style={{ paddingLeft: `${indent}px` }}>
         {enableDragDrop && (
           <button
-            className="cursor-grab p-1 text-[#68869A]/70 transition-colors hover:text-white active:cursor-grabbing"
+            className="cursor-grab p-1 text-admin-muted/70 transition-colors hover:text-white active:cursor-grabbing"
             {...attributes}
             {...listeners}
             title="Drag to reorder"
@@ -376,7 +376,7 @@ const CategoryTreeItem = memo((props: CategoryDisplayProps) => {
               {category.isActive ? "Active" : "Inactive"}
             </Badge>
           </div>
-          <p className="truncate text-[#68869A] text-sm">{category.slug}</p>
+          <p className="truncate text-admin-muted text-sm">{category.slug}</p>
         </div>
       </div>
 
@@ -404,8 +404,6 @@ export const CategoryDisplay = memo(function CategoryDisplay(props: CategoryDisp
       return <CategoryTableRow {...props} />;
   }
 });
-
-
 
 // Export individual components for specific use cases
 export { CategoryTableRow, CategoryGridCard, CategoryTreeItem };

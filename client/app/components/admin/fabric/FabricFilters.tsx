@@ -35,7 +35,7 @@ export const FabricFilters: React.FC<FabricFiltersProps> = ({
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-4">
             <div className="relative flex-1">
-              <Search className="text-[#68869A] absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
+              <Search className="text-admin-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
               <Input
                 data-testid={getInputTestId("search")}
                 placeholder="Search fabrics by name, type, or properties..."

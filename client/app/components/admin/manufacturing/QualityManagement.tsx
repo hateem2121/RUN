@@ -109,7 +109,7 @@ function SortableQualityItem({
         <div
           {...attributes}
           {...listeners}
-          className="mt-1 cursor-grab active:cursor-grabbing text-[#68869A] hover:text-[#D4A853] transition-colors"
+          className="mt-1 cursor-grab active:cursor-grabbing text-admin-muted hover:text-brand-manufacturing transition-colors"
         >
           <GripVertical className="h-5 w-5" />
         </div>
@@ -126,24 +126,24 @@ function SortableQualityItem({
             <Badge
               variant="outline"
               className={cn(
-                "text-[10px] uppercase tracking-wider border-0 py-0 h-4",
+                "text-xxs uppercase tracking-wider border-0 py-0 h-4",
                 (quality.isActive ?? true)
                   ? "bg-emerald-500/10 text-emerald-400"
-                  : "bg-white/5 text-[#68869A]",
+                  : "bg-white/5 text-admin-muted",
               )}
             >
               {(quality.isActive ?? true) ? "Active" : "Inactive"}
             </Badge>
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[#68869A] text-xs">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-admin-muted text-xs">
             {quality.category && (
               <span className="flex items-center gap-1.5 capitalize font-medium text-white/40">
                 {quality.category}
               </span>
             )}
             {quality.frequency && (
-              <span className="flex items-center gap-1.5 text-[#D4A853]/80">
+              <span className="flex items-center gap-1.5 text-brand-manufacturing/80">
                 <span className="text-white/20">•</span>
                 {quality.frequency}
               </span>
@@ -154,12 +154,12 @@ function SortableQualityItem({
             <div className="mt-4 flex flex-col gap-4">
               {checkpoints.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest pl-0.5">
+                  <p className="text-xxs font-bold text-white/40 uppercase tracking-widest pl-0.5">
                     Control Checkpoints
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {checkpoints.slice(0, 4).map((checkpoint, i) => (
-                      <div key={i} className="flex items-center gap-2 text-xs text-[#68869A]">
+                      <div key={i} className="flex items-center gap-2 text-xs text-admin-muted">
                         <div className="size-1 rounded-full bg-emerald-500/40" />
                         <span className="truncate">{checkpoint}</span>
                       </div>
@@ -172,7 +172,7 @@ function SortableQualityItem({
                   {standards.map((standard, idx) => (
                     <Badge
                       key={idx}
-                      className="bg-white/5 border-white/10 text-white/60 text-[10px] py-0.5 rounded-lg"
+                      className="bg-white/5 border-white/10 text-white/60 text-xxs py-0.5 rounded-lg"
                     >
                       {standard}
                     </Badge>
@@ -188,7 +188,7 @@ function SortableQualityItem({
             size="icon"
             variant="ghost"
             onClick={() => onEdit(quality)}
-            className="size-8 rounded-lg hover:bg-[#D4A853]/10 hover:text-[#D4A853]"
+            className="size-8 rounded-lg hover:bg-brand-manufacturing/10 hover:text-brand-manufacturing"
             title="Edit Quality Standard"
             aria-label="Edit Quality Standard"
           >
@@ -457,7 +457,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
             <h2 className="text-xl font-bold text-white tracking-tight">
               Quality Assurance Standards
             </h2>
-            <p className="text-sm text-[#68869A]">
+            <p className="text-sm text-admin-muted">
               Manage manufacturing quality benchmarks, compliance protocols, and oversight
               checkpoints
             </p>
@@ -467,7 +467,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
               resetQualityForm();
               setShowQualityDialog(true);
             }}
-            className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl font-bold transition-all px-6 py-5 uppercase text-[10px] tracking-widest"
+            className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-xl font-bold transition-all px-6 py-5 uppercase text-xxs tracking-widest"
           >
             <Plus className="mr-2 h-4 w-4" />
             Add Quality Standard
@@ -482,7 +482,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                 <div className="h-2 w-2 animate-bounce rounded-full bg-emerald-500 [animation-delay:-0.15s]"></div>
                 <div className="h-2 w-2 animate-bounce rounded-full bg-emerald-500"></div>
               </div>
-              <p className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest">
+              <p className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                 Auditing Protocols...
               </p>
             </div>
@@ -492,7 +492,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                 <Shield className="size-8 text-white/10" />
               </div>
               <p className="text-white/40 font-medium">No quality standards documented.</p>
-              <p className="text-[#68869A] text-sm mt-1">
+              <p className="text-admin-muted text-sm mt-1">
                 Establish your first quality protocol to begin.
               </p>
             </div>
@@ -527,7 +527,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
         <Dialog open={showQualityDialog} onOpenChange={setShowQualityDialog}>
           <DialogContent
             className={cn(
-              "bg-[#0A0A0A]/95 border-white/10 backdrop-blur-2xl text-white rounded-3xl p-0 overflow-hidden",
+              "bg-surface-black/95 border-white/10 backdrop-blur-2xl text-white rounded-3xl p-0 overflow-hidden",
               showPreview ? "max-w-6xl" : "max-w-xl",
             )}
           >
@@ -537,7 +537,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                   <DialogTitle className="text-2xl font-bold tracking-tight">
                     {editingQuality ? "Edit Quality Standard" : "Define New Standard"}
                   </DialogTitle>
-                  <DialogDescription className="text-[#68869A]">
+                  <DialogDescription className="text-admin-muted">
                     Configure technical quality assurance metrics and benchmarks
                   </DialogDescription>
                 </div>
@@ -545,7 +545,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowPreview(!showPreview)}
-                  className="hidden gap-2 sm:flex text-[10px] font-bold uppercase tracking-widest hover:bg-white/5"
+                  className="hidden gap-2 sm:flex text-xxs font-bold uppercase tracking-widest hover:bg-white/5"
                 >
                   {showPreview ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   {showPreview ? "Hide Preview" : "Show Preview"}
@@ -561,7 +561,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                       <div className="space-y-2">
                         <Label
                           htmlFor="quality-title"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Standard Title
                         </Label>
@@ -583,7 +583,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                       <div className="space-y-2">
                         <Label
                           htmlFor="quality-icon"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Visual Symbol
                         </Label>
@@ -594,7 +594,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                           <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-[50px] focus:ring-emerald-500/50">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className="bg-[#0A0A0A] border-white/10 text-white">
+                          <SelectContent className="bg-surface-black border-white/10 text-white">
                             {Object.keys(qualityIcons).map((icon) => (
                               <SelectItem
                                 key={icon}
@@ -613,7 +613,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                       <div className="space-y-2">
                         <Label
                           htmlFor="quality-category"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Process Category
                         </Label>
@@ -634,7 +634,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                       <div className="space-y-2">
                         <Label
                           htmlFor="quality-frequency"
-                          className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                         >
                           Audit Frequency
                         </Label>
@@ -657,7 +657,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                     <div className="space-y-2">
                       <Label
                         htmlFor="quality-description"
-                        className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1"
+                        className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
                       >
                         Detailed Criteria
                       </Label>
@@ -696,7 +696,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
 
                     <div className="space-y-6 pt-6 border-t border-white/5">
                       <div className="space-y-4">
-                        <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                        <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                           Verification Checkpoints
                         </Label>
                         <div className="grid gap-3">
@@ -729,7 +729,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                           <Button
                             type="button"
                             onClick={handleAddCheckpoint}
-                            className="h-11 bg-white/10 hover:bg-white/20 text-white font-bold text-[10px] uppercase tracking-widest px-6"
+                            className="h-11 bg-white/10 hover:bg-white/20 text-white font-bold text-xxs uppercase tracking-widest px-6"
                           >
                             Add Step
                           </Button>
@@ -737,7 +737,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                       </div>
 
                       <div className="space-y-4 pt-6 border-t border-white/5">
-                        <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                        <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                           Global Compliance Registry
                         </Label>
                         <div className="flex flex-wrap gap-2">
@@ -769,7 +769,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                           <Button
                             type="button"
                             onClick={handleAddStandard}
-                            className="h-11 bg-white/10 hover:bg-white/20 text-white font-bold text-[10px] uppercase tracking-widest px-6 whitespace-nowrap"
+                            className="h-11 bg-white/10 hover:bg-white/20 text-white font-bold text-xxs uppercase tracking-widest px-6 whitespace-nowrap"
                           >
                             Register Standard
                           </Button>
@@ -777,7 +777,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                       </div>
 
                       <div className="space-y-4 pt-6 border-t border-white/5">
-                        <Label className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest pl-1">
+                        <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                           Compliance Badge
                         </Label>
                         <div className="flex gap-3">
@@ -785,7 +785,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                             type="button"
                             variant="outline"
                             onClick={() => setShowQualityImagePicker(true)}
-                            className="flex-1 bg-white/5 border-white/10 h-14 rounded-xl justify-start px-4 text-[#68869A] hover:bg-white/10 hover:text-white transition-all border-0 shadow-none ring-offset-0 focus:ring-0"
+                            className="flex-1 bg-white/5 border-white/10 h-14 rounded-xl justify-start px-4 text-admin-muted hover:bg-white/10 hover:text-white transition-all border-0 shadow-none ring-offset-0 focus:ring-0"
                           >
                             <ImageIcon className="mr-3 h-5 w-5 text-emerald-500" />
                             <span className="truncate">
@@ -799,7 +799,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                               type="button"
                               variant="ghost"
                               onClick={() => setQualityForm({ ...qualityForm, imageId: null })}
-                              className="h-14 w-14 rounded-xl border border-white/10 hover:bg-red-500/10 hover:text-red-400 text-[#68869A]"
+                              className="h-14 w-14 rounded-xl border border-white/10 hover:bg-red-500/10 hover:text-red-400 text-admin-muted"
                             >
                               <Trash2 className="h-5 w-5" />
                             </Button>
@@ -813,7 +813,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                     <div className="sticky top-0 h-fit space-y-4">
                       <div className="flex items-center gap-2 mb-2 p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
                         <LayoutTemplate className="h-4 w-4 text-emerald-500" />
-                        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+                        <span className="text-xxs font-bold text-emerald-400 uppercase tracking-widest">
                           Protocol Visualization
                         </span>
                       </div>
@@ -826,7 +826,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                           />
                         </LivePreviewGrid>
                       </div>
-                      <p className="text-[10px] font-medium text-[#68869A] text-center italic">
+                      <p className="text-xxs font-medium text-admin-muted text-center italic">
                         Live rendering of the quality protocol as it will appear on the global
                         production site.
                       </p>
@@ -840,14 +840,14 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                   type="button"
                   variant="ghost"
                   onClick={() => setShowQualityDialog(false)}
-                  className="text-[#68869A] hover:bg-white/5"
+                  className="text-admin-muted hover:bg-white/5"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
-                  className="bg-primary hover:bg-primary/90 text-white rounded-xl px-8 py-6 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all outline-none ring-0 border-0"
+                  className="bg-primary hover:bg-primary/90 text-white rounded-xl px-8 py-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all outline-none ring-0 border-0"
                 >
                   {isPending
                     ? "Syncing..."

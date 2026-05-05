@@ -42,7 +42,7 @@ export function MediaFiltersPanel() {
         <h2 className="font-semibold text-white">Filters</h2>
         <button
           type="button"
-          className="z-popover inline-flex h-8 w-8 items-center justify-center rounded-md p-0 font-medium text-sm text-[#68869A] transition-colors hover:bg-white/5 hover:text-white focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50 disabled:pointer-events-none disabled:opacity-50"
+          className="z-popover inline-flex h-8 w-8 items-center justify-center rounded-md p-0 font-medium text-sm text-admin-muted transition-colors hover:bg-white/5 hover:text-white focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50 disabled:pointer-events-none disabled:opacity-50"
           onMouseDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -61,18 +61,18 @@ export function MediaFiltersPanel() {
         <div className="space-y-2">
           <Label
             htmlFor="filters-search"
-            className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest"
+            className="text-xxs font-bold text-admin-muted uppercase tracking-widest"
           >
             Search
           </Label>
           <div className="relative">
-            <Search className="absolute top-3 left-3 h-4 w-4 text-[#68869A]" />
+            <Search className="absolute top-3 left-3 h-4 w-4 text-admin-muted" />
             <Input
               id="filters-search"
               placeholder="Search media..."
               value={localSearch}
               onChange={(e) => setLocalSearch(e.target.value)}
-              className="pl-10 bg-white/[0.03] border-white/10 text-white placeholder:text-[#68869A]/50 focus:border-white/20 focus:ring-1 focus:ring-white/20"
+              className="pl-10 bg-white/[0.03] border-white/10 text-white placeholder:text-admin-muted/50 focus:border-white/20 focus:ring-1 focus:ring-white/20"
             />
           </div>
         </div>
@@ -81,7 +81,7 @@ export function MediaFiltersPanel() {
         <div className="space-y-2">
           <Label
             htmlFor="filters-type"
-            className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest"
+            className="text-xxs font-bold text-admin-muted uppercase tracking-widest"
           >
             Type
           </Label>
@@ -106,7 +106,7 @@ export function MediaFiltersPanel() {
         <div className="space-y-2">
           <Label
             htmlFor="filters-sort-by"
-            className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest"
+            className="text-xxs font-bold text-admin-muted uppercase tracking-widest"
           >
             Sort by
           </Label>
@@ -132,7 +132,7 @@ export function MediaFiltersPanel() {
         <div className="space-y-2">
           <Label
             id="filters-sort-order"
-            className="text-[10px] font-bold text-[#68869A] uppercase tracking-widest"
+            className="text-xxs font-bold text-admin-muted uppercase tracking-widest"
           >
             Sort order
           </Label>
@@ -141,7 +141,7 @@ export function MediaFiltersPanel() {
               variant={state.sortOrder === "asc" ? "default" : "outline"}
               size="sm"
               onClick={() => updateState("sortOrder", "asc")}
-              className={`flex-1 ${state.sortOrder === "asc" ? "bg-primary text-white" : "border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white"}`}
+              className={`flex-1 ${state.sortOrder === "asc" ? "bg-primary text-white" : "border-white/10 bg-white/5 text-admin-foreground hover:bg-white/10 hover:text-white"}`}
             >
               <ArrowUp className="mr-2 h-4 w-4" />
               Ascending
@@ -150,7 +150,7 @@ export function MediaFiltersPanel() {
               variant={state.sortOrder === "desc" ? "default" : "outline"}
               size="sm"
               onClick={() => updateState("sortOrder", "desc")}
-              className={`flex-1 ${state.sortOrder === "desc" ? "bg-primary text-white" : "border-white/10 bg-white/5 text-[#E3DFD6] hover:bg-white/10 hover:text-white"}`}
+              className={`flex-1 ${state.sortOrder === "desc" ? "bg-primary text-white" : "border-white/10 bg-white/5 text-admin-foreground hover:bg-white/10 hover:text-white"}`}
             >
               <ArrowDown className="mr-2 h-4 w-4" />
               Descending
@@ -162,32 +162,32 @@ export function MediaFiltersPanel() {
       {/* Folder tree navigation - simplified */}
       <div className="flex-1 border-t border-white/5 p-4">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="font-medium text-sm text-[#E3DFD6]">Folders</h3>
+          <h3 className="font-medium text-sm text-admin-foreground">Folders</h3>
           <Button
             size="sm"
             variant="ghost"
-            className="h-6 w-6 p-0 text-[#68869A] hover:text-white hover:bg-white/5"
+            className="h-6 w-6 p-0 text-admin-muted hover:text-white hover:bg-white/5"
           >
             <Plus className="h-3 w-3" />
           </Button>
         </div>
         <div className="space-y-1">
           {/* Root folder */}
-          <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-sm text-[#E3DFD6] hover:bg-white/5">
+          <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-sm text-admin-foreground hover:bg-white/5">
             <Folder className="h-4 w-4 text-blue-400" />
             <span>All Media</span>
           </div>
           {/* Sample folders - replace with dynamic data */}
           <div className="ml-4">
-            <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-sm text-[#68869A] hover:bg-white/5 hover:text-[#E3DFD6]">
+            <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-sm text-admin-muted hover:bg-white/5 hover:text-admin-foreground">
               <Folder className="h-4 w-4" />
               <span>Products</span>
             </div>
-            <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-sm text-[#68869A] hover:bg-white/5 hover:text-[#E3DFD6]">
+            <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-sm text-admin-muted hover:bg-white/5 hover:text-admin-foreground">
               <Folder className="h-4 w-4" />
               <span>Banners</span>
             </div>
-            <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-sm text-[#68869A] hover:bg-white/5 hover:text-[#E3DFD6]">
+            <div className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-sm text-admin-muted hover:bg-white/5 hover:text-admin-foreground">
               <Folder className="h-4 w-4" />
               <span>3D Models</span>
             </div>
