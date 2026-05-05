@@ -207,7 +207,6 @@ async function cleanupTempUploads(
       }
     }
 
-    const _freedMB = (freed / (1024 * 1024)).toFixed(2);
     return { deleted, freed, errors, filePaths: filesToDelete };
   } catch (error) {
     logger.error(`[Lifecycle] Temp uploads cleanup failed:`, serializeError(error));
@@ -330,7 +329,6 @@ async function cleanupOrphanedFiles(
       }
     }
 
-    const _freedMB = (freed / (1024 * 1024)).toFixed(2);
     return { deleted, freed, errors, checked, orphanedFiles };
   } catch (error) {
     logger.error(`[Lifecycle] Orphaned files cleanup failed:`, serializeError(error));

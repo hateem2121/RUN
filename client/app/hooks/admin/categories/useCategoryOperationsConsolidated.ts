@@ -27,7 +27,7 @@ export interface CategoryUIState {
   hardDeletingCategory: Category | null;
 }
 
-export default function useCategoryOperationsConsolidated() {
+export function useCategoryOperationsConsolidated() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 

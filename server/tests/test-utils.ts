@@ -163,7 +163,7 @@ export function createMockSessionUser(overrides: Partial<SessionUser> = {}): Ses
     firstName: "Test",
     lastName: "User",
     profileImageUrl: "https://example.com/image.jpg",
-    failedLoginAttempts: "0",
+    failedLoginAttempts: 0,
     lockoutUntil: null,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -231,7 +231,7 @@ export async function cleanupDatabase() {
     throw new Error("Cleanup allowed only in test environment");
   }
 
-  const _storage = getStorage();
+    getStorage();
   // Implementation depends on storage exposed methods
   // For now, this is a placeholder
   logger.info("[TestUtils] Database cleanup requested");

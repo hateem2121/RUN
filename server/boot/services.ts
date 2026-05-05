@@ -36,7 +36,7 @@ export async function startServices() {
 
   // 3. Storage Lifecycle
   try {
-    const _lifecycleScheduler = getLifecycleScheduler({
+    getLifecycleScheduler({
       enabled: false,
       interval: 60 * 60 * 1000,
       dryRun: false,

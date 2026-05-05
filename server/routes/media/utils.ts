@@ -14,7 +14,7 @@ import ffprobeStatic from "ffprobe-static";
 const ffprobePath =
   (ffprobeStatic as { path: string }).path ?? (ffprobeStatic as unknown as string);
 
-import type { InsertMediaAsset, MediaAsset } from "../../../shared/index.js";
+import type { InsertMediaAsset, MediaAsset } from "@shared/index.js";
 import { type ImageVariants, isImageFile, processImage } from "../../image-processor.js";
 import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
@@ -514,9 +514,6 @@ export async function processUploadedFile(
 ): Promise<MediaAsset> {
   const storage = mediaRepository;
   let storageKey: string | null = null;
-
-  // Extract extension for logging
-  const _extension = file.originalname.toLowerCase().split(".").pop() || "";
 
   // Correct MIME type
   const correctedMime = correctMimeType(file.mimetype, file.originalname);

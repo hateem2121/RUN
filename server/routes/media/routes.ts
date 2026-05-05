@@ -41,7 +41,7 @@ import {
   uploadGltfPackage,
   uploadSingleFile,
 } from "./handlers.js";
-import { createErrorResponse } from "./lib/utilities/core-utils.js";
+import { createErrorResponse } from "./utils.js";
 import { regularUpload, uploadOptimized, validateMagicNumbers } from "./middleware.js";
 import { getRateLimiterHealth, getRateLimiterStats } from "./rate-limiter-handlers.js";
 

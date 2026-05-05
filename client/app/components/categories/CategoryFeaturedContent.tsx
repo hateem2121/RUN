@@ -5,7 +5,7 @@ import { Component, lazy, type ReactNode, Suspense, useRef } from "react";
 import { BentoCardContainer } from "@/components/ui/BentoCardContainer";
 import { ExpandableCard } from "@/components/ui/bento-cards/expandable-card";
 import { FlipCard } from "@/components/ui/bento-cards/flip-card";
-import SvgMaskCard from "@/components/ui/bento-cards/svg-mask-card";
+import { SvgMaskCard } from "@/components/ui/bento-cards/svg-mask-card";
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Typography } from "@/components/ui/typography";
@@ -19,7 +19,9 @@ if (typeof window !== "undefined") {
 }
 
 // Lazy-load FluidGlass
-const FluidGlass = lazy(() => import("@/components/ui/bento-cards/fluid-glass-final"));
+const FluidGlass = lazy(() =>
+  import("@/components/ui/bento-cards/fluid-glass-final").then((m) => ({ default: m.FluidGlass })),
+);
 
 interface BentoCardContent {
   title?: string;

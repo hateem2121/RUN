@@ -17,7 +17,6 @@ import { NavigationService } from "../../services/navigation-service.js";
 const router = express.Router();
 
 // Cache TTL (2 hours for navigation data)
-const _CACHE_TTL = 7200;
 
 /**
  * CHUNK 7: Admin Cache Bypass Utility

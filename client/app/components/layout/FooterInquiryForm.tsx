@@ -2,7 +2,7 @@ import { cva } from "class-variance-authority";
 import gsap from "gsap";
 import type React from "react";
 import { useRef, useState } from "react";
-import Magnetic from "@/components/ui/Magnetic";
+import { Magnetic } from "@/components/ui/Magnetic";
 import { cn } from "@/lib/utils";
 import { useCursorStore } from "@/stores/useCursorStore";
 

@@ -2,9 +2,9 @@ import { memo, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { FloatingDockSkeleton } from "./floating-dock-skeleton";
-import ResponsiveNavigation from "./responsive-navigation";
+import { ResponsiveNavigation } from "./responsive-navigation";
 
-const FloatingDockHeader = memo(function FloatingDockHeader() {
+export const FloatingDockHeader = memo(function FloatingDockHeader() {
   const [mounted, setMounted] = useState(false);
   const location = useLocation();
 
@@ -55,5 +55,3 @@ const FloatingDockHeader = memo(function FloatingDockHeader() {
     </header>
   );
 });
-
-export default FloatingDockHeader;

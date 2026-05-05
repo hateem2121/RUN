@@ -189,7 +189,6 @@ export const uploadOptimized = multer({
   },
   fileFilter: (_req, file, cb) => {
     // Extract file extension for logging and validation
-    const _extension = file.originalname.toLowerCase().split(".").pop() || "";
 
     // SECURITY-HARDENED file type validation - Enhanced chunked upload support
     const allowedMimes = [

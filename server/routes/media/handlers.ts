@@ -26,7 +26,7 @@ import {
   processUploadedFile,
   slugifyFilename,
   type UploadOptions,
-} from "./lib/utilities/core-utils.js";
+} from "./utils.js";
 import { backendUploadManager, uploadMetrics } from "./middleware.js";
 import { MediaIdParamSchema, MediaListQuerySchema, MediaUpdateSchema } from "./schemas.js";
 import { enhancedUploadService, uploadSessions } from "./services.js";
@@ -409,7 +409,7 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
     const downloadedChunks = await Promise.all(chunkDownloadPromises);
     const chunks = downloadedChunks.sort((a, b) => a.index - b.index).map((chunk) => chunk.buffer);
 
-    const _assemblyTime = Date.now() - assemblyStartTime;
+    Date.now() - assemblyStartTime;
     const assembledFile = Buffer.concat(chunks);
 
     // Track final storage key for compensating delete if DB insert fails
@@ -789,7 +789,7 @@ export async function batchCreateAssets(req: Request, res: Response, _next: Next
   logger.info(`[Batch Upload] Cache invalidated for ${results.length} uploaded assets`);
 
   // Trigger Webhooks for batch uploads
-  results.forEach((asset) => {
+  results.forEach((asset: MediaAsset) => {
     webhookService.trigger("media.uploaded", asset);
   });
 

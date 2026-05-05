@@ -86,5 +86,4 @@ export function GeometricDivider({
   );
 }
 
-// Export as default as well for easier imports
-export default GeometricDivider;
+

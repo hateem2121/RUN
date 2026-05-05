@@ -1,6 +1,4 @@
 import type { Server } from "node:http";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import type { Express } from "express";
 import { generateOpenApiSpec } from "../lib/api/openapi-generator.js";
 import { logger } from "../lib/monitoring/logger.js";
@@ -9,7 +7,6 @@ import { registerRoutes } from "../routes/index.js";
 
 // import openapiRouter from "../routes/v1/openapi.js"; // REMOVED: Missing module
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export async function setupRoutes(app: Express, httpServer: Server) {
   await registerRoutes(app);

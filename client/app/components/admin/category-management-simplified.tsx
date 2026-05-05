@@ -30,7 +30,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
 // Consolidated hook
-import useCategoryOperationsConsolidated from "@/hooks/admin/categories/useCategoryOperationsConsolidated";
+import { useCategoryOperationsConsolidated } from "@/hooks/admin/categories/useCategoryOperationsConsolidated";
 
 // New consolidated components
 import { CategoryForm } from "./categories/CategoryForm";

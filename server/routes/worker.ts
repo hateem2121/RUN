@@ -102,7 +102,6 @@ router.post("/process-media", async (req, res) => {
   });
 
   // Process based on operation type
-  const _success = true;
 
   switch (payload.operation) {
     case "optimize":

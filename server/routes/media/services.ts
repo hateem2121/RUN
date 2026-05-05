@@ -13,7 +13,7 @@ import {
   detectMediaType,
   generateOrganizedStoragePath,
   slugifyFilename,
-} from "./lib/utilities/core-utils.js";
+} from "./utils.js";
 
 /**
  * Upload session management for chunk tracking

@@ -24,7 +24,7 @@ import { StorageSingleton } from "../../../storage-singleton.js";
 
 const unifiedCache = UnifiedCache.getInstance();
 const HOMEPAGE_CACHE_TTL = 3600; // 1 hour (in seconds)
-const _CONTENT_CACHE_TTL = 3600; // 1 hour (in seconds)
+
 
 export class ManufacturingRepository {
   async getManufacturingHero(): Promise<ManufacturingHero | undefined> {

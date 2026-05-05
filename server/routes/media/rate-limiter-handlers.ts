@@ -8,7 +8,7 @@ import {
   diagnosticLimiter,
   generalLimiter,
 } from "../../lib/resilience/rate-limiter.js";
-import { createSuccessResponse } from "./lib/utilities/core-utils.js";
+import { createSuccessResponse } from "./utils.js";
 
 /**
  * GET /api/media/rate-limiter/stats

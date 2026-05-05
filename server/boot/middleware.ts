@@ -1,6 +1,4 @@
 import crypto from "node:crypto";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import cookieParser from "cookie-parser";
 import express, {
   type Express,
@@ -19,7 +17,7 @@ import {
 import { requestSanitization } from "../middleware/sanitization.js";
 import { authService } from "../services/auth-service.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 
 /**
  * Global Middleware Configuration

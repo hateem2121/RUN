@@ -1,41 +1,39 @@
 # Task Plan — Monorepo Remediation — Phase 2
 
-## Session: 2026-05-02
+## Session: 2026-05-05 (Investigative Audit)
 
 ### Objective
-Resolve remaining accessibility debt (202 errors), perform surgical dead code cleanup, and validate the React 19 Admin Hero management component.
+Complete a full investigative audit of the monorepo architecture and `@run-remix/shared` package to ensure foundational stability and compliance with RUN Remix standards.
 
 ### Protocol 0 — Session Bookends
-- [/] START: Read and update `task_plan.md`
-- [ ] END: Update `findings.md` and run `npm run verify:tech-integrity`
+- [x] START: Read and update `task_plan.md`
+- [x] END: Update `findings.md` and run `npm run verify:tech-integrity`
 
-### Remediation Status
+### Audit Scope
 
-#### Phase 1: Infrastructure & Stability
-- [x] Optimize Turborepo caching (`turbo.json` inputs/outputs).
-- [x] Resolve A11Y Batch A (Button types).
-- [x] Resolve A11Y Batch B (Keyboard handlers for high-impact components).
+#### 1. Workspace Configuration
+- [x] Verify `package.json` (root) workspaces.
+- [x] Check hoisting and major dependency versions.
+- [x] Verify `engines.node` and `.nvmrc` consistency.
 
-#### Phase 2: A11Y Batch C (Remaining Debt)
-- [x] Resolve `useButtonType` in Sidebar, Theater, and Bulk Operations.
-- [x] Resolve `noStaticElementInteractions` in Marquee and HoverCard3D.
-- [x] Resolve `noSvgWithoutTitle` in Stacking Cards.
-- [/] Resolve remaining ~150 minor violations.
+#### 2. @run-remix/shared Integrity
+- [x] Audit `shared/package.json` exports map.
+- [x] Check for boundary violations (client/server imports in shared).
+- [x] Verify all Drizzle schemas and Zod viewmodels are exported.
+- [x] Audit route constants and manifest.
 
-#### Phase 3: Surgical Dead Code Cleanup
-- [x] Re-run `knip` audit.
-- [x] Removed 11 redundant files (Comparison tool, ProcessStepForm, etc).
-- [ ] Verify remaining dead code candidates.
+#### 3. TypeScript & Biome Configuration
+- [x] Verify TS v6 configuration (ignoreDeprecations, paths, no baseUrl).
+- [x] Check project references and strict mode enforcement.
+- [x] Verify Biome v2.3.10 config and absence of ESLint/Prettier.
 
-#### Phase 4: React 19 Validation
-- [x] Functional unit testing for `HeroManagement.test.tsx`.
-- [x] Verify form state management via `useActionState` and `useOptimistic`.
+#### 4. Turborepo & Dependency Hygiene
+- [x] Review `turbo.json` pipeline and caching.
+- [x] Run `knip` via `verify:tech-integrity`.
+- [x] Audit for forbidden dependencies (framer-motion, @react-three/fiber).
+- [x] Verify Port 5002 compliance via env schema.
 
-#### Phase 5: Monorepo & Shared Audit (Complete)
-- [x] Workspace structure and hoising audit.
-- [x] Shared package boundary and integrity check.
-- [x] TypeScript v6 and Biome 2.3.10 configuration review.
-- [x] Forbidden dependency audit (framer-motion, @react-three/fiber).
-- [x] Port 5002 compliance and Env schema validation.
+### Status: [x] AUDIT COMPLETE (MR-01 Findings recorded in findings.md)
 
-### Status: [x] AUDIT COMPLETE (Critical findings recorded in findings.md)
+## Session: 2026-05-02
+... (rest of the file)

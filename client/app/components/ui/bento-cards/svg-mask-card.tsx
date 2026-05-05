@@ -15,7 +15,7 @@ interface SvgMaskCardProps {
   link?: string | undefined;
 }
 
-const SvgMaskCard = memo(function SvgMaskCard({
+export const SvgMaskCard = memo(function SvgMaskCard({
   title,
   // description,
   maskSvgUrl,
@@ -308,5 +308,3 @@ const SvgMaskCard = memo(function SvgMaskCard({
     </section>
   );
 });
-
-export default SvgMaskCard;

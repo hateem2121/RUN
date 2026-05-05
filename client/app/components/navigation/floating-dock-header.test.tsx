@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 import { ThemeProvider } from "@/components/shared/theme-provider";
-import FloatingDockHeader from "./floating-dock-header";
+import { FloatingDockHeader } from "./floating-dock-header";
 
 // Mock window.matchMedia
 Object.defineProperty(window, "matchMedia", {
@@ -26,7 +26,7 @@ vi.mock("@/components/ui/theme-toggle", () => ({
 }));
 
 vi.mock("./responsive-navigation", () => ({
-  default: () => <div data-testid="responsive-navigation" />,
+  ResponsiveNavigation: () => <div data-testid="responsive-navigation" />,
 }));
 
 const queryClient = new QueryClient({

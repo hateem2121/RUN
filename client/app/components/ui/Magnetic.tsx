@@ -10,7 +10,7 @@ interface MagneticProps {
  * Magnetic - Wraps interactive elements to create elastic attraction effect
  * Uses GSAP quickTo for high-performance mouse tracking.
  */
-const Magnetic: React.FC<MagneticProps> = ({ children, strength = 0.35 }) => {
+export const Magnetic: React.FC<MagneticProps> = ({ children, strength = 0.35 }) => {
   const magnetRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -61,5 +61,3 @@ const Magnetic: React.FC<MagneticProps> = ({ children, strength = 0.35 }) => {
     ref: magnetRef,
   });
 };
-
-export default Magnetic;

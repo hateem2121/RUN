@@ -528,18 +528,18 @@ export function MediaUploadEnhanced() {
   }, []);
 
   // Drag and drop handlers
-  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>): void => {
+  const handleDragOver = useCallback((e: React.DragEvent<HTMLButtonElement>): void => {
     e.preventDefault();
     setIsDragging(true);
   }, []);
 
-  const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>): void => {
+  const handleDragLeave = useCallback((e: React.DragEvent<HTMLButtonElement>): void => {
     e.preventDefault();
     setIsDragging(false);
   }, []);
 
   const handleDrop = useCallback(
-    (e: React.DragEvent<HTMLDivElement>): void => {
+    (e: React.DragEvent<HTMLButtonElement>): void => {
       e.preventDefault();
       setIsDragging(false);
 

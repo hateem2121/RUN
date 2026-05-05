@@ -470,14 +470,13 @@ export class AuthService {
     // This would typically involve checking the session store
     // For unit testing purposes, we can mock this or use the middleware logic
     // Implementation details depend on the session store being used
-    const _uaHash = this.hashUserAgent(userAgent).substring(0, 16);
+    this.hashUserAgent(userAgent).substring(0, 16);
     // In a real implementation, we'd fetch the session and compare uaHash
     // For now, this is a placeholder to satisfy test signature
   }
 
   public async shouldRotateSession(_sessionId: string): Promise<boolean> {
     // Placeholder for rotation logic
-    const _ROTATION_INTERVAL = 15 * 60 * 1000;
     // In reality, this would check sess.lastRotated in the session store
     return true; // Simplified for test stub
   }

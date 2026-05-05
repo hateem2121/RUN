@@ -1,0 +1,529 @@
+[Drizzle] ⚠️ DATABASE_URL is not set. Database operations will fail.
+Unused files (38)
+scripts/cache-clear.ts                  
+scripts/check-about-data.ts             
+scripts/check-db-schema.ts              
+scripts/deep-schema-check.ts            
+scripts/fix-about-schema.ts             
+scripts/force-about-refresh.ts          
+scripts/healthcheck.js                  
+scripts/promote-admins.ts               
+scripts/run-qa-seeds.ts                 
+scripts/seed-sustainability-stitch.ts   
+scripts/seed-sustainability.ts          
+scripts/seeders/business-system.ts      
+scripts/seeders/cms-about.ts            
+scripts/seeders/cms-homepage.ts         
+scripts/seeders/cms-manufacturing.ts    
+scripts/seeders/cms-sustainability.ts   
+scripts/seeders/cms-technology.ts       
+scripts/seeders/configuration.ts        
+scripts/seeders/media-organization.ts   
+scripts/seeders/product-ecosystem.ts    
+scripts/setup-newsletter-db.ts          
+scripts/stabilize-test-db.ts            
+scripts/tasks/media-variant-generator.ts
+scripts/tasks/warm-media-cache.ts       
+scripts/test-about-queries.ts           
+scripts/update-db.ts                    
+scripts/update-openapi-spec.ts          
+scripts/utils/certification-mapper.ts   
+scripts/utils/cleanup-neon-branches.ts  
+scripts/utils/composition-mapper.ts     
+scripts/utils/fabric-parser.ts          
+scripts/utils/fabric-validator.ts       
+scripts/utils/generate-schema-docs.ts   
+scripts/utils/seed-helpers.ts           
+scripts/verify.ts                       
+server/middleware/idempotency.ts        
+server/migrations/relations.ts          
+server/migrations/schema.ts             
+Unused devDependencies (10)
+form-data            package.json:74:6       
+http-proxy-agent     package.json:75:6       
+lint-staged          package.json:79:6       
+markdown-link-check  package.json:80:6       
+markdownlint-cli     package.json:81:6       
+pino-pretty          package.json:84:6       
+qs                   package.json:86:6       
+tar                  package.json:87:6       
+tough-cookie         package.json:88:6       
+pino-pretty          server/package.json:75:6
+Unlisted dependencies (2)
+vite                  server/lib/ssr/ssr-handler.ts:37:14
+@vitejs/plugin-react  vitest.config.ts:2:20              
+Unlisted binaries (4)
+tsx    package.json       
+pkill  package.json       
+lhci   package.json       
+fuser  server/package.json
+Unused exports (335)
+navItems                                            client/app/components/admin/admin-layout.tsx:334:10                 
+CategoryTableRow                                    client/app/components/admin/categories/CategoryDisplay.tsx:409:10   
+CategoryGridCard                                    client/app/components/admin/categories/CategoryDisplay.tsx:409:28   
+CategoryTreeItem                                    client/app/components/admin/categories/CategoryDisplay.tsx:409:46   
+CategoryTableView                                   client/app/components/admin/categories/CategoryList.tsx:299:10      
+CategoryGridView                                    client/app/components/admin/categories/CategoryList.tsx:299:29      
+CategoryTreeView                                    client/app/components/admin/categories/CategoryList.tsx:299:47      
+getSelectTestId                                     client/app/components/admin/fabric/types.ts:135:14                  
+getFiberTestId                                      client/app/components/admin/fiber/types.ts:65:14                    
+useMediaLibrary                           function  …mponents/admin/media-library/MediaLibraryContextEnhanced.tsx:572:17
+MediaLibraryContext                                 …mponents/admin/media-library/MediaLibraryContextEnhanced.tsx:585:10
+UploadQueueManager                        class     …pp/components/admin/media-library/upload/upload-utilities.ts:112:14
+productWarningSchema                                …-management-unified/admin/schema/product-validation.schema.ts:94:14
+useAccordionPersistence                             …ponents/admin/product-management-unified/shared/hooks/index.ts:3:10
+useMediaOperations                                  …ponents/admin/product-management-unified/shared/hooks/index.ts:5:10
+useProductForm                                      …ponents/admin/product-management-unified/shared/hooks/index.ts:6:10
+useMediaOperations                        function  …product-management-unified/shared/hooks/useMediaOperations.ts:20:17
+useProductForm                            function  …in/product-management-unified/shared/hooks/useProductForm.ts:229:17
+validateMediaFile                         function  …p/components/admin/product-management-unified/shared/utils.ts:41:17
+getMediaUrl                               function  …p/components/admin/product-management-unified/shared/utils.ts:86:17
+withErrorBoundary                         function  client/app/components/admin/ProductErrorBoundary.tsx:76:17          
+CertificateSelectionDialog                function  …nt/app/components/admin/shared/CertificateSelectionDialog.tsx:49:17
+default                                             …t/app/components/admin/shared/CertificateSelectionDialog.tsx:295:16
+SUSTAINABILITY_ICONS                                client/app/components/admin/shared/IconPicker.tsx:29:14             
+getIconComponent                          function  client/app/components/admin/shared/IconPicker.tsx:145:17            
+CertificateSelectionDialog                          client/app/components/admin/shared/index.ts:4:10                    
+ManufacturingFormWrapper                            client/app/components/admin/shared/index.ts:6:10                    
+PerformanceMonitor                                  client/app/components/admin/shared/index.ts:7:10                    
+useVirtualizationConfig                             client/app/components/admin/shared/index.ts:12:10                   
+VirtualizedList                                     client/app/components/admin/shared/index.ts:12:35                   
+ManufacturingFormWrapper                  function  …ient/app/components/admin/shared/ManufacturingFormWrapper.tsx:20:17
+PerformanceMonitor                        function  client/app/components/admin/shared/PerformanceMonitor.tsx:23:17     
+VirtualizedList                           function  client/app/components/admin/shared/VirtualizedList.tsx:21:17        
+useVirtualizationConfig                   function  client/app/components/admin/shared/VirtualizedList.tsx:88:17        
+AssetPlaceholder                                    …/components/error-boundaries/manufacturing-error-boundary.tsx:77:14
+PARTNERS                                            client/app/components/homepage/constants.ts:78:14                   
+CursorVariant                                       client/app/components/homepage/types.ts:13:14                       
+footerInputVariants                                 client/app/components/layout/FooterInquiryForm.tsx:9:14             
+CertificationBadge                                  client/app/components/products/ProductBadges.tsx:6:14               
+useOptimizedQuery                                   client/app/components/shared/manufacturing/index.ts:5:10            
+MechanicalGears                           function  …pp/components/shared/manufacturing/ManufacturingAnimations.tsx:5:17
+ConveyorBelt                              function  …p/components/shared/manufacturing/ManufacturingAnimations.tsx:75:17
+ManufacturingCard                         function  …ent/app/components/shared/manufacturing/ManufacturingCard.tsx:27:17
+ManufacturingLoadingState                 function  …components/shared/manufacturing/ManufacturingLoadingState.tsx:19:17
+ManufacturingInlineLoader                 function  …omponents/shared/manufacturing/ManufacturingLoadingState.tsx:139:17
+ManufacturingMediaDisplay                 function  …components/shared/manufacturing/ManufacturingMediaDisplay.tsx:23:17
+PerformanceSummary                        function  …t/app/components/shared/manufacturing/performance-summary.tsx:15:17
+AlertDialogPortal                                   client/app/components/ui/alert-dialog.tsx:122:3                     
+AlertDialogOverlay                                  client/app/components/ui/alert-dialog.tsx:123:3                     
+AlertTitle                                          client/app/components/ui/alert.tsx:59:17                            
+badgeVariants                                       client/app/components/ui/badge.tsx:44:17                            
+cardVariants                                        client/app/components/ui/bento-cards/enhanced-animations.tsx:9:14   
+staggerContainer                                    client/app/components/ui/bento-cards/enhanced-animations.tsx:45:14  
+fadeInUp                                            client/app/components/ui/bento-cards/enhanced-animations.tsx:54:14  
+scaleIn                                             client/app/components/ui/bento-cards/enhanced-animations.tsx:69:14  
+LoadingSpinner                                      client/app/components/ui/bento-cards/enhanced-animations.tsx:125:14 
+ImageLoadAnimation                                  client/app/components/ui/bento-cards/enhanced-animations.tsx:156:14 
+modalVariants                                       client/app/components/ui/bento-cards/enhanced-animations.tsx:169:14 
+backdropVariants                                    client/app/components/ui/bento-cards/enhanced-animations.tsx:196:14 
+SimpleErrorBoundary                       function  …nt/app/components/ui/bento-cards/enhanced-error-boundary.tsx:114:17
+default                                             …nt/app/components/ui/bento-cards/enhanced-error-boundary.tsx:137:16
+BreadcrumbEllipsis                                  client/app/components/ui/breadcrumb.tsx:114:3                       
+cardVariants                                        client/app/components/ui/card.tsx:101:3                             
+CommandDialog                                       client/app/components/ui/command.tsx:153:3                          
+CommandShortcut                                     client/app/components/ui/command.tsx:159:3                          
+DialogPortal                                        client/app/components/ui/dialog.tsx:522:3                           
+DialogOverlay                                       client/app/components/ui/dialog.tsx:523:3                           
+DialogTrigger                                       client/app/components/ui/dialog.tsx:525:3                           
+NestedDialog                                        client/app/components/ui/dialog.tsx:532:3                           
+DropdownMenuCheckboxItem                            client/app/components/ui/dropdown-menu.tsx:190:3                    
+DropdownMenuRadioItem                               client/app/components/ui/dropdown-menu.tsx:191:3                    
+DropdownMenuLabel                                   client/app/components/ui/dropdown-menu.tsx:192:3                    
+DropdownMenuShortcut                                client/app/components/ui/dropdown-menu.tsx:194:3                    
+DropdownMenuGroup                                   client/app/components/ui/dropdown-menu.tsx:195:3                    
+DropdownMenuPortal                                  client/app/components/ui/dropdown-menu.tsx:196:3                    
+DropdownMenuSub                                     client/app/components/ui/dropdown-menu.tsx:197:3                    
+DropdownMenuSubContent                              client/app/components/ui/dropdown-menu.tsx:198:3                    
+DropdownMenuSubTrigger                              client/app/components/ui/dropdown-menu.tsx:199:3                    
+DropdownMenuRadioGroup                              client/app/components/ui/dropdown-menu.tsx:200:3                    
+useErrorBoundary                          function  client/app/components/ui/ErrorBoundary.tsx:116:17                   
+WithErrorBoundary                         function  client/app/components/ui/ErrorBoundary.tsx:140:17                   
+useFormField                                        client/app/components/ui/form.tsx:174:3                             
+FormDescription                                     client/app/components/ui/form.tsx:179:3                             
+default                                             client/app/components/ui/geometric-divider.tsx:90:16                
+iconWrapperVariants                                 client/app/components/ui/icon-wrapper.tsx:56:23                     
+inputVariants                                       client/app/components/ui/input.tsx:53:17                            
+useMapMarkers                                       client/app/components/ui/map/index.ts:2:10                          
+useMapState                                         client/app/components/ui/map/index.ts:3:10                          
+OptimizedMapContainer                               client/app/components/ui/map/index.ts:8:10                          
+SimpleMapContainer                                  client/app/components/ui/map/index.ts:9:10                          
+animationCache                                      client/app/components/ui/map/index.ts:10:10                         
+iconManager                                         client/app/components/ui/map/index.ts:11:10                         
+OptimizedMapContainer                     function  client/app/components/ui/map/OptimizedMapContainer.tsx:28:17        
+withModelViewerErrorBound…                function  client/app/components/ui/ModelViewerErrorBoundary.tsx:462:17        
+PaginationEllipsis                                  client/app/components/ui/pagination.tsx:125:3                       
+ScrollBar                                           client/app/components/ui/scroll-area.tsx:48:22                      
+SelectGroup                                         client/app/components/ui/select.tsx:154:3                           
+SelectLabel                                         client/app/components/ui/select.tsx:158:3                           
+SelectSeparator                                     client/app/components/ui/select.tsx:160:3                           
+SelectScrollUpButton                                client/app/components/ui/select.tsx:161:3                           
+SelectScrollDownButton                              client/app/components/ui/select.tsx:162:3                           
+SheetPortal                                         client/app/components/ui/sheet.tsx:119:3                            
+SheetOverlay                                        client/app/components/ui/sheet.tsx:120:3                            
+SheetClose                                          client/app/components/ui/sheet.tsx:122:3                            
+useSidebar                                          client/app/components/ui/sidebar.tsx:23:14                          
+SidebarProvider                                     client/app/components/ui/sidebar.tsx:31:14                          
+DesktopSidebar                                      client/app/components/ui/sidebar.tsx:85:14                          
+MobileSidebar                                       client/app/components/ui/sidebar.tsx:122:14                         
+SmartBentoGrid                            function  client/app/components/ui/smart-bento-grid.tsx:111:17                
+NaturalMedia                              function  client/app/components/ui/smart-bento-grid.tsx:137:17                
+SortableContent                                     client/app/components/ui/sortable.tsx:543:20                        
+SortableOverlay                                     client/app/components/ui/sortable.tsx:543:71                        
+Card                                      function  client/app/components/ui/stacking-cards.tsx:54:17                   
+TableFooter                                         client/app/components/ui/table.tsx:113:41                           
+TableCaption                                        client/app/components/ui/table.tsx:113:86                           
+textareaVariants                                    client/app/components/ui/textarea.tsx:37:20                         
+ToastAction                                         client/app/components/ui/toast.tsx:142:3                            
+textVariants                                        client/app/components/ui/typography.tsx:74:14                       
+Heading                                             client/app/components/ui/typography.tsx:152:22                      
+Text                                                client/app/components/ui/typography.tsx:152:31                      
+useGlobalErrorFilter                                client/app/hooks/use-global-error-filter.ts:44:14                   
+inquiryFormSchema                                   client/app/hooks/use-inquiry-form.ts:11:10                          
+useNavigationItems                        function  client/app/hooks/use-navigation.ts:10:17                            
+useNestedModalStack                       function  client/app/hooks/use-nested-modal-focus.ts:224:17                   
+useProgressiveImageLoading                function  client/app/hooks/use-optimized-media.ts:126:17                      
+useImagePreloader                         function  client/app/hooks/use-optimized-media.ts:160:17                      
+useMediaPerformanceMonitor                function  client/app/hooks/use-optimized-media.ts:198:17                      
+useSmoothScroll                           function  client/app/hooks/use-scroll.tsx:145:17                              
+reducer                     useToastMod…            client/app/hooks/use-toast.ts:71:14                                 
+emergencyTechnologyRollba…                function  client/app/hooks/useTechnologyFeatureFlags.ts:70:23                 
+useViewportAwarePositioni…                function  client/app/hooks/useViewportAwarePositioning.ts:46:17               
+logout                                              client/app/lib/auth.ts:74:14                                        
+processErrorQueue                         function  client/app/lib/errorReporter.ts:95:23                               
+initErrorReporter                         function  client/app/lib/errorReporter.ts:132:17                              
+getErrorQueueSize                         function  client/app/lib/errorReporter.ts:156:17                              
+clearErrorQueue                           function  client/app/lib/errorReporter.ts:163:17                              
+staggerReveal                                       client/app/lib/gsap-animations.ts:57:14                             
+horizontalScrollLock                                client/app/lib/gsap-animations.ts:80:14                             
+MediaCacheInvalidator                     class     client/app/lib/media-query-keys.ts:114:14                           
+invalidateAllMedia                                  client/app/lib/media-query-keys.ts:133:14                           
+invalidateMediaItem                                 client/app/lib/media-query-keys.ts:134:14                           
+invalidatePaginatedMedia                            client/app/lib/media-query-keys.ts:135:14                           
+MediaResolver                             class     client/app/lib/media-resolver.ts:25:14                              
+detectMediaTypeFromUrl                    function  client/app/lib/media-type-detector.ts:26:17                         
+detectMediaTypeFromMime                   function  client/app/lib/media-type-detector.ts:51:17                         
+isImageUrl                                function  client/app/lib/media-type-detector.ts:89:17                         
+isVideoUrl                                function  client/app/lib/media-type-detector.ts:96:17                         
+DEFAULT_MODEL_VIEWER_CONF…                          client/app/lib/model-viewer-config.ts:51:14                         
+DEFAULT_ERROR_CONFIG                                client/app/lib/model-viewer-config.ts:77:14                         
+DEFAULT_PERFORMANCE_CONFIG                          client/app/lib/model-viewer-config.ts:89:14                         
+getPerformanceConfig                      function  client/app/lib/model-viewer-config.ts:125:17                        
+validateModelViewerConfig                 function  client/app/lib/model-viewer-config.ts:180:17                        
+MODEL_VIEWER_PRESETS                                client/app/lib/model-viewer-config.ts:240:14                        
+intersectionManager                                 client/app/lib/performance-intersection-observer.ts:85:14           
+useAnimationIntersectionO…                function  client/app/lib/performance-intersection-observer.ts:152:17          
+useImageIntersectionObser…                function  client/app/lib/performance-intersection-observer.ts:179:17          
+useBatchIntersectionObser…                function  client/app/lib/performance-intersection-observer.ts:206:17          
+useSmartAnimationScheduler                function  client/app/lib/performance-intersection-observer.ts:263:17          
+useDeviceCapabilities                     function  client/app/lib/performance-intersection-observer.ts:302:17          
+withPerformanceOptimizati…                function  client/app/lib/performance-intersection-observer.ts:342:17          
+usePerformanceObserver                              client/app/lib/performance-intersection-observer.ts:383:14          
+transformProduct                          function  client/app/lib/product-transformers.ts:54:17                        
+groupProductsByCategory                   function  client/app/lib/product-transformers.ts:275:17                       
+buildProductUrl                           function  client/app/lib/product-transformers.ts:295:17                       
+buildProductMediaItems                    function  client/app/lib/product-transformers.ts:340:17                       
+getQueryFn                  queryClient…            client/app/lib/queryClient.ts:84:14                                 
+createQueryClient           queryClient…            client/app/lib/queryClient.ts:138:14                                
+mediaBatchScheduler         queryClient…            client/app/lib/queryClient.ts:430:14                                
+useMediaResolver            queryClient…            client/app/lib/queryClient.ts:441:14                                
+getCacheMetrics             queryClient…            client/app/lib/queryClient.ts:539:14                                
+cleanupCacheIfNeeded        queryClient…            client/app/lib/queryClient.ts:577:14                                
+startAutomaticCacheCleanup  queryClient…            client/app/lib/queryClient.ts:665:14                                
+stopAutomaticCacheCleanup   queryClient…            client/app/lib/queryClient.ts:682:14                                
+prefetchCriticalHomepageD…  queryClient…            client/app/lib/queryClient.ts:690:14                                
+prefetchSecondaryHomepage…  queryClient…            client/app/lib/queryClient.ts:711:14                                
+forceResetMediaCache        queryClient…            client/app/lib/queryClient.ts:756:14                                
+getGridTemplateColumns                    function  client/app/lib/responsive-grid.ts:34:17                             
+RESPONSIVE_HEIGHTS                                  client/app/lib/responsive-grid.ts:47:14                             
+CARD_HEIGHT_CONSTRAINTS                             client/app/lib/responsive-grid.ts:56:14                             
+BREAKPOINTS                                         client/app/lib/responsive-grid.ts:65:14                             
+getResponsiveHeightStyles                 function  client/app/lib/responsive-grid.ts:75:17                             
+formatFileSize                            function  client/app/lib/utils.ts:19:17                                       
+sanitizeObj                               function  client/app/lib/utils.ts:74:17                                       
+ResponseValidationError                   class     client/app/lib/validated-api.ts:5:14                                
+submitContactInquiry                      function  client/app/services/inquiry.server.ts:15:23                         
+submitQuoteRequest                        function  client/app/services/inquiry.server.ts:65:23                         
+submitInquiry                                       client/app/services/inquiry.server.ts:167:34                        
+iconMap                                             client/app/utils/icon-resolver.ts:29:14                             
+env                                                 server/config/environment.ts:13:14                                  
+isDevelopment                                       server/config/environment.ts:16:14                                  
+isProduction                                        server/config/environment.ts:17:14                                  
+isTest                                              server/config/environment.ts:18:14                                  
+server                                              server/config/environment.ts:53:14                                  
+logging                                             server/config/environment.ts:61:14                                  
+security                                            server/config/environment.ts:72:14                                  
+cloud                                               server/config/environment.ts:82:14                                  
+development                                         server/config/environment.ts:89:14                                  
+features                                            server/config/environment.ts:95:14                                  
+getConfigSummary                                    server/config/environment.ts:121:14                                 
+productionConfig                                    server/config/production.ts:58:14                                   
+stagingConfig                                       server/config/production.ts:109:14                                  
+developmentConfig                                   server/config/production.ts:129:14                                  
+validateConfig                            function  server/config/production.ts:181:17                                  
+pool                                                server/db.ts:55:12                                                  
+updateHealthCheckTime                     function  server/db.ts:230:17                                                 
+closeDatabaseConnection                             server/db.ts:234:14                                                 
+safeTransaction                           function  server/db.ts:269:23                                                 
+CacheStrategies                                     server/lib/cache/cache-strategies.ts:55:14                          
+InvalidationPatterns                                server/lib/cache/cache-strategies.ts:116:21                         
+TwoTierBatchCache                         class     server/lib/cache/two-tier-batch.ts:48:14                            
+CircuitState                                        server/lib/db/db-circuit-breaker.ts:11:14                           
+DatabaseCircuitBreaker                    class     server/lib/db/db-circuit-breaker.ts:34:14                           
+DatabaseKeepAlive                         class     server/lib/db/keep-alive.ts:10:14                                   
+QueryTracker                              class     server/lib/db/query-performance.ts:486:14                           
+performanceMonitor                                  server/lib/db/query-performance.ts:590:14                           
+AccessoryRepository                       class     server/lib/db/repositories/accessory-repository.ts:47:14            
+UserRepository                                      server/lib/db/repositories/index.ts:18:10                           
+ProductRepository                                   server/lib/db/repositories/index.ts:25:3                            
+AccessoryRepository                                 server/lib/db/repositories/index.ts:31:10                           
+MediaRepository                                     server/lib/db/repositories/index.ts:33:10                           
+MiscRepository                                      server/lib/db/repositories/index.ts:41:10                           
+BlogRepository                                      server/lib/db/repositories/index.ts:47:10                           
+SystemRepository                                    server/lib/db/repositories/index.ts:53:10                           
+WebhookRepository                                   server/lib/db/repositories/index.ts:54:10                           
+AboutRepository                           class     server/lib/db/repositories/page-content/about.repository.ts:33:14   
+HomepageRepository                        class     server/lib/db/repositories/page-content/homepage.repository.ts:33:14
+ManufacturingRepository                   class     …/lib/db/repositories/page-content/manufacturing.repository.ts:29:14
+SustainabilityRepository                  class     …lib/db/repositories/page-content/sustainability.repository.ts:27:14
+TechnologyRepository                      class     …ver/lib/db/repositories/page-content/technology.repository.ts:33:14
+withTransaction                           function  server/lib/db/repositories/shared-utils.ts:15:23                    
+cacheUtils                                          server/lib/db/repositories/shared-utils.ts:52:14                    
+WebhookRepository                         class     server/lib/db/repositories/webhook-repository.ts:17:14              
+AlertService                              class     server/lib/integrations/alert-service.ts:202:14                     
+GLTFProcessor                             class     server/lib/integrations/gltf-processor.ts:34:14                     
+isGLBBuffer                               function  server/lib/integrations/gltf-processor.ts:538:17                    
+StorageLifecycleScheduler                           server/lib/integrations/storage-lifecycle-scheduler.ts:576:10       
+HttpMetricsTracker                        class     server/lib/monitoring/http-metrics.ts:37:14                         
+debugLog                                            server/lib/monitoring/logger.ts:238:14                              
+productionLog                                       server/lib/monitoring/logger.ts:244:14                              
+cacheInvalidationQueue                              server/lib/queue/cache-invalidation-queue.ts:12:14                  
+queueMediaProcessing                      function  server/lib/queues/media-queue.ts:77:23                              
+queueMediaOperations                      function  server/lib/queues/media-queue.ts:162:23                             
+getQueueStats                             function  server/lib/queues/media-queue.ts:179:23                             
+getCircuit                                function  server/lib/resilience/circuit-breaker.ts:162:17                     
+EXTERNAL_API_CIRCUIT_OPTI…                          server/lib/resilience/circuit-breaker.ts:215:14                     
+RateLimiter                               class     server/lib/resilience/rate-limiter.ts:34:14                         
+getRunbookPath                            function  server/lib/runbook-registry.ts:67:17                                
+hasRunbook                                function  server/lib/runbook-registry.ts:74:17                                
+getRunbookErrorCodes                      function  server/lib/runbook-registry.ts:81:17                                
+hasRequiredSecrets                        function  server/lib/secrets/secret-manager.ts:124:17                         
+isServerShuttingDown                      function  server/lib/shutdown-manager.ts:96:17                                
+AppStorageService                         class     server/lib/storage/app-service.ts:11:14                             
+safeParseId                               function  server/lib/utilities/core-utils.ts:25:17                            
+transformNullToUndefined                  function  server/lib/utilities/core-utils.ts:134:17                           
+prepareForValidation                      function  server/lib/utilities/core-utils.ts:151:17                           
+cleanApiData                              function  server/lib/utilities/core-utils.ts:155:17                           
+sanitizeString                            function  server/lib/utilities/core-utils.ts:202:17                           
+validateFilename                          function  server/lib/utilities/core-utils.ts:206:17                           
+validateMediaId                           function  server/lib/utilities/core-utils.ts:216:17                           
+setSecureCORSHeaders                                server/lib/utilities/core-utils.ts:224:14                           
+MediaUrlBuilder                           class     server/lib/utilities/core-utils.ts:256:14                           
+responseOptimizer                                   server/lib/utilities/core-utils.ts:292:14                           
+UrlPathService                            class     server/lib/utilities/core-utils.ts:304:14                           
+RetryManager                              class     server/lib/utilities/core-utils.ts:340:14                           
+migrationService                                    server/lib/utilities/core-utils.ts:364:14                           
+MediaValidator                                      server/lib/utilities/core-utils.ts:381:14                           
+default                                             server/lib/utilities/core-utils.ts:451:16                           
+generateSlug                              function  server/lib/utilities/slug-utils.ts:44:17                            
+isValidSlug                               function  server/lib/utilities/slug-utils.ts:64:17                            
+UPLOAD_CONFIG                                       server/lib/utilities/upload-config.ts:6:14                          
+getAppVersion                                       server/lib/utilities/version.ts:5:14                                
+CSRF_COOKIE_NAME                                    server/middleware/csrf.ts:12:14                                     
+CSRF_HEADER_NAME                                    server/middleware/csrf.ts:13:14                                     
+validateCsrfToken                         function  server/middleware/csrf.ts:76:17                                     
+generateErrorResponse                     function  server/middleware/production-error-handler.ts:217:17                
+notFoundHandler                           function  server/middleware/production-error-handler.ts:424:17                
+apiRateLimiter                                      server/middleware/rateLimiter.ts:149:14                             
+uploadRateLimit                                     server/middleware/rateLimiter.ts:270:14                             
+canManageResource                         function  server/middleware/rbac.ts:104:17                                    
+xssSanitizer                              function  server/middleware/sanitization.ts:39:17                             
+isPublicCacheablePath                               server/middleware/ssr-cache.ts:92:10                                
+PUBLIC_CACHEABLE_PATHS                              server/middleware/ssr-cache.ts:92:33                                
+PRIVATE_PATHS                                       server/middleware/ssr-cache.ts:92:57                                
+handleUploadError                                   server/multer-optimized.ts:251:14                                   
+batchCreateAssets                         function  server/routes/media/handlers.ts:772:23                              
+batchDeleteAssets                         function  server/routes/media/handlers.ts:799:23                              
+initChunkedUpload                         function  server/routes/media/handlers.ts:1225:23                             
+createErrorResponse                                 server/routes/media/index.ts:11:3                                   
+createPaginatedResponse                             server/routes/media/index.ts:12:3                                   
+createSuccessResponse                               server/routes/media/index.ts:13:3                                   
+uploadRateLimiter                                   server/routes/media/middleware.ts:40:14                             
+UPLOAD_CONSTANTS                                    server/routes/media/middleware.ts:46:14                             
+BackendUploadManager                      class     server/routes/media/middleware.ts:57:14                             
+MediaUploadParamSchema                              server/routes/media/schemas.ts:22:14                                
+FolderCreateSchema                                  server/routes/media/schemas.ts:26:14                                
+FolderUpdateSchema                                  server/routes/media/schemas.ts:31:14                                
+PerformanceQuerySchema                              server/routes/media/schemas.ts:45:14                                
+uploadRateLimit                                     server/routes/media/services.ts:641:14                              
+baseQueryParamsSchema                               server/routes/media/types.ts:17:14                                  
+UPLOAD_OPTIMIZATION                                 server/routes/media/types.ts:55:14                                  
+slugifyFilename                           function  server/routes/media/utils.ts:96:17                                  
+generateThumbnailCachePath                function  server/routes/media/utils.ts:206:17                                 
+detectMediaType                           function  server/routes/media/utils.ts:221:17                                 
+createPaginatedResponse                             server/routes/media/utils.ts:240:14                                 
+createErrorResponse                                 server/routes/media/utils.ts:251:14                                 
+createSuccessResponse                               server/routes/media/utils.ts:257:14                                 
+toBuffer                                  function  server/routes/media/utils.ts:263:17                                 
+MediaUrlResolver                                    server/routes/media/utils.ts:302:14                                 
+enhancedValidation                                  server/routes/media/utils.ts:320:14                                 
+buildInsertMediaAsset                     function  server/routes/media/utils.ts:410:17                                 
+getVideoMetadata                          function  server/routes/media/utils.ts:465:23                                 
+processUploadedFile                       function  server/routes/media/utils.ts:511:23                                 
+FeatureFlagsQuerySchema                             server/routes/utilities/schemas.ts:20:14                            
+FeatureFlagParamSchema                              server/routes/utilities/schemas.ts:25:14                            
+FeatureFlagUpdateBodySche…                          server/routes/utilities/schemas.ts:29:14                            
+ResourcesBatchQuerySchema                           server/routes/utilities/schemas.ts:33:14                            
+AboutService                              class     server/services/about.service.ts:32:14                              
+AdminService                                        server/services/admin/index.ts:5:10                                 
+WebhookService                            class     server/services/webhook-service.ts:16:14                            
+testAuthMiddleware                                  server/tests/test-utils.ts:15:14                                    
+withAuthenticatedUser                     function  server/tests/test-utils.ts:188:17                                   
+createTestUser                            function  server/tests/test-utils.ts:205:23                                   
+createTestAdmin                           function  server/tests/test-utils.ts:222:23                                   
+cleanupDatabase                           function  server/tests/test-utils.ts:229:23                                   
+insertManufacturingCapabi…                          server/validation/manufacturing.ts:18:3                             
+insertManufacturingCaseSt…                          server/validation/manufacturing.ts:19:3                             
+insertManufacturingHeroSc…                          server/validation/manufacturing.ts:20:3                             
+insertManufacturingProces…                          server/validation/manufacturing.ts:21:3                             
+insertManufacturingQualit…                          server/validation/manufacturing.ts:22:3                             
+validate                                  function  server/validation/manufacturing.ts:36:17                            
+validateManufacturingHero                 function  server/validation/manufacturing.ts:88:17                            
+reorderProcessesSchema                              server/validation/manufacturing.ts:110:14                           
+reorderCapabilitiesSchema                           server/validation/manufacturing.ts:119:14                           
+reorderQualitiesSchema                              server/validation/manufacturing.ts:128:14                           
+reorderCaseStudiesSchema                            server/validation/manufacturing.ts:137:14                           
+Unused exported types (113)
+NavItem                                  type       client/app/components/admin/admin-layout.tsx:335:15                 
+CapabilityManagementProps                interface  …t/app/components/admin/manufacturing/CapabilityManagement.tsx:77:18
+ProcessManagementProps                   interface  …ient/app/components/admin/manufacturing/ProcessManagement.tsx:62:18
+MediaGridItemProps                       interface  …p/components/admin/media-library/components/MediaGridItem.tsx:14:18
+MediaGridPaginationProps                 interface  …ponents/admin/media-library/components/MediaGridPagination.tsx:6:18
+MediaGridProps                           interface  client/app/components/admin/media-library/MediaGrid.tsx:12:18       
+MediaLibraryContextType                  type       …mponents/admin/media-library/MediaLibraryContextEnhanced.tsx:588:15
+ProductFormValues                        type       …management-unified/admin/schema/product-validation.schema.ts:106:13
+SectionKey                               type       …ents/admin/product-management-unified/hooks/useProductForm.ts:18:13
+ProductFormState                         interface  …ents/admin/product-management-unified/hooks/useProductForm.ts:29:18
+AccordionState                           interface  …uct-management-unified/shared/hooks/useAccordionPersistence.ts:4:18
+MediaGridBaseProps                       interface  …p/components/admin/product-management-unified/shared/types.ts:76:18
+MediaRemovalHandler                      type       …p/components/admin/product-management-unified/shared/types.ts:87:13
+MediaFieldType                           type       …p/components/admin/product-management-unified/shared/types.ts:90:13
+MediaSelectHandler                       type       …p/components/admin/product-management-unified/shared/types.ts:93:13
+MediaAssetsFormData                      interface  …p/components/admin/product-management-unified/shared/types.ts:96:18
+GlassCardProps                           interface  client/app/components/admin/shared/GlassCard.tsx:4:18               
+IconOption                               interface  client/app/components/admin/shared/IconPicker.tsx:22:18             
+TechnologyEquipmentManag…                interface  …omponents/admin/technology/TechnologyEquipmentManagement.tsx:242:18
+NavItem                                  interface  client/app/components/homepage/types.ts:22:18                       
+HomepageBatchResponse                    type       client/app/components/homepage/types.ts:40:3                        
+HeroData                                 type       client/app/components/homepage/types.ts:44:3                        
+HomepageSloganItem                       type       client/app/components/homepage/types.ts:45:3                        
+HomepageSectionItem                      type       client/app/components/homepage/types.ts:46:3                        
+DataWithTimestamp                        type       client/app/components/homepage/types.ts:48:3                        
+StaggeredMenuProps                       interface  client/app/components/navigation/staggered-menu.tsx:13:18           
+EnhancedMediaAsset                       interface  client/app/components/products/UnifiedMediaTheater.tsx:34:18        
+InteractiveExperienceSec…                interface  …nt/app/components/technology/InteractiveExperienceSection.tsx:18:18
+BadgeProps                               interface  client/app/components/ui/badge.tsx:36:18                            
+IconWrapperProps                         interface  client/app/components/ui/icon-wrapper.tsx:31:18                     
+InputProps                               interface  client/app/components/ui/input.tsx:28:18                            
+TileLayerType                            type       client/app/components/ui/map/hooks/useMapState.ts:3:13              
+AnimationType                            type       client/app/components/ui/map/index.ts:12:15                         
+TileLayerType                            type       client/app/components/ui/map/index.ts:12:43                         
+AnimationType                            type       client/app/components/ui/map/types.ts:13:13                         
+TileLayerType                            type       client/app/components/ui/map/types.ts:14:13                         
+MarqueeStripProps                        interface  client/app/components/ui/marquee-strip.tsx:6:18                     
+TextareaProps                            interface  client/app/components/ui/textarea.tsx:23:18                         
+UnifiedModelViewerProps                  type       client/app/components/ui/UnifiedModelViewer.tsx:8:15                
+UnifiedModelViewerProps                  interface  client/app/components/ui/UnifiedModelViewerCore.tsx:33:18           
+CategoryUIState                          interface  …p/hooks/admin/categories/useCategoryOperationsConsolidated.ts:11:18
+ResourceType                             type       client/app/hooks/resources/useResourceBatch.ts:4:13                 
+SearchResult                             interface  client/app/hooks/resources/useResourceSearch.ts:6:18                
+ManufacturingEntity                      type       client/app/hooks/useManufacturingMutations.ts:5:13                  
+MediaResolverOptions                     interface  client/app/lib/media-resolver.ts:19:18                              
+MediaType                                type       client/app/lib/media-type-detector.ts:6:13                          
+MediaAssetBasic                          type       client/app/lib/media-url-builder.ts:9:13                            
+MediaAssetWithMetadata                   type       client/app/lib/media-url-builder.ts:10:13                           
+MediaPriority                            type       client/app/lib/media-url-builder.ts:15:13                           
+MediaContext                             type       client/app/lib/media-url-builder.ts:16:13                           
+ModelViewerErrorConfig                   interface  client/app/lib/model-viewer-config.ts:30:18                         
+ModelViewerPerformanceCo…                interface  client/app/lib/model-viewer-config.ts:37:18                         
+IntersectionOptions                      interface  client/app/lib/performance-intersection-observer.ts:8:18            
+IntersectionResult                       interface  client/app/lib/performance-intersection-observer.ts:16:18           
+MinimalCategory                          type       client/app/lib/product-transformers.ts:39:13                        
+TransformContext                         interface  client/app/lib/product-transformers.ts:43:18                        
+QueryDataType              queryClient…  type       client/app/lib/queryClient.ts:464:13                                
+ResponsiveSpanConfig                     interface  client/app/lib/responsive-grid.ts:5:18                              
+Environment                              type       server/config/environment.ts:169:13                                 
+DatabaseConfig                           type       server/config/environment.ts:170:13                                 
+ServerConfig                             type       server/config/environment.ts:171:13                                 
+LoggingConfig                            type       server/config/environment.ts:172:13                                 
+SecurityConfig                           type       server/config/environment.ts:173:13                                 
+DevelopmentConfig                        type       server/config/environment.ts:174:13                                 
+FeaturesConfig                           type       server/config/environment.ts:175:13                                 
+CDNConfig                                type       server/config/environment.ts:176:13                                 
+ProductionConfig                         interface  server/config/production.ts:4:18                                    
+Database                                 type       server/db.ts:150:13                                                 
+ImageMetadata                            interface  server/image-processor.ts:12:18                                     
+CacheInvalidationEvent                   interface  server/lib/cache/cache-events.ts:9:18                               
+ProductDetail                            type       server/lib/db/repositories/index.ts:24:8                            
+ProductSummary                           type       server/lib/db/repositories/index.ts:26:8                            
+AlertSeverity                            type       server/lib/integrations/alert-service.ts:23:13                      
+GLTFProcessingResult                     interface  server/lib/integrations/gltf-processor.ts:11:18                     
+GLTFValidationResult                     interface  server/lib/integrations/gltf-processor.ts:21:18                     
+LifecycleConfig                          type       server/lib/integrations/storage-lifecycle-scheduler.ts:575:15       
+CleanupMetrics                           type       server/lib/integrations/storage-lifecycle-scheduler.ts:575:32       
+CleanupReport                            type       server/lib/integrations/storage-lifecycle-scheduler.ts:575:48       
+QueueResult                              interface  server/lib/queues/media-queue.ts:58:18                              
+SafeIdResult                             interface  server/lib/utilities/core-utils.ts:14:18                            
+CreateRateLimiterOptions                 interface  server/middleware/rateLimiter.ts:160:18                             
+IUserRepository                          interface  server/repositories/storage-interfaces.ts:118:18                    
+ICategoryRepository                      interface  server/repositories/storage-interfaces.ts:128:18                    
+IFiberRepository                         interface  server/repositories/storage-interfaces.ts:143:18                    
+IFabricRepository                        interface  server/repositories/storage-interfaces.ts:154:18                    
+ICertificateRepository                   interface  server/repositories/storage-interfaces.ts:165:18                    
+ISizeChartRepository                     interface  server/repositories/storage-interfaces.ts:179:18                    
+IAccessoryRepository                     interface  server/repositories/storage-interfaces.ts:190:18                    
+IMediaRepository                         interface  server/repositories/storage-interfaces.ts:210:18                    
+IProductRepository                       interface  server/repositories/storage-interfaces.ts:270:18                    
+INavigationRepository                    interface  server/repositories/storage-interfaces.ts:318:18                    
+IContactRepository                       interface  server/repositories/storage-interfaces.ts:338:18                    
+IInquiryRepository                       interface  server/repositories/storage-interfaces.ts:350:18                    
+IContentRepository                       interface  server/repositories/storage-interfaces.ts:376:18                    
+ISustainabilityRepository                interface  server/repositories/storage-interfaces.ts:472:18                    
+IManufacturingRepository                 interface  server/repositories/storage-interfaces.ts:521:18                    
+ITechnologyRepository                    interface  server/repositories/storage-interfaces.ts:566:18                    
+IWebhookRepository                       interface  server/repositories/storage-interfaces.ts:617:18                    
+ISystemRepository                        interface  server/repositories/storage-interfaces.ts:630:18                    
+MediaAsset                               type       server/routes/media/index.ts:16:15                                  
+MediaMetadata                            type       server/routes/media/index.ts:16:27                                  
+UploadSession                            type       server/routes/media/index.ts:16:42                                  
+UploadSession                            interface  server/routes/media/services.ts:21:18                               
+InsertMediaAsset                         type       server/routes/media/types.ts:10:27                                  
+MediaQueryParams                         type       server/routes/media/types.ts:48:13                                  
+UploadMetrics                            interface  server/routes/media/types.ts:61:18                                  
+UploadResult                             interface  server/routes/media/types.ts:71:18                                  
+BatchUploadResult                        interface  server/routes/media/types.ts:79:18                                  
+ApiResponse                              interface  server/routes/media/types.ts:93:18                                  
+PaginatedResponse                        interface  server/routes/media/types.ts:100:18                                 
+AssetVisibility                          type       server/routes/media/utils.ts:141:13                                 
+UploadOptions                            interface  server/routes/media/utils.ts:504:18                                 
+ValidationResult                         type       server/validation/manufacturing.ts:28:13                            
+Duplicate exports (10)
+useMediaLibrary|useMediaLibraryEnhanced                           …s/admin/media-library/MediaLibraryContextEnhanced.tsx
+MediaLibraryProvider|MediaLibraryEnhancedProvider                 …s/admin/media-library/MediaLibraryContextEnhanced.tsx
+CertificateSelectionDialog|default                                …omponents/admin/shared/CertificateSelectionDialog.tsx
+EnhancedBentoCardErrorBoundary|default                            …components/ui/bento-cards/enhanced-error-boundary.tsx
+GeometricDivider|default                                          client/app/components/ui/geometric-divider.tsx        
+invalidateMediaQueries|invalidateAllMedia|invalidateMediaItem|i…  client/app/lib/media-query-keys.ts                    
+useIntersectionObserver|usePerformanceObserver                    client/app/lib/performance-intersection-observer.ts   
+queryPerformanceMonitor|performanceMonitor                        server/lib/db/query-performance.ts                    
+UPLOAD_CONFIG|default                                             server/lib/utilities/upload-config.ts                 
+QuoteSubmissionSchema|inquiryFormSchema                           shared/validation/contact.ts                          
+Configuration hints (8)
+scripts                         …ip.config.ts  Add entry and/or refine project files in workspaces["scripts"] (35 unuse…
+server                          …ip.config.ts  Add entry and/or refine project files in workspaces["server"] (3 unused …
+[client/app/routes.ts, …]       …ip.config.ts  Remove, or move unused top-level entry to one of "workspaces"            
+…lient/app/**/*.{ts,tsx}, …]    …ip.config.ts  Remove, or move unused top-level project to one of "workspaces"          
+**/*.spec.{ts,tsx}              …ip.config.ts  Remove from ignore                                                       
+**/node_modules/**              …ip.config.ts  Remove from ignore                                                       
+[client/app/routes.ts, …]       …ip.config.ts  Refine entry pattern (no matches)                                        
+…lient/app/**/*.{ts,tsx}, …]    …ip.config.ts  Refine project pattern (no matches)                                      

@@ -19,7 +19,7 @@ interface FluidGlassProps {
  * Replaces the previous three.js/WebGL implementation to comply with the
  * project's hard constraint: @google/model-viewer only for 3D; no three.js.
  */
-const FluidGlass = memo(function FluidGlass({
+export const FluidGlass = memo(function FluidGlass({
   mode = "lens",
   lensProps = {},
   barProps = {},
@@ -100,5 +100,3 @@ const FluidGlass = memo(function FluidGlass({
     </div>
   );
 });
-
-export default FluidGlass;

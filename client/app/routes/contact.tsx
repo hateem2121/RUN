@@ -8,7 +8,9 @@ import { useIsMobile } from "@/hooks/use-is-mobile";
 import { getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/contact";
 
-const ContactInfoCards = lazy(() => import("@/components/contact/contact-info-cards"));
+const ContactInfoCards = lazy(() =>
+  import("@/components/contact/contact-info-cards").then((m) => ({ default: m.ContactInfoCards })),
+);
 
 export function meta({}: Route.MetaArgs) {
   return [

@@ -11,6 +11,6 @@ export {
   createErrorResponse,
   createPaginatedResponse,
   createSuccessResponse,
-} from "./lib/utilities/core-utils.js";
+} from "./utils.js";
 // Re-export types for external use
 export type { MediaAsset, MediaMetadata, UploadSession } from "./types.js";

@@ -434,7 +434,6 @@ export class GLTFProcessor {
    * PHASE 1.1 ENHANCED: Auto-convert external textures to embedded (with strict validation)
    */
   async processForUpload(buffer: Buffer, baseUrl?: string): Promise<GLTFProcessingResult> {
-    const _originalSize = buffer.length;
     const validation = await this.validateGLTF(buffer);
 
     if (!validation.isValid) {

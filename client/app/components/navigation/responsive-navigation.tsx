@@ -10,7 +10,7 @@ import { FloatingDockSkeleton } from "./floating-dock-skeleton";
 import { NavigationIcon } from "./navigation-icon";
 import { StaggeredMenu } from "./staggered-menu";
 
-const ResponsiveNavigation = memo(function ResponsiveNavigation() {
+export const ResponsiveNavigation = memo(function ResponsiveNavigation() {
   // Desktop navigation items (filtered by showOnDesktop)
   const { navigationItems: desktopItems, isLoading: desktopLoading } = useDesktopNavigationItems();
 
@@ -75,5 +75,3 @@ const ResponsiveNavigation = memo(function ResponsiveNavigation() {
     </>
   );
 });
-
-export default ResponsiveNavigation;

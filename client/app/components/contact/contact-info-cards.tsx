@@ -7,7 +7,7 @@ interface ContactInfoCardsProps {
   contactConfig?: ContactConfig | undefined;
 }
 
-export default function ContactInfoCards({ contactConfig }: ContactInfoCardsProps) {
+export function ContactInfoCards({ contactConfig }: ContactInfoCardsProps) {
   return (
     <aside
       className="col-span-1 lg:col-span-2 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-1"

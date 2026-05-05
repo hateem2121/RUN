@@ -4,8 +4,6 @@
  * Relocated from modules/ to resources/ for consistent architecture (October 15, 2025)
  */
 
-import { BigQuery } from "@google-cloud/bigquery";
-import { CloudTasksClient } from "@google-cloud/tasks";
 import express, { type Request } from "express";
 import {
   type ContactPageConfiguration,
@@ -22,13 +20,6 @@ import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { verifyRecaptcha } from "../../lib/security/recaptcha-verify.js";
 import { authService } from "../../services/auth-service.js";
 
-// Initialize Google Cloud Clients
-const _tasksClient = new CloudTasksClient();
-const _bigquery = new BigQuery();
-
-const _GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const _GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
-const _EMAIL_QUEUE = "email-queue";
 
 const router = express.Router();
 

@@ -28,7 +28,7 @@ if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
       lastName: "Admin",
       profileImageUrl: "https://via.placeholder.com/150",
       isAdmin: true,
-      failedLoginAttempts: "0",
+      failedLoginAttempts: 0,
       lockoutUntil: null,
       createdAt: new Date(),
       updatedAt: new Date(),

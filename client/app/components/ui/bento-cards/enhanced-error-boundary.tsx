@@ -134,4 +134,4 @@ export function SimpleErrorBoundary({
   );
 }
 
-export default EnhancedBentoCardErrorBoundary;
+
