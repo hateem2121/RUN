@@ -379,9 +379,6 @@ export function withPerformanceOptimization<
   return WrappedComponent;
 }
 
-// Performance observer hook (alias for useIntersectionObserver)
-export const usePerformanceObserver = useIntersectionObserver;
-
 // Cleanup on unmount
 if (typeof window !== "undefined") {
   window.addEventListener("beforeunload", () => {

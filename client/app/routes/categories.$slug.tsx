@@ -162,7 +162,10 @@ export default function CategoryDetail() {
             The category you're looking for doesn't exist or has been moved.
           </Typography.P>
           <Link to="/categories">
-            <button className="inline-flex items-center bg-black px-6 py-3 font-semibold text-white transition-colors hover:bg-foreground/80">
+            <button
+              type="button"
+              className="inline-flex items-center bg-black px-6 py-3 font-semibold text-white transition-colors hover:bg-foreground/80"
+            >
               Browse All Categories
             </button>
           </Link>

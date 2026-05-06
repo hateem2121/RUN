@@ -121,11 +121,7 @@ export function PublicHeroSection({
 
   return (
     <ManufacturingErrorBoundary>
-      <div
-        ref={containerRef}
-        className="relative bg-[var(--color-manufacturing-bg)]"
-        aria-labelledby="hero-title"
-      >
+      <div ref={containerRef} className="relative bg-[var(--color-manufacturing-bg)]">
         {/* Header Section */}
         <header className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
           {/* Floating Sparks Animation Layer */}
@@ -237,10 +233,9 @@ export function PublicHeroSection({
         </header>
 
         {/* Stats Bar Sticky */}
-        <div
+        <section
           ref={statsRef}
           className="sticky top-20 z-40 bg-[var(--color-manufacturing-bg)]/95 backdrop-blur-md border-y border-[var(--color-manufacturing-accent)]/20 shadow-lg shadow-[var(--color-manufacturing-accent)]/10 transition-all duration-300"
-          role="region"
           aria-label="Manufacturing Statistics"
         >
           <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center overflow-x-auto no-scrollbar">
@@ -269,7 +264,7 @@ export function PublicHeroSection({
               <span className="font-bold tracking-wider">LIVE PRODUCTION STATUS: ACTIVE</span>
             </div>
           </div>
-        </div>
+        </section>
       </div>
     </ManufacturingErrorBoundary>
   );

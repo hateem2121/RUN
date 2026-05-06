@@ -42,7 +42,7 @@ const FloatingDockDesktop = ({
   className?: string | undefined;
   iconSize?: "small" | "medium" | "large";
 }) => {
-  const dockRef = useRef<HTMLDivElement>(null);
+  const dockRef = useRef<HTMLElement>(null);
 
   const sizeMap = {
     small: { base: 32, hover: 64, icon: 16, iconHover: 32 },
@@ -125,9 +125,8 @@ const FloatingDockDesktop = ({
         className,
       )}
     >
-      <div
+      <nav
         ref={dockRef}
-        role="navigation"
         aria-label="Desktop navigation dock"
         className="flex w-full transform-gpu items-center gap-2"
       >
@@ -140,7 +139,7 @@ const FloatingDockDesktop = ({
             iconSize={item.iconSize || iconSize}
           />
         ))}
-      </div>
+      </nav>
     </Card>
   );
 };

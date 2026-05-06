@@ -41,6 +41,7 @@ export function MechanicalGears() {
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
+        aria-hidden="true"
       >
         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
       </svg>
@@ -52,6 +53,7 @@ export function MechanicalGears() {
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
+        aria-hidden="true"
       >
         <circle cx="12" cy="12" r="3" />
         <path d="M12 1v6m0 6v6m4.22-10.22l4.24 4.24m-4.24 4.24l4.24 4.24M20 12h-6m-6 0H1m4.22 10.22l4.24-4.24m-4.24-4.24L1 9.5" />
@@ -64,6 +66,7 @@ export function MechanicalGears() {
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
+        aria-hidden="true"
       >
         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
       </svg>

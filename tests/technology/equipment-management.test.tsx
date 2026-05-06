@@ -21,7 +21,9 @@ const MockTechnologyEquipmentManagement = ({ isLoading: _isLoading }: { isLoadin
     <div data-testid="equipment-management">
       <h2>Technology Equipment</h2>
       <div data-testid="equipment-header">Manage your advanced manufacturing equipment</div>
-      <button data-testid="add-equipment">Add Equipment</button>
+      <button type="button" data-testid="add-equipment">
+        Add Equipment
+      </button>
 
       {/* Mock equipment item */}
       <div data-testid="equipment-item">
@@ -60,6 +62,7 @@ const MockTechnologyEquipmentManagement = ({ isLoading: _isLoading }: { isLoadin
 
       {/* Mock form interactions */}
       <button
+        type="button"
         data-testid="update-name"
         onClick={() => setEquipmentForm({ ...equipmentForm, name: "Updated Equipment" })}
       >
@@ -67,6 +70,7 @@ const MockTechnologyEquipmentManagement = ({ isLoading: _isLoading }: { isLoadin
       </button>
 
       <button
+        type="button"
         data-testid="add-capability"
         onClick={() =>
           setEquipmentForm({

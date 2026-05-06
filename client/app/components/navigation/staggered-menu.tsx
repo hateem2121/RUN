@@ -380,7 +380,6 @@ export const StaggeredMenu = ({
 
         <header
           className="staggered-menu-header absolute top-0 left-0 z-(--z-index-modal-nested) flex w-full items-center justify-center bg-transparent p-4 pt-(--pt)"
-          aria-label="Main navigation header"
           style={{ "--pt": "max(1rem, env(safe-area-inset-top))" } as React.CSSProperties}
         >
           <button

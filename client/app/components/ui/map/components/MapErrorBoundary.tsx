@@ -34,7 +34,9 @@ export class MapErrorBoundary extends Component<Props, State> {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
+                  <title>Map Error Icon</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -49,6 +51,7 @@ export class MapErrorBoundary extends Component<Props, State> {
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => window.location.reload()}
                 className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors"
               >

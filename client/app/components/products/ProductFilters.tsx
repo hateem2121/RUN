@@ -276,6 +276,7 @@ export function ProductFilters({
                 >
                   {fabric.name}
                   <button
+                    type="button"
                     onClick={() => handleFabricToggle(fabricId)}
                     className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500"
                     aria-label={`Remove ${fabric.name} filter`}
@@ -296,6 +297,7 @@ export function ProductFilters({
                 >
                   {cert.name}
                   <button
+                    type="button"
                     onClick={() => handleCertificateToggle(certId)}
                     className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500"
                     aria-label={`Remove ${cert.name} filter`}
@@ -310,6 +312,7 @@ export function ProductFilters({
               <Badge key={`tag-${tag}`} variant="secondary" className="shrink-0 py-1 pr-1 pl-3">
                 {tag}
                 <button
+                  type="button"
                   onClick={() => handleTagToggle(tag)}
                   className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500"
                   aria-label={`Remove ${tag} filter`}
@@ -323,6 +326,7 @@ export function ProductFilters({
               <Badge variant="secondary" className="shrink-0 py-1 pr-1 pl-3">
                 MOQ: {selectedFilters.moqRange[0]}-{selectedFilters.moqRange[1]}
                 <button
+                  type="button"
                   onClick={() => handleMoqChange([0, 10000])}
                   className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500"
                   aria-label="Remove MOQ filter"

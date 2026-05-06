@@ -57,13 +57,17 @@ export function ProductGrid({
     <>
       <div className={cn("grid", gridClasses[viewMode])}>
         {products.map((product) => (
-          <div key={product.id} onMouseEnter={() => handleProductHover(product)}>
+          <section
+            key={product.id}
+            onMouseEnter={() => handleProductHover(product)}
+            aria-label={`Product card for ${product.name}`}
+          >
             <ProductCard
               product={product}
               viewMode={viewMode}
               onQuickViewClick={setSelectedProduct}
             />
-          </div>
+          </section>
         ))}
       </div>
 

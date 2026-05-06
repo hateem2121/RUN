@@ -48,8 +48,8 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
         await updateHomepageHero.mutateAsync(data);
         setIsDirty(false);
         return { success: true, error: null };
-      } catch (error: any) {
-        return { success: false, error: error.message as string };
+      } catch (error: unknown) {
+        return { success: false, error: (error as Error).message || "Unknown error" };
       }
     },
     { success: null, error: null } as { success: boolean | null; error: string | null },

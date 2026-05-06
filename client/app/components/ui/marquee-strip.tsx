@@ -21,7 +21,7 @@ export function MarqueeStrip({
   direction = "left",
   className,
 }: MarqueeStripProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
@@ -43,7 +43,7 @@ export function MarqueeStrip({
   };
 
   return (
-    <div
+    <section
       ref={containerRef}
       className={cn(
         "relative w-full overflow-hidden py-4 border-y border-white/[0.08] bg-white/[0.02] backdrop-blur-sm focus:outline-none focus:ring-1 focus:ring-white/20",
@@ -53,7 +53,6 @@ export function MarqueeStrip({
       onMouseLeave={handleMouseLeave}
       onFocus={handleMouseEnter}
       onBlur={handleMouseLeave}
-      role="group"
       aria-label="Scrolling marquee"
     >
       <div ref={contentRef} className="flex whitespace-nowrap items-center will-change-transform">
@@ -69,6 +68,6 @@ export function MarqueeStrip({
           </span>
         ))}
       </div>
-    </div>
+    </section>
   );
 }

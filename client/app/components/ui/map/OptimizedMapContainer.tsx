@@ -80,8 +80,10 @@ export function OptimizedMapContainer({ locations, className = "" }: OptimizedMa
         {/* Map Layer Toggle Button */}
         <div ref={toggleRef} className="z-max absolute top-4 right-4">
           <button
+            type="button"
             onClick={toggleLayer}
             className="border-border/50 bg-background/90 flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105 hover:-translate-y-0.5 active:scale-95"
+            aria-label="Toggle map layer"
           >
             {activeLayer === "roadmap" ? (
               <>

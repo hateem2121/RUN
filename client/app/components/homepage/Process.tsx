@@ -154,6 +154,7 @@ export const Process: React.FC = () => {
           aria-hidden="true"
         >
           <svg className="h-full w-full" viewBox="0 0 1000 200" preserveAspectRatio="none">
+            <title>Decorative Process Line</title>
             <path
               ref={pathRef}
               d="M0,100 C250,200 500,0 1000,100"
@@ -201,9 +202,8 @@ export const Process: React.FC = () => {
                   <p className="mb-8 max-w-md font-light text-base text-muted-foreground leading-relaxed md:text-xl">
                     {step.description}
                   </p>
-                  <div
-                    role="button"
-                    tabIndex={0}
+                  <button
+                    type="button"
                     aria-label={`Proceed to next step: ${step.title}`}
                     className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-foreground transition-all duration-300 hover:bg-foreground hover:text-background md:h-16 md:w-16"
                   >
@@ -211,7 +211,7 @@ export const Process: React.FC = () => {
                       aria-hidden="true"
                       className="h-5 w-5 -rotate-45 transition-transform duration-300 group-hover:rotate-0 md:h-6 md:w-6"
                     />
-                  </div>
+                  </button>
                 </div>
               </div>
             </div>

@@ -136,6 +136,7 @@ function Gallery({ media, name }: GalleryProps) {
         {media.map((_, idx) => (
           <button
             key={idx}
+            type="button"
             onClick={() => scrollTo(idx)}
             className="relative h-2 w-2 overflow-hidden rounded-full"
             aria-label={`Go to slide ${idx + 1}`}
@@ -256,6 +257,7 @@ function AddToCartSection({ product }: AddToCartSectionProps) {
       </div>
 
       <button
+        type="button"
         onClick={handleAddToCart}
         disabled={isPending && optimisticState.status !== "added"}
         className={cn(
@@ -445,15 +447,24 @@ function ProductDetailContent() {
             {/* Sizes (Mock) */}
             <div className="mb-8 product-section-reveal">
               <div className="mb-3 flex items-center justify-between">
-                <label className="font-bold text-sm uppercase tracking-wider">Select Size</label>
-                <button className="flex items-center gap-1 text-muted-foreground text-xs transition-colors hover:text-foreground">
+                <label
+                  htmlFor="size-selection"
+                  className="font-bold text-sm uppercase tracking-wider"
+                >
+                  Select Size
+                </label>
+                <button
+                  type="button"
+                  className="flex items-center gap-1 text-muted-foreground text-xs transition-colors hover:text-foreground"
+                >
                   <Ruler className="h-3 w-3" /> Size Guide
                 </button>
               </div>
-              <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
+              <div className="grid grid-cols-4 gap-2 sm:grid-cols-6" id="size-selection">
                 {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
                   <button
                     key={size}
+                    type="button"
                     className="flex h-12 items-center justify-center rounded border border-border transition-colors hover:border-foreground focus:outline-hidden focus:ring-2 focus:ring-foreground"
                   >
                     {size}
@@ -464,19 +475,25 @@ function ProductDetailContent() {
 
             {/* Colors (Mock) */}
             <div className="mb-10 product-section-reveal">
-              <label className="mb-3 block font-bold text-sm uppercase tracking-wider">
+              <label
+                htmlFor="color-selection"
+                className="mb-3 block font-bold text-sm uppercase tracking-wider"
+              >
                 Select Color
               </label>
-              <div className="flex gap-3">
+              <div className="flex gap-3" id="color-selection">
                 <button
+                  type="button"
                   aria-label="Select Black"
                   className="h-10 w-10 rounded-full border-2 border-transparent bg-black ring-1 ring-transparent ring-offset-2 transition-transform hover:scale-110 focus:ring-black"
                 ></button>
                 <button
+                  type="button"
                   aria-label="Select Blue"
                   className="h-10 w-10 rounded-full border-2 border-transparent bg-blue-600 transition-transform hover:scale-110"
                 ></button>
                 <button
+                  type="button"
                   aria-label="Select Stone"
                   className="h-10 w-10 rounded-full border-2 border-transparent bg-stone-300 transition-transform hover:scale-110"
                 ></button>
@@ -489,10 +506,18 @@ function ProductDetailContent() {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-4">
-              <button className="center-flex gap-2 rounded border border-border py-3 font-bold text-sm transition-colors hover:bg-muted">
+              <button
+                type="button"
+                className="center-flex gap-2 rounded border border-border py-3 font-bold text-sm transition-colors hover:bg-muted"
+                aria-label="Save to wishlist"
+              >
                 <Heart className="h-4 w-4" /> Save
               </button>
-              <button className="center-flex gap-2 rounded border border-border py-3 font-bold text-sm transition-colors hover:bg-muted">
+              <button
+                type="button"
+                className="center-flex gap-2 rounded border border-border py-3 font-bold text-sm transition-colors hover:bg-muted"
+                aria-label="Share product"
+              >
                 <Share2 className="h-4 w-4" /> Share
               </button>
             </div>

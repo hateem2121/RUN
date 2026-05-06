@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   type QuoteSubmissionData as InquiryFormData,
-  QuoteSubmissionSchema as inquiryFormSchema,
+  QuoteSubmissionSchema,
 } from "@shared/validation/contact";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
@@ -11,7 +11,6 @@ import { useHydratedStore } from "../lib/useHydratedStore";
 import { type QuoteItem, type QuoteStore, useQuoteStore } from "../stores/useQuoteStore";
 
 export type { InquiryFormData };
-export { inquiryFormSchema };
 
 interface UseInquiryFormProps {
   onClose: () => void;
@@ -31,7 +30,7 @@ export function useInquiryForm({ onClose }: UseInquiryFormProps) {
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<InquiryFormData>({
-    resolver: zodResolver(inquiryFormSchema),
+    resolver: zodResolver(QuoteSubmissionSchema),
   });
 
   const mutation = useMutation({

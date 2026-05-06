@@ -505,7 +505,7 @@ export function CategoryManagementSimplified() {
       <CategoryForm
         open={uiState.showCreateDialog || uiState.showEditDialog}
         onClose={closeDialogs}
-        onSubmit={(data: any) => {
+        onSubmit={(data: InsertCategory | Partial<InsertCategory>) => {
           if (uiState.editingCategory) {
             handleUpdateCategory(data);
           } else {

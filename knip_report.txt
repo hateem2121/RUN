@@ -1,64 +1,31 @@
 [Drizzle] ⚠️ DATABASE_URL is not set. Database operations will fail.
-Unused files (38)
-scripts/cache-clear.ts                  
-scripts/check-about-data.ts             
-scripts/check-db-schema.ts              
-scripts/deep-schema-check.ts            
-scripts/fix-about-schema.ts             
-scripts/force-about-refresh.ts          
-scripts/healthcheck.js                  
-scripts/promote-admins.ts               
-scripts/run-qa-seeds.ts                 
-scripts/seed-sustainability-stitch.ts   
-scripts/seed-sustainability.ts          
-scripts/seeders/business-system.ts      
-scripts/seeders/cms-about.ts            
-scripts/seeders/cms-homepage.ts         
-scripts/seeders/cms-manufacturing.ts    
-scripts/seeders/cms-sustainability.ts   
-scripts/seeders/cms-technology.ts       
-scripts/seeders/configuration.ts        
-scripts/seeders/media-organization.ts   
-scripts/seeders/product-ecosystem.ts    
-scripts/setup-newsletter-db.ts          
-scripts/stabilize-test-db.ts            
-scripts/tasks/media-variant-generator.ts
-scripts/tasks/warm-media-cache.ts       
-scripts/test-about-queries.ts           
-scripts/update-db.ts                    
-scripts/update-openapi-spec.ts          
-scripts/utils/certification-mapper.ts   
-scripts/utils/cleanup-neon-branches.ts  
-scripts/utils/composition-mapper.ts     
-scripts/utils/fabric-parser.ts          
-scripts/utils/fabric-validator.ts       
-scripts/utils/generate-schema-docs.ts   
-scripts/utils/seed-helpers.ts           
-scripts/verify.ts                       
-server/middleware/idempotency.ts        
-server/migrations/relations.ts          
-server/migrations/schema.ts             
-Unused devDependencies (10)
-form-data            package.json:74:6       
-http-proxy-agent     package.json:75:6       
-lint-staged          package.json:79:6       
-markdown-link-check  package.json:80:6       
-markdownlint-cli     package.json:81:6       
-pino-pretty          package.json:84:6       
-qs                   package.json:86:6       
-tar                  package.json:87:6       
-tough-cookie         package.json:88:6       
+Unused devDependencies (14)
+@axe-core/react      client/package.json:80:6
+axe-core             client/package.json:88:6
+@axe-core/react      package.json:59:6       
+axe-core             package.json:72:6       
+form-data            package.json:76:6       
+http-proxy-agent     package.json:77:6       
+lint-staged          package.json:81:6       
+markdown-link-check  package.json:82:6       
+markdownlint-cli     package.json:83:6       
+pino-pretty          package.json:86:6       
+qs                   package.json:88:6       
+tar                  package.json:89:6       
+tough-cookie         package.json:90:6       
 pino-pretty          server/package.json:75:6
-Unlisted dependencies (2)
-vite                  server/lib/ssr/ssr-handler.ts:37:14
-@vitejs/plugin-react  vitest.config.ts:2:20              
+Unlisted dependencies (4)
+@run-remix/server     client/app/routes/api.navigation-items.tsx:5:13   
+@run-remix/server     client/app/routes/api.navigation-settings.tsx:3:13
+@run-remix/server     client/app/services/inquiry.server.ts:26:11       
+@vitejs/plugin-react  vitest.config.ts:2:20                             
 Unlisted binaries (4)
 tsx    package.json       
 pkill  package.json       
 lhci   package.json       
 fuser  server/package.json
-Unused exports (335)
-navItems                                            client/app/components/admin/admin-layout.tsx:334:10                 
+Unused exports (319)
+navItems                                            client/app/components/admin/admin-layout.tsx:342:10                 
 CategoryTableRow                                    client/app/components/admin/categories/CategoryDisplay.tsx:409:10   
 CategoryGridCard                                    client/app/components/admin/categories/CategoryDisplay.tsx:409:28   
 CategoryTreeItem                                    client/app/components/admin/categories/CategoryDisplay.tsx:409:46   
@@ -67,8 +34,7 @@ CategoryGridView                                    client/app/components/admin/
 CategoryTreeView                                    client/app/components/admin/categories/CategoryList.tsx:299:47      
 getSelectTestId                                     client/app/components/admin/fabric/types.ts:135:14                  
 getFiberTestId                                      client/app/components/admin/fiber/types.ts:65:14                    
-useMediaLibrary                           function  …mponents/admin/media-library/MediaLibraryContextEnhanced.tsx:572:17
-MediaLibraryContext                                 …mponents/admin/media-library/MediaLibraryContextEnhanced.tsx:585:10
+MediaLibraryContext                                 …mponents/admin/media-library/MediaLibraryContextEnhanced.tsx:581:10
 UploadQueueManager                        class     …pp/components/admin/media-library/upload/upload-utilities.ts:112:14
 productWarningSchema                                …-management-unified/admin/schema/product-validation.schema.ts:94:14
 useAccordionPersistence                             …ponents/admin/product-management-unified/shared/hooks/index.ts:3:10
@@ -78,9 +44,8 @@ useMediaOperations                        function  …product-management-unifie
 useProductForm                            function  …in/product-management-unified/shared/hooks/useProductForm.ts:229:17
 validateMediaFile                         function  …p/components/admin/product-management-unified/shared/utils.ts:41:17
 getMediaUrl                               function  …p/components/admin/product-management-unified/shared/utils.ts:86:17
-withErrorBoundary                         function  client/app/components/admin/ProductErrorBoundary.tsx:76:17          
+withErrorBoundary                         function  client/app/components/admin/ProductErrorBoundary.tsx:78:17          
 CertificateSelectionDialog                function  …nt/app/components/admin/shared/CertificateSelectionDialog.tsx:49:17
-default                                             …t/app/components/admin/shared/CertificateSelectionDialog.tsx:295:16
 SUSTAINABILITY_ICONS                                client/app/components/admin/shared/IconPicker.tsx:29:14             
 getIconComponent                          function  client/app/components/admin/shared/IconPicker.tsx:145:17            
 CertificateSelectionDialog                          client/app/components/admin/shared/index.ts:4:10                    
@@ -118,7 +83,6 @@ ImageLoadAnimation                                  client/app/components/ui/ben
 modalVariants                                       client/app/components/ui/bento-cards/enhanced-animations.tsx:169:14 
 backdropVariants                                    client/app/components/ui/bento-cards/enhanced-animations.tsx:196:14 
 SimpleErrorBoundary                       function  …nt/app/components/ui/bento-cards/enhanced-error-boundary.tsx:114:17
-default                                             …nt/app/components/ui/bento-cards/enhanced-error-boundary.tsx:137:16
 BreadcrumbEllipsis                                  client/app/components/ui/breadcrumb.tsx:114:3                       
 cardVariants                                        client/app/components/ui/card.tsx:101:3                             
 CommandDialog                                       client/app/components/ui/command.tsx:153:3                          
@@ -141,7 +105,6 @@ useErrorBoundary                          function  client/app/components/ui/Err
 WithErrorBoundary                         function  client/app/components/ui/ErrorBoundary.tsx:140:17                   
 useFormField                                        client/app/components/ui/form.tsx:174:3                             
 FormDescription                                     client/app/components/ui/form.tsx:179:3                             
-default                                             client/app/components/ui/geometric-divider.tsx:90:16                
 iconWrapperVariants                                 client/app/components/ui/icon-wrapper.tsx:56:23                     
 inputVariants                                       client/app/components/ui/input.tsx:53:17                            
 useMapMarkers                                       client/app/components/ui/map/index.ts:2:10                          
@@ -179,7 +142,7 @@ textVariants                                        client/app/components/ui/typ
 Heading                                             client/app/components/ui/typography.tsx:152:22                      
 Text                                                client/app/components/ui/typography.tsx:152:31                      
 useGlobalErrorFilter                                client/app/hooks/use-global-error-filter.ts:44:14                   
-inquiryFormSchema                                   client/app/hooks/use-inquiry-form.ts:11:10                          
+inquiryFormSchema                                   client/app/hooks/use-inquiry-form.ts:14:10                          
 useNavigationItems                        function  client/app/hooks/use-navigation.ts:10:17                            
 useNestedModalStack                       function  client/app/hooks/use-nested-modal-focus.ts:224:17                   
 useProgressiveImageLoading                function  client/app/hooks/use-optimized-media.ts:126:17                      
@@ -196,10 +159,6 @@ getErrorQueueSize                         function  client/app/lib/errorReporter
 clearErrorQueue                           function  client/app/lib/errorReporter.ts:163:17                              
 staggerReveal                                       client/app/lib/gsap-animations.ts:57:14                             
 horizontalScrollLock                                client/app/lib/gsap-animations.ts:80:14                             
-MediaCacheInvalidator                     class     client/app/lib/media-query-keys.ts:114:14                           
-invalidateAllMedia                                  client/app/lib/media-query-keys.ts:133:14                           
-invalidateMediaItem                                 client/app/lib/media-query-keys.ts:134:14                           
-invalidatePaginatedMedia                            client/app/lib/media-query-keys.ts:135:14                           
 MediaResolver                             class     client/app/lib/media-resolver.ts:25:14                              
 detectMediaTypeFromUrl                    function  client/app/lib/media-type-detector.ts:26:17                         
 detectMediaTypeFromMime                   function  client/app/lib/media-type-detector.ts:51:17                         
@@ -284,16 +243,16 @@ SystemRepository                                    server/lib/db/repositories/i
 WebhookRepository                                   server/lib/db/repositories/index.ts:54:10                           
 AboutRepository                           class     server/lib/db/repositories/page-content/about.repository.ts:33:14   
 HomepageRepository                        class     server/lib/db/repositories/page-content/homepage.repository.ts:33:14
-ManufacturingRepository                   class     …/lib/db/repositories/page-content/manufacturing.repository.ts:29:14
-SustainabilityRepository                  class     …lib/db/repositories/page-content/sustainability.repository.ts:27:14
+ManufacturingRepository                   class     …/lib/db/repositories/page-content/manufacturing.repository.ts:28:14
+SustainabilityRepository                  class     …lib/db/repositories/page-content/sustainability.repository.ts:29:14
 TechnologyRepository                      class     …ver/lib/db/repositories/page-content/technology.repository.ts:33:14
 withTransaction                           function  server/lib/db/repositories/shared-utils.ts:15:23                    
 cacheUtils                                          server/lib/db/repositories/shared-utils.ts:52:14                    
 WebhookRepository                         class     server/lib/db/repositories/webhook-repository.ts:17:14              
 AlertService                              class     server/lib/integrations/alert-service.ts:202:14                     
 GLTFProcessor                             class     server/lib/integrations/gltf-processor.ts:34:14                     
-isGLBBuffer                               function  server/lib/integrations/gltf-processor.ts:538:17                    
-StorageLifecycleScheduler                           server/lib/integrations/storage-lifecycle-scheduler.ts:576:10       
+isGLBBuffer                               function  server/lib/integrations/gltf-processor.ts:537:17                    
+StorageLifecycleScheduler                           server/lib/integrations/storage-lifecycle-scheduler.ts:574:10       
 HttpMetricsTracker                        class     server/lib/monitoring/http-metrics.ts:37:14                         
 debugLog                                            server/lib/monitoring/logger.ts:238:14                              
 productionLog                                       server/lib/monitoring/logger.ts:244:14                              
@@ -327,7 +286,6 @@ MediaValidator                                      server/lib/utilities/core-ut
 default                                             server/lib/utilities/core-utils.ts:451:16                           
 generateSlug                              function  server/lib/utilities/slug-utils.ts:44:17                            
 isValidSlug                               function  server/lib/utilities/slug-utils.ts:64:17                            
-UPLOAD_CONFIG                                       server/lib/utilities/upload-config.ts:6:14                          
 getAppVersion                                       server/lib/utilities/version.ts:5:14                                
 CSRF_COOKIE_NAME                                    server/middleware/csrf.ts:12:14                                     
 CSRF_HEADER_NAME                                    server/middleware/csrf.ts:13:14                                     
@@ -341,35 +299,28 @@ xssSanitizer                              function  server/middleware/sanitizati
 isPublicCacheablePath                               server/middleware/ssr-cache.ts:92:10                                
 PUBLIC_CACHEABLE_PATHS                              server/middleware/ssr-cache.ts:92:33                                
 PRIVATE_PATHS                                       server/middleware/ssr-cache.ts:92:57                                
-handleUploadError                                   server/multer-optimized.ts:251:14                                   
+handleUploadError                                   server/multer-optimized.ts:250:14                                   
 batchCreateAssets                         function  server/routes/media/handlers.ts:772:23                              
 batchDeleteAssets                         function  server/routes/media/handlers.ts:799:23                              
 initChunkedUpload                         function  server/routes/media/handlers.ts:1225:23                             
-createErrorResponse                                 server/routes/media/index.ts:11:3                                   
-createPaginatedResponse                             server/routes/media/index.ts:12:3                                   
-createSuccessResponse                               server/routes/media/index.ts:13:3                                   
+createErrorResponse                                 server/routes/media/index.ts:13:3                                   
+createPaginatedResponse                             server/routes/media/index.ts:14:3                                   
+createSuccessResponse                               server/routes/media/index.ts:15:3                                   
 uploadRateLimiter                                   server/routes/media/middleware.ts:40:14                             
 UPLOAD_CONSTANTS                                    server/routes/media/middleware.ts:46:14                             
 BackendUploadManager                      class     server/routes/media/middleware.ts:57:14                             
-MediaUploadParamSchema                              server/routes/media/schemas.ts:22:14                                
-FolderCreateSchema                                  server/routes/media/schemas.ts:26:14                                
-FolderUpdateSchema                                  server/routes/media/schemas.ts:31:14                                
-PerformanceQuerySchema                              server/routes/media/schemas.ts:45:14                                
+MediaUploadParamSchema                              server/routes/media/schemas.ts:23:14                                
+FolderCreateSchema                                  server/routes/media/schemas.ts:27:14                                
+FolderUpdateSchema                                  server/routes/media/schemas.ts:32:14                                
+PerformanceQuerySchema                              server/routes/media/schemas.ts:51:14                                
 uploadRateLimit                                     server/routes/media/services.ts:641:14                              
 baseQueryParamsSchema                               server/routes/media/types.ts:17:14                                  
 UPLOAD_OPTIMIZATION                                 server/routes/media/types.ts:55:14                                  
-slugifyFilename                           function  server/routes/media/utils.ts:96:17                                  
 generateThumbnailCachePath                function  server/routes/media/utils.ts:206:17                                 
-detectMediaType                           function  server/routes/media/utils.ts:221:17                                 
-createPaginatedResponse                             server/routes/media/utils.ts:240:14                                 
-createErrorResponse                                 server/routes/media/utils.ts:251:14                                 
-createSuccessResponse                               server/routes/media/utils.ts:257:14                                 
 toBuffer                                  function  server/routes/media/utils.ts:263:17                                 
 MediaUrlResolver                                    server/routes/media/utils.ts:302:14                                 
 enhancedValidation                                  server/routes/media/utils.ts:320:14                                 
-buildInsertMediaAsset                     function  server/routes/media/utils.ts:410:17                                 
 getVideoMetadata                          function  server/routes/media/utils.ts:465:23                                 
-processUploadedFile                       function  server/routes/media/utils.ts:511:23                                 
 FeatureFlagsQuerySchema                             server/routes/utilities/schemas.ts:20:14                            
 FeatureFlagParamSchema                              server/routes/utilities/schemas.ts:25:14                            
 FeatureFlagUpdateBodySche…                          server/routes/utilities/schemas.ts:29:14                            
@@ -393,14 +344,14 @@ reorderProcessesSchema                              server/validation/manufactur
 reorderCapabilitiesSchema                           server/validation/manufacturing.ts:119:14                           
 reorderQualitiesSchema                              server/validation/manufacturing.ts:128:14                           
 reorderCaseStudiesSchema                            server/validation/manufacturing.ts:137:14                           
-Unused exported types (113)
-NavItem                                  type       client/app/components/admin/admin-layout.tsx:335:15                 
+Unused exported types (112)
+NavItem                                  type       client/app/components/admin/admin-layout.tsx:343:15                 
 CapabilityManagementProps                interface  …t/app/components/admin/manufacturing/CapabilityManagement.tsx:77:18
 ProcessManagementProps                   interface  …ient/app/components/admin/manufacturing/ProcessManagement.tsx:62:18
 MediaGridItemProps                       interface  …p/components/admin/media-library/components/MediaGridItem.tsx:14:18
 MediaGridPaginationProps                 interface  …ponents/admin/media-library/components/MediaGridPagination.tsx:6:18
 MediaGridProps                           interface  client/app/components/admin/media-library/MediaGrid.tsx:12:18       
-MediaLibraryContextType                  type       …mponents/admin/media-library/MediaLibraryContextEnhanced.tsx:588:15
+MediaLibraryContextType                  type       …mponents/admin/media-library/MediaLibraryContextEnhanced.tsx:584:15
 ProductFormValues                        type       …management-unified/admin/schema/product-validation.schema.ts:106:13
 SectionKey                               type       …ents/admin/product-management-unified/hooks/useProductForm.ts:18:13
 ProductFormState                         interface  …ents/admin/product-management-unified/hooks/useProductForm.ts:29:18
@@ -412,7 +363,7 @@ MediaSelectHandler                       type       …p/components/admin/produc
 MediaAssetsFormData                      interface  …p/components/admin/product-management-unified/shared/types.ts:96:18
 GlassCardProps                           interface  client/app/components/admin/shared/GlassCard.tsx:4:18               
 IconOption                               interface  client/app/components/admin/shared/IconPicker.tsx:22:18             
-TechnologyEquipmentManag…                interface  …omponents/admin/technology/TechnologyEquipmentManagement.tsx:242:18
+TechnologyEquipmentManag…                interface  …omponents/admin/technology/TechnologyEquipmentManagement.tsx:243:18
 NavItem                                  interface  client/app/components/homepage/types.ts:22:18                       
 HomepageBatchResponse                    type       client/app/components/homepage/types.ts:40:3                        
 HeroData                                 type       client/app/components/homepage/types.ts:44:3                        
@@ -469,9 +420,9 @@ ProductSummary                           type       server/lib/db/repositories/i
 AlertSeverity                            type       server/lib/integrations/alert-service.ts:23:13                      
 GLTFProcessingResult                     interface  server/lib/integrations/gltf-processor.ts:11:18                     
 GLTFValidationResult                     interface  server/lib/integrations/gltf-processor.ts:21:18                     
-LifecycleConfig                          type       server/lib/integrations/storage-lifecycle-scheduler.ts:575:15       
-CleanupMetrics                           type       server/lib/integrations/storage-lifecycle-scheduler.ts:575:32       
-CleanupReport                            type       server/lib/integrations/storage-lifecycle-scheduler.ts:575:48       
+LifecycleConfig                          type       server/lib/integrations/storage-lifecycle-scheduler.ts:573:15       
+CleanupMetrics                           type       server/lib/integrations/storage-lifecycle-scheduler.ts:573:32       
+CleanupReport                            type       server/lib/integrations/storage-lifecycle-scheduler.ts:573:48       
 QueueResult                              interface  server/lib/queues/media-queue.ts:58:18                              
 SafeIdResult                             interface  server/lib/utilities/core-utils.ts:14:18                            
 CreateRateLimiterOptions                 interface  server/middleware/rateLimiter.ts:160:18                             
@@ -493,9 +444,9 @@ IManufacturingRepository                 interface  server/repositories/storage-
 ITechnologyRepository                    interface  server/repositories/storage-interfaces.ts:566:18                    
 IWebhookRepository                       interface  server/repositories/storage-interfaces.ts:617:18                    
 ISystemRepository                        interface  server/repositories/storage-interfaces.ts:630:18                    
-MediaAsset                               type       server/routes/media/index.ts:16:15                                  
-MediaMetadata                            type       server/routes/media/index.ts:16:27                                  
-UploadSession                            type       server/routes/media/index.ts:16:42                                  
+MediaAsset                               type       server/routes/media/index.ts:10:15                                  
+MediaMetadata                            type       server/routes/media/index.ts:10:27                                  
+UploadSession                            type       server/routes/media/index.ts:10:42                                  
 UploadSession                            interface  server/routes/media/services.ts:21:18                               
 InsertMediaAsset                         type       server/routes/media/types.ts:10:27                                  
 MediaQueryParams                         type       server/routes/media/types.ts:48:13                                  
@@ -505,25 +456,14 @@ BatchUploadResult                        interface  server/routes/media/types.ts
 ApiResponse                              interface  server/routes/media/types.ts:93:18                                  
 PaginatedResponse                        interface  server/routes/media/types.ts:100:18                                 
 AssetVisibility                          type       server/routes/media/utils.ts:141:13                                 
-UploadOptions                            interface  server/routes/media/utils.ts:504:18                                 
 ValidationResult                         type       server/validation/manufacturing.ts:28:13                            
-Duplicate exports (10)
-useMediaLibrary|useMediaLibraryEnhanced                           …s/admin/media-library/MediaLibraryContextEnhanced.tsx
-MediaLibraryProvider|MediaLibraryEnhancedProvider                 …s/admin/media-library/MediaLibraryContextEnhanced.tsx
-CertificateSelectionDialog|default                                …omponents/admin/shared/CertificateSelectionDialog.tsx
-EnhancedBentoCardErrorBoundary|default                            …components/ui/bento-cards/enhanced-error-boundary.tsx
-GeometricDivider|default                                          client/app/components/ui/geometric-divider.tsx        
-invalidateMediaQueries|invalidateAllMedia|invalidateMediaItem|i…  client/app/lib/media-query-keys.ts                    
-useIntersectionObserver|usePerformanceObserver                    client/app/lib/performance-intersection-observer.ts   
-queryPerformanceMonitor|performanceMonitor                        server/lib/db/query-performance.ts                    
-UPLOAD_CONFIG|default                                             server/lib/utilities/upload-config.ts                 
-QuoteSubmissionSchema|inquiryFormSchema                           shared/validation/contact.ts                          
-Configuration hints (8)
-scripts                         …ip.config.ts  Add entry and/or refine project files in workspaces["scripts"] (35 unuse…
-server                          …ip.config.ts  Add entry and/or refine project files in workspaces["server"] (3 unused …
-[client/app/routes.ts, …]       …ip.config.ts  Remove, or move unused top-level entry to one of "workspaces"            
-…lient/app/**/*.{ts,tsx}, …]    …ip.config.ts  Remove, or move unused top-level project to one of "workspaces"          
-**/*.spec.{ts,tsx}              …ip.config.ts  Remove from ignore                                                       
-**/node_modules/**              …ip.config.ts  Remove from ignore                                                       
-[client/app/routes.ts, …]       …ip.config.ts  Refine entry pattern (no matches)                                        
-…lient/app/**/*.{ts,tsx}, …]    …ip.config.ts  Refine project pattern (no matches)                                      
+Duplicate exports (2)
+useIntersectionObserver|usePerformanceObserver  client/app/lib/performance-intersection-observer.ts
+queryPerformanceMonitor|performanceMonitor      server/lib/db/query-performance.ts                 
+Configuration hints (6)
+[client/app/routes.ts, …]        knip.config.ts  Remove, or move unused top-level entry to one of "workspaces"  
+[client/app/**/*.{ts,tsx}, …]    knip.config.ts  Remove, or move unused top-level project to one of "workspaces"
+**/*.spec.{ts,tsx}               knip.config.ts  Remove from ignore                                             
+**/node_modules/**               knip.config.ts  Remove from ignore                                             
+[client/app/routes.ts, …]        knip.config.ts  Refine entry pattern (no matches)                              
+[client/app/**/*.{ts,tsx}, …]    knip.config.ts  Refine project pattern (no matches)                            

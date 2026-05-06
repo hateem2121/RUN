@@ -458,11 +458,7 @@ export default function ProductsPage() {
                   </Select>
 
                   {/* View Mode */}
-                  <div
-                    className="flex gap-1 rounded-md bg-muted p-1"
-                    role="group"
-                    aria-label="View mode"
-                  >
+                  <section className="flex gap-1 rounded-md bg-muted p-1" aria-label="View mode">
                     <Button
                       size="sm"
                       variant={viewMode === "small" ? "default" : "ghost"}
@@ -490,7 +486,7 @@ export default function ProductsPage() {
                     >
                       <LayoutGrid className="h-4 w-4" />
                     </Button>
-                  </div>
+                  </section>
                 </div>
 
                 {/* Advanced Filters */}
@@ -507,9 +503,8 @@ export default function ProductsPage() {
             </div>
 
             {/* Results count */}
-            <div
+            <output
               className="container mx-auto mt-2 max-w-7xl px-4 pb-2 text-sm text-muted-foreground md:px-8"
-              role="status"
               aria-live="polite"
             >
               Showing {sortedProducts.length} products
@@ -519,7 +514,7 @@ export default function ProductsPage() {
                 ` in ${
                   categories.find((c) => c.id.toString() === selectedCategory)?.name || "Category"
                 }`}
-            </div>
+            </output>
           </div>
 
           {/* Products Grid */}

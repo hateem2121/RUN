@@ -897,10 +897,12 @@ export function UnifiedModelViewer({
 
         {/* Enhanced placeholder - poster image + "View 3D Model" button */}
         {!userActivated && isVisible && shouldLoadModel && (
-          <div
-            className="group absolute inset-0 flex cursor-pointer items-center justify-center"
+          <button
+            type="button"
+            className="group absolute inset-0 flex border-none bg-transparent p-0 items-center justify-center outline-hidden focus:ring-2 focus:ring-primary focus:ring-inset"
             onClick={handleActivateModel}
             data-testid="view-3d-overlay"
+            aria-label={`Activate 3D model for ${asset.originalName || "this product"}`}
           >
             {/* Poster image background */}
             {asset.thumbnailUrl && (
@@ -923,7 +925,7 @@ export function UnifiedModelViewer({
               <p className="text-lg font-medium text-white drop-shadow-lg">View 3D Model</p>
               <p className="text-xs text-white/80">Click to load interactive 3D viewer</p>
             </div>
-          </div>
+          </button>
         )}
 
         {/* Lazy loading placeholder - shown before viewport intersection */}

@@ -74,13 +74,15 @@ const SortableMetricItem = memo(function SortableMetricItem({
   return (
     <div ref={setNodeRef} style={style} className="group relative">
       <div className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all duration-300">
-        <div
+        <button
+          type="button"
           {...attributes}
           {...listeners}
           className="cursor-grab active:cursor-grabbing text-admin-muted hover:text-emerald-400 transition-colors"
+          aria-label="Drag to reorder metric"
         >
           <GripVertical className="h-5 w-5" />
-        </div>
+        </button>
 
         <div className="size-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
           <IconComponent className="size-5 text-emerald-400" />
@@ -148,13 +150,15 @@ const SortableInitiativeItem = memo(function SortableInitiativeItem({
   return (
     <div ref={setNodeRef} style={style} className="group relative">
       <div className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all duration-300">
-        <div
+        <button
+          type="button"
           {...attributes}
           {...listeners}
           className="mt-1 cursor-grab active:cursor-grabbing text-admin-muted hover:text-emerald-400 transition-colors"
+          aria-label="Drag to reorder initiative"
         >
           <GripVertical className="h-5 w-5" />
-        </div>
+        </button>
 
         <div className="size-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
           <Leaf className="size-6 text-emerald-400" />
@@ -222,13 +226,15 @@ const SortableGoalItem = memo(function SortableGoalItem({
   return (
     <div ref={setNodeRef} style={style} className="group relative">
       <div className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] hover:border-white/[0.12] transition-all duration-300">
-        <div
+        <button
+          type="button"
           {...attributes}
           {...listeners}
           className="mt-1 cursor-grab active:cursor-grabbing text-admin-muted hover:text-emerald-400 transition-colors"
+          aria-label="Drag to reorder goal"
         >
           <GripVertical className="h-5 w-5" />
-        </div>
+        </button>
 
         <div className="size-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
           <Target className="size-6 text-emerald-400" />

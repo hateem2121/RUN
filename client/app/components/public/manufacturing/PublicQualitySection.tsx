@@ -124,10 +124,9 @@ export function PublicQualitySection({ qualities = [] }: PublicQualitySectionPro
 
           <div className="grid grid-cols-2 gap-6">
             {displayQualities.map((q, idx) => (
-              <div
+              <section
                 key={idx}
                 className="glass-premium p-6 rounded-none text-center transform transition-all hover:scale-105 hover:border-[var(--color-manufacturing-accent)]/30 group"
-                role="group"
                 aria-label={`Quality Metric: ${q.title}`}
               >
                 <div className="relative w-32 h-32 mx-auto mb-4 flex items-center justify-center">
@@ -179,7 +178,7 @@ export function PublicQualitySection({ qualities = [] }: PublicQualitySectionPro
                     {sanitizeContent(q.description)}
                   </p>
                 )}
-              </div>
+              </section>
             ))}
           </div>
         </div>

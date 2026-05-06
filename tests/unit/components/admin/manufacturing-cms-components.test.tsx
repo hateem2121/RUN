@@ -124,7 +124,7 @@ vi.mock("@/components/ui/dialog", () => ({
 }));
 
 vi.mock("@/components/ui/card", () => ({
-  Card: ({ children }: { children: React.ReactNode }) => <div role="article">{children}</div>,
+  Card: ({ children }: { children: React.ReactNode }) => <article>{children}</article>,
   CardHeader: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   CardTitle: ({ children }: { children: React.ReactNode }) => <h3>{children}</h3>,
   CardDescription: ({ children }: { children: React.ReactNode }) => <p>{children}</p>,

@@ -600,6 +600,8 @@ export function UnifiedMediaTheater({
                     <video
                       src={asset.url || `/api/media/${asset.id}/content`}
                       controls
+                      muted
+                      playsInline
                       className="h-full w-full rounded-lg"
                       preload="metadata"
                       onLoadedData={() => onMediaLoad?.(asset)}
@@ -618,13 +620,14 @@ export function UnifiedMediaTheater({
 
   // Default theater/carousel view
   return (
-    <div
+    <section
       className={cn(
         "space-y-4",
         isFullscreen && "z-modal fixed inset-0 flex flex-col bg-black",
         className,
       )}
       onKeyDown={handleKeyDown}
+      aria-label={`${productName} media theater`}
     >
       {/* Main Display */}
       <div
@@ -932,6 +935,6 @@ export function UnifiedMediaTheater({
           )}
         </div>
       )}
-    </div>
+    </section>
   );
 }

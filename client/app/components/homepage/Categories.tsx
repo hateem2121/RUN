@@ -20,8 +20,7 @@ const CategoryMarqueeItem: React.FC<{
   onMouseLeave: () => void;
 }> = memo(({ cat, uniqueIndex, isBlurred, onMouseEnter, onMouseLeave }) => {
   return (
-    <div
-      role="listitem"
+    <li
       className={cn(
         "group relative px-8 py-4 transition-all duration-500 ease-out md:px-16",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime/50 rounded-xl",
@@ -35,7 +34,7 @@ const CategoryMarqueeItem: React.FC<{
       <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-foreground group-focus:text-foreground md:text-[10vw]">
         {cat.name} <span className="text-brand-lime inline-block align-top text-[2vw]">●</span>
       </h2>
-    </div>
+    </li>
   );
 });
 
@@ -77,7 +76,11 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
     >
       <div className="pointer-events-none absolute top-0 left-0 h-full w-full bg-radial-primary-glow opacity-5" />
 
-      <div className="flex flex-col gap-0" onMouseLeave={() => setHoveredIndex(null)}>
+      <section
+        className="flex flex-col gap-0"
+        onMouseLeave={() => setHoveredIndex(null)}
+        aria-label="Product categories navigation"
+      >
         {/* Optimized Forward Marquee */}
         <div
           className={cn(
@@ -89,7 +92,7 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
           {[1, 2, 3, 4].map((loop) => {
             const isLoopHidden = loop > 1;
             return (
-              <div key={`loop-${loop}`} aria-hidden={isLoopHidden} className="flex" role="list">
+              <ul key={`loop-${loop}`} aria-hidden={isLoopHidden} className="flex">
                 {(data || CATEGORIES).map((cat, index) => {
                   const uniqueIndex = `${loop}-${index}`;
                   return (
@@ -105,11 +108,11 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
                     />
                   );
                 })}
-              </div>
+              </ul>
             );
           })}
         </div>
-      </div>
+      </section>
     </section>
   );
 };

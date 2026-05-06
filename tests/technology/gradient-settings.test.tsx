@@ -36,8 +36,12 @@ const MockTechnologyGradientSettings = ({
         <span data-testid="noise-value">{Math.round(gradientData.noise * 100)}%</span>
       </div>
       <div data-testid="blind-count">{gradientData.blindCount}</div>
-      <button onClick={() => setGradientData({ ...gradientData, angle: 90 })}>Change Angle</button>
-      <button onClick={() => setShowAdvanced(!showAdvanced)}>Advanced Settings</button>
+      <button type="button" onClick={() => setGradientData({ ...gradientData, angle: 90 })}>
+        Change Angle
+      </button>
+      <button type="button" onClick={() => setShowAdvanced(!showAdvanced)}>
+        Advanced Settings
+      </button>
 
       {showAdvanced && (
         <div>
@@ -53,6 +57,7 @@ const MockTechnologyGradientSettings = ({
       </div>
 
       <button
+        type="button"
         onClick={() => {
           fetch("/api/technology-gradient-settings", {
             method: "POST",

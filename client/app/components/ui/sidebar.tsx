@@ -97,7 +97,7 @@ export const DesktopSidebar = ({ className, children, ...props }: React.Componen
   }, [open, animate]);
 
   return (
-    <div
+    <nav
       ref={sidebarRef}
       className={cn(
         "fixed top-0 bottom-0 left-0 z-sticky hidden w-80 shrink-0 bg-neutral-100 px-4 py-4 md:flex md:flex-col dark:bg-neutral-800",
@@ -110,12 +110,11 @@ export const DesktopSidebar = ({ className, children, ...props }: React.Componen
       }}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
-      role="navigation"
       aria-label="Desktop Sidebar"
       {...props}
     >
       {children}
-    </div>
+    </nav>
   );
 };
 
@@ -152,11 +151,10 @@ export const MobileSidebar = ({ className, children, ...props }: React.Component
   }, [open, shouldRender]);
 
   return (
-    <div
+    <nav
       className={cn(
         "fixed top-0 right-0 left-0 z-modal flex h-16 w-full flex-row items-center justify-between bg-neutral-100 px-4 py-4 md:hidden dark:bg-neutral-800",
       )}
-      role="navigation"
       aria-label="Mobile Sidebar"
       {...props}
     >
@@ -189,7 +187,7 @@ export const MobileSidebar = ({ className, children, ...props }: React.Component
           {children}
         </div>
       )}
-    </div>
+    </nav>
   );
 };
 

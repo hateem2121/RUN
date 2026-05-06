@@ -34,7 +34,9 @@ const MockTechnologyInnovationManagement = ({ isLoading: _isLoading }: { isLoadi
       <div data-testid="innovation-header">
         Showcase your technological innovations and breakthroughs
       </div>
-      <button data-testid="add-innovation">Add Innovation</button>
+      <button type="button" data-testid="add-innovation">
+        Add Innovation
+      </button>
 
       {/* Mock innovation item */}
       <div data-testid="innovation-item">
@@ -83,6 +85,7 @@ const MockTechnologyInnovationManagement = ({ isLoading: _isLoading }: { isLoadi
 
       {/* Mock form interactions */}
       <button
+        type="button"
         data-testid="update-title"
         onClick={() => setInnovationForm({ ...innovationForm, title: "Updated Innovation" })}
       >
@@ -90,6 +93,7 @@ const MockTechnologyInnovationManagement = ({ isLoading: _isLoading }: { isLoadi
       </button>
 
       <button
+        type="button"
         data-testid="add-benefit"
         onClick={() =>
           setInnovationForm({
@@ -102,6 +106,7 @@ const MockTechnologyInnovationManagement = ({ isLoading: _isLoading }: { isLoadi
       </button>
 
       <button
+        type="button"
         data-testid="add-specification"
         onClick={() => {
           const newSpecs = {
@@ -115,6 +120,7 @@ const MockTechnologyInnovationManagement = ({ isLoading: _isLoading }: { isLoadi
       </button>
 
       <button
+        type="button"
         data-testid="add-metric"
         onClick={() => {
           const newMetrics = {

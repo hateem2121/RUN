@@ -29,13 +29,13 @@ export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
   if (isLoading) {
     return (
       <div className="from-background to-muted flex min-h-screen items-center justify-center bg-linear-to-br">
-        <div className="text-center" role="status" aria-label="Checking access">
+        <output className="text-center" aria-label="Checking access">
           <div
             className="border-primary inline-block h-12 w-12 animate-spin rounded-full border-b-2"
             aria-hidden="true"
           />
           <p className="text-muted-foreground mt-4">Checking access...</p>
-        </div>
+        </output>
       </div>
     );
   }
@@ -45,9 +45,9 @@ export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
     login(window.location.pathname);
     return (
       <div className="from-background to-muted flex min-h-screen items-center justify-center bg-linear-to-br">
-        <div className="text-center" role="status" aria-label="Redirecting to login">
+        <output className="text-center" aria-label="Redirecting to login">
           <p className="text-muted-foreground">Redirecting to login...</p>
-        </div>
+        </output>
       </div>
     );
   }
@@ -68,6 +68,7 @@ export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
             Logged in as: <span className="font-medium">{user?.email}</span>
           </p>
           <button
+            type="button"
             onClick={() => {
               window.location.href = "/";
             }}

@@ -152,7 +152,9 @@ export function AboutHeroTab() {
                             src={`/api/media/${selectedMedia.id}/content`}
                             className="h-20 w-32 rounded-md border object-cover"
                             aria-label="Background video preview"
-                          />
+                          >
+                            <track kind="captions" />
+                          </video>
                         ) : (
                           <img
                             src={`/api/media/${selectedMedia.id}/content`}

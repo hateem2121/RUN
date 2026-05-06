@@ -104,6 +104,7 @@ export function StorageOptimizationDashboard() {
             <div className="relative mx-auto mb-8 h-48 w-48">
               {/* SVG Donut Chart Mockup */}
               <svg className="h-full w-full -rotate-90 transform" viewBox="0 0 36 36">
+                <title>Storage breakdown donut chart</title>
                 <circle
                   cx="18"
                   cy="18"
@@ -252,6 +253,7 @@ export function StorageOptimizationDashboard() {
                       <td className="py-4 text-admin-muted">{file.date}</td>
                       <td className="py-4 text-right">
                         <button
+                          type="button"
                           className="text-admin-muted transition-colors hover:text-red-500"
                           aria-label={`Delete ${file.name}`}
                           title={`Delete ${file.name}`}

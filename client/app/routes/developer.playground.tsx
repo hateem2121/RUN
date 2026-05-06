@@ -205,6 +205,7 @@ export default function ApiPlayground() {
         <div className="flex-1 overflow-y-auto space-y-2 pr-2">
           {filteredEndpoints.map((e) => (
             <button
+              type="button"
               key={`${e.path}-${e.method}`}
               onClick={() => {
                 setSelectedEndpoint(e);
@@ -297,10 +298,14 @@ export default function ApiPlayground() {
                             if (!paramName) return null;
                             return (
                               <div key={`${paramName}-${i}`} className="space-y-2">
-                                <label className="text-xs font-medium">
+                                <label
+                                  htmlFor={`param-${paramName}-${i}`}
+                                  className="text-xs font-medium"
+                                >
                                   {paramName} <span className="text-red-500">*</span>
                                 </label>
                                 <Input
+                                  id={`param-${paramName}-${i}`}
                                   placeholder={`Enter ${paramName}`}
                                   value={requestParams[paramName] || ""}
                                   onChange={(e) =>
@@ -333,8 +338,11 @@ export default function ApiPlayground() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-medium">Authorization Header</label>
+                      <label htmlFor="auth-header" className="text-xs font-medium">
+                        Authorization Header
+                      </label>
                       <Input
+                        id="auth-header"
                         placeholder="Bearer <token> or just <token>"
                         value={authHeader}
                         onChange={(e) => setAuthHeader(e.target.value)}

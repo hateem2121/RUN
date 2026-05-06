@@ -98,11 +98,12 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
           {(products?.length ? products : FEATURED_PRODUCTS)
             .slice(0, settings?.maxProducts ?? undefined)
             .map((product, index) => (
-              <div
+              <section
                 key={product.id}
                 className={`product-card group relative ${index === 1 ? "sm:mt-24" : ""}`}
                 onMouseEnter={() => !isMobile && setCursor("view")}
                 onMouseLeave={() => resetCursor()}
+                aria-label={`Product card for ${product.name}`}
               >
                 <div className="bg-muted/20 relative mb-8 aspect-3/4 overflow-hidden">
                   <ImageWithSkeleton
@@ -134,7 +135,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
                     {product.price}
                   </span>
                 </div>
-              </div>
+              </section>
             ))}
         </div>
 

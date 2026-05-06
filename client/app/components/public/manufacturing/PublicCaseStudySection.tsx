@@ -76,7 +76,11 @@ export function PublicCaseStudySection({
     <ManufacturingErrorBoundary>
       <section className="py-24 bg-[color:var(--m-bg)] relative border-b border-white/5">
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
-          <svg className="absolute w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            className="absolute w-full h-full"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
             <defs>
               <pattern id="gridPattern" height="40" patternUnits="userSpaceOnUse" width="40">
                 <path
@@ -106,6 +110,7 @@ export function PublicCaseStudySection({
 
             <div className="flex items-center gap-4">
               <button
+                type="button"
                 onClick={prevProject}
                 aria-label="Previous project"
                 className="w-12 h-12 flex items-center justify-center border border-[color:var(--m-primary)]/30 bg-black/50 text-[color:var(--m-primary)] hover:bg-[color:var(--m-primary)] hover:text-black transition-colors skew-x-[-10deg]"
@@ -113,6 +118,7 @@ export function PublicCaseStudySection({
                 <ChevronLeft className="w-6 h-6 skew-x-[10deg]" />
               </button>
               <button
+                type="button"
                 onClick={nextProject}
                 aria-label="Next project"
                 className="w-12 h-12 flex items-center justify-center border border-[color:var(--m-primary)]/30 bg-black/50 text-[color:var(--m-primary)] hover:bg-[color:var(--m-primary)] hover:text-black transition-colors skew-x-[-10deg]"

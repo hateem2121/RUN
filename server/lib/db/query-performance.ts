@@ -585,6 +585,3 @@ export class QueryTracker {
 
 // Export singleton instance
 export const queryPerformanceMonitor = QueryPerformanceMonitor.getInstance();
-
-// Backward-compatible alias for old performance-monitor.ts
-export const performanceMonitor = queryPerformanceMonitor;

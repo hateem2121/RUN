@@ -172,6 +172,7 @@ export const Hero: React.FC = () => {
       >
         <div className="relative h-24 w-24 animate-[spin_10s_linear_infinite]">
           <svg viewBox="0 0 100 100" className="h-full w-full fill-black dark:fill-white">
+            <title>Scroll Down</title>
             <path
               id="curve"
               d="M 50 50 m -37 0 a 37 37 0 1 1 74 0 a 37 37 0 1 1 -74 0"

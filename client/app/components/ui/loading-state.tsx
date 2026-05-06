@@ -20,8 +20,7 @@ export function LoadingState({
   };
 
   return (
-    <div
-      role="status"
+    <output
       aria-live="polite"
       aria-busy="true"
       className={cn(
@@ -40,6 +39,6 @@ export function LoadingState({
         />
       </div>
       {text && <p className="animate-pulse font-medium text-muted-foreground text-sm">{text}</p>}
-    </div>
+    </output>
   );
 }

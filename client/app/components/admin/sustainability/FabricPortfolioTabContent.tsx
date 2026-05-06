@@ -190,13 +190,14 @@ export function FabricPortfolioTabContent({
                 ) : (
                   <div className="p-2 space-y-1">
                     {filteredFabrics.map((fabric) => (
-                      <div
+                      <button
                         key={fabric.id}
+                        type="button"
                         onClick={() =>
                           handleFabricToggle(fabric.id, !selectedFabricIds.includes(fabric.id))
                         }
                         className={cn(
-                          "flex items-center gap-4 rounded-xl p-3 cursor-pointer transition-all duration-200 group border text-left",
+                          "flex w-full items-center gap-4 rounded-xl p-3 cursor-pointer transition-all duration-200 group border text-left",
                           selectedFabricIds.includes(fabric.id)
                             ? "bg-emerald-500/10 border-emerald-500/30"
                             : "bg-transparent border-transparent hover:bg-white/5",
@@ -243,7 +244,7 @@ export function FabricPortfolioTabContent({
                             </span>
                           </div>
                         )}
-                      </div>
+                      </button>
                     ))}
                   </div>
                 )}

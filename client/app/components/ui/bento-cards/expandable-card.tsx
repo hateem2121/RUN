@@ -33,12 +33,12 @@ export const ExpandableCard = memo(function ExpandableCard({
   const [isMediaLoading, setIsMediaLoading] = useState(true);
   const [, setMediaLoadError] = useState(false);
 
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLButtonElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const bgImageRef = useRef<HTMLDivElement>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const modalContentRef = useRef<HTMLDivElement>(null);
 
@@ -115,11 +115,12 @@ export const ExpandableCard = memo(function ExpandableCard({
     <EnhancedBentoCardErrorBoundary showTechnicalDetails={false}>
       <AnimatedCardWrapper className="h-full w-full">
         {/* Collapsed Card */}
-        <div
+        <button
           ref={cardRef}
+          type="button"
           data-layout-id={layoutId}
           className={cn(
-            "relative h-full w-full cursor-pointer overflow-hidden rounded-2xl",
+            "relative h-full w-full cursor-pointer overflow-hidden rounded-2xl text-left",
             "border border-luxury-light",
             "shadow-luxury-lg transition-all duration-300 hover:shadow-luxury-xl hover:scale-[1.02]",
             "flex flex-col",
@@ -131,6 +132,7 @@ export const ExpandableCard = memo(function ExpandableCard({
             maxHeight: "500px",
           }}
           onClick={handleCardClick}
+          aria-label={`Expand ${title} details`}
         >
           {/* Background Image */}
           {mediaUrl && !hasError && (
@@ -162,7 +164,13 @@ export const ExpandableCard = memo(function ExpandableCard({
             <div className="center-flex absolute inset-0 bg-linear-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">
               <div className="text-center text-text-muted dark:text-muted-foreground">
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-muted dark:bg-muted">
-                  <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="h-8 w-8"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -199,15 +207,17 @@ export const ExpandableCard = memo(function ExpandableCard({
               </div>
             </div>
           </div>
-        </div>
+        </button>
 
         {/* Full-Screen Modal */}
         {isExpanded &&
           createPortal(
-            <div
+            <button
               ref={modalRef}
-              className="fixed inset-0 z-modal bg-black/80"
+              type="button"
+              className="fixed inset-0 z-modal bg-black/80 border-none w-full h-full"
               onClick={() => setIsExpanded(false)}
+              aria-label="Close expanded view"
             >
               {/* Background */}
               {mediaUrl && (
@@ -219,6 +229,7 @@ export const ExpandableCard = memo(function ExpandableCard({
               {/* Close Button */}
               <button
                 ref={closeButtonRef}
+                type="button"
                 className="absolute top-6 right-6 z-elevated rounded-full bg-white/10 p-3 transition-colors hover:scale-110 hover:bg-white/20"
                 onClick={() => setIsExpanded(false)}
               >
@@ -230,6 +241,8 @@ export const ExpandableCard = memo(function ExpandableCard({
                 ref={modalContentRef}
                 className="relative flex h-full items-center justify-center p-8"
                 onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => e.stopPropagation()}
+                role="document"
               >
                 <div className="max-h-modal w-full max-w-4xl overflow-y-auto rounded-3xl p-8 md:p-12">
                   <div className="space-y-8">
@@ -268,7 +281,7 @@ export const ExpandableCard = memo(function ExpandableCard({
                   </div>
                 </div>
               </div>
-            </div>,
+            </button>,
             document.body,
           )}
       </AnimatedCardWrapper>

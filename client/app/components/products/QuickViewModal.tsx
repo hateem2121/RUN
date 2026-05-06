@@ -45,16 +45,24 @@ export const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps
   return (
     <div
       ref={modalRef}
-      className="center-flex fixed inset-0 z-modal bg-black/50 p-4 backdrop-blur-xs"
-      onClick={onClose}
+      className="center-flex fixed inset-0 z-modal p-4 backdrop-blur-xs"
       role="dialog"
       aria-modal="true"
       aria-labelledby="product-modal-title"
       data-testid="quick-view-modal"
     >
-      <div
-        className="flex h-auto max-h-modal w-full max-w-4xl flex-col overflow-hidden rounded-lg bg-background text-foreground shadow-2xl md:flex-row"
+      <button
+        type="button"
+        className="absolute inset-0 bg-black/50 border-none w-full h-full cursor-default"
+        onClick={onClose}
+        aria-label="Close modal backdrop"
+        tabIndex={-1}
+      />
+      <section
+        className="relative flex h-auto max-h-modal w-full max-w-4xl flex-col overflow-hidden rounded-lg bg-background text-foreground shadow-2xl md:flex-row"
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+        role="document"
       >
         {/* Product Image */}
         <div className="relative w-full overflow-hidden bg-muted md:w-1/2">
@@ -74,6 +82,7 @@ export const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps
         {/* Product Details */}
         <div className="relative w-full overflow-y-auto p-6 md:w-1/2 md:p-8">
           <button
+            type="button"
             onClick={onClose}
             className="sticky top-0 right-0 z-default float-right -mt-6 -mr-6 rounded-full bg-background p-2 text-2xl transition-colors hover:bg-muted hover:text-muted-foreground md:-mt-8 md:-mr-8"
             data-testid="close-modal"
@@ -177,7 +186,7 @@ export const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps
             </Button>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

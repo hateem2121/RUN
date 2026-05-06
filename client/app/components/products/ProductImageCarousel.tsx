@@ -106,10 +106,11 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   }
 
   return (
-    <div
+    <section
       className="group relative h-full w-full"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      aria-label={`${productName} image gallery`}
     >
       {showVideo && primaryVideo ? (
         <div className="relative h-full w-full">
@@ -166,6 +167,7 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
           {viewMode !== "small" && isHovered && (
             <>
               <button
+                type="button"
                 onClick={goToPrevious}
                 className="absolute top-1/2 left-2 -translate-y-1/2 rounded-full bg-black/50 p-1 text-white transition-all hover:bg-black/70"
                 aria-label="Previous image"
@@ -173,6 +175,7 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
                 <ChevronLeft className="h-4 w-4" />
               </button>
               <button
+                type="button"
                 onClick={goToNext}
                 className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-black/50 p-1 text-white transition-all hover:bg-black/70"
                 aria-label="Next image"
@@ -186,6 +189,7 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
             {Array.from({ length: totalItems }).map((_, index) => (
               <button
                 key={index}
+                type="button"
                 onClick={(e) => goToIndex(index, e)}
                 className={cn(
                   "h-1.5 w-1.5 rounded-full transition-all duration-200",
@@ -197,7 +201,7 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
           </div>
         </>
       )}
-    </div>
+    </section>
   );
 };
 

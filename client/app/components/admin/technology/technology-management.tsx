@@ -92,6 +92,7 @@ export function TechnologyManagement() {
           </div>
           <div className="flex items-center gap-3">
             <button
+              type="button"
               className="size-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-admin-muted hover:bg-white/10 hover:text-white transition-all"
               title="Notifications"
               aria-label="Notifications"

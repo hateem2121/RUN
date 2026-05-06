@@ -193,7 +193,7 @@ export const Footer: React.FC = () => {
                     ))
                   : ["Instagram", "LinkedIn", "Behance"].map((item) => (
                       <li key={item}>
-                        <a href="#" className={footerLinkVariants({ display: "inline" })}>
+                        <a href="/" className={footerLinkVariants({ display: "inline" })}>
                           {item}
                         </a>
                       </li>

@@ -481,7 +481,9 @@ export function AboutSectionsTab() {
                               src={`/api/media/${media.id}/content`}
                               className="h-24 w-full rounded-lg object-cover"
                               aria-label={`Preview of ${media.filename || "video"}`}
-                            />
+                            >
+                              <track kind="captions" />
+                            </video>
                           ) : (
                             <img
                               src={`/api/media/${media.id}/content`}

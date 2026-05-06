@@ -15,7 +15,9 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
   return (
     <>
-      <div
+      <button
+        type="button"
+        aria-label="Close inquiry drawer"
         className="fixed inset-0 z-modal-backdrop bg-black/60 backdrop-blur-md transition-opacity duration-500 animate-in fade-in"
         onClick={onClose}
       />

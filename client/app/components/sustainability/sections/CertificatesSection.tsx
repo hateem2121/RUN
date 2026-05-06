@@ -43,7 +43,12 @@ function HexNode({ certificate }: { certificate: Certificate }) {
       </div>
 
       {/* SVG border overlay */}
-      <svg className="hex-border" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <svg
+        className="hex-border"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
         <polygon points="50 0, 100 25, 100 75, 50 100, 0 75, 0 25" />
       </svg>
 
@@ -132,7 +137,12 @@ export function CertificatesSection({
     >
       {/* Hex pattern SVG background */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <svg className="absolute w-full h-full opacity-10" height="100%" width="100%">
+        <svg
+          className="absolute w-full h-full opacity-10"
+          height="100%"
+          width="100%"
+          aria-hidden="true"
+        >
           <defs>
             <pattern height="40" id="hex-cert-pattern" patternUnits="userSpaceOnUse" width="40">
               <path

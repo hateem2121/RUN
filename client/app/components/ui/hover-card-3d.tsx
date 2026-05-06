@@ -51,18 +51,18 @@ export function HoverCard3D({ children, className = "", maxRotation = 15 }: Hove
   );
 
   return (
-    <div
+    <section
       ref={cardRef}
       className={`hover-card-3d ${className}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      role="presentation"
+      aria-label="3D hover card"
       style={{
         transformStyle: "preserve-3d",
         perspective: "var(--perspective-standard)",
       }}
     >
       {children}
-    </div>
+    </section>
   );
 }

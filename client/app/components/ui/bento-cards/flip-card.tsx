@@ -38,10 +38,11 @@ export const FlipCard = memo(function FlipCard({
     <EnhancedBentoCardErrorBoundary showTechnicalDetails={false}>
       <AnimatedCardWrapper className="h-full w-full">
         <div className="relative flex h-full w-full items-center justify-center contain-layout">
-          <div
+          <section
             className="group perspective-deep relative h-96 w-full max-w-72"
             onMouseEnter={() => setIsFlipped(true)}
             onMouseLeave={() => setIsFlipped(false)}
+            aria-label={`${cardTitle} flip card`}
           >
             <div
               className={cn(
@@ -172,7 +173,8 @@ export const FlipCard = memo(function FlipCard({
                 </div>
 
                 <div className="mt-4 border-zinc-200 border-t pt-4 dark:border-zinc-800">
-                  <div
+                  <button
+                    type="button"
                     className={cn(
                       "group/start relative",
                       "flex items-center justify-between",
@@ -182,7 +184,7 @@ export const FlipCard = memo(function FlipCard({
                       "dark:from-luxury-charcoal dark:via-luxury-charcoal dark:to-surface-black",
                       "hover:from-0% hover:from-primary/10 hover:via-100% hover:via-primary/5 hover:to-100% hover:to-transparent",
                       "dark:hover:from-0% dark:hover:from-primary/20 dark:hover:via-100% dark:hover:via-primary/10 dark:hover:to-100% dark:hover:to-transparent",
-                      "hover:scale-[1.02] hover:cursor-pointer",
+                      "hover:scale-[1.02] hover:cursor-pointer w-full text-left",
                     )}
                     onClick={() => link && window.open(link, "_blank")}
                   >
@@ -199,11 +201,11 @@ export const FlipCard = memo(function FlipCard({
                       />
                       <ArrowRight className="relative z-elevated h-4 w-4 text-orange-500 transition-all duration-300 group-hover/start:translate-x-0.5 group-hover/start:scale-110" />
                     </div>
-                  </div>
+                  </button>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </AnimatedCardWrapper>
     </EnhancedBentoCardErrorBoundary>

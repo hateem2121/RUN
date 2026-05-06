@@ -53,7 +53,8 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
 
       <div className="flex p-5 sm:p-6">
         {/* Drag Handle */}
-        <div
+        <button
+          type="button"
           {...attributes}
           {...listeners}
           className="mr-2 flex cursor-grab items-center justify-center self-stretch text-admin-foreground/20 transition-colors hover:text-[#00D4FF]/40 active:cursor-grabbing"
@@ -61,7 +62,7 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
           aria-label="Drag to reorder"
         >
           <GripVertical className="h-5 w-5" />
-        </div>
+        </button>
 
         <div className="flex flex-1 flex-col gap-6 sm:flex-row sm:items-center">
           {/* Milestone Icon */}

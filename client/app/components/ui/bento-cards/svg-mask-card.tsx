@@ -295,15 +295,9 @@ export const SvgMaskCard = memo(function SvgMaskCard({
 
       {/* Click handler */}
       {link && (
-        <a
-          href={link}
-          className="absolute inset-0 z-elevated"
-          aria-label={`View ${title}`}
-          onClick={(e) => {
-            e.preventDefault();
-            window.location.href = link;
-          }}
-        />
+        <a href={link} className="absolute inset-0 z-elevated" aria-label={`View ${title}`}>
+          <span className="sr-only">View {title}</span>
+        </a>
       )}
     </section>
   );

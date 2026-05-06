@@ -38,7 +38,7 @@ export function CustomSelect<T>({
   const [search, setSearch] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   const filtered = searchable
     ? options.filter((o) => getLabel(o).toLowerCase().includes(search.toLowerCase()))
@@ -102,7 +102,7 @@ export function CustomSelect<T>({
   }, [highlightedIndex, open]);
 
   return (
-    <div ref={containerRef} className="relative" onKeyDown={handleKeyDown}>
+    <div ref={containerRef} role="none" className="relative" onKeyDown={handleKeyDown}>
       <button
         id={id}
         type="button"
@@ -135,35 +135,51 @@ export function CustomSelect<T>({
               />
             </div>
           )}
-          <ul
+          <div
             ref={listRef}
+            role="listbox"
             aria-labelledby={ariaLabelledBy || id}
             className="max-h-40 overflow-y-auto py-1"
           >
             {filtered.map((option, index) => (
-              <li
+              <div
                 key={getKey(option)}
+                role="option"
+                tabIndex={0}
                 aria-selected={value === option ? "true" : "false"}
                 onClick={() => {
                   onChange(option);
                   setOpen(false);
                   setSearch("");
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onChange(option);
+                    setOpen(false);
+                    setSearch("");
+                  }
+                }}
                 className={cn(
-                  "cursor-pointer select-none px-3 py-2 text-foreground",
+                  "cursor-pointer select-none px-3 py-2 text-foreground outline-hidden focus:bg-primary focus:text-primary-foreground",
                   index === highlightedIndex && "bg-primary text-primary-foreground",
                   value === option && index !== highlightedIndex && "bg-muted",
                 )}
               >
                 {renderOption ? renderOption(option) : getLabel(option)}
-              </li>
+              </div>
             ))}
             {filtered.length === 0 && (
-              <li aria-disabled="true" className="px-3 py-2 text-muted-foreground text-sm">
+              <div
+                role="option"
+                tabIndex={-1}
+                aria-disabled="true"
+                className="px-3 py-2 text-muted-foreground text-sm"
+              >
                 No results
-              </li>
+              </div>
             )}
-          </ul>
+          </div>
         </div>
       )}
     </div>

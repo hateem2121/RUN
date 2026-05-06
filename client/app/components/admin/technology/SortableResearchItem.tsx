@@ -115,14 +115,15 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
       {/* Actions */}
       <div className="flex items-center gap-2">
         {/* Drag Handle */}
-        <div
+        <button
+          type="button"
           {...attributes}
           {...listeners}
           className="flex h-10 w-10 cursor-grab items-center justify-center rounded-lg text-white/20 transition-colors hover:bg-white/5 hover:text-white active:cursor-grabbing"
           aria-label="Drag to reorder"
         >
           <Layers className="h-5 w-5" />
-        </div>
+        </button>
 
         <button
           type="button"

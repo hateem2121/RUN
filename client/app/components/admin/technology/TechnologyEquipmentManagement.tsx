@@ -126,7 +126,8 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
     >
       {/* Drag Handle & Actions */}
       <div className="absolute right-3 top-3 z-10 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
-        <div
+        <button
+          type="button"
           {...attributes}
           {...listeners}
           className="flex h-8 w-8 cursor-grab items-center justify-center rounded-lg bg-surface-black/80 text-white backdrop-blur-md transition-colors hover:bg-white/20 active:cursor-grabbing"
@@ -134,7 +135,7 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
           aria-label="Drag to reorder"
         >
           <Layers className="h-4 w-4" />
-        </div>
+        </button>
         <button
           type="button"
           onClick={() => onEdit(equipment)}

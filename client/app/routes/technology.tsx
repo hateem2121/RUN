@@ -511,7 +511,10 @@ function TechnologyInner() {
                   >
                     {vm.cta.primaryText || "Book a Tech Demo"}
                   </a>
-                  <button className="px-14 py-6 border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] text-black dark:text-white font-bold uppercase tracking-[0.2em] shadow-lg hover:border-[#0047AB] dark:hover:border-[#00D4FF] hover:text-[#0047AB] dark:hover:text-[#00D4FF] dark:hover:shadow-[0_0_20px_rgba(0,212,255,0.2)] transition-all text-xs dark:backdrop-blur-xl">
+                  <button
+                    type="button"
+                    className="px-14 py-6 border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] text-black dark:text-white font-bold uppercase tracking-[0.2em] shadow-lg hover:border-[#0047AB] dark:hover:border-[#00D4FF] hover:text-[#0047AB] dark:hover:text-[#00D4FF] dark:hover:shadow-[0_0_20px_rgba(0,212,255,0.2)] transition-all text-xs dark:backdrop-blur-xl"
+                  >
                     View Equipment Specs
                   </button>
                 </div>

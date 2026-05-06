@@ -106,7 +106,7 @@ function SortableInnovationItem({
   };
 
   return (
-    <div
+    <li
       ref={setNodeRef}
       style={style}
       className={cn(
@@ -116,15 +116,24 @@ function SortableInnovationItem({
         isDragging && "opacity-50 z-20 shadow-2xl",
       )}
       onClick={() => onSelect(innovation)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSelect(innovation);
+        }
+      }}
+      aria-current={isSelected}
     >
-      <div
+      <button
+        type="button"
         {...attributes}
         {...listeners}
-        className="cursor-move p-1 text-admin-muted hover:text-cyan-400 transition-colors"
+        className="cursor-move p-1 text-admin-muted hover:text-cyan-400 transition-colors bg-transparent border-0 outline-none focus:ring-2 focus:ring-cyan-500/50 rounded"
         onClick={(e) => e.stopPropagation()}
+        aria-label="Drag to reorder innovation"
       >
         <GripVertical className="h-5 w-5" />
-      </div>
+      </button>
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
@@ -172,7 +181,7 @@ function SortableInnovationItem({
       {isSelected && (
         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-cyan-500 rounded-r-lg" />
       )}
-    </div>
+    </li>
   );
 }
 
@@ -420,7 +429,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
               items={filteredInnovations.map((i) => i.id)}
               strategy={verticalListSortingStrategy}
             >
-              <div className="space-y-3 p-1">
+              <ul className="space-y-3 p-1 list-none">
                 {filteredInnovations.map((inn) => (
                   <SortableInnovationItem
                     key={inn.id}
@@ -438,7 +447,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                     </p>
                   </div>
                 )}
-              </div>
+              </ul>
             </SortableContext>
           </DndContext>
         </div>
@@ -596,12 +605,14 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                         <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                           Innovation Visual
                         </Label>
-                        <div
+                        <button
+                          type="button"
                           className={cn(
-                            "aspect-video rounded-2xl border-2 border-dashed border-white/10 bg-white/[0.02] flex items-center justify-center relative overflow-hidden group cursor-pointer",
+                            "aspect-video rounded-2xl border-2 border-dashed border-white/10 bg-white/[0.02] flex items-center justify-center relative overflow-hidden group cursor-pointer w-full",
                             innovationForm.imageId && "border-solid border-cyan-500/30",
                           )}
                           onClick={() => setShowImagePicker(true)}
+                          aria-label="Select innovation visual"
                         >
                           {selectedImage ? (
                             <img
@@ -617,7 +628,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                               </p>
                             </div>
                           )}
-                        </div>
+                        </button>
                       </div>
                       <div className="space-y-6">
                         <div className="space-y-2">

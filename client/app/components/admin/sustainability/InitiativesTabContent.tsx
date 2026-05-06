@@ -536,9 +536,11 @@ export function InitiativesTabContent({
                 <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                   Visual Symbology
                 </Label>
-                <div
-                  className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer"
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer"
                   onClick={() => setShowInitiativeIconPicker(true)}
+                  aria-label={`Select icon: ${initiativeForm.iconName}`}
                 >
                   <div className="size-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                     <IconDisplay iconName={initiativeForm.iconName} />
@@ -546,7 +548,7 @@ export function InitiativesTabContent({
                   <span className="text-sm font-bold text-white tracking-tight">
                     {initiativeForm.iconName}
                   </span>
-                </div>
+                </button>
               </div>
               <div className="space-y-2">
                 <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
