@@ -1,6 +1,6 @@
 export async function loader() {
   try {
-    const { NavigationService } = await import("../../../server/services/navigation-service.js");
+    const { NavigationService } = await import("@run-remix/server/services/navigation-service.js");
     const result = await NavigationService.getGlassmorphismSettings();
 
     if (result.isErr()) {

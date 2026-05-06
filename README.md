@@ -1,6 +1,6 @@
 # RUN Remix — The Agentic Sportswear Factory
 
-**Version:** 4.0.3 | **Port:** 5002 (Exclusively) | **Engine:** gstack | **Last Updated:** April 2026
+**Version:** 4.1.0 | **Port:** 5002 (Exclusively) | **Engine:** gstack | **Last Updated:** May 2026
 
 [![Node 24+](https://img.shields.io/badge/Node-24%2B-339933?logo=node.js)](https://nodejs.org)
 [![React 19](https://img.shields.io/badge/React-19.2.4-61DAFB?logo=react)](https://react.dev)
@@ -116,6 +116,11 @@ Every task follows the deterministic **B.L.A.S.T.** methodology:
 | API Reference | [`docs/api/`](./docs/api/) |
 | Architecture | [`docs/core/architecture.md`](./docs/core/architecture.md) |
 | Security | [`SECURITY.md`](./SECURITY.md) |
+| CSRF Protection | [`docs/security/csrf-protection.md`](./docs/security/csrf-protection.md) |
+| Security Headers | [`docs/security/headers.md`](./docs/security/headers.md) |
+| Disaster Recovery | [`docs/infrastructure/disaster-recovery.md`](./docs/infrastructure/disaster-recovery.md) |
+| Multi-Region Strategy | [`docs/infrastructure/multi-region.md`](./docs/infrastructure/multi-region.md) |
+| Dependency Graph | [`docs/core/dependency-graph.md`](./docs/core/dependency-graph.md) |
 | Contributing | [`CONTRIBUTING.md`](./CONTRIBUTING.md) |
 | Changelog | [`CHANGELOG.md`](./CHANGELOG.md) |
 
@@ -124,9 +129,10 @@ Every task follows the deterministic **B.L.A.S.T.** methodology:
 ## 🛡️ Security & Performance
 
 - **Port 5002** is used for ALL services.
-- Sub-500ms p95 latency via L1/L2 caching.
+- **100/100 Architecture Health Score** (Verified May 2026).
+- Sub-500ms p95 latency via L1/L2 caching + real-time Web Vitals monitoring.
 - Zero-tolerance for `any` types or unsafe data patterns.
-- Automated security scanning on every PR.
+- Automated security scanning on every PR + accessibility regression tests.
 
 For vulnerability reporting, see [`SECURITY.md`](./SECURITY.md).
 

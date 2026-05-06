@@ -9,9 +9,11 @@ import {
   type SustainabilityHero,
   type SustainabilityInitiative,
   type SustainabilityMetric,
+  type SustainabilityMetricHistory,
   sustainabilityGoals,
   sustainabilityHero,
   sustainabilityInitiatives,
+  sustainabilityMetricHistory,
   sustainabilityMetrics,
   type UnifiedSustainability,
   unifiedSustainability,
@@ -211,6 +213,15 @@ export class SustainabilityRepository {
       .values({ ...data, sortOrder: newOrder })
       .returning();
 
+    if (created) {
+      // Record initial history
+      await db.insert(sustainabilityMetricHistory).values({
+        metricId: created.id,
+        value: created.value,
+        notes: "Initial value",
+      });
+    }
+
     if (!created) {
       throw new Error("Failed to create sustainability metric");
     }
@@ -234,6 +245,15 @@ export class SustainabilityRepository {
       .set({ ...data, updatedAt: new Date() })
       .where(eq(sustainabilityMetrics.id, id))
       .returning();
+
+    if (updated && data.value !== undefined) {
+      // Record history change
+      await db.insert(sustainabilityMetricHistory).values({
+        metricId: updated.id,
+        value: updated.value,
+        notes: "Value updated",
+      });
+    }
 
     if (!updated) {
       throw new Error(`Failed to update sustainability metric with id ${id}`);
@@ -268,6 +288,14 @@ export class SustainabilityRepository {
     });
     await unifiedCache.del("sustainability:metrics");
     await emitCacheInvalidation("sustainability:metrics", "update");
+  }
+
+  async getSustainabilityMetricHistory(metricId: number): Promise<SustainabilityMetricHistory[]> {
+    return db
+      .select()
+      .from(sustainabilityMetricHistory)
+      .where(eq(sustainabilityMetricHistory.metricId, metricId))
+      .orderBy(asc(sustainabilityMetricHistory.recordedAt));
   }
 
   async getSustainabilityInitiatives(includeInactive = false): Promise<SustainabilityInitiative[]> {

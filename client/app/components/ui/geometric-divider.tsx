@@ -85,5 +85,3 @@ export function GeometricDivider({
     </div>
   );
 }
-
-

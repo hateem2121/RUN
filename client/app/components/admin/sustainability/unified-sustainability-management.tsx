@@ -38,8 +38,8 @@ import { FeaturesTabContent } from "./FeaturesTabContent";
 import { GoalsTabContent } from "./GoalsTabContent";
 import { HeroTabContent } from "./HeroTabContent";
 import { InitiativesTabContent } from "./InitiativesTabContent";
+import { MetricsTabContent } from "./metrics-tab";
 import { SectionHeadersTabContent } from "./SectionHeadersTabContent";
-import { MetricsTabContent } from "./sustainability/metrics-tab";
 
 // Sortable item components standardized with Stitch aesthetics
 const SortableMetricItem = memo(function SortableMetricItem({
@@ -247,9 +247,7 @@ const SortableGoalItem = memo(function SortableGoalItem({
               <span className="text-admin-muted">
                 <span className="text-white font-bold">{goal.currentValue}</span> /{" "}
                 {goal.targetValue}{" "}
-                <span className="text-xxs uppercase font-bold text-white/40 ml-1">
-                  {goal.unit}
-                </span>
+                <span className="text-xxs uppercase font-bold text-white/40 ml-1">{goal.unit}</span>
               </span>
               <span
                 className={cn(

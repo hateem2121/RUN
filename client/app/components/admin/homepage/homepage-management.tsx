@@ -13,11 +13,11 @@ import { useCallback, useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAdminHomepageData } from "@/hooks/use-admin-homepage-data";
 import { cn } from "@/lib/utils";
-import { HomepageFeaturedTab } from "./homepage/HomepageFeaturedTab";
-import { HomepageHeroTab } from "./homepage/HomepageHeroTab";
-import { HomepageProcessCardsTab } from "./homepage/HomepageProcessCardsTab";
-import { HomepageSectionsTab } from "./homepage/HomepageSectionsTab";
-import { HomepageSlogansTab } from "./homepage/HomepageSlogansTab";
+import { HomepageFeaturedTab } from "./HomepageFeaturedTab";
+import { HomepageHeroTab } from "./HomepageHeroTab";
+import { HomepageProcessCardsTab } from "./HomepageProcessCardsTab";
+import { HomepageSectionsTab } from "./HomepageSectionsTab";
+import { HomepageSlogansTab } from "./HomepageSlogansTab";
 
 export function HomepageManagement() {
   const { isLoading, hero, slogans, sections, featuredSettings, processCards } =

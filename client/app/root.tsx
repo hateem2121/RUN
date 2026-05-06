@@ -20,9 +20,9 @@ import { getQueryClient } from "@/lib/queryClient";
 import "@/index.css";
 import { useEffect } from "react";
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
+import { SkipLink } from "@/components/ui/skip-link";
 import { reportWebVitals } from "@/lib/web-vitals";
 import { ScrollProvider } from "./hooks/use-scroll";
-import { SkipLink } from "@/components/ui/skip-link";
 
 // Load CSP nonce from server context
 export const links: LinksFunction = () => [

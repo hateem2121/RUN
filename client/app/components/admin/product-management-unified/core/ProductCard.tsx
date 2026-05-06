@@ -437,7 +437,9 @@ export const ProductCard = memo(function ProductCard({
               <h3 className="truncate font-bold text-white text-base tracking-tight">
                 {product.name}
               </h3>
-              <p className="text-admin-muted text-xs font-mono mt-1 opacity-70">SKU: {product.sku}</p>
+              <p className="text-admin-muted text-xs font-mono mt-1 opacity-70">
+                SKU: {product.sku}
+              </p>
             </div>
           </div>
         </div>

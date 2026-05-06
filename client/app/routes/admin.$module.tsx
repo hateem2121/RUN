@@ -22,36 +22,40 @@ const AdminMediaPage = lazy(() =>
 );
 
 const FabricManagement = lazy(() =>
-  import("@/components/admin/fabric-management-enhanced").then((m) => ({
+  import("@/components/admin/fabric/fabric-management-enhanced").then((m) => ({
     default: m.FabricManagementEnhancedV2,
   })),
 );
 const FiberManagement = lazy(() =>
-  import("@/components/admin/fiber-management").then((m) => ({ default: m.FiberManagement })),
+  import("@/components/admin/fiber/fiber-management").then((m) => ({ default: m.FiberManagement })),
 );
 const CertificateManagement = lazy(() =>
-  import("@/components/admin/certificate-management").then((m) => ({
+  import("@/components/admin/certificate/certificate-management").then((m) => ({
     default: m.CertificateManagement,
   })),
 );
 const SizeChartManagement = lazy(() =>
-  import("@/components/admin/size-chart-management-enhanced").then((m) => ({
-    default: m.SizeChartManagementEnhanced,
-  })),
+  import("@/components/admin/product-management-unified/size-chart-management-enhanced").then(
+    (m) => ({
+      default: m.SizeChartManagementEnhanced,
+    }),
+  ),
 );
 const AccessoryManagement = lazy(() =>
-  import("@/components/admin/accessory-management-enhanced").then((m) => ({
-    default: m.AccessoryManagementEnhanced,
-  })),
+  import("@/components/admin/product-management-unified/accessory-management-enhanced").then(
+    (m) => ({
+      default: m.AccessoryManagementEnhanced,
+    }),
+  ),
 );
 // Unused exports removed
 const HomepageManagement = lazy(() =>
-  import("@/components/admin/homepage-management").then((m) => ({
+  import("@/components/admin/homepage/homepage-management").then((m) => ({
     default: m.HomepageManagement,
   })),
 );
 const CategoryManagement = lazy(() =>
-  import("@/components/admin/category-management-simplified").then((m) => ({
+  import("@/components/admin/categories/category-management-simplified").then((m) => ({
     default: m.CategoryManagementSimplified,
   })),
 );
@@ -61,24 +65,24 @@ const FooterManagement = lazy(() =>
   })),
 );
 const AboutManagement = lazy(() =>
-  import("@/components/admin/AboutManagement").then((m) => ({ default: m.AboutManagement })),
+  import("@/components/admin/about/AboutManagement").then((m) => ({ default: m.AboutManagement })),
 );
 const BlogManagement = lazy(() =>
-  import("@/components/admin/blog-management").then((m) => ({ default: m.BlogManagement })),
+  import("@/components/admin/blog/blog-management").then((m) => ({ default: m.BlogManagement })),
 );
 
 const SustainabilityManagement = lazy(() =>
-  import("@/components/admin/unified-sustainability-management").then((m) => ({
+  import("@/components/admin/sustainability/unified-sustainability-management").then((m) => ({
     default: m.UnifiedSustainabilityManagement,
   })),
 );
 const ManufacturingManagement = lazy(() =>
-  import("@/components/admin/manufacturing-management").then((m) => ({
+  import("@/components/admin/manufacturing/manufacturing-management").then((m) => ({
     default: m.ManufacturingManagement,
   })),
 );
 const TechnologyManagement = lazy(() =>
-  import("@/components/admin/technology-management").then((m) => ({
+  import("@/components/admin/technology/technology-management").then((m) => ({
     default: m.TechnologyManagement,
   })),
 );

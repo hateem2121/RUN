@@ -114,8 +114,8 @@ vi.mock("../../../server/lib/db/repositories/index.js", async (importOriginal) =
 
   return {
     ...actual,
-    pageContentRepository: {
-      ...actual.pageContentRepository,
+    manufacturingRepository: {
+      ...actual.manufacturingRepository,
       getManufacturingHero: vi.fn().mockResolvedValue(mockManufacturingHero),
       updateManufacturingHero: vi.fn().mockImplementation((data) => ({
         ...mockManufacturingHero,

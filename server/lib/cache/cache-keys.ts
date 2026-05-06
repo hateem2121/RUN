@@ -148,7 +148,7 @@ export const InvalidationPatterns = {
   navigation: "^navigation:.*",
   about: "^about:.*",
   sustainability: "^sustainability:.*",
-  manufacturing: ".*manufacturing:.*",
+  manufacturing: "^manufacturing:.*",
   technology: "^technology:.*",
   contact: "^contact:.*",
   inquiries: "^inquiries:.*",

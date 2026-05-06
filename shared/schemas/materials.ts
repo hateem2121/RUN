@@ -156,8 +156,8 @@ export const fibers = pgTable(
 // Fabric Compositions stub (for relationship queries)
 export const fabricCompositions = pgTable("fabric_compositions", {
   id: serial("id").primaryKey(),
-  fabricId: integer().references(() => fabrics.id),
-  fiberId: integer().references(() => fibers.id),
+  fabricId: integer().references(() => fabrics.id, { onDelete: "cascade" }),
+  fiberId: integer().references(() => fibers.id, { onDelete: "cascade" }),
   percentage: decimal(),
 });
 

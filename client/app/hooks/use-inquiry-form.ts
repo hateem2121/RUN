@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { 
-  type QuoteSubmissionData as InquiryFormData, 
-  QuoteSubmissionSchema as inquiryFormSchema 
+import {
+  type QuoteSubmissionData as InquiryFormData,
+  QuoteSubmissionSchema as inquiryFormSchema,
 } from "@shared/validation/contact";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";

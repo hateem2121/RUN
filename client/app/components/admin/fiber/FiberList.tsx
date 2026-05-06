@@ -342,7 +342,9 @@ export const FiberList: React.FC<FiberListProps> = ({
             </div>
             {renderFiberActions(fiber)}
           </div>
-          {fiber.description && <p className="mb-2 text-sm text-admin-muted">{fiber.description}</p>}
+          {fiber.description && (
+            <p className="mb-2 text-sm text-admin-muted">{fiber.description}</p>
+          )}
           {fiber.properties && getPropertiesArray(fiber.properties).length > 0 && (
             <div className="mb-2">
               <p className="mb-1 text-xs text-admin-muted">Properties:</p>

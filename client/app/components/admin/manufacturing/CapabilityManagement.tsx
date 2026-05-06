@@ -736,7 +736,9 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                               className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10"
                             >
                               <div className="flex-1 flex gap-2 text-sm">
-                                <span className="font-bold text-brand-manufacturing">{spec.label}:</span>
+                                <span className="font-bold text-brand-manufacturing">
+                                  {spec.label}:
+                                </span>
                                 <span className="text-white/70">{spec.value}</span>
                               </div>
                               <button

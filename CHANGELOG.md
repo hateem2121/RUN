@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.0] - 2026-05-06
+
+### Added
+
+- **Sustainability Metric Tracking**: New `sustainability_metric_history` table for immutable change tracking.
+- **Accessibility Baseline**: Integrated `axe-core` and established regression tests in `client/tests/accessibility.test.tsx`.
+- **Web Vitals Monitoring**: Real-time performance capture via `client/app/lib/performance.ts`.
+- **Infrastructure Docs**: New comprehensive documentation for Disaster Recovery, Multi-Region Strategy, CSRF Protection, and Security Headers.
+- **Dependency Graph**: Monorepo package relationships visualized in `docs/core/dependency-graph.md`.
+
+### Changed
+
+- **Architecture Health Score**: Achieved verified **100/100** score.
+- **Product Normalization**: `ProductRepository` refactored to sync `relatedProductIds` with the normalized `product_relations` table.
+- **Vitest Stabilization**: Resolved cross-workspace configuration issues via absolute path resolution in `vitest.config.ts`.
+- **Constitution Update**: `gemini.md` (v4.1.0) now includes System Health & Integrity invariants.
+
+### Fixed
+
+- **Type Integrity**: Resolved multiple latent typecheck issues in repository layers.
+- **Lint Standards**: Enforced project-wide Biome standards with zero-error tolerance.
+
 ## [4.0.3] - 2026-04-27
 
 ### Changed

@@ -56,7 +56,7 @@ export async function idempotencyMiddleware(
 
     // Intercept the outgoing response and cache it
     const originalJson = res.json.bind(res) as typeof res.json;
-    res.json = function (body: unknown) {
+    res.json = (body: unknown) => {
       // Background cache write (fire-and-forget in UnifiedCache.set)
       unifiedCache.set(cacheKey, { status: res.statusCode, body }, UnifiedCache.TTL_PRESETS.STATIC);
       return originalJson(body);
@@ -76,8 +76,8 @@ export async function clearIdempotencyStore(): Promise<void> {
   await unifiedCache.invalidate("idempotency:");
 }
 
-/** 
- * Exposed for testing only — inspect stored entries count. 
+/**
+ * Exposed for testing only — inspect stored entries count.
  * Note: This only returns L1 (memory) stats.
  */
 export function getIdempotencyStoreSize(): number {

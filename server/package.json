@@ -79,6 +79,7 @@
   },
   "scripts": {
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage -c ../vitest.config.ts",
     "typecheck": "tsc --noEmit",
     "build": "tsc -b && esbuild index.ts --bundle --platform=node --target=node24 --packages=external --format=esm --outfile=../dist/index.js",
     "predev": "fuser -k 5002/tcp 2>/dev/null; echo '✓ Clean dev environment ready'",

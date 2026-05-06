@@ -204,12 +204,7 @@ export const UploadItem = React.memo(function UploadItem({
             </div>
           </div>
           <div className="mt-2 flex justify-end">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleSave}
-              className="h-6 text-xxs gap-1"
-            >
+            <Button variant="ghost" size="sm" onClick={handleSave} className="h-6 text-xxs gap-1">
               <Save className="h-3 w-3" />
               Save Metadata
             </Button>

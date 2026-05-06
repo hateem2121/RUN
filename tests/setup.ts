@@ -1,5 +1,9 @@
-import { vi } from "vitest";
+import { expect, vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
+import * as axeMatchers from "vitest-axe/matchers";
+import "vitest-axe/extend-expect";
+
+expect.extend(axeMatchers);
 
 // Mock Replit database (Vitest 4.0 syntax)
 vi.mock("@replit/database", () => {

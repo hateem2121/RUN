@@ -231,7 +231,7 @@ export async function cleanupDatabase() {
     throw new Error("Cleanup allowed only in test environment");
   }
 
-    getStorage();
+  getStorage();
   // Implementation depends on storage exposed methods
   // For now, this is a placeholder
   logger.info("[TestUtils] Database cleanup requested");

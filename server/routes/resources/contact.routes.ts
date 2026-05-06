@@ -20,7 +20,6 @@ import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { verifyRecaptcha } from "../../lib/security/recaptcha-verify.js";
 import { authService } from "../../services/auth-service.js";
 
-
 const router = express.Router();
 
 // Cache TTL constants (in seconds) - CHUNK 34: Optimized by data volatility

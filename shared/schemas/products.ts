@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -6,6 +7,7 @@ import {
   serial,
   text,
   timestamp,
+  uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
@@ -80,7 +82,7 @@ export const products = pgTable(
   {
     id: serial("id").primaryKey(),
     name: varchar({ length: 255 }).notNull(),
-    slug: varchar({ length: 255 }).notNull().unique(),
+    slug: varchar({ length: 255 }).notNull(),
     description: text(),
     shortDescription: text(),
 
@@ -195,6 +197,10 @@ export const products = pgTable(
     // - products_certificate_ids_gin_idx (migrations/optimizations/002_add_jsonb_gin_indexes.sql)
     // - products_accessory_ids_gin_idx (migrations/optimizations/002_add_jsonb_gin_indexes.sql)
     // - products_image_ids_gin_idx (migrations/optimizations/002_add_jsonb_gin_indexes.sql)
+    // PERFORMANCE FIX: Partial unique index for slug to support soft-delete reuse
+    uniqueIndex("products_slug_unique_idx")
+      .on(table.slug)
+      .where(sql`${table.deletedAt} IS NULL`),
   ],
 );
 

@@ -16,6 +16,7 @@
       "@shared/*": ["../shared/*"],
       "@run-remix/shared": ["../shared/index.ts"],
       "@run-remix/shared/*": ["../shared/*"],
+      "@run-remix/server/*": ["../server/*"],
       "@assets/*": ["../attached_assets/*"]
     },
     "rootDirs": [".", "./.react-router/types"],

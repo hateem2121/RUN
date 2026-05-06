@@ -456,7 +456,7 @@ export class AuthService {
 
   public async getFailedAttempts(email: string): Promise<number> {
     const user = await userRepository.getUserByEmail(email);
-    return user ? user.failedLoginAttempts : 0;
+    return user?.failedLoginAttempts ?? 0;
   }
 
   /**

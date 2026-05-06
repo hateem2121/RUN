@@ -37,10 +37,10 @@ vi.mock("@/hooks/use-toast", () => ({
 
 vi.mock("@/hooks/useManufacturingMutations", () => ({
   useManufacturingMutations: () => ({
-    createMutation: { mutate: vi_mockMutate, isPending: false },
-    updateMutation: { mutate: vi_mockMutate, isPending: false },
-    deleteMutation: { mutate: vi_mockMutate, isPending: false },
-    reorderMutation: { mutate: vi_mockMutate, isPending: false },
+    createMutation: { mutate: vi_mockMutate, mutateAsync: vi_mockMutate, isPending: false },
+    updateMutation: { mutate: vi_mockMutate, mutateAsync: vi_mockMutate, isPending: false },
+    deleteMutation: { mutate: vi_mockMutate, mutateAsync: vi_mockMutate, isPending: false },
+    reorderMutation: { mutate: vi_mockMutate, mutateAsync: vi_mockMutate, isPending: false },
   }),
 }));
 
@@ -52,7 +52,10 @@ vi.mock("@/hooks/useOptimizedQuery", () => ({
 }));
 
 vi.mock("@/lib/queryClient", () => ({
-  apiRequest: vi.fn().mockResolvedValue({ data: {} }),
+  apiRequest: vi.fn((...args) => {
+    vi_mockMutate(...args);
+    return Promise.resolve({ data: {} });
+  }),
   getQueryClient: () => ({
     invalidateQueries: vi_mockInvalidateQueries,
   }),

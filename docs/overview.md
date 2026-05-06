@@ -39,19 +39,19 @@ npm ci
 | Technology | Version | Purpose | Provenance |
 | :--- | :--- | :--- | :--- |
 | **React** | `19.2.4` | UI Framework | `client/package.json` |
-| **Vite** | `7.0.0` | Build Tool / Bundler | `client/package.json` |
-| **React Router** | `7.11.0` | Routing (Client & SSR) | `client/package.json` |
-| **Tailwind CSS** | `4.0.0` | Styling Engine | `client/package.json` |
-| **TanStack Query** | `^5.90.12` | Server State Management | `client/package.json` |
+| **Vite** | `8.0.0` (Rolldown) | Build Tool / Bundler | `client/package.json` |
+| **React Router** | `7.14.2` | Routing (Client & SSR) | `client/package.json` |
+| **Tailwind CSS** | `4.2.0` | Styling Engine | `client/package.json` |
+| **TanStack Query** | `^5.66.0` | Server State Management | `client/package.json` |
 | **Three.js** | `^0.181.0` | 3D Visualization | `client/package.json` |
 
 ### Backend (`@run-remix/server`)
 
 | Technology | Version | Purpose | Provenance |
 | :--- | :--- | :--- | :--- |
-| **Express** | `^5.1.0` | Web Framework | `server/package.json` |
+| **Express** | `^5.2.0` | Web Framework | `server/package.json` |
 | **Node.js** | `24` | Runtime | `Dockerfile` |
-| **Drizzle ORM** | `^0.45.1` | Database ORM | `server/package.json` |
+| **Drizzle ORM** | `^0.45.2` | Database ORM | `server/package.json` |
 | **PostgreSQL** | `pg` (Neon) | Database Driver | `server/package.json` |
 | **Redis** | `Upstash` | Session & L2 Cache | `server/package.json` |
 | **Tini** | (Alpine Pkg) | Init Process | `Dockerfile` |
@@ -99,7 +99,7 @@ npm ci
 │   └── db.ts                     # Drizzle Instance
 │
 └── shared/ (@run-remix/shared)   # Zod Schemas & Contracts
-    └── schema.ts                 # Database & Validation Types
+    └── schemas/                  # Drizzle & Validation Types (SSOT)
 ```
 
 ### Dependency Rules
@@ -202,7 +202,7 @@ npm ci
 
 - **Operational Map:** See `docs/AGENT_INSTRUCTIONS.md`.
 - **Scripts:** Agents are expected to use `npm run verify:tech-integrity` to validate changes.
-- **Context:** `docs/core/tech-stack.md` provides definitions for AI decision making.
+- **Context:** `docs/core/architecture.md` provides definitions for AI decision making.
 
 ---
-**Version**: 1.3.0 | **Audit Status**: Verified | **Last Remediated**: 2026-04-27
+**Version**: 4.1.0 | **Audit Status**: Verified | **Last Remediated**: 2026-05-06

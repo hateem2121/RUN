@@ -570,7 +570,9 @@ export function TechnologyResearchManagement({
                           key={i}
                           className="flex items-center justify-between rounded-lg bg-white/[0.02] border border-white/[0.05] px-4 py-2"
                         >
-                          <span className="text-xs text-admin-foreground/60 line-clamp-1">{obj}</span>
+                          <span className="text-xs text-admin-foreground/60 line-clamp-1">
+                            {obj}
+                          </span>
                           <Button
                             type="button"
                             variant="ghost"
@@ -626,7 +628,9 @@ export function TechnologyResearchManagement({
                           key={i}
                           className="flex items-center justify-between rounded-lg bg-white/[0.02] border border-white/[0.05] px-4 py-2"
                         >
-                          <span className="text-xs text-admin-foreground/60 line-clamp-1">{out}</span>
+                          <span className="text-xs text-admin-foreground/60 line-clamp-1">
+                            {out}
+                          </span>
                           <Button
                             type="button"
                             variant="ghost"

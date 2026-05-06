@@ -23,10 +23,10 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { propertiesToObject } from "@/lib/fiber-utils";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
-import { FiberDetails } from "./fiber/FiberDetails";
-import { FiberForm } from "./fiber/FiberForm";
-import { FiberList } from "./fiber/FiberList";
-import { type FiberFormData, initialFiberFormData } from "./fiber/types";
+import { FiberDetails } from "./FiberDetails";
+import { FiberForm } from "./FiberForm";
+import { FiberList } from "./FiberList";
+import { type FiberFormData, initialFiberFormData } from "./types";
 
 export function FiberManagement() {
   const [formData, setFormData] = useState<FiberFormData>(initialFiberFormData);
@@ -72,7 +72,7 @@ export function FiberManagement() {
     if (newProperty?.trim() && !propertyList.includes(newProperty.trim())) {
       const updatedList = [...propertyList, newProperty.trim()];
       setPropertyList(updatedList);
-      setFormData((prev) => ({ ...prev, properties: updatedList.join(", ") }));
+      setFormData((prev: FiberFormData) => ({ ...prev, properties: updatedList.join(", ") }));
       setNewProperty("");
     }
   };
@@ -80,7 +80,7 @@ export function FiberManagement() {
   const removeProperty = (index: number) => {
     const updatedList = propertyList.filter((_, i) => i !== index);
     setPropertyList(updatedList);
-    setFormData((prev) => ({ ...prev, properties: updatedList.join(", ") }));
+    setFormData((prev: FiberFormData) => ({ ...prev, properties: updatedList.join(", ") }));
   };
 
   const createFiberMutation = useMutation({
@@ -91,7 +91,7 @@ export function FiberManagement() {
           ? propertiesToObject(
               data.properties
                 .split(",")
-                .map((p) => p.trim())
+                .map((p: string) => p.trim())
                 .filter(Boolean),
             )
           : undefined,
@@ -120,7 +120,7 @@ export function FiberManagement() {
           ? propertiesToObject(
               data.properties
                 .split(",")
-                .map((p) => p.trim())
+                .map((p: string) => p.trim())
                 .filter(Boolean),
             )
           : undefined,
@@ -338,7 +338,7 @@ export function FiberManagement() {
         fibers={filteredFibers}
         viewMode={viewMode}
         selectedFibers={selectedFibers}
-        onSelectFiber={(id) => {
+        onSelectFiber={(id: number) => {
           const newSet = new Set(selectedFibers);
           if (newSet.has(id)) {
             newSet.delete(id);
@@ -347,13 +347,13 @@ export function FiberManagement() {
           }
           setSelectedFibers(newSet);
         }}
-        onViewDetail={(fiber) => {
+        onViewDetail={(fiber: Fiber) => {
           setDetailFiber(fiber);
           setIsDetailDialogOpen(true);
         }}
         onEdit={handleEdit}
         onDuplicate={handleDuplicate}
-        onDelete={(id) => deleteFiberMutation.mutate(id)}
+        onDelete={(id: number) => deleteFiberMutation.mutate(id)}
         searchTerm={searchTerm}
         filterType={filterType}
         filterStatus={filterStatus}

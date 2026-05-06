@@ -1,3 +1,4 @@
+import { ok } from "neverthrow";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { miscRepository } from "../../../server/lib/db/repositories/index.js";
 import { aboutService } from "../../../server/services/about.service.js";
@@ -92,7 +93,9 @@ describe("AdminService - Content Management", () => {
   describe("About Timeline Management", () => {
     it("should delegate timeline creation to aboutService", async () => {
       const entryData = { year: "2010", title: "Start" };
-      vi.mocked(aboutService.createTimelineEntry).mockResolvedValue({ id: 1, ...entryData } as any);
+      vi.mocked(aboutService.createTimelineEntry).mockResolvedValue(
+        ok({ id: 1, ...entryData }) as any,
+      );
 
       const result = await adminService.createAboutTimelineEntry(mockAudit as any, entryData);
 

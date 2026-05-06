@@ -25,7 +25,7 @@ export const FloatingDockHeader = memo(function FloatingDockHeader() {
   }
 
   return (
-    <header className="fixed top-0 left-0 w-full z-(--z-index-modal-nested) pointer-events-none">
+    <header className="fixed top-0 left-0 w-full z-(--z-index-dock) pointer-events-none">
       {/* Brand Logo - Fixed top-left with two-line layout to prevent overlap */}
       <div className="fixed top-4 left-4 z-(--z-index-modal-nested-2) pointer-events-auto">
         <Link to="/" className="shrink-0" aria-label="Run Apparel Home">

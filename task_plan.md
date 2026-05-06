@@ -35,7 +35,33 @@ Perform a fresh, comprehensive investigative audit of the monorepo architecture 
 - [x] Audit for forbidden dependencies (framer-motion, @react-three/fiber).
 - [x] Verify Port 5002 compliance via env schema.
 
-### Status: [x] AUDIT COMPLETE (MR-02 Findings recorded in findings.md)
+### Status: [x] AUDIT COMPLETE (MR-03 Findings recorded in findings.md)
 
-## Session: 2026-05-02
-... (rest of the file)
+## Session: 2026-05-05 (Read-Only Investigative Audit)
+
+### Objective
+Complete a deep-dive audit of the monorepo architecture and `@run-remix/shared` package to identify architectural regressions and dependency hygiene issues.
+
+### Protocol 0 — Session Bookends
+- [x] START: Read and update `task_plan.md`
+- [x] END: Update `findings.md` and run `npm run verify:tech-integrity`
+
+### Status: [x] AUDIT COMPLETE
+
+## Session: 2026-05-05 (Database & Schema Layer — Full Investigative Audit)
+
+### Objective
+Complete a comprehensive audit of the Drizzle ORM schema, migrations, connection pool, and Zod generation contract.
+
+### Protocol 0 — Session Bookends
+- [x] START: Read and update `task_plan.md`
+- [x] END: Update `findings.md` and run `npm run verify:tech-integrity`
+
+### B.L.A.S.T. Steps
+- [x] **Blueprint**: Audit `shared/schemas/` and build schema map.
+- [x] **Link**: Verify Zod re-exports from `@run-remix/shared`.
+- [x] **Architect**: Review `drizzle.config.ts`, migrations, and connection pool in `server/db/`.
+- [x] **Stylize**: N/A.
+- [x] **Trigger**: Compile findings and halt.
+
+### Status: [x] AUDIT COMPLETE (DS-001 through DS-008 recorded in findings.md)

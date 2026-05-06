@@ -37,15 +37,15 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
-import { CertificateAnalytics } from "./certificate/CertificateAnalytics";
-import { CertificateForm } from "./certificate/CertificateForm";
-import { CertificateInsights } from "./certificate/CertificateInsights";
-import { CertificateList } from "./certificate/CertificateList";
+import { CertificateAnalytics } from "./CertificateAnalytics";
+import { CertificateForm } from "./CertificateForm";
+import { CertificateInsights } from "./CertificateInsights";
+import { CertificateList } from "./CertificateList";
 import {
   type CertificateAnalyticsData,
   type CertificateFormData,
   initialCertificateFormData,
-} from "./certificate/types";
+} from "./types";
 
 export function CertificateManagement() {
   const [formData, setFormData] = useState<CertificateFormData>(initialCertificateFormData);
@@ -498,7 +498,7 @@ export function CertificateManagement() {
               onSelect={setSelectedCertificates}
               onEdit={handleEdit}
               onDuplicate={handleDuplicate}
-              onDelete={(id) => deleteCertificateMutation.mutate(id)}
+              onDelete={(id: number) => deleteCertificateMutation.mutate(id)}
             />
           </TabsContent>
 
@@ -575,7 +575,7 @@ export function CertificateManagement() {
           onSelect={(assets) => {
             const asset = Array.isArray(assets) ? assets[0] : assets;
             if (asset?.id) {
-              setFormData((prev) => ({ ...prev, imageId: asset.id }));
+              setFormData((prev: CertificateFormData) => ({ ...prev, imageId: asset.id }));
               setIsMediaPickerOpen(false);
               toast({ title: "Success", description: "Image selected" });
             }

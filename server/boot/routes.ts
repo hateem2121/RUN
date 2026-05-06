@@ -7,7 +7,6 @@ import { registerRoutes } from "../routes/index.js";
 
 // import openapiRouter from "../routes/v1/openapi.js"; // REMOVED: Missing module
 
-
 export async function setupRoutes(app: Express, httpServer: Server) {
   await registerRoutes(app);
 

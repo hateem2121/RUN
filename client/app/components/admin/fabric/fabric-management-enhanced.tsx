@@ -15,16 +15,16 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { FabricCard } from "./fabric/FabricCard";
-import { FabricFilters } from "./fabric/FabricFilters";
-import { FabricForm } from "./fabric/FabricForm";
-import { FabricStats } from "./fabric/FabricStats";
+import { FabricCard } from "./FabricCard";
+import { FabricFilters } from "./FabricFilters";
+import { FabricForm } from "./FabricForm";
+import { FabricStats } from "./FabricStats";
 import {
   type EnhancedFormData,
   getButtonTestId,
   initialFormData,
   parseNumericValue,
-} from "./fabric/types";
+} from "./types";
 
 export function FabricManagementEnhancedV2() {
   const [formData, setFormData] = useState<EnhancedFormData>(initialFormData);
@@ -258,7 +258,7 @@ export function FabricManagementEnhancedV2() {
     }
 
     if (selectedAsset.id) {
-      setFormData((prev) => ({
+      setFormData((prev: EnhancedFormData) => ({
         ...prev,
         visualSwatchId: selectedAsset.id,
       }));
@@ -447,7 +447,7 @@ export function FabricManagementEnhancedV2() {
               fibers={fibers}
               certificates={certificates}
               sectionsOpen={sectionsOpen}
-              toggleSectionOpen={(section) =>
+              toggleSectionOpen={(section: string) =>
                 toggleSectionOpen(section as keyof typeof sectionsOpen)
               }
               setIsMediaPickerOpen={setIsMediaPickerOpen}

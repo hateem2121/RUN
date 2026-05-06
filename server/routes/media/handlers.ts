@@ -16,6 +16,10 @@ import {
 } from "../../lib/utilities/core-utils.js";
 import { webhookService } from "../../services/webhook-service.js";
 import { CHUNK_STORAGE_BASE, CHUNK_STORAGE_IS_PUBLIC } from "./chunk-config.js";
+import { backendUploadManager, uploadMetrics } from "./middleware.js";
+import { MediaIdParamSchema, MediaListQuerySchema, MediaUpdateSchema } from "./schemas.js";
+import { enhancedUploadService, uploadSessions } from "./services.js";
+import type { MediaAsset, MediaMetadata, UploadSession } from "./types.js";
 import {
   buildInsertMediaAsset,
   createErrorResponse,
@@ -27,10 +31,6 @@ import {
   slugifyFilename,
   type UploadOptions,
 } from "./utils.js";
-import { backendUploadManager, uploadMetrics } from "./middleware.js";
-import { MediaIdParamSchema, MediaListQuerySchema, MediaUpdateSchema } from "./schemas.js";
-import { enhancedUploadService, uploadSessions } from "./services.js";
-import type { MediaAsset, MediaMetadata, UploadSession } from "./types.js";
 
 // Session cleanup - remove stale uploads after 1 hour
 setInterval(

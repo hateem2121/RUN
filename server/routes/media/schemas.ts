@@ -1,3 +1,4 @@
+import { insertMediaAssetSchema } from "@run-remix/shared";
 import { z } from "zod";
 
 /**
@@ -33,14 +34,19 @@ export const FolderUpdateSchema = z.object({
   parentId: z.coerce.number().optional().nullable(),
 });
 
-export const MediaUpdateSchema = z.object({
-  filename: z.string().optional(),
-  altText: z.string().optional().nullable(),
-  caption: z.string().optional().nullable(),
-  folderId: z.coerce.number().optional().nullable(),
-  isPublic: z.boolean().optional(),
-  metadata: z.any().optional(),
-});
+// MediaUpdateSchema - FIXED: Uses shared schema and corrects isPublic -> isActive mapping
+export const MediaUpdateSchema = insertMediaAssetSchema
+  .partial()
+  .extend({
+    folderId: z.coerce.number().optional().nullable(),
+  })
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    uploadedAt: true,
+    deletedAt: true,
+  });
 
 export const PerformanceQuerySchema = z.object({
   path: z.string().optional(),

@@ -361,7 +361,9 @@ export function TechnologyCtaManagement() {
             <Zap className="h-5 w-5" />
           </div>
           <div className="text-2xl font-black text-white">4.2%</div>
-          <div className="text-xs font-bold uppercase tracking-wider text-admin-muted">Avg. CTR</div>
+          <div className="text-xs font-bold uppercase tracking-wider text-admin-muted">
+            Avg. CTR
+          </div>
         </div>
         <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5 backdrop-blur-xl">
           <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10 text-green-400">

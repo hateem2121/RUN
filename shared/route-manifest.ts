@@ -37,6 +37,17 @@ export const routeManifest: Record<string, string> = {
   "/admin/test-runner": "app/routes/admin.$module.tsx",
   "/admin/inquiries": "app/routes/admin.$module.tsx",
   "/admin/footer": "app/routes/admin.$module.tsx",
+  // API Routes
+  "/api/media": "app/routes/api.media.tsx",
+  "/api/navigation-items": "app/routes/api.navigation-items.tsx",
+  "/api/navigation-settings": "app/routes/api.navigation-settings.tsx",
+  // Developer & Support
+  "/developer": "app/routes/developer.tsx",
+  "/developer/playground": "app/routes/developer.playground.tsx",
+  "/developer/guides": "app/routes/developer.guides.$slug.tsx",
+  "/privacy": "app/routes/privacy.tsx",
+  "/terms": "app/routes/terms.tsx",
+  "/admin/": "app/routes/admin._index.tsx",
 };
 
 // Helper for fuzzy matching (simplified for SSR)
@@ -51,13 +62,27 @@ export const getComponentForPath = (pathName: string): string | undefined => {
     return routeManifest[cleanPath as keyof typeof routeManifest];
   }
 
-  // Fuzzy Match (Categories)
+  // Fuzzy Match (Categories & Products)
   if (cleanPath.startsWith("/categories/")) {
-    // /categories/:slug -> generic category page or product detail?
-    // App.tsx uses EnhancedProductDetail for deep category routes
-    // and CategoryRedirect for /categories/:slug
-    // Let's optimize for Product Detail as it's the heaviest
-    return "app/routes/categories.$slug.tsx";
+    const parts = cleanPath.split("/").filter(Boolean);
+
+    // /categories/:slug/products
+    if (parts.length === 3 && parts[2] === "products") {
+      return "app/routes/categories.$slug.products.tsx";
+    }
+
+    // /categories/:slug
+    if (parts.length === 2) {
+      return "app/routes/categories.$slug.tsx";
+    }
+
+    // Deep category routes /categories/...
+    return "app/routes/categories.$.tsx";
+  }
+
+  // Fallback for catch-all
+  if (cleanPath === "/404") {
+    return "app/routes/$.tsx";
   }
 
   return undefined;

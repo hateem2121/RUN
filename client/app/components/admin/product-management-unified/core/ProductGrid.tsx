@@ -341,7 +341,9 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
           </div>
           <div>
             <h1 className="text-xl font-bold text-white tracking-tight">Product Architecture</h1>
-            <p className="text-sm text-admin-muted">{displayProducts.length} synchronized products</p>
+            <p className="text-sm text-admin-muted">
+              {displayProducts.length} synchronized products
+            </p>
           </div>
         </div>
         <Button

@@ -11,6 +11,7 @@ import { removeUndefined } from "../../lib/utilities/core-utils.js";
  * - PATCH /api/sustainability           - Update unified sustainability config
  */
 
+import { insertUnifiedSustainabilitySchema } from "@run-remix/shared";
 import { type Request, Router } from "express";
 import { z } from "zod";
 import { CacheKeys } from "../../lib/cache/cache-strategies.js";
@@ -42,37 +43,7 @@ function shouldBypassCache(req: Request): boolean {
  * MUST BE BEFORE ROOT ROUTE to avoid being caught by '/'
  */
 router.get("/debug/validation", async (_req, res) => {
-  const updateSchema = z.object({
-    title: z.string().min(1).optional(),
-    headline: z.string().nullable().optional(),
-    subheadline: z.string().nullable().optional(),
-    content: z.string().nullable().optional(),
-    sectionType: z.string().min(1).optional(),
-    data: z.record(z.string(), z.any()).optional(),
-    metrics: z.record(z.string(), z.any()).optional(),
-    ctaText: z.string().nullable().optional(),
-    ctaLink: z.string().nullable().optional(),
-    metricsTitle: z.string().nullable().optional(),
-    metricsDescription: z.string().nullable().optional(),
-    certificationsTitle: z.string().nullable().optional(),
-    certificationsDescription: z.string().nullable().optional(),
-    certificationsFooterNote: z.string().nullable().optional(),
-    certificationIds: z.array(z.number()).nullable().optional(),
-    initiativesTitle: z.string().nullable().optional(),
-    initiativesDescription: z.string().nullable().optional(),
-    goalsTitle: z.string().nullable().optional(),
-    goalsDescription: z.string().nullable().optional(),
-    fabricPortfolioTitle: z.string().nullable().optional(),
-    callToActionTitle: z.string().nullable().optional(),
-    callToActionDescription: z.string().nullable().optional(),
-    callToActionButtonText: z.string().nullable().optional(),
-    callToActionButtonLink: z.string().nullable().optional(),
-    buttonText: z.string().nullable().optional(),
-    buttonLink: z.string().nullable().optional(),
-    backgroundImageId: z.number().nullable().optional(),
-    isActive: z.boolean().optional(),
-    sortOrder: z.number().optional(),
-  });
+  const updateSchema = insertUnifiedSustainabilitySchema.partial();
 
   const testPayloads = [
     {
@@ -209,42 +180,8 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
     bodySize: JSON.stringify(req.body || {}).length,
   });
 
-  // Input validation with Zod
-  // CHUNK 1: Updated all string fields to accept nullable values
-  const updateSchema = z.object({
-    title: z.string().min(1).optional(),
-    headline: z.string().nullable().optional(),
-    subheadline: z.string().nullable().optional(),
-    content: z.string().nullable().optional(),
-    sectionType: z.string().min(1).optional(),
-    data: z.record(z.string(), z.any()).optional(),
-    metrics: z.record(z.string(), z.any()).optional(),
-    ctaText: z.string().nullable().optional(),
-    ctaLink: z.string().nullable().optional(),
-    metricsTitle: z.string().nullable().optional(),
-    metricsDescription: z.string().nullable().optional(),
-    certificationsTitle: z.string().nullable().optional(),
-    certificationsDescription: z.string().nullable().optional(),
-    certificationsFooterNote: z.string().nullable().optional(),
-    certificationIds: z.array(z.number()).nullable().optional(),
-    initiativesTitle: z.string().nullable().optional(),
-    initiativesDescription: z.string().nullable().optional(),
-    goalsTitle: z.string().nullable().optional(),
-    goalsDescription: z.string().nullable().optional(),
-    fabricPortfolioTitle: z.string().nullable().optional(),
-    fabricPortfolioDescription: z.string().nullable().optional(),
-    featuresTitle: z.string().nullable().optional(),
-    featuresDescription: z.string().nullable().optional(),
-    callToActionTitle: z.string().nullable().optional(),
-    callToActionDescription: z.string().nullable().optional(),
-    callToActionButtonText: z.string().nullable().optional(),
-    callToActionButtonLink: z.string().nullable().optional(),
-    buttonText: z.string().nullable().optional(),
-    buttonLink: z.string().nullable().optional(),
-    backgroundImageId: z.number().nullable().optional(),
-    isActive: z.boolean().optional(),
-    sortOrder: z.number().optional(),
-  });
+  // Input validation with Zod - FIXED: Uses shared schema for SSOT
+  const updateSchema = insertUnifiedSustainabilitySchema.partial();
 
   // Input validation with Zod
   const validatedData = updateSchema.parse(req.body);

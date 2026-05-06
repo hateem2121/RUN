@@ -2,7 +2,7 @@ export async function loader() {
   try {
     // Dynamic import to avoid including server code in client bundle
     // React Router 7 loaders run on the server in this architecture
-    const { NavigationService } = await import("../../../server/services/navigation-service.js");
+    const { NavigationService } = await import("@run-remix/server/services/navigation-service.js");
     const result = await NavigationService.getItems();
 
     if (result.isErr()) {

@@ -41,9 +41,16 @@ export const AdminBreadcrumb = React.memo(function AdminBreadcrumb() {
   }
 
   return (
-    <nav className="mb-4 flex items-center space-x-1 text-muted-foreground text-sm">
-      <Link to="/admin" className="flex items-center transition-colors hover:text-foreground">
-        <Home className="h-4 w-4" />
+    <nav
+      aria-label="Breadcrumb"
+      className="mb-4 flex items-center space-x-1 text-muted-foreground text-sm"
+    >
+      <Link
+        to="/admin"
+        aria-label="Admin Dashboard"
+        className="flex items-center transition-colors hover:text-foreground"
+      >
+        <Home className="h-4 w-4" aria-hidden="true" />
       </Link>
 
       {breadcrumbs.slice(1).map((crumb, index) => (

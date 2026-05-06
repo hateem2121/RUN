@@ -1013,10 +1013,25 @@ export class ProductRepository {
     return await dbCircuitBreaker.execute(
       async () => {
         const dbInstance = tx || db;
-        const [created] = await dbInstance.insert(products).values(product).returning();
+
+        // Extract relatedProductIds for separate processing if present
+        const { relatedProductIds: relatedIds, ...productData } = product;
+
+        const [created] = await dbInstance.insert(products).values(productData).returning();
 
         if (!created) {
           throw new Error("Failed to create product");
+        }
+
+        // PHASE 4B: Normalize relationships
+        if (relatedIds && Array.isArray(relatedIds) && relatedIds.length > 0) {
+          await dbInstance.insert(productRelations).values(
+            relatedIds.map((rid, idx) => ({
+              productId: created.id,
+              relatedProductId: rid,
+              sortOrder: idx,
+            })),
+          );
         }
 
         if (!tx) {
@@ -1043,11 +1058,31 @@ export class ProductRepository {
     return await dbCircuitBreaker.execute(
       async () => {
         const dbInstance = tx || db;
+
+        // Extract relatedProductIds for separate processing if present
+        const { relatedProductIds: relatedIds, ...productData } = product;
+
         const [updated] = await dbInstance
           .update(products)
-          .set({ ...product, updatedAt: sql`NOW()` })
+          .set({ ...productData, updatedAt: sql`NOW()` })
           .where(and(eq(products.id, id), isNull(products.deletedAt)))
           .returning();
+
+        // PHASE 4B: Normalize relationships
+        if (updated && relatedIds !== undefined) {
+          // Clear existing and replace with new
+          await dbInstance.delete(productRelations).where(eq(productRelations.productId, id));
+
+          if (Array.isArray(relatedIds) && relatedIds.length > 0) {
+            await dbInstance.insert(productRelations).values(
+              relatedIds.map((rid, idx) => ({
+                productId: id,
+                relatedProductId: rid,
+                sortOrder: idx,
+              })),
+            );
+          }
+        }
 
         if (!tx && updated) {
           await this.invalidateProductCache();

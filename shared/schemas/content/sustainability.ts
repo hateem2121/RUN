@@ -74,6 +74,22 @@ export const sustainabilityMetrics = pgTable(
   ],
 );
 
+// Sustainability Metric History - Tracks changes over time
+export const sustainabilityMetricHistory = pgTable(
+  "sustainability_metric_history",
+  {
+    id: serial("id").primaryKey(),
+    metricId: integer("metric_id")
+      .notNull()
+      .references(() => sustainabilityMetrics.id, { onDelete: "cascade" }),
+    value: varchar({ length: 100 }).notNull(),
+    recordedAt: timestamp("recorded_at", { mode: "date", precision: 3 }).defaultNow(),
+    recordedBy: integer("recorded_by"), // Reference to admin user id
+    notes: text(),
+  },
+  (table) => [index("metric_history_metric_id_idx").on(table.metricId)],
+);
+
 // Sustainability Initiatives
 export const sustainabilityInitiatives = pgTable(
   "sustainability_initiatives",
@@ -240,6 +256,9 @@ export type InsertSustainabilityFeatures = typeof sustainabilityFeatures.$inferI
 export type UnifiedSustainability = typeof unifiedSustainability.$inferSelect;
 export type InsertUnifiedSustainability = typeof unifiedSustainability.$inferInsert;
 
+export type SustainabilityMetricHistory = typeof sustainabilityMetricHistory.$inferSelect;
+export type InsertSustainabilityMetricHistory = typeof sustainabilityMetricHistory.$inferInsert;
+
 // Zod Schemas
 export const insertHomepageSustainabilitySchema = z.object({
   title: z.string().min(1),
@@ -313,6 +332,13 @@ export const selectSustainabilityGoalSchema = createSelectSchema(sustainabilityG
 
 export const insertSustainabilityFeaturesSchema = createInsertSchema(sustainabilityFeatures);
 export const selectSustainabilityFeaturesSchema = createSelectSchema(sustainabilityFeatures);
+
+export const insertSustainabilityMetricHistorySchema = createInsertSchema(
+  sustainabilityMetricHistory,
+);
+export const selectSustainabilityMetricHistorySchema = createSelectSchema(
+  sustainabilityMetricHistory,
+);
 
 export const insertUnifiedSustainabilitySchema = createInsertSchema(unifiedSustainability);
 export const selectUnifiedSustainabilitySchema = createSelectSchema(unifiedSustainability);

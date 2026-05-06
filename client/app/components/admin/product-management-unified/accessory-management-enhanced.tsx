@@ -126,7 +126,9 @@ const AccessoryList = ({
               </div>
 
               {accessory.description && (
-                <p className="mb-2 line-clamp-2 text-sm text-admin-muted">{accessory.description}</p>
+                <p className="mb-2 line-clamp-2 text-sm text-admin-muted">
+                  {accessory.description}
+                </p>
               )}
 
               {/* Media Preview */}

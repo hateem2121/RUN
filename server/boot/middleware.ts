@@ -10,15 +10,13 @@ import express, {
 import helmet from "helmet";
 import { logger } from "../lib/monitoring/logger.js";
 import { csrfProtection } from "../middleware/csrf.js";
+import { idempotencyMiddleware } from "../middleware/idempotency.js";
 import {
   productionErrorHandler,
   setupGlobalErrorHandlers,
 } from "../middleware/production-error-handler.js";
 import { requestSanitization } from "../middleware/sanitization.js";
-import { idempotencyMiddleware } from "../middleware/idempotency.js";
 import { authService } from "../services/auth-service.js";
-
-
 
 /**
  * Global Middleware Configuration

@@ -35,7 +35,7 @@ import { Switch } from "@/components/ui/switch";
 import { TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { IconDisplay, IconPicker } from "./shared/IconPicker";
+import { IconDisplay, IconPicker } from "../shared/IconPicker";
 
 interface InitiativeFormData {
   title: string;
@@ -701,7 +701,7 @@ export function InitiativesTabContent({
       <IconPicker
         isOpen={showInitiativeIconPicker}
         onClose={() => setShowInitiativeIconPicker(false)}
-        onSelect={(iconName) => setInitiativeForm((prev) => ({ ...prev, iconName }))}
+        onSelect={(iconName: string) => setInitiativeForm((prev) => ({ ...prev, iconName }))}
         currentIcon={initiativeForm.iconName}
         title="Select Initiative Icon"
       />

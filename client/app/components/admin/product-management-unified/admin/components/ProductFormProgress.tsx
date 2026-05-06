@@ -140,7 +140,9 @@ export function ProductFormProgress() {
                       : "text-admin-muted/70"
                 }`}
               />
-              <p className="text-admin-foreground/80 mb-1 text-xs font-medium">{typedSection.name}</p>
+              <p className="text-admin-foreground/80 mb-1 text-xs font-medium">
+                {typedSection.name}
+              </p>
               <div className="center-flex gap-1 text-xs">
                 <span
                   className={

@@ -125,7 +125,9 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
           }
           placeholder="https://example.com/certificate.pdf"
         />
-        <p className="mt-1 text-admin-muted text-sm">Link to the certificate document (PDF, etc.)</p>
+        <p className="mt-1 text-admin-muted text-sm">
+          Link to the certificate document (PDF, etc.)
+        </p>
       </div>
 
       <div className="flex items-center space-x-2">

@@ -41,11 +41,13 @@ export class ProductErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/5 p-12 backdrop-blur-xl">
-          <div className="size-16 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-6 shadow-red-glow">
-            <AlertCircle className="h-8 w-8 text-red-500" />
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-destructive/20 bg-destructive/5 p-12 backdrop-blur-xl">
+          <div className="size-16 rounded-full bg-destructive/10 border border-destructive/20 flex items-center justify-center mb-6 shadow-destructive-glow">
+            <AlertCircle className="h-8 w-8 text-destructive" />
           </div>
-          <h2 className="mb-2 text-xl font-bold text-white tracking-tight">System Protocol Violation</h2>
+          <h2 className="mb-2 text-xl font-bold text-white tracking-tight">
+            System Protocol Violation
+          </h2>
           <p className="mb-6 max-w-md text-center text-sm text-admin-muted">
             {this.state.error?.message ||
               "An unexpected exception has occurred in the product management subsystem."}

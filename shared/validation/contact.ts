@@ -83,7 +83,6 @@ export const QuoteSubmissionSchema = z.object({
 
 export type QuoteSubmissionData = z.infer<typeof QuoteSubmissionSchema>;
 
-
 // Admin contact page CMS settings form schema
 export const contactContentFormSchema = z.object({
   heroTitle: z.string().min(1, "Hero title is required").default("DROP US A MESSAGE"),

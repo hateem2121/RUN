@@ -381,7 +381,9 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-white tracking-tight">Manufacturing Processes</h2>
-            <p className="text-sm text-admin-muted">Manage production steps and efficiency metrics</p>
+            <p className="text-sm text-admin-muted">
+              Manage production steps and efficiency metrics
+            </p>
           </div>
           <Button
             onClick={() => {

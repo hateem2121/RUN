@@ -1,10 +1,11 @@
+import { ok } from "neverthrow";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CacheOperations } from "../../../server/lib/cache/cache-strategies.js";
-import { pageContentRepository } from "../../../server/lib/db/repositories/index.js";
+import { aboutRepository } from "../../../server/lib/db/repositories/index.js";
 import { aboutService } from "../../../server/services/about.service.js";
 
 vi.mock("../../../server/lib/db/repositories/index.js", () => ({
-  pageContentRepository: {
+  aboutRepository: {
     getAboutHero: vi.fn(),
     updateAboutHero: vi.fn(),
     getAboutTimelineEntries: vi.fn(),
@@ -29,6 +30,7 @@ vi.mock("../../../server/lib/db/repositories/index.js", () => ({
     deleteAboutStatistic: vi.fn(),
     getAboutTeamMessage: vi.fn(),
     updateAboutTeamMessage: vi.fn(),
+    getAboutBatch: vi.fn(),
   },
 }));
 
@@ -44,67 +46,54 @@ describe("AboutService", () => {
   });
 
   describe("getAllAboutData", () => {
-    it("should aggregate all about sections", async () => {
-      vi.mocked(pageContentRepository.getAboutHero).mockResolvedValue({
-        id: 1,
-        title: "Hero",
-      } as unknown as any);
-      vi.mocked(pageContentRepository.getAboutTimelineEntries).mockResolvedValue([
-        { id: 1, year: "2020" },
-      ] as unknown as any);
-      vi.mocked(pageContentRepository.getAboutMapLocations).mockResolvedValue([
-        { id: 1, name: "HQ" },
-      ] as unknown as any);
-      vi.mocked(pageContentRepository.getAboutSections).mockResolvedValue([
-        { id: 1, title: "Mission" },
-      ] as unknown as any);
-      vi.mocked(pageContentRepository.getAboutStatistics).mockResolvedValue([
-        { id: 1, label: "Stats" },
-      ] as unknown as any);
-      vi.mocked(pageContentRepository.getAboutTeamMessage).mockResolvedValue({
-        id: 1,
-        name: "CEO",
-      } as unknown as any);
+    it("should aggregate all about sections via repository", async () => {
+      const mockBatchData = {
+        hero: { id: 1, headline: "Hero" },
+        timeline: [{ id: 1, year: "2020", title: "Start" }],
+        locations: [{ id: 1, name: "HQ" }],
+        sections: [{ id: 1, title: "Mission" }],
+        statistics: [{ id: 1, label: "Stats", value: "100" }],
+        teamMessage: { id: 1, name: "CEO", message: "Hello" },
+      };
 
-      const data = await aboutService.getAllAboutData();
+      vi.mocked(aboutRepository.getAboutBatch).mockResolvedValue(mockBatchData as any);
 
-      expect(data.hero?.title).toBe("Hero");
+      const result = await aboutService.getAllAboutData();
+
+      expect(result.isOk()).toBe(true);
+      const data = result._unsafeUnwrap();
+      expect(data.hero?.headline).toBe("Hero");
       expect(data.timeline).toHaveLength(1);
       expect(data.sections).toHaveLength(1);
     });
 
-    it("should handle partial failures gracefully", async () => {
-      vi.mocked(pageContentRepository.getAboutHero).mockRejectedValue(new Error("DB Error"));
-      vi.mocked(pageContentRepository.getAboutTimelineEntries).mockResolvedValue([]);
-      vi.mocked(pageContentRepository.getAboutMapLocations).mockResolvedValue([]);
-      vi.mocked(pageContentRepository.getAboutSections).mockResolvedValue([]);
-      vi.mocked(pageContentRepository.getAboutStatistics).mockResolvedValue([]);
-      vi.mocked(pageContentRepository.getAboutTeamMessage).mockResolvedValue(null);
+    it("should return error when repository fails", async () => {
+      vi.mocked(aboutRepository.getAboutBatch).mockRejectedValue(new Error("DB Error"));
 
-      const data = await aboutService.getAllAboutData();
+      const result = await aboutService.getAllAboutData();
 
-      expect(data.hero).toBeNull();
-      expect(data.timeline).toEqual([]);
+      expect(result.isErr()).toBe(true);
     });
   });
 
   describe("Timeline Management", () => {
     it("should create timeline entry and invalidate cache", async () => {
       const entryData = { year: "2025", title: "Future" };
-      vi.mocked(pageContentRepository.createAboutTimelineEntry).mockResolvedValue({
+      vi.mocked(aboutRepository.createAboutTimelineEntry).mockResolvedValue({
         id: 2,
         ...entryData,
       } as any);
 
       const result = await aboutService.createTimelineEntry(entryData as any);
 
-      expect(result.id).toBe(2);
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap().id).toBe(2);
       expect(CacheOperations.invalidateAbout).toHaveBeenCalled();
     });
 
     it("should update timeline entry and invalidate cache", async () => {
       const updateData = { title: "Updated" };
-      vi.mocked(pageContentRepository.updateAboutTimelineEntry).mockResolvedValue({
+      vi.mocked(aboutRepository.updateAboutTimelineEntry).mockResolvedValue({
         id: 1,
         year: "2020",
         ...updateData,
@@ -112,16 +101,18 @@ describe("AboutService", () => {
 
       const result = await aboutService.updateTimelineEntry(1, updateData);
 
-      expect(result.title).toBe("Updated");
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap().title).toBe("Updated");
       expect(CacheOperations.invalidateAbout).toHaveBeenCalled();
     });
 
     it("should delete timeline entry and invalidate cache", async () => {
-      vi.mocked(pageContentRepository.deleteAboutTimelineEntry).mockResolvedValue(true);
+      vi.mocked(aboutRepository.deleteAboutTimelineEntry).mockResolvedValue(true);
 
       const result = await aboutService.deleteTimelineEntry(1);
 
-      expect(result).toBe(true);
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap()).toBe(true);
       expect(CacheOperations.invalidateAbout).toHaveBeenCalled();
     });
   });

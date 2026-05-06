@@ -33,8 +33,8 @@ import { Switch } from "@/components/ui/switch";
 import { useCategoryOperationsConsolidated } from "@/hooks/admin/categories/useCategoryOperationsConsolidated";
 
 // New consolidated components
-import { CategoryForm } from "./categories/CategoryForm";
-import { CategoryList } from "./categories/CategoryList";
+import { CategoryForm } from "./CategoryForm";
+import { CategoryList } from "./CategoryList";
 
 export function CategoryManagementSimplified() {
   const {
@@ -505,7 +505,7 @@ export function CategoryManagementSimplified() {
       <CategoryForm
         open={uiState.showCreateDialog || uiState.showEditDialog}
         onClose={closeDialogs}
-        onSubmit={(data) => {
+        onSubmit={(data: any) => {
           if (uiState.editingCategory) {
             handleUpdateCategory(data);
           } else {

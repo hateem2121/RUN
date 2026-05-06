@@ -1,7 +1,7 @@
 import type { HomepageHero, InsertHomepageHero, MediaAsset } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { Eye, EyeOff, Globe, Image as ImageIcon, Play, Save, Zap } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useActionState, useEffect, useOptimistic, useState, useTransition } from "react";
 import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,38 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
   const [isDirty, setIsDirty] = useState(false);
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  // Optimistic state for the broadcast status
+  const [optimisticActive, setOptimisticActive] = useOptimistic(
+    formData.isActive ?? true,
+    (_state, newState: boolean) => newState,
+  );
+
+  // React 19 Action State for the form
+  const [actionState, formAction] = useActionState(
+    async (_prevState: { success: boolean | null; error: string | null }, fData: FormData) => {
+      const data: Partial<InsertHomepageHero> = {
+        title: fData.get("title") as string,
+        subtitle: fData.get("subtitle") as string,
+        ctaText: fData.get("ctaText") as string,
+        ctaLink: fData.get("ctaLink") as string,
+        isActive: fData.get("isActive") === "on",
+        backgroundImageId: fData.get("backgroundImageId")
+          ? Number(fData.get("backgroundImageId"))
+          : undefined,
+      };
+
+      try {
+        await updateHomepageHero.mutateAsync(data);
+        setIsDirty(false);
+        return { success: true, error: null };
+      } catch (error: any) {
+        return { success: false, error: error.message as string };
+      }
+    },
+    { success: null, error: null } as { success: boolean | null; error: string | null },
+  );
 
   const { data: mediaAssets = [] } = useQuery<MediaAsset[]>({
     queryKey: ["/api/media-assets"],
@@ -48,12 +80,12 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setIsDirty(true);
-  };
 
-  const handleSave = () => {
-    updateHomepageHero.mutate(formData, {
-      onSuccess: () => setIsDirty(false),
-    });
+    if (field === "isActive") {
+      startTransition(() => {
+        setOptimisticActive(value as boolean);
+      });
+    }
   };
 
   const handleMediaSelect = (assets: MediaAsset | MediaAsset[]) => {
@@ -70,7 +102,8 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
 
   return (
     <TabsContent value="hero" className="mt-0 focus-visible:outline-none outline-none">
-      <div className="space-y-6">
+      <form action={formAction} className="space-y-6">
+        <input type="hidden" name="backgroundImageId" value={formData.backgroundImageId || ""} />
         <GlassCard className="p-8">
           <div className="mb-8 flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -88,6 +121,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
             </div>
             <div className="flex items-center gap-3">
               <Button
+                type="button"
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowPreview(!showPreview)}
@@ -98,16 +132,16 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                 {showPreview ? "Hide Preview" : "Show Preview"}
               </Button>
               <Button
-                onClick={handleSave}
-                disabled={!isDirty || updateHomepageHero.isPending}
+                type="submit"
+                disabled={!isDirty || isPending}
                 className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-8 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none border-0"
               >
-                {updateHomepageHero.isPending ? (
+                {isPending ? (
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white" />
                 ) : (
                   <Save className="h-4 w-4 mr-2" />
                 )}
-                {updateHomepageHero.isPending ? "Syncing..." : "Sync Hero"}
+                {isPending ? "Syncing..." : "Sync Hero"}
               </Button>
             </div>
           </div>
@@ -124,6 +158,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                   </Label>
                   <Input
                     id="title"
+                    name="title"
                     value={formData.title || ""}
                     onChange={(e) => handleChange("title", e.target.value)}
                     className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-blue-500/50 placeholder:text-white/20"
@@ -143,6 +178,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                   </Label>
                   <Input
                     id="subtitle"
+                    name="subtitle"
                     value={formData.subtitle || ""}
                     onChange={(e) => handleChange("subtitle", e.target.value)}
                     className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-blue-500/50 placeholder:text-white/20"
@@ -165,6 +201,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                     </Label>
                     <Input
                       id="ctaText"
+                      name="ctaText"
                       value={formData.ctaText || ""}
                       onChange={(e) => handleChange("ctaText", e.target.value)}
                       className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50 placeholder:text-white/20"
@@ -180,6 +217,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                     </Label>
                     <Input
                       id="ctaLink"
+                      name="ctaLink"
                       value={formData.ctaLink || ""}
                       onChange={(e) => handleChange("ctaLink", e.target.value)}
                       className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-blue-500/50 placeholder:text-white/20"
@@ -258,7 +296,8 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
               <div className="flex items-center space-x-3 p-4 rounded-xl border border-white/5 bg-white/[0.02]">
                 <Switch
                   id="isActive"
-                  checked={formData.isActive ?? true}
+                  name="isActive"
+                  checked={optimisticActive}
                   onCheckedChange={(checked) => handleChange("isActive", checked)}
                   className="data-[state=checked]:bg-blue-500"
                 />
@@ -337,7 +376,12 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
           mediaPickerTarget="homepage-hero"
           selectionMode="single"
         />
-      </div>
+        {actionState.error && (
+          <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-500">
+            {actionState.error}
+          </div>
+        )}
+      </form>
     </TabsContent>
   );
 }

@@ -41,9 +41,9 @@ import {
   uploadGltfPackage,
   uploadSingleFile,
 } from "./handlers.js";
-import { createErrorResponse } from "./utils.js";
 import { regularUpload, uploadOptimized, validateMagicNumbers } from "./middleware.js";
 import { getRateLimiterHealth, getRateLimiterStats } from "./rate-limiter-handlers.js";
+import { createErrorResponse } from "./utils.js";
 
 const router: Router = express.Router();
 

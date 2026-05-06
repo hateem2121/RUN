@@ -51,7 +51,10 @@ export default function DeveloperLayout() {
           </div>
         </SidebarBody>
       </Sidebar>
-      <main id="main-content" className="flex-1 overflow-y-auto bg-white dark:bg-neutral-900 p-4 md:p-10 outline-none">
+      <main
+        id="main-content"
+        className="flex-1 overflow-y-auto bg-white dark:bg-neutral-900 p-4 md:p-10 outline-none"
+      >
         <div className="max-w-4xl mx-auto">
           <Outlet />
         </div>

@@ -194,7 +194,7 @@ describe("AuthService", () => {
       const { userRepository } = await import("../../lib/db/repositories/index.js");
       vi.mocked(userRepository.getUserByEmail).mockResolvedValue({
         id: "1",
-        failedLoginAttempts: "4",
+        failedLoginAttempts: 4,
       } as any);
       vi.mocked(userRepository.updateUser).mockResolvedValue({} as any);
 
@@ -203,7 +203,7 @@ describe("AuthService", () => {
       expect(userRepository.updateUser).toHaveBeenCalledWith(
         "1",
         expect.objectContaining({
-          failedLoginAttempts: "5",
+          failedLoginAttempts: 5,
           lockoutUntil: expect.any(Date),
         }),
       );
@@ -231,7 +231,7 @@ describe("AuthService", () => {
       expect(userRepository.updateUser).toHaveBeenCalledWith(
         "1",
         expect.objectContaining({
-          failedLoginAttempts: "0",
+          failedLoginAttempts: 0,
           lockoutUntil: null,
         }),
       );
@@ -500,7 +500,7 @@ describe("AuthService", () => {
       const { userRepository } = await import("../../lib/db/repositories/index.js");
       vi.mocked(userRepository.getUserByEmail).mockResolvedValue({
         id: "1",
-        failedLoginAttempts: "3",
+        failedLoginAttempts: 3,
       } as any);
 
       const attempts = await authService.getFailedAttempts("test@example.com");
@@ -621,7 +621,7 @@ describe("AuthService", () => {
       expect(userRepository.updateUser).toHaveBeenCalledWith(
         "1",
         expect.objectContaining({
-          failedLoginAttempts: "1",
+          failedLoginAttempts: 1,
         }),
       );
     });

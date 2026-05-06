@@ -23,7 +23,7 @@ export async function submitContactInquiry(data: ContactSubmissionData) {
   }
 
   // 3. reCAPTCHA v3 Validation (PHASE 4 REMEDIATION)
-  const { verifyRecaptcha } = await import("../../../server/lib/security/recaptcha-verify.js");
+  const { verifyRecaptcha } = await import("@run-remix/server/lib/security/recaptcha-verify.js");
   const recaptchaResult = await verifyRecaptcha(validated.recaptchaToken, "server-action");
 
   if (!recaptchaResult.success) {
@@ -34,7 +34,7 @@ export async function submitContactInquiry(data: ContactSubmissionData) {
   try {
     // 3. Insert into Database via Unified Service Layer
     // NOTE: This ensures consistent AES-256-GCM encryption and blind indexing
-    const { inquiryService } = await import("../../../server/services/inquiry-service.js");
+    const { inquiryService } = await import("@run-remix/server/services/inquiry-service.js");
     const result = await inquiryService.createInquiry({
       name: validated.name,
       email: validated.email,

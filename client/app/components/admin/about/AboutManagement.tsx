@@ -1,11 +1,11 @@
-import { AboutHeroTab } from "@/components/admin/about-hero-tab";
-import { AboutLocationsTab } from "@/components/admin/about-locations-tab";
-import { AboutSectionsTab } from "@/components/admin/about-sections-tab";
-import { AboutStatisticsTab } from "@/components/admin/about-statistics-tab";
-import { AboutTeamMessageTab } from "@/components/admin/about-team-message-tab";
-import { AboutTimelineTab } from "@/components/admin/about-timeline-tab";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AboutHeroTab } from "./about-hero-tab";
+import { AboutLocationsTab } from "./about-locations-tab";
+import { AboutSectionsTab } from "./about-sections-tab";
+import { AboutStatisticsTab } from "./about-statistics-tab";
+import { AboutTeamMessageTab } from "./about-team-message-tab";
+import { AboutTimelineTab } from "./about-timeline-tab";
 
 export function AboutManagement() {
   return (
