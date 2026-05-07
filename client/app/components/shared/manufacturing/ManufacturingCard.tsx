@@ -1,9 +1,8 @@
-import { gsap } from "@/lib/gsap";
 import type React from "react";
 import { useEffect, useRef } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { gsap } from "@/lib/gsap";
 
 interface ManufacturingCardProps {
   children: React.ReactNode;

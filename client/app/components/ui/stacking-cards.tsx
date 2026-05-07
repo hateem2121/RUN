@@ -1,10 +1,10 @@
-import { gsap, useGSAP } from "@/lib/gsap";
 import type { AboutSection, MediaAsset } from "@shared/index";
 import { useRef } from "react";
 import { IconWrapper } from "@/components/ui/icon-wrapper";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import { useIsMobile } from "@/hooks/use-is-mobile";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-is-mobile";
+import { gsap, useGSAP } from "@/lib/gsap";
 
 interface StackingCard {
   title: string;

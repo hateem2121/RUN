@@ -1,4 +1,3 @@
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { lazy, Suspense, useRef, useState } from "react";
 import { isRouteErrorResponse, useRouteError } from "react-router";
 import { Hero } from "@/components/homepage/Hero";
@@ -6,6 +5,7 @@ import { Preloader } from "@/components/homepage/Preloader";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { useHomepageData } from "@/hooks/use-homepage-data";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 
 // Lazy Load Heavy Components (Below Fold)
 const Categories = lazy(() =>
@@ -27,7 +27,6 @@ const Stats = lazy(() => import("@/components/homepage/Stats").then((m) => ({ de
 const Values = lazy(() =>
   import("@/components/homepage/Values").then((m) => ({ default: m.Values })),
 );
-
 
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { useLoaderData } from "react-router";

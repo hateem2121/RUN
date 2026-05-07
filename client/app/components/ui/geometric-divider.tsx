@@ -1,5 +1,5 @@
-import { gsap, useGSAP } from "@/lib/gsap";
 import { useRef } from "react";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 interface GeometricDividerProps {

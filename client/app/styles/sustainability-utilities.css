@@ -24,7 +24,12 @@
 }
 
 @utility animated-gradient-border {
-  background: linear-gradient(90deg, var(--color-sustainability-primary), var(--color-sustainability-accent), var(--color-sustainability-primary));
+  background: linear-gradient(
+    90deg,
+    var(--color-sustainability-primary),
+    var(--color-sustainability-accent),
+    var(--color-sustainability-primary)
+  );
   background-size: 200% 100%;
   animation: gradientShift 4s ease infinite;
 }

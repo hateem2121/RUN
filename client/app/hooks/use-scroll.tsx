@@ -1,7 +1,7 @@
-import { gsap, ScrollTrigger } from "@/lib/gsap";
 import LocomotiveScroll from "locomotive-scroll";
 import type React from "react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 interface SmoothScrollOptions {
   lerp?: number;

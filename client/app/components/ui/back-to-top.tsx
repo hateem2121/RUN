@@ -7,7 +7,10 @@ import { cn } from "@/lib/utils";
 const ROUTE_ACCENT_MAP: Record<string, { bg: string; hover: string }> = {
   "/manufacturing": { bg: "bg-manufacturing-accent", hover: "hover:bg-manufacturing-accent/90" },
   "/technology": { bg: "bg-technology-accent", hover: "hover:bg-technology-accent/90" },
-  "/sustainability": { bg: "bg-sustainability-primary", hover: "hover:bg-sustainability-primary/90" },
+  "/sustainability": {
+    bg: "bg-sustainability-primary",
+    hover: "hover:bg-sustainability-primary/90",
+  },
 };
 
 const DEFAULT_ACCENT = { bg: "bg-manufacturing-accent", hover: "hover:bg-manufacturing-accent/90" };

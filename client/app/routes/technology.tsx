@@ -1,4 +1,3 @@
-import { gsap, useGSAP } from "@/lib/gsap";
 import type {
   MediaAsset,
   TechnologyCta as TechnologyCtaType,
@@ -8,6 +7,15 @@ import type {
   TechnologyResearch,
   TechnologyRoadmap,
 } from "@shared/index";
+// Import shared ViewModels
+import type {
+  CtaVM,
+  EquipmentVM,
+  HeroVM,
+  InnovationVM,
+  ResearchVM,
+  RoadmapVM,
+} from "@shared/viewmodels";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import React, { useRef } from "react";
 import { useLoaderData } from "react-router";
@@ -19,19 +27,9 @@ import { TechnologyStackSection } from "@/components/technology/TechnologyStackS
 import { MarqueeStrip } from "@/components/ui/marquee-strip";
 import { Typography } from "@/components/ui/typography";
 import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/technology";
-
-
-// Import shared ViewModels
-import type {
-  CtaVM,
-  EquipmentVM,
-  HeroVM,
-  InnovationVM,
-  ResearchVM,
-  RoadmapVM,
-} from "@shared/viewmodels";
 
 export async function loader() {
   const queryClient = getQueryClient();

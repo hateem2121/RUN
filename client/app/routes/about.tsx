@@ -1,9 +1,7 @@
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
-import type { AboutBatchResponse } from "@shared/index";
 import { ABOUT_API } from "@shared/api-constants";
+import type { AboutBatchResponse } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { MessageSquare } from "lucide-react";
-
 import { useRef } from "react";
 import { isRouteErrorResponse, useLoaderData, useRouteError } from "react-router";
 import { HeroSection } from "@/components/sections/HeroSection";
@@ -16,6 +14,7 @@ import { StackingCards } from "@/components/ui/stacking-cards";
 import { Timeline } from "@/components/ui/timeline";
 import { Typography } from "@/components/ui/typography";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useMediaResolver } from "@/lib/media-resolver";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { resolveIcon } from "@/utils/icon-resolver";

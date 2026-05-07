@@ -1,7 +1,7 @@
-import { gsap, useGSAP } from "@/lib/gsap";
 import type { ManufacturingProcess, MediaAsset } from "@shared/index";
 import { useRef } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 interface ProductionBlueprintProps {

@@ -114,10 +114,7 @@ export const Hero: React.FC = () => {
   );
 
   return (
-    <section
-      ref={containerRef}
-      className="bg-background relative h-screen w-full overflow-hidden"
-    >
+    <section ref={containerRef} className="bg-background relative h-screen w-full overflow-hidden">
       {/* 
         CSS Gradient Background 
         Replaces the R3F Canvas with a performant CSS animation.

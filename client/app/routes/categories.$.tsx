@@ -3,16 +3,15 @@
  * Implements React 19 standards, Native CSS Scroll Snap, and Optimistic UI.
  */
 
-import { gsap, useGSAP } from "@/lib/gsap";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { AlertCircle, Check, Heart, Ruler, Share2, ShoppingBag } from "lucide-react";
-
 import { useEffect, useOptimistic, useRef, useState, useTransition } from "react";
 import { Link, useLoaderData, useParams } from "react-router";
 import { ProductBreadcrumbs } from "@/components/products/ProductBreadcrumbs";
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Typography } from "@/components/ui/typography";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 import {

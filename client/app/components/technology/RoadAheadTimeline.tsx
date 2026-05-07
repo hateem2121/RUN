@@ -1,6 +1,6 @@
 import type { ResearchVM, RoadmapVM } from "@shared/viewmodels";
-import { gsap } from "@/lib/gsap";
 import React from "react";
+import { gsap } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 interface RoadAheadTimelineProps {

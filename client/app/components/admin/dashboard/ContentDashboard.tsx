@@ -227,7 +227,7 @@ export function ContentDashboard() {
               key={card.label}
               variant="glass-premium"
               interactive
-              className="group relative flex min-h-[140px] flex-col justify-between"
+              className="group relative flex min-h-dashboard-card flex-col justify-between"
             >
               <Link to={card.route} className="flex h-full flex-col justify-between p-5">
                 {card.badge && (
@@ -239,7 +239,7 @@ export function ContentDashboard() {
                   <div
                     className={`flex h-8 w-8 items-center justify-center rounded ${card.iconColor}`}
                   >
-                    <card.icon className="h-[18px] w-[18px]" />
+                    <card.icon className="size-icon-admin" />
                   </div>
                   <h3 className="text-sm font-semibold transition-colors group-hover:text-blue-500">
                     {card.label}

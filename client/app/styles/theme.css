@@ -104,15 +104,15 @@
     /* Manufacturing - Dark Mode */
     --color-manufacturing-bg: #0a0a0a;
     --color-manufacturing-card: #121212;
-    --color-manufacturing-accent: #D4A853;
+    --color-manufacturing-accent: #d4a853;
     --color-manufacturing-head: #ffffff;
     --color-manufacturing-body: #e3dfd6;
     --color-manufacturing-muted: #68869a;
 
     /* Technology - Dark Mode */
-    --color-technology-primary: #0047AB;
-    --color-technology-accent: #00D4FF;
-    --color-technology-bg: #0A0A0A;
+    --color-technology-primary: #0047ab;
+    --color-technology-accent: #00d4ff;
+    --color-technology-bg: #0a0a0a;
     --color-technology-card: #121212;
     --color-technology-head: #ffffff;
     --color-technology-body: #e3dfd6;
@@ -184,14 +184,14 @@
   /* Manufacturing Perfection System */
   --color-manufacturing-bg: #fdf2f0;
   --color-manufacturing-card: #ffffff;
-  --color-manufacturing-accent: #D4A853;
+  --color-manufacturing-accent: #d4a853;
   --color-manufacturing-head: #1a1a1a;
   --color-manufacturing-body: #4a4a4a;
   --color-manufacturing-muted: #6b7280;
 
   /* Technology System */
-  --color-technology-primary: #0047AB;
-  --color-technology-accent: #00D4FF;
+  --color-technology-primary: #0047ab;
+  --color-technology-accent: #00d4ff;
   --color-technology-bg: #ffffff;
   --color-technology-card: #f8fafc;
   --color-technology-head: #0f172a;
@@ -288,7 +288,8 @@
 
   --spacing-container: 1280px;
   --container-2xl: 1600px;
-  --width-sidebar: 140px;
+  --max-width-search-modal: 640px;
+  --width-sidebar: 240px;
   --width-dock-item: 140px;
   --spacing-admin-dialog-offset: 52px;
 
@@ -309,15 +310,19 @@
   --height-loading-content: 50vh;
   --min-height-value-card: 400px;
   --min-height-process-card: 60vh;
+  --min-height-admin-error: 60vh;
+  --min-height-settings-card: 400px;
+  --min-height-dashboard-card: 140px;
 
   /* Width Tokens (for arbitrary value replacement) */
-  --width-sidebar-collapsed: 60px;
-  --width-sidebar-expanded: 300px;
+  --width-sidebar-collapsed: 64px;
+  --width-sidebar-expanded: 240px;
   --width-sheet-sm: 320px;
   --width-sheet-md: 400px;
   --width-sheet-lg: 540px;
   --max-width-toast: 420px;
   --width-icon-sm: 1.2rem;
+  --size-icon-admin: 18px;
   --min-width-thumbnail: 80px;
   --min-width-label: 140px;
 

@@ -113,7 +113,12 @@
 
 /** Progress bar gradient */
 @utility bg-gradient-manufacturing-progress {
-  background: linear-gradient(to right, transparent, var(--color-manufacturing-accent), var(--color-manufacturing-accent));
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-manufacturing-accent),
+    var(--color-manufacturing-accent)
+  );
 }
 
 /** Horizontal line gradient */
@@ -128,12 +133,21 @@
 
 /** Overlay gradient for images */
 @utility bg-gradient-manufacturing-overlay {
-  background: linear-gradient(to top, var(--color-manufacturing-bg), rgba(10, 10, 10, 0.2), transparent);
+  background: linear-gradient(
+    to top,
+    var(--color-manufacturing-bg),
+    rgba(10, 10, 10, 0.2),
+    transparent
+  );
 }
 
 /** Surface gradient for cards */
 @utility bg-gradient-manufacturing-surface {
-  background: linear-gradient(to bottom right, var(--color-manufacturing-card), var(--color-manufacturing-bg));
+  background: linear-gradient(
+    to bottom right,
+    var(--color-manufacturing-card),
+    var(--color-manufacturing-bg)
+  );
 }
 
 /* ===========================================

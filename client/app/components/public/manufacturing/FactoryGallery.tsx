@@ -109,9 +109,7 @@ export function FactoryGallery() {
 
           <div className="flex flex-col items-center justify-center pointer-events-none md:pointer-events-auto">
             <div className="flex items-center space-x-2 text-white font-mono text-sm border-l-4 border-manufacturing-accent px-4 py-2 bg-black/80 backdrop-blur-sm skew-x-[-12deg] shadow-lg shadow-manufacturing-accent/10">
-              <span className="text-manufacturing-accent animate-pulse font-black italic">
-                ●
-              </span>
+              <span className="text-manufacturing-accent animate-pulse font-black italic">●</span>
               <span className="tracking-widest font-black italic text-manufacturing-accent text-lg">
                 0{currentIndex} / 0{totalSlides}
               </span>

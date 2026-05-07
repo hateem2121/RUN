@@ -180,7 +180,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* Sidebar */}
       <aside
         className={`flex flex-shrink-0 flex-col border-r border-white/10 bg-admin-surface transition-[width] duration-200 ease-in-out ${
-          sidebarOpen ? "w-[240px]" : "w-[64px]"
+          sidebarOpen ? "w-sidebar-expanded" : "w-sidebar-collapsed"
         }`}
       >
         {/* Sidebar Header — Logo + Toggle */}

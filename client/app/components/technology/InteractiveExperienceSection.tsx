@@ -1,10 +1,10 @@
 import type { MediaAsset } from "@shared/index";
-import { gsap } from "@/lib/gsap";
 import { Box, Loader2 } from "lucide-react";
 import React from "react";
 import { ModelViewerErrorBoundary } from "@/components/ui/ModelViewerErrorBoundary";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Typography } from "@/components/ui/typography";
+import { gsap } from "@/lib/gsap";
 import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
 import { useIntersectionObserver } from "@/lib/performance-intersection-observer";
 import { cn } from "@/lib/utils";

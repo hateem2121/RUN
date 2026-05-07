@@ -1,16 +1,10 @@
-import { type InsertInquiry, insertInquirySchema } from "@run-remix/shared";
+import { addInquiryLogSchema, type InsertInquiry, insertInquirySchema } from "@run-remix/shared";
 import express from "express";
-import { z } from "zod";
 import { inquiryService } from "../../services/inquiry-service.js";
 
 const router = express.Router();
 
 const updateInquirySchema = insertInquirySchema.partial();
-
-const addLogSchema = z.object({
-  action: z.string().min(1).max(100),
-  note: z.string().min(1).max(2000),
-});
 
 router.get("/admin/inquiries", async (req, res) => {
   const page = parseInt(req.query.page as string, 10) || 1;
@@ -77,9 +71,13 @@ router.post("/admin/inquiries/:id/logs", async (req, res) => {
     return res.status(400).json({ error: "Invalid inquiry ID" });
   }
 
-  const validatedData = addLogSchema.parse(req.body);
+  const validation = addInquiryLogSchema.safeParse(req.body);
+  if (!validation.success) {
+    return res.status(400).json({ error: validation.error.issues });
+  }
+
   const updated = await inquiryService.addCrmLog(id, {
-    ...validatedData,
+    ...validation.data,
     user: (req as unknown as { user?: { email?: string } }).user?.email || "Admin",
   });
 

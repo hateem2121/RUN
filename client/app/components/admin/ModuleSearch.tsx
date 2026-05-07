@@ -55,7 +55,7 @@ export function ModuleSearch({ links }: ModuleSearchProps) {
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="overflow-hidden p-0 shadow-2xl sm:max-w-[640px] border border-white/[0.08] bg-surface-black/80 backdrop-blur-xl [&>button]:text-white [&>button]:hover:bg-white/10">
+        <DialogContent className="overflow-hidden p-0 shadow-2xl sm:max-w-search-modal border border-white/[0.08] bg-surface-black/80 backdrop-blur-xl [&>button]:text-white [&>button]:hover:bg-white/10">
           <DialogTitle className="sr-only">Command Palette</DialogTitle>
           <Command className="bg-transparent text-white [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
             <CommandInput

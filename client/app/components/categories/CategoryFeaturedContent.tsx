@@ -1,4 +1,3 @@
-import { gsap, useGSAP } from "@/lib/gsap";
 import { Component, lazy, type ReactNode, Suspense, useRef } from "react";
 import { BentoCardContainer } from "@/components/ui/BentoCardContainer";
 import { ExpandableCard } from "@/components/ui/bento-cards/expandable-card";
@@ -7,6 +6,7 @@ import { SvgMaskCard } from "@/components/ui/bento-cards/svg-mask-card";
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Typography } from "@/components/ui/typography";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { isModelUrl } from "@/lib/media-type-detector";
 import { getResponsiveSpanClasses } from "@/lib/responsive-grid";
 import { cn } from "@/lib/utils";

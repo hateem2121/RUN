@@ -1,9 +1,8 @@
-import { gsap, useGSAP } from "@/lib/gsap";
 import type { SustainabilityGoal } from "@shared/index";
 import { useMemo, useRef } from "react";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { calculateGoalProgress } from "@/lib/sustainability-utils";
 import { cn } from "@/lib/utils";
-
 
 interface GoalsSectionProps {
   goals: SustainabilityGoal[];

@@ -248,6 +248,27 @@
   box-shadow: 0 0 30px rgba(239, 68, 68, 0.1);
 }
 
+@utility min-h-admin-error {
+  min-height: var(--min-height-admin-error);
+}
+
+@utility max-w-search-modal {
+  max-width: var(--max-width-search-modal);
+}
+
+@utility min-h-settings-card {
+  min-height: var(--min-height-settings-card);
+}
+
+@utility min-h-dashboard-card {
+  min-height: var(--min-height-dashboard-card);
+}
+
+@utility size-icon-admin {
+  width: var(--size-icon-admin);
+  height: var(--size-icon-admin);
+}
+
 /* =========================================
    AntiGravity Premium: Aurora & Mesh Gradients
    ========================================= */
@@ -976,7 +997,6 @@
    DARK:  Primary #00C97B (emerald), bg #0A0A0A
    LIGHT: Primary #1A4331 (forest green), bg #F9FAF9
    ========================================= */
-
 
 /* Named float animations — matching Stitch animate-bob-1/2/3/4 */
 @utility animate-bob-1 {

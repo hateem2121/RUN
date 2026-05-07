@@ -77,7 +77,8 @@ export function SimpleMapContainer({ locations, className = "" }: SimpleMapConta
           return;
         }
 
-        const color = location.type === "facility" ? "var(--color-status-success)" : "var(--color-status-info)";
+        const color =
+          location.type === "facility" ? "var(--color-status-success)" : "var(--color-status-info)";
 
         const icon = L.divIcon({
           className: "custom-map-marker",

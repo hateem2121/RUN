@@ -4,10 +4,10 @@
  */
 
 import express from "express";
-import { z } from "zod";
 import {
   insertNavigationGlassmorphismSettingsSchema,
   insertNavigationItemSchema,
+  navigationReorderSchema,
 } from "../../../shared/index.js";
 import { ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
@@ -95,10 +95,7 @@ router.patch(
   authService.requireAdmin,
   async (req, res, next) => {
     const { items } = req.body;
-    const reorderSchema = z.object({
-      items: z.array(z.object({ id: z.number(), sortOrder: z.number() })),
-    });
-    const validation = reorderSchema.safeParse({ items });
+    const validation = navigationReorderSchema.safeParse({ items });
 
     if (!validation.success) {
       return next(new ValidationError("Invalid reorder data", { issues: validation.error.issues }));

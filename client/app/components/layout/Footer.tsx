@@ -1,13 +1,12 @@
 import type { ContactPageConfiguration, FooterConfiguration } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { cva } from "class-variance-authority";
-import { gsap } from "@/lib/gsap";
 import type React from "react";
 import { useEffect, useRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { gsap } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 import { FooterInquiryForm } from "./FooterInquiryForm";
-
 
 /**
  * Footer - Command Center style footer with:

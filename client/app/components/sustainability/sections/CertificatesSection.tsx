@@ -1,7 +1,7 @@
-import { gsap, useGSAP } from "@/lib/gsap";
 import type { Certificate } from "@shared/schemas/catalog";
 import { CheckCircle } from "lucide-react";
 import { useRef } from "react";
+import { gsap, useGSAP } from "@/lib/gsap";
 
 interface CertificatesSectionProps {
   certificates: Certificate[];

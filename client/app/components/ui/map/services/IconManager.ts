@@ -71,7 +71,10 @@ class IconManagerService {
 
     const { size, type } = config;
     const color = type === "client" ? "var(--color-status-info)" : "var(--color-status-success)";
-    const shadowColor = type === "client" ? "color-mix(in srgb, var(--color-status-info) 40%, transparent)" : "color-mix(in srgb, var(--color-status-success) 40%, transparent)";
+    const shadowColor =
+      type === "client"
+        ? "color-mix(in srgb, var(--color-status-info) 40%, transparent)"
+        : "color-mix(in srgb, var(--color-status-success) 40%, transparent)";
 
     const icon = new DivIcon({
       className: `fallback-marker ${type}-fallback`,

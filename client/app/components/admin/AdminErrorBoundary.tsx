@@ -17,7 +17,7 @@ export function AdminErrorBoundary() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center bg-background border rounded-lg shadow-sm border-destructive/20 m-4">
+    <div className="flex flex-col items-center justify-center min-h-admin-error p-8 text-center bg-background border rounded-lg shadow-sm border-destructive/20 m-4">
       <div className="p-4 rounded-full bg-destructive/10 mb-6 text-destructive">
         <AlertCircle size={48} />
       </div>

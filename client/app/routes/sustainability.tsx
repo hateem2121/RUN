@@ -1,4 +1,3 @@
-import { gsap, useGSAP } from "@/lib/gsap";
 import type { MediaAsset, SustainabilityBatchResponse } from "@shared/index";
 import type { Certificate } from "@shared/schemas/catalog";
 import type {
@@ -8,12 +7,10 @@ import type {
 } from "@shared/schemas/content/sustainability";
 import type { Fabric } from "@shared/schemas/materials";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
-
 import { ArrowRight, Download } from "lucide-react";
 import { useMemo, useRef } from "react";
 import { isRouteErrorResponse, Link, useLoaderData, useRouteError } from "react-router";
 import { SEOMeta } from "@/components/seo/seo-meta";
-
 import {
   CertificatesSection,
   FabricPortfolioSection,
@@ -24,11 +21,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { MarqueeStrip } from "@/components/ui/marquee-strip";
 import { Typography } from "@/components/ui/typography";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { apiRequest, batchFetchMediaContent, getQueryClient } from "@/lib/queryClient";
 import { getSustainabilityIcon } from "@/lib/sustainability-utils";
 import { cn } from "@/lib/utils";
 import type { Route } from "./+types/sustainability";
-
 
 export async function loader() {
   const queryClient = getQueryClient();
@@ -96,9 +93,7 @@ function HeroHeadline({ text }: { text: string }) {
         <span className="italic text-sustainability-primary">{wovenWord}</span>{" "}
         <span className="text-sustainability-head">{intoWord}</span>
       </span>
-      <span className="hero-line self-start pl-8 md:pl-16 text-sustainability-head">
-        {line3}
-      </span>
+      <span className="hero-line self-start pl-8 md:pl-16 text-sustainability-head">{line3}</span>
     </h1>
   );
 }
@@ -237,9 +232,7 @@ function ImpactCounterCard({ name, value, unit, description, iconName }: ImpactC
         {name}
       </p>
       {description && (
-        <p className="text-sm text-sustainability-muted leading-relaxed mt-2">
-          {description}
-        </p>
+        <p className="text-sm text-sustainability-muted leading-relaxed mt-2">{description}</p>
       )}
     </article>
   );
@@ -519,8 +512,10 @@ function SustainabilityInner() {
           <div
             className="hero-esg mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 backdrop-blur-sm"
             style={{
-              borderColor: "color-mix(in srgb, var(--color-sustainability-primary) 30%, transparent)",
-              backgroundColor: "color-mix(in srgb, var(--color-sustainability-primary) 10%, transparent)",
+              borderColor:
+                "color-mix(in srgb, var(--color-sustainability-primary) 30%, transparent)",
+              backgroundColor:
+                "color-mix(in srgb, var(--color-sustainability-primary) 10%, transparent)",
             }}
           >
             <span className="relative flex h-2 w-2">
@@ -622,9 +617,13 @@ function SustainabilityInner() {
                 className="font-neue-stance text-3xl font-bold md:text-5xl"
                 style={{ color: "var(--color-sustainability-head)" }}
               >
-                Engineered for <span style={{ color: "var(--color-sustainability-primary)" }}>Impact</span>
+                Engineered for{" "}
+                <span style={{ color: "var(--color-sustainability-primary)" }}>Impact</span>
               </Typography.H2>
-              <Typography.P className="max-w-2xl" style={{ color: "var(--color-sustainability-muted)" }}>
+              <Typography.P
+                className="max-w-2xl"
+                style={{ color: "var(--color-sustainability-muted)" }}
+              >
                 {featuresData?.description || metricsDescription}
               </Typography.P>
             </div>
@@ -720,8 +719,7 @@ function SustainabilityInner() {
             <div className="container mx-auto px-6 lg:px-10 mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
               <div>
                 <Typography.H2 className="font-neue-stance text-3xl font-bold text-sustainability-head mb-2">
-                  Sustainable{" "}
-                  <span className="text-sustainability-primary">Material Library</span>
+                  Sustainable <span className="text-sustainability-primary">Material Library</span>
                 </Typography.H2>
                 <Typography.P className="text-sustainability-muted">
                   {fabricPortfolioData.description || "Browse our top-rated eco-fabrics."}

@@ -1,5 +1,8 @@
 // Export common utilities
 
+// Export API-specific contract schemas
+export * from "./api/inquiry";
+export * from "./api/navigation";
 export * from "./blog";
 export * from "./catalog";
 export * from "./categories";

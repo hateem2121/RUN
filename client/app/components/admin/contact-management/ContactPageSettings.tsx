@@ -175,7 +175,7 @@ export function ContactPageSettings() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl">
+      <div className="flex min-h-settings-card items-center justify-center rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl">
         <div className="flex flex-col items-center gap-4">
           <div className="size-8 animate-spin rounded-full border-4 border-white/10 border-t-blue-500" />
           <p className="text-admin-muted text-sm font-bold tracking-wider uppercase">

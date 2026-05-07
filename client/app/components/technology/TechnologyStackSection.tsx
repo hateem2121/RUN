@@ -1,8 +1,8 @@
-import { gsap, useGSAP } from "@/lib/gsap";
 import type { MediaAsset } from "@shared/index";
 import type { EquipmentVM, InnovationVM } from "@shared/viewmodels";
 import React from "react";
 import { OptimizedImage } from "@/components/ui/optimized-image";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 type FilterTab = "all" | "innovations" | "equipment";

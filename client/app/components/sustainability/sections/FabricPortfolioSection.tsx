@@ -1,9 +1,9 @@
-import { gsap, useGSAP } from "@/lib/gsap";
 import type { MediaAsset } from "@shared/index";
 import type { Fabric } from "@shared/schemas/materials";
 import { useQuery } from "@tanstack/react-query";
 import { Leaf, RotateCw } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 
