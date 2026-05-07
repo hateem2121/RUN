@@ -28,7 +28,7 @@ export class WebhookService {
       const subscriptions = await webhookRepository.getWebhookSubscriptions();
 
       const activeSubs = subscriptions.filter(
-        (sub) => sub.isActive === "Y" && (sub.events as unknown as string[]).includes(event),
+        (sub) => sub.isActive === true && (sub.events as unknown as string[]).includes(event),
       );
 
       if (activeSubs.length === 0) {

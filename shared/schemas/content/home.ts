@@ -241,7 +241,7 @@ export const insertHomepageProcessCardSchema = z.object({
 });
 
 export const insertHomepageSectionSchema = z.object({
-  sectionName: z.string().min(1),
+  name: z.string().min(1),
   content: z.string().optional(),
   isActive: z.boolean().optional(),
 });

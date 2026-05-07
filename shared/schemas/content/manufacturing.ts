@@ -8,6 +8,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
+import { certificates } from "../catalog";
 import { pgTable } from "../common";
 import { mediaAssets } from "../media";
 
@@ -132,7 +133,9 @@ export const manufacturingQualities = pgTable(
     imageId: integer("image_id").references(() => mediaAssets.id, {
       onDelete: "set null",
     }),
-    certificateId: integer("certificate_id"),
+    certificateId: integer("certificate_id").references(() => certificates.id, {
+      onDelete: "set null",
+    }),
     category: varchar("category", { length: 100 }),
     testingMethod: varchar("testing_method", { length: 255 }),
     frequency: varchar("frequency", { length: 100 }),

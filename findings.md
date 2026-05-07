@@ -209,3 +209,39 @@
 
 ---
 **Verified by Antigravity - May 6, 2026**
+
+## Database & Schema Layer Audit (Session: 2026-05-06)
+
+### Findings Overview
+
+### 🟢 Resolved Findings (Remediated 2026-05-06)
+
+*   **DS-002: Orphaned FK in Manufacturing** -> RESOLVED (Added FK reference to certificates).
+*   **DS-003: Missing onDelete behavior in Blog** -> RESOLVED (Added set null/restrict policies).
+*   **DS-004: Type Drift (isActive)** -> RESOLVED (Converted to boolean and updated Zod).
+*   **DS-005: SSOT Violation (Local Zod Schemas)** -> RESOLVED (Migrated to @run-remix/shared).
+*   **DS-007: Migration Hygiene** -> RESOLVED (Consolidated manual SQL into Drizzle schema).
+*   **DS-008: Property Naming Mismatch** -> RESOLVED (Standardized on 'name' in Home sections).
+
+### 🟡 Outstanding Observations
+
+*   **DS-006: JSONB ID Arrays**: Remains as an architectural "intended flexibility" with documented risk of orphaned IDs.
+*   **DS-009: Protocol Choice**: Using WebSocket (Pool) for transactions instead of HTTP-only for serverless. [x] VERIFIED
+*   **DS-010: Connection Security**: Port 5002 enforced via centralized env schema. [x] VERIFIED
+
+### Detailed Analysis
+
+#### DS-002: Orphaned FK in Manufacturing Qualities
+The `manufacturing_qualities` table defines `certificateId` as an `integer` but lacks a `.references(() => certificates.id)` call in `shared/schemas/content/manufacturing.ts`. This allows invalid IDs to be stored.
+
+#### DS-003: Missing onDelete behavior in Blog Posts
+In `shared/schemas/blog.ts`, foreign keys for `featuredImageId`, `categoryId`, and `authorId` do not specify `onDelete`. This defaults to `NO ACTION`, which may prevent deletion of users or categories. Recommended: `set null` for images/categories and `restrict` for authors.
+
+#### DS-005: Local Zod Schema Redundancy
+Hand-written Zod schemas were found in `server/routes/utilities/newsletter.ts` and `server/routes/utilities/inquiry-admin.ts` that duplicate logic already present in `@run-remix/shared` (via `insertNewsletterSubscriberSchema` and `insertInquirySchema`).
+
+#### DS-006: JSONB ID Arrays
+Several tables (e.g., `unified_sustainability`, `products`, `about_sections`) use `jsonb().$type<number[]>()` to store related entity IDs (certificates, media). While flexible, this prevents the database from enforcing referential integrity, increasing the risk of orphaned IDs.
+
+#### DS-009: WebSocket Connection Strategy
+The application explicitly uses `@neondatabase/serverless` `Pool` with WebSocket (via `ws` constructor) in `server/db.ts`. This is a deliberate choice to support interactive transactions (`db.transaction()`), which are not natively supported by the HTTP-only driver. Connection pooling is optimized with `idleTimeoutMillis: 10000` for serverless environments.

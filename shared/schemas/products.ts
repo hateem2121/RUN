@@ -189,14 +189,21 @@ export const products = pgTable(
     index("products_primary_image_id_idx").on(table.primaryImageId),
     index("products_primary_video_id_idx").on(table.primaryVideoId),
     index("products_model_file_id_idx").on(table.modelFileId),
-    // NOTE: GIN trigram indexes for ILIKE search optimization created via migration:
-    // - products_name_trgm_idx (migrations/optimizations/004_add_trigram_indexes.sql)
-    // - products_description_trgm_idx (migrations/optimizations/004_add_trigram_indexes.sql)
-    // NOTE: GIN indexes for JSONB array containment queries created via migration:
-    // - products_tags_gin_idx (migrations/optimizations/002_add_jsonb_gin_indexes.sql)
-    // - products_certificate_ids_gin_idx (migrations/optimizations/002_add_jsonb_gin_indexes.sql)
-    // - products_accessory_ids_gin_idx (migrations/optimizations/002_add_jsonb_gin_indexes.sql)
-    // - products_image_ids_gin_idx (migrations/optimizations/002_add_jsonb_gin_indexes.sql)
+
+    // CONSOLIDATED OPTIMIZATIONS (DS-007): Moving manual SQL indexes into Drizzle schema
+    // GIN indexes for JSONB array containment queries (@> operator)
+    index("products_tags_gin_idx").using("gin", sql`${table.tags} jsonb_path_ops`),
+    index("products_certificate_ids_gin_idx").using(
+      "gin",
+      sql`${table.certificateIds} jsonb_path_ops`,
+    ),
+    index("products_accessory_ids_gin_idx").using("gin", sql`${table.accessoryIds} jsonb_path_ops`),
+    index("products_image_ids_gin_idx").using("gin", sql`${table.imageIds} jsonb_path_ops`),
+
+    // GIN trigram indexes for ILIKE search optimization (requires pg_trgm extension)
+    index("products_name_trgm_idx").using("gin", sql`${table.name} gin_trgm_ops`),
+    index("products_description_trgm_idx").using("gin", sql`${table.description} gin_trgm_ops`),
+
     // PERFORMANCE FIX: Partial unique index for slug to support soft-delete reuse
     uniqueIndex("products_slug_unique_idx")
       .on(table.slug)

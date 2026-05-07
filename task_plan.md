@@ -95,3 +95,49 @@ Systematically resolve Biome A11Y diagnostics, prune unused code via Knip, and c
   - [x] **Tech Integrity Score: 100/100**
 
 ### Status: [x] ALL REMEDIATION PHASES COMPLETE
+
+## Session: 2026-05-06 (Database & Schema Layer — Full Investigative Audit)
+
+### Objective
+Complete a comprehensive audit of the Drizzle ORM schema, Neon Serverless PostgreSQL connection, migrations, indexes, FK integrity, and Zod generation contract.
+
+### Protocol 0 — Session Bookends
+- [x] START: Read and update `task_plan.md`
+- [x] END: Update `findings.md` and run `npm run verify:tech-integrity`
+
+### B.L.A.S.T. Execution Order
+- [x] **Blueprint**: List files in `shared/schemas/`. Read every Drizzle table definition. Build a complete schema map.
+- [x] **Link**: Verify `drizzle-zod` generated schema re-exports from `@run-remix/shared`. Check for locally-defined schemas in `server/` and `client/`.
+- [x] **Architect**: Read `drizzle.config.ts`. Verify migrations and connection pool settings in `server/db/`.
+- [x] **Stylize**: N/A.
+- [x] **Trigger**: Compile findings and halt.
+
+### Investigation Scope
+- [x] 1. Schema Completeness & Correctness (Types, NOT NULL, PKs, Timestamps, Soft-delete)
+- [x] 2. Foreign Key Integrity (Definitions, onDelete behavior, Orphans)
+- [x] 3. Indexes (WHERE clauses, Unique slugs, Composite, Slow queries)
+- [x] 4. Drizzle-Zod Generation (Insert/Select schemas, No hand-written Zod, Centralized exports)
+- [x] 5. Migrations (Directory, Dialect, Sequential, Committed, No manual SQL)
+- [x] 6. Connection Pool (HTTP/WebSocket, Env vars, Pool size, Error handling, Health status)
+- [x] 7. JSONB & Complex Types (Zod validation, No untyped jsonb, Arrays)
+- [x] 8. Data Consistency (Soft-delete exclusion, DB defaults, UUIDs)
+- [x] 9. Query Health (Connection count, Latency, N+1 check)
+
+### Status: [x] REMEDIATION COMPLETE (2026-05-06)
+
+## Phase 6: Database & Schema Layer Remediation
+
+- [x] **Step B: Blueprint - Schema Hardening**
+  - [x] Fix missing FK references (DS-002).
+  - [x] Standardize `onDelete` behaviors (DS-003).
+  - [x] Resolve type inconsistencies (`isActive`) (DS-004).
+- [x] **Step L: Link - SSOT Implementation**
+  - [x] Migrate local Zod schemas to `@run-remix/shared` (DS-005).
+  - [x] Standardize content property naming (DS-008).
+- [x] **Step A: Architect - Migration Lifecycle**
+  - [x] Generate and verify Drizzle migrations.
+  - [x] Consolidate manual optimizations (DS-007).
+- [x] **Step S: Stylize - Final Verification**
+  - [x] Run `verify:tech-integrity`.
+  - [x] Update `findings.md` to mark DS issues as RESOLVED.
+- [x] **Step T: Trigger - Landing & Deploy**

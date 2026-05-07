@@ -1,15 +1,11 @@
+import { insertNewsletterSubscriberSchema } from "@run-remix/shared";
 import type { Express } from "express";
-import { z } from "zod";
 import { miscRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 
-const NewsletterSchema = z.object({
-  email: z.string().email("Please enter a valid email address."),
-});
-
 export function registerNewsletterRoutes(app: Express): void {
   app.post("/api/newsletter/subscribe", async (req, res) => {
-    const result = NewsletterSchema.safeParse(req.body);
+    const result = insertNewsletterSubscriberSchema.safeParse(req.body);
 
     if (!result.success) {
       return res.status(400).json({

@@ -1,4 +1,4 @@
-import { integer, jsonb, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, integer, jsonb, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import type { Category } from "./categories";
@@ -17,7 +17,7 @@ export const webhookSubscriptions = pgTable("webhook_subscriptions", {
   url: text("url").notNull(),
   secret: varchar("secret", { length: 255 }).notNull(),
   events: jsonb("events").$type<string[]>().notNull(),
-  isActive: varchar("is_active", { length: 1 }).default("Y"), // 'Y' or 'N'
+  isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -52,7 +52,7 @@ export const selectWebhookSubscriptionSchema = createSelectSchema(webhookSubscri
 export const insertWebhookSubscriptionSchema = z.object({
   url: z.string().url(),
   events: z.array(z.string()).min(1),
-  isActive: z.enum(["Y", "N"]).optional(),
+  isActive: z.boolean().optional(),
 });
 
 export const webhookEventNames = [

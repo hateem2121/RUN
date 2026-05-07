@@ -10,3 +10,8 @@ export const newsletterSubscribers = pgTable("newsletter_subscribers", {
 
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
 export type InsertNewsletterSubscriber = typeof newsletterSubscribers.$inferInsert;
+
+// Zod Schemas
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSubscribers);
+export const selectNewsletterSubscriberSchema = createSelectSchema(newsletterSubscribers);

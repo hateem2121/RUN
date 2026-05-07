@@ -23,7 +23,7 @@ export class WebhookRepository {
     return await db
       .select()
       .from(webhookSubscriptions)
-      .where(eq(webhookSubscriptions.isActive, "Y"));
+      .where(eq(webhookSubscriptions.isActive, true));
   }
 
   async getWebhookSubscription(id: number): Promise<WebhookSubscription | undefined> {

@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
   decimal,
@@ -133,6 +134,11 @@ export const accessories = pgTable(
     // PERFORMANCE INDEXES for accessory queries
     index("accessories_sku_idx").on(table.sku),
     index("accessories_is_active_idx").on(table.isActive),
+
+    // CONSOLIDATED OPTIMIZATIONS (DS-007): Trigram indexes for multi-field search
+    index("accessories_name_trgm_idx").using("gin", sql`${table.name} gin_trgm_ops`),
+    index("accessories_description_trgm_idx").using("gin", sql`${table.description} gin_trgm_ops`),
+    index("accessories_sku_trgm_idx").using("gin", sql`${table.sku} gin_trgm_ops`),
   ],
 );
 

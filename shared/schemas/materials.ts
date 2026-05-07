@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
   decimal,
@@ -119,6 +120,8 @@ export const fabrics = pgTable(
     index("fabrics_seasonality_idx").on(table.seasonality),
     index("fabrics_deleted_at_idx").on(table.deletedAt),
     index("fabrics_active_query_idx").on(table.deletedAt, table.isActive),
+    // CONSOLIDATED OPTIMIZATIONS (DS-007): Trigram index for ILIKE search
+    index("fabrics_name_trgm_idx").using("gin", sql`${table.name} gin_trgm_ops`),
   ],
 );
 

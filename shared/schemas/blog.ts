@@ -19,10 +19,14 @@ export const blogPosts = pgTable("blog_posts", {
   slug: text("slug").notNull().unique(),
   content: text("content").notNull(),
   excerpt: text("excerpt"),
-  featuredImageId: integer("featured_image_id").references(() => mediaAssets.id),
-  categoryId: integer("category_id").references(() => blogCategories.id),
+  featuredImageId: integer("featured_image_id").references(() => mediaAssets.id, {
+    onDelete: "set null",
+  }),
+  categoryId: integer("category_id").references(() => blogCategories.id, {
+    onDelete: "set null",
+  }),
   authorId: text("author_id")
-    .references(() => users.id)
+    .references(() => users.id, { onDelete: "restrict" })
     .notNull(),
   status: text("status", { enum: ["draft", "published", "archived"] })
     .default("draft")

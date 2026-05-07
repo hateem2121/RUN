@@ -1,18 +1,11 @@
+import { type InsertInquiry, insertInquirySchema } from "@run-remix/shared";
 import express from "express";
 import { z } from "zod";
 import { inquiryService } from "../../services/inquiry-service.js";
 
 const router = express.Router();
 
-const updateInquirySchema = z.object({
-  status: z.enum(["new", "read", "responded", "archived"]).optional(),
-  adminNotes: z.string().max(1000).optional(),
-  priority: z.enum(["low", "medium", "high", "urgent"]).optional(),
-  crmStage: z.string().max(50).optional(),
-  leadScore: z.number().int().optional(),
-  tags: z.array(z.string()).optional(),
-  assignedTo: z.string().max(100).optional(),
-});
+const updateInquirySchema = insertInquirySchema.partial();
 
 const addLogSchema = z.object({
   action: z.string().min(1).max(100),
@@ -69,7 +62,7 @@ router.patch("/admin/inquiries/:id", async (req, res) => {
   }
 
   const validatedData = updateInquirySchema.parse(req.body);
-  const updated = await inquiryService.updateInquiry(id, validatedData);
+  const updated = await inquiryService.updateInquiry(id, validatedData as Partial<InsertInquiry>);
 
   if (!updated) {
     return res.status(404).json({ error: "Inquiry not found" });
