@@ -193,3 +193,147 @@ Perform a final, read-only comprehensive investigative audit across all three co
 2. [x] Database & Schema Layer (DS-Series)
 3. [x] Design System (GS-Series)
 4. [x] Addressing Outstanding Observations (Phase 4)
+
+## Session: Auth & Session Layer — Full Investigative Audit
+
+### Objective
+Complete, exhaustive audit of the Auth & Session layer — covering Google OAuth flow, Passport.js, Redis session storage, CSRF protection middleware, session security configuration, JWT, and all auth-adjacent routes.
+
+### Protocol 0 — Session Bookends
+- [x] START: Read and update `task_plan.md`
+- [ ] END: Update `findings.md` and run `npm run verify:tech-integrity`
+
+### B.L.A.S.T. Steps
+- [ ] **Blueprint**: Read `server/routes/auth.ts` completely. Map full OAuth flow & session config.
+- [ ] **Link**: Verify `.env` keys in `shared/schemas/env.schema.ts` (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, SESSION_SECRET, Redis strings).
+- [ ] **Architect**: Confirm `mock-login` and `dev/login` are gated. Verify Redis session store.
+- [ ] **Stylize**: N/A
+- [ ] **Trigger**: Do NOT deploy. Run `/cso` after investigation.
+
+### Investigation Scope
+- [ ] 1. Google OAuth Flow
+- [ ] 2. Session Configuration (CRITICAL)
+- [ ] 3. Redis Session Store
+- [ ] 4. CSRF Protection
+- [ ] 5. Mock Login & Dev Login (CRITICAL)
+- [ ] 6. `isAuthenticated` Middleware
+- [ ] 7. Role-Based Access
+- [ ] 8. Token Storage
+- [ ] 9. User Data Endpoint
+- [ ] 10. Observability
+
+### Status: [x] AUDIT COMPLETE (AU-S01 through AU-S07) 🟢 RESOLVED (Remediated 2026-05-07)
+*   **AU-O01: OAuth State Missing** -> RESOLVED (Enabled `state: true` in GoogleStrategy).
+*   **AU-O02: Session Fixation on Login** -> RESOLVED (Implemented `req.session.regenerate()` in all login routes).
+*   **AU-O03: JWT_SECRET Inactive** -> RESOLVED (Removed unused secret and validation logic).
+
+## Phase 9: Auth & Session Layer Remediation (AU-Series)
+
+- [x] **Step 1: OAuth Flow Hardening**
+  - [x] Add `state: true` to GoogleStrategy in `auth-service.ts`.
+- [x] **Step 2: Session Fixation Protection**
+  - [x] Implement `req.session.regenerate()` in `mock-login`.
+  - [x] Implement `req.session.regenerate()` in `google/callback`.
+- [x] **Step 3: Configuration Cleanup**
+  - [x] Remove `JWT_SECRET` from `env.schema.ts`.
+- [x] **Step 4: Final Verification**
+  - [x] Run `npm run verify:tech-integrity`.
+  - [x] Update `findings.md` to RESOLVED.
+
+### Status: [x] REMEDIATION COMPLETE (2026-05-07)
+
+## Session: Security — Full System Investigative Audit (CSO Pass)
+
+### Objective
+Complete, system-wide Security audit covering OWASP Top 10 (2021), STRIDE threat model on all critical surfaces, authentication bypass, privilege escalation, injection vectors, XSS, CSRF, secrets management, dependency vulnerabilities, and security headers.
+
+### Protocol 0 — Session Bookends
+- [x] START: Read and update `task_plan.md`
+- [ ] END: Update `findings.md` and run `npm run verify:tech-integrity`
+
+### B.L.A.S.T. Execution Order
+- [ ] **B**: Read `server/middleware/csrf.ts`, `server/routes/auth.ts`, `server/middleware/ssr-cache.ts`. Map all auth-protected surfaces.
+- [ ] **L**: Enumerate all mutation endpoints. Verify each has: auth check, CSRF token, Zod validation.
+- [ ] **A**: Run `/cso` with OWASP Top 10 and STRIDE framing across the full application.
+- [ ] **S**: N/A — security layer.
+- [ ] **T**: Do NOT exploit any vulnerabilities. Document findings only.
+
+### Investigation Scope
+
+#### OWASP Top 10 (2021) — Full Coverage
+- [ ] **A01: Broken Access Control** (Admin endpoints, privilege escalation, IDOR, public vs admin endpoints)
+- [ ] **A02: Cryptographic Failures** (Plaintext secrets, Session secret entropy, HTTPS, secrets in bundle/git)
+- [ ] **A03: Injection** (SQL injection, Command injection, Path traversal, TipTap HTML injection)
+- [ ] **A04: Insecure Design** (Rate limiting, file upload exec, dev endpoints, business logic)
+- [ ] **A05: Security Misconfiguration** (Security headers, CORS, error stack traces, Swagger UI, NODE_ENV)
+- [ ] **A06: Vulnerable and Outdated Components** (`npm audit`, known CVEs, abandoned packages)
+- [ ] **A07: Identification and Authentication Failures** (Session timeout, Brute force protection)
+- [ ] **A08: Software and Data Integrity Failures** (`npm ci`, lock file, SRI)
+- [ ] **A09: Security Logging and Monitoring Failures** (Auth events, admin mutations, failed access, Sentry alerts)
+- [ ] **A10: Server-Side Request Forgery (SSRF)** (URL allowlists, internal network access)
+
+#### Dev/Debug Endpoint Firewall (CRITICAL)
+- [ ] Verify `GET /api/dev/login` is 404/403
+- [ ] Verify `GET /api/mock-login` is 404/403
+- [ ] Verify `POST /api/debug/crash` is 404/403
+- [ ] Verify `POST /api/debug/slow-query` is 404/403
+- [ ] Verify `GET /api/kv-direct/inspect-all` is 404/403
+- [ ] Verify `GET /api/kv-direct/test/:type` is 404/403
+- [ ] Verify `POST /api/data-creation/*` is 404/403
+- [ ] Verify `POST /api/direct-postgres/*` is 404/403
+- [ ] Verify `GET /api/docs` (Swagger) is 404/403
+
+#### STRIDE Threat Model & Additional Checks
+- [ ] Verify STRIDE Critical Surfaces (Spoofing, Tampering, Repudiation, Info Disclosure, DoS, Elevation of Privilege)
+- [ ] Check CSP for `unsafe-eval`
+- [ ] Identify TipTap sanitisation library
+- [ ] Cookie `__Host-` prefix
+- [ ] No `X-Powered-By: Express` header
+- [ ] `GET /api/metrics` is not public
+- [ ] Max-length enforced server-side
+- [ ] Zip bomb protection
+
+## Session: Dev / Debug Tools — Full Investigative Audit
+
+### Objective
+Complete audit of all Dev / Debug / Migration tools to confirm every one of these tools is unconditionally firewalled from production, and assess their safety and correctness in development use.
+
+### Protocol 0 — Session Bookends
+- [ ] START: Read and update `task_plan.md`
+- [ ] END: Update `findings.md` and run `npm run verify:tech-integrity`
+
+### Investigation Scope & B.L.A.S.T. Steps
+- [ ] **B**: Read `server/routes/dev.ts` and `debug.ts` completely. Identify every dev/debug endpoint and guard mechanism.
+- [ ] **L**: Verify every endpoint has a production guard.
+- [ ] **A**: Simulate production (`NODE_ENV=production`) and attempt each endpoint.
+- [ ] **T**: Do NOT execute any seeder or crash endpoints. Test access only.
+
+#### Scopes
+- [ ] 1. Production Firewall — All Dev/Debug Endpoints
+- [ ] 2. Guard Implementation Quality
+- [ ] 3. Dev Login Endpoints
+- [ ] 4. Debug Endpoints
+- [ ] 5. Seeder Scripts
+- [ ] 6. KV Inspection
+- [ ] 7. Swagger UI
+- [ ] 8. react-scan (Dev Profiler)
+
+### Status: [x] AUDIT COMPLETE (DD-001 through DD-006 recorded in findings.md)
+
+## Session: Dev / Debug Tools — Architectural Remediation (2026-05-07)
+
+### Goal
+Address architectural observations and recommendations identified during the investigative audit.
+
+### Tasks
+- [ ] 1. Centralize Port Configuration (Fix hardcoded :5000)
+    - [ ] Update `server/routes/utilities/api-based-population.ts`
+    - [ ] Update `server/lib/integrations/email-service.ts`
+    - [ ] Update `server/migrations/optimizations/README.md`
+- [ ] 2. Implement Data Masking for Diagnostics
+    - [ ] Add redaction utility to `server/routes/utilities/kv-diagnostics.ts`
+- [ ] 3. Verify Fixes
+    - [ ] Run `api-based/populate-all` in dev
+    - [ ] Test `kv-direct/inspect-all` for redacted fields
+
+### Status: [x] COMPLETE

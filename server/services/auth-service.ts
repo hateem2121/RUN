@@ -167,6 +167,7 @@ export class AuthService {
           clientSecret: process.env.GOOGLE_CLIENT_SECRET,
           callbackURL: "/api/auth/google/callback",
           proxy: true,
+          state: true,
         },
         async (
           _accessToken: string,

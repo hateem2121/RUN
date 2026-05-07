@@ -52,27 +52,35 @@ if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
       });
     }
 
-    req.login(mockUser, (err) => {
+    req.session.regenerate((err) => {
       if (err) {
-        console.error("Mock login failed", err);
-        res.status(500).json({ error: "Mock login failed" });
+        console.error("Session regeneration failed", err);
+        res.status(500).json({ error: "Session regeneration failed" });
         return;
       }
 
-      // Ensure session is saved before redirecting/responding
-      req.session.save((saveErr) => {
-        if (saveErr) {
-          console.error("Session save failed", saveErr);
-          res.status(500).json({ error: "Session save failed" });
+      req.login(mockUser, (loginErr) => {
+        if (loginErr) {
+          console.error("Mock login failed", loginErr);
+          res.status(500).json({ error: "Mock login failed" });
           return;
         }
 
-        const returnTo = (req.query.returnTo as string) || "/admin";
-        if (req.headers.accept?.includes("application/json")) {
-          res.json({ success: true, user: mockUser });
-          return;
-        }
-        res.redirect(returnTo);
+        // Ensure session is saved before redirecting/responding
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            console.error("Session save failed", saveErr);
+            res.status(500).json({ error: "Session save failed" });
+            return;
+          }
+
+          const returnTo = (req.query.returnTo as string) || "/admin";
+          if (req.headers.accept?.includes("application/json")) {
+            res.json({ success: true, user: mockUser });
+            return;
+          }
+          res.redirect(returnTo);
+        });
       });
     });
   });
@@ -84,8 +92,23 @@ router.get(
   passport.authenticate("google", {
     failureRedirect: "/api/login",
   }),
-  (_req, res) => {
-    res.redirect("/");
+  (req, res, next) => {
+    const user = req.user as SessionUser;
+    if (!user) {
+      return res.redirect("/api/login");
+    }
+
+    req.session.regenerate((err) => {
+      if (err) {
+        return next(err);
+      }
+      req.login(user, (loginErr) => {
+        if (loginErr) {
+          return next(loginErr);
+        }
+        res.redirect("/");
+      });
+    });
   },
 );
 

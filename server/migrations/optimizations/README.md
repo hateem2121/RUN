@@ -64,7 +64,7 @@ npm run db:push
 
 ```bash
 # Use the built-in migration executor
-curl -X POST http://localhost:5000/api/utilities/migrate \
+curl -X POST http://localhost:5002/api/utilities/migrate \
   -H "Content-Type: application/json" \
   -d '{
     "sql": "-- paste migration SQL here --"

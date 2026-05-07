@@ -2,6 +2,7 @@
 // Creates all 47 business items using working API endpoints
 
 import type { Express } from "express";
+import { env } from "../../lib/env.js";
 import { logger } from "../../lib/monitoring/logger.js";
 
 import { authService } from "../../services/auth-service.js";
@@ -34,7 +35,7 @@ export function registerAPIBasedPopulationRoutes(app: Express): void {
       endpoint: string,
       data?: unknown,
     ): Promise<unknown> => {
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
+      const response = await fetch(`http://localhost:${env.PORT}${endpoint}`, {
         method,
         headers: { "Content-Type": "application/json" },
         ...(data ? { body: JSON.stringify(data) } : {}),

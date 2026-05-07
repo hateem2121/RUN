@@ -117,14 +117,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Utilities / Functions (Direct app mounting for special cases)
 
-  // KV Diagnostics
-  app.use("/api/kv-direct", diagnosticLimiter.middleware());
-  app.use("/api/kv-diagnostics", diagnosticLimiter.middleware());
-  registerKVDiagnosticsRoutes(app);
+  // Metrics (Production-safe, read-only)
   registerMetricsRoutes(app);
-  registerDataCreationRoutes(app);
-  registerDirectPostgresPopulationRoutes(app);
-  registerAPIBasedPopulationRoutes(app);
+
+  // DEV-ONLY: KV Diagnostics & Data Population (NEVER in production)
+  if (process.env.NODE_ENV !== "production") {
+    app.use("/api/kv-direct", diagnosticLimiter.middleware());
+    app.use("/api/kv-diagnostics", diagnosticLimiter.middleware());
+    registerKVDiagnosticsRoutes(app);
+    registerDataCreationRoutes(app);
+    registerDirectPostgresPopulationRoutes(app);
+    registerAPIBasedPopulationRoutes(app);
+  }
+
   registerNewsletterRoutes(app);
   app.use("/api/analytics", analyticsRouter);
 

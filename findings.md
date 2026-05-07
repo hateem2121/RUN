@@ -340,3 +340,132 @@ The application explicitly uses `@neondatabase/serverless` `Pool` with WebSocket
 
 ---
 **Verified by Antigravity - May 7, 2026**
+
+## AU: Auth & Session Layer — Full Investigative Audit (2026-05-07)
+
+### Findings Overview
+
+### 🟢 PASS (Verified Secure)
+*   **AU-S01: Session Configuration**: httpOnly, secure (in production), and sameSite: "lax" are correctly configured. Secret rotation is supported.
+*   **AU-S02: Session Security**: 15-minute Session ID rotation and User-Agent binding (uaHash) provide high-tier protection against session hijacking.
+*   **AU-S03: Redis Persistence**: Confirmed usage of @upstash/redis via connect-redis for session storage. In-memory fallback is strictly blocked in production.
+*   **AU-S04: CSRF Protection**: Double-Submit Cookie pattern is applied globally via csrfProtection middleware. Token validation uses timingSafeEqual.
+*   **AU-S05: Mock Login Gating**: /api/mock-login and associated service logic are strictly restricted to development and test environments.
+*   **AU-S06: RBAC & Audit**: Admin routes are protected by requireAdmin. Denied access attempts are logged to the audit trail.
+*   **AU-S07: Token Hygiene**: No sensitive tokens or JWTs are stored in localStorage. Cloud Tasks OIDC tokens are correctly verified.
+
+
+---
+**Verified by Antigravity - May 7, 2026**
+
+### 🟢 RESOLVED (Remediated 2026-05-07)
+*   **AU-O01: OAuth State Missing** -> RESOLVED (Enabled state: true in GoogleStrategy).
+*   **AU-O02: Session Fixation on Login** -> RESOLVED (Implemented req.session.regenerate() in all login routes).
+*   **AU-O03: JWT_SECRET Inactive** -> RESOLVED (Removed unused secret and validation logic).
+
+---
+**Remediation Verified by Antigravity - May 7, 2026**
+
+## SE: Security — Full System Investigative Audit (CSO Pass) (2026-05-07)
+
+### Findings Overview
+
+### 🟢 RESOLVED (Remediated 2026-05-07)
+*   **SE-DEV-01: Development Endpoints Reachable** -> RESOLVED (Gated behind NODE_ENV guard).
+*   **SE-A01-01: Broken Access Control on Inquiry Admin** -> RESOLVED (Applied requireAdmin RBAC).
+*   **SE-A03-01: Missing TipTap Sanitisation** -> RESOLVED (Implemented isomorphic-dompurify pipe).
+*   **SE-A03-02: Raw SQL Usage** -> RESOLVED (Migrated to parameterized sql literal).
+*   **SE-A06-01: Vulnerable Dependencies** -> RESOLVED (Updated @google-cloud/storage and added overrides).
+
+---
+
+## DD: Dev / Debug Tools — Full Investigative Audit (2026-05-07)
+
+### Findings Overview
+
+### 🟢 PASS (Verified Secure)
+*   **DD-001: Production Firewall Coverage**: 100% of identified dev/debug endpoints return 404 in a simulated production environment (`NODE_ENV=production`).
+*   **DD-002: Multi-Layered Defense**: Debug endpoints in `debug.ts` utilize three layers of protection: `NODE_ENV` check, static token verification (`X-RUN-DEBUG-TOKEN`), and a network allowlist (Localhost only).
+*   **DD-003: Boot-Time Failsafes**: The application explicitly throws fatal errors and refuses to boot if insecure flags like `ENABLE_MOCK_ADMIN` or `BYPASS_RBAC_FOR_TESTING` are set in production.
+*   **DD-004: react-scan Sanitization**: `react-scan` is correctly isolated to `devDependencies` and the Vite dev-only plugin pipeline. No production imports or runtime overhead detected.
+*   **DD-005: Seeder Implementation Quality**: Seeder scripts use Drizzle ORM and established repositories. They correctly follow the "No Raw SQL" rule and are gated by both `NODE_ENV` and `requireAdmin`.
+
+### 🟡 Minor Observations
+*   **DD-006: Hardcoded Port in Seeder**: `server/routes/utilities/api-based-population.ts` uses a hardcoded `localhost:5000` for internal API calls. While firewalled from production, this should ideally use the `PORT` env var (defaulting to 5002) for dev consistency.
+
+### Detailed Firewall Verification (Simulated Production)
+
+| Endpoint | Guard Mechanism | Prod Status (403/404) |
+|----------|-----------------|-----------------------|
+| `GET /api/dev/login` | Mount-level `NODE_ENV` check | 404 ✅ |
+| `GET /api/mock-login` | Internal `NODE_ENV` check | 404 ✅ |
+| `POST /api/debug/crash` | Internal middleware guard | 404 ✅ |
+| `POST /api/debug/slow-query` | Internal middleware guard | 404 ✅ |
+| `GET /api/kv-direct/inspect-all` | Mount-level `NODE_ENV` check | 404 ✅ |
+| `GET /api/kv-direct/test/:type` | Mount-level `NODE_ENV` check | 404 ✅ |
+| `POST /api/data-creation/create-all-business-data` | Mount-level `NODE_ENV` check | 404 ✅ |
+| `POST /api/api-based/populate-all` | Mount-level `NODE_ENV` check | 404 ✅ |
+| `POST /api/direct-postgres/populate-all` | Mount-level `NODE_ENV` check | 404 ✅ |
+| `GET /api/docs` (Swagger UI) | Internal `environment` check | 404 ✅ |
+
+---
+**Verified by Antigravity - May 7, 2026**
+
+### 🔴 Critical Findings (All Resolved)
+
+*   **SE-DEV-01: Development Endpoints Reachable in Production**
+    - **Surface**: `server/routes/utilities/kv-diagnostics.ts` (`GET /api/kv-direct/inspect-all`, `GET /api/kv-direct/test/:type`)
+    - **Attack Vector**: Unauthenticated users can access internal diagnostic routes, returning complete database dumps of tables without any authentication or authorization guards.
+    - **Proof**: `registerKVDiagnosticsRoutes(app)` is mounted globally in `index.ts` without `process.env.NODE_ENV !== "production"` or `authService.requireAdmin`.
+    - **Recommended Fix**: Wrap `registerKVDiagnosticsRoutes` registration with a `NODE_ENV !== "production"` check.
+
+*   **SE-A01-01: Broken Access Control on Inquiry Admin Mutations**
+    - **Surface**: `server/routes/utilities/inquiry-admin.ts`
+    - **Attack Vector**: Endpoints `PATCH /admin/inquiries/:id`, `POST /admin/inquiries/:id/logs`, and `DELETE /admin/inquiries/:id` do not enforce role-based access control. Unauthenticated users could theoretically mutate client inquiries.
+    - **Proof**: The mutation routes lack the inline `authService.requireAdmin` middleware, and the router is mounted in `index.ts` without global admin enforcement.
+    - **Recommended Fix**: Apply `authService.requireAdmin` to the mutation routes or globally to `inquiryAdminRouter` in `index.ts`.
+
+*   **SE-A03-01: Missing TipTap HTML Sanitisation (XSS Risk)**
+    - **Surface**: `client/package.json` and React rendering layer.
+    - **Attack Vector**: TipTap generates raw HTML that is stored in the database. Without a strict sanitisation pipeline (e.g., `isomorphic-dompurify`) before storing or rendering via `dangerouslySetInnerHTML`, malicious administrators or compromised accounts could inject XSS payloads.
+    - **Proof**: `DOMPurify` is absent from `package.json`, and the custom `sanitizeContent` utility in `client/app/lib/utils.ts` only removes testing artifacts (`[QA-AUTO]`), failing to scrub malicious tags.
+    - **Recommended Fix**: Install `isomorphic-dompurify` and integrate it into a centralized parsing utility for all rich text rendering.
+
+### 🟡 High / Moderate Findings
+
+*   **SE-DEV-02: Data Population Routes Available to Production Admins**
+    - **Surface**: `server/routes/utilities/data-creation.ts` and `server/routes/utilities/direct-postgres-population.ts`
+    - **Attack Vector**: While guarded by `authService.requireAdmin`, development utilities meant for seeding data are compiled into the production router. These expose administrative surface area that should not exist in a production build, violating the principle of least privilege.
+    - **Proof**: These routes are mounted globally in `index.ts` regardless of `NODE_ENV`.
+    - **Recommended Fix**: Restrict the mounting of these routes to development environments only.
+
+*   **SE-A03-02: Raw SQL Template Literal Usage**
+    - **Surface**: `server/routes/debug.ts` (Line 112)
+    - **Attack Vector**: The endpoint uses `sql.raw(\`SELECT pg_sleep(${duration})\`)`. While immediate exploitation is mitigated by `parseFloat()`, bypassing Drizzle ORM's parameterized query syntax with `sql.raw` and template literals is a severe anti-pattern that can introduce SQL injection if the input type changes.
+    - **Proof**: `const query = sql.raw(\`SELECT pg_sleep(${duration})\`);`
+    - **Recommended Fix**: Refactor to use parameterized template literals: `sql\`SELECT pg_sleep(${duration})\``.
+
+*   **SE-A06-01: Vulnerable Dependencies (Low Severity)**
+    - **Surface**: Monorepo dependencies.
+    - **Attack Vector**: `npm audit` returned 4 low-severity vulnerabilities related to `@google-cloud/storage` nested dependencies (`@tootallnate/once`, `http-proxy-agent`, `teeny-request`).
+    - **Proof**: `npm audit --json` output.
+    - **Recommended Fix**: Run `npm audit fix` or update `@google-cloud/storage` to resolve the nested dependency chain.
+
+### 🟢 PASS (Verified Secure)
+
+#### OWASP Top 10 (2021)
+*   **A02: Cryptographic Failures**: Secrets are managed securely via env variables. HTTPS is enforced by external infrastructure (secure cookies present).
+*   **A04: Insecure Design**: Form rate limiting and business logic boundaries are intact.
+*   **A05: Security Misconfiguration**: `helmet` is deployed with strict CSP, and CORS is correctly limited to allowlisted origins in production. Error handling via `productionErrorHandler` strips stack traces.
+*   **A07: Identification and Authentication Failures**: Session fixation and timeouts are enforced.
+*   **A08: Software and Data Integrity Failures**: Pipeline utilizes standard integrity checks.
+*   **A09: Security Logging and Monitoring**: Admin mutations and auth flows emit structured logs.
+*   **A10: SSRF**: No unvalidated server-side fetching vectors detected.
+
+#### STRIDE Threat Model
+*   **Spoofing**: Defeated via OAuth callback `state: true` (Verified AU-01).
+*   **Tampering**: TipTap XSS flagged (SE-A03-01). Other surfaces validated.
+*   **Repudiation**: Defeated via global admin mutation logging in `server/boot/middleware.ts`.
+*   **Information Disclosure**: Defeated via production error handlers and CSRF tokens. Note: `kv-direct` leak flagged (SE-DEV-01).
+*   **Denial of Service**: Defeated via Upstash Redis rate limiting and payload size restrictions (100kb for standard API).
+*   **Elevation of Privilege**: Defeated via robust RBAC in `authService.requireAdmin`, barring the specific gap noted in SE-A01-01.

@@ -6,6 +6,7 @@
 
 import type { Transporter } from "nodemailer";
 import nodemailer from "nodemailer";
+import { env } from "../env.js";
 import { logger } from "../monitoring/logger.js";
 
 interface EmailOptions {
@@ -130,7 +131,7 @@ class EmailService {
   private generateAdminEmailTemplate(inquiry: InquiryEmailData): string {
     const dashboardUrl = process.env.REPLIT_DEV_DOMAIN
       ? `https://${process.env.REPLIT_DEV_DOMAIN}/admin/inquiries/${inquiry.id}`
-      : `http://localhost:5000/admin/inquiries/${inquiry.id}`;
+      : `http://localhost:${env.PORT}/admin/inquiries/${inquiry.id}`;
 
     return `
 <!DOCTYPE html>

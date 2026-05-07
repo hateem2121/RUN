@@ -107,11 +107,9 @@ router.post("/slow-query", async (req, res) => {
   const duration = req.query.duration ? parseFloat(req.query.duration as string) : 1.2;
   logger.info(`[Debug] Triggering slow query of ${duration}s...`);
 
-  // Use raw SQL execution to bypass any ORM caching if present, ensuring it hits the driver
-  // and thus our 'trackedSql' proxy in db.ts
-  const query = sql.raw(`SELECT pg_sleep(${duration})`);
-
-  await db.execute(query);
+  // Use parameterized SQL execution to prevent anti-patterns and follow Drizzle best practices,
+  // while still hitting our 'trackedSql' proxy in db.ts
+  await db.execute(sql`SELECT pg_sleep(${duration})`);
 
   res.json({ message: "Slow query execution complete", duration });
 });

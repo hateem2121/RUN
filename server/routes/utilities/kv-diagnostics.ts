@@ -11,6 +11,44 @@ import {
 } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 
+/**
+ * REDACT SENSITIVE DATA
+ * Recursively masks sensitive fields in diagnostic output
+ */
+function redactSensitiveData(data: any): any {
+  if (!data || typeof data !== "object") return data;
+
+  if (Array.isArray(data)) {
+    return data.map(redactSensitiveData);
+  }
+
+  const sensitiveFields = ["email", "password", "hashedPassword", "secret", "token", "key", "apiKey"];
+  const redacted: any = {};
+
+  for (const [key, value] of Object.entries(data)) {
+    if (sensitiveFields.some((field) => key.toLowerCase().includes(field.toLowerCase()))) {
+      if (typeof value === "string") {
+        if (key.toLowerCase().includes("email") && value.includes("@")) {
+          const parts = value.split("@");
+          const name = parts[0] || "";
+          const domain = parts[1] || "";
+          redacted[key] = `${name.charAt(0)}***@***${domain?.substring(domain.lastIndexOf(".")) || ""}`;
+        } else {
+          redacted[key] = "[REDACTED]";
+        }
+      } else {
+        redacted[key] = "[REDACTED]";
+      }
+    } else if (typeof value === "object") {
+      redacted[key] = redactSensitiveData(value);
+    } else {
+      redacted[key] = value;
+    }
+  }
+
+  return redacted;
+}
+
 export function registerKVDiagnosticsRoutes(app: Express): void {
   // Direct PostgreSQL Storage inspection
   app.get("/api/kv-direct/inspect-all", async (_req, res) => {
@@ -82,7 +120,7 @@ export function registerKVDiagnosticsRoutes(app: Express): void {
       success: true,
       message: `Found ${totalItems} total items in PostgreSQL storage`,
       summary,
-      results,
+      results: redactSensitiveData(results),
       timestamp: new Date().toISOString(),
     });
   });
@@ -121,7 +159,7 @@ export function registerKVDiagnosticsRoutes(app: Express): void {
       success: true,
       type,
       count: Array.isArray(data) ? data.length : data ? 1 : 0,
-      data,
+      data: redactSensitiveData(data),
     });
   });
 

@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { sanitizeHtml } from "@/lib/sanitize-html";
 import { cn } from "@/lib/utils";
 
 interface RichTextEditorProps {
@@ -38,7 +39,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
     ],
     content: value,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      onChange(sanitizeHtml(editor.getHTML()));
     },
     editorProps: {
       attributes: {

@@ -1,8 +1,12 @@
 import { addInquiryLogSchema, type InsertInquiry, insertInquirySchema } from "@run-remix/shared";
 import express from "express";
+import { authService } from "../../services/auth-service.js";
 import { inquiryService } from "../../services/inquiry-service.js";
 
 const router = express.Router();
+
+// SE-A01-01 FIX: Enforce admin RBAC on all inquiry management routes
+router.use("/admin/inquiries", authService.requireAdmin);
 
 const updateInquirySchema = insertInquirySchema.partial();
 
