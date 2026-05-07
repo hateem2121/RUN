@@ -121,7 +121,7 @@ export function PublicHeroSection({
 
   return (
     <ManufacturingErrorBoundary>
-      <div ref={containerRef} className="relative bg-[var(--color-manufacturing-bg)]">
+      <div ref={containerRef} className="relative bg-manufacturing-bg">
         {/* Header Section */}
         <header className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
           {/* Floating Sparks Animation Layer */}
@@ -130,7 +130,7 @@ export function PublicHeroSection({
               <div
                 key={i}
                 className={cn(
-                  "absolute bg-[var(--color-manufacturing-accent)] shadow-[0_0_8px_var(--color-manufacturing-accent)] opacity-40 pointer-events-none spark",
+                  "absolute bg-manufacturing-accent shadow-[0_0_8px_var(--color-manufacturing-accent)] opacity-40 pointer-events-none spark",
                   i % 3 === 0 ? "w-1 h-1" : i % 2 === 0 ? "w-1.5 h-1.5" : "w-0.5 h-0.5",
                 )}
                 style={
@@ -181,18 +181,18 @@ export function PublicHeroSection({
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkSaFr8satMiHuubKnq6ZmnTrhos9xLMveFMM4olbG-J23bK5ywE9wF3atm-z3ne_0ztbPnL1etAMv6bRuKpUbC42HETMKBh0VuEUmOffoQdi7Y_2ipx8QjbDa12BKfSsZhvdoahTOEOsW20djY3Hi8a29So3_Cd0OMzm7Kl1UHZViy2Skj4o7hv61vKsFdjYtgSJp7klmS0SdpX6k9ltAN73ADtT0Yb4TZM_DIhlFs2pGb5ygJWMVAcZJz9wEh5bBtgRByWiLhmw"
               />
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-manufacturing-bg)] via-[var(--color-manufacturing-bg)]/80 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-manufacturing-bg via-manufacturing-bg/80 to-transparent"></div>
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_var(--color-manufacturing-bg)_100%)]"></div>
             <div className="absolute inset-0 tech-grid-manufacturing [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
           </div>
 
           <div className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col justify-center h-full pb-20 mt-10">
             <div className="max-w-6xl">
-              <div className="inline-flex items-center space-x-3 border-l-4 border-[var(--color-manufacturing-accent)] pl-4 mb-8">
-                <span className="text-xs font-mono uppercase tracking-widest text-[var(--color-manufacturing-accent)] font-bold">
+              <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8 border-l-2 border-manufacturing-accent pl-6">
+                <span className="text-xs font-mono uppercase tracking-widest text-manufacturing-accent font-bold">
                   Est. 1889
                 </span>
-                <span className="text-xs font-mono uppercase tracking-widest text-[#68869A]">
+                <span className="text-xs font-mono uppercase tracking-widest text-manufacturing-muted">
                   ISO 9001:2015 Certified
                 </span>
               </div>
@@ -216,13 +216,13 @@ export function PublicHeroSection({
 
               <div ref={ctaRef} className="flex flex-col sm:flex-row gap-6">
                 <a
-                  className="inline-flex items-center justify-center bg-[var(--color-manufacturing-accent)] hover:bg-white hover:text-black text-black px-10 py-5 text-sm font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(255,77,0,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] skew-x-[-10deg]"
+                  className="inline-flex items-center justify-center bg-manufacturing-accent hover:bg-white hover:text-black text-black px-10 py-5 text-sm font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(255,77,0,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] skew-x-[-10deg]"
                   href={hero.ctaLink || "#process"}
                 >
                   {hero.ctaText || "Explore Our Process"}
                 </a>
                 <a
-                  className="inline-flex items-center justify-center border border-white/30 hover:border-[var(--color-manufacturing-accent)] hover:text-[var(--color-manufacturing-accent)] text-white px-10 py-5 text-sm font-bold uppercase tracking-widest transition-all hover:bg-[#121212]/50 backdrop-blur-sm skew-x-[-10deg]"
+                  className="inline-flex items-center justify-center border border-white/30 hover:border-manufacturing-accent hover:text-manufacturing-accent text-white px-10 py-5 text-sm font-bold uppercase tracking-widest transition-all hover:bg-manufacturing-card/50 backdrop-blur-sm skew-x-[-10deg]"
                   href="#tour"
                 >
                   Request Factory Tour
@@ -235,7 +235,7 @@ export function PublicHeroSection({
         {/* Stats Bar Sticky */}
         <section
           ref={statsRef}
-          className="sticky top-20 z-40 bg-[var(--color-manufacturing-bg)]/95 backdrop-blur-md border-y border-[var(--color-manufacturing-accent)]/20 shadow-lg shadow-[var(--color-manufacturing-accent)]/10 transition-all duration-300"
+          className="sticky top-20 z-40 bg-manufacturing-bg/95 backdrop-blur-md border-y border-manufacturing-accent/20 shadow-lg shadow-manufacturing-accent/10 transition-all duration-300"
           aria-label="Manufacturing Statistics"
         >
           <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center overflow-x-auto no-scrollbar">
@@ -245,22 +245,22 @@ export function PublicHeroSection({
                   key={i}
                   className="flex flex-col md:flex-row items-center gap-1 md:gap-3 group cursor-default"
                 >
-                  <span className="text-[var(--color-manufacturing-accent)] font-neue-stance font-bold italic text-3xl group-hover:scale-110 transition-transform skew-x-[-5deg] flex items-baseline">
+                  <span className="text-manufacturing-accent font-neue-stance font-bold italic text-3xl group-hover:scale-110 transition-transform skew-x-[-5deg] flex items-baseline">
                     {stat.value === 0.05 ? "<" : ""}
                     <span className="stat-number" data-target={stat.value}>
                       0
                     </span>
                     {stat.suffix}
                   </span>
-                  <span className="text-[10px] text-[#E3DFD6] uppercase tracking-widest border-t border-transparent group-hover:border-[var(--color-manufacturing-accent)]/50 pt-1 transition-all font-bold">
+                  <span className="text-[10px] text-manufacturing-body uppercase tracking-widest border-t border-transparent group-hover:border-manufacturing-accent/50 pt-1 transition-all font-bold">
                     {stat.label}
                   </span>
                 </div>
               ))}
             </div>
 
-            <div className="hidden md:flex items-center gap-4 text-xs font-mono text-[var(--color-manufacturing-accent)]">
-              <span className="w-2 h-2 rounded-none rotate-45 bg-[var(--color-manufacturing-accent)] animate-pulse"></span>
+            <div className="hidden md:flex items-center gap-4 text-xs font-mono text-manufacturing-accent">
+              <span className="w-2 h-2 rounded-none rotate-45 bg-manufacturing-accent animate-pulse"></span>
               <span className="font-bold tracking-wider">LIVE PRODUCTION STATUS: ACTIVE</span>
             </div>
           </div>

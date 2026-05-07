@@ -141,3 +141,40 @@ Complete a comprehensive audit of the Drizzle ORM schema, Neon Serverless Postgr
   - [x] Run `verify:tech-integrity`.
   - [x] Update `findings.md` to mark DS issues as RESOLVED.
 - [x] **Step T: Trigger - Landing & Deploy**
+
+## Phase 7: Design System Investigative Audit (GS-Series)
+
+- [x] **1. Tailwind v4 Audit**
+  - [x] Read `index.css` & `@theme` blocks
+  - [x] Map colors, spacing, typography tokens
+  - [x] Verify no `tailwind.config.js` exists
+- [x] **2. Violation Detection**
+  - [x] Grep for arbitrary values `-[...]`
+  - [x] Grep for hardcoded `px` values
+  - [x] Audit Icon library usage
+- [x] **3. GSAP & Scroll Audit**
+  - [x] Audit `useGSAP` patterns
+  - [x] Verify single scroll hijacker
+  - [x] Check accessibility (`reduced-motion`)
+- [x] **4. Visual Verification**
+  - [x] Visual audit on primary pages
+  - [x] Typography scale check
+  - [x] Dark mode coverage
+
+### Status: [x] AUDIT COMPLETE (GS-001 through GS-010 recorded in findings.md)
+
+## Phase 8: Design System Remediation (GS-Series)
+- [x] **Step 1: Theme Hardening**
+  - [x] Refactor `index.css` to remove hardcoded overrides.
+  - [x] Standardize shadow and z-index tokens in `theme.css`.
+- [x] **Step 2: Animation SSOT**
+  - [x] Centralize GSAP plugin registration in `lib/gsap.ts`.
+  - [x] Update 20+ components to use the centralized registry.
+- [x] **Step 3: Surgical Tokenization**
+  - [x] Eliminate arbitrary values in Manufacturing, Sustainability, and Technology routes.
+  - [x] Replace inline styles with Tailwind v4 utility classes.
+- [x] **Step 4: Verification & Integrity**
+  - [x] Visual verification on port 5002.
+  - [x] Run `npm run verify:tech-integrity`.
+
+### Status: [x] REMEDIATION COMPLETE (2026-05-07)

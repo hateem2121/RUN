@@ -1,6 +1,5 @@
 import type { MediaAsset } from "@shared/index";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap } from "@/lib/gsap";
 import { Box, Loader2 } from "lucide-react";
 import React from "react";
 import { ModelViewerErrorBoundary } from "@/components/ui/ModelViewerErrorBoundary";
@@ -268,10 +267,6 @@ export function InteractiveExperienceSection({
 
   React.useEffect(() => {
     if (!sectionRef.current) return;
-
-    if (typeof window !== "undefined") {
-      gsap.registerPlugin(ScrollTrigger);
-    }
 
     const ctx = gsap.context(() => {
       const statElements = sectionRef.current?.querySelectorAll(".stat-countup");

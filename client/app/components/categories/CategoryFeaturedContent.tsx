@@ -1,6 +1,4 @@
-import { useGSAP } from "@gsap/react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { Component, lazy, type ReactNode, Suspense, useRef } from "react";
 import { BentoCardContainer } from "@/components/ui/BentoCardContainer";
 import { ExpandableCard } from "@/components/ui/bento-cards/expandable-card";
@@ -12,11 +10,6 @@ import { Typography } from "@/components/ui/typography";
 import { isModelUrl } from "@/lib/media-type-detector";
 import { getResponsiveSpanClasses } from "@/lib/responsive-grid";
 import { cn } from "@/lib/utils";
-
-// Register ScrollTrigger
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 // Lazy-load FluidGlass
 const FluidGlass = lazy(() =>

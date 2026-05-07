@@ -1,14 +1,9 @@
-import { useGSAP } from "@gsap/react";
+import { gsap, useGSAP } from "@/lib/gsap";
 import type { SustainabilityGoal } from "@shared/index";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useMemo, useRef } from "react";
 import { calculateGoalProgress } from "@/lib/sustainability-utils";
 import { cn } from "@/lib/utils";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, useGSAP);
-}
 
 interface GoalsSectionProps {
   goals: SustainabilityGoal[];

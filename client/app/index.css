@@ -977,35 +977,6 @@
    LIGHT: Primary #1A4331 (forest green), bg #F9FAF9
    ========================================= */
 
-/* --- CSS Variables for both modes --- */
-.sustainability-page {
-  --s-primary: #00c97b;
-  --s-bg: #0a0a0a;
-  --s-bg-section: #050807;
-  --s-bg-card: rgba(255, 255, 255, 0.04);
-  --s-border-card: rgba(255, 255, 255, 0.08);
-  --s-text-head: #ffffff;
-  --s-text-body: #e3dfd6;
-  --s-text-muted: #68869a;
-  --s-card-shadow: none;
-  --s-marquee-bg: #00c97b;
-  --s-marquee-text: #0a0a0a;
-}
-
-.light .sustainability-page,
-.sustainability-page.light {
-  --s-primary: #1a4331;
-  --s-bg: #f9faf9;
-  --s-bg-section: #f3f4f3;
-  --s-bg-card: rgba(255, 255, 255, 0.6);
-  --s-border-card: #ffffff;
-  --s-text-head: #111827;
-  --s-text-body: #374151;
-  --s-text-muted: #6b7280;
-  --s-card-shadow: 0 8px 30px rgba(209, 250, 229, 0.5);
-  --s-marquee-bg: #1a4331;
-  --s-marquee-text: #ffffff;
-}
 
 /* Named float animations — matching Stitch animate-bob-1/2/3/4 */
 @utility animate-bob-1 {
@@ -1153,10 +1124,10 @@
 @utility bg-hero-conic {
   background: conic-gradient(
     from 0deg at 50% 50%,
-    #000000 0deg,
-    #1a1a1a 120deg,
-    #333333 240deg,
-    #000000 360deg
+    var(--hero-conic-start, #000000) 0deg,
+    var(--hero-conic-mid, #1a1a1a) 120deg,
+    var(--hero-conic-end, #333333) 240deg,
+    var(--hero-conic-start, #000000) 360deg
   );
 }
 

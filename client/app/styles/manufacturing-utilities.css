@@ -15,17 +15,17 @@
 
 /** Primary dark background - #0A0A0A */
 @utility bg-manufacturing-dark {
-  background-color: #0a0a0a;
+  background-color: var(--color-manufacturing-bg);
 }
 
 /** Surface/secondary background - #121212 */
 @utility bg-manufacturing-surface {
-  background-color: #121212;
+  background-color: var(--color-manufacturing-card);
 }
 
 /** Accent gold background - #D4A853 */
 @utility bg-manufacturing-accent {
-  background-color: #d4a853;
+  background-color: var(--color-manufacturing-accent);
 }
 
 /** Accent gold at 10% opacity */
@@ -44,7 +44,7 @@
 
 /** Accent gold text - #D4A853 */
 @utility text-manufacturing-accent {
-  color: #d4a853;
+  color: var(--color-manufacturing-accent);
 }
 
 /**
@@ -52,12 +52,12 @@
  * WCAG AA compliant: 4.5:1 contrast ratio on #0A0A0A
  */
 @utility text-manufacturing-muted {
-  color: #8ba3b5;
+  color: var(--color-manufacturing-muted);
 }
 
 /** Light text color - #E3DFD6 */
 @utility text-manufacturing-light {
-  color: #e3dfd6;
+  color: var(--color-manufacturing-body);
 }
 
 /** Accent gold at 40% opacity for subtle text */
@@ -71,7 +71,7 @@
 
 /** Accent gold border */
 @utility border-manufacturing-accent {
-  border-color: #d4a853;
+  border-color: var(--color-manufacturing-accent);
 }
 
 /** Accent gold at ~13.3% opacity (1/7.5) for subtle borders */
@@ -90,7 +90,7 @@
 
 /** Accent gold fill for SVG icons */
 @utility fill-manufacturing-accent {
-  fill: #d4a853;
+  fill: var(--color-manufacturing-accent);
 }
 
 /* ===========================================
@@ -99,12 +99,12 @@
 
 /** Accent gold ring for focus-visible states */
 @utility ring-manufacturing-accent {
-  --tw-ring-color: #d4a853;
+  --tw-ring-color: var(--color-manufacturing-accent);
 }
 
 /** Dark ring offset for focus states */
 @utility ring-offset-manufacturing-dark {
-  --tw-ring-offset-color: #0a0a0a;
+  --tw-ring-offset-color: var(--color-manufacturing-bg);
 }
 
 /* ===========================================
@@ -113,7 +113,7 @@
 
 /** Progress bar gradient */
 @utility bg-gradient-manufacturing-progress {
-  background: linear-gradient(to right, transparent, #d4a853, #d4a853);
+  background: linear-gradient(to right, transparent, var(--color-manufacturing-accent), var(--color-manufacturing-accent));
 }
 
 /** Horizontal line gradient */
@@ -123,17 +123,17 @@
 
 /** Vertical accent gradient */
 @utility bg-gradient-manufacturing-vertical {
-  background: linear-gradient(to bottom, #d4a853, transparent);
+  background: linear-gradient(to bottom, var(--color-manufacturing-accent), transparent);
 }
 
 /** Overlay gradient for images */
 @utility bg-gradient-manufacturing-overlay {
-  background: linear-gradient(to top, #0a0a0a, rgba(10, 10, 10, 0.2), transparent);
+  background: linear-gradient(to top, var(--color-manufacturing-bg), rgba(10, 10, 10, 0.2), transparent);
 }
 
 /** Surface gradient for cards */
 @utility bg-gradient-manufacturing-surface {
-  background: linear-gradient(to bottom right, #121212, #0a0a0a);
+  background: linear-gradient(to bottom right, var(--color-manufacturing-card), var(--color-manufacturing-bg));
 }
 
 /* ===========================================

@@ -1,4 +1,4 @@
-import { useGSAP } from "@gsap/react";
+import { gsap, useGSAP } from "@/lib/gsap";
 import type { MediaAsset, SustainabilityBatchResponse } from "@shared/index";
 import type { Certificate } from "@shared/schemas/catalog";
 import type {
@@ -8,8 +8,6 @@ import type {
 } from "@shared/schemas/content/sustainability";
 import type { Fabric } from "@shared/schemas/materials";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { ArrowRight, Download } from "lucide-react";
 import { useMemo, useRef } from "react";
@@ -31,9 +29,6 @@ import { getSustainabilityIcon } from "@/lib/sustainability-utils";
 import { cn } from "@/lib/utils";
 import type { Route } from "./+types/sustainability";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, useGSAP);
-}
 
 export async function loader() {
   const queryClient = getQueryClient();
@@ -96,12 +91,12 @@ function HeroHeadline({ text }: { text: string }) {
       ref={containerRef}
       className="flex flex-col gap-1 font-display text-5xl font-medium tracking-tight md:text-7xl lg:text-8xl"
     >
-      <span className="hero-line self-start text-[color:var(--s-text-head)]">{line1}</span>
+      <span className="hero-line self-start text-sustainability-head">{line1}</span>
       <span className="hero-line self-start pl-4 md:pl-8">
-        <span className="italic text-[color:var(--s-primary)]">{wovenWord}</span>{" "}
-        <span className="text-[color:var(--s-text-head)]">{intoWord}</span>
+        <span className="italic text-sustainability-primary">{wovenWord}</span>{" "}
+        <span className="text-sustainability-head">{intoWord}</span>
       </span>
-      <span className="hero-line self-start pl-8 md:pl-16 text-[color:var(--s-text-head)]">
+      <span className="hero-line self-start pl-8 md:pl-16 text-sustainability-head">
         {line3}
       </span>
     </h1>
@@ -160,24 +155,24 @@ function StatCard({ label, value, unit, iconName, index }: StatCardProps) {
       ref={cardRef}
       className={cn(
         "stat-card flex flex-col items-center justify-center gap-1.5 rounded-2xl p-6 text-center backdrop-blur-xl",
-        "transition-all duration-300 hover:scale-105 hover:border-[color:var(--s-primary)]/30 hover:bg-white/5",
+        "transition-all duration-300 hover:scale-105 hover:border-sustainability-primary/30 hover:bg-white/5",
         "min-w-[140px] max-w-[220px] flex-1",
         bobClass,
         mtOffset,
         isAccented
-          ? "border border-[color:var(--s-primary)]/30 bg-[color:var(--s-primary)]/5"
-          : "border border-[color:var(--s-border-card)] bg-[color:var(--s-bg-card)]",
+          ? "border border-sustainability-primary/30 bg-sustainability-primary/5"
+          : "border border-sustainability-border bg-sustainability-card",
+        "shadow-sustainability-card",
       )}
-      style={{ boxShadow: "var(--s-card-shadow)" }}
       aria-label={`${label}: ${value}${unit || ""}`}
     >
       <div className="mb-2">{getSustainabilityIcon(iconName, "md")}</div>
-      <span className="text-xs font-medium uppercase tracking-wider whitespace-nowrap text-[color:var(--s-text-muted)]">
+      <span className="text-xs font-medium uppercase tracking-wider whitespace-nowrap text-sustainability-muted">
         {label}
       </span>
-      <span className="font-neue-stance text-2xl font-bold text-[color:var(--s-text-head)]">
+      <span className="font-neue-stance text-2xl font-bold text-sustainability-head">
         {!Number.isNaN(parseFloat(value)) ? <span ref={valueRef}>0</span> : value}
-        {unit && <span className="text-sm ml-0.5 text-[color:var(--s-primary)]">{unit}</span>}
+        {unit && <span className="text-sm ml-0.5 text-sustainability-primary">{unit}</span>}
       </span>
     </article>
   );
@@ -228,21 +223,21 @@ function ImpactCounterCard({ name, value, unit, description, iconName }: ImpactC
   return (
     <article
       ref={cardRef}
-      className="impact-card group bg-[color:var(--s-bg-card)] p-8 text-center transition-all duration-300 hover:bg-[color:var(--s-bg-card-hover)]"
+      className="impact-card group bg-sustainability-card p-8 text-center transition-all duration-300 hover:bg-sustainability-card/10"
       aria-label={`${name}: ${value}${unit || ""}`}
     >
-      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[color:var(--s-primary)]/5 group-hover:bg-[color:var(--s-primary)]/20 transition-colors duration-300 text-gray-400 group-hover:text-[color:var(--s-primary)]">
+      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-sustainability-primary/5 group-hover:bg-sustainability-primary/20 transition-colors duration-300 text-gray-400 group-hover:text-sustainability-primary">
         {getSustainabilityIcon(iconName, "lg")}
       </div>
-      <div className="font-neue-stance text-3xl md:text-4xl font-bold text-[color:var(--s-text-head)] mb-1">
+      <div className="font-neue-stance text-3xl md:text-4xl font-bold text-sustainability-head mb-1">
         {isNumeric ? <span ref={valueRef}>0</span> : value}
-        {unit && <span className="text-xl ml-1 text-[color:var(--s-primary)]">{unit}</span>}
+        {unit && <span className="text-xl ml-1 text-sustainability-primary">{unit}</span>}
       </div>
-      <p className="text-xs uppercase tracking-wider text-[color:var(--s-primary)] font-medium">
+      <p className="text-xs uppercase tracking-wider text-sustainability-primary font-medium">
         {name}
       </p>
       {description && (
-        <p className="text-sm text-[color:var(--s-text-muted)] leading-relaxed mt-2">
+        <p className="text-sm text-sustainability-muted leading-relaxed mt-2">
           {description}
         </p>
       )}
@@ -485,8 +480,7 @@ function SustainabilityInner() {
   return (
     <div
       ref={containerRef}
-      className="sustainability-page relative min-h-screen overflow-hidden"
-      style={{ backgroundColor: "var(--s-bg)" }}
+      className="sustainability-page relative min-h-screen overflow-hidden bg-sustainability-bg"
     >
       <SEOMeta
         title="Sustainability & Environmental Responsibility"
@@ -494,7 +488,7 @@ function SustainabilityInner() {
       />
 
       {/* ─── Hero Section ─── */}
-      <header className="relative flex min-h-[90vh] items-center justify-center overflow-hidden bg-[color:var(--s-bg)] text-[color:var(--s-text-head)] px-6 py-20 lg:px-10">
+      <header className="relative flex min-h-[90vh] items-center justify-center overflow-hidden bg-sustainability-bg text-sustainability-head px-6 py-20 lg:px-10">
         <div
           className="absolute inset-0 z-0 opacity-40 will-change-transform"
           data-scroll
@@ -505,7 +499,7 @@ function SustainabilityInner() {
             className="absolute inset-0 z-0 pointer-events-none"
             style={{
               background:
-                "radial-gradient(circle at 70% 30%, color-mix(in srgb, var(--s-primary) 15%, transparent) 0%, transparent 60%), radial-gradient(circle at 10% 80%, color-mix(in srgb, var(--s-primary) 8%, transparent) 0%, transparent 50%)",
+                "radial-gradient(circle at 70% 30%, color-mix(in srgb, var(--color-sustainability-primary) 15%, transparent) 0%, transparent 60%), radial-gradient(circle at 10% 80%, color-mix(in srgb, var(--color-sustainability-primary) 8%, transparent) 0%, transparent 50%)",
             }}
           />
 
@@ -525,23 +519,23 @@ function SustainabilityInner() {
           <div
             className="hero-esg mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 backdrop-blur-sm"
             style={{
-              borderColor: "color-mix(in srgb, var(--s-primary) 30%, transparent)",
-              backgroundColor: "color-mix(in srgb, var(--s-primary) 10%, transparent)",
+              borderColor: "color-mix(in srgb, var(--color-sustainability-primary) 30%, transparent)",
+              backgroundColor: "color-mix(in srgb, var(--color-sustainability-primary) 10%, transparent)",
             }}
           >
             <span className="relative flex h-2 w-2">
               <span
                 className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
-                style={{ backgroundColor: "var(--s-primary)" }}
+                style={{ backgroundColor: "var(--color-sustainability-primary)" }}
               />
               <span
                 className="relative inline-flex h-2 w-2 rounded-full"
-                style={{ backgroundColor: "var(--s-primary)" }}
+                style={{ backgroundColor: "var(--color-sustainability-primary)" }}
               />
             </span>
             <span
               className="text-xs font-semibold uppercase tracking-wider"
-              style={{ color: "var(--s-primary)" }}
+              style={{ color: "var(--color-sustainability-primary)" }}
             >
               2024 ESG Report Live
             </span>
@@ -553,7 +547,7 @@ function SustainabilityInner() {
 
           <p
             className="hero-sub mb-10 max-w-2xl text-lg font-light leading-relaxed md:text-xl"
-            style={{ color: "var(--s-text-muted)" }}
+            style={{ color: "var(--color-sustainability-muted)" }}
           >
             {hero?.subheadline ||
               "Leading the revolution in eco-conscious performance wear. We engineer fabrics that perform for the athlete and protect the planet."}
@@ -562,7 +556,7 @@ function SustainabilityInner() {
           <div className="hero-btns flex flex-wrap items-center justify-center gap-4 mb-16">
             <Button
               size="lg"
-              className="h-14 min-w-[180px] rounded-full bg-[color:var(--s-primary)] px-8 text-base font-bold text-black shadow-[0_0_20px_rgba(0,199,123,0.3)] transition hover:scale-105 hover:bg-white border-0"
+              className="h-14 min-w-[180px] rounded-full bg-sustainability-primary px-8 text-base font-bold text-black shadow-[0_0_20px_rgba(0,199,123,0.3)] transition hover:scale-105 hover:bg-white border-0"
               asChild
             >
               <Link to="#impact">
@@ -573,7 +567,7 @@ function SustainabilityInner() {
             <Button
               size="lg"
               variant="outline"
-              className="h-14 min-w-[180px] rounded-full border-[color:var(--s-border-card)] bg-[color:var(--s-bg-card)] px-8 text-base text-[color:var(--s-text-head)] backdrop-blur-md hover:bg-[color:var(--s-bg-card-hover)]"
+              className="h-14 min-w-[180px] rounded-full border-sustainability-border bg-sustainability-card px-8 text-base text-sustainability-head backdrop-blur-md hover:bg-sustainability-card/10"
               asChild
             >
               <Link to="/contact">
@@ -607,10 +601,10 @@ function SustainabilityInner() {
 
       <main>
         {/* ─── Marquee Strip ─── */}
-        <div className="relative w-full overflow-hidden bg-[color:var(--s-primary)]/10 py-4 backdrop-blur-sm border-b border-[color:var(--s-primary)]/20">
+        <div className="relative w-full overflow-hidden bg-sustainability-primary/10 py-4 backdrop-blur-sm border-b border-sustainability-primary/20">
           <MarqueeStrip
             text="Organic Cotton • Recycled Polyester • Regenerative Agriculture • Biodegradable Fibers • Circular Economy •"
-            accentColor="var(--s-marquee-bg)"
+            accentColor="var(--color-sustainability-marquee-bg)"
             speed={80}
           />
         </div>
@@ -620,17 +614,17 @@ function SustainabilityInner() {
           id="impact"
           className="relative py-24 lg:py-28"
           aria-label="Sustainability impact metrics"
-          style={{ backgroundColor: "var(--s-bg)" }}
+          style={{ backgroundColor: "var(--color-sustainability-bg)" }}
         >
           <div className="container mx-auto px-6 lg:px-10">
             <div className="fade-up-scroll mb-12 flex flex-col gap-4">
               <Typography.H2
                 className="font-neue-stance text-3xl font-bold md:text-5xl"
-                style={{ color: "var(--s-text-head)" }}
+                style={{ color: "var(--color-sustainability-head)" }}
               >
-                Engineered for <span style={{ color: "var(--s-primary)" }}>Impact</span>
+                Engineered for <span style={{ color: "var(--color-sustainability-primary)" }}>Impact</span>
               </Typography.H2>
-              <Typography.P className="max-w-2xl" style={{ color: "var(--s-text-muted)" }}>
+              <Typography.P className="max-w-2xl" style={{ color: "var(--color-sustainability-muted)" }}>
                 {featuresData?.description || metricsDescription}
               </Typography.P>
             </div>
@@ -641,16 +635,16 @@ function SustainabilityInner() {
                 {featuresData.highlightedFeatures.map((feature, index: number) => (
                   <div
                     key={feature.id || index}
-                    className="feature-card group relative overflow-hidden rounded-3xl border border-[color:var(--s-border-card)] bg-[color:var(--s-bg-card)] p-8 backdrop-blur-md transition hover:shadow-lg hover:border-[color:var(--s-primary)]/30"
+                    className="feature-card group relative overflow-hidden rounded-3xl border border-sustainability-border bg-sustainability-card p-8 backdrop-blur-md transition hover:shadow-lg hover:border-sustainability-primary/30"
                   >
-                    <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-[color:var(--s-primary)] to-transparent" />
-                    <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-full bg-[color:var(--s-primary)]/10 text-[color:var(--s-primary)] transition-colors group-hover:bg-[color:var(--s-primary)] group-hover:text-black">
+                    <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-sustainability-primary to-transparent" />
+                    <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-full bg-sustainability-primary/10 text-sustainability-primary transition-colors group-hover:bg-sustainability-primary group-hover:text-black">
                       {getSustainabilityIcon(null, "md")}
                     </div>
-                    <Typography.H3 className="mb-2 text-xl font-bold text-[color:var(--s-text-head)]">
+                    <Typography.H3 className="mb-2 text-xl font-bold text-sustainability-head">
                       {feature.title}
                     </Typography.H3>
-                    <Typography.P className="text-sm leading-relaxed text-[color:var(--s-text-muted)]">
+                    <Typography.P className="text-sm leading-relaxed text-sustainability-muted">
                       {feature.description}
                     </Typography.P>
                   </div>
@@ -661,7 +655,7 @@ function SustainabilityInner() {
             {/* Bottom Area: Impact Metric Counters - in a segmented grid */}
             {activeImpactMetrics.length > 0 && (
               <section
-                className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-[color:var(--s-border-card)] lg:grid-cols-4 bg-[color:var(--s-border-card)]"
+                className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-sustainability-border lg:grid-cols-4 bg-sustainability-border"
                 aria-label="Sustainability metrics"
               >
                 {activeImpactMetrics.map((metric: SustainabilityMetric) => (
@@ -679,7 +673,7 @@ function SustainabilityInner() {
 
             {activeImpactMetrics.length === 0 && (
               <div className="py-8 text-center">
-                <Typography.P className="text-[color:var(--s-text-muted)]">
+                <Typography.P className="text-sustainability-muted">
                   No impact metrics configured. Add metrics in the admin panel to display here.
                 </Typography.P>
               </div>
@@ -714,7 +708,7 @@ function SustainabilityInner() {
 
         {/* ─── Fabric Portfolio Section ─── */}
         {fabricPortfolioData && (
-          <section className="bg-[color:var(--s-bg-alt)] py-24 relative overflow-hidden">
+          <section className="bg-sustainability-section py-24 relative overflow-hidden">
             {/* Dot pattern background */}
             <div
               className="absolute inset-0 pointer-events-none opacity-5 mix-blend-screen"
@@ -725,11 +719,11 @@ function SustainabilityInner() {
 
             <div className="container mx-auto px-6 lg:px-10 mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
               <div>
-                <Typography.H2 className="font-neue-stance text-3xl font-bold text-[color:var(--s-text-head)] mb-2">
+                <Typography.H2 className="font-neue-stance text-3xl font-bold text-sustainability-head mb-2">
                   Sustainable{" "}
-                  <span className="text-[color:var(--s-primary)]">Material Library</span>
+                  <span className="text-sustainability-primary">Material Library</span>
                 </Typography.H2>
-                <Typography.P className="text-[color:var(--s-text-muted)]">
+                <Typography.P className="text-sustainability-muted">
                   {fabricPortfolioData.description || "Browse our top-rated eco-fabrics."}
                 </Typography.P>
               </div>
@@ -749,20 +743,20 @@ function SustainabilityInner() {
         )}
 
         {/* ─── CTA Footer — Dramatic Stitch-Faithful Redesign ─── */}
-        <footer className="relative mt-20 overflow-hidden bg-[color:var(--s-bg)] pt-32 pb-12">
+        <footer className="relative mt-20 overflow-hidden bg-sustainability-bg pt-32 pb-12">
           {/* Dramatic radial gradient backdrop */}
           <div
             className="absolute inset-0 opacity-30 pointer-events-none"
             style={{
               background:
-                "radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--s-primary) 30%, transparent) 0%, color-mix(in srgb, #003366 50%, transparent) 50%, transparent 100%)",
+                "radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--color-sustainability-primary) 30%, transparent) 0%, color-mix(in srgb, var(--color-sustainability-primary) 50%, transparent) 50%, transparent 100%)",
             }}
           />
 
           <div className="relative z-10 container mx-auto max-w-7xl px-6 lg:px-10">
             {/* CTA Content */}
             <div className="fade-up-scroll mb-20 flex flex-col items-center text-center">
-              <h2 className="mb-6 font-display text-5xl font-bold tracking-tight text-[color:var(--s-text-head)] md:text-7xl">
+              <h2 className="mb-6 font-display text-5xl font-bold tracking-tight text-sustainability-head md:text-7xl">
                 {(callToActionTitle || "Join Our Sustainable Journey").split(" ").length > 2 ? (
                   <>
                     {(callToActionTitle || "Join Our Sustainable Journey")
@@ -770,7 +764,7 @@ function SustainabilityInner() {
                       .slice(0, 2)
                       .join(" ")}
                     <br />
-                    <span className="italic text-[color:var(--s-primary)]">
+                    <span className="italic text-sustainability-primary">
                       {(callToActionTitle || "Join Our Sustainable Journey")
                         .split(" ")
                         .slice(2)
@@ -781,14 +775,14 @@ function SustainabilityInner() {
                   callToActionTitle || "Join Our Sustainable Journey"
                 )}
               </h2>
-              <p className="mb-10 max-w-xl text-lg text-[color:var(--s-text-muted)]">
+              <p className="mb-10 max-w-xl text-lg text-sustainability-muted">
                 {callToActionDescription ||
                   "Partner with a manufacturer that prioritizes the planet as much as performance. Let's build the future of sportswear together."}
               </p>
               <div className="flex flex-col gap-4 sm:flex-row">
                 <Button
                   size="lg"
-                  className="h-14 min-w-[200px] rounded-full bg-[color:var(--s-primary)] px-8 text-lg font-bold text-[#0A0A0A] shadow-[0_0_20px_rgba(0,199,123,0.4)] transition hover:scale-105 hover:bg-white border-0"
+                  className="h-14 min-w-[200px] rounded-full bg-sustainability-primary px-8 text-lg font-bold text-sustainability-bg shadow-[0_0_20px_color-mix(in_srgb,_var(--color-sustainability-primary)_40%,_transparent)] transition hover:scale-105 hover:bg-white border-0"
                   asChild
                 >
                   <Link to={callToActionButtonLink}>
@@ -799,23 +793,23 @@ function SustainabilityInner() {
               </div>
             </div>
 
-            <div className="flex flex-col items-center justify-between gap-6 border-t border-[color:var(--s-border-card)] pt-12 md:flex-row">
+            <div className="flex flex-col items-center justify-between gap-6 border-t border-sustainability-border pt-12 md:flex-row">
               <div className="flex items-center gap-6">
                 <img src="/logo.png" alt="RUN Logo" className="h-8 w-auto invert" />
-                <p className="text-sm text-[color:var(--s-text-muted)]">
+                <p className="text-sm text-sustainability-muted">
                   © {new Date().getFullYear()} RUN APPAREL (PVT) LTD. All rights reserved.
                 </p>
               </div>
               <div className="flex gap-8">
                 <Link
                   to="/privacy"
-                  className="text-sm text-[color:var(--s-text-muted)] transition hover:text-[color:var(--s-primary)]"
+                  className="text-sm text-sustainability-muted transition hover:text-sustainability-primary"
                 >
                   Privacy Policy
                 </Link>
                 <Link
                   to="/terms"
-                  className="text-sm text-[color:var(--s-text-muted)] transition hover:text-[color:var(--s-primary)]"
+                  className="text-sm text-sustainability-muted transition hover:text-sustainability-primary"
                 >
                   Terms of Service
                 </Link>

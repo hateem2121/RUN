@@ -1,10 +1,7 @@
 import type { ResearchVM, RoadmapVM } from "@shared/viewmodels";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap } from "@/lib/gsap";
 import React from "react";
 import { cn } from "@/lib/utils";
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface RoadAheadTimelineProps {
   roadmap: RoadmapVM[];

@@ -1,16 +1,11 @@
-import { useGSAP } from "@gsap/react";
-import type { Fabric, MediaAsset } from "@shared/index";
+import { gsap, useGSAP } from "@/lib/gsap";
+import type { MediaAsset } from "@shared/index";
+import type { Fabric } from "@shared/schemas/materials";
 import { useQuery } from "@tanstack/react-query";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Leaf, RotateCw } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, useGSAP);
-}
 
 interface FabricPortfolioSectionProps {
   mediaAssets?: MediaAsset[];

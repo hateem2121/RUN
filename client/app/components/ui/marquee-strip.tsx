@@ -17,7 +17,7 @@ export interface MarqueeStripProps {
 export function MarqueeStrip({
   text,
   speed = 100,
-  accentColor = "#68869A", // Brand muted color by default
+  accentColor = "var(--color-admin-muted)", // Brand muted color by default
   direction = "left",
   className,
 }: MarqueeStripProps) {

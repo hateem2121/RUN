@@ -454,11 +454,11 @@ export const StaggeredMenu = ({
                       }}
                       style={{
                         color: it.label.toLowerCase().includes("manufacturing")
-                          ? "#D4A853"
+                          ? "var(--color-manufacturing-accent)"
                           : it.label.toLowerCase().includes("technology")
-                            ? "#00D4FF"
+                            ? "var(--color-technology-accent)"
                             : it.label.toLowerCase().includes("sustainability")
-                              ? "#00C97B"
+                              ? "var(--color-sustainability-primary)"
                               : undefined,
                       }}
                     >

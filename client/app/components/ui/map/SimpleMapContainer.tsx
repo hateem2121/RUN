@@ -77,7 +77,7 @@ export function SimpleMapContainer({ locations, className = "" }: SimpleMapConta
           return;
         }
 
-        const color = location.type === "facility" ? "#16a34a" : "#2563eb";
+        const color = location.type === "facility" ? "var(--color-status-success)" : "var(--color-status-info)";
 
         const icon = L.divIcon({
           className: "custom-map-marker",
@@ -99,7 +99,7 @@ export function SimpleMapContainer({ locations, className = "" }: SimpleMapConta
               <h3 style="font-weight: bold; color: ${color}; margin: 0 0 4px 0;">
                 ${location.type === "facility" ? "Facility" : "Client"}: ${location.name}
               </h3>
-              <p style="margin: 0; font-size: 12px; color: #666;">
+              <p style="margin: 0; font-size: 12px; color: var(--color-admin-muted);">
                 ${location.city}, ${location.country}
               </p>
               ${location.details ? `<p style="margin: 4px 0 0 0; font-size: 12px;">${location.details}</p>` : ""}
@@ -196,7 +196,7 @@ export function SimpleMapContainer({ locations, className = "" }: SimpleMapConta
           </div>
 
           {/* Map Container */}
-          <div ref={containerRef} className="h-full w-full bg-[#1a1a2e]" />
+          <div ref={containerRef} className="h-full w-full bg-slate-900" />
 
           {/* Loading Overlay */}
           {!isLoaded && (

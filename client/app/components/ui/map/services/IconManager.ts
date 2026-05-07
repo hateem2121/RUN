@@ -70,8 +70,8 @@ class IconManagerService {
     }
 
     const { size, type } = config;
-    const color = type === "client" ? "#3b82f6" : "#10b981";
-    const shadowColor = type === "client" ? "rgba(59, 130, 246, 0.4)" : "rgba(16, 185, 129, 0.4)";
+    const color = type === "client" ? "var(--color-status-info)" : "var(--color-status-success)";
+    const shadowColor = type === "client" ? "color-mix(in srgb, var(--color-status-info) 40%, transparent)" : "color-mix(in srgb, var(--color-status-success) 40%, transparent)";
 
     const icon = new DivIcon({
       className: `fallback-marker ${type}-fallback`,

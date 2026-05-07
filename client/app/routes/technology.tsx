@@ -1,33 +1,27 @@
-import { useGSAP } from "@gsap/react";
+import { gsap, useGSAP } from "@/lib/gsap";
 import type {
   MediaAsset,
   TechnologyCta as TechnologyCtaType,
   TechnologyEquipment,
-  TechnologyHero,
+  TechnologyHero as TechnologyHeroType,
   TechnologyInnovation,
   TechnologyResearch,
   TechnologyRoadmap,
 } from "@shared/index";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 import React, { useRef } from "react";
 import { useLoaderData } from "react-router";
-// Import NEW unified sections
+
+// import { TechnologyErrorBoundary } from "@/components/error-boundaries/TechnologyErrorBoundary";
 import { InteractiveExperienceSection } from "@/components/technology/InteractiveExperienceSection";
 import { RoadAheadTimeline } from "@/components/technology/RoadAheadTimeline";
 import { TechnologyStackSection } from "@/components/technology/TechnologyStackSection";
-import { MarqueeStrip } from "@/components/technology/ui/MarqueeStrip";
+import { MarqueeStrip } from "@/components/ui/marquee-strip";
 import { Typography } from "@/components/ui/typography";
 import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
 import { getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/technology";
 
-// Register GSAP plugins
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 // Import shared ViewModels
 import type {
@@ -69,7 +63,7 @@ type TechnologyVM = {
 
 // Type for batch API response
 type TechnologyBatchResponse = {
-  hero: TechnologyHero | null;
+  hero: TechnologyHeroType | null;
   innovations: TechnologyInnovation[];
   equipment: TechnologyEquipment[];
   research: TechnologyResearch[];
@@ -85,7 +79,7 @@ type TechnologyBatchResponse = {
   };
 };
 
-function resolveHeroBackgroundId(hero: TechnologyHero | undefined): number | null {
+function resolveHeroBackgroundId(hero: TechnologyHeroType | undefined): number | null {
   if (!hero) return null;
   return hero.backgroundMediaId || null;
 }
@@ -105,7 +99,7 @@ function collectMediaIds(item: MediaEntity): {
   };
 }
 
-function normalizeHero(h: TechnologyHero | undefined): HeroVM | null {
+function normalizeHero(h: TechnologyHeroType | undefined): HeroVM | null {
   if (!h) return null;
   const heroData = h as Record<string, unknown>;
   return {
@@ -213,7 +207,7 @@ function normalizeCta(c: TechnologyCtaType | undefined): CtaVM | null {
 }
 
 function normalizeTechnologyData(
-  hero: TechnologyHero | undefined,
+  hero: TechnologyHeroType | undefined,
   innovations: TechnologyInnovation[],
   equipment: TechnologyEquipment[],
   research: TechnologyResearch[],
@@ -341,8 +335,8 @@ function TechnologyInner() {
       {batchLoading ? (
         <div className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-white">
           <div className="text-center text-slate-900">
-            <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-[#0047AB]/30 border-t-[#0047AB]"></div>
-            <Typography.P className="text-sm tracking-widest uppercase font-mono text-[#0047AB]/70">
+            <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-technology-primary/30 border-t-technology-primary"></div>
+            <Typography.P className="text-sm tracking-widest uppercase font-mono text-technology-primary/70">
               Initializing...
             </Typography.P>
           </div>
@@ -350,7 +344,7 @@ function TechnologyInner() {
       ) : (
         <div
           ref={containerRef}
-          className="technology-page-root relative isolate min-h-screen bg-white dark:bg-[#0A0A0A]"
+          className="technology-page-root relative isolate min-h-screen bg-technology-bg"
         >
           {/* Grid Pattern */}
           <div className="fixed inset-0 pointer-events-none z-0 bg-grid-arctic dark:bg-grid-tech opacity-30"></div>
@@ -358,32 +352,32 @@ function TechnologyInner() {
           {/* ============================================
               HERO SECTION — Stitch Design
               ============================================ */}
-          <header className="relative pt-48 pb-40 px-6 min-h-screen flex flex-col justify-center overflow-hidden bg-gradient-to-b from-white to-[#FAFBFC] dark:from-[#0A0A0A] dark:to-transparent">
+          <header className="relative pt-48 pb-40 px-6 min-h-screen flex flex-col justify-center overflow-hidden bg-gradient-to-b from-technology-bg to-technology-card dark:from-technology-bg dark:to-transparent">
             {/* HUD micro-copy top-right */}
             <div className="hero-hud absolute top-28 right-12 hidden md:flex flex-col items-end gap-1">
-              <span className="micro-copy dark:text-[#00D4FF]/70">SYS.STATUS: OPTIMAL</span>
+              <span className="micro-copy dark:text-technology-accent/70">SYS.STATUS: OPTIMAL</span>
               <span className="micro-copy dark:text-slate-600">LAT: 47.3769° N</span>
             </div>
 
             <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col items-center text-center">
               {/* Version Badge */}
               <div className="hero-badge mb-12 inline-flex items-center gap-3 px-4 py-1.5 bg-white dark:bg-white/[0.04] border border-slate-100 dark:border-white/[0.08] shadow-sm rounded-full dark:backdrop-blur-xl">
-                <div className="w-1.5 h-1.5 bg-[#0047AB] dark:bg-[#00D4FF] rounded-full shadow-[0_0_8px_rgba(0,71,171,0.5)] dark:shadow-[0_0_8px_rgba(0,212,255,0.8)] dark:animate-pulse"></div>
-                <span className="text-[10px] font-mono font-bold text-[#0047AB] dark:text-[#00D4FF] tracking-widest uppercase">
+                <div className="w-1.5 h-1.5 bg-technology-primary dark:bg-technology-accent rounded-full shadow-[0_0_8px_rgba(0,71,171,0.5)] dark:shadow-[0_0_8px_var(--color-technology-accent)] dark:animate-pulse"></div>
+                <span className="text-[10px] font-mono font-bold text-technology-primary dark:text-technology-accent tracking-widest uppercase">
                   Version 2.04 Stable
                 </span>
               </div>
 
               {/* Title Block */}
               <div className="hero-title flex flex-col items-center mb-12 space-y-4">
-                <Typography.H1 className="text-7xl md:text-[9rem] lg:text-[11rem] font-neue-stance font-bold text-black dark:text-white leading-[0.8] tracking-tight uppercase flex flex-col items-center">
+                <Typography.H1 className="text-7xl md:text-display-lg lg:text-display-xl font-neue-stance font-bold text-black dark:text-white leading-[0.8] tracking-tight uppercase flex flex-col items-center">
                   {firstWord && (
                     <span className="block text-slate-900 dark:text-white opacity-90">
                       {firstWord}
                     </span>
                   )}
                   {gradientWord && (
-                    <span className="bg-clip-text text-transparent py-2 bg-gradient-to-br from-[#0047AB] to-[#002F75] dark:from-[#00D4FF] dark:to-[#00D4FF]/70">
+                    <span className="bg-clip-text text-transparent py-2 bg-gradient-to-br from-technology-primary to-technology-primary/80 dark:from-technology-accent dark:to-technology-accent/70">
                       {gradientWord}
                     </span>
                   )}
@@ -396,10 +390,10 @@ function TechnologyInner() {
               </div>
 
               {/* Cobalt/Cyan accent bar */}
-              <div className="hero-accent h-1.5 w-24 bg-[#0047AB] dark:bg-[#00D4FF] mb-14 shadow-sm dark:shadow-[0_0_15px_rgba(0,212,255,0.6)]"></div>
+              <div className="hero-accent h-1.5 w-24 bg-technology-primary dark:bg-technology-accent mb-14 shadow-sm dark:shadow-[0_0_15px_var(--color-technology-accent)]"></div>
 
               {/* Subtitle */}
-              <Typography.P className="hero-desc text-base md:text-xl text-slate-500 dark:text-[#E3DFD6] font-normal leading-relaxed max-w-2xl mb-16 tracking-wide font-helvetica">
+              <Typography.P className="hero-desc text-base md:text-xl text-technology-body font-normal leading-relaxed max-w-2xl mb-16 tracking-wide font-helvetica">
                 {vm.hero?.subtitle ||
                   "Engineering the next generation of athletic skin. We go beyond textiles, diving deep into biotechnology to enhance human performance through reactive materials."}
               </Typography.P>
@@ -408,7 +402,7 @@ function TechnologyInner() {
               <div className="hero-cta flex justify-center group">
                 <a
                   href={vm.hero?.primaryCtaLink || "#"}
-                  className="px-12 py-5 bg-[#0047AB] dark:bg-[#00D4FF] text-white dark:text-black font-bold uppercase tracking-[0.25em] text-[10px] shadow-[0_10px_30px_-10px_rgba(0,71,171,0.5)] dark:shadow-[0_0_30px_-5px_rgba(0,212,255,0.4)] hover:shadow-[0_15px_40px_-10px_rgba(0,71,171,0.6)] dark:hover:shadow-[0_0_50px_-5px_rgba(0,212,255,0.6)] dark:hover:bg-white transition-all duration-500 flex items-center gap-4"
+                  className="px-12 py-5 bg-technology-primary dark:bg-technology-accent text-white dark:text-black font-bold uppercase tracking-[0.25em] text-[10px] shadow-[0_10px_30px_-10px_rgba(0,71,171,0.5)] dark:shadow-[0_0_30px_-5px_var(--color-technology-accent)] hover:shadow-[0_15px_40px_-10px_rgba(0,71,171,0.6)] dark:hover:shadow-[0_0_50px_-5px_var(--color-technology-accent)] dark:hover:bg-white transition-all duration-500 flex items-center gap-4"
                 >
                   {vm.hero?.primaryCtaText || "Explore Our Innovations"}
                   <span className="material-symbols-outlined text-base group-hover:translate-y-1 transition-transform">
@@ -420,7 +414,7 @@ function TechnologyInner() {
 
             {/* HUD micro-copy bottom-left */}
             <div className="hero-hud absolute bottom-10 left-12 hidden md:block">
-              <span className="micro-copy dark:text-[#00D4FF]/70">UPTIME: 99.99%</span>
+              <span className="micro-copy dark:text-technology-accent/70">UPTIME: 99.99%</span>
             </div>
 
             {/* Partner Marquee Bar — bottom of hero */}
@@ -431,7 +425,7 @@ function TechnologyInner() {
                     {TECH_PARTNERS.map((partner) => (
                       <span
                         key={`${set}-${partner}`}
-                        className="text-xl md:text-2xl font-neue-stance text-black dark:text-[#E3DFD6] font-bold tracking-tighter dark:opacity-70"
+                        className="text-xl md:text-2xl font-neue-stance text-technology-head dark:text-technology-body font-bold tracking-tighter dark:opacity-70"
                       >
                         {partner}
                       </span>
@@ -444,15 +438,8 @@ function TechnologyInner() {
 
           {/* Cyan Scrolling Marquee Strip */}
           <MarqueeStrip
-            items={[
-              "INNOVATION",
-              "3D DESIGN",
-              "SMART TEXTILES",
-              "R&D",
-              "BIOMECHANICS",
-              "COMPUTATIONAL ANALYSIS",
-            ]}
-            accentColor="#00D4FF"
+            text="INNOVATION • 3D DESIGN • SMART TEXTILES • R&D • BIOMECHANICS • COMPUTATIONAL ANALYSIS"
+            accentColor="var(--color-technology-accent)"
           />
 
           {/* Technical Analysis Dashboard */}
@@ -478,28 +465,28 @@ function TechnologyInner() {
               CTA SECTION — Stitch Design
               ============================================ */}
           {vm.cta && (
-            <section className="tech-cta py-48 px-6 relative overflow-hidden flex items-center justify-center border-t border-slate-100 dark:border-white/[0.08] bg-[#FAFBFC] dark:bg-[#0A0A0A]">
+            <section className="tech-cta py-48 px-6 relative overflow-hidden flex items-center justify-center border-t border-slate-100 dark:border-white/[0.08] bg-technology-card dark:bg-technology-bg">
               <div className="absolute inset-0 bg-grid-arctic dark:bg-grid-tech opacity-30 dark:opacity-20 z-0"></div>
 
               {/* HUD micro-copy */}
               <div className="absolute bottom-8 left-8 hidden md:block">
-                <span className="micro-copy dark:text-[#00D4FF]">
+                <span className="micro-copy dark:text-technology-accent">
                   LIVE FEED: ENCRYPTED_TUNNEL_CONNECTED
                 </span>
               </div>
               <div className="absolute top-8 right-8 hidden md:block">
-                <span className="micro-copy dark:text-[#68869A]">ID: RUN_APP_LAB_849</span>
+                <span className="micro-copy dark:text-technology-muted">ID: RUN_APP_LAB_849</span>
               </div>
 
               <div className="relative z-10 text-center max-w-4xl mx-auto">
                 <Typography.H2 className="text-6xl md:text-8xl lg:text-9xl font-neue-stance font-bold text-black dark:text-white mb-10 uppercase italic tracking-tighter leading-[0.85] dark:drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                   {vm.cta.headline.replace("?", "")} <br />
-                  <span className="text-[#0047AB] dark:text-[#00D4FF] dark:drop-shadow-[0_0_15px_rgba(0,212,255,0.6)]">
+                  <span className="text-technology-primary dark:text-technology-accent dark:drop-shadow-[0_0_15px_var(--color-technology-accent)]">
                     Together?
                   </span>
                 </Typography.H2>
 
-                <Typography.P className="text-lg md:text-2xl text-slate-500 dark:text-[#E3DFD6] mb-16 max-w-2xl mx-auto font-light leading-relaxed tracking-wide font-helvetica">
+                <Typography.P className="text-lg md:text-2xl text-technology-body mb-16 max-w-2xl mx-auto font-light leading-relaxed tracking-wide font-helvetica">
                   {vm.cta.subheadline ||
                     "Equip your team with technology designed for the next century of sport. Partner with us to redefine what is possible."}
                 </Typography.P>
@@ -507,13 +494,13 @@ function TechnologyInner() {
                 <div className="flex flex-col sm:flex-row gap-8 justify-center">
                   <a
                     href="/contact"
-                    className="px-14 py-6 bg-[#0047AB] dark:bg-[#00D4FF] text-white dark:text-black font-bold uppercase tracking-[0.2em] shadow-2xl dark:shadow-[0_0_30px_rgba(0,212,255,0.4)] hover:bg-[#002F75] dark:hover:bg-white dark:hover:shadow-[0_0_50px_rgba(255,255,255,0.6)] transition-all transform hover:-translate-y-1 text-xs"
+                    className="px-14 py-6 bg-technology-primary dark:bg-technology-accent text-white dark:text-black font-bold uppercase tracking-[0.2em] shadow-2xl dark:shadow-[0_0_30px_var(--color-technology-accent)] hover:bg-technology-primary/80 dark:hover:bg-white dark:hover:shadow-[0_0_50px_rgba(255,255,255,0.6)] transition-all transform hover:-translate-y-1 text-xs"
                   >
                     {vm.cta.primaryText || "Book a Tech Demo"}
                   </a>
                   <button
                     type="button"
-                    className="px-14 py-6 border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] text-black dark:text-white font-bold uppercase tracking-[0.2em] shadow-lg hover:border-[#0047AB] dark:hover:border-[#00D4FF] hover:text-[#0047AB] dark:hover:text-[#00D4FF] dark:hover:shadow-[0_0_20px_rgba(0,212,255,0.2)] transition-all text-xs dark:backdrop-blur-xl"
+                    className="px-14 py-6 border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] text-black dark:text-white font-bold uppercase tracking-[0.2em] shadow-lg hover:border-technology-primary dark:hover:border-technology-accent hover:text-technology-primary dark:hover:text-technology-accent dark:hover:shadow-[0_0_20px_var(--color-technology-accent)] transition-all text-xs dark:backdrop-blur-xl"
                   >
                     View Equipment Specs
                   </button>

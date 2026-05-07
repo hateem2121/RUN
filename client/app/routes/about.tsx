@@ -1,9 +1,7 @@
-import { useGSAP } from "@gsap/react";
-import type { AboutBatchResponse } from "@run-remix/shared";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import type { AboutBatchResponse } from "@shared/index";
 import { ABOUT_API } from "@shared/api-constants";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MessageSquare } from "lucide-react";
 
 import { useRef } from "react";
@@ -40,10 +38,6 @@ export function meta({}: Route.MetaArgs) {
       content: "Learn about our history, values, and manufacturing capabilities.",
     },
   ];
-}
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
 }
 
 export default function About() {

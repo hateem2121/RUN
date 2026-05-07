@@ -3,16 +3,9 @@
  * Implements React 19 standards, Native CSS Scroll Snap, and Optimistic UI.
  */
 
-import { useGSAP } from "@gsap/react";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AlertCircle, Check, Heart, Ruler, Share2, ShoppingBag } from "lucide-react";
-
-// Register ScrollTrigger
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 import { useEffect, useOptimistic, useRef, useState, useTransition } from "react";
 import { Link, useLoaderData, useParams } from "react-router";

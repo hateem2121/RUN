@@ -42,6 +42,11 @@
       radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
       radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
       radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+
+    /* Hero Conic - Light Mode */
+    --hero-conic-start: #e0e7ff;
+    --hero-conic-mid: #f8fafc;
+    --hero-conic-end: #ffffff;
   }
 
   .dark {
@@ -90,6 +95,41 @@
       radial-gradient(at 97% 96%, hsla(38, 60%, 74%, 0.1) 0px, transparent 50%),
       radial-gradient(at 33% 50%, hsla(222, 67%, 73%, 0.15) 0px, transparent 50%),
       radial-gradient(at 79% 53%, hsla(343, 68%, 79%, 0.1) 0px, transparent 50%);
+
+    /* Hero Conic - Dark Mode */
+    --hero-conic-start: #000000;
+    --hero-conic-mid: #1a1a1a;
+    --hero-conic-end: #333333;
+
+    /* Manufacturing - Dark Mode */
+    --color-manufacturing-bg: #0a0a0a;
+    --color-manufacturing-card: #121212;
+    --color-manufacturing-accent: #D4A853;
+    --color-manufacturing-head: #ffffff;
+    --color-manufacturing-body: #e3dfd6;
+    --color-manufacturing-muted: #68869a;
+
+    /* Technology - Dark Mode */
+    --color-technology-primary: #0047AB;
+    --color-technology-accent: #00D4FF;
+    --color-technology-bg: #0A0A0A;
+    --color-technology-card: #121212;
+    --color-technology-head: #ffffff;
+    --color-technology-body: #e3dfd6;
+    --color-technology-muted: #68869a;
+
+    /* Sustainability - Dark Mode */
+    --color-sustainability-primary: #00c97b;
+    --color-sustainability-bg: #0a0a0a;
+    --color-sustainability-section: #050807;
+    --color-sustainability-card: rgba(255, 255, 255, 0.04);
+    --color-sustainability-border: rgba(255, 255, 255, 0.08);
+    --color-sustainability-head: #ffffff;
+    --color-sustainability-body: #e3dfd6;
+    --color-sustainability-muted: #68869a;
+    --color-sustainability-marquee-bg: #00c97b;
+    --color-sustainability-marquee-text: #0a0a0a;
+    --shadow-sustainability-card: none;
 
     /* Feature Gradients - Dark Mode */
   }
@@ -142,9 +182,34 @@
   --gradient-manufacturing-hero: linear-gradient(to bottom right, #0a0a0a, #121212);
 
   /* Manufacturing Perfection System */
-  --color-manufacturing-accent: #ff4d00;
-  --color-manufacturing-bg: #1a0000;
-  --color-manufacturing-card: #121212;
+  --color-manufacturing-bg: #fdf2f0;
+  --color-manufacturing-card: #ffffff;
+  --color-manufacturing-accent: #D4A853;
+  --color-manufacturing-head: #1a1a1a;
+  --color-manufacturing-body: #4a4a4a;
+  --color-manufacturing-muted: #6b7280;
+
+  /* Technology System */
+  --color-technology-primary: #0047AB;
+  --color-technology-accent: #00D4FF;
+  --color-technology-bg: #ffffff;
+  --color-technology-card: #f8fafc;
+  --color-technology-head: #0f172a;
+  --color-technology-body: #475569;
+  --color-technology-muted: #64748b;
+
+  /* Sustainability System */
+  --color-sustainability-primary: #1a4331;
+  --color-sustainability-bg: #f9faf9;
+  --color-sustainability-section: #f3f4f3;
+  --color-sustainability-card: rgba(255, 255, 255, 0.6);
+  --color-sustainability-border: #ffffff;
+  --color-sustainability-head: #111827;
+  --color-sustainability-body: #374151;
+  --color-sustainability-muted: #6b7280;
+  --color-sustainability-marquee-bg: #1a4331;
+  --color-sustainability-marquee-text: #ffffff;
+  --shadow-sustainability-card: 0 8px 30px rgba(209, 250, 229, 0.5);
 
   /* =========================================
      Surface & Text Scale (Phase 1 Token Foundation)
@@ -279,6 +344,13 @@
   --shadow-popup: 0 10px 30px rgba(0, 0, 0, 0.15);
   --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.12);
 
+  /* luxury Shadow Scale (GS-010 remediation) */
+  --shadow-luxury-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-luxury-sm: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-luxury-md: 0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-luxury-lg: 0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+  --shadow-luxury-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
   /* Glow Shadows */
   --shadow-glow-sm: 0 0 10px 2px rgba(139, 92, 246, 0.15);
   --shadow-glow-md: 0 0 20px 4px rgba(139, 92, 246, 0.2);
@@ -286,11 +358,6 @@
   --shadow-glow-lg-desktop: 0 0 40px 12px rgba(139, 92, 246, 0.3);
   --shadow-glow-primary: 0 0 20px 4px hsl(var(--primary) / 0.3);
   --shadow-glow-orange: 0 0 20px 4px rgba(251, 146, 60, 0.3);
-
-  /* Luxury Shadows */
-  --shadow-luxury-sm: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-luxury-md: 0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
-  --shadow-luxury-lg: 0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
 
   /* Map/Leaflet Overrides */
   --color-map-popup-bg: var(--color-card);
@@ -594,4 +661,7 @@
   border-color: color-mix(in srgb, var(--color-manufacturing-accent) 60%, transparent);
   border-width: 1px;
   background-color: color-mix(in srgb, var(--color-manufacturing-accent) 5%, transparent);
+}
+@utility shadow-sustainability-card {
+  box-shadow: var(--shadow-sustainability-card);
 }

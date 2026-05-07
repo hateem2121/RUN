@@ -122,9 +122,9 @@ export function PublicCapabilitySection({
 
   return (
     <ManufacturingErrorBoundary>
-      <section className="py-24 max-w-7xl mx-auto px-6 bg-[color:var(--m-bg)]">
+      <section className="py-24 max-w-7xl mx-auto px-6 bg-manufacturing-bg">
         <div className="mb-16 text-center">
-          <span className="text-[color:var(--m-primary)] font-mono text-xs uppercase tracking-widest border border-[color:var(--m-primary)]/30 px-3 py-1 rounded-none font-bold">
+          <span className="text-manufacturing-accent font-mono text-xs uppercase tracking-widest border border-manufacturing-accent/30 px-3 py-1 rounded-none font-bold">
             Core Competencies
           </span>
           <h2 className="text-5xl font-neue-stance font-bold text-white uppercase mt-6 italic tracking-tighter skew-x-[-2deg]">
@@ -144,13 +144,13 @@ export function PublicCapabilitySection({
               <div
                 key={idx}
                 className={cn(
-                  "border border-white/5 bg-white/[0.04] p-8 relative overflow-hidden group backdrop-blur-xl transition-all duration-500 hover:border-[color:var(--m-primary)]/40 hover:bg-white/[0.06]",
+                  "border border-white/5 bg-white/[0.04] p-8 relative overflow-hidden group backdrop-blur-xl transition-all duration-500 hover:border-manufacturing-accent/40 hover:bg-white/[0.06]",
                   isLarge ? "col-span-2 row-span-1 lg:row-span-2" : "col-span-2 lg:col-span-1",
                   isVertical ? "row-span-1 lg:row-span-2" : "row-span-1",
                 )}
               >
                 <div className="absolute top-0 right-0 p-4 opacity-40 group-hover:opacity-100 transition-opacity">
-                  <Icon className="size-8 md:size-10 text-[color:var(--m-primary)]" />
+                  <Icon className="size-8 md:size-10 text-manufacturing-accent" />
                 </div>
 
                 <div className="relative z-10 h-full flex flex-col justify-end">
@@ -164,7 +164,7 @@ export function PublicCapabilitySection({
                   </h3>
                   <p
                     className={cn(
-                      "text-[#E3DFD6] mb-6 font-light leading-relaxed",
+                      "text-manufacturing-body mb-6 font-light leading-relaxed",
                       isLarge ? "max-w-md" : "text-sm",
                     )}
                   >
@@ -173,7 +173,7 @@ export function PublicCapabilitySection({
 
                   {isLarge && (
                     <a
-                      className="text-[color:var(--m-primary)] text-sm font-bold uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2 group/link cursor-pointer w-fit"
+                      className="text-manufacturing-accent text-sm font-bold uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2 group/link cursor-pointer w-fit"
                       href="#contact"
                     >
                       Learn More{" "}
@@ -182,15 +182,15 @@ export function PublicCapabilitySection({
                   )}
 
                   {isVertical && (
-                    <div className="h-24 w-full bg-[color:var(--m-bg)]/50 rounded-sm mt-4 relative overflow-hidden border border-[color:var(--m-primary)]/10">
-                      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--m-primary)_0%,_transparent_70%)]"></div>
-                      <div className="absolute top-1/2 left-1/4 w-1.5 h-1.5 bg-[color:var(--m-primary)] rotate-45 animate-pulse"></div>
+                    <div className="h-24 w-full bg-manufacturing-bg/50 rounded-sm mt-4 relative overflow-hidden border border-manufacturing-accent/10">
+                      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--color-manufacturing-accent)_0%,_transparent_70%)]"></div>
+                      <div className="absolute top-1/2 left-1/4 w-1.5 h-1.5 bg-manufacturing-accent rotate-45 animate-pulse"></div>
                       <div
-                        className="absolute top-1/3 left-1/2 w-1.5 h-1.5 bg-[color:var(--m-primary)] rotate-45 animate-pulse"
+                        className="absolute top-1/3 left-1/2 w-1.5 h-1.5 bg-manufacturing-accent rotate-45 animate-pulse"
                         style={{ animationDelay: "0.5s" }}
                       ></div>
                       <div
-                        className="absolute top-2/3 right-1/4 w-1.5 h-1.5 bg-[color:var(--m-primary)] rotate-45 animate-pulse"
+                        className="absolute top-2/3 right-1/4 w-1.5 h-1.5 bg-manufacturing-accent rotate-45 animate-pulse"
                         style={{ animationDelay: "1s" }}
                       ></div>
                     </div>
@@ -199,7 +199,7 @@ export function PublicCapabilitySection({
 
                 {isLarge && imgSrc && (
                   <>
-                    <div className="absolute inset-0 z-0 bg-gradient-to-t from-[color:var(--m-bg)]/95 via-transparent to-transparent"></div>
+                    <div className="absolute inset-0 z-0 bg-gradient-to-t from-manufacturing-bg/95 via-transparent to-transparent"></div>
                     <img
                       alt={cap.title}
                       className="absolute inset-0 w-full h-full object-cover -z-10 opacity-30 mix-blend-overlay group-hover:scale-105 transition-transform duration-700 grayscale group-hover:grayscale-0"

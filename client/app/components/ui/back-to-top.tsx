@@ -5,12 +5,12 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const ROUTE_ACCENT_MAP: Record<string, { bg: string; hover: string }> = {
-  "/manufacturing": { bg: "bg-[#D4A853]", hover: "hover:bg-[#D4A853]/90" },
-  "/technology": { bg: "bg-[#00D4FF]", hover: "hover:bg-[#00D4FF]/90" },
-  "/sustainability": { bg: "bg-[#00C97B]", hover: "hover:bg-[#00C97B]/90" },
+  "/manufacturing": { bg: "bg-manufacturing-accent", hover: "hover:bg-manufacturing-accent/90" },
+  "/technology": { bg: "bg-technology-accent", hover: "hover:bg-technology-accent/90" },
+  "/sustainability": { bg: "bg-sustainability-primary", hover: "hover:bg-sustainability-primary/90" },
 };
 
-const DEFAULT_ACCENT = { bg: "bg-[#D4A853]", hover: "hover:bg-[#D4A853]/90" };
+const DEFAULT_ACCENT = { bg: "bg-manufacturing-accent", hover: "hover:bg-manufacturing-accent/90" };
 
 export function BackToTop() {
   const [isVisible, setIsVisible] = useState(false);

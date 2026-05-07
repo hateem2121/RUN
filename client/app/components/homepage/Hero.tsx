@@ -116,14 +116,14 @@ export const Hero: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="bg-background-alt relative h-screen w-full overflow-hidden dark"
+      className="bg-background relative h-screen w-full overflow-hidden"
     >
       {/* 
         CSS Gradient Background 
         Replaces the R3F Canvas with a performant CSS animation.
         Uses a mesh-like gradient effect.
       */}
-      <div className="absolute inset-0 z-base overflow-hidden bg-black">
+      <div className="absolute inset-0 z-base overflow-hidden bg-background">
         <div className="bg-hero-conic absolute -inset-1/2 opacity-40 blur-hero-conic animate-spin-slow" />
         <div className="bg-hero-dots absolute inset-0 opacity-30 bg-hero-dots-size" />
       </div>
@@ -138,7 +138,7 @@ export const Hero: React.FC = () => {
             {heroLines.map((line: string, i: number) => (
               <span
                 key={i}
-                className="hero-line block my-0 md:-my-2 overflow-visible py-2 will-change-transform text-white font-bold tracking-tighter leading-[0.9] md:leading-[0.85] text-[13vw] sm:text-[10vw] md:text-[8vw] lg:text-[7vw] xl:text-[6vw]"
+                className="hero-line block my-0 md:-my-2 overflow-visible py-2 will-change-transform text-foreground font-bold tracking-tighter leading-[0.9] md:leading-[0.85] text-[13vw] sm:text-[10vw] md:text-[8vw] lg:text-[7vw] xl:text-[6vw]"
               >
                 {line}
               </span>
@@ -147,7 +147,7 @@ export const Hero: React.FC = () => {
 
           {/* CMS Subtitle */}
           {heroData?.subtitle && (
-            <p className="hero-subtitle mt-6 max-w-xl text-white/70 text-base md:text-lg leading-relaxed tracking-wide">
+            <p className="hero-subtitle mt-6 max-w-xl text-muted-foreground text-base md:text-lg leading-relaxed tracking-wide">
               {heroData.subtitle}
             </p>
           )}
@@ -156,7 +156,7 @@ export const Hero: React.FC = () => {
           {heroData?.ctaText && heroData?.ctaLink && (
             <a
               href={heroData.ctaLink}
-              className="pointer-events-auto hero-cta mt-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-8 py-3 text-sm font-bold tracking-widest text-white uppercase backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/40"
+              className="pointer-events-auto hero-cta mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-accent/10 px-8 py-3 text-sm font-bold tracking-widest text-foreground uppercase backdrop-blur-sm transition-all duration-300 hover:bg-accent/20 hover:border-accent/40"
             >
               {heroData.ctaText}
               <span aria-hidden="true">→</span>

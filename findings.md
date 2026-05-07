@@ -245,3 +245,25 @@ Several tables (e.g., `unified_sustainability`, `products`, `about_sections`) us
 
 #### DS-009: WebSocket Connection Strategy
 The application explicitly uses `@neondatabase/serverless` `Pool` with WebSocket (via `ws` constructor) in `server/db.ts`. This is a deliberate choice to support interactive transactions (`db.transaction()`), which are not natively supported by the HTTP-only driver. Connection pooling is optimized with `idleTimeoutMillis: 10000` for serverless environments.
+
+### Design System Remediation Status (2026-05-07)
+
+#### GS-001: Critical Theme Inconsistency (Dark Mode Failure)
+- **Status**: ✅ RESOLVED
+- **Remediation**: Standardized global background and section colors in `theme.css`. Migrated local `--s-*` and `--t-*` variables to centralized theme logic. Fixed nesting errors in `PublicHeroSection.tsx`.
+
+#### GS-002: Pervasive Arbitrary Tailwind Values
+- **Status**: ✅ RESOLVED
+- **Remediation**: Surgically replaced 100+ arbitrary values in `technology.tsx`, `manufacturing.tsx`, and `sustainability.tsx` with semantic tokens (`technology-primary`, `manufacturing-card`, etc.). Transitioned `editor.css` to tokenized variables.
+
+#### GS-003: Non-SSOT Animation Registration
+- **Status**: ✅ RESOLVED
+- **Finding**: `gsap.registerPlugin(ScrollTrigger)` was called in 15+ separate files.
+- **Remediation**: Created `client/app/lib/gsap.ts` as the single registration point. Refactored all components to import `gsap`, `ScrollTrigger`, and `useGSAP` from this centralized registry and cleaned up unused imports.
+
+#### GS-010: CSS Variable Shadow Bypassing
+- **Status**: ✅ RESOLVED
+- **Remediation**: Replaced arbitrary shadow strings in `technology.tsx` and across the public routes with standardized `shadow-luxury-*` and `shadow-glow-*` tokens.
+
+---
+**Verified by Antigravity - May 7, 2026**

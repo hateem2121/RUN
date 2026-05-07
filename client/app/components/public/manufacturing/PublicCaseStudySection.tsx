@@ -74,7 +74,7 @@ export function PublicCaseStudySection({
 
   return (
     <ManufacturingErrorBoundary>
-      <section className="py-24 bg-[color:var(--m-bg)] relative border-b border-white/5">
+      <section className="py-24 bg-manufacturing-bg relative border-b border-white/5">
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
           <svg
             className="absolute w-full h-full"
@@ -87,7 +87,7 @@ export function PublicCaseStudySection({
                   d="M 40 0 L 0 0 0 40"
                   fill="none"
                   stroke="currentColor"
-                  className="text-[color:var(--m-primary)]"
+                  className="text-manufacturing-accent"
                   strokeOpacity="0.2"
                   strokeWidth="1"
                 ></path>
@@ -100,7 +100,7 @@ export function PublicCaseStudySection({
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="flex flex-col md:flex-row justify-between md:items-end mb-16 gap-6">
             <div>
-              <span className="text-[color:var(--m-primary)] font-mono text-xs uppercase tracking-widest font-bold">
+              <span className="text-manufacturing-accent font-mono text-xs uppercase tracking-widest font-bold">
                 Featured Case Studies
               </span>
               <h2 className="text-5xl md:text-6xl font-neue-stance font-bold text-white uppercase mt-4 italic tracking-tighter skew-x-[-2deg]">
@@ -113,7 +113,7 @@ export function PublicCaseStudySection({
                 type="button"
                 onClick={prevProject}
                 aria-label="Previous project"
-                className="w-12 h-12 flex items-center justify-center border border-[color:var(--m-primary)]/30 bg-black/50 text-[color:var(--m-primary)] hover:bg-[color:var(--m-primary)] hover:text-black transition-colors skew-x-[-10deg]"
+                className="w-12 h-12 flex items-center justify-center border border-manufacturing-accent/30 bg-black/50 text-manufacturing-accent hover:bg-manufacturing-accent hover:text-black transition-colors skew-x-[-10deg]"
               >
                 <ChevronLeft className="w-6 h-6 skew-x-[10deg]" />
               </button>
@@ -121,14 +121,14 @@ export function PublicCaseStudySection({
                 type="button"
                 onClick={nextProject}
                 aria-label="Next project"
-                className="w-12 h-12 flex items-center justify-center border border-[color:var(--m-primary)]/30 bg-black/50 text-[color:var(--m-primary)] hover:bg-[color:var(--m-primary)] hover:text-black transition-colors skew-x-[-10deg]"
+                className="w-12 h-12 flex items-center justify-center border border-manufacturing-accent/30 bg-black/50 text-manufacturing-accent hover:bg-manufacturing-accent hover:text-black transition-colors skew-x-[-10deg]"
               >
                 <ChevronRight className="w-6 h-6 skew-x-[10deg]" />
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 border border-white/10 bg-[color:var(--m-bg)]/80 backdrop-blur-md shadow-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 border border-white/10 bg-manufacturing-bg/80 backdrop-blur-md shadow-2xl">
             {/* Image Side */}
             <div className="lg:col-span-3 pb-[60%] lg:pb-0 relative overflow-hidden group">
               <img
@@ -137,8 +137,8 @@ export function PublicCaseStudySection({
                 className="absolute inset-0 w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-105"
                 src={currentProject.img}
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[color:var(--m-bg)] hidden lg:block opacity-90"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--m-bg)] to-transparent lg:hidden opacity-90"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-manufacturing-bg hidden lg:block opacity-90"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-manufacturing-bg to-transparent lg:hidden opacity-90"></div>
               <div className="absolute top-6 left-6 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
                 <span className="text-[10px] uppercase font-mono tracking-widest text-white/70 font-bold bg-black/50 px-2 py-0.5 border border-white/10 backdrop-blur-md">
@@ -149,7 +149,7 @@ export function PublicCaseStudySection({
 
             {/* Content Side */}
             <div className="lg:col-span-2 p-8 md:p-12 flex flex-col justify-center relative z-10">
-              <span className="text-xs font-mono uppercase tracking-widest text-[color:var(--m-primary)] mb-4 font-bold border-l-2 border-[color:var(--m-primary)] pl-3">
+              <span className="text-xs font-mono uppercase tracking-widest text-manufacturing-accent mb-4 font-bold border-l-2 border-manufacturing-accent pl-3">
                 {currentProject.tag}
               </span>
 
@@ -157,14 +157,14 @@ export function PublicCaseStudySection({
                 {currentProject.title}
               </h3>
 
-              <p className="text-[#E3DFD6] mb-10 leading-relaxed font-light text-sm md:text-base">
+              <p className="text-manufacturing-body mb-10 leading-relaxed font-light text-sm md:text-base">
                 {currentProject.desc}
               </p>
 
               <div className="grid grid-cols-2 gap-y-6 gap-x-4 mb-10 border-t border-white/5 pt-8">
                 {currentProject.stats.map((stat, i) => (
                   <div key={i}>
-                    <div className="text-[10px] uppercase text-[color:var(--m-text-muted)] font-mono mb-1 font-bold">
+                    <div className="text-[10px] uppercase text-manufacturing-muted font-mono mb-1 font-bold">
                       {stat.label}
                     </div>
                     <div className="text-white font-neue-stance font-medium text-xl italic">
@@ -175,7 +175,7 @@ export function PublicCaseStudySection({
               </div>
 
               <a
-                className="inline-flex items-center justify-between w-full border border-white/10 bg-white/[0.02] hover:bg-[color:var(--m-primary)] hover:text-black text-white px-6 py-4 uppercase text-xs tracking-widest font-bold transition-all duration-300 group cursor-pointer"
+                className="inline-flex items-center justify-between w-full border border-white/10 bg-white/[0.02] hover:bg-manufacturing-accent hover:text-black text-white px-6 py-4 uppercase text-xs tracking-widest font-bold transition-all duration-300 group cursor-pointer"
                 href="/case-studies"
               >
                 <span>View Full Specs</span>

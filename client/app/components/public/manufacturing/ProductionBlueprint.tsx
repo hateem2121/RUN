@@ -1,15 +1,8 @@
-import { useGSAP } from "@gsap/react";
+import { gsap, useGSAP } from "@/lib/gsap";
 import type { ManufacturingProcess, MediaAsset } from "@shared/index";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
 import { useRef } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
 import { cn } from "@/lib/utils";
-
-// Register ScrollTrigger
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 interface ProductionBlueprintProps {
   mediaAssets: MediaAsset[];
@@ -147,8 +140,8 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
 
           {/* Timeline Mini-Map (Desktop) */}
           <div className="hidden md:flex flex-col items-end">
-            <div className="bg-[#121212] border border-[var(--color-manufacturing-accent)]/20 p-2 mb-2 shadow-lg shadow-black/50">
-              <div className="flex items-center space-x-1 font-mono text-[10px] uppercase text-[#68869A] mb-2 border-b border-white/5 pb-1 justify-between px-1">
+            <div className="bg-manufacturing-card border border-[var(--color-manufacturing-accent)]/20 p-2 mb-2 shadow-lg shadow-black/50">
+              <div className="flex items-center space-x-1 font-mono text-[10px] uppercase text-manufacturing-muted mb-2 border-b border-white/5 pb-1 justify-between px-1">
                 <span>Process Monitor</span>
                 <span className="w-1.5 h-1.5 bg-[var(--color-manufacturing-accent)] rounded-none rotate-45 animate-pulse"></span>
               </div>
@@ -214,18 +207,18 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
                   >
                     0{idx + 1}
                   </div>
-                  <div className="flex flex-col ml-4 bg-[#1A0000] py-1">
+                  <div className="flex flex-col ml-4 bg-manufacturing-bg py-1">
                     <span
                       className={cn(
                         "text-xs font-mono font-bold uppercase tracking-widest mb-1 transition-colors",
                         idx === 0
                           ? "text-[var(--color-manufacturing-accent)]"
-                          : "text-[#E3DFD6] group-hover:text-[var(--color-manufacturing-accent)]",
+                          : "text-manufacturing-body group-hover:text-[var(--color-manufacturing-accent)]",
                       )}
                     >
                       {phase.subtitle.split(" ")[0]} {phase.subtitle.split(" ")[1]}
                     </span>
-                    <span className="text-xs font-mono text-[#68869A] uppercase">
+                    <span className="text-xs font-mono text-manufacturing-muted uppercase">
                       {phase.subtitle.substring(
                         phase.subtitle.indexOf("["),
                         phase.subtitle.indexOf("]") + 1,
@@ -283,7 +276,7 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
                       </div>
                       <p
                         className={cn(
-                          "text-[#E3DFD6] text-sm leading-relaxed font-light border-l-2 pl-4 transition-colors",
+                          "text-manufacturing-body text-sm leading-relaxed font-light border-l-2 pl-4 transition-colors",
                           idx === 0
                             ? "border-[var(--color-manufacturing-accent)]"
                             : "border-white/20 group-hover:border-[var(--color-manufacturing-accent)]",

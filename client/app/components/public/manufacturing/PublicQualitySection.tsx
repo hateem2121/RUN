@@ -1,14 +1,8 @@
-import { useGSAP } from "@gsap/react";
+import { gsap, useGSAP } from "@/lib/gsap";
 import type { ManufacturingQuality, MediaAsset } from "@shared/index";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
 import { useRef } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
 import { cn, sanitizeContent } from "@/lib/utils";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 interface PublicQualitySectionProps {
   qualities?: ManufacturingQuality[];
@@ -97,10 +91,10 @@ export function PublicQualitySection({ qualities = [] }: PublicQualitySectionPro
     <ManufacturingErrorBoundary>
       <section
         ref={sectionRef}
-        className="py-32 relative overflow-hidden bg-[var(--color-manufacturing-bg)]"
+        className="py-32 relative overflow-hidden bg-manufacturing-bg"
         aria-labelledby="quality-title"
       >
-        <div className="absolute inset-0 border-y border-white/5 bg-[var(--color-manufacturing-bg)]/30"></div>
+        <div className="absolute inset-0 border-y border-white/5 bg-manufacturing-bg/30"></div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
@@ -110,14 +104,14 @@ export function PublicQualitySection({ qualities = [] }: PublicQualitySectionPro
             >
               Zero
               <br />
-              <span className="text-[var(--color-manufacturing-accent)]">Defects</span>
+              <span className="text-manufacturing-accent">Defects</span>
             </h2>
-            <p className="text-[#E3DFD6] text-lg max-w-md leading-relaxed font-light">
+            <p className="text-manufacturing-body text-lg max-w-md leading-relaxed font-light">
               Our proprietary "Vision-AI" inspection system scans every inch of fabric at 300 frames
               per second, ensuring microscopic imperfections are detected before cutting begins.
             </p>
-            <div className="mt-12 flex items-center space-x-4 text-sm text-[#68869A] font-mono">
-              <span className="w-3 h-3 bg-[var(--color-manufacturing-accent)] rounded-none rotate-45 animate-pulse"></span>
+            <div className="mt-12 flex items-center space-x-4 text-sm text-manufacturing-muted font-mono">
+              <span className="w-3 h-3 bg-manufacturing-accent rounded-none rotate-45 animate-pulse"></span>
               <span className="font-bold tracking-wider uppercase">System Status: Operational</span>
             </div>
           </div>
@@ -136,7 +130,7 @@ export function PublicQualitySection({ qualities = [] }: PublicQualitySectionPro
                     aria-label={`${q.displayValue} ${q.title}`}
                   >
                     <circle
-                      className="text-[#0A0A0A]"
+                      className="text-manufacturing-bg"
                       cx="64"
                       cy="64"
                       fill="transparent"
@@ -170,11 +164,11 @@ export function PublicQualitySection({ qualities = [] }: PublicQualitySectionPro
                       : q.displayValue}
                   </span>
                 </div>
-                <h4 className="text-[#68869A] group-hover:text-[var(--color-manufacturing-accent)] transition-colors uppercase text-xs tracking-widest font-bold mb-2">
+                <h4 className="text-manufacturing-muted group-hover:text-[var(--color-manufacturing-accent)] transition-colors uppercase text-xs tracking-widest font-bold mb-2">
                   {sanitizeContent(q.title)}
                 </h4>
                 {q.description && q.description !== q.displayValue && (
-                  <p className="text-[#E3DFD6] text-[10px] leading-tight font-light opacity-0 group-hover:opacity-100 transition-opacity">
+                  <p className="text-manufacturing-body text-[10px] leading-tight font-light opacity-0 group-hover:opacity-100 transition-opacity">
                     {sanitizeContent(q.description)}
                   </p>
                 )}

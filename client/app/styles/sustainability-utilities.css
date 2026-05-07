@@ -6,25 +6,25 @@
   background-image:
     radial-gradient(
       ellipse at 20% 30%,
-      color-mix(in srgb, var(--s-primary) 6%, transparent) 0%,
+      color-mix(in srgb, var(--color-sustainability-primary) 6%, transparent) 0%,
       transparent 60%
     ),
     radial-gradient(
       ellipse at 80% 70%,
-      color-mix(in srgb, var(--s-primary) 4%, transparent) 0%,
+      color-mix(in srgb, var(--color-sustainability-primary) 4%, transparent) 0%,
       transparent 50%
     ),
     repeating-linear-gradient(
       135deg,
       transparent,
       transparent 40px,
-      color-mix(in srgb, var(--s-primary) 1.5%, transparent) 40px,
-      color-mix(in srgb, var(--s-primary) 1.5%, transparent) 41px
+      color-mix(in srgb, var(--color-sustainability-primary) 1.5%, transparent) 40px,
+      color-mix(in srgb, var(--color-sustainability-primary) 1.5%, transparent) 41px
     );
 }
 
 @utility animated-gradient-border {
-  background: linear-gradient(90deg, var(--s-primary), var(--s-accent), var(--s-primary));
+  background: linear-gradient(90deg, var(--color-sustainability-primary), var(--color-sustainability-accent), var(--color-sustainability-primary));
   background-size: 200% 100%;
   animation: gradientShift 4s ease infinite;
 }
@@ -77,21 +77,21 @@
     width: 100%;
     height: 100%;
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    background: var(--s-bg-card);
-    border: 1px solid var(--s-border-card);
+    background: var(--color-sustainability-card);
+    border: 1px solid var(--color-sustainability-muted);
     display: flex;
     justify-content: center;
     align-items: center;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     z-index: 10;
-    box-shadow: var(--s-card-shadow);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   }
   .hex-container:hover .hexagon {
     transform: scale(1.05);
-    background: var(--s-primary);
-    box-shadow: 0 0 25px color-mix(in srgb, var(--s-primary) 80%, transparent);
+    background: var(--color-sustainability-primary);
+    box-shadow: 0 0 25px color-mix(in srgb, var(--color-sustainability-primary) 80%, transparent);
     z-index: 20;
-    color: var(--s-marquee-text);
+    color: var(--color-sustainability-head);
   }
   .hex-details {
     position: absolute;
@@ -99,8 +99,8 @@
     top: 50%;
     transform: translateY(-50%) translateX(-20px);
     width: 220px;
-    background: var(--s-bg-section);
-    border: 1px solid var(--s-primary);
+    background: var(--color-sustainability-bg);
+    border: 1px solid var(--color-sustainability-primary);
     border-radius: 12px;
     padding: 16px;
     opacity: 0;
@@ -109,7 +109,7 @@
     z-index: 30;
     box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
     pointer-events: none;
-    color: var(--s-text-body);
+    color: var(--color-sustainability-body);
   }
   .hex-container:hover .hex-details {
     opacity: 1;
@@ -127,12 +127,12 @@
   }
   .hex-border polygon {
     fill: none;
-    stroke: var(--s-border-card);
+    stroke: var(--color-sustainability-muted);
     stroke-width: 1;
     transition: stroke 0.3s ease;
   }
   .hex-container:hover .hex-border polygon {
-    stroke: var(--s-primary);
+    stroke: var(--color-sustainability-primary);
     stroke-width: 2;
   }
 }

@@ -15,30 +15,30 @@
   font-size: 1.875rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 .ProseMirror h2 {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1.25rem;
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 .ProseMirror h3 {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 .ProseMirror blockquote {
-  border-left: 2px solid #00d4ff;
+  border-left: 2px solid var(--color-technology-accent);
   padding-left: 1rem;
   margin-left: 0;
   margin-right: 0;
   font-style: italic;
-  color: rgba(0, 212, 255, 0.6);
+  color: color-mix(in srgb, var(--color-technology-accent) 60%, transparent);
 }
 
 .ProseMirror ul {
@@ -54,7 +54,7 @@
 }
 
 .ProseMirror a {
-  color: #00d4ff;
+  color: var(--color-technology-accent);
   text-decoration: underline;
   text-underline-offset: 4px;
 }

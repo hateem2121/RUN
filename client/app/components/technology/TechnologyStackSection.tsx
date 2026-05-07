@@ -1,13 +1,9 @@
-import { useGSAP } from "@gsap/react";
+import { gsap, useGSAP } from "@/lib/gsap";
 import type { MediaAsset } from "@shared/index";
 import type { EquipmentVM, InnovationVM } from "@shared/viewmodels";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import React from "react";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { cn } from "@/lib/utils";
-
-gsap.registerPlugin(ScrollTrigger);
 
 type FilterTab = "all" | "innovations" | "equipment";
 

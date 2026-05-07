@@ -313,7 +313,7 @@ function ManufacturingInner() {
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data is hardcoded, not user input
         dangerouslySetInnerHTML={{ __html: generateStructuredData() }}
       />
-      <div className="dark min-h-screen bg-[#0A0A0A] text-white font-helvetica selection:bg-amber-500/30">
+      <div className="min-h-screen bg-background text-foreground font-helvetica selection:bg-amber-500/30">
         {/* Hero Section */}
         <ManufacturingErrorBoundary>
           <PublicHeroSection mediaAssets={mediaAssets} hero={hero} stats={derivedStats} />
@@ -322,7 +322,7 @@ function ManufacturingInner() {
         {/* Brand Marquee */}
         <MarqueeStrip
           text="CUTTING • ASSEMBLY • FINISHING • QUALITY • INNOVATION •"
-          accentColor="#FF4D00"
+          accentColor="var(--color-manufacturing-accent)"
           speed={40}
         />
 
@@ -332,7 +332,7 @@ function ManufacturingInner() {
         </ManufacturingErrorBoundary>
 
         {/* Capabilities Section */}
-        <div className="bg-[#121212]">
+        <div className="bg-manufacturing-card">
           <ManufacturingErrorBoundary>
             <PublicCapabilitySection mediaAssets={mediaAssets} capabilities={capabilities} />
           </ManufacturingErrorBoundary>

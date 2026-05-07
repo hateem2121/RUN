@@ -1,14 +1,9 @@
-import { useGSAP } from "@gsap/react";
-import type { MediaAsset, SustainabilityInitiative } from "@shared/index";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, useGSAP } from "@/lib/gsap";
+import type { MediaAsset } from "@shared/index";
+import type { SustainabilityInitiative } from "@shared/schemas/content/sustainability";
 import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, useGSAP);
-}
 
 /* ─────────────────────────────────────────────
    Individual Initiative Card (alternating split)

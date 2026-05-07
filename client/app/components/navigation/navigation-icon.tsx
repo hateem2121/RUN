@@ -165,11 +165,11 @@ export const NavigationIcon = memo(function NavigationIcon({
   // Apply specific colors based on icon type/name
   let iconColorClass = "text-neutral-500 dark:text-neutral-300";
   if (normalizedInput === "manufacturing") {
-    iconColorClass = "text-[#D4A853]";
+    iconColorClass = "text-manufacturing-accent";
   } else if (normalizedInput === "technology") {
-    iconColorClass = "text-[#00D4FF]";
+    iconColorClass = "text-technology-accent";
   } else if (normalizedInput === "sustainability") {
-    iconColorClass = "text-[#00C97B]";
+    iconColorClass = "text-sustainability-primary";
   }
 
   const commonClasses = `${className} ${iconColorClass}`;

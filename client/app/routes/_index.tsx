@@ -1,6 +1,4 @@
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { lazy, Suspense, useRef, useState } from "react";
 import { isRouteErrorResponse, useRouteError } from "react-router";
 import { Hero } from "@/components/homepage/Hero";
@@ -30,8 +28,6 @@ const Values = lazy(() =>
   import("@/components/homepage/Values").then((m) => ({ default: m.Values })),
 );
 
-// Register Plugin Globally
-gsap.registerPlugin(ScrollTrigger);
 
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { useLoaderData } from "react-router";

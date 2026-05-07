@@ -1,13 +1,7 @@
-import { useGSAP } from "@gsap/react";
-import type { Certificate } from "@shared/index";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, useGSAP } from "@/lib/gsap";
+import type { Certificate } from "@shared/schemas/catalog";
 import { CheckCircle } from "lucide-react";
 import { useRef } from "react";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, useGSAP);
-}
 
 interface CertificatesSectionProps {
   certificates: Certificate[];

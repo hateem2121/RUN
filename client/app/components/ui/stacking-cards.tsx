@@ -1,16 +1,10 @@
-import { useGSAP } from "@gsap/react";
+import { gsap, useGSAP } from "@/lib/gsap";
 import type { AboutSection, MediaAsset } from "@shared/index";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
 import { IconWrapper } from "@/components/ui/icon-wrapper";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface StackingCard {
   title: string;
