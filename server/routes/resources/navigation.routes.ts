@@ -1,41 +1,32 @@
-/**
- * NAVIGATION ROUTES MODULE
- * Handles public navigation items and settings
- */
-
-import express from "express";
+import { Router } from "express";
 import {
   insertNavigationGlassmorphismSettingsSchema,
   insertNavigationItemSchema,
   navigationReorderSchema,
 } from "../../../shared/index.js";
 import { ValidationError } from "../../lib/errors.js";
-import { logger } from "../../lib/monitoring/logger.js";
+import { shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
 import { NavigationService } from "../../services/navigation-service.js";
 
-const router = express.Router();
-
-// Cache TTL (2 hours for navigation data)
-
 /**
- * CHUNK 7: Admin Cache Bypass Utility
+ * NAVIGATION RESOURCE ROUTER
+ *
+ * Handles public navigation items and settings.
+ * Refactored for Express 5.2 compliance: uses native error propagation (throw).
+ * Aligned with "Thin Controller" pattern.
  */
-function shouldBypassCache(req: express.Request): boolean {
-  return req.headers.referer?.includes("/admin") || req.query.nocache === "true";
-}
+const router = Router();
 
 /**
  * GET /navigation-items
  * Returns all active navigation items ordered by sort order
  */
-router.get("/navigation-items", async (req, res, next) => {
+router.get("/navigation-items", async (req, res) => {
   const bypassCache = shouldBypassCache(req);
   const result = await NavigationService.getItems(bypassCache);
 
-  if (result.isErr()) {
-    return next(result.error);
-  }
+  if (result.isErr()) throw result.error;
 
   const data = result.value;
 
@@ -58,12 +49,10 @@ router.get("/navigation-items", async (req, res, next) => {
  * GET /navigation-settings
  * Returns navigation-specific UI settings (glassmorphism, etc.)
  */
-router.get("/navigation-settings", async (_req, res, next) => {
+router.get("/navigation-settings", async (_req, res) => {
   const result = await NavigationService.getGlassmorphismSettings();
 
-  if (result.isErr()) {
-    return next(result.error);
-  }
+  if (result.isErr()) throw result.error;
   return res.json(result.value);
 });
 
@@ -72,51 +61,40 @@ router.get("/navigation-settings", async (_req, res, next) => {
 // ============================================================================
 
 // Create navigation item
-router.post("/admin/navigation-items", authService.requireAdmin, async (req, res, next) => {
+router.post("/admin/navigation-items", authService.requireAdmin, async (req, res) => {
   const validatedData = insertNavigationItemSchema.safeParse(req.body);
   if (!validatedData.success) {
-    return next(
-      new ValidationError("Invalid navigation item", { issues: validatedData.error.issues }),
-    );
+    throw new ValidationError("Invalid navigation item", { issues: validatedData.error.issues });
   }
 
   const result = await NavigationService.createItem(validatedData.data);
-
-  if (result.isErr()) {
-    return next(result.error);
-  }
+  if (result.isErr()) throw result.error;
 
   return res.status(201).json(result.value);
 });
 
 // Bulk reorder navigation items
-router.patch(
-  "/admin/navigation-items/reorder",
-  authService.requireAdmin,
-  async (req, res, next) => {
-    const { items } = req.body;
-    const validation = navigationReorderSchema.safeParse({ items });
+router.patch("/admin/navigation-items/reorder", authService.requireAdmin, async (req, res) => {
+  const { items } = req.body;
+  const validation = navigationReorderSchema.safeParse({ items });
 
-    if (!validation.success) {
-      return next(new ValidationError("Invalid reorder data", { issues: validation.error.issues }));
-    }
+  if (!validation.success) {
+    throw new ValidationError("Invalid reorder data", { issues: validation.error.issues });
+  }
 
-    const result = await NavigationService.reorderItems(validation.data.items);
+  const result = await NavigationService.reorderItems(validation.data.items);
+  if (result.isErr()) throw result.error;
 
-    if (result.isErr()) {
-      return next(result.error);
-    }
-    return res.json(result.value);
-  },
-);
+  return res.json(result.value);
+});
 
 // Update navigation item
-router.patch("/admin/navigation-items/:id", authService.requireAdmin, async (req, res, next) => {
+router.patch("/admin/navigation-items/:id", authService.requireAdmin, async (req, res) => {
   const id = Number.parseInt(req.params.id as string, 10);
   const validatedData = insertNavigationItemSchema.partial().safeParse(req.body);
 
   if (!validatedData.success) {
-    return next(new ValidationError("Invalid update data", { issues: validatedData.error.issues }));
+    throw new ValidationError("Invalid update data", { issues: validatedData.error.issues });
   }
 
   const result = await NavigationService.updateItem(
@@ -124,20 +102,16 @@ router.patch("/admin/navigation-items/:id", authService.requireAdmin, async (req
     validatedData.data as Record<string, unknown>,
   );
 
-  if (result.isErr()) {
-    return next(result.error);
-  }
+  if (result.isErr()) throw result.error;
   return res.json(result.value);
 });
 
 // Delete navigation item
-router.delete("/admin/navigation-items/:id", authService.requireAdmin, async (req, res, next) => {
+router.delete("/admin/navigation-items/:id", authService.requireAdmin, async (req, res) => {
   const id = Number.parseInt(req.params.id as string, 10);
   const result = await NavigationService.deleteItem(id);
 
-  if (result.isErr()) {
-    return next(result.error);
-  }
+  if (result.isErr()) throw result.error;
   return res.status(204).send();
 });
 
@@ -145,24 +119,21 @@ router.delete("/admin/navigation-items/:id", authService.requireAdmin, async (re
 router.patch(
   "/admin/navigation-glassmorphism-settings",
   authService.requireAdmin,
-  async (req, res, next) => {
+  async (req, res) => {
     const validation = insertNavigationGlassmorphismSettingsSchema.safeParse(req.body);
     if (!validation.success) {
-      return next(
-        new ValidationError("Invalid glassmorphism settings", { issues: validation.error.issues }),
-      );
+      throw new ValidationError("Invalid glassmorphism settings", {
+        issues: validation.error.issues,
+      });
     }
+
     const result = await NavigationService.updateGlassmorphismSettings(
       validation.data as Record<string, unknown>,
     );
 
-    if (result.isErr()) {
-      return next(result.error);
-    }
+    if (result.isErr()) throw result.error;
     return res.json(result.value);
   },
 );
-
-logger.debug("[Navigation Routes] ✅ Navigation routes loaded");
 
 export default router;

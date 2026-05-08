@@ -51,7 +51,7 @@ import sustainabilityMetricsRouter from "./sustainability-metrics.routes.js";
 import technologyCTARouter from "./technology-cta.routes.js";
 import technologyEquipmentRouter from "./technology-equipment.routes.js";
 import technologyGradientSettingsRouter from "./technology-gradient-settings.routes.js";
-// Technology Page Resources
+import technologyHeroRouter from "./technology-hero.routes.js";
 import technologyInnovationsRouter from "./technology-innovations.routes.js";
 import technologyResearchRouter from "./technology-research.routes.js";
 import technologyRoadmapRouter from "./technology-roadmap.routes.js";
@@ -105,6 +105,7 @@ router.use("/manufacturing-case-studies", manufacturingCaseStudiesRouter);
 // ============================================================================
 // TECHNOLOGY PAGE RESOURCES
 // ============================================================================
+router.use("/technology-hero", technologyHeroRouter);
 router.use("/technology-innovations", technologyInnovationsRouter);
 router.use("/technology-equipment", technologyEquipmentRouter);
 router.use("/technology-research", technologyResearchRouter);

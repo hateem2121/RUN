@@ -12,6 +12,7 @@ import { db, getPoolMetrics } from "../../db.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { UnifiedCache } from "../../lib/cache/unified-cache.js";
 import { queryPerformanceMonitor } from "../../lib/db/query-performance.js";
+import { ValidationError } from "../../lib/errors.js";
 import { alertManager } from "../../lib/monitoring/alert-manager.js";
 import { errorAggregator } from "../../lib/monitoring/error-aggregator.js";
 import { httpMetricsTracker } from "../../lib/monitoring/http-metrics.js";
@@ -417,10 +418,8 @@ export function registerMetricsRoutes(app: Express): void {
     const validation = alertThresholdsUpdateSchema.safeParse(req.body);
 
     if (!validation.success) {
-      return res.status(400).json({
-        error: "Invalid threshold configuration",
-        message: "Payload validation failed",
-        issues: validation.error.flatten(),
+      throw new ValidationError("Invalid threshold configuration", {
+        details: validation.error.flatten(),
       });
     }
 

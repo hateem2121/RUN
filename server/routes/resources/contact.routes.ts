@@ -4,15 +4,14 @@ import {
   insertContactPageConfigurationSchema,
 } from "../../../shared/index.js";
 import { ContactSubmissionSchema } from "../../../shared/validation/contact.js";
-import { safeQuery } from "../../db.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
-import { miscRepository } from "../../lib/db/repositories/index.js";
-import { NotFoundError, ValidationError } from "../../lib/errors.js";
+import { ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { verifyRecaptcha } from "../../lib/security/recaptcha-verify.js";
+import { criticalTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
+import { contactService } from "../../services/contact.service.js";
 
 const router = express.Router();
 
@@ -29,7 +28,7 @@ function shouldBypassCache(req: Request): boolean {
 }
 
 // Contact form submission endpoint
-router.post("/contact", async (req, res) => {
+router.post("/contact", criticalTier, async (req, res) => {
   const validation = ContactSubmissionSchema.safeParse(req.body);
   if (!validation.success) {
     throw new ValidationError("Invalid contact submission", { issues: validation.error.issues });
@@ -100,12 +99,14 @@ router.get("/contact-info", async (req, res) => {
     return res.json(cached);
   }
 
-  // Query contact page configuration from database
-  const config = await miscRepository.getContactPageConfiguration();
+  // Query contact page configuration from database via service
+  const result = await contactService.getContactPageConfiguration();
 
-  if (!config) {
-    throw new NotFoundError("Contact configuration not found");
+  if (result.isErr()) {
+    throw result.error;
   }
+
+  const config = result.value;
 
   // Cache for 120 minutes (7200s)
   await unifiedCache.set(cacheKey, config, CACHE_TTL_NAVIGATION * 1000);
@@ -146,9 +147,7 @@ router.get("/locations", async (req, res) => {
 
 // Contact page configuration
 router.get("/contact-page-configuration", async (_req, res) => {
-  const result = await safeQuery(
-    withTimeout(miscRepository.getContactPageConfiguration(), 5000, "Get contact page config"),
-  );
+  const result = await contactService.getContactPageConfiguration();
 
   if (result.isErr()) {
     throw result.error;
@@ -163,13 +162,7 @@ router.post("/admin/contact-page-configuration", authService.requireAdmin, async
     throw new ValidationError("Invalid contact configuration", { issues: validation.error.issues });
   }
 
-  const result = await safeQuery(
-    withTimeout(
-      miscRepository.createContactPageConfiguration(validation.data),
-      5000,
-      "Create contact page config",
-    ),
-  );
+  const result = await contactService.createContactPageConfiguration(validation.data);
 
   if (result.isErr()) {
     throw result.error;
@@ -189,13 +182,7 @@ router.patch("/admin/contact-page-configuration", authService.requireAdmin, asyn
     throw new ValidationError("Invalid contact configuration", { issues: validation.error.issues });
   }
   // Contact page configuration is a singleton - always use ID 1
-  const result = await safeQuery(
-    withTimeout(
-      miscRepository.updateContactPageConfiguration(1, validation.data),
-      5000,
-      "Update contact page config",
-    ),
-  );
+  const result = await contactService.updateContactPageConfiguration(1, validation.data);
 
   if (result.isErr()) {
     throw result.error;

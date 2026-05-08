@@ -1,87 +1,46 @@
-import type { InsertManufacturingHero } from "@run-remix/shared";
+import { Router } from "express";
+import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
+import { authService } from "../../services/auth-service.js";
+import { manufacturingService } from "../../services/manufacturing.service.js";
+import { validateManufacturingHeroPartial } from "../../validation/manufacturing.js";
 
 /**
  * MANUFACTURING HERO RESOURCES
  *
- * Dedicated router for Manufacturing Hero management
- * Replaces legacy page-content-routes.ts implementation
+ * Dedicated router for Manufacturing Hero management.
+ * Refactored to "Thin Controller" pattern: delegates business logic to manufacturingService.
  */
-
-import { type Request, type Response, Router } from "express";
-import { manufacturingRepository } from "../../lib/db/repositories/index.js";
-import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { authService } from "../../services/auth-service.js";
-import type { SessionUser } from "../../types/session.js";
-import { validateManufacturingHeroPartial } from "../../validation/manufacturing.js";
-
 const router = Router();
 
-// Zod schema for validation is imported from validation/manufacturing.js to ensure consistency
-
-// Helper function for null to undefined transformation (legacy compatibility)
-const transformNullToUndefined = (obj: Record<string, unknown>): Record<string, unknown> => {
-  const result: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(obj)) {
-    result[key] = value === null ? undefined : value;
-  }
-  return result;
-};
-
 // GET /api/manufacturing-hero
-router.get("/manufacturing-hero", async (_req: Request, res: Response): Promise<void> => {
+router.get("/manufacturing-hero", async (_req, res) => {
   if (process.env.NODE_ENV === "production") {
     res.setHeader("Cache-Control", "public, max-age=1800, s-maxage=1800");
-    res.setHeader("X-Cache-TTL", "1800");
   } else {
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    res.setHeader("Pragma", "no-cache");
-    res.setHeader("Expires", "0");
   }
-  res.setHeader("Vary", "Accept-Encoding");
 
-  const hero = await withTimeout(
-    manufacturingRepository.getManufacturingHero(),
-    10000,
-    "Get manufacturing hero",
-  );
+  const result = await manufacturingService.getHero();
+  if (result.isErr()) throw result.error;
 
-  res.json(hero || null);
+  return res.json(result.value || null);
 });
 
 // PATCH /api/manufacturing-hero
-// prettier-ignore
-router.patch(
-  "/manufacturing-hero",
-  authService.requireAdmin,
-  async (req: Request, res: Response): Promise<void> => {
-    const transformedData = transformNullToUndefined(req.body);
-    const validation = validateManufacturingHeroPartial(transformedData);
+router.patch("/manufacturing-hero", authService.requireAdmin, async (req, res) => {
+  const validation = validateManufacturingHeroPartial(req.body);
 
-    if (!validation.success) {
-      logger.warn("[ManufacturingHero] Validation failed:", validation.error);
-      res.status(400).json(validation.error);
-      return;
-    }
+  if (!validation.success) {
+    throw new ValidationError(validation.error.message || "Validation failed", {
+      details: validation.error.details,
+    });
+  }
 
-    const hero = await withTimeout(
-      manufacturingRepository.updateManufacturingHero(
-        removeUndefined(validation.data) as unknown as Partial<InsertManufacturingHero>,
-      ),
-      10000,
-      "Update manufacturing hero",
-    );
+  const result = await manufacturingService.updateHero(removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
 
-    // Audit Logging
-
-    // Audit Logging
-    const user = req.user as SessionUser | undefined;
-    const adminId = user?.claims?.sub || "unknown";
-    logger.info(`[Audit] Admin ${adminId} updated manufacturing hero`);
-
-    res.json(hero);
-  },
-);
+  return res.json(result.value);
+});
 
 export default router;

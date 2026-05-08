@@ -1,80 +1,32 @@
-import { removeUndefined } from "../../lib/utilities/core-utils.js";
-
-/**
- * MANUFACTURING PROCESSES RESOURCE ROUTER
- *
- * Modular Express Router for Manufacturing Processes management
- * Handles full CRUD + reorder operations for manufacturing processes
- *
- * Routes:
- * - GET    /api/v1/manufacturing-processes           - List all processes
- * - GET    /api/v1/manufacturing-processes/:id       - Get single process
- * - POST   /api/v1/manufacturing-processes           - Create new process
- * - PATCH  /api/v1/manufacturing-processes/:id       - Update process
- * - DELETE /api/v1/manufacturing-processes/:id       - Delete process
- * - PATCH  /api/v1/manufacturing-processes/reorder   - Reorder processes
- */
-
-import { type Request, Router } from "express";
-import { z } from "zod";
-import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
-import { manufacturingRepository } from "../../lib/db/repositories/index.js";
-import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { Router } from "express";
+import { ValidationError } from "../../lib/errors.js";
+import { removeUndefined, shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
+import { manufacturingService } from "../../services/manufacturing.service.js";
 import {
   validateManufacturingProcess,
   validateManufacturingProcessPartial,
   validateReorderProcesses,
 } from "../../validation/manufacturing.js";
 
+/**
+ * MANUFACTURING PROCESSES RESOURCE ROUTER
+ *
+ * Modular Express Router for Manufacturing Processes management.
+ * Refactored to "Thin Controller" pattern: delegates business logic to manufacturingService.
+ * Enforces RFC 9110/9457 compliance via native Express 5 error propagation.
+ */
 const router = Router();
 
-/**
- * CHUNK 7: Admin Cache Bypass Utility
- * Determines if cache should be bypassed for admin or debugging requests
- */
-function shouldBypassCache(req: Request): boolean {
-  return req.headers.referer?.includes("/admin") || req.query.nocache === "true";
-}
-
-const idParamSchema = z.object({
-  id: z.string().transform(Number).pipe(z.number().int().positive()),
-});
-
 router.get("/", async (req, res) => {
-  // CHUNK 5: Two-tier cache with benchmarking
-  const { data: processes, benchmark } = (await twoTierBatchCache.get(
-    "manufacturing:processes",
-    async () => {
-      return await withTimeout(
-        manufacturingRepository.getManufacturingProcesses(),
-        10000,
-        "Get manufacturing processes",
-      );
-    },
-    { bypassCache: shouldBypassCache(req) },
-  )) || { data: [], benchmark: { hit: "MISS", totalTime: 0, l1Time: 0, l2Time: 0, dbTime: 0 } };
+  const result = await manufacturingService.getProcesses(shouldBypassCache(req));
 
-  // Log performance metrics
-  res.setHeader("X-Cache-Hit", benchmark?.hit || "MISS");
-  if (benchmark?.hit && benchmark.hit !== "MISS") {
-    const cacheTime = benchmark.hit === "L1" ? benchmark.l1Time : benchmark.l2Time;
-    logger.info(
-      `[ManufacturingProcesses] ✅ ${benchmark.hit} HIT: ${
-        processes?.length || 0
-      } processes (${cacheTime?.toFixed(2)}ms)`,
-    );
-  } else {
-    logger.info(
-      `[ManufacturingProcesses] ⬆️ MISS + CACHED: ${
-        processes?.length || 0
-      } processes (${benchmark?.dbTime?.toFixed(2)}ms)`,
-    );
-  }
+  if (result.isErr()) throw result.error;
+
+  const processes = result.value;
 
   return res.json(
-    (processes || []).map((p) => ({
+    processes.map((p) => ({
       ...p,
       title: p.title || p.name || "Untitled Process",
     })),
@@ -82,105 +34,68 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const { id } = idParamSchema.parse(req.params);
+  const id = parseInt(req.params.id as string);
+  const result = await manufacturingService.getProcess(id);
 
-  const process = await withTimeout(
-    manufacturingRepository.getManufacturingProcess(id),
-    10000,
-    "Get manufacturing process",
-  );
+  if (result.isErr()) throw result.error;
 
-  if (!process) {
-    return res.status(404).json({ error: "Process not found" });
-  }
-
-  logger.info(`[ManufacturingProcesses] Retrieved process ${id}`);
-  return res.json(process);
+  return res.json(result.value);
 });
 
 router.post("/", authService.requireAdmin, async (req, res) => {
   const validation = validateManufacturingProcess(req.body);
-
   if (!validation.success) {
-    logger.warn("[ManufacturingProcesses] Validation failed:", validation.error);
-    return res.status(400).json(validation.error);
+    throw new ValidationError(validation.error.message || "Validation failed", {
+      details: validation.error.details,
+    });
   }
 
-  const newProcess = await withTimeout(
-    manufacturingRepository.createManufacturingProcess(removeUndefined(validation.data)),
-    10000,
-    "Create manufacturing process",
-  );
+  const result = await manufacturingService.createProcess(removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
 
-  logger.info(`[ManufacturingProcesses] Created process ${newProcess.id}`);
-  return res.status(201).json(newProcess);
+  return res.status(201).json(result.value);
 });
 
 router.patch("/:id", authService.requireAdmin, async (req, res) => {
-  const { id } = idParamSchema.parse(req.params);
+  const id = parseInt(req.params.id as string);
   const validation = validateManufacturingProcessPartial(req.body);
-
   if (!validation.success) {
-    logger.warn("[ManufacturingProcesses] Validation failed:", validation.error);
-    return res.status(400).json(validation.error);
+    throw new ValidationError(validation.error.message || "Validation failed", {
+      details: validation.error.details,
+    });
   }
 
-  const updated = await withTimeout(
-    manufacturingRepository.updateManufacturingProcess(id, removeUndefined(validation.data)),
-    10000,
-    "Update manufacturing process",
-  );
+  const result = await manufacturingService.updateProcess(id, removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
 
-  if (!updated) {
-    return res.status(404).json({ error: "Process not found" });
-  }
-
-  logger.info(`[ManufacturingProcesses] Updated process ${id}`);
-  return res.json(updated);
+  return res.json(result.value);
 });
 
 router.delete("/:id", authService.requireAdmin, async (req, res) => {
-  const { id } = idParamSchema.parse(req.params);
+  const id = parseInt(req.params.id as string);
+  const result = await manufacturingService.deleteProcess(id);
 
-  const deleted = await withTimeout(
-    manufacturingRepository.deleteManufacturingProcess(id),
-    10000,
-    "Delete manufacturing process",
-  );
+  if (result.isErr()) throw result.error;
 
-  if (!deleted) {
-    return res.status(404).json({ error: "Process not found" });
-  }
-
-  logger.info(`[ManufacturingProcesses] Deleted process ${id}`);
   return res.status(204).send();
 });
 
 router.patch("/reorder", authService.requireAdmin, async (req, res) => {
   const validation = validateReorderProcesses(req.body);
-
   if (!validation.success) {
-    logger.warn("[ManufacturingProcesses] Reorder validation failed:", validation.error);
-    return res.status(400).json(validation.error);
+    throw new ValidationError(validation.error.message || "Validation failed", {
+      details: validation.error.details,
+    });
   }
 
-  const { processes } = validation.data;
-  const orderedIds = processes.sort((a, b) => a.position - b.position).map((item) => item.id);
+  const orderedIds = validation.data.processes
+    .sort((a, b) => a.position - b.position)
+    .map((item) => item.id);
 
-  await withTimeout(
-    manufacturingRepository.reorderManufacturingProcesses(orderedIds),
-    10000,
-    "Reorder manufacturing processes",
-  );
+  const result = await manufacturingService.reorderProcesses(orderedIds);
+  if (result.isErr()) throw result.error;
 
-  logger.info(`[ManufacturingProcesses] Reordered ${orderedIds.length} processes`);
   return res.json({ success: true, updated: orderedIds.length });
 });
-
-/**
- * PHASE 4: Cache warming now handled by CacheWarmupRegistry
- * Old HTTP-based warming removed to eliminate duplicate DB queries
- * See: server/lib/cache-warmup-registry.ts -> manufacturingProcesses
- */
 
 export default router;

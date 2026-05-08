@@ -1,34 +1,18 @@
-import { removeUndefined } from "../../lib/utilities/core-utils.js";
+import { Router } from "express";
+import { z } from "zod";
+import { insertSustainabilityInitiativeSchema } from "../../../shared/index.js";
+import { ValidationError } from "../../lib/errors.js";
+import { removeUndefined, shouldBypassCache } from "../../lib/utilities/core-utils.js";
+import { authService } from "../../services/auth-service.js";
+import { sustainabilityService } from "../../services/sustainability.service.js";
 
 /**
  * SUSTAINABILITY INITIATIVES RESOURCE ROUTER
  *
- * Modular Express Router for Sustainability Initiatives management
- * Handles full CRUD + reorder operations for sustainability initiatives
- *
- * Routes:
- * - GET    /api/v1/sustainability-initiatives           - List all initiatives
- * - GET    /api/v1/sustainability-initiatives/:id       - Get single initiative
- * - POST   /api/v1/sustainability-initiatives           - Create new initiative
- * - PATCH  /api/v1/sustainability-initiatives/:id       - Update initiative
- * - DELETE /api/v1/sustainability-initiatives/:id       - Delete initiative
- * - PATCH  /api/v1/sustainability-initiatives/reorder   - Reorder initiatives
+ * Modular Express Router for Sustainability Initiatives management.
+ * Refactored to "Thin Controller" pattern: delegates business logic to sustainabilityService.
  */
-
-import { Router } from "express";
-import { z } from "zod";
-import { insertSustainabilityInitiativeSchema } from "../../../shared/index.js";
-import { CacheOperations } from "../../lib/cache/cache-strategies.js";
-import { sustainabilityRepository } from "../../lib/db/repositories/index.js";
-import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { authService } from "../../services/auth-service.js";
-
 const router = Router();
-
-const idParamSchema = z.object({
-  id: z.string().transform(Number).pipe(z.number().int().positive()),
-});
 
 const reorderSchema = z.object({
   initiatives: z.array(
@@ -39,143 +23,76 @@ const reorderSchema = z.object({
   ),
 });
 
-router.get("/", async (_req, res) => {
-  const initiatives = await withTimeout(
-    sustainabilityRepository.getSustainabilityInitiatives(),
-    10000,
-    "Get sustainability initiatives",
-  );
+router.get("/", async (req, res) => {
+  const result = await sustainabilityService.getInitiatives(shouldBypassCache(req));
+  if (result.isErr()) throw result.error;
 
-  logger.info(`[SustainabilityInitiatives] Retrieved ${initiatives.length} initiatives`);
+  const initiatives = result.value;
+
   return res.json(initiatives);
 });
 
 router.get("/:id", async (req, res) => {
-  const { id } = idParamSchema.parse(req.params);
+  const id = parseInt(req.params.id as string);
+  const result = await sustainabilityService.getInitiative(id);
+  if (result.isErr()) throw result.error;
 
-  const initiative = await withTimeout(
-    sustainabilityRepository.getSustainabilityInitiative(id),
-    10000,
-    "Get sustainability initiative",
-  );
-
-  if (!initiative) {
-    return res.status(404).json({ error: "Initiative not found" });
-  }
-
-  logger.info(`[SustainabilityInitiatives] Retrieved initiative ${id}`);
-  return res.json(initiative);
+  return res.json(result.value);
 });
 
 router.post("/", authService.requireAdmin, async (req, res) => {
   const validation = insertSustainabilityInitiativeSchema.safeParse(req.body);
-
   if (!validation.success) {
-    logger.warn("[SustainabilityInitiatives] Validation failed:", validation.error);
-    return res.status(400).json({
-      error: "Validation failed",
+    throw new ValidationError("Validation failed", {
       details: validation.error.issues,
     });
   }
 
-  const newInitiative = await withTimeout(
-    sustainabilityRepository.createSustainabilityInitiative(removeUndefined(validation.data)),
-    10000,
-    "Create sustainability initiative",
-  );
+  const result = await sustainabilityService.createInitiative(removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
 
-  CacheOperations.invalidateSustainability()
-    .then(() => logger.info("[SustainabilityInitiatives] ✅ Cache invalidated after creation"))
-    .catch((cacheError) =>
-      logger.error("[SustainabilityInitiatives] ❌ Cache invalidation failed:", cacheError),
-    );
-
-  logger.info(`[SustainabilityInitiatives] Created initiative ${newInitiative.id}`);
-  return res.status(201).json(newInitiative);
+  return res.status(201).json(result.value);
 });
 
 router.patch("/:id", authService.requireAdmin, async (req, res) => {
-  const { id } = idParamSchema.parse(req.params);
+  const id = parseInt(req.params.id as string);
   const validation = insertSustainabilityInitiativeSchema.partial().safeParse(req.body);
-
   if (!validation.success) {
-    logger.warn("[SustainabilityInitiatives] Validation failed:", validation.error);
-    return res.status(400).json({
-      error: "Validation failed",
+    throw new ValidationError("Validation failed", {
       details: validation.error.issues,
     });
   }
 
-  const updated = await withTimeout(
-    sustainabilityRepository.updateSustainabilityInitiative(id, removeUndefined(validation.data)),
-    10000,
-    "Update sustainability initiative",
-  );
+  const result = await sustainabilityService.updateInitiative(id, removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
 
-  if (!updated) {
-    return res.status(404).json({ error: "Initiative not found" });
-  }
-
-  CacheOperations.invalidateSustainability()
-    .then(() => logger.info("[SustainabilityInitiatives] ✅ Cache invalidated after update"))
-    .catch((cacheError) =>
-      logger.error("[SustainabilityInitiatives] ❌ Cache invalidation failed:", cacheError),
-    );
-
-  logger.info(`[SustainabilityInitiatives] Updated initiative ${id}`);
-  return res.json(updated);
+  return res.json(result.value);
 });
 
 router.delete("/:id", authService.requireAdmin, async (req, res) => {
-  const { id } = idParamSchema.parse(req.params);
+  const id = parseInt(req.params.id as string);
+  const result = await sustainabilityService.deleteInitiative(id);
+  if (result.isErr()) throw result.error;
 
-  const deleted = await withTimeout(
-    sustainabilityRepository.deleteSustainabilityInitiative(id),
-    10000,
-    "Delete sustainability initiative",
-  );
-
-  if (!deleted) {
-    return res.status(404).json({ error: "Initiative not found" });
-  }
-
-  CacheOperations.invalidateSustainability()
-    .then(() => logger.info("[SustainabilityInitiatives] ✅ Cache invalidated after deletion"))
-    .catch((cacheError) =>
-      logger.error("[SustainabilityInitiatives] ❌ Cache invalidation failed:", cacheError),
-    );
-
-  logger.info(`[SustainabilityInitiatives] Deleted initiative ${id}`);
   return res.status(204).send();
 });
 
 router.patch("/reorder", authService.requireAdmin, async (req, res) => {
   const validation = reorderSchema.safeParse(req.body);
-
   if (!validation.success) {
-    logger.warn("[SustainabilityInitiatives] Reorder validation failed:", validation.error);
-    return res.status(400).json({
-      error: "Validation failed",
+    throw new ValidationError("Validation failed", {
       details: validation.error.issues,
     });
   }
 
-  const updates = await Promise.all(
-    removeUndefined(validation.data).initiatives.map(({ id, position }) =>
-      sustainabilityRepository.updateSustainabilityInitiative(id, {
-        sortOrder: position,
-      }),
-    ),
-  );
+  const orderedIds = validation.data.initiatives
+    .sort((a, b) => a.position - b.position)
+    .map((item) => item.id);
 
-  CacheOperations.invalidateSustainability()
-    .then(() => logger.info("[SustainabilityInitiatives] ✅ Cache invalidated after reorder"))
-    .catch((cacheError) =>
-      logger.error("[SustainabilityInitiatives] ❌ Cache invalidation failed:", cacheError),
-    );
+  const result = await sustainabilityService.reorderInitiatives(orderedIds);
+  if (result.isErr()) throw result.error;
 
-  logger.info(`[SustainabilityInitiatives] Reordered ${updates.length} initiatives`);
-  return res.json({ success: true, updated: updates.length });
+  return res.json({ success: true, updated: orderedIds.length });
 });
 
 export default router;

@@ -8,6 +8,7 @@ import express, {
   type Response,
 } from "express";
 import helmet from "helmet";
+import { env } from "../lib/env.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { csrfProtection } from "../middleware/csrf.js";
 import { idempotencyMiddleware } from "../middleware/idempotency.js";
@@ -36,8 +37,8 @@ export async function setupMiddleware(app: Express) {
             "'self'",
             "https:",
             "data:",
-            "http://localhost:5002",
-            "http://127.0.0.1:5002",
+            `http://localhost:${env.PORT}`,
+            `http://127.0.0.1:${env.PORT}`,
           ],
         },
       },

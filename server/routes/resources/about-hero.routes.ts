@@ -1,53 +1,28 @@
+import { Router } from "express";
+import { insertAboutHeroSchema } from "../../../shared/index.js";
+import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
+import { aboutService } from "../../services/about.service.js";
+import { authService } from "../../services/auth-service.js";
 
 /**
  * ABOUT HERO RESOURCE ROUTER
  *
- * Modular Express Router for About Hero management
- * Handles GET and PATCH operations for the about page hero section
- *
- * Routes:
- * - GET    /api/about-hero          - Get hero data
- * - PATCH  /api/about-hero          - Update hero data
+ * Modular Express Router for About Hero management.
+ * Refactored to "Thin Controller" pattern: delegates business logic to aboutService.
+ * Enforces RFC 9110/9457 compliance via native Express 5 error propagation.
  */
-
-import { Router } from "express";
-import { insertAboutHeroSchema } from "../../../shared/index.js";
-import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { aboutService } from "../../services/about.service.js";
-import { authService } from "../../services/auth-service.js";
-
 const router = Router();
-
-// Cache TTL constants (in seconds) - CHUNK 34: Optimized by data volatility
-// PHASE 1 OPTIMIZATION: Increased from 3600s (60min) to 10800s (180min)
-// Cache constants removed as they were unused
 
 /**
  * GET /api/about-hero
  * Retrieve the About page hero section
  */
 router.get("/", async (_req, res) => {
-  const result = await withTimeout(aboutService.getHero(), 10000, "Get about hero");
+  const result = await aboutService.getHero();
+  if (result.isErr()) throw result.error;
 
-  return result.match(
-    (hero) => {
-      if (hero) {
-        logger.info(`[AboutHero] Retrieved hero: ${hero.title}`);
-      } else {
-        logger.info("[AboutHero] No hero found");
-      }
-      return res.json(hero || null);
-    },
-    (error) => {
-      logger.error("[AboutHero] Fetch failed", error);
-      return res.status(error.statusCode || 500).json({
-        error: error.message,
-        code: error.code,
-      });
-    },
-  );
+  return res.json(result.value || null);
 });
 
 /**
@@ -55,37 +30,15 @@ router.get("/", async (_req, res) => {
  * Update the About page hero section
  */
 router.patch("/", authService.requireAdmin, async (req, res) => {
-  // Validate request body
   const validation = insertAboutHeroSchema.partial().safeParse(req.body);
-
   if (!validation.success) {
-    logger.warn("[AboutHero] Validation failed:", validation.error);
-    return res.status(400).json({
-      error: "Validation failed",
-      details: validation.error.issues,
-    });
+    throw new ValidationError("Validation failed", { issues: validation.error.issues });
   }
 
-  // Update hero
-  const result = await withTimeout(
-    aboutService.updateHero(removeUndefined(validation.data)),
-    10000,
-    "Update about hero",
-  );
+  const result = await aboutService.updateHero(removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
 
-  return result.match(
-    (updatedHero) => {
-      logger.info("[AboutHero] Hero updated successfully");
-      return res.json(updatedHero);
-    },
-    (error) => {
-      logger.error("[AboutHero] Update failed", error);
-      return res.status(error.statusCode || 500).json({
-        error: error.message,
-        code: error.code,
-      });
-    },
-  );
+  return res.json(result.value);
 });
 
 export default router;

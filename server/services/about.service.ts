@@ -1,3 +1,4 @@
+import { err, ok, type Result } from "neverthrow";
 import type {
   AboutBatchResponse,
   AboutHero,
@@ -12,354 +13,461 @@ import type {
   InsertAboutStatistic,
   InsertAboutTeamMessage,
   InsertAboutTimelineEntry,
-} from "@run-remix/shared";
-import type { Result } from "neverthrow";
-import { safeQuery } from "../db.js";
+} from "../../shared/index.js";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { aboutRepository } from "../lib/db/repositories/index.js";
-import type { AppError } from "../lib/errors.js";
+import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
+import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 
 /**
- * AboutService - Centralized business logic for About page management
- *
- * Eliminated code duplication between batch and granular endpoints.
- * Provides a single source of truth for all "About Us" related data fetching and updates.
- *
- * REFACTORED: Now uses the Repository Pattern via getStorage() to be database-agnostic
- * and standardized with the rest of the Service Layer.
+ * Service for managing About page domain content
+ * Enforces Result-based patterns and circuit breaker protection
  */
 export class AboutService {
   /**
-   * Get all About page data in a single optimized aggregate call
-   * Used by: /api/about-batch (public route)
+   * Invalidates all about page related cache entries
    */
-  async getAllAboutData(): Promise<Result<AboutBatchResponse, AppError>> {
-    const operation = async () => {
-      return await aboutRepository.getAboutBatch();
-    };
-
-    return safeQuery(withCircuit("about-batch-get", operation, DB_CIRCUIT_OPTIONS));
+  private async invalidateCache(): Promise<void> {
+    try {
+      await CacheOperations.invalidateAbout();
+    } catch (error) {
+      logger.error("[AboutService] Cache invalidation failed", error as Error);
+    }
   }
 
-  // ===========================================================================
-  // HERO SECTION
-  // ===========================================================================
+  // Hero
+  async getHero(includeInactive = false): Promise<Result<AboutHero, AppError>> {
+    try {
+      const hero = await withCircuit(
+        "get-about-hero",
+        () => aboutRepository.getAboutHero(includeInactive),
+        DB_CIRCUIT_OPTIONS,
+      );
 
-  async getHero(includeInactive: boolean = true): Promise<Result<AboutHero | null, AppError>> {
-    const operation = async () => {
-      const data = await aboutRepository.getAboutHero(includeInactive);
-      return data ? (data as AboutHero) : null;
-    };
+      if (!hero) {
+        return err(new NotFoundError("About hero configuration"));
+      }
 
-    return safeQuery(withCircuit("about-hero-get", operation, DB_CIRCUIT_OPTIONS));
+      return ok(hero);
+    } catch (error) {
+      logger.error("[AboutService] Failed to fetch hero", error as Error);
+      return err(new InternalError("Failed to fetch about hero configuration", { error }));
+    }
   }
 
   async updateHero(data: Partial<InsertAboutHero>): Promise<Result<AboutHero, AppError>> {
-    const result = await safeQuery(aboutRepository.updateAboutHero(data));
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+    try {
+      const updated = await withCircuit(
+        "update-about-hero",
+        () => aboutRepository.updateAboutHero(data),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      await this.invalidateCache();
+      return ok(updated);
+    } catch (error) {
+      logger.error("[AboutService] Failed to update hero", error as Error);
+      return err(new InternalError("Failed to update about hero configuration", { error }));
     }
-    return result;
   }
 
-  // ===========================================================================
-  // TIMELINE
-  // ===========================================================================
-
-  async getTimeline(
-    includeInactive: boolean = true,
+  // Timeline
+  async getTimelineEntries(
+    includeInactive = false,
   ): Promise<Result<AboutTimelineEntry[], AppError>> {
-    const operation = async () => {
-      const data = await aboutRepository.getAboutTimelineEntries(includeInactive);
-      return (data as AboutTimelineEntry[]) || [];
-    };
-
-    return safeQuery(withCircuit("about-timeline-get", operation, DB_CIRCUIT_OPTIONS));
+    try {
+      const entries = await withCircuit(
+        "get-about-timeline",
+        () => aboutRepository.getAboutTimelineEntries(includeInactive),
+        DB_CIRCUIT_OPTIONS,
+      );
+      return ok(entries);
+    } catch (error) {
+      logger.error("[AboutService] Failed to fetch timeline entries", error as Error);
+      return err(new InternalError("Failed to fetch about timeline entries", { error }));
+    }
   }
 
-  async getTimelineEntry(id: number): Promise<Result<AboutTimelineEntry | null, AppError>> {
-    const operation = async () => {
-      const data = await aboutRepository.getAboutTimelineEntry(id);
-      return data ? (data as AboutTimelineEntry) : null;
-    };
+  async getTimelineEntry(id: number): Promise<Result<AboutTimelineEntry, AppError>> {
+    try {
+      const entry = await withCircuit(
+        `get-about-timeline-${id}`,
+        () => aboutRepository.getAboutTimelineEntry(id),
+        DB_CIRCUIT_OPTIONS,
+      );
 
-    return safeQuery(withCircuit("about-timeline-entry-get", operation, DB_CIRCUIT_OPTIONS));
+      if (!entry) {
+        return err(new NotFoundError(`About timeline entry with ID ${id}`));
+      }
+
+      return ok(entry);
+    } catch (error) {
+      logger.error("[AboutService] Failed to fetch timeline entry", { id }, error as Error);
+      return err(new InternalError(`Failed to fetch about timeline entry ${id}`, { error }));
+    }
   }
 
   async createTimelineEntry(
     data: InsertAboutTimelineEntry,
   ): Promise<Result<AboutTimelineEntry, AppError>> {
-    const result = await safeQuery(aboutRepository.createAboutTimelineEntry(data));
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+    try {
+      const created = await withCircuit(
+        "create-about-timeline",
+        () => aboutRepository.createAboutTimelineEntry(data),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      await this.invalidateCache();
+      return ok(created);
+    } catch (error) {
+      logger.error("[AboutService] Failed to create timeline entry", error as Error);
+      return err(new InternalError("Failed to create about timeline entry", { error }));
     }
-    return result;
   }
 
   async updateTimelineEntry(
     id: number,
     data: Partial<InsertAboutTimelineEntry>,
   ): Promise<Result<AboutTimelineEntry, AppError>> {
-    const result = await safeQuery(aboutRepository.updateAboutTimelineEntry(id, data));
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+    try {
+      const updated = await withCircuit(
+        `update-about-timeline-${id}`,
+        () => aboutRepository.updateAboutTimelineEntry(id, data),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      await this.invalidateCache();
+      return ok(updated);
+    } catch (error) {
+      logger.error("[AboutService] Failed to update timeline entry", { id }, error as Error);
+      return err(new InternalError(`Failed to update about timeline entry ${id}`, { error }));
     }
-    return result;
   }
 
   async deleteTimelineEntry(id: number): Promise<Result<boolean, AppError>> {
-    const result = await safeQuery(aboutRepository.deleteAboutTimelineEntry(id));
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+    try {
+      const deleted = await withCircuit(
+        `delete-about-timeline-${id}`,
+        () => aboutRepository.deleteAboutTimelineEntry(id),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      if (!deleted) {
+        return err(new NotFoundError(`About timeline entry with ID ${id}`));
+      }
+
+      await this.invalidateCache();
+      return ok(deleted);
+    } catch (error) {
+      logger.error("[AboutService] Failed to delete timeline entry", { id }, error as Error);
+      return err(new InternalError(`Failed to delete about timeline entry ${id}`, { error }));
     }
-    return result;
   }
 
-  async reorderTimelineEntries(orderedIds: number[]): Promise<Result<boolean, AppError>> {
-    const operation = async () => {
-      await aboutRepository.reorderAboutTimelineEntries(orderedIds);
-      return true;
-    };
+  async reorderTimelineEntries(orderedIds: number[]): Promise<Result<void, AppError>> {
+    try {
+      await withCircuit(
+        "reorder-about-timeline",
+        () => aboutRepository.reorderAboutTimelineEntries(orderedIds),
+        DB_CIRCUIT_OPTIONS,
+      );
 
-    const result = await safeQuery(
-      withCircuit("about-timeline-reorder", operation, DB_CIRCUIT_OPTIONS),
-    );
-
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+      await this.invalidateCache();
+      return ok(undefined);
+    } catch (error) {
+      logger.error("[AboutService] Failed to reorder timeline entries", error as Error);
+      return err(new InternalError("Failed to reorder about timeline entries", { error }));
     }
-
-    return result;
   }
 
-  // ===========================================================================
-  // LOCATIONS
-  // ===========================================================================
-
-  async getLocations(
-    includeInactive: boolean = true,
-  ): Promise<Result<AboutMapLocation[], AppError>> {
-    const operation = async () => {
-      const data = await aboutRepository.getAboutMapLocations(includeInactive);
-      return (data as AboutMapLocation[]) || [];
-    };
-
-    return safeQuery(withCircuit("about-locations-get", operation, DB_CIRCUIT_OPTIONS));
-  }
-
-  async getLocation(id: number): Promise<Result<AboutMapLocation | null, AppError>> {
-    const operation = async () => {
-      const data = await aboutRepository.getAboutMapLocation(id);
-      return data ? (data as AboutMapLocation) : null;
-    };
-
-    return safeQuery(withCircuit("about-location-get", operation, DB_CIRCUIT_OPTIONS));
-  }
-
-  async createLocation(data: InsertAboutMapLocation): Promise<Result<AboutMapLocation, AppError>> {
-    const result = await safeQuery(aboutRepository.createAboutMapLocation(data));
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+  // Map Locations
+  async getMapLocations(includeInactive = false): Promise<Result<AboutMapLocation[], AppError>> {
+    try {
+      const locations = await withCircuit(
+        "get-about-locations",
+        () => aboutRepository.getAboutMapLocations(includeInactive),
+        DB_CIRCUIT_OPTIONS,
+      );
+      return ok(locations);
+    } catch (error) {
+      logger.error("[AboutService] Failed to fetch map locations", error as Error);
+      return err(new InternalError("Failed to fetch about map locations", { error }));
     }
-    return result;
   }
 
-  async updateLocation(
+  async createMapLocation(
+    data: InsertAboutMapLocation,
+  ): Promise<Result<AboutMapLocation, AppError>> {
+    try {
+      const created = await withCircuit(
+        "create-about-location",
+        () => aboutRepository.createAboutMapLocation(data),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      await this.invalidateCache();
+      return ok(created);
+    } catch (error) {
+      logger.error("[AboutService] Failed to create map location", error as Error);
+      return err(new InternalError("Failed to create about map location", { error }));
+    }
+  }
+
+  async updateMapLocation(
     id: number,
     data: Partial<InsertAboutMapLocation>,
   ): Promise<Result<AboutMapLocation, AppError>> {
-    const result = await safeQuery(aboutRepository.updateAboutMapLocation(id, data));
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+    try {
+      const updated = await withCircuit(
+        `update-about-location-${id}`,
+        () => aboutRepository.updateAboutMapLocation(id, data),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      await this.invalidateCache();
+      return ok(updated);
+    } catch (error) {
+      logger.error("[AboutService] Failed to update map location", { id }, error as Error);
+      return err(new InternalError(`Failed to update about map location ${id}`, { error }));
     }
-    return result;
   }
 
-  async deleteLocation(id: number): Promise<Result<boolean, AppError>> {
-    const result = await safeQuery(aboutRepository.deleteAboutMapLocation(id));
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+  async deleteMapLocation(id: number): Promise<Result<boolean, AppError>> {
+    try {
+      const deleted = await withCircuit(
+        `delete-about-location-${id}`,
+        () => aboutRepository.deleteAboutMapLocation(id),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      if (!deleted) {
+        return err(new NotFoundError(`About map location with ID ${id}`));
+      }
+
+      await this.invalidateCache();
+      return ok(deleted);
+    } catch (error) {
+      logger.error("[AboutService] Failed to delete map location", { id }, error as Error);
+      return err(new InternalError(`Failed to delete about map location ${id}`, { error }));
     }
-    return result;
   }
 
-  async reorderLocations(orderedIds: number[]): Promise<Result<boolean, AppError>> {
-    const operation = async () => {
-      await aboutRepository.reorderAboutMapLocations(orderedIds);
-      return true;
-    };
-
-    const result = await safeQuery(
-      withCircuit("about-locations-reorder", operation, DB_CIRCUIT_OPTIONS),
-    );
-
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+  // Sections
+  async getSections(includeInactive = false): Promise<Result<AboutSection[], AppError>> {
+    try {
+      const sections = await withCircuit(
+        "get-about-sections",
+        () => aboutRepository.getAboutSections(includeInactive),
+        DB_CIRCUIT_OPTIONS,
+      );
+      return ok(sections);
+    } catch (error) {
+      logger.error("[AboutService] Failed to fetch sections", error as Error);
+      return err(new InternalError("Failed to fetch about sections", { error }));
     }
-
-    return result;
   }
 
-  // ===========================================================================
-  // SECTIONS
-  // ===========================================================================
+  async getSection(id: number): Promise<Result<AboutSection, AppError>> {
+    try {
+      const section = await withCircuit(
+        `get-about-section-${id}`,
+        () => aboutRepository.getAboutSection(id),
+        DB_CIRCUIT_OPTIONS,
+      );
 
-  async getSections(includeInactive: boolean = true): Promise<Result<AboutSection[], AppError>> {
-    const operation = async () => {
-      const data = await aboutRepository.getAboutSections(includeInactive);
-      return (data as AboutSection[]) || [];
-    };
+      if (!section) {
+        return err(new NotFoundError(`About section with ID ${id}`));
+      }
 
-    return safeQuery(withCircuit("about-sections-get", operation, DB_CIRCUIT_OPTIONS));
-  }
-
-  async getSection(id: number): Promise<Result<AboutSection | null, AppError>> {
-    const operation = async () => {
-      const data = await aboutRepository.getAboutSection(id);
-      return data ? (data as AboutSection) : null;
-    };
-
-    return safeQuery(withCircuit("about-section-get", operation, DB_CIRCUIT_OPTIONS));
+      return ok(section);
+    } catch (error) {
+      logger.error("[AboutService] Failed to fetch section", { id }, error as Error);
+      return err(new InternalError(`Failed to fetch about section ${id}`, { error }));
+    }
   }
 
   async createSection(data: InsertAboutSection): Promise<Result<AboutSection, AppError>> {
-    const result = await safeQuery(aboutRepository.createAboutSection(data));
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+    try {
+      const created = await withCircuit(
+        "create-about-section",
+        () => aboutRepository.createAboutSection(data),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      await this.invalidateCache();
+      return ok(created);
+    } catch (error) {
+      logger.error("[AboutService] Failed to create section", error as Error);
+      return err(new InternalError("Failed to create about section", { error }));
     }
-    return result;
   }
 
   async updateSection(
     id: number,
     data: Partial<InsertAboutSection>,
   ): Promise<Result<AboutSection, AppError>> {
-    const result = await safeQuery(aboutRepository.updateAboutSection(id, data));
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+    try {
+      const updated = await withCircuit(
+        `update-about-section-${id}`,
+        () => aboutRepository.updateAboutSection(id, data),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      await this.invalidateCache();
+      return ok(updated);
+    } catch (error) {
+      logger.error("[AboutService] Failed to update section", { id }, error as Error);
+      return err(new InternalError(`Failed to update about section ${id}`, { error }));
     }
-    return result;
   }
 
   async deleteSection(id: number): Promise<Result<boolean, AppError>> {
-    const result = await safeQuery(aboutRepository.deleteAboutSection(id));
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+    try {
+      const deleted = await withCircuit(
+        `delete-about-section-${id}`,
+        () => aboutRepository.deleteAboutSection(id),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      if (!deleted) {
+        return err(new NotFoundError(`About section with ID ${id}`));
+      }
+
+      await this.invalidateCache();
+      return ok(deleted);
+    } catch (error) {
+      logger.error("[AboutService] Failed to delete section", { id }, error as Error);
+      return err(new InternalError(`Failed to delete about section ${id}`, { error }));
     }
-    return result;
   }
 
-  async reorderSections(orderedIds: number[]): Promise<Result<boolean, AppError>> {
-    const operation = async () => {
-      await aboutRepository.reorderAboutSections(orderedIds);
-      return true;
-    };
-
-    const result = await safeQuery(
-      withCircuit("about-sections-reorder", operation, DB_CIRCUIT_OPTIONS),
-    );
-
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+  // Statistics
+  async getStatistics(includeInactive = false): Promise<Result<AboutStatistic[], AppError>> {
+    try {
+      const statistics = await withCircuit(
+        "get-about-statistics",
+        () => aboutRepository.getAboutStatistics(includeInactive),
+        DB_CIRCUIT_OPTIONS,
+      );
+      return ok(statistics);
+    } catch (error) {
+      logger.error("[AboutService] Failed to fetch statistics", error as Error);
+      return err(new InternalError("Failed to fetch about statistics", { error }));
     }
-
-    return result;
-  }
-
-  // ===========================================================================
-  // STATISTICS
-  // ===========================================================================
-
-  async getStatistics(
-    includeInactive: boolean = true,
-  ): Promise<Result<AboutStatistic[], AppError>> {
-    const operation = async () => {
-      const data = await aboutRepository.getAboutStatistics(includeInactive);
-      return (data as AboutStatistic[]) || [];
-    };
-
-    return safeQuery(withCircuit("about-statistics-get", operation, DB_CIRCUIT_OPTIONS));
-  }
-
-  async getStatistic(id: number): Promise<Result<AboutStatistic | null, AppError>> {
-    const operation = async () => {
-      const data = await aboutRepository.getAboutStatistic(id);
-      return data ? (data as AboutStatistic) : null;
-    };
-
-    return safeQuery(withCircuit("about-statistic-get", operation, DB_CIRCUIT_OPTIONS));
   }
 
   async createStatistic(data: InsertAboutStatistic): Promise<Result<AboutStatistic, AppError>> {
-    const result = await safeQuery(aboutRepository.createAboutStatistic(data));
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+    try {
+      const created = await withCircuit(
+        "create-about-statistic",
+        () => aboutRepository.createAboutStatistic(data),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      await this.invalidateCache();
+      return ok(created);
+    } catch (error) {
+      logger.error("[AboutService] Failed to create statistic", error as Error);
+      return err(new InternalError("Failed to create about statistic", { error }));
     }
-    return result as Result<AboutStatistic, AppError>;
   }
 
   async updateStatistic(
     id: number,
     data: Partial<InsertAboutStatistic>,
   ): Promise<Result<AboutStatistic, AppError>> {
-    const result = await safeQuery(aboutRepository.updateAboutStatistic(id, data));
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+    try {
+      const updated = await withCircuit(
+        `update-about-statistic-${id}`,
+        () => aboutRepository.updateAboutStatistic(id, data),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      if (!updated) {
+        return err(new NotFoundError(`About statistic with ID ${id}`));
+      }
+
+      await this.invalidateCache();
+      return ok(updated);
+    } catch (error) {
+      logger.error("[AboutService] Failed to update statistic", { id }, error as Error);
+      return err(new InternalError(`Failed to update about statistic ${id}`, { error }));
     }
-    return result as Result<AboutStatistic, AppError>;
   }
 
   async deleteStatistic(id: number): Promise<Result<boolean, AppError>> {
-    const result = await safeQuery(aboutRepository.deleteAboutStatistic(id));
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+    try {
+      const deleted = await withCircuit(
+        `delete-about-statistic-${id}`,
+        () => aboutRepository.deleteAboutStatistic(id),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      if (!deleted) {
+        return err(new NotFoundError(`About statistic with ID ${id}`));
+      }
+
+      await this.invalidateCache();
+      return ok(deleted);
+    } catch (error) {
+      logger.error("[AboutService] Failed to delete statistic", { id }, error as Error);
+      return err(new InternalError(`Failed to delete about statistic ${id}`, { error }));
     }
-    return result;
   }
 
-  async reorderStatistics(orderedIds: number[]): Promise<Result<boolean, AppError>> {
-    const operation = async () => {
-      await aboutRepository.reorderAboutStatistics(orderedIds);
-      return true;
-    };
+  // Team Messages
+  async getTeamMessage(includeInactive = false): Promise<Result<AboutTeamMessage, AppError>> {
+    try {
+      const message = await withCircuit(
+        "get-about-team-message",
+        () => aboutRepository.getAboutTeamMessage(includeInactive),
+        DB_CIRCUIT_OPTIONS,
+      );
 
-    const result = await safeQuery(
-      withCircuit("about-statistics-reorder", operation, DB_CIRCUIT_OPTIONS),
-    );
+      if (!message) {
+        return err(new NotFoundError("About team message"));
+      }
 
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+      return ok(message);
+    } catch (error) {
+      logger.error("[AboutService] Failed to fetch team message", error as Error);
+      return err(new InternalError("Failed to fetch about team message", { error }));
     }
-
-    return result;
-  }
-
-  // ===========================================================================
-  // TEAM MESSAGE
-  // ===========================================================================
-
-  async getTeamMessage(
-    includeInactive: boolean = true,
-  ): Promise<Result<AboutTeamMessage | null, AppError>> {
-    const operation = async () => {
-      const data = await aboutRepository.getAboutTeamMessage(includeInactive);
-      return data ? (data as AboutTeamMessage) : null;
-    };
-
-    return safeQuery(withCircuit("about-team-message-get", operation, DB_CIRCUIT_OPTIONS));
   }
 
   async updateTeamMessage(
     data: Partial<InsertAboutTeamMessage>,
   ): Promise<Result<AboutTeamMessage, AppError>> {
-    const result = await safeQuery(aboutRepository.updateAboutTeamMessage(data));
-    if (result.isOk()) {
-      await CacheOperations.invalidateAbout();
+    try {
+      const updated = await withCircuit(
+        "update-about-team-message",
+        () => aboutRepository.updateAboutTeamMessage(data),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      await this.invalidateCache();
+      return ok(updated);
+    } catch (error) {
+      logger.error("[AboutService] Failed to update team message", error as Error);
+      return err(new InternalError("Failed to update about team message", { error }));
     }
-    return result as Result<AboutTeamMessage, AppError>;
+  }
+
+  // Batch
+  async getBatch(): Promise<Result<AboutBatchResponse, AppError>> {
+    try {
+      const batch = await withCircuit(
+        "get-about-batch",
+        () => aboutRepository.getAboutBatch(),
+        DB_CIRCUIT_OPTIONS,
+      );
+      return ok(batch);
+    } catch (error) {
+      logger.error("[AboutService] Failed to fetch about batch", error as Error);
+      return err(new InternalError("Failed to fetch about page batch content", { error }));
+    }
   }
 }
 
-// Export singleton instance
 export const aboutService = new AboutService();

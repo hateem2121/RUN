@@ -12,6 +12,7 @@ import compression from "compression";
 import { type Express, type Request, type Response, Router } from "express";
 import { logger } from "../lib/monitoring/logger.js";
 import { diagnosticLimiter } from "../lib/resilience/rate-limiter.js";
+import { apiTier, criticalTier, publicTier, uploadTier } from "../middleware/rate-limit-tiers.js";
 import v1AdminRouter from "./admin/admin.js";
 import authRouter from "./auth.js";
 // V1 Modular Routers
@@ -85,20 +86,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // 1. Auth & Worker (Root Level)
-  apiRouter.use(authRouter);
-  apiRouter.use(workerRouter);
-  apiRouter.use(inquiryAdminRouter);
+  apiRouter.use("/auth", criticalTier, authRouter);
+  apiRouter.use("/worker", apiTier, workerRouter);
+  apiRouter.use("/inquiry-admin", criticalTier, inquiryAdminRouter);
 
   // 1.5 Resources (Public Page Content - Must be before Admin/Core to avoid conflicts)
-  apiRouter.use(resourcesRouter);
-  apiRouter.use(footerConfigRouter);
+  apiRouter.use("/resources", publicTier, resourcesRouter);
+  apiRouter.use("/footer-config", publicTier, footerConfigRouter);
 
   // 2. Core Business Domains
-  apiRouter.use(v1CoreRouter);
+  apiRouter.use(apiTier, v1CoreRouter);
 
   // 3. Admin & Media Management
-  apiRouter.use("/admin", v1AdminRouter);
-  apiRouter.use("/media", v1MediaRouter);
+  apiRouter.use("/admin", criticalTier, v1AdminRouter);
+  apiRouter.use("/media", uploadTier, v1MediaRouter);
 
   // ARCH-001 FIX: Single canonical API mount
   app.use("/api", apiRouter);
@@ -113,7 +114,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api/docs", docsRouter);
 
   // Debug (Development only, gated internally)
-  app.use("/api/debug", debugRouter);
+  if (process.env.NODE_ENV !== "production") {
+    app.use("/api/debug", debugRouter);
+  }
 
   // Utilities / Functions (Direct app mounting for special cases)
 

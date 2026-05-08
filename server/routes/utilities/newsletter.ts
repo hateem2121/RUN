@@ -1,23 +1,27 @@
 import { insertNewsletterSubscriberSchema } from "@run-remix/shared";
 import type { Express } from "express";
-import { miscRepository } from "../../lib/db/repositories/index.js";
+import { ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { writeRateLimiter } from "../../middleware/rateLimiter.js";
+import { apiTier, criticalTier, publicTier } from "../../middleware/rate-limit-tiers.js";
+import { newsletterService } from "../../services/newsletter.service.js";
 
 export function registerNewsletterRoutes(app: Express): void {
-  app.post("/api/newsletter/subscribe", writeRateLimiter, async (req, res) => {
+  app.post("/api/newsletter/subscribe", criticalTier, async (req, res) => {
     const result = insertNewsletterSubscriberSchema.safeParse(req.body);
 
     if (!result.success) {
-      return res.status(422).json({
-        status: "error",
-        message: result.error.issues[0]?.message || "Invalid email address.",
+      throw new ValidationError("Invalid subscription data", {
+        details: result.error.issues,
       });
     }
 
-    await miscRepository.subscribeToNewsletter(result.data.email);
+    const subscribeResult = await newsletterService.subscribe(result.data.email);
 
-    return res.json({
+    if (subscribeResult.isErr()) {
+      throw subscribeResult.error;
+    }
+
+    return res.status(201).json({
       status: "success",
       message: "You have been subscribed!",
     });

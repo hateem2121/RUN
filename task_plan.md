@@ -374,20 +374,94 @@ Finalize the hardening of the API and Service layer by refactoring InquiryServic
 
 ### Protocol 0 — Session Bookends
 - [/] START: Read and update `task_plan.md`
-- [ ] END: Update `findings.md` and run `npm run verify:tech-integrity`
+- [x] END: Update `findings.md` and run `npm run verify:tech-integrity`
 
 ### Accomplishments
 - [x] **Phase 1: InquiryService Hardening**
   - [x] Refactored `InquiryService` to use `neverthrow` Result and `withCircuit`.
   - [x] Extracted mapping logic from `server/routes/core/inquiries.ts`.
   - [x] Updated `server/routes/utilities/inquiry-admin.ts` to handle Result-based responses.
-- [/] **Phase 2: Auth Layer Result-Based Refactoring**
+- [x] **Phase 2: Auth Layer Result-Based Refactoring**
   - [x] Refactored `AuthService` to return `Result<T, AppError>` for DB-dependent methods.
   - [x] Standardized error handling in `AuthService` (logger.fatal for boot errors).
-- [ ] **Phase 3: Observability & Compliance**
-  - [ ] Replace `console.log/error` with `logger` in middleware and bootstrap.
-  - [ ] Standardize validation error status codes to `422` (AS-005).
-  - [ ] Implement missing rate limiting on mutation endpoints (AS-006).
+- [x] **Phase 3: Observability & Compliance**
+  - [x] Replace `console.log/error` with `logger` in middleware and bootstrap.
+  - [x] Standardize validation error status codes to `422` (AS-005).
+  - [x] Implement missing rate limiting on mutation endpoints (AS-006).
 
-### Status: [/] IN PROGRESS
+### Status: [x] COMPLETE
 
+## Session: API & Service Layer — Full Investigative Audit
+
+### Objective
+Complete audit of the **Express 5 API and service layer** — covering all route handlers, service files, `neverthrow` Result usage, `opossum` circuit breakers, HTTP contract correctness, logging, and architectural compliance.
+
+### Protocol 0 — Session Bookends
+- [x] START: Read and update `task_plan.md`
+- [x] END: Update `findings.md` and run `npm run verify:tech-integrity`
+
+### B.L.A.S.T. Execution Order
+- [x] **B**: List all files in `server/routes/` and `server/services/`. Create a mapping of route file → service file for every domain.
+- [x] **L**: Scan every route handler for business logic violations. Scan every service for raw `throw` statements.
+- [x] **A**: Verify `opossum` circuit breakers wrap all external service calls. Check Express 5 error handler.
+- [x] **S**: N/A — backend system.
+- [x] **T**: Do NOT deploy. Compile findings and halt.
+
+### Investigation Scope
+- [x] 1. Thin Controller Compliance (CRITICAL)
+- [x] 2. `neverthrow` Result Usage (CRITICAL)
+- [x] 3. `opossum` Circuit Breakers
+- [x] 4. Zod Request Validation
+- [x] 5. HTTP Status Codes
+- [x] 6. Logging & Observability
+- [x] 7. Express 5 Compliance
+- [x] 8. Route Organisation
+- [x] 9. API Documentation
+- [x] 10. Rate Limiting
+
+### Status: [x] AUDIT COMPLETE (AS-001 through AS-010 recorded in findings.md)
+
+---
+
+## 🛠️ API & Service Layer — Remediation Phase
+
+> **Session Type:** Guided Architecture Remediation
+
+### Protocol 0 — Session Bookends
+- [ ] START: Read and update `task_plan.md`
+- [ ] END: Update `findings.md` and run `npm run verify:tech-integrity`
+
+### B.L.A.S.T. Execution Order
+- [ ] **B**: Scaffold new services (e.g., `ContactService`) if needed.
+- [ ] **L**: Refactor service methods to return `Result`/`ResultAsync`. Remove direct DB calls from route handlers.
+- [ ] **A**: Implement Zod validation middleware and `opossum` circuit breakers where missing.
+- [ ] **S**: N/A — Backend remediation.
+- [ ] **T**: Run backend unit tests and `verify:tech-integrity`.
+
+### Remediation Scope (AS-Series)
+- [ ] AS-001 & AS-005: Convert `AdminService` methods to `neverthrow` Result pattern.
+- [ ] AS-002 & AS-007: Refactor `newsletter.ts` to use a service and return `201`.
+- [ ] AS-003 & AS-009: Refactor `contact.routes.ts` to use a `ContactService` and eliminate `safeQuery`.
+- [ ] AS-004: Guard `debugRouter` with production environment checks.
+- [ ] AS-006: Add Zod validation middleware to `POST` and `PATCH` in `admin.ts`.
+- [ ] AS-008: Add circuit breaker to `email-service.ts` and return `Result`.
+- [ ] AS-010: Fix hardcoded port in `middleware.ts`.
+
+### Status: [ ] PENDING
+
+## Session: 2026-05-08 (API & Service Layer — Fresh Full Investigative Audit)
+
+### Objective
+Complete, fresh re-audit of the Express 5 API and service layer post-remediation. Covers all 57 route files, 12 service files, 8 middleware files, and 5 integration files across 10 investigation scopes.
+
+### Outcome: FULLY COMPLETED
+- **Status:** COMPLETED
+- **Findings:** Identified 10 new architectural violations (AS-001 to AS-010).
+- **Critical Findings:** Significant repository leaks in `resources/` routes, business logic in media handlers, and Result pattern regressions in `media/services.ts`.
+- **Integrity Check:** `npm run verify:tech-integrity` — **PASSED**.
+- **Deliverable:** Detailed `findings.md` with compliance table and remediation recommendations.
+
+### B.L.A.S.T. Summary
+- **Blueprint/Link**: Automated grep pass identified widespread violations in Media and Resources sub-domains.
+- **Architect**: Manual review confirmed 10 high-risk areas requiring immediate remediation.
+- **Trigger**: Full compilation of `findings.md` with 10 detailed findings and RFC-compliant reporting.

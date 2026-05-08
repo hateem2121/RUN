@@ -1,437 +1,246 @@
-import { removeUndefined } from "../../lib/utilities/core-utils.js";
-
-/**
- * HOMEPAGE MANAGEMENT ROUTES MODULE
- * Page-specific CRUD operations for Homepage content
- * Relocated from modules/ to resources/ for consistent architecture (October 15, 2025)
- *
- * HTTP CACHE-BUSTING IMPLEMENTATION (October 15, 2025):
- * All GET endpoints now include Cache-Control headers to prevent 304 Not Modified responses.
- * This ensures admin changes appear immediately in frontend without hard refresh.
- *
- * Modified GET endpoints with cache-busting headers:
- * ✅ GET /api/homepage-hero - Hero section data
- * ✅ GET /api/homepage-slogans - All slogans list
- * ✅ GET /api/homepage-slogans/:id - Single slogan by ID
- * ✅ GET /api/homepage-process-cards - All process cards list
- * ✅ GET /api/homepage-process-cards/:id - Single process card by ID
- * ✅ GET /api/homepage-sections - All sections list
- * ✅ GET /api/homepage-sections/:name - Single section by name
-
- * ✅ GET /api/homepage-featured-products-settings - Featured products configuration
- *
- * Cache-busting headers applied to each endpoint:
- * - Cache-Control: no-cache, no-store, must-revalidate
- * - Pragma: no-cache
- * - Expires: 0
- *
- * Note: Server-side caching (UnifiedCache) remains active for performance.
- * Only HTTP/browser caching is disabled to ensure real-time updates.
- */
-
-import express, { type Request } from "express";
-// Import validation schemas and types
+import { Router } from "express";
 import {
-  type HomepageFeaturedProductsSettings,
-  type HomepageHero,
-  type HomepageSection,
-  type HomepageSlogan,
   insertHomepageFeaturedProductsSettingsSchema,
   insertHomepageHeroSchema,
   insertHomepageProcessCardSchema,
   insertHomepageSectionSchema,
   insertHomepageSloganSchema,
 } from "../../../shared/index.js";
-import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
-import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
-import { unifiedCache } from "../../lib/cache/unified-cache.js";
-import { homepageRepository } from "../../lib/db/repositories/index.js";
-import { logger } from "../../lib/monitoring/logger.js";
+import { ValidationError } from "../../lib/errors.js";
+import { removeUndefined, shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
-
-const router = express.Router();
-
-// Cache TTL constants (in seconds) - CHUNK 34: Optimized by data volatility
-// PHASE 1 OPTIMIZATION: Increased from 3600s (60min) to 10800s (180min)
-const CACHE_TTL_STATIC = 10800; // 180 minutes (3 hours) - homepage content data changes rarely
+import { homepageService } from "../../services/homepage.service.js";
 
 /**
- * CHUNK 7: Admin Cache Bypass Utility
- * Determines if cache should be bypassed for admin or debugging requests
+ * HOMEPAGE MANAGEMENT RESOURCE ROUTER
+ *
+ * Page-specific CRUD operations for Homepage content.
+ * Refactored to "Thin Controller" pattern: delegates business logic to homepageService.
+ * Enforces RFC 9110/9457 compliance via native Express 5 error propagation.
  */
-function shouldBypassCache(req: Request): boolean {
-  return req.headers.referer?.includes("/admin") || req.query.nocache === "true";
-}
-
-// CHUNK 1: Cache invalidation helper using CacheOperations with try-catch
-const invalidateHomepageCache = async () => {
-  await CacheOperations.invalidateHomepage();
-  await twoTierBatchCache.invalidate("homepage:batch");
-  await twoTierBatchCache.invalidate("homepage:process-cards");
-  logger.info("[Homepage Management] ✅ Cache invalidated via CacheOperations");
-};
+const router = Router();
 
 // ================================
-// HOMEPAGE HERO ROUTES (2 routes)
+// HOMEPAGE HERO ROUTES
 // ================================
 
-// Get homepage hero - CHUNK 5: Added caching for configuration endpoints
 router.get("/homepage-hero", async (req, res) => {
-  const cacheKey = CacheKeys.homepage.hero();
-  const cached = await unifiedCache.get<HomepageHero | Record<string, never>>(cacheKey);
+  const result = await homepageService.getHero(shouldBypassCache(req));
+  if (result.isErr()) throw result.error;
 
-  // CHUNK 7: Check cache bypass
-  if (cached && !shouldBypassCache(req)) {
-    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    res.setHeader("Pragma", "no-cache");
-    res.setHeader("Expires", "0");
-    res.setHeader("X-Cache-Hit", "true");
-    return res.json(cached);
-  }
-
-  if (shouldBypassCache(req)) {
-    logger.debug("[Homepage] Admin/debug request - bypassing cache for hero");
-  }
-
-  const hero = await homepageRepository.getHomepageHero();
-  const result = hero || {};
-  await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC);
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
-  return res.json(result);
+  return res.json(result.value);
 });
 
-// Update homepage hero
 router.patch("/homepage-hero", authService.requireAdmin, async (req, res) => {
-  logger.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  logger.info("[STEP 5: BACKEND] PATCH /api/homepage-hero - Received request");
-  logger.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  logger.info("📥 Request body:", JSON.stringify(req.body));
-  logger.info("🔹 backgroundImageId in request:", req.body.backgroundImageId);
-  logger.info("🔹 Timestamp:", new Date().toISOString());
-
   const validation = insertHomepageHeroSchema.safeParse(req.body);
   if (!validation.success) {
-    logger.error("❌ Validation failed:", validation.error.message);
-    return res.status(400).json({ error: validation.error.message });
+    throw new ValidationError("Invalid hero data", { issues: validation.error.issues });
   }
 
-  logger.info("✅ Validation passed, updating hero in database...");
-  logger.info("📦 Validated data:", JSON.stringify(removeUndefined(validation.data)));
+  const result = await homepageService.updateHero(removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
 
-  const hero = await homepageRepository.updateHomepageHero(removeUndefined(validation.data));
-
-  logger.info("✅ Hero updated in database successfully");
-  logger.info("📦 Updated hero data:", JSON.stringify(hero));
-  logger.info("🔹 backgroundImageId saved:", hero.backgroundImageId);
-
-  logger.info("🔄 Invalidating homepage cache...");
-  await invalidateHomepageCache();
-  logger.info("✅ Cache invalidated");
-
-  logger.info("📤 Sending response to frontend");
-  logger.info("⏭️  NEXT: Frontend should refetch and user page should display new background");
-  logger.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-
-  return res.json(hero);
+  return res.json(result.value);
 });
 
 // ================================
-// HOMEPAGE SLOGANS ROUTES (6 routes)
+// HOMEPAGE SLOGANS ROUTES
 // ================================
 
-// Get all homepage slogans - CHUNK 5: Added caching for configuration endpoints
 router.get("/homepage-slogans", async (req, res) => {
-  const cacheKey = CacheKeys.homepage.slogans();
-  const cached = await unifiedCache.get<HomepageSlogan[]>(cacheKey);
+  const result = await homepageService.getSlogans();
+  if (result.isErr()) throw result.error;
 
-  // CHUNK 7: Check cache bypass
-  if (cached && !shouldBypassCache(req)) {
-    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    res.setHeader("Pragma", "no-cache");
-    res.setHeader("Expires", "0");
-    res.setHeader("X-Cache-Hit", "true");
-    return res.json(cached);
-  }
-
-  if (shouldBypassCache(req)) {
-    logger.debug("[Homepage] Admin/debug request - bypassing cache for slogans");
-  }
-
-  const slogans = await homepageRepository.getHomepageSlogans();
-  const result = slogans || [];
-  await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC);
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
-  return res.json(result);
+  return res.json(result.value);
 });
 
-// Get single homepage slogan by ID
 router.get("/homepage-slogans/:id", async (req, res) => {
-  const id = parseInt(req.params.id as string, 10);
-  const slogan = await homepageRepository.getHomepageSlogan(id);
-  if (!slogan) {
-    return res.status(404).json({ message: "Slogan not found" });
-  }
+  const id = parseInt(req.params.id as string);
+  const result = await homepageService.getSlogan(id);
+  if (result.isErr()) throw result.error;
+
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
-  return res.json(slogan);
+  return res.json(result.value);
 });
 
-// Create homepage slogan
 router.post("/homepage-slogans", authService.requireAdmin, async (req, res) => {
   const validation = insertHomepageSloganSchema.safeParse(req.body);
   if (!validation.success) {
-    return res.status(400).json({ error: validation.error.message });
+    throw new ValidationError("Invalid slogan data", { issues: validation.error.issues });
   }
-  const slogan = await homepageRepository.createHomepageSlogan(removeUndefined(validation.data));
-  await invalidateHomepageCache();
-  return res.status(201).json(slogan);
+
+  const result = await homepageService.createSlogan(removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
+
+  return res.status(201).json(result.value);
 });
 
-// Update homepage slogan
 router.patch("/homepage-slogans/:id", authService.requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id as string, 10);
+  const id = parseInt(req.params.id as string);
   const validation = insertHomepageSloganSchema.partial().safeParse(req.body);
   if (!validation.success) {
-    return res.status(400).json({ error: validation.error.message });
+    throw new ValidationError("Invalid slogan data", { issues: validation.error.issues });
   }
-  const slogan = await homepageRepository.updateHomepageSlogan(
-    id,
-    removeUndefined(validation.data),
-  );
-  if (!slogan) {
-    return res.status(404).json({ message: "Slogan not found" });
-  }
-  await invalidateHomepageCache();
-  return res.json(slogan);
+
+  const result = await homepageService.updateSlogan(id, removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
+
+  return res.json(result.value);
 });
 
-// Delete homepage slogan
 router.delete("/homepage-slogans/:id", authService.requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id as string, 10);
-  const deleted = await homepageRepository.deleteHomepageSlogan(id);
-  if (!deleted) {
-    return res.status(404).json({ message: "Slogan not found" });
-  }
-  await invalidateHomepageCache();
+  const id = parseInt(req.params.id as string);
+  const result = await homepageService.deleteSlogan(id);
+  if (result.isErr()) throw result.error;
+
   return res.status(204).send();
 });
 
-// Reorder homepage slogans
 router.patch("/homepage-slogans/reorder", authService.requireAdmin, async (req, res) => {
   const { slogans } = req.body;
   if (!Array.isArray(slogans)) {
-    return res.status(400).json({ message: "Slogans must be an array" });
+    throw new ValidationError("Slogans must be an array of IDs");
   }
-  const reorderedSlogans = await homepageRepository.reorderHomepageSlogans(slogans);
-  await invalidateHomepageCache();
-  return res.json(reorderedSlogans);
+
+  const result = await homepageService.reorderSlogans(slogans);
+  if (result.isErr()) throw result.error;
+
+  return res.json({ success: true });
 });
 
 // ================================
-// HOMEPAGE PROCESS CARDS ROUTES (6 routes)
+// HOMEPAGE PROCESS CARDS ROUTES
 // ================================
 
-// Get all process cards - CHUNK 5: Added caching for configuration endpoints
-// Get all process cards (ADMIN ONLY - BYPASS CACHE)
 router.get("/homepage-process-cards/admin", async (req, res) => {
-  if (shouldBypassCache(req)) {
-    logger.debug("[Homepage] Admin request - bypassing cache for process cards");
-  }
-
-  // FORCE FRESH READ + INCLUDE INACTIVE
-  const cards = await homepageRepository.getHomepageProcessCards(true);
+  const result = await homepageService.getProcessCards(true);
+  if (result.isErr()) throw result.error;
 
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
-
-  return res.json(cards || []);
+  return res.json(result.value);
 });
 
-// KEEP Public Endpoint for fallback (though likely handled by batch router)
 router.get("/homepage-process-cards", async (_req, res) => {
-  // Delegate to batch router logic or return active only
-  const cards = await homepageRepository.getHomepageProcessCards(false);
-  return res.json(cards || []);
+  const result = await homepageService.getProcessCards(false);
+  if (result.isErr()) throw result.error;
+
+  return res.json(result.value);
 });
 
-// Get single process card by ID
 router.get("/homepage-process-cards/:id", async (req, res) => {
-  const id = parseInt(req.params.id as string, 10);
-  const card = await homepageRepository.getHomepageProcessCard(id);
-  if (!card) {
-    return res.status(404).json({ message: "Process card not found" });
-  }
+  const id = parseInt(req.params.id as string);
+  const result = await homepageService.getProcessCard(id);
+  if (result.isErr()) throw result.error;
+
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
-  return res.json(card);
+  return res.json(result.value);
 });
 
-// Create process card
 router.post("/homepage-process-cards", authService.requireAdmin, async (req, res) => {
   const validation = insertHomepageProcessCardSchema.safeParse(req.body);
   if (!validation.success) {
-    return res.status(400).json({ error: validation.error.message });
+    throw new ValidationError("Invalid process card data", { issues: validation.error.issues });
   }
-  const card = await homepageRepository.createHomepageProcessCard(removeUndefined(validation.data));
-  await invalidateHomepageCache();
-  return res.status(201).json(card);
+
+  const result = await homepageService.createProcessCard(removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
+
+  return res.status(201).json(result.value);
 });
 
-// Update process card
 router.patch("/homepage-process-cards/:id", authService.requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id as string, 10);
+  const id = parseInt(req.params.id as string);
   const validation = insertHomepageProcessCardSchema.partial().safeParse(req.body);
   if (!validation.success) {
-    return res.status(400).json({ error: validation.error.message });
+    throw new ValidationError("Invalid process card data", { issues: validation.error.issues });
   }
-  const card = await homepageRepository.updateHomepageProcessCard(
-    id,
-    removeUndefined(validation.data),
-  );
-  if (!card) {
-    return res.status(404).json({ message: "Process card not found" });
-  }
-  await invalidateHomepageCache();
-  return res.json(card);
+
+  const result = await homepageService.updateProcessCard(id, removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
+
+  return res.json(result.value);
 });
 
-// Delete process card
 router.delete("/homepage-process-cards/:id", authService.requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id as string, 10);
-  const deleted = await homepageRepository.deleteHomepageProcessCard(id);
-  if (!deleted) {
-    return res.status(404).json({ message: "Process card not found" });
-  }
-  await invalidateHomepageCache();
+  const id = parseInt(req.params.id as string);
+  const result = await homepageService.deleteProcessCard(id);
+  if (result.isErr()) throw result.error;
+
   return res.status(204).send();
 });
 
-// Reorder process cards
 router.patch("/homepage-process-cards/reorder", authService.requireAdmin, async (req, res) => {
   const { cards } = req.body;
   if (!Array.isArray(cards)) {
-    return res.status(400).json({ message: "Cards must be an array" });
+    throw new ValidationError("Cards must be an array of IDs");
   }
-  const reorderedCards = await homepageRepository.reorderHomepageProcessCards(cards);
-  await invalidateHomepageCache();
-  return res.json(reorderedCards);
+
+  const result = await homepageService.reorderProcessCards(cards);
+  if (result.isErr()) throw result.error;
+
+  return res.json({ success: true });
 });
 
 // ================================
-// HOMEPAGE SECTIONS ROUTES (3 routes)
+// HOMEPAGE SECTIONS ROUTES
 // ================================
 
-// Get all homepage sections - CHUNK 5: Added caching for configuration endpoints
 router.get("/homepage-sections", async (req, res) => {
-  const cacheKey = CacheKeys.homepage.sections();
-  const cached = await unifiedCache.get<HomepageSection[]>(cacheKey);
+  const result = await homepageService.getSections(shouldBypassCache(req));
+  if (result.isErr()) throw result.error;
 
-  // CHUNK 7: Check cache bypass
-  if (cached && !shouldBypassCache(req)) {
-    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    res.setHeader("Pragma", "no-cache");
-    res.setHeader("Expires", "0");
-    res.setHeader("X-Cache-Hit", "true");
-    return res.json(cached);
-  }
-
-  if (shouldBypassCache(req)) {
-    logger.debug("[Homepage] Admin/debug request - bypassing cache for sections");
-  }
-
-  const sections = await homepageRepository.getHomepageSections();
-  const result = sections || [];
-  await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC);
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
-  return res.json(result);
+  return res.json(result.value);
 });
 
-// Get single homepage section by ID
 router.get("/homepage-sections/:id", async (req, res) => {
-  const id = parseInt(req.params.id as string, 10);
-  const section = await homepageRepository.getHomepageSectionById(id);
-  if (!section) {
-    return res.status(404).json({ message: "Section not found" });
-  }
+  const id = parseInt(req.params.id as string);
+  const result = await homepageService.getSectionById(id);
+  if (result.isErr()) throw result.error;
+
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
-  return res.json(section);
+  return res.json(result.value);
 });
 
-// Update homepage section
 router.patch("/homepage-sections/:id", authService.requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id as string, 10);
+  const id = parseInt(req.params.id as string);
   const validation = insertHomepageSectionSchema.partial().safeParse(req.body);
   if (!validation.success) {
-    return res.status(400).json({ error: validation.error.message });
+    throw new ValidationError("Invalid section data", { issues: validation.error.issues });
   }
-  const section = await homepageRepository.updateHomepageSectionById(
-    id,
-    removeUndefined(validation.data),
-  );
-  if (!section) {
-    return res.status(404).json({ message: "Section not found" });
-  }
-  await invalidateHomepageCache();
-  return res.json(section);
+
+  const result = await homepageService.updateSectionById(id, removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
+
+  return res.json(result.value);
 });
 
 // ================================
-// HOMEPAGE FEATURED PRODUCTS SETTINGS ROUTES (2 routes)
+// HOMEPAGE FEATURED PRODUCTS SETTINGS ROUTES
 // ================================
 
-// Get featured products settings - CHUNK 5: Added caching for configuration endpoints
 router.get("/homepage-featured-products-settings", async (req, res) => {
-  const cacheKey = CacheKeys.homepage.featuredProducts();
-  const cached = await unifiedCache.get<HomepageFeaturedProductsSettings | Record<string, never>>(
-    cacheKey,
-  );
+  const result = await homepageService.getFeaturedProductsSettings();
+  if (result.isErr()) throw result.error;
 
-  // CHUNK 7: Check cache bypass
-  if (cached && !shouldBypassCache(req)) {
-    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    res.setHeader("Pragma", "no-cache");
-    res.setHeader("Expires", "0");
-    res.setHeader("X-Cache-Hit", "true");
-    return res.json(cached);
-  }
-
-  if (shouldBypassCache(req)) {
-    logger.debug("[Homepage] Admin/debug request - bypassing cache for featured products settings");
-  }
-
-  const settings = await homepageRepository.getHomepageFeaturedProductsSettings();
-  const result = settings || {};
-  await unifiedCache.set(cacheKey, result, CACHE_TTL_STATIC);
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
-  return res.json(result);
+  return res.json(result.value);
 });
 
-// Update featured products settings
 router.patch("/homepage-featured-products-settings", authService.requireAdmin, async (req, res) => {
   const validation = insertHomepageFeaturedProductsSettingsSchema.safeParse(req.body);
   if (!validation.success) {
-    return res.status(400).json({ error: validation.error.message });
+    throw new ValidationError("Invalid settings data", { issues: validation.error.issues });
   }
-  const settings = await homepageRepository.updateHomepageFeaturedProductsSettings(
+
+  const result = await homepageService.updateFeaturedProductsSettings(
     removeUndefined(validation.data),
   );
-  await invalidateHomepageCache();
-  return res.json(settings);
-});
+  if (result.isErr()) throw result.error;
 
-logger.debug("[Homepage Management] ✅ Homepage management routes loaded (resources/, 21 routes)");
+  return res.json(result.value);
+});
 
 export default router;

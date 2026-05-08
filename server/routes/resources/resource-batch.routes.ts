@@ -5,8 +5,9 @@
 
 import { type Request, Router } from "express";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
-import { accessoryRepository, miscRepository } from "../../lib/db/repositories/index.js";
-import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { ValidationError } from "../../lib/errors.js";
+import { accessoryService } from "../../services/accessory.service.js";
+import { miscService } from "../../services/misc.service.js";
 
 const router = Router();
 
@@ -21,7 +22,7 @@ router.get("/batch", async (req: Request, res) => {
   const types = typesQuery.split(",").map((t) => t.trim().toLowerCase());
 
   if (!typesQuery) {
-    return res.status(400).json({ error: "Missing types query parameter" });
+    throw new ValidationError("Missing types query parameter");
   }
 
   const cacheKey = `resource-batch:${types.sort().join(",")}`;
@@ -29,34 +30,45 @@ router.get("/batch", async (req: Request, res) => {
   const { data: batchData, benchmark } = (await twoTierBatchCache.get(
     cacheKey,
     async () => {
-      const promises: Promise<unknown>[] = [];
+      const promises: Promise<any>[] = [];
       const labels: string[] = [];
 
       if (types.includes("accessory")) {
-        promises.push(withTimeout(accessoryRepository.getAccessories(), 5000, "Fetch accessories"));
+        promises.push(accessoryService.getAccessories());
         labels.push("accessories");
       }
       if (types.includes("certificate")) {
-        promises.push(withTimeout(miscRepository.getCertificates(), 5000, "Fetch certificates"));
+        promises.push(miscService.getCertificates());
         labels.push("certificates");
       }
       if (types.includes("size_chart") || types.includes("sizechart")) {
-        promises.push(withTimeout(miscRepository.getSizeCharts(), 5000, "Fetch size charts"));
+        promises.push(miscService.getSizeCharts());
         labels.push("sizeCharts");
       }
       if (types.includes("fabric")) {
-        promises.push(withTimeout(miscRepository.getFabrics(), 5000, "Fetch fabrics"));
+        promises.push(miscService.getFabrics());
         labels.push("fabrics");
       }
       if (types.includes("fiber")) {
-        promises.push(withTimeout(miscRepository.getFibers(), 5000, "Fetch fibers"));
+        promises.push(miscService.getFibers());
         labels.push("fibers");
       }
 
       const results = await Promise.all(promises);
-      const data: Record<string, unknown> = {};
+      const data: Record<string, any> = {};
+
       labels.forEach((label, index) => {
-        data[label] = results[index];
+        const result = results[index];
+        if (result.isOk()) {
+          // accessoryService returns { accessories, total }
+          if (label === "accessories") {
+            data[label] = result.value.accessories;
+          } else {
+            data[label] = result.value;
+          }
+        } else {
+          data[label] = []; // Fallback for specific failures in batch
+        }
       });
 
       return data;

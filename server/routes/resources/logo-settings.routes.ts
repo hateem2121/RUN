@@ -1,64 +1,38 @@
-/**
- * LOGO SETTINGS ROUTES MODULE
- * Handles logo animation settings and UI configuration
- */
-
-import express from "express";
+import { Router } from "express";
 import { insertLogoAnimationSettingsSchema } from "../../../shared/index.js";
-import { safeQuery } from "../../db.js";
-import { unifiedCache } from "../../lib/cache/unified-cache.js";
-import { homepageRepository } from "../../lib/db/repositories/index.js";
 import { ValidationError } from "../../lib/errors.js";
-import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { removeUndefined } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
+import { homepageService } from "../../services/homepage.service.js";
 
-const router = express.Router();
+/**
+ * LOGO SETTINGS RESOURCE ROUTER
+ *
+ * Handles logo animation settings and UI configuration.
+ * Refactored to "Thin Controller" pattern: delegates business logic to homepageService.
+ */
+const router = Router();
 
-// Cache TTL constant (in seconds)
-const CACHE_TTL_STATIC = 10800; // 3 hours
+// GET /api/logo-animation-settings
+router.get("/logo-animation-settings", async (_req, res) => {
+  const result = await homepageService.getLogoAnimationSettings();
+  if (result.isErr()) throw result.error;
 
-// Get logo animation settings
-router.get("/logo-animation-settings", async (_req, res, next) => {
-  const cacheKey = "logo-animation-settings";
-  const cached = await unifiedCache.get(cacheKey);
-  if (cached) {
-    return res.json(cached);
-  }
-
-  const result = await safeQuery(
-    withTimeout(homepageRepository.getLogoAnimationSettings(), 5000, "Get logo animation settings"),
-  );
-
-  if (result.isErr()) {
-    return next(result.error);
-  }
-
-  const settings = result.value || {};
-  await unifiedCache.set(cacheKey, settings, CACHE_TTL_STATIC);
-  return res.json(settings);
+  return res.json(result.value);
 });
 
-// Update logo animation settings
-router.patch("/admin/logo-animation-settings", authService.requireAdmin, async (req, res, next) => {
+// PATCH /api/admin/logo-animation-settings
+router.patch("/admin/logo-animation-settings", authService.requireAdmin, async (req, res) => {
   const validation = insertLogoAnimationSettingsSchema.safeParse(req.body);
   if (!validation.success) {
-    return next(new ValidationError("Invalid logo settings", { issues: validation.error.issues }));
+    throw new ValidationError("Invalid logo settings", { issues: validation.error.issues });
   }
 
-  const result = await safeQuery(
-    withTimeout(
-      homepageRepository.updateLogoAnimationSettings(validation.data),
-      5000,
-      "Update logo animation settings",
-    ),
+  const result = await homepageService.updateLogoAnimationSettings(
+    removeUndefined(validation.data),
   );
+  if (result.isErr()) throw result.error;
 
-  if (result.isErr()) {
-    return next(result.error);
-  }
-
-  // Clear cache when settings change
-  await unifiedCache.delete("logo-animation-settings");
   return res.json(result.value);
 });
 

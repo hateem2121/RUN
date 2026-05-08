@@ -408,139 +408,157 @@ export class AdminService {
   async fixCorruptedMedia(
     audit: AuditContext,
     timeoutMs = 30000,
-  ): Promise<{ fixedCount: number; fixedCategories: string[] }> {
-    logger.debug("AdminService: Starting cleanup of corrupted media URLs", { timeoutMs });
-    // Fetch all categories - this is fast
-    const categories = await withCircuit(
-      "get-categories-media-fix",
-      () => this.productRepo.getCategories(),
-      DB_CIRCUIT_OPTIONS,
-    );
+  ): Promise<Result<{ fixedCount: number; fixedCategories: string[] }, AppError>> {
+    try {
+      logger.debug("AdminService: Starting cleanup of corrupted media URLs", { timeoutMs });
+      // Fetch all categories - this is fast
+      const categories = await withCircuit(
+        "get-categories-media-fix",
+        () => this.productRepo.getCategories(),
+        DB_CIRCUIT_OPTIONS,
+      );
 
-    let fixedCount = 0;
-    const fixedCategories: string[] = [];
+      let fixedCount = 0;
+      const fixedCategories: string[] = [];
 
-    // Filter for categories that actually need updates (in memory optimization)
-    const categoriesToUpdate = categories.filter((category) => {
-      if (!category.featuredContent) return false;
+      // Filter for categories that actually need updates (in memory optimization)
+      const categoriesToUpdate = categories.filter((category) => {
+        if (!category.featuredContent) return false;
 
-      const content = category.featuredContent as Record<string, { mediaUrl?: string } | undefined>;
-      const cardKeys = ["card1", "card2", "card3", "card4"];
+        const content = category.featuredContent as Record<
+          string,
+          { mediaUrl?: string } | undefined
+        >;
+        const cardKeys = ["card1", "card2", "card3", "card4"];
 
-      return cardKeys.some((key) => {
-        const card = content[key];
-        return (
-          card?.mediaUrl &&
-          (card.mediaUrl.includes("undefined") || card.mediaUrl === "/api/media/undefined/content")
-        );
+        return cardKeys.some((key) => {
+          const card = content[key];
+          return (
+            card?.mediaUrl &&
+            (card.mediaUrl.includes("undefined") ||
+              card.mediaUrl === "/api/media/undefined/content")
+          );
+        });
       });
-    });
 
-    if (categoriesToUpdate.length === 0) {
-      logger.info("AdminService: No corrupted media URLs found.");
-      return { fixedCount: 0, fixedCategories: [] };
-    }
+      if (categoriesToUpdate.length === 0) {
+        logger.info("AdminService: No corrupted media URLs found.");
+        return ok({ fixedCount: 0, fixedCategories: [] });
+      }
 
-    logger.info("AdminService: Found categories with corrupted media. Processing updates...", {
-      count: categoriesToUpdate.length,
-    });
+      logger.info("AdminService: Found categories with corrupted media. Processing updates...", {
+        count: categoriesToUpdate.length,
+      });
 
-    // Process updates in parallel with concurrency limit to avoid DB contention
-    // Using a simple chunking strategy
-    const CHUNK_SIZE = 5;
-    for (let i = 0; i < categoriesToUpdate.length; i += CHUNK_SIZE) {
-      const chunk = categoriesToUpdate.slice(i, i + CHUNK_SIZE);
+      // Process updates in parallel with concurrency limit to avoid DB contention
+      // Using a simple chunking strategy
+      const CHUNK_SIZE = 5;
+      for (let i = 0; i < categoriesToUpdate.length; i += CHUNK_SIZE) {
+        const chunk = categoriesToUpdate.slice(i, i + CHUNK_SIZE);
 
-      await Promise.all(
-        chunk.map(async (category) => {
-          const updatedFeaturedContent = { ...category.featuredContent } as Record<
-            string,
-            { mediaUrl?: string } | undefined
-          >;
-          let needsUpdate = false;
+        await Promise.all(
+          chunk.map(async (category) => {
+            const updatedFeaturedContent = { ...category.featuredContent } as Record<
+              string,
+              { mediaUrl?: string } | undefined
+            >;
+            let needsUpdate = false;
 
-          // Apply fixes
-          for (const cardKey of ["card1", "card2", "card3", "card4"] as const) {
-            const card = updatedFeaturedContent[cardKey];
-            if (card?.mediaUrl) {
-              const mediaUrl = card.mediaUrl;
-              if (mediaUrl.includes("undefined") || mediaUrl === "/api/media/undefined/content") {
-                card.mediaUrl = "";
-                needsUpdate = true;
+            // Apply fixes
+            for (const cardKey of ["card1", "card2", "card3", "card4"] as const) {
+              const card = updatedFeaturedContent[cardKey];
+              if (card?.mediaUrl) {
+                const mediaUrl = card.mediaUrl;
+                if (mediaUrl.includes("undefined") || mediaUrl === "/api/media/undefined/content") {
+                  card.mediaUrl = "";
+                  needsUpdate = true;
+                }
               }
             }
-          }
 
-          if (needsUpdate) {
-            const updateResult = await withTimeout(
-              this.productRepo.updateCategory(category.id, {
-                featuredContent: updatedFeaturedContent,
-              }),
-              timeoutMs, // Use configurable timeout per update operation
-              `Update category ${category.id}`,
-            );
+            if (needsUpdate) {
+              const updateResult = await withTimeout(
+                this.productRepo.updateCategory(category.id, {
+                  featuredContent: updatedFeaturedContent,
+                }),
+                timeoutMs, // Use configurable timeout per update operation
+                `Update category ${category.id}`,
+              );
 
-            if (updateResult) {
-              fixedCount++;
-              fixedCategories.push(category.name);
+              if (updateResult) {
+                fixedCount++;
+                fixedCategories.push(category.name);
+              }
             }
-          }
-        }),
-      );
+          }),
+        );
+      }
+
+      const result = {
+        fixedCount,
+        fixedCategories,
+      };
+
+      // SEC-F04: Audit Log
+      if (fixedCount > 0) {
+        await this.logAudit({
+          action: "UPDATE",
+          tableName: "categories",
+          recordId: "BULK_FIX",
+          user: audit.user,
+          userAgent: audit.userAgent,
+          ipAddress: audit.ipAddress,
+          metadata: { operation: "fix-corrupted-media", result },
+        });
+      }
+
+      return ok(result);
+    } catch (error) {
+      logger.error("[AdminService] Failed to fix corrupted media", undefined, error as Error);
+      return err(new InternalError("Failed to fix corrupted media", { error }));
     }
-
-    const result = {
-      fixedCount,
-      fixedCategories,
-    };
-
-    // SEC-F04: Audit Log
-    if (fixedCount > 0) {
-      await this.logAudit({
-        action: "UPDATE",
-        tableName: "categories",
-        recordId: "BULK_FIX",
-        user: audit.user,
-        userAgent: audit.userAgent,
-        ipAddress: audit.ipAddress,
-        metadata: { operation: "fix-corrupted-media", result },
-      });
-    }
-
-    return result;
   }
 
   /**
    * Triggers system storage cleanup.
    */
-  async triggerCleanup(audit: AuditContext, autoClean: boolean, timeoutMs = 60000) {
-    const scheduler = getLifecycleScheduler();
-    // Assuming scheduler runs in background/async, but if we await a report, we should timeout the wait
-    // If runCleanup is long, we wrap it.
-    const report = await withTimeout(
-      scheduler.runCleanup(autoClean === false),
-      timeoutMs,
-      "Storage cleanup",
-    );
+  async triggerCleanup(
+    audit: AuditContext,
+    autoClean: boolean,
+    timeoutMs = 60000,
+  ): Promise<Result<any, AppError>> {
+    try {
+      const scheduler = getLifecycleScheduler();
+      // Assuming scheduler runs in background/async, but if we await a report, we should timeout the wait
+      // If runCleanup is long, we wrap it.
+      const report = await withTimeout(
+        scheduler.runCleanup(autoClean === false),
+        timeoutMs,
+        "Storage cleanup",
+      );
 
-    logger.info(`[AdminService] Storage cleanup triggered (autoClean: ${autoClean})`, {
-      cleanedFiles: report.cleanedFiles.length,
-      orphanedFiles: report.orphanedFiles.length,
-      spaceSaved: report.spaceSaved,
-    });
+      logger.info(`[AdminService] Storage cleanup triggered (autoClean: ${autoClean})`, {
+        cleanedFiles: report.cleanedFiles.length,
+        orphanedFiles: report.orphanedFiles.length,
+        spaceSaved: report.spaceSaved,
+      });
 
-    // SEC-F04: Audit Log
-    await this.logAudit({
-      action: "DELETE",
-      tableName: "storage",
-      recordId: "CLEANUP",
-      user: audit.user,
-      userAgent: audit.userAgent,
-      ipAddress: audit.ipAddress,
-      metadata: { operation: "cleanup", autoClean, report },
-    });
+      // SEC-F04: Audit Log
+      await this.logAudit({
+        action: "DELETE",
+        tableName: "storage",
+        recordId: "CLEANUP",
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+        metadata: { operation: "cleanup", autoClean, report },
+      });
 
-    return report;
+      return ok(report);
+    } catch (error) {
+      logger.error("[AdminService] Failed to trigger cleanup", undefined, error as Error);
+      return err(new InternalError("Failed to trigger cleanup", { error }));
+    }
   }
 
   /**
@@ -549,108 +567,128 @@ export class AdminService {
   async updateAuditConfig(
     audit: AuditContext,
     config: { enabled?: boolean | undefined; trackedTables?: string[] | undefined },
-  ) {
-    if (typeof config.enabled === "boolean") {
-      this.systemRepo.setAuditTrailEnabled(config.enabled);
-    }
-    if (Array.isArray(config.trackedTables)) {
-      this.systemRepo.configureTrackedTables(config.trackedTables);
-    }
+  ): Promise<Result<boolean, AppError>> {
+    try {
+      if (typeof config.enabled === "boolean") {
+        this.systemRepo.setAuditTrailEnabled(config.enabled);
+      }
+      if (Array.isArray(config.trackedTables)) {
+        this.systemRepo.configureTrackedTables(config.trackedTables);
+      }
 
-    // SEC-F04: Audit Log
-    await this.logAudit({
-      action: "UPDATE",
-      tableName: "audit_configuration",
-      recordId: "CONFIG",
-      user: audit.user,
-      userAgent: audit.userAgent,
-      ipAddress: audit.ipAddress,
-      newValues: config,
-      metadata: { operation: "update-audit-config" },
-    });
+      // SEC-F04: Audit Log
+      await this.logAudit({
+        action: "UPDATE",
+        tableName: "audit_configuration",
+        recordId: "CONFIG",
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+        newValues: config,
+        metadata: { operation: "update-audit-config" },
+      });
 
-    return true;
+      return ok(true);
+    } catch (error) {
+      logger.error("[AdminService] Failed to update audit config", undefined, error as Error);
+      return err(new InternalError("Failed to update audit config", { error }));
+    }
   }
 
   /**
    * Restores a soft-deleted category
    */
-  async restoreCategory(audit: AuditContext, id: number) {
-    const result = await withTimeout(
-      this.productRepo.restoreCategory(id),
-      5000,
-      "Restore category",
-    );
+  async restoreCategory(audit: AuditContext, id: number): Promise<Result<boolean, AppError>> {
+    try {
+      const result = await withTimeout(
+        this.productRepo.restoreCategory(id),
+        5000,
+        "Restore category",
+      );
 
-    if (result) {
-      // SEC-F04: Audit Log
-      await this.logAudit({
-        action: "RESTORE",
-        tableName: "categories",
-        recordId: id.toString(),
-        user: audit.user,
-        userAgent: audit.userAgent,
-        ipAddress: audit.ipAddress,
-      });
+      if (result) {
+        // SEC-F04: Audit Log
+        await this.logAudit({
+          action: "RESTORE",
+          tableName: "categories",
+          recordId: id.toString(),
+          user: audit.user,
+          userAgent: audit.userAgent,
+          ipAddress: audit.ipAddress,
+        });
+      }
+
+      return ok(result);
+    } catch (error) {
+      logger.error("[AdminService] Failed to restore category", { id }, error as Error);
+      return err(new InternalError("Failed to restore category", { id, error }));
     }
-
-    return result;
   }
 
   /**
    * Restores a soft-deleted product
    */
-  async restoreProduct(audit: AuditContext, id: number) {
-    const result = await withCircuit(
-      "restore-product",
-      () => this.productRepo.restoreProduct(id),
-      DB_CIRCUIT_OPTIONS,
-    );
+  async restoreProduct(audit: AuditContext, id: number): Promise<Result<boolean, AppError>> {
+    try {
+      const result = await withCircuit(
+        "restore-product",
+        () => this.productRepo.restoreProduct(id),
+        DB_CIRCUIT_OPTIONS,
+      );
 
-    if (result) {
-      // SEC-F04: Audit Log
-      await this.logAudit({
-        action: "RESTORE",
-        tableName: "products",
-        recordId: id.toString(),
-        user: audit.user,
-        userAgent: audit.userAgent,
-        ipAddress: audit.ipAddress,
-      });
+      if (result) {
+        // SEC-F04: Audit Log
+        await this.logAudit({
+          action: "RESTORE",
+          tableName: "products",
+          recordId: id.toString(),
+          user: audit.user,
+          userAgent: audit.userAgent,
+          ipAddress: audit.ipAddress,
+        });
+      }
+
+      return ok(result);
+    } catch (error) {
+      logger.error("[AdminService] Failed to restore product", { id }, error as Error);
+      return err(new InternalError("Failed to restore product", { id, error }));
     }
-
-    return result;
   }
 
   /**
    * Restores a soft-deleted media asset
    */
-  async restoreMediaAsset(audit: AuditContext, id: number) {
-    const result = await withTimeout(
-      this.mediaRepo.restoreMediaAsset(id),
-      5000,
-      "Restore media asset",
-    );
+  async restoreMediaAsset(audit: AuditContext, id: number): Promise<Result<boolean, AppError>> {
+    try {
+      const result = await withTimeout(
+        this.mediaRepo.restoreMediaAsset(id),
+        5000,
+        "Restore media asset",
+      );
 
-    if (result) {
-      // SEC-F04: Audit Log
-      await this.logAudit({
-        action: "RESTORE",
-        tableName: "media_assets",
-        recordId: id.toString(),
-        user: audit.user,
-        userAgent: audit.userAgent,
-        ipAddress: audit.ipAddress,
-      });
+      if (result) {
+        // SEC-F04: Audit Log
+        await this.logAudit({
+          action: "RESTORE",
+          tableName: "media_assets",
+          recordId: id.toString(),
+          user: audit.user,
+          userAgent: audit.userAgent,
+          ipAddress: audit.ipAddress,
+        });
+      }
+
+      return ok(result);
+    } catch (error) {
+      logger.error("[AdminService] Failed to restore media asset", { id }, error as Error);
+      return err(new InternalError("Failed to restore media asset", { id, error }));
     }
-
-    return result;
   }
 
   /**
    * Retrieves aggregated statistics for the Admin CMS Dashboard
    */
-  async getDashboardStats() {
+  async getDashboardStats(): Promise<Result<Record<string, number>, AppError>> {
     try {
       const [
         productsCount,
@@ -676,7 +714,7 @@ export class AdminService {
         db.select({ count: count() }).from(inquiries),
       ]);
 
-      return {
+      return ok({
         products: productsCount[0]?.count || 0,
         categories: categoriesCount[0]?.count || 0,
         media: mediaCount[0]?.count || 0,
@@ -688,10 +726,10 @@ export class AdminService {
         navigationItems: navigationItemsCount[0]?.count || 0,
         inquiries: inquiriesCount[0]?.count || 0,
         storage: 0, // Implement proper storage metrics later
-      };
+      });
     } catch (error) {
       logger.error("[AdminService] Failed to fetch dashboard stats", undefined, error as Error);
-      throw error;
+      return err(new InternalError("Failed to fetch dashboard stats", { error }));
     }
   }
 
@@ -803,16 +841,24 @@ export class AdminService {
    * Checks whether a slug is available (not taken by another product).
    * Optionally excludes a product ID (for edit mode).
    */
-  async checkSlugAvailability(slug: string, excludeId?: number): Promise<{ available: boolean }> {
-    const existing = await this.productRepo.getProductBySlug(slug);
-    if (!existing) {
-      return { available: true };
+  async checkSlugAvailability(
+    slug: string,
+    excludeId?: number,
+  ): Promise<Result<{ available: boolean }, AppError>> {
+    try {
+      const existing = await this.productRepo.getProductBySlug(slug);
+      if (!existing) {
+        return ok({ available: true });
+      }
+      // If the slug belongs to the product being edited, consider it available
+      if (excludeId && existing.id === excludeId) {
+        return ok({ available: true });
+      }
+      return ok({ available: false });
+    } catch (error) {
+      logger.error("[AdminService] Failed to check slug availability", { slug }, error as Error);
+      return err(new InternalError("Failed to check slug availability", { slug, error }));
     }
-    // If the slug belongs to the product being edited, consider it available
-    if (excludeId && existing.id === excludeId) {
-      return { available: true };
-    }
-    return { available: false };
   }
 
   // =============================================================================

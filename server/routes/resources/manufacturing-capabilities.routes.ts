@@ -1,148 +1,89 @@
-import type { InsertManufacturingCapability } from "@run-remix/shared";
-import { removeUndefined } from "../../lib/utilities/core-utils.js";
-
-/**
- * MANUFACTURING CAPABILITIES RESOURCE ROUTER
- *
- * Modular Express Router for Manufacturing Capabilities management
- * Handles full CRUD + reorder operations for manufacturing capabilities
- *
- * Routes:
- * - GET    /api/v1/manufacturing-capabilities           - List all capabilities
- * - GET    /api/v1/manufacturing-capabilities/:id       - Get single capability
- * - POST   /api/v1/manufacturing-capabilities           - Create new capability
- * - PATCH  /api/v1/manufacturing-capabilities/:id       - Update capability
- * - DELETE /api/v1/manufacturing-capabilities/:id       - Delete capability
- * - PATCH  /api/v1/manufacturing-capabilities/reorder   - Reorder capabilities
- */
-
 import { Router } from "express";
-import { z } from "zod";
-import { manufacturingRepository } from "../../lib/db/repositories/index.js";
-import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/resilience/request-timeout.js";
+import { ValidationError } from "../../lib/errors.js";
+import { removeUndefined } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
+import { manufacturingService } from "../../services/manufacturing.service.js";
 import {
   validateManufacturingCapability,
   validateManufacturingCapabilityPartial,
   validateReorderCapabilities,
 } from "../../validation/manufacturing.js";
 
+/**
+ * MANUFACTURING CAPABILITIES RESOURCE ROUTER
+ *
+ * Modular Express Router for Manufacturing Capabilities management.
+ * Refactored to "Thin Controller" pattern: delegates business logic to manufacturingService.
+ */
 const router = Router();
 
-const idParamSchema = z.object({
-  id: z.string().transform(Number).pipe(z.number().int().positive()),
-});
-
 router.get("/", async (_req, res) => {
-  const capabilities = await withTimeout(
-    manufacturingRepository.getManufacturingCapabilities(),
-    10000,
-    "Get manufacturing capabilities",
-  );
+  const result = await manufacturingService.getCapabilities();
+  if (result.isErr()) throw result.error;
 
-  logger.info(`[ManufacturingCapabilities] Retrieved ${capabilities.length} capabilities`);
-  return res.json(capabilities);
+  return res.json(result.value);
 });
 
 router.get("/:id", async (req, res) => {
-  const { id } = idParamSchema.parse(req.params);
+  const id = parseInt(req.params.id as string);
+  const result = await manufacturingService.getCapability(id);
+  if (result.isErr()) throw result.error;
 
-  const capability = await withTimeout(
-    manufacturingRepository.getManufacturingCapability(id),
-    10000,
-    "Get manufacturing capability",
-  );
-
-  if (!capability) {
-    return res.status(404).json({ error: "Capability not found" });
-  }
-
-  logger.info(`[ManufacturingCapabilities] Retrieved capability ${id}`);
-  return res.json(capability);
+  return res.json(result.value);
 });
 
 router.post("/", authService.requireAdmin, async (req, res) => {
   const validation = validateManufacturingCapability(req.body);
-
   if (!validation.success) {
-    logger.warn("[ManufacturingCapabilities] Validation failed:", validation.error);
-    return res.status(400).json(validation.error);
+    throw new ValidationError(validation.error.message || "Validation failed", {
+      details: validation.error.details,
+    });
   }
 
-  const newCapability = await withTimeout(
-    manufacturingRepository.createManufacturingCapability(
-      removeUndefined(validation.data) as unknown as InsertManufacturingCapability,
-    ),
-    10000,
-    "Create manufacturing capability",
-  );
+  const result = await manufacturingService.createCapability(removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
 
-  logger.info(`[ManufacturingCapabilities] Created capability ${newCapability.id}`);
-  return res.status(201).json(newCapability);
+  return res.status(201).json(result.value);
 });
 
 router.patch("/:id", authService.requireAdmin, async (req, res) => {
-  const { id } = idParamSchema.parse(req.params);
+  const id = parseInt(req.params.id as string);
   const validation = validateManufacturingCapabilityPartial(req.body);
-
   if (!validation.success) {
-    logger.warn("[ManufacturingCapabilities] Validation failed:", validation.error);
-    return res.status(400).json(validation.error);
+    throw new ValidationError(validation.error.message || "Validation failed", {
+      details: validation.error.details,
+    });
   }
 
-  const updated = await withTimeout(
-    manufacturingRepository.updateManufacturingCapability(
-      id,
-      removeUndefined(validation.data) as unknown as Partial<InsertManufacturingCapability>,
-    ),
-    10000,
-    "Update manufacturing capability",
-  );
+  const result = await manufacturingService.updateCapability(id, removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
 
-  if (!updated) {
-    return res.status(404).json({ error: "Capability not found" });
-  }
-
-  logger.info(`[ManufacturingCapabilities] Updated capability ${id}`);
-  return res.json(updated);
+  return res.json(result.value);
 });
 
 router.delete("/:id", authService.requireAdmin, async (req, res) => {
-  const { id } = idParamSchema.parse(req.params);
+  const id = parseInt(req.params.id as string);
+  const result = await manufacturingService.deleteCapability(id);
+  if (result.isErr()) throw result.error;
 
-  const deleted = await withTimeout(
-    manufacturingRepository.deleteManufacturingCapability(id),
-    10000,
-    "Delete manufacturing capability",
-  );
-
-  if (!deleted) {
-    return res.status(404).json({ error: "Capability not found" });
-  }
-
-  logger.info(`[ManufacturingCapabilities] Deleted capability ${id}`);
   return res.status(204).send();
 });
 
 router.patch("/reorder", authService.requireAdmin, async (req, res) => {
   const validation = validateReorderCapabilities(req.body);
-
   if (!validation.success) {
-    logger.warn("[ManufacturingCapabilities] Reorder validation failed:", validation.error);
-    return res.status(400).json(validation.error);
+    throw new ValidationError(validation.error.message || "Validation failed", {
+      details: validation.error.details,
+    });
   }
 
-  const { capabilities } = validation.data;
-  const orderedIds = capabilities.sort((a, b) => a.position - b.position).map((item) => item.id);
+  const orderedIds = validation.data.capabilities
+    .sort((a, b) => a.position - b.position)
+    .map((item) => item.id);
 
-  await withTimeout(
-    manufacturingRepository.reorderManufacturingCapabilities(orderedIds),
-    10000,
-    "Reorder manufacturing capabilities",
-  );
+  const result = await manufacturingService.reorderCapabilities(orderedIds);
+  if (result.isErr()) throw result.error;
 
-  logger.info(`[ManufacturingCapabilities] Reordered ${orderedIds.length} capabilities`);
   return res.json({ success: true, updated: orderedIds.length });
 });
 

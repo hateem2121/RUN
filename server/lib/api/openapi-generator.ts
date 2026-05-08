@@ -56,13 +56,19 @@ export function jsonResponse(schema: z.ZodType, description: string) {
   };
 }
 
+let cachedSpec: any = null;
+
 /**
  * Generates the full OpenAPI 3.1 specification
  */
 export function generateOpenApiSpec() {
+  if (cachedSpec && process.env.NODE_ENV === "production") {
+    return cachedSpec;
+  }
+
   const generator = new OpenApiGeneratorV31(registry.definitions);
 
-  return generator.generateDocument({
+  cachedSpec = generator.generateDocument({
     openapi: "3.1.0",
     info: {
       title: "RUN Remix CMS API",
@@ -83,4 +89,6 @@ export function generateOpenApiSpec() {
       { url: "http://localhost:5002/api", description: "Local Development" },
     ],
   });
+
+  return cachedSpec;
 }

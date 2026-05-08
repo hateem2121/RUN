@@ -7,6 +7,11 @@
 import { Router } from "express";
 import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
+import {
+  insertCertificateSchema,
+  insertFiberSchema,
+  insertProductSchema,
+} from "../../../shared/index.js";
 import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
@@ -74,31 +79,41 @@ router.get("/products", authService.requireAdmin, async (req, res) => {
 });
 
 // POST /products - Create product (admin only)
-router.post("/products", authService.requireAdmin, async (req, res) => {
-  const auditContext = getAuditContext(req);
-  const result = await adminService.createProduct(auditContext, req.body);
+router.post(
+  "/products",
+  authService.requireAdmin,
+  validateRequest({ body: insertProductSchema }),
+  async (req, res) => {
+    const auditContext = getAuditContext(req);
+    const result = await adminService.createProduct(auditContext, req.body as any);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
+    if (result.isErr()) {
+      throw result.error;
+    }
 
-  return res.status(201).json(result.value);
-});
+    return res.status(201).json(result.value);
+  },
+);
 
 // PATCH /products/:id - Update product (admin only)
-router.patch("/products/:id", authService.requireAdmin, async (req, res) => {
-  const id = validateIdParam(req, res, "id", "product");
-  if (id === null) return;
+router.patch(
+  "/products/:id",
+  authService.requireAdmin,
+  validateRequest({ body: insertProductSchema.partial() }),
+  async (req, res) => {
+    const id = validateIdParam(req, res, "id", "product");
+    if (id === null) return;
 
-  const auditContext = getAuditContext(req);
-  const result = await adminService.updateProduct(auditContext, id, req.body);
+    const auditContext = getAuditContext(req);
+    const result = await adminService.updateProduct(auditContext, id, req.body as any);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
+    if (result.isErr()) {
+      throw result.error;
+    }
 
-  return res.json(result.value);
-});
+    return res.json(result.value);
+  },
+);
 
 // GET /products/check-slug - Check slug availability
 // IMPORTANT: This route MUST be before /products/:id to avoid catching "check-slug" as an :id param
@@ -112,7 +127,12 @@ router.get("/products/check-slug", authService.requireAdmin, async (req, res) =>
 
   const slug = normalizeSlug(slugQuery.slug);
   const result = await adminService.checkSlugAvailability(slug, slugQuery.excludeId);
-  return res.json(result);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
 });
 
 // GET /products/:id - Single product with all relations
@@ -178,8 +198,13 @@ router.get("/test", authService.requireAdmin, (_req, res) => {
 
 // GET /dashboard/stats - Admin Dashboard aggregate metrics
 router.get("/dashboard/stats", authService.requireAdmin, async (_req, res) => {
-  const stats = await adminService.getDashboardStats();
-  return res.json(stats);
+  const result = await adminService.getDashboardStats();
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
 });
 
 // POST /fix-corrupted-media - Fix corrupted media URLs
@@ -200,10 +225,17 @@ router.post(
 
     const result = await adminService.fixCorruptedMedia(auditContext, timeout);
 
+    if (result.isErr()) {
+      throw result.error;
+    }
+
+    const { fixedCount, fixedCategories } = result.value;
+
     return res.json({
       success: true,
-      message: `Corrupted media cleanup completed: ${result.fixedCount} categories fixed`,
-      ...result,
+      message: `Corrupted media cleanup completed: ${fixedCount} categories fixed`,
+      fixedCount,
+      fixedCategories,
       timestamp: Date.now(),
     });
   },
@@ -216,9 +248,13 @@ router.post("/cleanup/trigger", authService.requireAdmin, async (req, res) => {
   // Create audit context
   const auditContext = getAuditContext(req);
 
-  const report = await adminService.triggerCleanup(auditContext, autoClean === true, timeout);
+  const result = await adminService.triggerCleanup(auditContext, autoClean === true, timeout);
 
-  res.json({ success: true, report });
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  res.json({ success: true, report: result.value });
 });
 
 // GET /enterprise/audit-config - Audit configuration retrieval
@@ -255,7 +291,11 @@ router.post(
     // Create audit context
     const auditContext = getAuditContext(req);
 
-    await adminService.updateAuditConfig(auditContext, validatedData);
+    const result = await adminService.updateAuditConfig(auditContext, validatedData);
+
+    if (result.isErr()) {
+      throw result.error;
+    }
 
     return res.json({ success: true, message: "Audit configuration updated" });
   },
@@ -280,7 +320,11 @@ router.post(
 
     const result = await adminService.restoreCategory(auditContext, id);
 
-    return res.json({ success: result });
+    if (result.isErr()) {
+      throw result.error;
+    }
+
+    return res.json({ success: result.value });
   },
 );
 
@@ -303,7 +347,11 @@ router.post(
 
     const result = await adminService.restoreProduct(auditContext, id);
 
-    return res.json({ success: result });
+    if (result.isErr()) {
+      throw result.error;
+    }
+
+    return res.json({ success: result.value });
   },
 );
 
@@ -325,7 +373,11 @@ router.post(
 
     const result = await adminService.restoreMediaAsset(auditContext, id);
 
-    return res.json({ success: result });
+    if (result.isErr()) {
+      throw result.error;
+    }
+
+    return res.json({ success: result.value });
   },
 );
 
@@ -345,16 +397,21 @@ router.get("/certificates", authService.requireAdmin, async (_req, res) => {
 });
 
 // POST /certificates - Create certificate
-router.post("/certificates", authService.requireAdmin, async (req, res) => {
-  const auditContext = getAuditContext(req);
-  const result = await adminService.createCertificate(auditContext, req.body);
+router.post(
+  "/certificates",
+  authService.requireAdmin,
+  validateRequest({ body: insertCertificateSchema }),
+  async (req, res) => {
+    const auditContext = getAuditContext(req);
+    const result = await adminService.createCertificate(auditContext, req.body);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
+    if (result.isErr()) {
+      throw result.error;
+    }
 
-  return res.status(201).json(result.value);
-});
+    return res.status(201).json(result.value);
+  },
+);
 
 // PATCH /certificates/:id - Update certificate
 router.patch("/certificates/:id", authService.requireAdmin, async (req, res) => {
@@ -400,16 +457,21 @@ router.get("/fibers", authService.requireAdmin, async (_req, res) => {
 });
 
 // POST /fibers - Create fiber
-router.post("/fibers", authService.requireAdmin, async (req, res) => {
-  const auditContext = getAuditContext(req);
-  const result = await adminService.createFiber(auditContext, req.body);
+router.post(
+  "/fibers",
+  authService.requireAdmin,
+  validateRequest({ body: insertFiberSchema }),
+  async (req, res) => {
+    const auditContext = getAuditContext(req);
+    const result = await adminService.createFiber(auditContext, req.body);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
+    if (result.isErr()) {
+      throw result.error;
+    }
 
-  return res.status(201).json(result.value);
-});
+    return res.status(201).json(result.value);
+  },
+);
 
 // PATCH /fibers/:id - Update fiber
 router.patch("/fibers/:id", authService.requireAdmin, async (req, res) => {

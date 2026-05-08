@@ -1,34 +1,18 @@
-import { removeUndefined } from "../../lib/utilities/core-utils.js";
+import { Router } from "express";
+import { z } from "zod";
+import { insertTechnologyRoadmapSchema } from "../../../shared/index.js";
+import { ValidationError } from "../../lib/errors.js";
+import { removeUndefined, shouldBypassCache } from "../../lib/utilities/core-utils.js";
+import { authService } from "../../services/auth-service.js";
+import { technologyService } from "../../services/technology.service.js";
 
 /**
  * TECHNOLOGY ROADMAP RESOURCE ROUTER
  *
- * Modular Express Router for Technology Roadmap management
- * Handles full CRUD + reorder operations for roadmap items
- *
- * Routes:
- * - GET    /api/v1/technology-roadmap           - List all roadmap items
- * - GET    /api/v1/technology-roadmap/:id       - Get single roadmap item
- * - POST   /api/v1/technology-roadmap           - Create new roadmap item
- * - PATCH  /api/v1/technology-roadmap/:id       - Update roadmap item
- * - DELETE /api/v1/technology-roadmap/:id       - Delete roadmap item
- * - PATCH  /api/v1/technology-roadmap/reorder   - Reorder roadmap items
+ * Modular Express Router for Technology Roadmap management.
+ * Refactored to "Thin Controller" pattern: delegates business logic to technologyService.
  */
-
-import { Router } from "express";
-import { z } from "zod";
-import { insertTechnologyRoadmapSchema } from "../../../shared/index.js";
-import { CacheOperations } from "../../lib/cache/cache-strategies.js";
-import { technologyRepository } from "../../lib/db/repositories/index.js";
-import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { authService } from "../../services/auth-service.js";
-
 const router = Router();
-
-const idParamSchema = z.object({
-  id: z.string().transform(Number).pipe(z.number().int().positive()),
-});
 
 const reorderSchema = z.object({
   roadmap: z.array(
@@ -39,141 +23,76 @@ const reorderSchema = z.object({
   ),
 });
 
-router.get("/", async (_req, res) => {
-  const roadmap = await withTimeout(
-    technologyRepository.getTechnologyRoadmap(),
-    10000,
-    "Get technology roadmap",
-  );
+router.get("/", async (req, res) => {
+  const result = await technologyService.getRoadmap(shouldBypassCache(req));
+  if (result.isErr()) throw result.error;
 
-  logger.info(`[TechnologyRoadmap] Retrieved ${roadmap.length} roadmap items`);
+  const roadmap = result.value;
+
   return res.json(roadmap);
 });
 
 router.get("/:id", async (req, res) => {
-  const { id } = idParamSchema.parse(req.params);
+  const id = parseInt(req.params.id as string);
+  const result = await technologyService.getRoadmapItem(id);
+  if (result.isErr()) throw result.error;
 
-  const item = await withTimeout(
-    technologyRepository.getTechnologyRoadmapItem(id),
-    10000,
-    "Get technology roadmap item",
-  );
-
-  if (!item) {
-    return res.status(404).json({ error: "Roadmap item not found" });
-  }
-
-  logger.info(`[TechnologyRoadmap] Retrieved roadmap item ${id}`);
-  return res.json(item);
+  return res.json(result.value);
 });
 
 router.post("/", authService.requireAdmin, async (req, res) => {
   const validation = insertTechnologyRoadmapSchema.safeParse(req.body);
-
   if (!validation.success) {
-    logger.warn("[TechnologyRoadmap] Validation failed:", validation.error);
-    return res.status(400).json({
-      error: "Validation failed",
+    throw new ValidationError("Validation failed", {
       details: validation.error.issues,
     });
   }
 
-  const newItem = await withTimeout(
-    technologyRepository.createTechnologyRoadmap(removeUndefined(validation.data)),
-    10000,
-    "Create technology roadmap item",
-  );
+  const result = await technologyService.createRoadmapItem(removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
 
-  CacheOperations.invalidateTechnology()
-    .then(() => logger.info("[TechnologyRoadmap] ✅ Cache invalidated after creation"))
-    .catch((cacheError) =>
-      logger.error("[TechnologyRoadmap] ❌ Cache invalidation failed:", cacheError),
-    );
-
-  logger.info(`[TechnologyRoadmap] Created roadmap item ${newItem.id}`);
-  return res.status(201).json(newItem);
+  return res.status(201).json(result.value);
 });
 
 router.patch("/:id", authService.requireAdmin, async (req, res) => {
-  const { id } = idParamSchema.parse(req.params);
+  const id = parseInt(req.params.id as string);
   const validation = insertTechnologyRoadmapSchema.partial().safeParse(req.body);
-
   if (!validation.success) {
-    logger.warn("[TechnologyRoadmap] Validation failed:", validation.error);
-    return res.status(400).json({
-      error: "Validation failed",
+    throw new ValidationError("Validation failed", {
       details: validation.error.issues,
     });
   }
 
-  const updated = await withTimeout(
-    technologyRepository.updateTechnologyRoadmap(id, removeUndefined(validation.data)),
-    10000,
-    "Update technology roadmap item",
-  );
+  const result = await technologyService.updateRoadmapItem(id, removeUndefined(validation.data));
+  if (result.isErr()) throw result.error;
 
-  if (!updated) {
-    return res.status(404).json({ error: "Roadmap item not found" });
-  }
-
-  CacheOperations.invalidateTechnology()
-    .then(() => logger.info("[TechnologyRoadmap] ✅ Cache invalidated after update"))
-    .catch((cacheError) =>
-      logger.error("[TechnologyRoadmap] ❌ Cache invalidation failed:", cacheError),
-    );
-
-  logger.info(`[TechnologyRoadmap] Updated roadmap item ${id}`);
-  return res.json(updated);
+  return res.json(result.value);
 });
 
 router.delete("/:id", authService.requireAdmin, async (req, res) => {
-  const { id } = idParamSchema.parse(req.params);
+  const id = parseInt(req.params.id as string);
+  const result = await technologyService.deleteRoadmapItem(id);
+  if (result.isErr()) throw result.error;
 
-  const deleted = await withTimeout(
-    technologyRepository.deleteTechnologyRoadmap(id),
-    10000,
-    "Delete technology roadmap item",
-  );
-
-  if (!deleted) {
-    return res.status(404).json({ error: "Roadmap item not found" });
-  }
-
-  CacheOperations.invalidateTechnology()
-    .then(() => logger.info("[TechnologyRoadmap] ✅ Cache invalidated after deletion"))
-    .catch((cacheError) =>
-      logger.error("[TechnologyRoadmap] ❌ Cache invalidation failed:", cacheError),
-    );
-
-  logger.info(`[TechnologyRoadmap] Deleted roadmap item ${id}`);
   return res.status(204).send();
 });
 
 router.patch("/reorder", authService.requireAdmin, async (req, res) => {
   const validation = reorderSchema.safeParse(req.body);
-
   if (!validation.success) {
-    logger.warn("[TechnologyRoadmap] Reorder validation failed:", validation.error);
-    return res.status(400).json({
-      error: "Validation failed",
+    throw new ValidationError("Validation failed", {
       details: validation.error.issues,
     });
   }
 
-  const updates = await Promise.all(
-    removeUndefined(validation.data).roadmap.map(({ id, position }) =>
-      technologyRepository.updateTechnologyRoadmap(id, { sortOrder: position }),
-    ),
-  );
+  const orderedIds = validation.data.roadmap
+    .sort((a, b) => a.position - b.position)
+    .map((item) => item.id);
 
-  CacheOperations.invalidateTechnology()
-    .then(() => logger.info("[TechnologyRoadmap] ✅ Cache invalidated after reorder"))
-    .catch((cacheError) =>
-      logger.error("[TechnologyRoadmap] ❌ Cache invalidation failed:", cacheError),
-    );
+  const result = await technologyService.reorderRoadmap(orderedIds);
+  if (result.isErr()) throw result.error;
 
-  logger.info(`[TechnologyRoadmap] Reordered ${updates.length} roadmap items`);
-  return res.json({ success: true, updated: updates.length });
+  return res.json({ success: true, updated: orderedIds.length });
 });
 
 export default router;

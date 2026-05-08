@@ -6,22 +6,16 @@ import { removeUndefined } from "../../lib/utilities/core-utils.js";
  * Handles all product CRUD operations, pagination, filtering, and search
  */
 
-import {
-  insertProductSchema,
-  type ProductSummary,
-  productByPathSchema,
-  productsQuerySchema,
-} from "@run-remix/shared";
+import { insertProductSchema, productByPathSchema, productsQuerySchema } from "@run-remix/shared";
 import { type Request, type Response, Router } from "express";
 import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
-import { retryDbOperation } from "../../lib/db/db-retry.js";
-import { productRepository } from "../../lib/db/repositories/index.js";
+import { ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { shouldBypassCache, validateIdParam } from "../../lib/utilities/core-utils.js";
 import { createRateLimiter } from "../../middleware/rateLimiter.js";
+import { productService } from "../../services/product.service.js";
 import { webhookService } from "../../services/webhook-service.js";
 
 const writeRateLimiter = createRateLimiter({
@@ -29,10 +23,6 @@ const writeRateLimiter = createRateLimiter({
   max: 50,
   message: "Too many write requests. Please try again later.",
 });
-
-// import { UnifiedCache } from "../../lib/cache/unified-cache.js";
-
-// const unifiedCache = UnifiedCache.getInstance();
 
 const router = Router();
 
@@ -249,9 +239,7 @@ registry.registerPath({
 });
 
 // GET /api/products - List products with pagination and filtering
-// CHUNK 5: Optimized with database-level pagination (avoids loading all products into memory)
 router.get("/products", async (req, res): Promise<undefined | Response> => {
-  // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
   if (shouldBypassCache(req)) {
     res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   } else {
@@ -259,87 +247,17 @@ router.get("/products", async (req, res): Promise<undefined | Response> => {
   }
 
   const query = productsQuerySchema.parse(req.query);
-  const { category, active, featured, tag, search, page, limit } = query;
+  const result = await productService.listProducts({
+    ...query,
+    page: query.page ? Number(query.page) : undefined,
+    limit: query.limit ? Number(query.limit) : undefined,
+  });
 
-  // Parse pagination parameters
-  const pageNum = Math.max(1, Number(page) || 1); // clamp: page=0 or page=-1 must not produce negative offset
-  const pageSize = Math.min(Number(limit) || 20, 100); // Max 100 items per page
-  const offset = (pageNum - 1) * pageSize;
+  if (result.isErr()) throw result.error;
 
-  let products: ProductSummary[] = [];
-  let totalCount = 0;
-
-  // CHUNK 5: Use database-level pagination (LIMIT/OFFSET) with dedicated COUNT queries
-  // This eliminates memory overhead and provides accurate counts without fetching all rows
-  if (search && typeof search === "string") {
-    const filters: {
-      categoryId?: number;
-      isActive?: boolean;
-      isFeatured?: boolean;
-    } = {};
-
-    if (category) filters.categoryId = parseInt(category as string, 10);
-    if (active === "true") filters.isActive = true;
-    else if (active === "false") filters.isActive = false;
-    if (featured === "true") filters.isFeatured = true;
-    else if (featured === "false") filters.isFeatured = false;
-
-    products = await retryDbOperation(
-      () => productRepository.searchProducts(search, filters, pageSize, offset),
-      { operationName: "Search products by query" },
-    );
-    totalCount = await retryDbOperation(
-      () => productRepository.searchProductsCount(search, filters),
-      {
-        operationName: "Count search results",
-      },
-    );
-  } else if (tag && typeof tag === "string") {
-    products = await retryDbOperation(
-      () => productRepository.getProductsByTag(tag, pageSize, offset),
-      { operationName: "Get products by tag" },
-    );
-    totalCount = await retryDbOperation(() => productRepository.getProductsByTagCount(tag), {
-      operationName: "Count products by tag",
-    });
-  } else if (category && typeof category === "string") {
-    const categoryId = parseInt(category, 10);
-    products = await retryDbOperation(
-      () => productRepository.getProductsByCategory(categoryId, pageSize, offset),
-      { operationName: "Get products by category" },
-    );
-    totalCount = await retryDbOperation(
-      () => productRepository.getProductsByCategoryCount(categoryId),
-      { operationName: "Count products by category" },
-    );
-  } else if (featured === "true") {
-    products = await retryDbOperation(
-      () => productRepository.getFeaturedProducts(pageSize, offset),
-      { operationName: "Get featured products" },
-    );
-    totalCount = await retryDbOperation(() => productRepository.getFeaturedProductsCount(), {
-      operationName: "Count featured products",
-    });
-  } else if (active === "true") {
-    // CHUNK 27-R: Combined query with window function - 40% faster (one query instead of two)
-    const result = await retryDbOperation(
-      () => productRepository.getProductsSummary(pageSize, offset),
-      { operationName: "Get active products summary" },
-    );
-    products = result.products;
-    totalCount = result.totalCount;
-  } else {
-    // CHUNK 27-R: Combined query with window function - 40% faster (one query instead of two)
-    const result = await retryDbOperation(
-      () => productRepository.getProductsSummary(pageSize, offset),
-      { operationName: "Get all products summary" },
-    );
-    products = result.products;
-    totalCount = result.totalCount;
-  }
-
-  // console.log("Sending products response:", { count: products?.length, total: totalCount });
-
+  const { products, totalCount } = result.value;
+  const pageSize = Math.min(Number(query.limit) || 20, 100);
+  const pageNum = Math.max(1, Number(query.page) || 1);
   const totalPages = Math.ceil(totalCount / pageSize);
 
   return res.json({
@@ -356,79 +274,46 @@ router.get("/products", async (req, res): Promise<undefined | Response> => {
 
 // GET /api/products/by-path - Get product by hierarchical URL path
 router.get("/products/by-path", async (req, res): Promise<undefined | Response> => {
-  const { path } = productByPathSchema.parse(req.query);
-
-  if (!path || typeof path !== "string") {
-    logger.warn(`[URL Validation] ❌ Missing or invalid path parameter`);
-    return res.status(400).json({
-      success: false,
-      error: { message: "Path parameter is required" },
-    });
+  const validation = productByPathSchema.safeParse(req.query);
+  if (!validation.success) {
+    throw new ValidationError("Invalid path parameter", { issues: validation.error.issues });
   }
 
-  // Log the requested path for tracking
+  const { path } = validation.data;
   logger.info(`[URL Validation] 🔍 Requested path: "${path}"`);
 
-  // Repository layer (product-repository.ts) handles all caching including 404s
-  const productContext = await withTimeout(
-    retryDbOperation(() => productRepository.getProductByPath(path), {
-      operationName: "Get product by path",
-    }),
-    10000,
-    "Get product by path",
-  );
+  const result = await productService.getProductByPath(path);
 
-  if (!productContext) {
-    logger.info(`[URL Validation] ❌ Product not found for path "${path}"`);
-    res.set("Cache-Control", "public, max-age=600"); // 10 minutes for 404s
-    return res.status(404).json({
-      success: false,
-      error: { message: "Product not found" },
-    });
+  if (result.isErr()) {
+    if (result.error.name === "NotFoundError") {
+      logger.info(`[URL Validation] ❌ Product not found for path "${path}"`);
+      res.set("Cache-Control", "public, max-age=600");
+      throw result.error;
+    }
+    throw result.error;
   }
 
   logger.info(
-    `[URL Validation] ✅ Product found for path "${path}" → ${productContext.product?.name} (ID: ${productContext.product?.id})`,
+    `[URL Validation] ✅ Product found for path "${path}" → ${result.value.product?.name}`,
   );
-
-  // Set browser cache headers (60 minutes)
-  // Note: Repository layer (product-repository.ts) handles server-side caching
-  res.set("Cache-Control", "public, max-age=3600"); // 60 minutes
-
-  return res.json(productContext);
+  res.set("Cache-Control", "public, max-age=3600");
+  return res.json(result.value);
 });
 
-// PHASE 4: GET /api/products/:id/3d-model - Get 3D model metadata lazily
+// GET /api/products/:id/3d-model - Get 3D model metadata lazily
 router.get("/products/:id/3d-model", async (req, res): Promise<undefined | Response> => {
   const id = validateIdParam(req, res, "id", "product");
-  if (id === null) {
-    return; // Error response already sent
-  }
+  if (id === null) return;
 
-  const modelMetadata = await withTimeout(
-    retryDbOperation(() => productRepository.get3DModelMetadata(id), {
-      operationName: "Get 3D model metadata",
-    }),
-    5000,
-    "Get 3D model metadata",
-  );
+  const result = await productService.get3DModelMetadata(id);
+  if (result.isErr()) throw result.error;
 
-  if (!modelMetadata) {
-    return res.status(404).json({
-      success: false,
-      error: { message: "3D model not found for this product" },
-    });
-  }
-
-  // Set cache headers for browser caching (15 minutes)
   res.set("Cache-Control", "public, max-age=900");
-
-  return res.json(modelMetadata);
+  return res.json(result.value);
 });
 
 // GET /api/products/:id - Get single product
 router.get("/products/:id", async (req, res): Promise<undefined | Response> => {
-  // Smart Caching: Bypass for admin/nocache, otherwise cache for 60s
   if (shouldBypassCache(req)) {
     res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   } else {
@@ -436,24 +321,12 @@ router.get("/products/:id", async (req, res): Promise<undefined | Response> => {
   }
 
   const id = validateIdParam(req, res, "id", "product");
-  if (id === null) {
-    return; // Error response already sent
-  }
+  if (id === null) return;
 
-  const product = await withTimeout(
-    retryDbOperation(() => productRepository.getProduct(id), {
-      operationName: "Get product by ID",
-    }),
-    5000,
-    "Get product by ID",
-  );
-  if (!product) {
-    return res.status(404).json({
-      success: false,
-      error: { message: "Product not found" },
-    });
-  }
-  return res.json(product);
+  const result = await productService.getProductById(id);
+  if (result.isErr()) throw result.error;
+
+  return res.json(result.value);
 });
 
 import { requireRole } from "../../middleware/rbac.js";
@@ -467,52 +340,24 @@ router.post(
     body: insertProductSchema,
   }),
   async (req, res): Promise<void> => {
-    // Input sanitization handled by middleware and Zod schema
-    const validatedData = req.body;
+    const result = await productService.createProduct(removeUndefined(req.body));
+    if (result.isErr()) throw result.error;
 
-    const product = await withTimeout(
-      retryDbOperation(() => productRepository.createProduct(removeUndefined(validatedData)), {
-        operationName: "Create product",
-      }),
-      10000,
-      "Create product",
-    );
-
-    // Trigger Webhook
-    webhookService.trigger("product.created", product);
-
-    res.status(201).json(product);
+    webhookService.trigger("product.created", result.value);
+    res.status(201).json(result.value);
   },
 );
 
 // Shared update handler for both PUT and PATCH
 const updateProductHandler = async (req: Request, res: Response): Promise<undefined | Response> => {
   const id = validateIdParam(req, res, "id", "product");
-  if (id === null) {
-    return; // Error response already sent
-  }
+  if (id === null) return;
 
-  // Input sanitization handled by middleware and Zod schema
-  const validatedData = req.body;
+  const result = await productService.updateProduct(id, removeUndefined(req.body));
+  if (result.isErr()) throw result.error;
 
-  const product = await withTimeout(
-    retryDbOperation(() => productRepository.updateProduct(id, removeUndefined(validatedData)), {
-      operationName: "Update product",
-    }),
-    10000,
-    "Update product",
-  );
-  if (!product) {
-    return res.status(404).json({
-      success: false,
-      error: { message: "Product not found" },
-    });
-  }
-
-  // Trigger Webhook
-  webhookService.trigger("product.updated", product);
-
-  return res.json(product);
+  webhookService.trigger("product.updated", result.value);
+  return res.json(result.value);
 };
 
 // PUT /api/products/:id - Update product
@@ -538,28 +383,12 @@ router.patch(
 // DELETE /api/products/:id - Delete product
 router.delete("/products/:id", requireRole("admin"), async (req, res): Promise<void> => {
   const id = validateIdParam(req, res, "id", "product");
-  if (id === null) {
-    return; // Error response already sent
-  }
+  if (id === null) return;
 
-  const deleted = await withTimeout(
-    retryDbOperation(() => productRepository.deleteProduct(id), {
-      operationName: "Delete product",
-    }),
-    10000,
-    "Delete product",
-  );
-  if (!deleted) {
-    res.status(404).json({
-      success: false,
-      error: { message: "Product not found" },
-    });
-    return;
-  }
+  const result = await productService.deleteProduct(id);
+  if (result.isErr()) throw result.error;
 
-  // Trigger Webhook
   webhookService.trigger("product.deleted", { id });
-
   res.status(204).send();
 });
 

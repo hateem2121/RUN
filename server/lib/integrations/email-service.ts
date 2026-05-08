@@ -4,10 +4,13 @@
  * Created: October 22, 2025
  */
 
+import { err, ok, type Result } from "neverthrow";
 import type { Transporter } from "nodemailer";
 import nodemailer from "nodemailer";
 import { env } from "../env.js";
+import { type AppError, InternalError } from "../errors.js";
 import { logger } from "../monitoring/logger.js";
+import { withCircuit } from "../resilience/circuit-breaker.js";
 
 interface EmailOptions {
   to: string;
@@ -75,34 +78,43 @@ class EmailService {
     }
   }
 
-  private async sendEmail(options: EmailOptions): Promise<boolean> {
+  private async sendEmail(options: EmailOptions): Promise<Result<boolean, AppError>> {
     if (!this.isConfigured || !this.transporter) {
       logger.warn("[Email] Email service not configured - skipping email send");
-      return false;
+      return ok(false);
     }
 
     try {
-      const info = await this.transporter.sendMail({
-        from: `"RUN APPAREL" <${process.env.GMAIL_USER}>`,
-        to: options.to,
-        subject: options.subject,
-        html: options.html,
-        text: options.text || options.html.replace(/<[^>]*>/g, ""),
-      });
+      const info = await withCircuit(
+        "email-smtp",
+        async () =>
+          await this.transporter!.sendMail({
+            from: `"RUN APPAREL" <${process.env.GMAIL_USER}>`,
+            to: options.to,
+            subject: options.subject,
+            html: options.html,
+            text: options.text || options.html.replace(/<[^>]*>/g, ""),
+          }),
+        {
+          timeout: 10000,
+          errorThresholdPercentage: 50,
+          resetTimeout: 30000,
+        },
+      );
 
       logger.info(`[Email] Email sent successfully: ${info.messageId}`);
-      return true;
+      return ok(true);
     } catch (error) {
       logger.error("[Email] Failed to send email:", error);
-      return false;
+      return err(new InternalError("Failed to send email", { error }));
     }
   }
 
-  async sendAdminNotification(inquiry: InquiryEmailData): Promise<boolean> {
+  async sendAdminNotification(inquiry: InquiryEmailData): Promise<Result<boolean, AppError>> {
     const adminEmail = process.env.GMAIL_USER;
     if (!adminEmail) {
       logger.warn("[Email] Admin email not configured");
-      return false;
+      return ok(false);
     }
 
     const subject = `New Contact Inquiry from ${inquiry.name}`;
@@ -116,7 +128,7 @@ class EmailService {
     });
   }
 
-  async sendCustomerConfirmation(inquiry: InquiryEmailData): Promise<boolean> {
+  async sendCustomerConfirmation(inquiry: InquiryEmailData): Promise<Result<boolean, AppError>> {
     const subject = "Thank you for contacting RUN APPAREL";
     const html = this.generateCustomerEmailTemplate(inquiry);
 
