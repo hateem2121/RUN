@@ -10,16 +10,16 @@ dns.setServers(["1.1.1.1", "8.8.8.8"]);
 import { injectSecretsToEnv, loadSecrets } from "./lib/secrets/secret-manager.js";
 import "dotenv/config";
 import type express from "express";
+import { logger } from "./lib/monitoring/logger.js";
+
 export let app: express.Express;
 export const serverReady: Promise<void> = (async () => {
   try {
     // 1. Load Secrets (Async)
-    // NOTE: Pino logger is not yet initialised at this point — console.log is
-    // intentional here as the absolute earliest bootstrap signal before server.ts loads.
-    console.log("[Bootstrap] Loading secrets from Secret Manager...");
+    logger.info("[Bootstrap] Loading secrets from Secret Manager...");
     const secrets = await loadSecrets();
     injectSecretsToEnv();
-    console.log(`[Bootstrap] Loaded ${Object.keys(secrets).length} secrets.`);
+    logger.info(`[Bootstrap] Loaded ${Object.keys(secrets).length} secrets.`);
 
     // 1.5. Validate Environment Variables
     const { validateEnv } = await import("../shared/schemas/env.schema.js");
@@ -32,7 +32,7 @@ export const serverReady: Promise<void> = (async () => {
     app = mod.app;
     await mod.serverReady;
   } catch (error) {
-    console.error("[Bootstrap] Critical failure during startup:", error);
+    logger.error("[Bootstrap] Critical failure during startup:", undefined, error as Error);
     process.exit(1);
   }
 })();

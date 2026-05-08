@@ -113,7 +113,7 @@ export function validateIdParam(
       );
     }
 
-    res.status(400).json(errorResponse);
+    res.status(422).json(errorResponse);
     return null;
   }
 

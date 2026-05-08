@@ -10,6 +10,7 @@ import { unifiedCache } from "../lib/cache/unified-cache.js";
 import { miscRepository } from "../lib/db/repositories/index.js";
 import { type AppError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
+import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 import { withTimeout } from "../lib/resilience/request-timeout.js";
 import { removeUndefined } from "../lib/utilities/core-utils.js";
 
@@ -50,7 +51,11 @@ export const NavigationService = {
     if (bypassCache) {
       logger.info("[Navigation] Bypassing cache for real-time data", { bypassCache });
       const result = await safeQuery(
-        withTimeout(storage.getNavigationItems(), 5000, "Get navigation items (bypass)"),
+        withCircuit(
+          "get-navigation-items-bypass",
+          () => withTimeout(storage.getNavigationItems(), 5000, "Get navigation items (bypass)"),
+          DB_CIRCUIT_OPTIONS,
+        ),
       );
 
       if (result.isErr()) {
@@ -85,7 +90,11 @@ export const NavigationService = {
 
     // Cache miss
     const result = await safeQuery(
-      withTimeout(storage.getNavigationItems(), 5000, "Get navigation items"),
+      withCircuit(
+        "get-navigation-items",
+        () => withTimeout(storage.getNavigationItems(), 5000, "Get navigation items"),
+        DB_CIRCUIT_OPTIONS,
+      ),
     );
 
     if (result.isErr()) {
@@ -107,7 +116,11 @@ export const NavigationService = {
 
   getItem: async (id: number): Promise<Result<NavigationItem, AppError>> => {
     const result = await safeQuery(
-      withTimeout(miscRepository.getNavigationItem(id), 5000, "Get navigation item"),
+      withCircuit(
+        "get-navigation-item",
+        () => withTimeout(miscRepository.getNavigationItem(id), 5000, "Get navigation item"),
+        DB_CIRCUIT_OPTIONS,
+      ),
     );
 
     if (result.isErr()) {
@@ -140,7 +153,16 @@ export const NavigationService = {
     };
 
     const result = await safeQuery(
-      withTimeout(miscRepository.createNavigationItem(itemData), 5000, "Create navigation item"),
+      withCircuit(
+        "create-navigation-item",
+        () =>
+          withTimeout(
+            miscRepository.createNavigationItem(itemData),
+            5000,
+            "Create navigation item",
+          ),
+        DB_CIRCUIT_OPTIONS,
+      ),
     );
 
     if (result.isErr()) {
@@ -167,10 +189,15 @@ export const NavigationService = {
     });
 
     const result = await safeQuery(
-      withTimeout(
-        miscRepository.updateNavigationItem(id, updateData),
-        5000,
-        "Update navigation item",
+      withCircuit(
+        "update-navigation-item",
+        () =>
+          withTimeout(
+            miscRepository.updateNavigationItem(id, updateData),
+            5000,
+            "Update navigation item",
+          ),
+        DB_CIRCUIT_OPTIONS,
       ),
     );
 
@@ -190,7 +217,11 @@ export const NavigationService = {
 
   deleteItem: async (id: number): Promise<Result<void, AppError>> => {
     const result = await safeQuery(
-      withTimeout(miscRepository.deleteNavigationItem(id), 5000, "Delete navigation item"),
+      withCircuit(
+        "delete-navigation-item",
+        () => withTimeout(miscRepository.deleteNavigationItem(id), 5000, "Delete navigation item"),
+        DB_CIRCUIT_OPTIONS,
+      ),
     );
 
     if (result.isErr()) {
@@ -213,7 +244,11 @@ export const NavigationService = {
     const storage = miscRepository;
 
     const result = await safeQuery(
-      withTimeout(storage.reorderNavigationItems(items), 5000, "Reorder navigation items"),
+      withCircuit(
+        "reorder-navigation-items",
+        () => withTimeout(storage.reorderNavigationItems(items), 5000, "Reorder navigation items"),
+        DB_CIRCUIT_OPTIONS,
+      ),
     );
 
     if (result.isErr()) {
@@ -243,10 +278,15 @@ export const NavigationService = {
     }
 
     const result = await safeQuery(
-      withTimeout(
-        miscRepository.getNavigationGlassmorphismSettings(),
-        5000,
-        "Get glassmorphism settings",
+      withCircuit(
+        "get-glassmorphism-settings",
+        () =>
+          withTimeout(
+            miscRepository.getNavigationGlassmorphismSettings(),
+            5000,
+            "Get glassmorphism settings",
+          ),
+        DB_CIRCUIT_OPTIONS,
       ),
     );
 
@@ -279,10 +319,15 @@ export const NavigationService = {
     };
 
     const result = await safeQuery(
-      withTimeout(
-        miscRepository.updateNavigationGlassmorphismSettings(settingsData),
-        5000,
-        "Update glassmorphism settings",
+      withCircuit(
+        "update-glassmorphism-settings",
+        () =>
+          withTimeout(
+            miscRepository.updateNavigationGlassmorphismSettings(settingsData),
+            5000,
+            "Update glassmorphism settings",
+          ),
+        DB_CIRCUIT_OPTIONS,
       ),
     );
 

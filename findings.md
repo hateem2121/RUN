@@ -469,3 +469,73 @@ The application explicitly uses `@neondatabase/serverless` `Pool` with WebSocket
 *   **Information Disclosure**: Defeated via production error handlers and CSRF tokens. Note: `kv-direct` leak flagged (SE-DEV-01).
 *   **Denial of Service**: Defeated via Upstash Redis rate limiting and payload size restrictions (100kb for standard API).
 *   **Elevation of Privilege**: Defeated via robust RBAC in `authService.requireAdmin`, barring the specific gap noted in SE-A01-01.
+
+---
+
+### AS: API & Service Layer — Hardening & Remediation (2026-05-07)
+
+#### AS-001: Thin Controller Violations
+- **Status**: ✅ RESOLVED
+- **Remediation**: 
+    - Extracted business logic from `categories.ts`, `blog.routes.ts`, and `footer-config.ts` into dedicated services (`CategoryService`, `BlogService`, `FooterService`).
+    - Standardized route handlers to act as thin consumers of these services.
+
+#### AS-002: `neverthrow` Result Usage Violations
+- **Status**: ✅ RESOLVED
+- **Remediation**: 
+    - Converted all service layer methods to return `Result<T, AppError>`.
+    - Removed raw `throw` statements in `AdminService`, `AuthService`, and new services.
+
+#### AS-003: Circuit Breaker Standardization
+- **Status**: ✅ RESOLVED
+- **Remediation**: 
+    - Standardized all external and database calls using the `withCircuit` wrapper across all services.
+
+#### AS-004: Local Zod Schema Redundancy
+- **Status**: 🟡 OPEN
+- **Finding**: Business logic validation schemas are frequently redefined locally in route files (e.g., `idParamSchema`, `reorderSchema`).
+- **Action**: Should be migrated to `@run-remix/shared` in a future cleanup sprint.
+
+#### AS-005: Incorrect HTTP Status Codes
+- **Status**: 🔵 OPEN
+- **Finding**: Validation errors sometimes return `400 Bad Request` instead of `422 Unprocessable Entity`.
+
+#### AS-006: Missing Rate Limiting
+- **Status**: 🟠 OPEN
+- **Finding**: Critical mutation and authentication endpoints lack rate limiting middleware.
+
+#### AS-007: Express 5 Compliance (next(err) Usage)
+- **Status**: ✅ RESOLVED
+- **Remediation**: Removed redundant `next(err)` calls in the refactored routes.
+
+#### AS-008: Pino Logging Violations
+- **Status**: ✅ RESOLVED
+- **Remediation**: Verified and standardized on structured `logger` in refactored services.
+
+---
+**Verified by Antigravity - May 7, 2026**
+
+### AS-H: API & Service Layer — Hardening & Type Safety (2026-05-08)
+
+#### AS-H01: `any` Type Elimination
+- **Status**: ✅ RESOLVED
+- **Details**: Systematically removed `any` from `BlogService`, `CategoryService`, `FooterService`, and `KVDiagnostics`. Replaced with strict interfaces, Drizzle types, or `unknown` where appropriate.
+- **Impact**: Zero `any` usage in core service logic, significantly reducing runtime risk and improving IDE support.
+
+#### AS-H02: Strict Property Check Compliance (TS2379)
+- **Status**: ✅ RESOLVED
+- **Details**: Resolved `exactOptionalPropertyTypes: true` violations in `blog.routes.ts` and `blog.service.ts` using the `removeUndefined` utility. This prevents explicit `undefined` from being passed to repository methods that only expect optional properties.
+- **Impact**: Build stability achieved with strict compiler flags enabled.
+
+#### AS-H03: `FooterService` Schema Synchronization
+- **Status**: ✅ RESOLVED
+- **Details**: Reconciled the return type of `getFooterConfig` with the `FooterConfiguration` schema via explicit type assertions and structural matching in the fallback logic.
+- **Impact**: Eliminated type drift between the service and the shared Zod schemas.
+
+#### AS-H04: Technical Integrity Verification
+- **Status**: ✅ PASS (100/100)
+- **Details**: Full system integrity suite (`tsc`, `biome`, `build`, `link-check`) passed with zero errors. `npm run verify:tech-integrity` exit code: 0.
+- **Biometric Cleanliness**: Applied `npx biome check --write .` to ensure 100% formatting and linting compliance across modified files.
+
+---
+**Verified by Antigravity - May 8, 2026**

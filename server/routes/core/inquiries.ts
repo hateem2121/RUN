@@ -1,20 +1,19 @@
+import { createInquirySchema } from "@run-remix/shared";
 import { Router } from "express";
 import { logger } from "../../lib/monitoring/logger.js";
+import { writeRateLimiter } from "../../middleware/rateLimiter.js";
 import { inquiryService } from "../../services/inquiry-service.js";
 
 const router = Router();
-
-import { createInquirySchema } from "@run-remix/shared";
 
 /**
  * POST /api/inquiries
  * Public endpoint for submitting contact inquiries and quote requests.
  */
-router.post("/inquiries", async (req, res) => {
+router.post("/inquiries", writeRateLimiter, async (req, res) => {
   const validatedData = createInquirySchema.parse(req.body);
 
   // Map the simplified frontend payload to the DB schema
-  // In our DB schema, inquiries table has name, email, company, etc. as top-level columns
   const insertData = {
     name: validatedData.contact.name,
     email: validatedData.contact.email,
@@ -23,15 +22,21 @@ router.post("/inquiries", async (req, res) => {
     country: validatedData.contact.country,
     message: validatedData.contact.message,
     source: validatedData.source,
-    // items are stored as JSONB in the inquiries table
-    items: validatedData.items?.map((item) => ({
-      ...item,
-      notes: item.notes || null,
-    })),
+    items:
+      validatedData.items?.map((item) => ({
+        ...item,
+        notes: item.notes || null,
+      })) || [],
     submittedAt: new Date(),
   };
 
-  const inquiry = await inquiryService.createInquiry(insertData);
+  const result = await inquiryService.createInquiry(insertData);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  const inquiry = result.value;
 
   logger.info(`[PublicInquiry] Successfully created inquiry #${inquiry.id} from ${inquiry.source}`);
 

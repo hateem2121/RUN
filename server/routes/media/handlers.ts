@@ -7,6 +7,7 @@ import { mediaRepository } from "../../lib/db/repositories/index.js";
 import { type AppError, BadRequestError, InternalError, NotFoundError } from "../../lib/errors.js";
 import { getGLTFProcessor, isGLTFFile } from "../../lib/integrations/gltf-processor.js";
 import { logger, serializeError } from "../../lib/monitoring/logger.js";
+import { DB_CIRCUIT_OPTIONS, withCircuit } from "../../lib/resilience/circuit-breaker.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { appStorageService } from "../../lib/storage/app-service.js";
 import {
@@ -55,7 +56,13 @@ async function getAllMediaAssets(): Promise<Result<MediaAsset[], AppError>> {
   let hasMore = true;
 
   while (hasMore) {
-    const batchResult = await safeQuery(storage.getMediaAssets(pageSize, offset));
+    const batchResult = await safeQuery(
+      withCircuit(
+        "get-all-media-assets-batch",
+        () => storage.getMediaAssets(pageSize, offset),
+        DB_CIRCUIT_OPTIONS,
+      ),
+    );
     if (batchResult.isErr()) {
       return err(batchResult.error);
     }
@@ -105,7 +112,13 @@ export async function getMediaAssets(req: Request, res: Response, next: NextFunc
   }
 
   // Fetch assets and total count in single batched transaction (reduces NEON active time)
-  const result = await safeQuery(storage.getMediaAssetsWithCount(limit, offset, filters));
+  const result = await safeQuery(
+    withCircuit(
+      "get-media-assets-with-count",
+      () => storage.getMediaAssetsWithCount(limit, offset, filters),
+      DB_CIRCUIT_OPTIONS,
+    ),
+  );
 
   if (result.isErr()) {
     return next(result.error);
@@ -140,7 +153,9 @@ export async function getMediaAssetById(
   }
 
   const storage = mediaRepository;
-  const result = await safeQuery(storage.getMediaAsset(id));
+  const result = await safeQuery(
+    withCircuit("get-media-asset-by-id", () => storage.getMediaAsset(id), DB_CIRCUIT_OPTIONS),
+  );
 
   if (result.isErr()) {
     return next(result.error);
@@ -172,7 +187,9 @@ export async function getMediaCount(req: Request, res: Response, next: NextFunct
   }
 
   // Use database-level COUNT with filtering - no need to load all records
-  const result = await safeQuery(storage.getMediaAssetsCount(filters));
+  const result = await safeQuery(
+    withCircuit("get-media-count", () => storage.getMediaAssetsCount(filters), DB_CIRCUIT_OPTIONS),
+  );
 
   if (result.isErr()) {
     return next(result.error);
@@ -207,7 +224,13 @@ export async function searchMediaAssets(req: Request, res: Response, next: NextF
 
   // Use database-level filtering with Drizzle's ilike() operator
   // This pushes filtering to PostgreSQL instead of loading all records into memory
-  const result = await safeQuery(storage.getMediaAssets(limit, 0, filters));
+  const result = await safeQuery(
+    withCircuit(
+      "search-media-assets",
+      () => storage.getMediaAssets(limit, 0, filters),
+      DB_CIRCUIT_OPTIONS,
+    ),
+  );
 
   if (result.isErr()) {
     return next(result.error);
@@ -230,7 +253,11 @@ export async function updateMediaAsset(
   const storage = mediaRepository;
 
   const result = await safeQuery(
-    storage.updateMediaAsset(id, data as unknown as Partial<MediaAsset>),
+    withCircuit(
+      "update-media-asset",
+      () => storage.updateMediaAsset(id, data as unknown as Partial<MediaAsset>),
+      DB_CIRCUIT_OPTIONS,
+    ),
   );
 
   if (result.isErr()) {
@@ -259,7 +286,13 @@ export async function deleteMediaAsset(
   const storage = mediaRepository;
 
   // Get asset metadata before deletion (needed for physical file cleanup)
-  const assetResult = await safeQuery(storage.getMediaAsset(assetId));
+  const assetResult = await safeQuery(
+    withCircuit(
+      "get-media-asset-before-delete",
+      () => storage.getMediaAsset(assetId),
+      DB_CIRCUIT_OPTIONS,
+    ),
+  );
   if (assetResult.isErr()) {
     return next(assetResult.error);
   }
@@ -272,7 +305,9 @@ export async function deleteMediaAsset(
 
   // ATOMIC OPERATION: Both DB soft delete AND cache invalidation succeed or both rollback
   // Transaction ensures cache is cleared BEFORE response is sent (fixes race condition)
-  const deleteResult = await safeQuery(storage.deleteMediaAsset(assetId));
+  const deleteResult = await safeQuery(
+    withCircuit("delete-media-asset", () => storage.deleteMediaAsset(assetId), DB_CIRCUIT_OPTIONS),
+  );
   if (deleteResult.isErr()) {
     return next(deleteResult.error);
   }
@@ -452,7 +487,11 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
       };
 
       const createResult = await safeQuery(
-        storage.createMediaAsset(buildInsertMediaAsset(metadata)),
+        withCircuit(
+          "create-media-asset-finalize",
+          () => storage.createMediaAsset(buildInsertMediaAsset(metadata)),
+          DB_CIRCUIT_OPTIONS,
+        ),
       );
       if (createResult.isErr()) {
         throw createResult.error;
@@ -461,9 +500,14 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
 
       // FIX: Update URL to use asset ID instead of storagePath
       const urlUpdateResult = await safeQuery(
-        storage.updateMediaAsset(asset.id, {
-          url: `/api/media/${asset.id}/content`,
-        }),
+        withCircuit(
+          "update-media-asset-url-finalize",
+          () =>
+            storage.updateMediaAsset(asset.id, {
+              url: `/api/media/${asset.id}/content`,
+            }),
+          DB_CIRCUIT_OPTIONS,
+        ),
       );
       if (urlUpdateResult.isErr()) {
         throw urlUpdateResult.error;
@@ -503,11 +547,16 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
           }
 
           const updateImageResult = await safeQuery(
-            storage.updateMediaAsset(asset.id, {
-              thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
-              metadata: imageMetadata,
-              imageVariants: imageVariants || undefined,
-            }),
+            withCircuit(
+              "update-image-metadata-finalize",
+              () =>
+                storage.updateMediaAsset(asset.id, {
+                  thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
+                  metadata: imageMetadata,
+                  imageVariants: imageVariants || undefined,
+                }),
+              DB_CIRCUIT_OPTIONS,
+            ),
           );
           if (updateImageResult.isErr()) {
             throw updateImageResult.error;
@@ -532,10 +581,15 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
           };
 
           const updateVideoResult = await safeQuery(
-            storage.updateMediaAsset(asset.id, {
-              thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
-              metadata: videoMetadata,
-            }),
+            withCircuit(
+              "update-video-metadata-finalize",
+              () =>
+                storage.updateMediaAsset(asset.id, {
+                  thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
+                  metadata: videoMetadata,
+                }),
+              DB_CIRCUIT_OPTIONS,
+            ),
           );
           if (updateVideoResult.isErr()) {
             throw updateVideoResult.error;
@@ -562,10 +616,15 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
             };
 
             const updateGltfResult = await safeQuery(
-              storage.updateMediaAsset(asset.id, {
-                thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
-                metadata: gltfMetadata,
-              }),
+              withCircuit(
+                "update-model-metadata-finalize",
+                () =>
+                  storage.updateMediaAsset(asset.id, {
+                    thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
+                    metadata: gltfMetadata,
+                  }),
+                DB_CIRCUIT_OPTIONS,
+              ),
             );
             if (updateGltfResult.isErr()) {
               throw updateGltfResult.error;
@@ -579,14 +638,27 @@ export async function finalizeUpload(req: Request, res: Response, next: NextFunc
         } catch (error) {
           logger.error("GLTF processing failed (chunked upload):", serializeError(error));
           // Still set thumbnail URL even if processing fails
-          await storage.updateMediaAsset(asset.id, {
-            thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
-          });
+          await safeQuery(
+            withCircuit(
+              "update-model-thumbnail-fallback-finalize",
+              () =>
+                storage.updateMediaAsset(asset.id, {
+                  thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
+                }),
+              DB_CIRCUIT_OPTIONS,
+            ),
+          );
         }
       }
 
       // Fetch the updated asset with metadata
-      const finalAssetResult = await safeQuery(storage.getMediaAsset(asset.id));
+      const finalAssetResult = await safeQuery(
+        withCircuit(
+          "get-final-asset-finalize",
+          () => storage.getMediaAsset(asset.id),
+          DB_CIRCUIT_OPTIONS,
+        ),
+      );
       if (finalAssetResult.isErr()) {
         throw finalAssetResult.error;
       }
@@ -632,7 +704,9 @@ export async function getMediaContent(
 ) {
   const { id } = MediaIdParamSchema.parse(req.params);
   const storage = mediaRepository;
-  const result = await safeQuery(storage.getMediaAsset(id));
+  const result = await safeQuery(
+    withCircuit("get-media-content-metadata", () => storage.getMediaAsset(id), DB_CIRCUIT_OPTIONS),
+  );
 
   if (result.isErr()) {
     return next(result.error);
@@ -691,7 +765,11 @@ export async function getMediaContent(
 export async function getThumbnail(req: Request<{ id: string }>, res: Response) {
   const { id } = MediaIdParamSchema.parse(req.params);
   const storage = mediaRepository;
-  const asset = await storage.getMediaAsset(id);
+  const asset = await withCircuit(
+    "get-thumbnail-metadata",
+    () => storage.getMediaAsset(id),
+    DB_CIRCUIT_OPTIONS,
+  );
 
   if (!asset) {
     return res.status(404).send("Media not found");

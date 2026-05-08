@@ -45,21 +45,19 @@ const emptyBodySchema = z
 
 // GET /products/initial-data - Admin products batch data
 router.get("/products/initial-data", authService.requireAdmin, async (_req, res) => {
-  const data = await adminService.getInitialProductsData();
-  return res.json(data);
+  const result = await adminService.getInitialProductsData();
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
 });
 
 // GET /products - List products (admin only, includes unapproved/inactive)
 router.get("/products", authService.requireAdmin, async (req, res) => {
   const { page, limit, search, categoryId, status } = req.query;
 
-  // We could call a dedicated productService method here, but for now we'll
-  // utilize the adminService which might have fetching logic or use a temporary implementation
-  // A proper implementation would use a dedicated method in products.service.ts
-
-  // NOTE: This relies on the new function being added to adminService or productService
-  // For the moment, we'll try to fetch all products and manually filter/paginate
-  // as a fallback if the specific method doesn't exist yet
   const result = await adminService.getProductsList({
     page: parseInt(page as string, 10) || 1,
     limit: parseInt(limit as string, 10) || 50,
@@ -68,14 +66,23 @@ router.get("/products", authService.requireAdmin, async (req, res) => {
     status: status as string,
   });
 
-  return res.json(result);
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
 });
 
 // POST /products - Create product (admin only)
 router.post("/products", authService.requireAdmin, async (req, res) => {
   const auditContext = getAuditContext(req);
   const result = await adminService.createProduct(auditContext, req.body);
-  return res.status(201).json(result);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.status(201).json(result.value);
 });
 
 // PATCH /products/:id - Update product (admin only)
@@ -85,7 +92,12 @@ router.patch("/products/:id", authService.requireAdmin, async (req, res) => {
 
   const auditContext = getAuditContext(req);
   const result = await adminService.updateProduct(auditContext, id, req.body);
-  return res.json(result);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
 });
 
 // GET /products/check-slug - Check slug availability
@@ -107,8 +119,13 @@ router.get("/products/check-slug", authService.requireAdmin, async (req, res) =>
 router.get("/products/:id", authService.requireAdmin, async (req, res) => {
   const id = validateIdParam(req, res, "id", "product");
   if (id === null) return;
-  const product = await adminService.getProductById(id);
-  return res.json(product);
+  const result = await adminService.getProductById(id);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
 });
 
 // PUT /products/:id - Full update
@@ -117,7 +134,12 @@ router.put("/products/:id", authService.requireAdmin, async (req, res) => {
   if (id === null) return;
   const auditContext = getAuditContext(req);
   const result = await adminService.updateProduct(auditContext, id, req.body);
-  return res.json(result);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
 });
 
 // DELETE /products/:id - Soft delete (sets deletedAt)
@@ -126,7 +148,12 @@ router.delete("/products/:id", authService.requireAdmin, async (req, res) => {
   if (id === null) return;
   const auditContext = getAuditContext(req);
   const result = await adminService.softDeleteProduct(auditContext, id);
-  return res.json({ success: result });
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json({ success: result.value });
 });
 
 // DELETE /products/:id/hard - Permanent delete (requires { confirm: 'DELETE' })
@@ -136,7 +163,12 @@ router.delete("/products/:id/hard", authService.requireAdmin, async (req, res) =
   const confirm = req.body?.confirm as string;
   const auditContext = getAuditContext(req);
   const result = await adminService.hardDeleteProduct(auditContext, id, confirm);
-  return res.json({ success: result });
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json({ success: result.value });
 });
 
 // GET /test - API routing test endpoint
@@ -304,14 +336,24 @@ router.post(
 // GET /certificates - List all certificates
 router.get("/certificates", authService.requireAdmin, async (_req, res) => {
   const result = await adminService.getCertificatesList();
-  return res.json(result);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
 });
 
 // POST /certificates - Create certificate
 router.post("/certificates", authService.requireAdmin, async (req, res) => {
   const auditContext = getAuditContext(req);
   const result = await adminService.createCertificate(auditContext, req.body);
-  return res.status(201).json(result);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.status(201).json(result.value);
 });
 
 // PATCH /certificates/:id - Update certificate
@@ -320,7 +362,12 @@ router.patch("/certificates/:id", authService.requireAdmin, async (req, res) => 
   if (id === null) return;
   const auditContext = getAuditContext(req);
   const result = await adminService.updateCertificate(auditContext, id, req.body);
-  return res.json(result);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
 });
 
 // DELETE /certificates/:id - Delete certificate
@@ -329,7 +376,12 @@ router.delete("/certificates/:id", authService.requireAdmin, async (req, res) =>
   if (id === null) return;
   const auditContext = getAuditContext(req);
   const result = await adminService.deleteCertificate(auditContext, id);
-  return res.json({ success: result });
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json({ success: result.value });
 });
 
 // =============================================================================
@@ -339,14 +391,24 @@ router.delete("/certificates/:id", authService.requireAdmin, async (req, res) =>
 // GET /fibers - List all fibers
 router.get("/fibers", authService.requireAdmin, async (_req, res) => {
   const result = await adminService.getFibersList();
-  return res.json(result);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
 });
 
 // POST /fibers - Create fiber
 router.post("/fibers", authService.requireAdmin, async (req, res) => {
   const auditContext = getAuditContext(req);
   const result = await adminService.createFiber(auditContext, req.body);
-  return res.status(201).json(result);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.status(201).json(result.value);
 });
 
 // PATCH /fibers/:id - Update fiber
@@ -355,7 +417,12 @@ router.patch("/fibers/:id", authService.requireAdmin, async (req, res) => {
   if (id === null) return;
   const auditContext = getAuditContext(req);
   const result = await adminService.updateFiber(auditContext, id, req.body);
-  return res.json(result);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
 });
 
 // DELETE /fibers/:id - Delete fiber
@@ -364,7 +431,12 @@ router.delete("/fibers/:id", authService.requireAdmin, async (req, res) => {
   if (id === null) return;
   const auditContext = getAuditContext(req);
   const result = await adminService.deleteFiber(auditContext, id);
-  return res.json({ success: result });
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json({ success: result.value });
 });
 
 // =============================================================================
@@ -374,14 +446,24 @@ router.delete("/fibers/:id", authService.requireAdmin, async (req, res) => {
 // GET /about/timeline - List all entries
 router.get("/about/timeline", authService.requireAdmin, async (_req, res) => {
   const result = await adminService.getAboutTimelineEntries();
-  return res.json(result);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
 });
 
 // POST /about/timeline - Create entry
 router.post("/about/timeline", authService.requireAdmin, async (req, res) => {
   const auditContext = getAuditContext(req);
   const result = await adminService.createAboutTimelineEntry(auditContext, req.body);
-  return res.status(201).json(result);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.status(201).json(result.value);
 });
 
 // PATCH /about/timeline/:id - Update entry
@@ -390,7 +472,12 @@ router.patch("/about/timeline/:id", authService.requireAdmin, async (req, res) =
   if (id === null) return;
   const auditContext = getAuditContext(req);
   const result = await adminService.updateAboutTimelineEntry(auditContext, id, req.body);
-  return res.json(result);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
 });
 
 // DELETE /about/timeline/:id - Delete entry
@@ -399,7 +486,12 @@ router.delete("/about/timeline/:id", authService.requireAdmin, async (req, res) 
   if (id === null) return;
   const auditContext = getAuditContext(req);
   const result = await adminService.deleteAboutTimelineEntry(auditContext, id);
-  return res.json({ success: result });
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json({ success: result.value });
 });
 
 export default router;

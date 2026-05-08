@@ -1,5 +1,7 @@
 import { addInquiryLogSchema, type InsertInquiry, insertInquirySchema } from "@run-remix/shared";
 import express from "express";
+import { ValidationError } from "../../lib/errors.js";
+import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
 import { inquiryService } from "../../services/inquiry-service.js";
 
@@ -17,7 +19,7 @@ router.get("/admin/inquiries", async (req, res) => {
   const source = req.query.source as string | undefined;
   const search = req.query.search as string | undefined;
 
-  const response = await inquiryService.listInquiries({
+  const result = await inquiryService.listInquiries({
     page,
     limit,
     status: status || undefined,
@@ -25,82 +27,83 @@ router.get("/admin/inquiries", async (req, res) => {
     search: search || undefined,
   });
 
-  return res.json(response);
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
 });
 
 router.get("/admin/inquiries/stats", async (_req, res) => {
   const result = await inquiryService.getStats();
-  if (result.fromCache) {
-    res.setHeader("X-Cache-Hit", "true");
+
+  if (result.isErr()) {
+    throw result.error;
   }
-  return res.json(result.data);
+
+  return res.json(result.value);
 });
 
 router.get("/admin/inquiries/:id", async (req, res) => {
-  const id = parseInt(req.params.id!, 10);
-  if (Number.isNaN(id)) {
-    return res.status(400).json({ error: "Invalid inquiry ID" });
-  }
+  const id = validateIdParam(req, res, "id", "Inquiry");
+  if (id === null) return;
 
   const result = await inquiryService.getInquiryById(id);
-  if (!result) {
-    return res.status(404).json({ error: "Inquiry not found" });
+
+  if (result.isErr()) {
+    throw result.error;
   }
 
-  if (result.fromCache) {
-    res.setHeader("X-Cache-Hit", "true");
-  }
-  return res.json(result.data);
+  return res.json(result.value);
 });
 
 router.patch("/admin/inquiries/:id", async (req, res) => {
-  const id = parseInt(req.params.id!, 10);
-  if (Number.isNaN(id)) {
-    return res.status(400).json({ error: "Invalid inquiry ID" });
+  const id = validateIdParam(req, res, "id", "Inquiry");
+  if (id === null) return;
+
+  const validation = updateInquirySchema.safeParse(req.body);
+  if (!validation.success) {
+    throw new ValidationError("Invalid inquiry data", { issues: validation.error.issues });
   }
 
-  const validatedData = updateInquirySchema.parse(req.body);
-  const updated = await inquiryService.updateInquiry(id, validatedData as Partial<InsertInquiry>);
+  const result = await inquiryService.updateInquiry(id, validation.data as Partial<InsertInquiry>);
 
-  if (!updated) {
-    return res.status(404).json({ error: "Inquiry not found" });
+  if (result.isErr()) {
+    throw result.error;
   }
 
-  return res.json(updated);
+  return res.json(result.value);
 });
 
 router.post("/admin/inquiries/:id/logs", async (req, res) => {
-  const id = parseInt(req.params.id!, 10);
-  if (Number.isNaN(id)) {
-    return res.status(400).json({ error: "Invalid inquiry ID" });
-  }
+  const id = validateIdParam(req, res, "id", "Inquiry");
+  if (id === null) return;
 
   const validation = addInquiryLogSchema.safeParse(req.body);
   if (!validation.success) {
-    return res.status(400).json({ error: validation.error.issues });
+    throw new ValidationError("Invalid log data", { issues: validation.error.issues });
   }
 
-  const updated = await inquiryService.addCrmLog(id, {
+  const result = await inquiryService.addCrmLog(id, {
     ...validation.data,
     user: (req as unknown as { user?: { email?: string } }).user?.email || "Admin",
   });
 
-  if (!updated) {
-    return res.status(404).json({ error: "Inquiry not found" });
+  if (result.isErr()) {
+    throw result.error;
   }
 
-  return res.json(updated);
+  return res.json(result.value);
 });
 
 router.delete("/admin/inquiries/:id", async (req, res) => {
-  const id = parseInt(req.params.id!, 10);
-  if (Number.isNaN(id)) {
-    return res.status(400).json({ error: "Invalid inquiry ID" });
-  }
+  const id = validateIdParam(req, res, "id", "Inquiry");
+  if (id === null) return;
 
-  const success = await inquiryService.deleteInquiry(id);
-  if (!success) {
-    return res.status(404).json({ error: "Inquiry not found" });
+  const result = await inquiryService.deleteInquiry(id);
+
+  if (result.isErr()) {
+    throw result.error;
   }
 
   return res.json({ success: true, message: "Inquiry deleted successfully" });

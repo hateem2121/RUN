@@ -14,8 +14,10 @@ import type {
   InsertProduct,
   MediaAsset,
   Product,
+  ProductDetail,
 } from "@run-remix/shared";
 import { count } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import {
   accessories,
   categories,
@@ -39,8 +41,10 @@ import {
   systemRepository,
 } from "../../lib/db/repositories/index.js";
 import { encrypt, getBlindIndex } from "../../lib/encryption.js";
+import { type AppError, InternalError, NotFoundError } from "../../lib/errors.js";
 import { getLifecycleScheduler } from "../../lib/integrations/storage-lifecycle-scheduler.js";
 import { logger } from "../../lib/monitoring/logger.js";
+import { DB_CIRCUIT_OPTIONS, withCircuit } from "../../lib/resilience/circuit-breaker.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import type { SessionUser } from "../../types/session.js";
 import { aboutService } from "../about.service.js";
@@ -116,100 +120,115 @@ export class AdminService {
     page: number = 1,
     limit: number = 50,
     options: { skipMetadata?: boolean; includeRecentMedia?: boolean } = {},
-  ): Promise<{
-    products: unknown[];
-    categories: unknown[];
-    fabrics: unknown[];
-    mediaAssets: unknown[];
-    meta: unknown;
-  }> {
-    const offset = (page - 1) * limit;
-
-    const metadataPromises = options.skipMetadata
-      ? [Promise.resolve([]), Promise.resolve([])]
-      : [this.productRepo.getCategories(), this.miscRepo.getFabrics()];
-
-    const [allProducts, totalProductsCount, categories, fabrics] = await withTimeout(
-      Promise.all([
-        this.productRepo.getProductsIncludingDeleted(limit, offset),
-        this.productRepo.getProductsCount(),
-        ...metadataPromises,
-      ]),
-      15000,
-      "Fetch admin initial data",
-    );
-
-    const safeAllProducts = Array.isArray(allProducts) ? allProducts : [];
-
-    // Filter for active/undeleted products for the primary list
-    const products = safeAllProducts.filter((p: Product) => p.isActive && !p.deletedAt);
-
-    // Calculate referenced media IDs from the PAGINATED products
-    const referencedMediaIds = new Set<number>();
-    const enhancedProducts = products.map((product: Product) => {
-      if (product.primaryImageId) referencedMediaIds.add(product.primaryImageId);
-      if (product.primaryVideoId) referencedMediaIds.add(product.primaryVideoId);
-      if (product.modelFileId) referencedMediaIds.add(product.modelFileId);
-
-      if (Array.isArray(product.imageIds)) {
-        product.imageIds.forEach((id: number | string) => {
-          if (typeof id === "number") referencedMediaIds.add(id);
-        });
-      }
-
-      return {
-        ...product,
-        urlPath: product.urlPath || product.slug,
-        canonicalUrl: product.urlPath
-          ? `/categories/${product.urlPath}`
-          : `/products/${product.slug}`,
-        primaryModelId: product.modelFileId || null,
-      };
-    });
-
-    // Efficiently fetch ONLY referenced media assets + some recent ones if requested
-    const validMediaIds = Array.from(referencedMediaIds).filter((id) => !Number.isNaN(id));
-    const mediaIdsStrings = validMediaIds.map((id) => id.toString());
-
-    const [referencedMedia, recentMedia] = await Promise.all([
-      mediaIdsStrings.length > 0
-        ? this.mediaRepo.getMediaAssetsByIds(mediaIdsStrings)
-        : Promise.resolve([]),
-      options.includeRecentMedia ? this.mediaRepo.getMediaAssets(50, 0) : Promise.resolve([]),
-    ]);
-
-    // Merge and deduplicate media assets
-    const mediaMap = new Map<number, MediaAsset>();
-    [...referencedMedia, ...recentMedia].forEach((asset) => {
-      if (asset && typeof asset.filename === "string" && asset.filename !== "undefined") {
-        mediaMap.set(asset.id, asset);
-      }
-    });
-
-    const allMediaToSend = Array.from(mediaMap.values()).map((asset) => ({
-      id: asset.id,
-      filename: asset.filename,
-      type: asset.type,
-      url: asset.url || `/api/media/${asset.id}/content`,
-      originalName: asset.originalName,
-    }));
-
-    return {
-      products: enhancedProducts,
-      categories: Array.isArray(categories) ? categories : [],
-      fabrics: Array.isArray(fabrics) ? fabrics : [],
-      mediaAssets: allMediaToSend,
-      meta: {
-        totalProducts: totalProductsCount,
-        totalCategories: Array.isArray(categories) ? categories.length : 0,
-        totalFabrics: Array.isArray(fabrics) ? fabrics.length : 0,
-        totalMediaAssets: allMediaToSend.length,
-        timestamp: Date.now(),
-        page,
-        limit,
-        totalPages: Math.ceil(totalProductsCount / limit),
+  ): Promise<
+    Result<
+      {
+        products: unknown[];
+        categories: unknown[];
+        fabrics: unknown[];
+        mediaAssets: unknown[];
+        meta: unknown;
       },
-    };
+      AppError
+    >
+  > {
+    try {
+      const offset = (page - 1) * limit;
+
+      const metadataPromises = options.skipMetadata
+        ? [Promise.resolve([]), Promise.resolve([])]
+        : [this.productRepo.getCategories(), this.miscRepo.getFabrics()];
+
+      const [allProducts, totalProductsCount, categories, fabrics] = await withCircuit(
+        "fetch-admin-initial-data",
+        () =>
+          Promise.all([
+            this.productRepo.getProductsIncludingDeleted(limit, offset),
+            this.productRepo.getProductsCount(),
+            ...metadataPromises,
+          ]),
+        { ...DB_CIRCUIT_OPTIONS, timeout: 15000 },
+      );
+
+      const safeAllProducts = Array.isArray(allProducts) ? allProducts : [];
+
+      // Filter for active/undeleted products for the primary list
+      const products = safeAllProducts.filter((p: Product) => p.isActive && !p.deletedAt);
+
+      // Calculate referenced media IDs from the PAGINATED products
+      const referencedMediaIds = new Set<number>();
+      const enhancedProducts = products.map((product: Product) => {
+        if (product.primaryImageId) referencedMediaIds.add(product.primaryImageId);
+        if (product.primaryVideoId) referencedMediaIds.add(product.primaryVideoId);
+        if (product.modelFileId) referencedMediaIds.add(product.modelFileId);
+
+        if (Array.isArray(product.imageIds)) {
+          product.imageIds.forEach((id: number | string) => {
+            if (typeof id === "number") referencedMediaIds.add(id);
+          });
+        }
+
+        return {
+          ...product,
+          urlPath: product.urlPath || product.slug,
+          canonicalUrl: product.urlPath
+            ? `/categories/${product.urlPath}`
+            : `/products/${product.slug}`,
+          primaryModelId: product.modelFileId || null,
+        };
+      });
+
+      // Efficiently fetch ONLY referenced media assets + some recent ones if requested
+      const validMediaIds = Array.from(referencedMediaIds).filter((id) => !Number.isNaN(id));
+      const mediaIdsStrings = validMediaIds.map((id) => id.toString());
+
+      const [referencedMedia, recentMedia] = await Promise.all([
+        mediaIdsStrings.length > 0
+          ? this.mediaRepo.getMediaAssetsByIds(mediaIdsStrings)
+          : Promise.resolve([]),
+        options.includeRecentMedia ? this.mediaRepo.getMediaAssets(50, 0) : Promise.resolve([]),
+      ]);
+
+      // Merge and deduplicate media assets
+      const mediaMap = new Map<number, MediaAsset>();
+      [...referencedMedia, ...recentMedia].forEach((asset) => {
+        if (asset && typeof asset.filename === "string" && asset.filename !== "undefined") {
+          mediaMap.set(asset.id, asset);
+        }
+      });
+
+      const allMediaToSend = Array.from(mediaMap.values()).map((asset) => ({
+        id: asset.id,
+        filename: asset.filename,
+        type: asset.type,
+        url: asset.url || `/api/media/${asset.id}/content`,
+        originalName: asset.originalName,
+      }));
+
+      return ok({
+        products: enhancedProducts,
+        categories: Array.isArray(categories) ? categories : [],
+        fabrics: Array.isArray(fabrics) ? fabrics : [],
+        mediaAssets: allMediaToSend,
+        meta: {
+          totalProducts: totalProductsCount,
+          totalCategories: Array.isArray(categories) ? categories.length : 0,
+          totalFabrics: Array.isArray(fabrics) ? fabrics.length : 0,
+          totalMediaAssets: allMediaToSend.length,
+          timestamp: Date.now(),
+          page,
+          limit,
+          totalPages: Math.ceil(totalProductsCount / limit),
+        },
+      });
+    } catch (error) {
+      logger.error(
+        "[AdminService] Failed to fetch initial products data",
+        undefined,
+        error as Error,
+      );
+      return err(new InternalError("Failed to fetch initial products data", { error }));
+    }
   }
 
   /**
@@ -221,111 +240,129 @@ export class AdminService {
     search?: string;
     categoryId?: string;
     status?: string;
-  }): Promise<{
-    products: unknown[];
-    categories: unknown[];
-    fabrics: unknown[];
-    mediaAssets: unknown[];
-    meta: unknown;
-  }> {
-    const { page = 1, limit = 50, search, categoryId, status } = options;
-    const offset = (page - 1) * limit;
-
-    // We can fetch initially to ensure we get some data and filter in-memory if needed
-    // In a fully optimized system, the repo would handle all filtering
-    const [allProductsData, totalProductsCount, categories, fabrics, media] = await Promise.all([
-      this.productRepo.getProductsIncludingDeleted(limit, offset),
-      this.productRepo.getProductsCount(),
-      this.productRepo.getCategories(),
-      this.miscRepo.getFabrics(),
-      this.mediaRepo.getMediaAssets(100, 0), // get recent media
-    ]);
-
-    const safeAllProducts = Array.isArray(allProductsData) ? allProductsData : [];
-    let products = safeAllProducts;
-
-    // Apply in-memory filtering since Drizzle queries might be complex to modify here dynamically without repo access
-    if (search) {
-      const s = search.toLowerCase();
-      products = products.filter(
-        (p) =>
-          p.name.toLowerCase().includes(s) ||
-          p.sku.toLowerCase().includes(s) ||
-          p.description?.toLowerCase().includes(s),
-      );
-    }
-
-    if (categoryId && categoryId !== "all") {
-      const catId = parseInt(categoryId, 10);
-      products = products.filter((p) => p.categoryId === catId);
-    }
-
-    if (status && status !== "all") {
-      if (status === "active") {
-        products = products.filter((p) => p.isActive && !p.deletedAt);
-      } else if (status === "featured") {
-        products = products.filter((p) => p.isFeatured && !p.deletedAt);
-      } else if (status === "deleted") {
-        products = products.filter((p) => !!p.deletedAt);
-      } else if (status === "draft") {
-        products = products.filter((p) => !p.isActive && !p.deletedAt);
-      }
-    }
-
-    // Convert media to expected format
-    const formattedMedia = (Array.isArray(media) ? media : []).map((asset) => ({
-      id: asset.id,
-      filename: asset.filename || "",
-      type: asset.type || "image",
-      url: asset.url || `/api/media/${asset.id}/content`,
-      originalName: asset.originalName || "",
-    }));
-
-    // Enhance products with extra fields needed by UI
-    const enhancedProducts = products.map((product) => ({
-      ...product,
-      urlPath: product.urlPath || product.slug,
-      canonicalUrl: product.urlPath
-        ? `/categories/${product.urlPath}`
-        : `/products/${product.slug}`,
-      primaryModelId: product.modelFileId || null,
-    }));
-
-    return {
-      products: enhancedProducts,
-      categories: Array.isArray(categories) ? categories : [],
-      fabrics: Array.isArray(fabrics) ? fabrics : [],
-      mediaAssets: formattedMedia,
-      meta: {
-        page,
-        limit,
-        totalProducts: products.length < limit ? products.length : totalProductsCount,
-        totalPages: Math.ceil(
-          (products.length < limit ? products.length : totalProductsCount) / limit,
-        ),
-        hasMore: offset + products.length < totalProductsCount,
+  }): Promise<
+    Result<
+      {
+        products: unknown[];
+        categories: unknown[];
+        fabrics: unknown[];
+        mediaAssets: unknown[];
+        meta: unknown;
       },
-    };
+      AppError
+    >
+  > {
+    try {
+      const { page = 1, limit = 50, search, categoryId, status } = options;
+      const offset = (page - 1) * limit;
+
+      // We can fetch initially to ensure we get some data and filter in-memory if needed
+      // In a fully optimized system, the repo would handle all filtering
+      const [allProductsData, totalProductsCount, categories, fabrics, media] = await Promise.all([
+        this.productRepo.getProductsIncludingDeleted(limit, offset),
+        this.productRepo.getProductsCount(),
+        this.productRepo.getCategories(),
+        this.miscRepo.getFabrics(),
+        this.mediaRepo.getMediaAssets(100, 0), // get recent media
+      ]);
+
+      const safeAllProducts = Array.isArray(allProductsData) ? allProductsData : [];
+      let products = safeAllProducts;
+
+      // Apply in-memory filtering since Drizzle queries might be complex to modify here dynamically without repo access
+      if (search) {
+        const s = search.toLowerCase();
+        products = products.filter(
+          (p) =>
+            p.name.toLowerCase().includes(s) ||
+            p.sku.toLowerCase().includes(s) ||
+            p.description?.toLowerCase().includes(s),
+        );
+      }
+
+      if (categoryId && categoryId !== "all") {
+        const catId = parseInt(categoryId, 10);
+        products = products.filter((p) => p.categoryId === catId);
+      }
+
+      if (status && status !== "all") {
+        if (status === "active") {
+          products = products.filter((p) => p.isActive && !p.deletedAt);
+        } else if (status === "featured") {
+          products = products.filter((p) => p.isFeatured && !p.deletedAt);
+        } else if (status === "deleted") {
+          products = products.filter((p) => !!p.deletedAt);
+        } else if (status === "draft") {
+          products = products.filter((p) => !p.isActive && !p.deletedAt);
+        }
+      }
+
+      // Convert media to expected format
+      const formattedMedia = (Array.isArray(media) ? media : []).map((asset) => ({
+        id: asset.id,
+        filename: asset.filename || "",
+        type: asset.type || "image",
+        url: asset.url || `/api/media/${asset.id}/content`,
+        originalName: asset.originalName || "",
+      }));
+
+      // Enhance products with extra fields needed by UI
+      const enhancedProducts = products.map((product) => ({
+        ...product,
+        urlPath: product.urlPath || product.slug,
+        canonicalUrl: product.urlPath
+          ? `/categories/${product.urlPath}`
+          : `/products/${product.slug}`,
+        primaryModelId: product.modelFileId || null,
+      }));
+
+      return ok({
+        products: enhancedProducts,
+        categories: Array.isArray(categories) ? categories : [],
+        fabrics: Array.isArray(fabrics) ? fabrics : [],
+        mediaAssets: formattedMedia,
+        meta: {
+          page,
+          limit,
+          totalProducts: products.length < limit ? products.length : totalProductsCount,
+          totalPages: Math.ceil(
+            (products.length < limit ? products.length : totalProductsCount) / limit,
+          ),
+          hasMore: offset + products.length < totalProductsCount,
+        },
+      });
+    } catch (error) {
+      logger.error("[AdminService] Failed to fetch products list", undefined, error as Error);
+      return err(new InternalError("Failed to fetch products list", { error }));
+    }
   }
 
   /**
    * Creates a new product and logs the action
    */
-  async createProduct(audit: AuditContext, data: InsertProduct): Promise<Product> {
-    const newProduct = await this.productRepo.createProduct(data);
+  async createProduct(
+    audit: AuditContext,
+    data: InsertProduct,
+  ): Promise<Result<Product, AppError>> {
+    try {
+      const newProduct = await this.productRepo.createProduct(data);
 
-    // Log the creation
-    await this.logAudit({
-      action: "INSERT",
-      tableName: "products",
-      recordId: newProduct.id.toString(),
-      user: audit.user,
-      userAgent: audit.userAgent,
-      ipAddress: audit.ipAddress,
-      newValues: newProduct as Record<string, unknown>,
-    });
+      // Log the creation
+      await this.logAudit({
+        action: "INSERT",
+        tableName: "products",
+        recordId: newProduct.id.toString(),
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+        newValues: newProduct as Record<string, unknown>,
+      });
 
-    return newProduct;
+      return ok(newProduct);
+    } catch (error) {
+      logger.error("[AdminService] Failed to create product", undefined, error as Error);
+      return err(new InternalError("Failed to create product", { error }));
+    }
   }
 
   /**
@@ -335,25 +372,33 @@ export class AdminService {
     audit: AuditContext,
     id: number,
     data: Partial<InsertProduct>,
-  ): Promise<Product> {
-    // Get original for audit log
-    const original = await this.productRepo.getProduct(id);
+  ): Promise<Result<Product, AppError>> {
+    try {
+      // Get original for audit log
+      const original = await this.productRepo.getProduct(id);
+      if (!original) {
+        return err(new NotFoundError(`Product with ID ${id}`));
+      }
 
-    const updatedProduct = await this.productRepo.updateProduct(id, data);
+      const updatedProduct = await this.productRepo.updateProduct(id, data);
 
-    // Log the update
-    await this.logAudit({
-      action: "UPDATE",
-      tableName: "products",
-      recordId: id.toString(),
-      user: audit.user,
-      userAgent: audit.userAgent,
-      ipAddress: audit.ipAddress,
-      oldValues: original as Record<string, unknown>,
-      newValues: updatedProduct! as Record<string, unknown>,
-    });
+      // Log the update
+      await this.logAudit({
+        action: "UPDATE",
+        tableName: "products",
+        recordId: id.toString(),
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+        oldValues: original as Record<string, unknown>,
+        newValues: updatedProduct! as Record<string, unknown>,
+      });
 
-    return updatedProduct!;
+      return ok(updatedProduct!);
+    } catch (error) {
+      logger.error("[AdminService] Failed to update product", { id }, error as Error);
+      return err(new InternalError("Failed to update product", { id, error }));
+    }
   }
 
   /**
@@ -366,10 +411,10 @@ export class AdminService {
   ): Promise<{ fixedCount: number; fixedCategories: string[] }> {
     logger.debug("AdminService: Starting cleanup of corrupted media URLs", { timeoutMs });
     // Fetch all categories - this is fast
-    const categories = await withTimeout(
-      this.productRepo.getCategories(),
-      10000,
-      "Get all categories for media fix",
+    const categories = await withCircuit(
+      "get-categories-media-fix",
+      () => this.productRepo.getCategories(),
+      DB_CIRCUIT_OPTIONS,
     );
 
     let fixedCount = 0;
@@ -556,7 +601,11 @@ export class AdminService {
    * Restores a soft-deleted product
    */
   async restoreProduct(audit: AuditContext, id: number) {
-    const result = await withTimeout(this.productRepo.restoreProduct(id), 5000, "Restore product");
+    const result = await withCircuit(
+      "restore-product",
+      () => this.productRepo.restoreProduct(id),
+      DB_CIRCUIT_OPTIONS,
+    );
 
     if (result) {
       // SEC-F04: Audit Log
@@ -641,7 +690,7 @@ export class AdminService {
         storage: 0, // Implement proper storage metrics later
       };
     } catch (error) {
-      logger.error("[AdminService] Failed to fetch dashboard stats", error);
+      logger.error("[AdminService] Failed to fetch dashboard stats", undefined, error as Error);
       throw error;
     }
   }
@@ -649,79 +698,105 @@ export class AdminService {
   /**
    * Retrieves a single product by ID with full detail columns.
    */
-  async getProductById(id: number) {
-    const product = await withTimeout(this.productRepo.getProduct(id), 5000, "Get product by ID");
-    if (!product) {
-      throw new Error(`Product with ID ${id} not found`);
+  async getProductById(id: number): Promise<Result<ProductDetail, AppError>> {
+    try {
+      const product = await withCircuit(
+        "get-product-by-id",
+        () => this.productRepo.getProduct(id),
+        DB_CIRCUIT_OPTIONS,
+      );
+      if (!product) {
+        return err(new NotFoundError(`Product with ID ${id}`));
+      }
+      return ok(product);
+    } catch (error) {
+      logger.error("[AdminService] Failed to fetch product", { id }, error as Error);
+      return err(new InternalError("Failed to fetch product", { id, error }));
     }
-    return product;
   }
 
   /**
    * Soft-deletes a product (sets deletedAt) and logs the action.
    */
-  async softDeleteProduct(audit: AuditContext, id: number) {
-    // Fetch original to log old values
-    const original = await this.productRepo.getProduct(id);
-    if (!original) {
-      throw new Error(`Product with ID ${id} not found`);
+  async softDeleteProduct(audit: AuditContext, id: number): Promise<Result<boolean, AppError>> {
+    try {
+      // Fetch original to log old values
+      const original = await this.productRepo.getProduct(id);
+      if (!original) {
+        return err(new NotFoundError(`Product with ID ${id}`));
+      }
+
+      const result = await withTimeout(
+        this.productRepo.deleteProduct(id),
+        5000,
+        "Soft delete product",
+      );
+
+      if (result) {
+        await this.logAudit({
+          action: "SOFT_DELETE",
+          tableName: "products",
+          recordId: id.toString(),
+          user: audit.user,
+          userAgent: audit.userAgent,
+          ipAddress: audit.ipAddress,
+          oldValues: { name: original.name, isActive: original.isActive } as Record<
+            string,
+            unknown
+          >,
+        });
+      }
+
+      return ok(result);
+    } catch (error) {
+      logger.error("[AdminService] Failed to soft delete product", { id }, error as Error);
+      return err(new InternalError("Failed to soft delete product", { id, error }));
     }
-
-    const result = await withTimeout(
-      this.productRepo.deleteProduct(id),
-      5000,
-      "Soft delete product",
-    );
-
-    if (result) {
-      await this.logAudit({
-        action: "SOFT_DELETE",
-        tableName: "products",
-        recordId: id.toString(),
-        user: audit.user,
-        userAgent: audit.userAgent,
-        ipAddress: audit.ipAddress,
-        oldValues: { name: original.name, isActive: original.isActive } as Record<string, unknown>,
-      });
-    }
-
-    return result;
   }
 
   /**
    * Hard-deletes a product permanently and logs the action.
    * Requires `confirm === 'DELETE'` from the caller for safety.
    */
-  async hardDeleteProduct(audit: AuditContext, id: number, confirm: string) {
-    if (confirm !== "DELETE") {
-      throw new Error("Hard delete requires { confirm: 'DELETE' } in request body");
+  async hardDeleteProduct(
+    audit: AuditContext,
+    id: number,
+    confirm: string,
+  ): Promise<Result<boolean, AppError>> {
+    try {
+      if (confirm !== "DELETE") {
+        return err(new InternalError("Hard delete requires { confirm: 'DELETE' }"));
+      }
+
+      // Fetch original to log old values
+      const original = await this.productRepo.getProduct(id);
+      if (!original) {
+        return err(new NotFoundError(`Product with ID ${id}`));
+      }
+
+      const result = await withTimeout(
+        this.productRepo.permanentlyDeleteProduct(id),
+        10000,
+        "Hard delete product",
+      );
+
+      if (result) {
+        await this.logAudit({
+          action: "HARD_DELETE",
+          tableName: "products",
+          recordId: id.toString(),
+          user: audit.user,
+          userAgent: audit.userAgent,
+          ipAddress: audit.ipAddress,
+          oldValues: { name: original.name, sku: original.sku } as Record<string, unknown>,
+        });
+      }
+
+      return ok(result);
+    } catch (error) {
+      logger.error("[AdminService] Failed to hard delete product", { id }, error as Error);
+      return err(new InternalError("Failed to hard delete product", { id, error }));
     }
-
-    // Fetch original to log old values
-    const original = await this.productRepo.getProduct(id);
-    if (!original) {
-      throw new Error(`Product with ID ${id} not found`);
-    }
-
-    const result = await withTimeout(
-      this.productRepo.permanentlyDeleteProduct(id),
-      10000,
-      "Hard delete product",
-    );
-
-    if (result) {
-      await this.logAudit({
-        action: "HARD_DELETE",
-        tableName: "products",
-        recordId: id.toString(),
-        user: audit.user,
-        userAgent: audit.userAgent,
-        ipAddress: audit.ipAddress,
-        oldValues: { name: original.name, sku: original.sku } as Record<string, unknown>,
-      });
-    }
-
-    return result;
   }
 
   /**
@@ -744,192 +819,305 @@ export class AdminService {
   // CERTIFICATE MANAGEMENT
   // =============================================================================
 
-  async getCertificatesList(): Promise<Certificate[]> {
-    return this.miscRepo.getCertificates();
+  async getCertificatesList(): Promise<Result<Certificate[], AppError>> {
+    try {
+      const result = await this.miscRepo.getCertificates();
+      return ok(result);
+    } catch (error) {
+      logger.error("[AdminService] Failed to fetch certificates list", undefined, error as Error);
+      return err(new InternalError("Failed to fetch certificates list", { error }));
+    }
   }
 
-  async createCertificate(audit: AuditContext, data: unknown): Promise<Certificate> {
-    const validated = insertCertificateSchema.parse(data);
-    const result = await this.miscRepo.createCertificate(validated);
+  async createCertificate(
+    audit: AuditContext,
+    data: unknown,
+  ): Promise<Result<Certificate, AppError>> {
+    try {
+      const validated = insertCertificateSchema.parse(data);
+      const result = await this.miscRepo.createCertificate(validated);
 
-    await this.logAudit({
-      action: "INSERT",
-      tableName: "certificates",
-      recordId: result.id.toString(),
-      user: audit.user,
-      userAgent: audit.userAgent,
-      ipAddress: audit.ipAddress,
-      newValues: result as Record<string, unknown>,
-    });
+      await this.logAudit({
+        action: "INSERT",
+        tableName: "certificates",
+        recordId: result.id.toString(),
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+        newValues: result as Record<string, unknown>,
+      });
 
-    return result;
+      return ok(result);
+    } catch (error) {
+      logger.error("[AdminService] Failed to create certificate", undefined, error as Error);
+      return err(new InternalError("Failed to create certificate", { error }));
+    }
   }
 
   async updateCertificate(
     audit: AuditContext,
     id: number,
     data: Partial<InsertCertificate>,
-  ): Promise<Certificate> {
-    const original = await this.miscRepo.getCertificate(id);
-    const result = await this.miscRepo.updateCertificate(id, data);
+  ): Promise<Result<Certificate, AppError>> {
+    try {
+      const original = await this.miscRepo.getCertificate(id);
+      if (!original) {
+        return err(new NotFoundError(`Certificate with ID ${id}`));
+      }
 
-    await this.logAudit({
-      action: "UPDATE",
-      tableName: "certificates",
-      recordId: id.toString(),
-      user: audit.user,
-      userAgent: audit.userAgent,
-      ipAddress: audit.ipAddress,
-      oldValues: original as Record<string, unknown>,
-      newValues: result! as Record<string, unknown>,
-    });
+      const result = await this.miscRepo.updateCertificate(id, data);
 
-    return result!;
-  }
-
-  async deleteCertificate(audit: AuditContext, id: number) {
-    const original = await this.miscRepo.getCertificate(id);
-    const result = await this.miscRepo.deleteCertificate(id);
-
-    if (result) {
       await this.logAudit({
-        action: "DELETE",
+        action: "UPDATE",
         tableName: "certificates",
         recordId: id.toString(),
         user: audit.user,
         userAgent: audit.userAgent,
         ipAddress: audit.ipAddress,
-        oldValues: { name: original?.name } as Record<string, unknown>,
+        oldValues: original as Record<string, unknown>,
+        newValues: result! as Record<string, unknown>,
       });
-    }
 
-    return result;
+      return ok(result!);
+    } catch (error) {
+      logger.error("[AdminService] Failed to update certificate", { id }, error as Error);
+      return err(new InternalError("Failed to update certificate", { id, error }));
+    }
+  }
+
+  async deleteCertificate(audit: AuditContext, id: number): Promise<Result<boolean, AppError>> {
+    try {
+      const original = await this.miscRepo.getCertificate(id);
+      if (!original) {
+        return err(new NotFoundError(`Certificate with ID ${id}`));
+      }
+
+      const result = await this.miscRepo.deleteCertificate(id);
+
+      if (result) {
+        await this.logAudit({
+          action: "DELETE",
+          tableName: "certificates",
+          recordId: id.toString(),
+          user: audit.user,
+          userAgent: audit.userAgent,
+          ipAddress: audit.ipAddress,
+          oldValues: original as Record<string, unknown>,
+        });
+      }
+
+      return ok(result);
+    } catch (error) {
+      logger.error("[AdminService] Failed to delete certificate", { id }, error as Error);
+      return err(new InternalError("Failed to delete certificate", { id, error }));
+    }
   }
 
   // =============================================================================
   // FIBER MANAGEMENT
   // =============================================================================
 
-  async getFibersList(): Promise<Fiber[]> {
-    return this.miscRepo.getFibers();
+  async getFibersList(): Promise<Result<Fiber[], AppError>> {
+    try {
+      const result = await this.miscRepo.getFibers();
+      return ok(result);
+    } catch (error) {
+      logger.error("[AdminService] Failed to fetch fibers list", undefined, error as Error);
+      return err(new InternalError("Failed to fetch fibers list", { error }));
+    }
   }
 
-  async createFiber(audit: AuditContext, data: unknown): Promise<Fiber> {
-    const validated = insertFiberSchema.parse(data);
-    const result = await this.miscRepo.createFiber(validated);
+  async createFiber(audit: AuditContext, data: unknown): Promise<Result<Fiber, AppError>> {
+    try {
+      const validated = insertFiberSchema.parse(data);
+      const result = await this.miscRepo.createFiber(validated);
 
-    await this.logAudit({
-      action: "INSERT",
-      tableName: "fibers",
-      recordId: result.id.toString(),
-      user: audit.user,
-      userAgent: audit.userAgent,
-      ipAddress: audit.ipAddress,
-      newValues: result as Record<string, unknown>,
-    });
-    return result!;
-  }
-
-  async updateFiber(audit: AuditContext, id: number, data: Partial<InsertFiber>): Promise<Fiber> {
-    const original = await this.miscRepo.getFiber(id);
-    const result = await this.miscRepo.updateFiber(id, data);
-
-    await this.logAudit({
-      action: "UPDATE",
-      tableName: "fibers",
-      recordId: id.toString(),
-      user: audit.user,
-      userAgent: audit.userAgent,
-      ipAddress: audit.ipAddress,
-      oldValues: original as Record<string, unknown>,
-      newValues: result as Record<string, unknown>,
-    });
-    return result!;
-  }
-
-  async deleteFiber(audit: AuditContext, id: number) {
-    const original = await this.miscRepo.getFiber(id);
-    const result = await this.miscRepo.deleteFiber(id);
-
-    if (result) {
       await this.logAudit({
-        action: "DELETE",
+        action: "INSERT",
+        tableName: "fibers",
+        recordId: result.id.toString(),
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+        newValues: result as Record<string, unknown>,
+      });
+      return ok(result);
+    } catch (error) {
+      logger.error("[AdminService] Failed to create fiber", undefined, error as Error);
+      return err(new InternalError("Failed to create fiber", { error }));
+    }
+  }
+
+  async updateFiber(
+    audit: AuditContext,
+    id: number,
+    data: Partial<InsertFiber>,
+  ): Promise<Result<Fiber, AppError>> {
+    try {
+      const original = await this.miscRepo.getFiber(id);
+      if (!original) {
+        return err(new NotFoundError(`Fiber with ID ${id}`));
+      }
+
+      const updatedFiber = await this.miscRepo.updateFiber(id, data);
+
+      await this.logAudit({
+        action: "UPDATE",
         tableName: "fibers",
         recordId: id.toString(),
         user: audit.user,
         userAgent: audit.userAgent,
         ipAddress: audit.ipAddress,
-        oldValues: { name: original?.name } as Record<string, unknown>,
+        oldValues: original as Record<string, unknown>,
+        newValues: updatedFiber as Record<string, unknown>,
       });
+      return ok(updatedFiber!);
+    } catch (error) {
+      logger.error("[AdminService] Failed to update fiber", { id }, error as Error);
+      return err(new InternalError("Failed to update fiber", { id, error }));
     }
+  }
 
-    return result;
+  async deleteFiber(audit: AuditContext, id: number): Promise<Result<boolean, AppError>> {
+    try {
+      const original = await this.miscRepo.getFiber(id);
+      if (!original) {
+        return err(new NotFoundError(`Fiber with ID ${id}`));
+      }
+
+      const result = await this.miscRepo.deleteFiber(id);
+
+      if (result) {
+        await this.logAudit({
+          action: "DELETE",
+          tableName: "fibers",
+          recordId: id.toString(),
+          user: audit.user,
+          userAgent: audit.userAgent,
+          ipAddress: audit.ipAddress,
+          oldValues: { name: original?.name } as Record<string, unknown>,
+        });
+      }
+
+      return ok(result);
+    } catch (error) {
+      logger.error("[AdminService] Failed to delete fiber", { id }, error as Error);
+      return err(new InternalError("Failed to delete fiber", { id, error }));
+    }
   }
 
   // =============================================================================
   // ABOUT TIMELINE MANAGEMENT
   // =============================================================================
 
-  async getAboutTimelineEntries(): Promise<AboutTimelineEntry[]> {
-    return (await this.about.getTimeline(true)).unwrapOr([]);
+  async getAboutTimelineEntries(): Promise<Result<AboutTimelineEntry[], AppError>> {
+    try {
+      const result = await this.about.getTimeline(true);
+      return result;
+    } catch (error) {
+      logger.error("[AdminService] Failed to fetch timeline entries", undefined, error as Error);
+      return err(new InternalError("Failed to fetch timeline entries", { error }));
+    }
   }
 
-  async createAboutTimelineEntry(audit: AuditContext, data: unknown): Promise<AboutTimelineEntry> {
-    const validated = insertAboutTimelineEntrySchema.parse(data);
-    const result = (await this.about.createTimelineEntry(validated))._unsafeUnwrap();
+  async createAboutTimelineEntry(
+    audit: AuditContext,
+    data: unknown,
+  ): Promise<Result<AboutTimelineEntry, AppError>> {
+    try {
+      const validated = insertAboutTimelineEntrySchema.parse(data);
+      const result = await this.about.createTimelineEntry(validated);
 
-    await this.logAudit({
-      action: "INSERT",
-      tableName: "about_timeline_entries",
-      recordId: result.id.toString(),
-      user: audit.user,
-      userAgent: audit.userAgent,
-      ipAddress: audit.ipAddress,
-      newValues: result as Record<string, unknown>,
-    });
+      if (result.isErr()) {
+        return err(result.error);
+      }
 
-    return result;
+      const entry = result.value;
+
+      await this.logAudit({
+        action: "INSERT",
+        tableName: "about_timeline_entries",
+        recordId: entry.id.toString(),
+        user: audit.user,
+        userAgent: audit.userAgent,
+        ipAddress: audit.ipAddress,
+        newValues: entry as Record<string, unknown>,
+      });
+
+      return ok(entry);
+    } catch (error) {
+      logger.error("[AdminService] Failed to create timeline entry", undefined, error as Error);
+      return err(new InternalError("Failed to create timeline entry", { error }));
+    }
   }
 
   async updateAboutTimelineEntry(
     audit: AuditContext,
     id: number,
     data: Partial<InsertAboutTimelineEntry>,
-  ): Promise<AboutTimelineEntry | undefined> {
-    const original = (await this.about.getTimelineEntry(id)).unwrapOr(null);
-    const result = (await this.about.updateTimelineEntry(id, data))._unsafeUnwrap();
+  ): Promise<Result<AboutTimelineEntry, AppError>> {
+    try {
+      const originalResult = await this.about.getTimelineEntry(id);
+      if (originalResult.isErr()) {
+        return err(originalResult.error);
+      }
+      const original = originalResult.value;
 
-    await this.logAudit({
-      action: "UPDATE",
-      tableName: "about_timeline_entries",
-      recordId: id.toString(),
-      user: audit.user,
-      userAgent: audit.userAgent,
-      ipAddress: audit.ipAddress,
-      oldValues: original as Record<string, unknown>,
-      newValues: result! as Record<string, unknown>,
-    });
+      const updateResult = await this.about.updateTimelineEntry(id, data);
+      if (updateResult.isErr()) {
+        return err(updateResult.error);
+      }
+      const result = updateResult.value;
 
-    return result;
-  }
-
-  async deleteAboutTimelineEntry(audit: AuditContext, id: number): Promise<boolean> {
-    const original = (await this.about.getTimelineEntry(id)).unwrapOr(null);
-    const result = (await this.about.deleteTimelineEntry(id)).unwrapOr(false);
-
-    if (result) {
       await this.logAudit({
-        action: "DELETE",
+        action: "UPDATE",
         tableName: "about_timeline_entries",
         recordId: id.toString(),
         user: audit.user,
         userAgent: audit.userAgent,
         ipAddress: audit.ipAddress,
-        oldValues: { title: original?.title } as Record<string, unknown>,
+        oldValues: original as Record<string, unknown>,
+        newValues: result! as Record<string, unknown>,
       });
-    }
 
-    return result;
+      return ok(result!);
+    } catch (error) {
+      logger.error("[AdminService] Failed to update timeline entry", { id }, error as Error);
+      return err(new InternalError("Failed to update timeline entry", { id, error }));
+    }
+  }
+
+  async deleteAboutTimelineEntry(
+    audit: AuditContext,
+    id: number,
+  ): Promise<Result<boolean, AppError>> {
+    try {
+      const originalResult = await this.about.getTimelineEntry(id);
+      const original = originalResult.isOk() ? originalResult.value : null;
+
+      const deleteResult = await this.about.deleteTimelineEntry(id);
+      if (deleteResult.isErr()) {
+        return err(deleteResult.error);
+      }
+      const result = deleteResult.value;
+
+      if (result) {
+        await this.logAudit({
+          action: "DELETE",
+          tableName: "about_timeline_entries",
+          recordId: id.toString(),
+          user: audit.user,
+          userAgent: audit.userAgent,
+          ipAddress: audit.ipAddress,
+          oldValues: { title: original?.title } as Record<string, unknown>,
+        });
+      }
+
+      return ok(result);
+    } catch (error) {
+      logger.error("[AdminService] Failed to delete timeline entry", { id }, error as Error);
+      return err(new InternalError("Failed to delete timeline entry", { id, error }));
+    }
   }
 }
 

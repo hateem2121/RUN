@@ -33,7 +33,7 @@ router.post("/workers/send-email", async (req, res) => {
 
   if (!payload || !payload.email) {
     logger.error("[Worker] Invalid payload received for email task");
-    return res.status(400).json({ error: "Invalid payload" });
+    return res.status(422).json({ error: "Invalid payload" });
   }
 
   logger.info(`[Worker] Processing email task for inquiry #${payload.id}`);
@@ -86,12 +86,12 @@ router.post("/process-media", async (req, res) => {
   // Validate payload
   if (!payload.mediaId || !payload.operation) {
     logger.warn("[Worker:Media] Invalid payload - missing required fields");
-    return res.status(400).json({ error: "Missing mediaId or operation" });
+    return res.status(422).json({ error: "Missing mediaId or operation" });
   }
 
   if (!VALID_MEDIA_OPERATIONS.includes(payload.operation)) {
     logger.warn("[Worker:Media] Invalid operation", { operation: payload.operation });
-    return res.status(400).json({ error: `Invalid operation: ${payload.operation}` });
+    return res.status(422).json({ error: `Invalid operation: ${payload.operation}` });
   }
 
   logger.info("[Worker:Media] Processing task", {

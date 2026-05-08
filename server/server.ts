@@ -89,7 +89,6 @@ export const serverReady: Promise<void> = (async () => {
     setupGracefulShutdown(httpServer, 30000);
   } catch (error) {
     logger.error("Failed to boot server", error);
-    console.error("BOOT_ERROR_RAW:", error); // Fallback in case Pino transport itself is broken
     process.exit(1); // Fatal error during startup
   }
 })();

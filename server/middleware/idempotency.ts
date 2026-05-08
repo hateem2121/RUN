@@ -17,6 +17,7 @@
 
 import type { NextFunction, Request, Response } from "express";
 import { UnifiedCache, unifiedCache } from "../lib/cache/unified-cache.js";
+import { logger } from "../lib/monitoring/logger.js";
 
 interface CachedEntry {
   status: number;
@@ -66,7 +67,7 @@ export async function idempotencyMiddleware(
   } catch (error) {
     // Fail safe: if cache errors, proceed with normal execution
     // but log the error
-    console.error("[Idempotency] Cache error:", error);
+    logger.error("[Idempotency] Cache error", {}, error as Error);
     next();
   }
 }

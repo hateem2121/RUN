@@ -293,7 +293,7 @@ export function generateErrorResponse(error: unknown, details: ErrorDetails): Pr
       case "validation":
         problemDetails.type = `${ERROR_TYPE_BASE}/validation-failed`;
         problemDetails.title = "Validation Failed";
-        problemDetails.status = 400;
+        problemDetails.status = 422;
         problemDetails.detail = "The request parameters failed validation";
         if (error && typeof error === "object" && "issues" in error) {
           problemDetails["invalid-params"] = (error as { issues: unknown[] }).issues;

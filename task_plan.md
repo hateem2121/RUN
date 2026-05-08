@@ -337,3 +337,57 @@ Address architectural observations and recommendations identified during the inv
     - [ ] Test `kv-direct/inspect-all` for redacted fields
 
 ### Status: [x] COMPLETE
+
+### Status: [x] AUDIT COMPLETE (AS-001 through AS-008 recorded in findings.md)
+
+## Session: 2026-05-07 (API & Service Layer — Hardening & Remediation)
+
+### Objective
+Resolve identified architectural issues in the API and service layer: thin controllers, Result-based services, and circuit breaker standardization.
+
+### Protocol 0 — Session Bookends
+- [x] START: Read and update `task_plan.md`
+- [x] END: Update `findings.md` and run `npm run verify:tech-integrity`
+
+### Accomplishments
+- [x] **Phase 1: Admin API Service Extraction**
+  - [x] Created `CategoryService` to encapsulate category business logic.
+  - [x] Created `BlogService` for blog category and post administration.
+  - [x] Created `FooterService` for footer configuration management.
+  - [x] Refactored `server/routes/core/categories.ts`, `server/routes/admin/blog.routes.ts`, and `server/routes/utilities/footer-config.ts` into thin controllers.
+- [x] **Phase 2: Result-Based Architecture**
+  - [x] Standardized all service methods to return `Result<T, AppError>`.
+  - [x] Implemented proper error propagation in route handlers (throwing `result.error`).
+- [x] **Phase 3: Circuit Breaker Standardization**
+  - [x] Implemented `withCircuit` wrapper for `opossum` in `server/lib/resilience/circuit-breaker.ts`.
+  - [x] Standardized circuit breakers across `AdminService`, `CategoryService`, `BlogService`, `FooterService`, `AuthService`, and `WebhookService`.
+- [x] **Phase 4: Verification**
+  - [x] Resolved all TypeScript errors in service layer.
+  - [x] Verified system integrity with `npm run verify:tech-integrity`.
+
+### Status: [x] REMEDIATION COMPLETE (2026-05-07)
+
+## Session: 2026-05-08 (API & Service Layer — Final Hardening)
+
+### Objective
+Finalize the hardening of the API and Service layer by refactoring InquiryService, standardizing HTTP status codes, and resolving remaining observability issues.
+
+### Protocol 0 — Session Bookends
+- [/] START: Read and update `task_plan.md`
+- [ ] END: Update `findings.md` and run `npm run verify:tech-integrity`
+
+### Accomplishments
+- [x] **Phase 1: InquiryService Hardening**
+  - [x] Refactored `InquiryService` to use `neverthrow` Result and `withCircuit`.
+  - [x] Extracted mapping logic from `server/routes/core/inquiries.ts`.
+  - [x] Updated `server/routes/utilities/inquiry-admin.ts` to handle Result-based responses.
+- [/] **Phase 2: Auth Layer Result-Based Refactoring**
+  - [x] Refactored `AuthService` to return `Result<T, AppError>` for DB-dependent methods.
+  - [x] Standardized error handling in `AuthService` (logger.fatal for boot errors).
+- [ ] **Phase 3: Observability & Compliance**
+  - [ ] Replace `console.log/error` with `logger` in middleware and bootstrap.
+  - [ ] Standardize validation error status codes to `422` (AS-005).
+  - [ ] Implement missing rate limiting on mutation endpoints (AS-006).
+
+### Status: [/] IN PROGRESS
+

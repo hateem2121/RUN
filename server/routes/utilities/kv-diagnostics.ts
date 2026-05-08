@@ -15,31 +15,40 @@ import { logger } from "../../lib/monitoring/logger.js";
  * REDACT SENSITIVE DATA
  * Recursively masks sensitive fields in diagnostic output
  */
-function redactSensitiveData(data: any): any {
+function redactSensitiveData(data: unknown): unknown {
   if (!data || typeof data !== "object") return data;
 
   if (Array.isArray(data)) {
     return data.map(redactSensitiveData);
   }
 
-  const sensitiveFields = ["email", "password", "hashedPassword", "secret", "token", "key", "apiKey"];
-  const redacted: any = {};
+  const sensitiveFields = [
+    "email",
+    "password",
+    "hashedPassword",
+    "secret",
+    "token",
+    "key",
+    "apiKey",
+  ];
+  const redacted: Record<string, unknown> = {};
 
-  for (const [key, value] of Object.entries(data)) {
+  for (const [key, value] of Object.entries(data as Record<string, unknown>)) {
     if (sensitiveFields.some((field) => key.toLowerCase().includes(field.toLowerCase()))) {
       if (typeof value === "string") {
         if (key.toLowerCase().includes("email") && value.includes("@")) {
           const parts = value.split("@");
           const name = parts[0] || "";
           const domain = parts[1] || "";
-          redacted[key] = `${name.charAt(0)}***@***${domain?.substring(domain.lastIndexOf(".")) || ""}`;
+          redacted[key] =
+            `${name.charAt(0)}***@***${domain?.substring(domain.lastIndexOf(".")) || ""}`;
         } else {
           redacted[key] = "[REDACTED]";
         }
       } else {
         redacted[key] = "[REDACTED]";
       }
-    } else if (typeof value === "object") {
+    } else if (typeof value === "object" && value !== null) {
       redacted[key] = redactSensitiveData(value);
     } else {
       redacted[key] = value;

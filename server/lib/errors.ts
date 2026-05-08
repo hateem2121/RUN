@@ -24,7 +24,7 @@ export abstract class AppError extends Error {
 
 export class ValidationError extends AppError {
   constructor(message: string, details?: Record<string, unknown>) {
-    super(message, 400, "VALIDATION_ERROR", true, details);
+    super(message, 422, "VALIDATION_ERROR", true, details);
   }
 }
 

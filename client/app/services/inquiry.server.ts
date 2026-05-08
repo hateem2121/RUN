@@ -47,11 +47,11 @@ export async function submitContactInquiry(data: ContactSubmissionData) {
       status: "new",
     });
 
-    if (!result) {
-      throw new Error("Failed to insert inquiry");
+    if (result.isErr()) {
+      throw result.error;
     }
 
-    return { success: true, submissionId: result.id };
+    return { success: true, submissionId: result.value.id };
   } catch (error) {
     console.error("[Inquiry] Failed to submit:", error);
     throw new Error("Failed to submit inquiry");

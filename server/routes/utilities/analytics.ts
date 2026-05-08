@@ -2,6 +2,8 @@ import { Router } from "express";
 import { z } from "zod";
 import { logger } from "../../lib/monitoring/logger.js";
 
+import { writeRateLimiter } from "../../middleware/rateLimiter.js";
+
 const router = Router();
 
 const WebVitalSchema = z.object({
@@ -15,7 +17,7 @@ const WebVitalSchema = z.object({
  * POST /api/analytics/vitals
  * Receives Core Web Vitals from the client
  */
-router.post("/vitals", (req, res) => {
+router.post("/vitals", writeRateLimiter, (req, res) => {
   const metric = WebVitalSchema.parse(req.body);
 
   // Log the metric for observability

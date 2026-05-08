@@ -1,9 +1,3 @@
-/**
- * CONTACT ROUTES MODULE
- * Page-specific content routes for Contact page
- * Relocated from modules/ to resources/ for consistent architecture (October 15, 2025)
- */
-
 import express, { type Request } from "express";
 import {
   type ContactPageConfiguration,
@@ -14,7 +8,7 @@ import { safeQuery } from "../../db.js";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { miscRepository } from "../../lib/db/repositories/index.js";
-import { ValidationError } from "../../lib/errors.js";
+import { NotFoundError, ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { verifyRecaptcha } from "../../lib/security/recaptcha-verify.js";
@@ -25,33 +19,32 @@ const router = express.Router();
 // Cache TTL constants (in seconds) - CHUNK 34: Optimized by data volatility
 // PHASE 1 OPTIMIZATION: Increased TTLs to improve cache hit rate (60% → 70%+ target)
 const CACHE_TTL_NAVIGATION = 7200; // 120 minutes (2 hours) - contact info changes occasionally
-const CACHE_TTL_STATIC = 10800; // 180 minutes (3 hours) - business locations change rarely
+const CACHE_TTL_STATIC = 10800; // 3 hours
 
 /**
- * CHUNK 7: Admin Cache Bypass Utility
  * Determines if cache should be bypassed for admin or debugging requests
  */
 function shouldBypassCache(req: Request): boolean {
   return req.headers.referer?.includes("/admin") || req.query.nocache === "true";
 }
 
-// Schema handled via import
-
 // Contact form submission endpoint
-// prettier-ignore
 router.post("/contact", async (req, res) => {
-  // security (public)
-  const validatedData = ContactSubmissionSchema.parse(req.body);
+  const validation = ContactSubmissionSchema.safeParse(req.body);
+  if (!validation.success) {
+    throw new ValidationError("Invalid contact submission", { issues: validation.error.issues });
+  }
+
+  const validatedData = validation.data;
 
   // Server-side honeypot validation - reject if filled (bot detection)
   if (validatedData.honeypot && validatedData.honeypot.trim().length > 0) {
     logger.warn(`[Contact] Honeypot triggered - potential spam from ${req.ip}`, {
       email: validatedData.email,
-      honeypot: validatedData.honeypot.substring(0, 50),
     });
-    return res.status(400).json({
+    return res.status(422).json({
       success: false,
-      error: "Invalid submission",
+      error: "Security validation failed",
     });
   }
 
@@ -59,16 +52,15 @@ router.post("/contact", async (req, res) => {
   const recaptchaResult = await verifyRecaptcha(validatedData.recaptchaToken, req.ip || "unknown");
 
   if (!recaptchaResult.success) {
-    return res.status(400).json({
+    return res.status(422).json({
       success: false,
       error: recaptchaResult.error || "Security check failed",
     });
   }
 
   // Create inquiry via unified service layer
-  // NOTE: This centralizes Encryption, Webhooks, BigQuery, and Email side-effects
   const { inquiryService } = await import("../../services/inquiry-service.js");
-  const inquiry = await inquiryService.createInquiry({
+  const inquiryResult = await inquiryService.createInquiry({
     name: validatedData.name,
     email: validatedData.email,
     message: validatedData.message,
@@ -79,6 +71,12 @@ router.post("/contact", async (req, res) => {
     source: "contact-page",
     status: "new",
   });
+
+  if (inquiryResult.isErr()) {
+    throw inquiryResult.error;
+  }
+
+  const inquiry = inquiryResult.value;
 
   logger.info(
     `[Contact] New inquiry #${inquiry.id} from ${validatedData.email} via unified service`,
@@ -96,33 +94,21 @@ router.get("/contact-info", async (req, res) => {
   const cacheKey = CacheKeys.contact.configuration();
   const cached = await unifiedCache.get<ContactPageConfiguration>(cacheKey);
 
-  // CHUNK 7: Check cache bypass
+  // Check cache bypass
   if (cached && !shouldBypassCache(req)) {
-    logger.debug("[Contact] Returning cached contact info");
     res.setHeader("X-Cache-Hit", "true");
     return res.json(cached);
-  }
-
-  if (shouldBypassCache(req)) {
-    logger.debug("[Contact] Admin/debug request - bypassing cache for contact info");
   }
 
   // Query contact page configuration from database
   const config = await miscRepository.getContactPageConfiguration();
 
   if (!config) {
-    logger.warn("[Contact] No contact configuration found in database");
-    return res.status(404).json({ error: "Contact configuration not found" });
+    throw new NotFoundError("Contact configuration not found");
   }
 
-  // Return all configuration fields including new ones:
-  // - Old fields: email, phone, address, workingHours, heroTitle, description, socialLinks, mapCoordinates
-  // - New fields: locationLine1, locationLine2, locationButtonText, tradingHours, platformOptions,
-  //               formButtonText, formPrivacyText, successHeading, successMessage
-
-  // Cache for 120 minutes (7200s) - Phase 1 optimization
+  // Cache for 120 minutes (7200s)
   await unifiedCache.set(cacheKey, config, CACHE_TTL_NAVIGATION * 1000);
-  logger.debug("[Contact] Contact info cached for 120 minutes / 2 hours");
 
   return res.json(config);
 });
@@ -130,25 +116,12 @@ router.get("/contact-info", async (req, res) => {
 // Get business locations/offices
 router.get("/locations", async (req, res) => {
   const cacheKey = "business-locations";
-  const cached =
-    await unifiedCache.get<
-      Array<{
-        id: number;
-        name: string;
-        address: string;
-        lat: number;
-        lng: number;
-      }>
-    >(cacheKey);
+  const cached = await unifiedCache.get<unknown[]>(cacheKey);
 
-  // CHUNK 7: Check cache bypass
+  // Check cache bypass
   if (cached && !shouldBypassCache(req)) {
     res.setHeader("X-Cache-Hit", "true");
     return res.json(cached);
-  }
-
-  if (shouldBypassCache(req)) {
-    logger.debug("[Contact] Admin/debug request - bypassing cache for locations");
   }
 
   // Placeholder business locations - replace with actual storage method
@@ -172,85 +145,69 @@ router.get("/locations", async (req, res) => {
 // ============================================================================
 
 // Contact page configuration
-router.get("/contact-page-configuration", async (_req, res, next) => {
+router.get("/contact-page-configuration", async (_req, res) => {
   const result = await safeQuery(
     withTimeout(miscRepository.getContactPageConfiguration(), 5000, "Get contact page config"),
   );
 
   if (result.isErr()) {
-    return next(result.error);
+    throw result.error;
   }
 
   return res.json(result.value || {});
 });
 
-router.post(
-  "/admin/contact-page-configuration",
-  authService.requireAdmin,
-  async (req, res, next) => {
-    const validation = insertContactPageConfigurationSchema.safeParse(req.body);
-    if (!validation.success) {
-      return next(
-        new ValidationError("Invalid contact configuration", { issues: validation.error.issues }),
-      );
-    }
+router.post("/admin/contact-page-configuration", authService.requireAdmin, async (req, res) => {
+  const validation = insertContactPageConfigurationSchema.safeParse(req.body);
+  if (!validation.success) {
+    throw new ValidationError("Invalid contact configuration", { issues: validation.error.issues });
+  }
 
-    const result = await safeQuery(
-      withTimeout(
-        miscRepository.createContactPageConfiguration(validation.data),
-        5000,
-        "Create contact page config",
-      ),
-    );
+  const result = await safeQuery(
+    withTimeout(
+      miscRepository.createContactPageConfiguration(validation.data),
+      5000,
+      "Create contact page config",
+    ),
+  );
 
-    if (result.isErr()) {
-      return next(result.error);
-    }
+  if (result.isErr()) {
+    throw result.error;
+  }
 
-    // Invalidate contact page cache after successful creation
-    CacheOperations.invalidateContact()
-      .then(() =>
-        logger.info("[Contact] ✅ Cache invalidated after contact page configuration creation"),
-      )
-      .catch((err) => logger.error("[Contact] ❌ Cache invalidation failed:", err));
+  // Invalidate contact page cache after successful creation
+  await CacheOperations.invalidateContact().catch((err) =>
+    logger.error("[Contact] Cache invalidation failed:", err),
+  );
 
-    return res.json(result.value);
-  },
-);
+  return res.json(result.value);
+});
 
-router.patch(
-  "/admin/contact-page-configuration",
-  authService.requireAdmin,
-  async (req, res, next) => {
-    const validation = insertContactPageConfigurationSchema.safeParse(req.body);
-    if (!validation.success) {
-      return next(
-        new ValidationError("Invalid contact configuration", { issues: validation.error.issues }),
-      );
-    }
-    // Contact page configuration is a singleton - always use ID 1
-    const result = await safeQuery(
-      withTimeout(
-        miscRepository.updateContactPageConfiguration(1, validation.data),
-        5000,
-        "Update contact page config",
-      ),
-    );
+router.patch("/admin/contact-page-configuration", authService.requireAdmin, async (req, res) => {
+  const validation = insertContactPageConfigurationSchema.safeParse(req.body);
+  if (!validation.success) {
+    throw new ValidationError("Invalid contact configuration", { issues: validation.error.issues });
+  }
+  // Contact page configuration is a singleton - always use ID 1
+  const result = await safeQuery(
+    withTimeout(
+      miscRepository.updateContactPageConfiguration(1, validation.data),
+      5000,
+      "Update contact page config",
+    ),
+  );
 
-    if (result.isErr()) {
-      return next(result.error);
-    }
+  if (result.isErr()) {
+    throw result.error;
+  }
 
-    // Invalidate contact page cache after successful update
-    CacheOperations.invalidateContact()
-      .then(() =>
-        logger.info("[Contact] ✅ Cache invalidated after contact page configuration update"),
-      )
-      .catch((err) => logger.error("[Contact] ❌ Cache invalidation failed:", err));
+  // Invalidate contact page cache after successful update
+  await CacheOperations.invalidateContact().catch((err) =>
+    logger.error("[Contact] Cache invalidation failed:", err),
+  );
 
-    return res.json(result.value);
-  },
-);
+  return res.json(result.value);
+});
 
 logger.debug("[Contact Routes] ✅ Contact routes loaded (resources/)");
 

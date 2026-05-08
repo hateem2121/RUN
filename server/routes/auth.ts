@@ -4,6 +4,8 @@ import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
 import { adminCacheManager } from "../lib/cache/admin-cache.js";
 import { userRepository } from "../lib/db/repositories/index.js";
+import { logger } from "../lib/monitoring/logger.js";
+import { authRateLimiter } from "../middleware/rateLimiter.js";
 import { authService } from "../services/auth-service.js";
 import type { SessionUser } from "../types/session.js";
 
@@ -12,6 +14,7 @@ const router = Router();
 // Login route - starts OAuth flow
 router.get(
   "/login",
+  authRateLimiter,
   passport.authenticate("google", {
     scope: ["profile", "email"],
   }),
@@ -54,14 +57,14 @@ if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
 
     req.session.regenerate((err) => {
       if (err) {
-        console.error("Session regeneration failed", err);
+        logger.error("Session regeneration failed", undefined, err as Error);
         res.status(500).json({ error: "Session regeneration failed" });
         return;
       }
 
       req.login(mockUser, (loginErr) => {
         if (loginErr) {
-          console.error("Mock login failed", loginErr);
+          logger.error("Mock login failed", undefined, loginErr as Error);
           res.status(500).json({ error: "Mock login failed" });
           return;
         }
@@ -69,7 +72,7 @@ if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
         // Ensure session is saved before redirecting/responding
         req.session.save((saveErr) => {
           if (saveErr) {
-            console.error("Session save failed", saveErr);
+            logger.error("Session save failed", undefined, saveErr as Error);
             res.status(500).json({ error: "Session save failed" });
             return;
           }
@@ -92,7 +95,7 @@ router.get(
   passport.authenticate("google", {
     failureRedirect: "/api/login",
   }),
-  (req, res, next) => {
+  (req, res) => {
     const user = req.user as SessionUser;
     if (!user) {
       return res.redirect("/api/login");
@@ -100,11 +103,11 @@ router.get(
 
     req.session.regenerate((err) => {
       if (err) {
-        return next(err);
+        throw err;
       }
       req.login(user, (loginErr) => {
         if (loginErr) {
-          return next(loginErr);
+          throw loginErr;
         }
         res.redirect("/");
       });
@@ -113,14 +116,14 @@ router.get(
 );
 
 // Logout route
-router.get("/logout", (req, res, next) => {
+router.get("/logout", (req, res) => {
   req.logout((err) => {
     if (err) {
-      return next(err);
+      throw err;
     }
     req.session.destroy((sessionErr) => {
       if (sessionErr) {
-        return next(sessionErr);
+        throw sessionErr;
       }
       res.redirect("/");
     });

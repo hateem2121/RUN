@@ -268,3 +268,23 @@ export class UploadRateLimiter {
 
 // Export singleton instance for backward compatibility
 export const uploadRateLimit = new UploadRateLimiter();
+
+/**
+ * Authentication Rate Limiter
+ * Strict limit for login and auth-related endpoints
+ */
+export const authRateLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // 10 attempts
+  message: "Too many login attempts, please try again after 15 minutes.",
+});
+
+/**
+ * Write Rate Limiter
+ * Standard limit for public POST/PUT/PATCH endpoints
+ */
+export const writeRateLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // 20 requests
+  message: "Too many requests, please try again later.",
+});
