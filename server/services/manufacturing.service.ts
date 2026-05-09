@@ -38,8 +38,8 @@ export class ManufacturingService {
         {
           bypassCache,
           swrConfig: {
-            staleMs: 60 * 60 * 1000, // 1 hour stale
-            expireMs: 12 * 60 * 60 * 1000, // 12 hours expire
+            staleWhileRevalidate: 60 * 60, // 1 hour stale
+            ttl: 12 * 60 * 60, // 12 hours expire
           },
         },
       );
@@ -171,6 +171,21 @@ export class ManufacturingService {
     }
   }
 
+  async getCapability(id: number): Promise<Result<ManufacturingCapability, AppError>> {
+    try {
+      const capability = await withCircuit(
+        `get-manufacturing-capability-${id}`,
+        () => manufacturingRepository.getManufacturingCapability(id),
+        DB_CIRCUIT_OPTIONS,
+      );
+      if (!capability) return err(new NotFoundError(`Manufacturing capability with ID ${id}`));
+      return ok(capability);
+    } catch (error) {
+      logger.error("[ManufacturingService] Failed to fetch capability", { id }, error as Error);
+      return err(new InternalError(`Failed to fetch manufacturing capability ${id}`, { error }));
+    }
+  }
+
   async createCapability(
     data: InsertManufacturingCapability,
   ): Promise<Result<ManufacturingCapability, AppError>> {
@@ -298,6 +313,35 @@ export class ManufacturingService {
     }
   }
 
+  async getCaseStudy(id: number): Promise<Result<ManufacturingCaseStudy, AppError>> {
+    try {
+      const study = await withCircuit(
+        `get-manufacturing-case-study-${id}`,
+        () => manufacturingRepository.getManufacturingCaseStudy(id),
+        DB_CIRCUIT_OPTIONS,
+      );
+      if (!study) return err(new NotFoundError(`Manufacturing case study with ID ${id}`));
+      return ok(study);
+    } catch (error) {
+      logger.error("[ManufacturingService] Failed to fetch case study", { id }, error as Error);
+      return err(new InternalError(`Failed to fetch manufacturing case study ${id}`, { error }));
+    }
+  }
+
+  async reorderCaseStudies(orderedIds: number[]): Promise<Result<void, AppError>> {
+    try {
+      await withCircuit(
+        "reorder-manufacturing-case-studies",
+        () => manufacturingRepository.reorderManufacturingCaseStudies(orderedIds),
+        DB_CIRCUIT_OPTIONS,
+      );
+      return ok(undefined);
+    } catch (error) {
+      logger.error("[ManufacturingService] Failed to reorder case studies", error as Error);
+      return err(new InternalError("Failed to reorder manufacturing case studies", { error }));
+    }
+  }
+
   // Hero
   async getHero(): Promise<Result<ManufacturingHero, AppError>> {
     try {
@@ -342,6 +386,21 @@ export class ManufacturingService {
     } catch (error) {
       logger.error("[ManufacturingService] Failed to fetch qualities", error as Error);
       return err(new InternalError("Failed to fetch manufacturing qualities", { error }));
+    }
+  }
+
+  async getQuality(id: number): Promise<Result<ManufacturingQuality, AppError>> {
+    try {
+      const quality = await withCircuit(
+        `get-manufacturing-quality-${id}`,
+        () => manufacturingRepository.getManufacturingQuality(id),
+        DB_CIRCUIT_OPTIONS,
+      );
+      if (!quality) return err(new NotFoundError(`Manufacturing quality with ID ${id}`));
+      return ok(quality);
+    } catch (error) {
+      logger.error("[ManufacturingService] Failed to fetch quality", { id }, error as Error);
+      return err(new InternalError(`Failed to fetch manufacturing quality ${id}`, { error }));
     }
   }
 

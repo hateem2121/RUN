@@ -1,8 +1,7 @@
 import crypto from "node:crypto";
-import { sql } from "drizzle-orm";
 import { Router } from "express";
-import { db } from "../db.js";
 import { logger } from "../lib/monitoring/logger.js";
+import { systemService } from "../services/system.service.js";
 
 const router = Router();
 
@@ -97,19 +96,19 @@ router.post("/crash", (req, res) => {
   res.status(202).json({ message: "Crash scheduled" });
 });
 
-/**
- * POST /api/debug/slow-query
- * Executes a deterministic slow query (pg_sleep) to verify observability logs.
- */
+// POST /api/debug/slow-query
+// Executes a deterministic slow query (pg_sleep) to verify observability logs.
 // prettier-ignore
 router.post("/slow-query", async (req, res) => {
   // security (dev only)
   const duration = req.query.duration ? parseFloat(req.query.duration as string) : 1.2;
   logger.info(`[Debug] Triggering slow query of ${duration}s...`);
 
-  // Use parameterized SQL execution to prevent anti-patterns and follow Drizzle best practices,
-  // while still hitting our 'trackedSql' proxy in db.ts
-  await db.execute(sql`SELECT pg_sleep(${duration})`);
+  const result = await systemService.simulateSlowQuery(duration);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
 
   res.json({ message: "Slow query execution complete", duration });
 });

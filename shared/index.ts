@@ -4,6 +4,7 @@ export * from "./routes.js";
 export * from "./schemas/index.js";
 export * from "./types/about.js";
 export * from "./types/homepage.js";
+export * from "./types/products.js";
 export * from "./types/sustainability.js";
 export * from "./validation/index.js";
 export * from "./viewmodels/index.js";

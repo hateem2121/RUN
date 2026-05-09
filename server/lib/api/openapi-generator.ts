@@ -56,7 +56,7 @@ export function jsonResponse(schema: z.ZodType, description: string) {
   };
 }
 
-let cachedSpec: any = null;
+let cachedSpec: ReturnType<OpenApiGeneratorV31["generateDocument"]> | null = null;
 
 /**
  * Generates the full OpenAPI 3.1 specification

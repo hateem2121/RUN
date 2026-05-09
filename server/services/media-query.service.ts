@@ -16,7 +16,11 @@ export class MediaQueryService {
   async getAssets(
     limit = 20,
     offset = 0,
-    filters: { type?: string; search?: string; folderId?: number } = {},
+    filters: {
+      type?: string | undefined;
+      search?: string | undefined;
+      folderId?: number | undefined;
+    } = {},
   ): Promise<Result<{ assets: MediaAsset[]; total: number }, AppError>> {
     try {
       const result = await withCircuit(
@@ -34,7 +38,7 @@ export class MediaQueryService {
   /**
    * Retrieves a single asset by ID
    */
-  async getAssetById(id: string): Promise<Result<MediaAsset, AppError>> {
+  async getAssetById(id: number): Promise<Result<MediaAsset, AppError>> {
     try {
       const asset = await withCircuit(
         `get-media-asset-${id}`,
@@ -89,7 +93,7 @@ export class MediaQueryService {
    * Retrieves total count of assets matching filters
    */
   async getMediaCount(
-    filters: { type?: string; folderId?: number } = {},
+    filters: { type?: string | undefined; folderId?: number | undefined } = {},
   ): Promise<Result<number, AppError>> {
     try {
       const count = await withCircuit(
@@ -107,7 +111,7 @@ export class MediaQueryService {
   /**
    * Updates an existing media asset
    */
-  async updateAsset(id: string, data: Partial<MediaAsset>): Promise<Result<MediaAsset, AppError>> {
+  async updateAsset(id: number, data: Partial<MediaAsset>): Promise<Result<MediaAsset, AppError>> {
     try {
       const updated = await withCircuit(
         `update-media-asset-${id}`,
@@ -129,7 +133,7 @@ export class MediaQueryService {
   /**
    * Deletes a media asset (soft delete)
    */
-  async deleteAsset(id: string): Promise<Result<boolean, AppError>> {
+  async deleteAsset(id: number): Promise<Result<boolean, AppError>> {
     try {
       const success = await withCircuit(
         `delete-media-asset-${id}`,
@@ -154,7 +158,7 @@ export class MediaQueryService {
   async searchAssets(
     query: string,
     limit = 20,
-    filters: { type?: string; folderId?: number } = {},
+    filters: { type?: string | undefined; folderId?: number | undefined } = {},
   ): Promise<Result<MediaAsset[], AppError>> {
     try {
       const assets = await withCircuit(
@@ -214,7 +218,7 @@ export class MediaQueryService {
   /**
    * Returns cache health and stats
    */
-  async getCacheStats(): Promise<Result<any, AppError>> {
+  async getCacheStats(): Promise<Result<Record<string, unknown>, AppError>> {
     const { unifiedCache } = await import("../lib/cache/unified-cache.js");
     try {
       const stats = await unifiedCache.getHealthStatus();
@@ -227,7 +231,7 @@ export class MediaQueryService {
   /**
    * Performs a health scan of the media database
    */
-  async getHealthScan(): Promise<Result<{ status: string; issues: any[] }, AppError>> {
+  async getHealthScan(): Promise<Result<{ status: string; issues: unknown[] }, AppError>> {
     // Basic implementation for now
     return ok({ status: "healthy", issues: [] });
   }
@@ -249,7 +253,7 @@ export class MediaQueryService {
   /**
    * Clears cache for a specific asset
    */
-  async clearCache(id: string): Promise<Result<boolean, AppError>> {
+  async clearCache(id: number): Promise<Result<boolean, AppError>> {
     const { unifiedCache } = await import("../lib/cache/unified-cache.js");
     try {
       const assetResult = await this.getAssetById(id);

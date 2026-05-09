@@ -2,13 +2,13 @@ import { err, ok, type Result } from "neverthrow";
 import type {
   InsertProduct,
   Product,
+  ProductDetail,
+  ProductDetailWithContext,
   ProductSummary,
-  ProductWithContext,
 } from "../../shared/index.js";
 import { retryDbOperation } from "../lib/db/db-retry.js";
 import { productRepository } from "../lib/db/repositories/index.js";
 import { type AppError, DatabaseError, NotFoundError } from "../lib/errors.js";
-import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 
 /**
@@ -21,18 +21,24 @@ export class ProductService {
    * Lists products with pagination and filtering.
    */
   async listProducts(params: {
-    category?: string;
-    active?: string;
-    featured?: string;
-    tag?: string;
-    search?: string;
-    page?: number;
-    limit?: number;
+    category?: string | undefined;
+    active?: string | undefined;
+    featured?: string | undefined;
+    tag?: string | undefined;
+    search?: string | undefined;
+    page?: number | undefined;
+    limit?: number | undefined;
   }): Promise<
     Result<
       {
-        products: ProductSummary[];
-        totalCount: number;
+        data: ProductSummary[];
+        pagination: {
+          page: number;
+          limit: number;
+          total: number;
+          pages: number;
+          hasMore: boolean;
+        };
       },
       AppError
     >
@@ -46,7 +52,7 @@ export class ProductService {
       let totalCount = 0;
 
       if (params.search) {
-        const filters: any = {};
+        const filters: Record<string, unknown> = {};
         if (params.category) filters.categoryId = parseInt(params.category, 10);
         if (params.active === "true") filters.isActive = true;
         else if (params.active === "false") filters.isActive = false;
@@ -115,7 +121,18 @@ export class ProductService {
         totalCount = result.totalCount;
       }
 
-      return ok({ products, totalCount });
+      const totalPages = Math.ceil(totalCount / limit);
+
+      return ok({
+        data: products,
+        pagination: {
+          page,
+          limit,
+          total: totalCount,
+          pages: totalPages,
+          hasMore: page < totalPages,
+        },
+      });
     } catch (error) {
       return err(new DatabaseError("Failed to list products", { cause: error }));
     }
@@ -124,7 +141,7 @@ export class ProductService {
   /**
    * Fetches a single product by ID.
    */
-  async getProductById(id: number): Promise<Result<Product, AppError>> {
+  async getProductById(id: number): Promise<Result<ProductDetail, AppError>> {
     try {
       const product = await withCircuit(
         `get-product-${id}`,
@@ -145,7 +162,7 @@ export class ProductService {
   /**
    * Resolves a product by its URL path.
    */
-  async getProductByPath(path: string): Promise<Result<ProductWithContext, AppError>> {
+  async getProductByPath(path: string): Promise<Result<ProductDetailWithContext, AppError>> {
     try {
       const productContext = await withCircuit(
         `get-product-by-path-${path}`,
@@ -166,7 +183,7 @@ export class ProductService {
   /**
    * Fetches 3D model metadata for a product.
    */
-  async get3DModelMetadata(id: number): Promise<Result<any, AppError>> {
+  async get3DModelMetadata(id: number): Promise<Result<Record<string, unknown>, AppError>> {
     try {
       const metadata = await withCircuit(
         `get-product-3d-model-${id}`,

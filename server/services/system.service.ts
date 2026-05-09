@@ -64,6 +64,37 @@ export class SystemService {
       return err(new InternalError("Failed to configure audit trail", { error }));
     }
   }
+
+  /**
+   * Checks database connectivity (SELECT 1)
+   */
+  async checkDatabaseConnectivity(): Promise<Result<boolean, AppError>> {
+    try {
+      await withCircuit("db-connectivity-check", () => systemRepository.ping(), DB_CIRCUIT_OPTIONS);
+      return ok(true);
+    } catch (error) {
+      return err(new InternalError("Database connectivity check failed", { error }));
+    }
+  }
+
+  /**
+   * Simulates a slow query (DEBUG ONLY)
+   */
+  async simulateSlowQuery(duration: number): Promise<Result<void, AppError>> {
+    if (process.env.NODE_ENV === "production" && process.env.ENABLE_DEBUG_ROUTES !== "true") {
+      return err(new InternalError("Debug operations not allowed in production"));
+    }
+    try {
+      await withCircuit(
+        "simulate-slow-query",
+        () => systemRepository.executeSleep(duration),
+        DB_CIRCUIT_OPTIONS,
+      );
+      return ok(undefined);
+    } catch (error) {
+      return err(new InternalError("Slow query simulation failed", { error }));
+    }
+  }
 }
 
 export const systemService = new SystemService();

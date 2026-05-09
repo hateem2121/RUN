@@ -1,8 +1,7 @@
-import { users } from "@run-remix/shared";
-import { eq } from "drizzle-orm";
 import { Router } from "express";
-import { db } from "../db.js";
+import { InternalError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
+import { authService } from "../services/auth-service.js";
 
 const devRouter = Router();
 
@@ -12,24 +11,21 @@ devRouter.get("/login", async (req, res) => {
     return res.status(404).send("Not found");
   }
 
-  const adminUser = await db.query.users.findFirst({
-    where: eq(users.email, "team@wear-run.com"),
-  });
+  const result = await authService.devLogin();
 
-  if (!adminUser) {
-    return res.status(404).json({ error: "Admin user not found" });
+  if (result.isErr()) {
+    const status = (result.error as { status?: number }).status || 500;
+    return res.status(status).json({ error: result.error.message });
   }
 
-  const sessionUser = {
-    ...adminUser,
-    claims: { sub: adminUser.id, email: adminUser.email, isMock: true },
-  };
+  const sessionUser = result.value;
 
   return req.login(sessionUser, (err) => {
     if (err) {
-      return res.status(500).json({ error: "Login failed" });
+      logger.error("[Dev] Session login failed", err);
+      throw new InternalError("Login session creation failed", { error: err });
     }
-    logger.info(`[Dev] Logged in as admin: ${adminUser.email}`);
+    logger.info(`[Dev] Logged in as admin: ${sessionUser.email}`);
     return res.json({
       success: true,
       message: "Logged in as admin",

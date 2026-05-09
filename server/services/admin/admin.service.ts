@@ -13,6 +13,7 @@ import type {
   InsertFiber,
   InsertProduct,
   MediaAsset,
+  MediaAssetSummary,
   Product,
   ProductDetail,
 } from "@run-remix/shared";
@@ -526,7 +527,8 @@ export class AdminService {
     audit: AuditContext,
     autoClean: boolean,
     timeoutMs = 60000,
-  ): Promise<Result<any, AppError>> {
+    // biome-ignore lint/suspicious/noExplicitAny: Dynamic cleanup report result
+  ): Promise<Result<Record<string, any>, AppError>> {
     try {
       const scheduler = getLifecycleScheduler();
       // Assuming scheduler runs in background/async, but if we await a report, we should timeout the wait
@@ -554,7 +556,8 @@ export class AdminService {
         metadata: { operation: "cleanup", autoClean, report },
       });
 
-      return ok(report);
+      // biome-ignore lint/suspicious/noExplicitAny: Dynamic cleanup report structure
+      return ok(report as unknown as Record<string, any>);
     } catch (error) {
       logger.error("[AdminService] Failed to trigger cleanup", undefined, error as Error);
       return err(new InternalError("Failed to trigger cleanup", { error }));
@@ -793,6 +796,24 @@ export class AdminService {
   }
 
   /**
+   * Fetches all media assets for admin management.
+   * Extracted from route handler to maintain thin controller pattern (AS-106).
+   */
+  async getMediaAssetsList(): Promise<Result<MediaAssetSummary[], AppError>> {
+    try {
+      const assets = await withCircuit(
+        "get-all-media-assets-admin",
+        () => this.mediaRepo.getMediaAssets(),
+        DB_CIRCUIT_OPTIONS,
+      );
+      return ok(assets || []);
+    } catch (error) {
+      logger.error("[AdminService] Failed to fetch all media assets", undefined, error as Error);
+      return err(new InternalError("Failed to fetch all media assets", { error }));
+    }
+  }
+
+  /**
    * Hard-deletes a product permanently and logs the action.
    * Requires `confirm === 'DELETE'` from the caller for safety.
    */
@@ -845,8 +866,11 @@ export class AdminService {
     slug: string,
     excludeId?: number,
   ): Promise<Result<{ available: boolean }, AppError>> {
+    const { normalizeSlug } = await import("../../lib/utilities/slug-utils.js");
+    const normalizedSlug = normalizeSlug(slug);
+
     try {
-      const existing = await this.productRepo.getProductBySlug(slug);
+      const existing = await this.productRepo.getProductBySlug(normalizedSlug);
       if (!existing) {
         return ok({ available: true });
       }
@@ -1058,7 +1082,7 @@ export class AdminService {
 
   async getAboutTimelineEntries(): Promise<Result<AboutTimelineEntry[], AppError>> {
     try {
-      const result = await this.about.getTimeline(true);
+      const result = await this.about.getTimelineEntries(true);
       return result;
     } catch (error) {
       logger.error("[AdminService] Failed to fetch timeline entries", undefined, error as Error);

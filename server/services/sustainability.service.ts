@@ -468,7 +468,7 @@ export class SustainabilityService {
   }
 
   // Batch
-  async getBatch(): Promise<Result<any, AppError>> {
+  async getBatch(): Promise<Result<Record<string, unknown>, AppError>> {
     try {
       const [hero, metrics, initiatives, goals, certificates, fabrics] = await withCircuit(
         "get-sustainability-batch-db",
@@ -486,15 +486,15 @@ export class SustainabilityService {
 
       return ok({
         hero: hero || null,
-        metrics: (metrics || []).map((m: any) => ({
+        metrics: (metrics || []).map((m: SustainabilityMetric) => ({
           ...m,
           title: m.name || "Untitled Metric",
         })),
-        initiatives: (initiatives || []).map((i: any) => ({
+        initiatives: (initiatives || []).map((i: SustainabilityInitiative) => ({
           ...i,
           title: i.title || "Untitled Initiative",
         })),
-        goals: (goals || []).map((g: any) => ({
+        goals: (goals || []).map((g: SustainabilityGoal) => ({
           ...g,
           title: g.title || "Untitled Goal",
         })),

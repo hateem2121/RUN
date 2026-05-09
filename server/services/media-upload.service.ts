@@ -15,6 +15,7 @@ import {
   buildInsertMediaAsset,
   detectMediaType,
   generateOrganizedStoragePath,
+  getVideoMetadata,
   slugifyFilename,
 } from "../routes/media/utils.js";
 import { webhookService } from "./webhook-service.js";
@@ -181,8 +182,16 @@ export class MediaUploadService {
         for (let i = batchStart; i < batchEnd; i++) {
           const chunkKey = `${CHUNK_STORAGE_BASE}/${uploadId}/chunk-${i}`;
           batchPromises.push(
-            appStorageService.downloadAsset(chunkKey).then((buffer) => {
-              if (!buffer) throw new Error(`Chunk ${i} missing`);
+            withCircuit(
+              "download-chunk-finalize",
+              () =>
+                withTimeout(
+                  appStorageService.downloadAsset(chunkKey),
+                  15000,
+                  `Download chunk ${i} for assembly`,
+                ),
+              DB_CIRCUIT_OPTIONS,
+            ).then((buffer) => {
               return { index: i, chunk: buffer };
             }),
           );
@@ -190,6 +199,9 @@ export class MediaUploadService {
 
         const batchResults = await Promise.all(batchPromises);
         for (const { index, chunk } of batchResults) {
+          if (!chunk) {
+            return err(new InternalError(`Chunk ${index} missing during assembly`));
+          }
           orderedChunks[index] = chunk;
           computedTotal += chunk.length;
         }
@@ -227,13 +239,18 @@ export class MediaUploadService {
       const storagePath = generateOrganizedStoragePath(mediaType, session.filename);
 
       // Upload final file to storage
-      await withTimeout(
-        appStorageService.uploadAsset(storagePath, assembledFile, {
-          contentType: session.mimeType,
-          isPublic: true,
-        }),
-        30000,
-        "Final asset upload",
+      await withCircuit(
+        "upload-final-asset",
+        () =>
+          withTimeout(
+            appStorageService.uploadAsset(storagePath, assembledFile, {
+              contentType: session.mimeType,
+              isPublic: true,
+            }),
+            60000,
+            "Final asset upload to object storage",
+          ),
+        DB_CIRCUIT_OPTIONS,
       );
 
       const slugifiedFilename = slugifyFilename(session.filename);
@@ -256,7 +273,7 @@ export class MediaUploadService {
       );
 
       if (!createdAsset) {
-        throw new Error("Database record creation failed");
+        return err(new InternalError("Database record creation failed"));
       }
 
       // Update URL to use API proxy
@@ -267,7 +284,7 @@ export class MediaUploadService {
         })) || createdAsset;
 
       // Image Processing (Async)
-      if (mediaType === "image" || isImageFile(session.mimeType)) {
+      if (mediaType === "images" || isImageFile(session.mimeType)) {
         try {
           const imageData = await processImage(assembledFile, session.filename);
           const variants = await generateResponsiveVariants(assembledFile, session.filename);
@@ -310,7 +327,11 @@ export class MediaUploadService {
     // Async cleanup of chunks
     for (let i = 0; i < session.totalChunks; i++) {
       const chunkKey = `${CHUNK_STORAGE_BASE}/${uploadId}/chunk-${i}`;
-      appStorageService.deleteAsset(chunkKey).catch(() => {});
+      withCircuit(
+        "delete-chunk-cleanup",
+        () => appStorageService.deleteAsset(chunkKey),
+        DB_CIRCUIT_OPTIONS,
+      ).catch(() => {});
     }
 
     this.sessions.delete(uploadId);
@@ -378,11 +399,161 @@ export class MediaUploadService {
    */
   async uploadSingleFile(
     file: Express.Multer.File,
-    options: any = {},
+    // biome-ignore lint/suspicious/noExplicitAny: Dynamic upload options
+    options: Record<string, any> = {},
   ): Promise<Result<MediaAsset, AppError>> {
     try {
-      const { processUploadedFile } = await import("../routes/media/utils.js");
-      const asset = await processUploadedFile(file, options);
+      const storage = mediaRepository;
+      let storageKey: string | null = null;
+
+      // Correct MIME type
+      const correctedMime = correctMimeType(file.mimetype, file.originalname);
+
+      // Determine file type (use correctedMime for accurate detection)
+      let fileType = "document";
+      if (isImageFile(correctedMime)) {
+        fileType = "image";
+      } else if (correctedMime.startsWith("video/")) {
+        fileType = "video";
+      } else if (isGLTFFile(correctedMime, file.originalname)) {
+        fileType = "model";
+      }
+
+      // Log upload initiation
+      logger.info("File upload initiated", {
+        filename: file.originalname,
+        size: file.size,
+        type: fileType,
+        mimeType: correctedMime,
+        originalMimeType: file.mimetype,
+        hasAltText: !!options.altText,
+        hasTags: !!options.tags?.length,
+        hasCaption: !!options.caption,
+        folderId: options.folderId,
+      });
+
+      // Generate organized storage path with automatic slugification
+      const mediaType = detectMediaType(correctedMime);
+      storageKey = generateOrganizedStoragePath(mediaType, file.originalname);
+
+      // Store in object storage
+      await withCircuit(
+        "upload-single-file",
+        () =>
+          withTimeout(
+            appStorageService.uploadAsset(storageKey, file.buffer),
+            30000,
+            "Single file upload to object storage",
+          ),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      // STANDARDIZED NAMING: Store slugified filename to match storage path
+      const slugifiedFilename = slugifyFilename(file.originalname);
+
+      // Create metadata with bucket name and optional fields
+      const metadata = {
+        filename: slugifiedFilename,
+        originalName: file.originalname, // Preserve original for display
+        totalSize: file.size,
+        mimeType: correctedMime,
+        type: fileType,
+        url: `/api/media/${storageKey}`,
+        storagePath: storageKey,
+        bucketName: appStorageService.getBucketName(),
+        tags: options.tags || [],
+        altText: options.altText || "",
+        caption: options.caption || "",
+        folderId: options.folderId ?? null,
+      };
+
+      // Save to database
+      const asset = await storage.createMediaAsset(buildInsertMediaAsset(metadata));
+
+      // FIX: Update URL to use asset ID instead of storagePath
+      await storage.updateMediaAsset(asset.id, {
+        url: `/api/media/${asset.id}/content`,
+      });
+
+      // Process thumbnails for images + generate compressed variants
+      if (fileType === "image") {
+        try {
+          const imageData = await processImage(file.buffer, file.originalname);
+          const imageMetadata = {
+            dimensions: {
+              width: imageData.width,
+              height: imageData.height,
+            },
+            format: correctedMime.split("/")[1],
+          };
+
+          let imageVariants: Record<string, string> | undefined;
+          try {
+            imageVariants = (await generateResponsiveVariants(
+              file.buffer,
+              file.originalname,
+            )) as unknown as Record<string, string>;
+            logger.info("Responsive variants generated (single upload)", {
+              assetId: asset.id,
+              variants: Object.keys(imageVariants || {}),
+            });
+          } catch (variantError) {
+            logger.warn(
+              "Responsive variant generation failed (single upload):",
+              serializeError(variantError),
+            );
+          }
+
+          await storage.updateMediaAsset(asset.id, {
+            thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
+            metadata: imageMetadata,
+            imageVariants: imageVariants || undefined,
+          });
+        } catch (error) {
+          logger.error("Thumbnail generation failed:", serializeError(error));
+        }
+      }
+
+      // Process video metadata
+      if (fileType === "video") {
+        try {
+          const videoMetadata = await getVideoMetadata(file.buffer);
+
+          await storage.updateMediaAsset(asset.id, {
+            thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
+            metadata: videoMetadata,
+          });
+        } catch (error) {
+          logger.error("Video metadata extraction aborted:", serializeError(error));
+        }
+      }
+
+      // Process GLTF/GLB models
+      if (fileType === "model") {
+        try {
+          const gltfProcessor = getGLTFProcessor();
+          const processed = await gltfProcessor.processForUpload(file.buffer);
+
+          if (processed.success) {
+            const gltfMetadata = {
+              texturesEmbedded: processed.texturesEmbedded || 0,
+              processedSize: processed.processedSize || 0,
+              originalSize: processed.originalSize || 0,
+            };
+
+            await storage.updateMediaAsset(asset.id, {
+              thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
+              metadata: gltfMetadata,
+            });
+          }
+        } catch (error) {
+          logger.error("GLTF processing failed:", serializeError(error));
+        }
+      }
+
+      // Fetch the updated asset with metadata
+      const updatedAsset = await storage.getMediaAsset(asset.id);
+      const finalAsset = updatedAsset || asset;
 
       // Invalidate all media list caches
       const { unifiedCache } = await import("../lib/cache/unified-cache.js");
@@ -393,7 +564,7 @@ export class MediaUploadService {
         unifiedCache.delete("search"),
       ]);
 
-      return ok(asset);
+      return ok(finalAsset as MediaAsset);
     } catch (error) {
       logger.error("[MediaUploadService] Single upload failed", error as Error);
       return err(new InternalError("Upload failed", { error }));
@@ -418,11 +589,11 @@ export class MediaUploadService {
     try {
       const numericIds = ids.map((id) => parseInt(id, 10));
       const assetsToDelete = await Promise.all(
-        numericIds.map((id) => mediaRepository.getMediaAsset(id.toString())),
+        numericIds.map((id) => mediaRepository.getMediaAsset(id)),
       );
 
       const results = await Promise.allSettled(
-        numericIds.map((id) => mediaRepository.deleteMediaAsset(id.toString())),
+        numericIds.map((id) => mediaRepository.deleteMediaAsset(id)),
       );
 
       let successCount = 0;
@@ -433,15 +604,23 @@ export class MediaUploadService {
         const result = results[i];
         const asset = assetsToDelete[i];
 
-        if (result.status === "fulfilled" && result.value === true) {
+        if (
+          result &&
+          result.status === "fulfilled" &&
+          (result as PromiseFulfilledResult<unknown>).value
+        ) {
           successCount++;
           if (asset?.storagePath) {
             try {
-              await appStorageService.deleteAsset(asset.storagePath);
+              await withCircuit(
+                "delete-asset-batch",
+                () => appStorageService.deleteAsset(asset.storagePath!),
+                DB_CIRCUIT_OPTIONS,
+              );
             } catch (storageError) {
               // Compensating Rollback
               try {
-                await mediaRepository.updateMediaAsset(asset.id.toString(), { deletedAt: null });
+                await mediaRepository.updateMediaAsset(asset.id, { deletedAt: null });
                 rollbackCount++;
                 successCount--;
               } catch (restoreError) {
@@ -486,8 +665,15 @@ export class MediaUploadService {
    */
   async batchCreateAssets(files: Express.Multer.File[]): Promise<Result<MediaAsset[], AppError>> {
     try {
-      const { processUploadedFile } = await import("../routes/media/utils.js");
-      const results = await Promise.all(files.map((file) => processUploadedFile(file)));
+      const results: MediaAsset[] = [];
+
+      for (const file of files) {
+        const result = await this.uploadSingleFile(file);
+        if (result.isErr()) {
+          return err(result.error);
+        }
+        results.push(result.value);
+      }
 
       const { unifiedCache } = await import("../lib/cache/unified-cache.js");
       await Promise.allSettled([
@@ -506,15 +692,29 @@ export class MediaUploadService {
   /**
    * Uploads file from Base64 data
    */
-  async uploadBase64(filename: string, base64Data: string): Promise<Result<any, AppError>> {
+  async uploadBase64(
+    _filename: string,
+    _base64Data: string,
+  ): Promise<Result<Record<string, unknown>, AppError>> {
     // Basic implementation for now
     return ok({ status: "Base64 upload not fully implemented in service layer yet" });
   }
 
   /**
+   * Uploads chunk raw
+   */
+  async uploadChunkRaw(
+    uploadId: string,
+    chunkIndex: number,
+    buffer: Buffer,
+  ): Promise<Result<Record<string, unknown>, AppError>> {
+    return this.uploadChunk(uploadId, chunkIndex, buffer);
+  }
+
+  /**
    * Processes and uploads a GLTF package
    */
-  async uploadGltfPackage(): Promise<Result<any, AppError>> {
+  async uploadGltfPackage(): Promise<Result<Record<string, unknown>, AppError>> {
     return ok({ status: "GLTF package upload not fully implemented in service layer yet" });
   }
 
@@ -525,15 +725,15 @@ export class MediaUploadService {
     uploadId: string,
     chunkNumber: number,
     buffer: Buffer,
-    _options?: any,
-  ): Promise<Result<any, AppError>> {
+    _options?: Record<string, unknown>,
+  ): Promise<Result<Record<string, unknown>, AppError>> {
     return this.uploadChunk(uploadId, chunkNumber, buffer);
   }
 
   /**
    * Returns current upload metrics
    */
-  getUploadMetrics(): Result<any, AppError> {
+  getUploadMetrics(): Result<Record<string, unknown>, AppError> {
     return ok({
       activeSessions: this.sessions.size,
       activeOperations: this.activeOperations.size,

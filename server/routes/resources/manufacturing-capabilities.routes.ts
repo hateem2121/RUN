@@ -25,7 +25,7 @@ router.get("/", async (_req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const id = parseInt(req.params.id as string);
+  const id = parseInt(req.params.id as string, 10);
   const result = await manufacturingService.getCapability(id);
   if (result.isErr()) throw result.error;
 
@@ -47,7 +47,7 @@ router.post("/", authService.requireAdmin, async (req, res) => {
 });
 
 router.patch("/:id", authService.requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id as string);
+  const id = parseInt(req.params.id as string, 10);
   const validation = validateManufacturingCapabilityPartial(req.body);
   if (!validation.success) {
     throw new ValidationError(validation.error.message || "Validation failed", {
@@ -62,7 +62,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
 });
 
 router.delete("/:id", authService.requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id as string);
+  const id = parseInt(req.params.id as string, 10);
   const result = await manufacturingService.deleteCapability(id);
   if (result.isErr()) throw result.error;
 

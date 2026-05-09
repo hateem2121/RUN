@@ -72,7 +72,7 @@ const MEDIA_DETAIL_COLUMNS = {
 function normalizeFilters(filters?: {
   type?: string | undefined;
   search?: string | undefined;
-  folderId?: number;
+  folderId?: number | undefined;
 }): string {
   if (!filters || Object.keys(filters).length === 0) {
     return "{}";
@@ -142,7 +142,11 @@ export class MediaRepository {
   async getMediaAssets(
     limit: number = 100,
     offset: number = 0,
-    filters?: { type?: string | undefined; search?: string | undefined; folderId?: number },
+    filters?: {
+      type?: string | undefined;
+      search?: string | undefined;
+      folderId?: number | undefined;
+    },
   ): Promise<MediaAssetSummary[]> {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getMediaAssets(limit, offset, filters);
@@ -384,7 +388,11 @@ export class MediaRepository {
   async getMediaAssetsWithCount(
     limit: number = 100,
     offset: number = 0,
-    filters?: { type?: string | undefined; search?: string | undefined; folderId?: number },
+    filters?: {
+      type?: string | undefined;
+      search?: string | undefined;
+      folderId?: number | undefined;
+    },
   ): Promise<{ assets: MediaAssetSummary[]; total: number }> {
     const perfTracker = queryPerformanceMonitor.startQuery("getMediaAssetsWithCount");
     // PERFORMANCE FIX: Normalized filters for consistent cache keys

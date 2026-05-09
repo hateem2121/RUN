@@ -241,7 +241,8 @@ export const setSecureCORSHeaders = (res: Response, origin?: string): void => {
  * Determines if the request should bypass caching mechanisms
  * Checks for 'nocache' query param or admin referer
  */
-export function shouldBypassCache(req: Request): boolean {
+// biome-ignore lint/suspicious/noExplicitAny: Generic request support
+export function shouldBypassCache(req: Request<any, any, any, any>): boolean {
   const referer = req.headers.referer || "";
   const nocache = req.query.nocache === "true";
   // Bypass if referer contains /admin or nocache param is true

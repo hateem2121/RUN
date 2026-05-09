@@ -1,9 +1,12 @@
 import type { Request, Response } from "express";
+import type { z } from "zod";
 import { BadRequestError } from "../../lib/errors.js";
 import { safeSerialize, shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { mediaService } from "../../services/media.service.js";
-import { MediaIdParamSchema, MediaListQuerySchema, MediaUpdateSchema } from "./schemas.js";
+import type { MediaListQuerySchema } from "./schemas.js";
 import { createPaginatedResponse, createSuccessResponse } from "./utils.js";
+
+type MediaListQuery = z.infer<typeof MediaListQuerySchema>;
 
 /**
  * MEDIA HANDLERS
@@ -17,9 +20,9 @@ import { createPaginatedResponse, createSuccessResponse } from "./utils.js";
 // QUERY & LISTING HANDLERS
 // ============================================================================
 
-export async function getMediaAssets(req: Request, res: Response) {
-  const query = MediaListQuerySchema.parse(req.query);
-  const { page, limit, type, search, folderId } = query;
+// biome-ignore lint/suspicious/noExplicitAny: Express 5 type hardening
+export async function getMediaAssets(req: Request<any, any, any, MediaListQuery>, res: Response) {
+  const { page, limit, type, search, folderId } = req.query;
 
   if (shouldBypassCache(req)) {
     res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
@@ -27,10 +30,10 @@ export async function getMediaAssets(req: Request, res: Response) {
     res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
   }
 
-  const result = await mediaService.getAssets(limit, (page - 1) * limit, {
-    type,
-    search,
-    folderId,
+  const result = await mediaService.getAssets(Number(limit), (Number(page) - 1) * Number(limit), {
+    type: type as string,
+    search: search as string,
+    folderId: folderId ? Number(folderId) : undefined,
   });
 
   if (result.isErr()) throw result.error;
@@ -40,17 +43,17 @@ export async function getMediaAssets(req: Request, res: Response) {
   return res.json(
     safeSerialize(
       createPaginatedResponse(assets, {
-        page,
-        limit,
+        page: Number(page),
+        limit: Number(limit),
         total,
-        pages: Math.ceil(total / limit),
+        pages: Math.ceil(total / Number(limit)),
       }),
     ),
   );
 }
 
 export async function getMediaAssetById(req: Request<{ id: string }>, res: Response) {
-  const { id } = MediaIdParamSchema.parse(req.params);
+  const id = parseInt(req.params.id, 10);
 
   if (shouldBypassCache(req)) {
     res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
@@ -65,8 +68,8 @@ export async function getMediaAssetById(req: Request<{ id: string }>, res: Respo
 }
 
 export async function getMediaCount(req: Request, res: Response) {
-  const query = MediaListQuerySchema.partial().parse(req.query);
-  const { type, folderId } = query;
+  const { type } = req.query as { type?: string };
+  const folderId = req.query.folderId ? parseInt(req.query.folderId as string, 10) : undefined;
 
   const result = await mediaService.getMediaCount({ type, folderId });
   if (result.isErr()) throw result.error;
@@ -74,12 +77,15 @@ export async function getMediaCount(req: Request, res: Response) {
   return res.json(createSuccessResponse({ count: result.value }));
 }
 
-export async function searchMediaAssets(req: Request, res: Response) {
-  const query = MediaListQuerySchema.parse(req.query);
-  const { search, type, limit, folderId } = query;
+// biome-ignore lint/suspicious/noExplicitAny: Express type hardening
+export async function searchMediaAssets(
+  req: Request<any, any, any, MediaListQuery>,
+  res: Response,
+) {
+  const { search, type, limit, folderId } = req.query;
 
-  const result = await mediaService.searchAssets(search || "", limit, {
-    type,
+  const result = await mediaService.searchAssets(search || "", Number(limit), {
+    type: type as string,
     folderId,
   });
 
@@ -93,8 +99,8 @@ export async function searchMediaAssets(req: Request, res: Response) {
 // ============================================================================
 
 export async function updateMediaAsset(req: Request<{ id: string }>, res: Response) {
-  const { id } = MediaIdParamSchema.parse(req.params);
-  const data = MediaUpdateSchema.parse(req.body);
+  const id = parseInt(req.params.id, 10);
+  const data = req.body;
 
   const result = await mediaService.updateAsset(id, data);
   if (result.isErr()) throw result.error;
@@ -103,7 +109,7 @@ export async function updateMediaAsset(req: Request<{ id: string }>, res: Respon
 }
 
 export async function deleteMediaAsset(req: Request<{ id: string }>, res: Response) {
-  const { id } = MediaIdParamSchema.parse(req.params);
+  const id = parseInt(req.params.id, 10);
 
   const result = await mediaService.deleteAsset(id);
   if (result.isErr()) throw result.error;
@@ -117,10 +123,6 @@ export async function deleteMediaAsset(req: Request<{ id: string }>, res: Respon
 
 export async function initializeUpload(req: Request, res: Response) {
   const { filename, fileSize, mimeType, originalName } = req.body;
-
-  if (!filename || !fileSize || !mimeType) {
-    throw new BadRequestError("Missing required fields");
-  }
 
   const result = await mediaService.initializeUpload(
     filename,
@@ -138,8 +140,8 @@ export async function uploadChunk(req: Request, res: Response) {
   const { uploadId, chunkNumber } = req.body;
   const file = req.file;
 
-  if (!file || !uploadId || chunkNumber === undefined) {
-    throw new BadRequestError("Missing required fields");
+  if (!file) {
+    throw new BadRequestError("No file provided");
   }
 
   const result = await mediaService.uploadChunk(uploadId, parseInt(chunkNumber, 10), file.buffer);
@@ -151,7 +153,6 @@ export async function uploadChunk(req: Request, res: Response) {
 
 export async function finalizeUpload(req: Request, res: Response) {
   const { uploadId } = req.body;
-  if (!uploadId) throw new BadRequestError("Missing uploadId");
 
   const result = await mediaService.finalizeUpload(uploadId);
   if (result.isErr()) throw result.error;
@@ -175,7 +176,7 @@ export async function uploadBase64(req: Request, res: Response) {
   return res.status(201).json(createSuccessResponse(result.value));
 }
 
-export async function uploadGltfPackage(req: Request, res: Response) {
+export async function uploadGltfPackage(_req: Request, res: Response) {
   const result = await mediaService.uploadGltfPackage();
   if (result.isErr()) throw result.error;
   return res.status(201).json(createSuccessResponse(result.value));
@@ -197,9 +198,9 @@ export async function uploadChunkRaw(req: Request, res: Response) {
 // ============================================================================
 
 export async function getMediaContent(req: Request<{ id: string }>, res: Response) {
-  const { id } = MediaIdParamSchema.parse(req.params);
+  const { id } = req.params;
 
-  const result = await mediaService.getSignedUrl(id);
+  const result = await mediaService.getSignedUrl(Number(id));
   if (result.isErr()) throw result.error;
 
   res.set("Access-Control-Allow-Origin", "*");
@@ -209,9 +210,9 @@ export async function getMediaContent(req: Request<{ id: string }>, res: Respons
 }
 
 export async function getThumbnail(req: Request<{ id: string }>, res: Response) {
-  const { id } = MediaIdParamSchema.parse(req.params);
+  const { id } = req.params;
 
-  const result = await mediaService.getThumbnailUrl(id);
+  const result = await mediaService.getThumbnailUrl(Number(id));
   if (result.isErr()) throw result.error;
 
   res.set("Access-Control-Allow-Origin", "*");
@@ -221,34 +222,34 @@ export async function getThumbnail(req: Request<{ id: string }>, res: Response) 
 }
 
 export async function getMediaContentWithPath(req: Request<{ id: string }>, res: Response) {
-  const { id } = MediaIdParamSchema.parse(req.params);
+  const { id } = req.params;
   return res.redirect(`/api/media/${id}/content`);
 }
 
 export async function getMediaGeometry(req: Request<{ id: string }>, res: Response) {
-  const { id } = MediaIdParamSchema.parse(req.params);
-  const result = await mediaService.getMediaGeometry(id);
+  const { id } = req.params;
+  const result = await mediaService.getMediaGeometry(Number(id));
   if (result.isErr()) throw result.error;
   return res.json(createSuccessResponse(result.value));
 }
 
 export async function getMediaRaw(req: Request<{ id: string }>, res: Response) {
-  const { id } = MediaIdParamSchema.parse(req.params);
-  const result = await mediaService.getMediaRaw(id);
+  const { id } = req.params;
+  const result = await mediaService.getMediaRaw(Number(id));
   if (result.isErr()) throw result.error;
   return res.redirect(302, result.value);
 }
 
 export async function getMediaProxy(req: Request<{ id: string }>, res: Response) {
-  const { id } = MediaIdParamSchema.parse(req.params);
-  const result = await mediaService.getMediaProxy(id);
+  const { id } = req.params;
+  const result = await mediaService.getMediaProxy(Number(id));
   if (result.isErr()) throw result.error;
   return res.redirect(302, result.value);
 }
 
 export async function getThumbnailProxy(req: Request<{ id: string }>, res: Response) {
-  const { id } = MediaIdParamSchema.parse(req.params);
-  const result = await mediaService.getThumbnailProxy(id);
+  const { id } = req.params;
+  const result = await mediaService.getThumbnailProxy(Number(id));
   if (result.isErr()) throw result.error;
   return res.redirect(302, result.value);
 }
@@ -334,7 +335,7 @@ export async function getHealthScan(_req: Request, res: Response) {
 
 export async function getUploadProgress(req: Request, res: Response) {
   const { uploadId } = req.params;
-  const result = mediaService.getUploadProgress(uploadId);
+  const result = mediaService.getUploadProgress(uploadId as string);
   if (result.isErr()) throw result.error;
   return res.json(createSuccessResponse(result.value));
 }
@@ -346,7 +347,7 @@ export async function getActiveUploads(_req: Request, res: Response) {
 
 export async function cancelUpload(req: Request, res: Response) {
   const { uploadId } = req.params;
-  const result = mediaService.cancelUpload(uploadId);
+  const result = mediaService.cancelUpload(uploadId as string);
   if (result.isErr()) throw result.error;
   return res.json(createSuccessResponse({ deleted: true }));
 }
@@ -355,9 +356,9 @@ export async function cancelUpload(req: Request, res: Response) {
 // UTILITY & MAINTENANCE HANDLERS
 // ============================================================================
 
-export async function clearMediaCache(req: Request, res: Response) {
-  const { id } = MediaIdParamSchema.parse(req.params);
-  const result = await mediaService.clearCache(id);
+export async function clearMediaCache(req: Request<{ id: string }>, res: Response) {
+  const { id } = req.params;
+  const result = await mediaService.clearCache(Number(id));
   if (result.isErr()) throw result.error;
   return res.json(createSuccessResponse({ cleared: true }));
 }

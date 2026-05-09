@@ -610,6 +610,7 @@ export class TechnologyService {
   /**
    * Transforms flat frontend gradient data to DB nested structure
    */
+  // biome-ignore lint/suspicious/noExplicitAny: Dynamic frontend structure
   transformFrontendGradient(data: any): Partial<InsertTechnologyGradientSettings> {
     return {
       gradientType: "linear",
@@ -622,7 +623,8 @@ export class TechnologyService {
   }
 
   // Batch
-  async getBatch(): Promise<Result<any, AppError>> {
+  // biome-ignore lint/suspicious/noExplicitAny: Dynamic batch data structure
+  async getBatch(): Promise<Result<Record<string, any>, AppError>> {
     try {
       // Fetch all technology data in parallel using circuit breaker
       const [hero, innovations, equipment, research, roadmap, cta, gradientSettings] =

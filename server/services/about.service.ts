@@ -196,6 +196,25 @@ export class AboutService {
     }
   }
 
+  async getMapLocation(id: number): Promise<Result<AboutMapLocation, AppError>> {
+    try {
+      const location = await withCircuit(
+        `get-about-location-${id}`,
+        () => aboutRepository.getAboutMapLocation(id),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      if (!location) {
+        return err(new NotFoundError(`About map location with ID ${id}`));
+      }
+
+      return ok(location);
+    } catch (error) {
+      logger.error("[AboutService] Failed to fetch map location", { id }, error as Error);
+      return err(new InternalError(`Failed to fetch about map location ${id}`, { error }));
+    }
+  }
+
   async createMapLocation(
     data: InsertAboutMapLocation,
   ): Promise<Result<AboutMapLocation, AppError>> {
@@ -250,6 +269,22 @@ export class AboutService {
     } catch (error) {
       logger.error("[AboutService] Failed to delete map location", { id }, error as Error);
       return err(new InternalError(`Failed to delete about map location ${id}`, { error }));
+    }
+  }
+
+  async reorderLocations(orderedIds: number[]): Promise<Result<void, AppError>> {
+    try {
+      await withCircuit(
+        "reorder-about-locations",
+        () => aboutRepository.reorderAboutMapLocations(orderedIds),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      await this.invalidateCache();
+      return ok(undefined);
+    } catch (error) {
+      logger.error("[AboutService] Failed to reorder locations", error as Error);
+      return err(new InternalError("Failed to reorder about map locations", { error }));
     }
   }
 
@@ -342,18 +377,53 @@ export class AboutService {
     }
   }
 
+  async reorderSections(orderedIds: number[]): Promise<Result<void, AppError>> {
+    try {
+      await withCircuit(
+        "reorder-about-sections",
+        () => aboutRepository.reorderAboutSections(orderedIds),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      await this.invalidateCache();
+      return ok(undefined);
+    } catch (error) {
+      logger.error("[AboutService] Failed to reorder sections", error as Error);
+      return err(new InternalError("Failed to reorder about sections", { error }));
+    }
+  }
+
   // Statistics
   async getStatistics(includeInactive = false): Promise<Result<AboutStatistic[], AppError>> {
     try {
-      const statistics = await withCircuit(
+      const stats = await withCircuit(
         "get-about-statistics",
         () => aboutRepository.getAboutStatistics(includeInactive),
         DB_CIRCUIT_OPTIONS,
       );
-      return ok(statistics);
+      return ok(stats);
     } catch (error) {
       logger.error("[AboutService] Failed to fetch statistics", error as Error);
       return err(new InternalError("Failed to fetch about statistics", { error }));
+    }
+  }
+
+  async getStatistic(id: number): Promise<Result<AboutStatistic, AppError>> {
+    try {
+      const stat = await withCircuit(
+        `get-about-statistic-${id}`,
+        () => aboutRepository.getAboutStatistic(id),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      if (!stat) {
+        return err(new NotFoundError(`About statistic with ID ${id}`));
+      }
+
+      return ok(stat);
+    } catch (error) {
+      logger.error("[AboutService] Failed to fetch statistic", { id }, error as Error);
+      return err(new InternalError(`Failed to fetch about statistic ${id}`, { error }));
     }
   }
 
@@ -413,6 +483,22 @@ export class AboutService {
     } catch (error) {
       logger.error("[AboutService] Failed to delete statistic", { id }, error as Error);
       return err(new InternalError(`Failed to delete about statistic ${id}`, { error }));
+    }
+  }
+
+  async reorderStatistics(orderedIds: number[]): Promise<Result<void, AppError>> {
+    try {
+      await withCircuit(
+        "reorder-about-statistics",
+        () => aboutRepository.reorderAboutStatistics(orderedIds),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      await this.invalidateCache();
+      return ok(undefined);
+    } catch (error) {
+      logger.error("[AboutService] Failed to reorder statistics", error as Error);
+      return err(new InternalError("Failed to reorder about statistics", { error }));
     }
   }
 

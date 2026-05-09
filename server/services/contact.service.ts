@@ -8,6 +8,14 @@ import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 
+export interface BusinessLocation {
+  id: number;
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+}
+
 /**
  * Service for managing Contact Page configuration
  */
@@ -81,6 +89,23 @@ export class ContactService {
       );
       return err(new InternalError("Failed to update contact configuration", { id, error }));
     }
+  }
+
+  /**
+   * Retrieves business locations
+   * Extracted from route handler to maintain thin controller pattern (AS-108).
+   */
+  async getBusinessLocations(): Promise<Result<BusinessLocation[], AppError>> {
+    const locations = [
+      {
+        id: 1,
+        name: "Head Office",
+        address: "Colombo, Sri Lanka",
+        lat: 6.9271,
+        lng: 79.8612,
+      },
+    ];
+    return ok(locations);
   }
 }
 

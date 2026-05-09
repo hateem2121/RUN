@@ -55,6 +55,7 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "client", "app"),
       "@shared": path.resolve(__dirname, "shared"),
+      "@run-remix/shared": path.resolve(__dirname, "shared/index.ts"),
       "@assets": path.resolve(__dirname, "attached_assets"),
     },
   },

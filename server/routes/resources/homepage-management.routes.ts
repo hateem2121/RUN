@@ -48,7 +48,7 @@ router.patch("/homepage-hero", authService.requireAdmin, async (req, res) => {
 // HOMEPAGE SLOGANS ROUTES
 // ================================
 
-router.get("/homepage-slogans", async (req, res) => {
+router.get("/homepage-slogans", async (_req, res) => {
   const result = await homepageService.getSlogans();
   if (result.isErr()) throw result.error;
 
@@ -57,7 +57,7 @@ router.get("/homepage-slogans", async (req, res) => {
 });
 
 router.get("/homepage-slogans/:id", async (req, res) => {
-  const id = parseInt(req.params.id as string);
+  const id = parseInt(req.params.id as string, 10);
   const result = await homepageService.getSlogan(id);
   if (result.isErr()) throw result.error;
 
@@ -78,7 +78,7 @@ router.post("/homepage-slogans", authService.requireAdmin, async (req, res) => {
 });
 
 router.patch("/homepage-slogans/:id", authService.requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id as string);
+  const id = parseInt(req.params.id as string, 10);
   const validation = insertHomepageSloganSchema.partial().safeParse(req.body);
   if (!validation.success) {
     throw new ValidationError("Invalid slogan data", { issues: validation.error.issues });
@@ -91,7 +91,7 @@ router.patch("/homepage-slogans/:id", authService.requireAdmin, async (req, res)
 });
 
 router.delete("/homepage-slogans/:id", authService.requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id as string);
+  const id = parseInt(req.params.id as string, 10);
   const result = await homepageService.deleteSlogan(id);
   if (result.isErr()) throw result.error;
 
@@ -114,7 +114,7 @@ router.patch("/homepage-slogans/reorder", authService.requireAdmin, async (req, 
 // HOMEPAGE PROCESS CARDS ROUTES
 // ================================
 
-router.get("/homepage-process-cards/admin", async (req, res) => {
+router.get("/homepage-process-cards/admin", async (_req, res) => {
   const result = await homepageService.getProcessCards(true);
   if (result.isErr()) throw result.error;
 
@@ -130,7 +130,7 @@ router.get("/homepage-process-cards", async (_req, res) => {
 });
 
 router.get("/homepage-process-cards/:id", async (req, res) => {
-  const id = parseInt(req.params.id as string);
+  const id = parseInt(req.params.id as string, 10);
   const result = await homepageService.getProcessCard(id);
   if (result.isErr()) throw result.error;
 
@@ -151,7 +151,7 @@ router.post("/homepage-process-cards", authService.requireAdmin, async (req, res
 });
 
 router.patch("/homepage-process-cards/:id", authService.requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id as string);
+  const id = parseInt(req.params.id as string, 10);
   const validation = insertHomepageProcessCardSchema.partial().safeParse(req.body);
   if (!validation.success) {
     throw new ValidationError("Invalid process card data", { issues: validation.error.issues });
@@ -164,7 +164,7 @@ router.patch("/homepage-process-cards/:id", authService.requireAdmin, async (req
 });
 
 router.delete("/homepage-process-cards/:id", authService.requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id as string);
+  const id = parseInt(req.params.id as string, 10);
   const result = await homepageService.deleteProcessCard(id);
   if (result.isErr()) throw result.error;
 
@@ -196,7 +196,7 @@ router.get("/homepage-sections", async (req, res) => {
 });
 
 router.get("/homepage-sections/:id", async (req, res) => {
-  const id = parseInt(req.params.id as string);
+  const id = parseInt(req.params.id as string, 10);
   const result = await homepageService.getSectionById(id);
   if (result.isErr()) throw result.error;
 
@@ -205,7 +205,7 @@ router.get("/homepage-sections/:id", async (req, res) => {
 });
 
 router.patch("/homepage-sections/:id", authService.requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id as string);
+  const id = parseInt(req.params.id as string, 10);
   const validation = insertHomepageSectionSchema.partial().safeParse(req.body);
   if (!validation.success) {
     throw new ValidationError("Invalid section data", { issues: validation.error.issues });
@@ -221,7 +221,7 @@ router.patch("/homepage-sections/:id", authService.requireAdmin, async (req, res
 // HOMEPAGE FEATURED PRODUCTS SETTINGS ROUTES
 // ================================
 
-router.get("/homepage-featured-products-settings", async (req, res) => {
+router.get("/homepage-featured-products-settings", async (_req, res) => {
   const result = await homepageService.getFeaturedProductsSettings();
   if (result.isErr()) throw result.error;
 

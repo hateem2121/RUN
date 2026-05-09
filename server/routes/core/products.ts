@@ -255,21 +255,7 @@ router.get("/products", async (req, res): Promise<undefined | Response> => {
 
   if (result.isErr()) throw result.error;
 
-  const { products, totalCount } = result.value;
-  const pageSize = Math.min(Number(query.limit) || 20, 100);
-  const pageNum = Math.max(1, Number(query.page) || 1);
-  const totalPages = Math.ceil(totalCount / pageSize);
-
-  return res.json({
-    data: products,
-    pagination: {
-      page: pageNum,
-      limit: pageSize,
-      total: totalCount,
-      pages: totalPages,
-      hasMore: pageNum < totalPages,
-    },
-  });
+  return res.json(result.value);
 });
 
 // GET /api/products/by-path - Get product by hierarchical URL path

@@ -30,7 +30,7 @@ router.get("/batch", async (req: Request, res) => {
   const { data: batchData, benchmark } = (await twoTierBatchCache.get(
     cacheKey,
     async () => {
-      const promises: Promise<any>[] = [];
+      const promises: Promise<import("neverthrow").Result<unknown, unknown>>[] = [];
       const labels: string[] = [];
 
       if (types.includes("accessory")) {
@@ -55,14 +55,14 @@ router.get("/batch", async (req: Request, res) => {
       }
 
       const results = await Promise.all(promises);
-      const data: Record<string, any> = {};
+      const data: Record<string, unknown> = {};
 
       labels.forEach((label, index) => {
         const result = results[index];
-        if (result.isOk()) {
+        if (result?.isOk()) {
           // accessoryService returns { accessories, total }
           if (label === "accessories") {
-            data[label] = result.value.accessories;
+            data[label] = (result.value as { accessories: unknown }).accessories;
           } else {
             data[label] = result.value;
           }

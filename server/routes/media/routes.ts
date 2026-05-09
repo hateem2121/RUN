@@ -1,5 +1,6 @@
-import express, { type Router } from "express";
+import express, { type RequestHandler, type Router } from "express";
 import { z } from "zod";
+import { validateRequest } from "zod-express-middleware";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { createRateLimiter } from "../../middleware/rateLimiter.js";
 import { authService } from "../../services/auth-service.js";
@@ -43,6 +44,14 @@ import {
 } from "./handlers.js";
 import { regularUpload, uploadOptimized, validateMagicNumbers } from "./middleware.js";
 import { getRateLimiterHealth, getRateLimiterStats } from "./rate-limiter-handlers.js";
+import {
+  MediaChunkSchema,
+  MediaFinalizeSchema,
+  MediaIdParamSchema,
+  MediaListQuerySchema,
+  MediaUpdateSchema,
+  MediaUploadInitSchema,
+} from "./schemas.js";
 import { createErrorResponse } from "./utils.js";
 
 const router: Router = express.Router();
@@ -211,9 +220,18 @@ router.get("/rate-limiter/stats", authService.requireAdmin, getRateLimiterStats)
 router.get("/rate-limiter/health", authService.requireAdmin, getRateLimiterHealth);
 
 // Core CRUD (non-parametric routes first)
-router.get("/", bulkMediaLimiter, getMediaAssets);
+router.get(
+  "/",
+  bulkMediaLimiter,
+  validateRequest({ query: MediaListQuerySchema }) as unknown as RequestHandler,
+  getMediaAssets as unknown as RequestHandler,
+);
 router.get("/count", getMediaCount);
-router.get("/search", searchMediaAssets);
+router.get(
+  "/search",
+  validateRequest({ query: MediaListQuerySchema }) as unknown as RequestHandler,
+  searchMediaAssets as unknown as RequestHandler,
+);
 
 // Batch operations (specific routes before parametric)
 // Note: batchOperations handles both file uploads and JSON delete operations
@@ -243,7 +261,7 @@ router.post(
   },
   batchOperations,
 );
-router.post("/batch", authService.requireAdmin, batchOperations); // Ensure both are covered if needed, but the one above is the main one. Wait, line 109 is the main one.
+// router.post("/batch", authService.requireAdmin, batchOperations); // Removed duplicate registration
 
 router.get("/batch/content", batchGetContent);
 
@@ -259,9 +277,19 @@ router.get("/proxy/:id/thumbnail", getThumbnailProxy);
 router.get("/proxy/:id", getMediaProxy);
 
 // Parametric routes (generic - must be AFTER specific routes)
-router.get("/:id", getMediaAssetById);
-router.patch("/:id", authService.requireAdmin, updateMediaAsset);
-router.delete("/:id", authService.requireAdmin, deleteMediaAsset);
+router.get("/:id", validateRequest({ params: MediaIdParamSchema }), getMediaAssetById);
+router.patch(
+  "/:id",
+  authService.requireAdmin,
+  validateRequest({ params: MediaIdParamSchema, body: MediaUpdateSchema }),
+  updateMediaAsset,
+);
+router.delete(
+  "/:id",
+  authService.requireAdmin,
+  validateRequest({ params: MediaIdParamSchema }),
+  deleteMediaAsset,
+);
 router.get("/:id/content", getMediaContent);
 router.get("/:id/content/*path", getMediaContentWithPath);
 router.get("/:id/geometry", getMediaGeometry);
@@ -301,18 +329,30 @@ router.post(
 );
 
 // Chunked upload flow
-router.post("/upload/init", authService.requireAdmin, initializeUpload);
+router.post(
+  "/upload/init",
+  authService.requireAdmin,
+  validateRequest({ body: MediaUploadInitSchema }),
+  initializeUpload,
+);
 // prettier-ignore
 router.post(
   "/upload/chunk",
   authService.requireAdmin,
   regularUpload.single("chunk"),
+  validateRequest({ body: MediaChunkSchema }),
   validateMagicNumbers,
   uploadChunk,
 );
 router.post("/upload/chunk-raw", authService.requireAdmin, uploadChunkRaw);
 // prettier-ignore
-router.post("/upload/finalize", authService.requireAdmin, express.json(), finalizeUpload);
+router.post(
+  "/upload/finalize",
+  authService.requireAdmin,
+  express.json(),
+  validateRequest({ body: MediaFinalizeSchema }),
+  finalizeUpload,
+);
 router.get("/upload/progress/:uploadId", authService.requireAdmin, getUploadProgress);
 router.delete("/upload/:uploadId", authService.requireAdmin, cancelUpload);
 router.get("/upload/active", authService.requireAdmin, getActiveUploads);

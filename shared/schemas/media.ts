@@ -9,6 +9,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
+import { z } from "zod";
 import { pgTable } from "./common";
 
 /**
@@ -160,4 +161,64 @@ export const insertMediaAssetSchema = createInsertSchema(mediaAssets, {
 export const selectFolderSchema = createSelectSchema(folders);
 export const insertFolderSchema = createInsertSchema(folders, {
   name: (s) => s.min(1),
+});
+
+// ============================================================================
+// Media Query & Request Schemas (Migrated from server/routes/media)
+// ============================================================================
+
+export const MediaListQuerySchema = z.object({
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(50),
+  type: z.enum(["image", "video", "document", "model"]).optional(),
+  search: z.string().optional(),
+  folderId: z.coerce.number().optional(),
+  sort: z.enum(["createdAt", "size", "name"]).default("createdAt"),
+  order: z.enum(["asc", "desc"]).default("desc"),
+});
+
+export const MediaIdParamSchema = z.object({
+  id: z.string().regex(/^\d+$/, "ID must be a numeric string").transform(Number),
+});
+
+export const MediaUploadParamSchema = z.object({
+  uploadId: z.string().uuid(),
+});
+
+export const FolderCreateSchema = z.object({
+  name: z.string().min(1).max(255),
+  parentId: z.coerce.number().optional(),
+});
+
+export const FolderUpdateSchema = z.object({
+  name: z.string().min(1).max(255).optional(),
+  parentId: z.coerce.number().optional().nullable(),
+});
+
+export const MediaUpdateSchema = insertMediaAssetSchema
+  .partial()
+  .extend({
+    folderId: z.coerce.number().optional().nullable(),
+  })
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    uploadedAt: true,
+    deletedAt: true,
+  });
+
+export const PerformanceQuerySchema = z.object({
+  path: z.string().optional(),
+});
+
+export const baseQueryParamsSchema = z.object({
+  page: z.string().optional(),
+  limit: z.string().optional(),
+  cursor: z.string().optional(),
+  search: z.string().max(500).optional(),
+  type: z.string().optional(),
+  tags: z.string().max(1000).optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 });

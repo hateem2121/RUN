@@ -18,7 +18,7 @@ const router = Router();
  * Retrieve all map locations
  */
 router.get("/", async (_req, res) => {
-  const result = await withTimeout(aboutService.getLocations(), 10000, "Get map locations");
+  const result = await withTimeout(aboutService.getMapLocations(), 10000, "Get map locations");
 
   if (result.isErr()) {
     throw result.error;
@@ -36,7 +36,7 @@ router.get("/:id", async (req, res) => {
   const id = validateIdParam(req, res, "id", "Location");
   if (id === null) return;
 
-  const result = await withTimeout(aboutService.getLocation(id), 10000, "Get map location");
+  const result = await withTimeout(aboutService.getMapLocation(id), 10000, "Get map location");
 
   if (result.isErr()) {
     throw result.error;
@@ -68,7 +68,11 @@ router.post("/", authService.requireAdmin, async (req, res) => {
     longitude: String(validation.data.longitude),
   } as InsertAboutMapLocation;
 
-  const result = await withTimeout(aboutService.createLocation(data), 10000, "Create map location");
+  const result = await withTimeout(
+    aboutService.createMapLocation(data),
+    10000,
+    "Create map location",
+  );
 
   if (result.isErr()) {
     throw result.error;
@@ -101,7 +105,7 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
   }
 
   const result = await withTimeout(
-    aboutService.updateLocation(id, data),
+    aboutService.updateMapLocation(id, data),
     10000,
     "Update map location",
   );
@@ -122,7 +126,11 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
   const id = validateIdParam(req, res, "id", "Location");
   if (id === null) return;
 
-  const result = await withTimeout(aboutService.deleteLocation(id), 10000, "Delete map location");
+  const result = await withTimeout(
+    aboutService.deleteMapLocation(id),
+    10000,
+    "Delete map location",
+  );
 
   if (result.isErr()) {
     throw result.error;

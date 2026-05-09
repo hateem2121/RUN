@@ -1,11 +1,25 @@
 import { type AuditLog, auditLogs, type InsertAuditLog } from "@run-remix/shared";
-import { desc } from "drizzle-orm";
+import { desc, sql } from "drizzle-orm";
 import { db } from "../../../db.js";
 import { decrypt } from "../../encryption.js";
 import { logger } from "../../monitoring/logger.js";
 import { StorageSingleton } from "../../storage-singleton.js";
 
 export class SystemRepository {
+  /**
+   * Pings the database to verify connectivity
+   */
+  async ping(): Promise<void> {
+    await db.execute(sql`SELECT 1`);
+  }
+
+  /**
+   * Executes a database sleep for debugging
+   */
+  async executeSleep(duration: number): Promise<void> {
+    await db.execute(sql`SELECT pg_sleep(${duration})`);
+  }
+
   /**
    * Get recent audit logs
    */

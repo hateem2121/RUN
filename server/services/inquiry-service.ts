@@ -10,7 +10,7 @@ import { err, ok, type Result } from "neverthrow";
 import type { Inquiry, InsertInquiry } from "../../shared/schemas/content/common.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
 import { miscRepository } from "../lib/db/repositories/index.js";
-import { type AppError, DatabaseError, NotFoundError } from "../lib/errors.js";
+import { type AppError, DatabaseError, NotFoundError, ValidationError } from "../lib/errors.js";
 import { emailService, type InquiryEmailData } from "../lib/integrations/email-service.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { emailQueue } from "../lib/queue/email-queue.js";
@@ -19,6 +19,7 @@ import {
   EXTERNAL_API_CIRCUIT_OPTIONS,
   withCircuit,
 } from "../lib/resilience/circuit-breaker.js";
+import { verifyRecaptcha } from "../lib/security/recaptcha-verify.js";
 
 const CACHE_TTL_INQUIRIES = 300; // 5 minutes
 
@@ -31,6 +32,78 @@ const tasksClient = new CloudTasksClient();
 const bigquery = new BigQuery();
 
 export class InquiryService {
+  /**
+   * Processes a public contact page submission (AS-116).
+   * Encapsulates Honeypot validation and reCAPTCHA verification.
+   */
+  async processContactSubmission(
+    validatedData: Record<string, unknown>,
+    clientIp: string,
+  ): Promise<Result<Inquiry, AppError>> {
+    // 1. Honeypot Validation
+    if (typeof validatedData.honeypot === "string" && validatedData.honeypot.trim().length > 0) {
+      logger.warn(`[InquiryService] Honeypot triggered - potential spam from ${clientIp}`, {
+        email: validatedData.email,
+      });
+      return err(new ValidationError("Security validation failed (HP)"));
+    }
+
+    // 2. reCAPTCHA Verification
+    const recaptchaResult = await verifyRecaptcha(validatedData.recaptchaToken as string, clientIp);
+    if (!recaptchaResult.success) {
+      logger.warn(`[InquiryService] reCAPTCHA failed for ${validatedData.email}`, {
+        error: recaptchaResult.error,
+      });
+      return err(new ValidationError(recaptchaResult.error || "Security check failed (RC)"));
+    }
+
+    // 3. Map to Insert Schema
+    const insertData: InsertInquiry = {
+      name: validatedData.name as string,
+      email: validatedData.email as string,
+      message: validatedData.message as string,
+      company: (validatedData.company as string) || null,
+      phone: (validatedData.phone as string) || null,
+      country: (validatedData.country as string) || null,
+      preferredPlatform: (validatedData.preferredPlatform as string) || null,
+      source: "contact-page",
+      status: "new",
+      submittedAt: new Date(),
+    };
+
+    return this.createInquiry(insertData);
+  }
+
+  /**
+   * Creates an inquiry from the public payload (AS-108).
+   * Handles mapping from frontend structure to database schema.
+   */
+  async createFromPublicPayload(
+    validatedData: Record<string, unknown>,
+  ): Promise<Result<Inquiry, AppError>> {
+    // biome-ignore lint/suspicious/noExplicitAny: Dynamic contact structure
+    const contact = (validatedData.contact as Record<string, any>) || {};
+    const insertData: InsertInquiry = {
+      name: contact.name,
+      email: contact.email,
+      company: contact.company,
+      phone: contact.phone,
+      country: contact.country,
+      message: contact.message,
+      source: validatedData.source as string,
+      items:
+        // biome-ignore lint/suspicious/noExplicitAny: Dynamic items array
+        ((validatedData.items as any[]) || [])?.map((item) => ({
+          productId: (item.productId as number) || 0,
+          quantity: (item.quantity as number) || 1,
+          notes: (item.notes as string) || null,
+        })) || [],
+      submittedAt: new Date(),
+    };
+
+    return this.createInquiry(insertData);
+  }
+
   /**
    * Creates a new inquiry, ensuring consistent encryption and validation.
    * Centralizes all side-effects (Encryption, Webhooks, BigQuery, Cloud Tasks).

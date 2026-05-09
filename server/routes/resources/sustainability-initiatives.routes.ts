@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
+import { validateRequest } from "zod-express-middleware";
 import { insertSustainabilityInitiativeSchema } from "../../../shared/index.js";
-import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined, shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
 import { sustainabilityService } from "../../services/sustainability.service.js";
@@ -23,6 +23,16 @@ const reorderSchema = z.object({
   ),
 });
 
+/**
+ * @openapi
+ * /api/resources/sustainability-initiatives:
+ *   get:
+ *     summary: List sustainability initiatives
+ *     tags: [Resources]
+ *     responses:
+ *       200:
+ *         description: List of initiatives
+ */
 router.get("/", async (req, res) => {
   const result = await sustainabilityService.getInitiatives(shouldBypassCache(req));
   if (result.isErr()) throw result.error;
@@ -32,67 +42,165 @@ router.get("/", async (req, res) => {
   return res.json(initiatives);
 });
 
+/**
+ * @openapi
+ * /api/resources/sustainability-initiatives/{id}:
+ *   get:
+ *     summary: Get initiative by ID
+ *     tags: [Resources]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Initiative data
+ *       404:
+ *         description: Initiative not found
+ */
 router.get("/:id", async (req, res) => {
-  const id = parseInt(req.params.id as string);
+  const id = parseInt(req.params.id as string, 10);
   const result = await sustainabilityService.getInitiative(id);
   if (result.isErr()) throw result.error;
 
   return res.json(result.value);
 });
 
-router.post("/", authService.requireAdmin, async (req, res) => {
-  const validation = insertSustainabilityInitiativeSchema.safeParse(req.body);
-  if (!validation.success) {
-    throw new ValidationError("Validation failed", {
-      details: validation.error.issues,
-    });
-  }
+/**
+ * @openapi
+ * /api/resources/sustainability-initiatives:
+ *   post:
+ *     summary: Create sustainability initiative
+ *     tags: [Resources]
+ *     security: [{ sessionAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SustainabilityInitiative'
+ *     responses:
+ *       201:
+ *         description: Initiative created
+ */
+router.post(
+  "/",
+  authService.requireAdmin,
+  validateRequest({ body: insertSustainabilityInitiativeSchema }),
+  async (req, res) => {
+    const result = await sustainabilityService.createInitiative(removeUndefined(req.body));
+    if (result.isErr()) throw result.error;
 
-  const result = await sustainabilityService.createInitiative(removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
+    return res.status(201).json(result.value);
+  },
+);
 
-  return res.status(201).json(result.value);
-});
+/**
+ * @openapi
+ * /api/resources/sustainability-initiatives/{id}:
+ *   patch:
+ *     summary: Update sustainability initiative
+ *     tags: [Resources]
+ *     security: [{ sessionAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SustainabilityInitiative'
+ *     responses:
+ *       200:
+ *         description: Initiative updated
+ */
+router.patch(
+  "/:id",
+  authService.requireAdmin,
+  validateRequest({ body: insertSustainabilityInitiativeSchema.partial() }),
+  async (req, res) => {
+    const id = parseInt(req.params.id as string, 10);
+    const result = await sustainabilityService.updateInitiative(id, removeUndefined(req.body));
+    if (result.isErr()) throw result.error;
 
-router.patch("/:id", authService.requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id as string);
-  const validation = insertSustainabilityInitiativeSchema.partial().safeParse(req.body);
-  if (!validation.success) {
-    throw new ValidationError("Validation failed", {
-      details: validation.error.issues,
-    });
-  }
+    return res.json(result.value);
+  },
+);
 
-  const result = await sustainabilityService.updateInitiative(id, removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
-});
-
+/**
+ * @openapi
+ * /api/resources/sustainability-initiatives/{id}:
+ *   delete:
+ *     summary: Delete sustainability initiative
+ *     tags: [Resources]
+ *     security: [{ sessionAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: Initiative deleted
+ */
 router.delete("/:id", authService.requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id as string);
+  const id = parseInt(req.params.id as string, 10);
   const result = await sustainabilityService.deleteInitiative(id);
   if (result.isErr()) throw result.error;
 
   return res.status(204).send();
 });
 
-router.patch("/reorder", authService.requireAdmin, async (req, res) => {
-  const validation = reorderSchema.safeParse(req.body);
-  if (!validation.success) {
-    throw new ValidationError("Validation failed", {
-      details: validation.error.issues,
-    });
-  }
+/**
+ * @openapi
+ * /api/resources/sustainability-initiatives/reorder:
+ *   patch:
+ *     summary: Reorder sustainability initiatives
+ *     tags: [Resources]
+ *     security: [{ sessionAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               initiatives:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     id: { type: integer }
+ *                     position: { type: integer }
+ *     responses:
+ *       200:
+ *         description: Initiatives reordered
+ */
+router.patch(
+  "/reorder",
+  authService.requireAdmin,
+  validateRequest({ body: reorderSchema }),
+  async (req, res) => {
+    interface InitiativeSortItem {
+      id: number;
+      position: number;
+    }
+    const orderedIds = (req.body.initiatives as InitiativeSortItem[])
+      .sort((a, b) => a.position - b.position)
+      .map((item) => item.id);
 
-  const orderedIds = validation.data.initiatives
-    .sort((a, b) => a.position - b.position)
-    .map((item) => item.id);
+    const result = await sustainabilityService.reorderInitiatives(orderedIds);
+    if (result.isErr()) throw result.error;
 
-  const result = await sustainabilityService.reorderInitiatives(orderedIds);
-  if (result.isErr()) throw result.error;
-
-  return res.json({ success: true, updated: orderedIds.length });
-});
+    return res.json({ success: true, updated: orderedIds.length });
+  },
+);
 
 export default router;

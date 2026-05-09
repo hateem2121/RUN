@@ -8,7 +8,7 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { adminCacheManager } from "../lib/cache/admin-cache.js";
 import { userRepository } from "../lib/db/repositories/index.js";
-import { type AppError, DatabaseError, InternalError } from "../lib/errors.js";
+import { type AppError, DatabaseError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 import { getSecret } from "../lib/secrets/secret-manager.js";
@@ -502,6 +502,37 @@ export class AuthService {
 
   public async shouldRotateSession(_sessionId: string): Promise<boolean> {
     return true;
+  }
+
+  /**
+   * DEV ONLY: Perform mock login for administrative testing
+   * RESTRICTED to development environment.
+   */
+  public async devLogin(): Promise<Result<SessionUser, AppError>> {
+    if (process.env.NODE_ENV === "production") {
+      return err(new InternalError("Dev login not allowed in production"));
+    }
+
+    try {
+      const adminUser = await withCircuit(
+        "dev-login-fetch",
+        () => userRepository.getUserByEmail("team@wear-run.com"),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      if (!adminUser) {
+        return err(new NotFoundError("Admin user team@wear-run.com"));
+      }
+
+      const sessionUser: SessionUser = {
+        ...adminUser,
+        claims: { sub: adminUser.id, email: adminUser.email, isMock: true },
+      };
+
+      return ok(sessionUser);
+    } catch (error) {
+      return err(new InternalError("Failed to perform dev login", { error }));
+    }
   }
 }
 

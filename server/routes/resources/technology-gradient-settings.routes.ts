@@ -1,8 +1,10 @@
 import { Router } from "express";
+import { z } from "zod";
 import {
   insertTechnologyGradientSettingsSchema,
   technologyGradientFrontendSchema,
 } from "../../../shared/index.js";
+import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
@@ -16,6 +18,15 @@ import { technologyService } from "../../services/technology.service.js";
  */
 const router = Router();
 
+registry.registerPath({
+  method: "get",
+  path: "/resources/technology-gradient-settings",
+  summary: "Get technology page gradient settings",
+  tags: ["Resources"],
+  responses: {
+    200: jsonResponse(z.any(), "Gradient settings data"),
+  },
+});
 router.get("/", async (_req, res) => {
   const result = await technologyService.getGradientSettings();
   if (result.isErr()) throw result.error;
@@ -23,8 +34,27 @@ router.get("/", async (_req, res) => {
   return res.json(result.value);
 });
 
+registry.registerPath({
+  method: "patch",
+  path: "/resources/technology-gradient-settings",
+  summary: "Update technology page gradient settings",
+  tags: ["Resources"],
+  security: [{ sessionAuth: [] }],
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: z.lazy(() => z.any()), // Use z.any() or specific schema if available
+        },
+      },
+    },
+  },
+  responses: {
+    200: jsonResponse(z.any(), "Updated gradient settings"),
+  },
+});
 router.patch("/", authService.requireAdmin, async (req, res) => {
-  let storageData: any = {};
+  let storageData: Record<string, unknown> = {};
 
   // Detect format and validate
   const frontendValidation = technologyGradientFrontendSchema.safeParse(req.body);

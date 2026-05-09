@@ -312,6 +312,9 @@ export type ProductDetail = Pick<
   | "metaTitle"
   | "metaDescription"
   | "urlPath"
+  | "fiberComposition"
+  | "metadata"
+  | "deletedAt"
   | "createdAt"
   | "updatedAt"
 >;

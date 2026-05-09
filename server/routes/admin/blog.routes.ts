@@ -1,4 +1,6 @@
+import { insertBlogCategorySchema, insertBlogPostSchema } from "@run-remix/shared";
 import { Router } from "express";
+import { validateRequest } from "zod-express-middleware";
 import { removeUndefined, validateIdParam } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
 import { blogService } from "../../services/blog.service.js";
@@ -17,20 +19,30 @@ router.get("/categories", authService.requireAdmin, async (_req, res) => {
 });
 
 // POST /api/admin/blog/categories
-router.post("/categories", authService.requireAdmin, async (req, res) => {
-  const result = await blogService.createBlogCategory(req.body);
-  if (result.isErr()) throw result.error;
-  return res.status(201).json(result.value);
-});
+router.post(
+  "/categories",
+  authService.requireAdmin,
+  validateRequest({ body: insertBlogCategorySchema }),
+  async (req, res) => {
+    const result = await blogService.createBlogCategory(req.body);
+    if (result.isErr()) throw result.error;
+    return res.status(201).json(result.value);
+  },
+);
 
 // PATCH /api/admin/blog/categories/:id
-router.patch("/categories/:id", authService.requireAdmin, async (req, res) => {
-  const id = validateIdParam(req, res, "id", "category");
-  if (id === null) return;
-  const result = await blogService.updateBlogCategory(id, req.body);
-  if (result.isErr()) throw result.error;
-  return res.json(result.value);
-});
+router.patch(
+  "/categories/:id",
+  authService.requireAdmin,
+  validateRequest({ body: insertBlogCategorySchema.partial() }),
+  async (req, res) => {
+    const id = validateIdParam(req, res, "id", "category");
+    if (id === null) return;
+    const result = await blogService.updateBlogCategory(id, req.body);
+    if (result.isErr()) throw result.error;
+    return res.json(result.value);
+  },
+);
 
 // DELETE /api/admin/blog/categories/:id
 router.delete("/categories/:id", authService.requireAdmin, async (req, res) => {
@@ -63,14 +75,19 @@ router.get("/posts", authService.requireAdmin, async (req, res) => {
 });
 
 // POST /api/admin/blog/posts
-router.post("/posts", authService.requireAdmin, async (req, res) => {
-  const result = await blogService.createBlogPost(
-    req.body,
-    req.user?.id ? String(req.user.id) : undefined,
-  );
-  if (result.isErr()) throw result.error;
-  return res.status(201).json(result.value);
-});
+router.post(
+  "/posts",
+  authService.requireAdmin,
+  validateRequest({ body: insertBlogPostSchema }),
+  async (req, res) => {
+    const result = await blogService.createBlogPost(
+      req.body,
+      req.user?.id ? String(req.user.id) : undefined,
+    );
+    if (result.isErr()) throw result.error;
+    return res.status(201).json(result.value);
+  },
+);
 
 // GET /api/admin/blog/posts/:id
 router.get("/posts/:id", authService.requireAdmin, async (req, res) => {
@@ -82,13 +99,18 @@ router.get("/posts/:id", authService.requireAdmin, async (req, res) => {
 });
 
 // PATCH /api/admin/blog/posts/:id
-router.patch("/posts/:id", authService.requireAdmin, async (req, res) => {
-  const id = validateIdParam(req, res, "id", "post");
-  if (id === null) return;
-  const result = await blogService.updateBlogPost(id, req.body);
-  if (result.isErr()) throw result.error;
-  return res.json(result.value);
-});
+router.patch(
+  "/posts/:id",
+  authService.requireAdmin,
+  validateRequest({ body: insertBlogPostSchema.partial() }),
+  async (req, res) => {
+    const id = validateIdParam(req, res, "id", "post");
+    if (id === null) return;
+    const result = await blogService.updateBlogPost(id, req.body);
+    if (result.isErr()) throw result.error;
+    return res.json(result.value);
+  },
+);
 
 // DELETE /api/admin/blog/posts/:id
 router.delete("/posts/:id", authService.requireAdmin, async (req, res) => {

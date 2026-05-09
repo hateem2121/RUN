@@ -4,11 +4,11 @@ import { removeUndefined } from "../../lib/utilities/core-utils.js";
 // Aggregates metrics from cache, database, and performance monitoring systems
 
 import os from "node:os";
-import { sql } from "drizzle-orm";
 import type { Express } from "express";
 import { z } from "zod";
+import { validateRequest } from "zod-express-middleware";
 import type { AlertConfig } from "../../config/alerts.js";
-import { db, getPoolMetrics } from "../../db.js";
+import { getPoolMetrics } from "../../db.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { UnifiedCache } from "../../lib/cache/unified-cache.js";
 import { queryPerformanceMonitor } from "../../lib/db/query-performance.js";
@@ -17,8 +17,8 @@ import { alertManager } from "../../lib/monitoring/alert-manager.js";
 import { errorAggregator } from "../../lib/monitoring/error-aggregator.js";
 import { httpMetricsTracker } from "../../lib/monitoring/http-metrics.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { authService } from "../../services/auth-service.js";
+import { systemService } from "../../services/system.service.js";
 import {
   CacheInvalidationQuerySchema,
   MetricsAlertsQuerySchema,
@@ -64,7 +64,7 @@ export function registerMetricsRoutes(app: Express): void {
    * GET /api/metrics
    * Returns comprehensive system metrics including cache, database, and performance data
    */
-  app.get("/api/metrics", (_req, res) => {
+  app.get("/api/metrics", authService.requireAdmin, (_req, res) => {
     const startTime = performance.now();
 
     // PRODUCTION OPTIMIZATION: Gather metrics from all systems including batch cache
@@ -173,7 +173,7 @@ export function registerMetricsRoutes(app: Express): void {
    * GET /api/metrics/cache
    * Returns detailed cache-specific metrics
    */
-  app.get("/api/metrics/cache", (_req, res) => {
+  app.get("/api/metrics/cache", authService.requireAdmin, (_req, res) => {
     const metrics = cache.getMetrics();
     const healthScore = cache.getHealthScore();
 
@@ -189,7 +189,7 @@ export function registerMetricsRoutes(app: Express): void {
    * CHUNK 5: GET /api/batch-cache-metrics
    * Returns TwoTierBatchCache metrics for monitoring batch query performance
    */
-  app.get("/api/batch-cache-metrics", (_req, res) => {
+  app.get("/api/batch-cache-metrics", authService.requireAdmin, (_req, res) => {
     const batchMetrics = twoTierBatchCache.getMetrics();
 
     res.json({
@@ -238,7 +238,7 @@ export function registerMetricsRoutes(app: Express): void {
    * GET /api/metrics/database
    * Returns detailed database performance metrics including connection pool status
    */
-  app.get("/api/metrics/database", (_req, res) => {
+  app.get("/api/metrics/database", authService.requireAdmin, (_req, res) => {
     const legacyMetrics = queryPerformanceMonitor.getMetrics();
     const performanceStats = queryPerformanceMonitor.getPerformanceStats();
     const performanceReport = queryPerformanceMonitor.generatePerformanceReport();
@@ -259,7 +259,7 @@ export function registerMetricsRoutes(app: Express): void {
    * GET /api/metrics/system
    * Returns system-level metrics (CPU, memory, OS)
    */
-  app.get("/api/metrics/system", (_req, res) => {
+  app.get("/api/metrics/system", authService.requireAdmin, (_req, res) => {
     const memUsage = process.memoryUsage();
     const systemMem = {
       total: os.totalmem(),
@@ -306,7 +306,7 @@ export function registerMetricsRoutes(app: Express): void {
   });
 
   // PHASE 2: GC metrics endpoint
-  app.get("/api/metrics/gc", (_req, res) => {
+  app.get("/api/metrics/gc", authService.requireAdmin, (_req, res) => {
     const gcMetrics = alertManager.getGCMetrics();
     const thresholds = alertManager.getThresholds();
     const gcThreshold = thresholds.gcPause.thresholdMs;
@@ -324,7 +324,7 @@ export function registerMetricsRoutes(app: Express): void {
    * GET /api/metrics/http
    * Returns detailed HTTP request/response metrics
    */
-  app.get("/api/metrics/http", (_req, res) => {
+  app.get("/api/metrics/http", authService.requireAdmin, (_req, res) => {
     const stats = httpMetricsTracker.getStats();
     const statusCategories = httpMetricsTracker.getStatusCodeCategories();
     const healthy = httpMetricsTracker.isHealthy();
@@ -342,71 +342,81 @@ export function registerMetricsRoutes(app: Express): void {
    * GET /api/metrics/errors/test
    * Test endpoint to trigger sample errors for testing error aggregation
    */
-  app.get("/api/metrics/errors/test", (_req, _res, next) => {
+  app.get("/api/metrics/errors/test", authService.requireAdmin, (_req, _res) => {
     const testError = new Error("Test error for aggregation demo") as Error & {
       status: number;
     };
     testError.status = 500;
-    next(testError);
+    throw testError;
   });
 
   /**
    * GET /api/metrics/errors
    * Returns error aggregation and analysis metrics
    */
-  app.get("/api/metrics/errors", (req, res) => {
-    const query = MetricsErrorsQuerySchema.parse(req.query);
-    const { type, severity, since, limit } = query;
+  app.get(
+    "/api/metrics/errors",
+    authService.requireAdmin,
+    validateRequest({ query: MetricsErrorsQuerySchema }),
+    (req, res) => {
+      const { type, severity, since, limit } = req.query as z.infer<
+        typeof MetricsErrorsQuerySchema
+      >;
 
-    // Get aggregated metrics
-    const metrics = errorAggregator.getMetrics();
+      // Get aggregated metrics
+      const metrics = errorAggregator.getMetrics();
 
-    // If filters provided, also return filtered errors
-    let filtered: ReturnType<typeof errorAggregator.getErrorsFiltered> | undefined;
-    if (type || severity || since || limit) {
-      filtered = errorAggregator.getErrorsFiltered(
-        removeUndefined({
-          type,
-          severity,
-          since: since ? new Date(since) : undefined,
-          limit,
-        }),
-      );
-    }
+      // If filters provided, also return filtered errors
+      let filtered: ReturnType<typeof errorAggregator.getErrorsFiltered> | undefined;
+      if (type || severity || since || limit) {
+        filtered = errorAggregator.getErrorsFiltered(
+          removeUndefined({
+            type,
+            severity,
+            since: since ? new Date(since) : undefined,
+            limit,
+          }),
+        );
+      }
 
-    res.json({
-      timestamp: new Date().toISOString(),
-      metrics,
-      ...(filtered && { filtered }),
-    });
-  });
+      res.json({
+        timestamp: new Date().toISOString(),
+        metrics,
+        ...(filtered && { filtered }),
+      });
+    },
+  );
 
   /**
    * GET /api/metrics/alerts
    * Returns alert history and threshold configuration
    */
-  app.get("/api/metrics/alerts", (req, res) => {
-    const query = MetricsAlertsQuerySchema.parse(req.query);
-    const { type, limit } = query;
+  app.get(
+    "/api/metrics/alerts",
+    authService.requireAdmin,
+    validateRequest({ query: MetricsAlertsQuerySchema }),
+    (req, res) => {
+      const { type, limit } = req.query as z.infer<typeof MetricsAlertsQuerySchema>;
 
-    // Get alerts (optionally filtered by type)
-    const alerts = type ? alertManager.getAlertsByType(type) : alertManager.getAlerts(limit);
+      // Get alerts (optionally filtered by type)
+      const alerts = type ? alertManager.getAlertsByType(type) : alertManager.getAlerts(limit);
 
-    // Check current metrics and get any new alerts
-    const newAlerts = alertManager.checkMetrics();
+      // Check current metrics and get any new alerts
+      const newAlerts = alertManager.checkMetrics();
 
-    res.json({
-      timestamp: new Date().toISOString(),
-      thresholds: alertManager.getThresholds(),
-      alerts,
-      newAlerts,
-      summary: {
-        total: alerts.length,
-        critical: alerts.filter((a) => a.severity === "critical").length,
-        warning: alerts.filter((a) => a.severity === "warning").length,
-      },
-    });
-  });
+      res.json({
+        timestamp: new Date().toISOString(),
+        thresholds: alertManager.getThresholds(),
+        alerts,
+        newAlerts,
+        summary: {
+          total: alerts.length,
+          critical: alerts.filter((a) => a.severity === "critical").length,
+          warning: alerts.filter((a) => a.severity === "warning").length,
+        },
+      });
+    },
+  );
 
   /**
    * PUT /api/metrics/alerts/thresholds
@@ -440,14 +450,23 @@ export function registerMetricsRoutes(app: Express): void {
    */
   app.get("/api/health/db", async (_req, res) => {
     const start = Date.now();
-    await withTimeout(db.execute(sql`SELECT 1`), 3000, "Database health check");
+    const result = await systemService.checkDatabaseConnectivity();
     const latency = Date.now() - start;
 
-    return res.status(200).json({
-      status: "healthy",
-      latency,
-      timestamp: new Date().toISOString(),
-    });
+    if (result.isOk()) {
+      return res.status(200).json({
+        status: "healthy",
+        latency,
+        timestamp: new Date().toISOString(),
+      });
+    } else {
+      return res.status(503).json({
+        status: "unhealthy",
+        latency,
+        error: result.error.message,
+        timestamp: new Date().toISOString(),
+      });
+    }
   });
 
   /**
@@ -456,18 +475,23 @@ export function registerMetricsRoutes(app: Express): void {
    * Used by frontend to detect when backend cache was invalidated
    * Query params: pattern (required) - the cache pattern to check (e.g., 'media:')
    */
-  app.get("/api/cache/invalidation-time", async (req, res) => {
-    const { pattern } = CacheInvalidationQuerySchema.parse(req.query);
+  app.get(
+    "/api/cache/invalidation-time",
+    authService.requireAdmin,
+    validateRequest({ query: CacheInvalidationQuerySchema }),
+    async (req, res) => {
+      const { pattern } = req.query as z.infer<typeof CacheInvalidationQuerySchema>;
 
-    const { getLatestInvalidationTime } = await import("../../lib/cache/cache-events.js");
-    const timestamp = await getLatestInvalidationTime(pattern);
+      const { getLatestInvalidationTime } = await import("../../lib/cache/cache-events.js");
+      const timestamp = await getLatestInvalidationTime(pattern);
 
-    return res.json({
-      pattern,
-      timestamp,
-      lastInvalidation: timestamp > 0 ? new Date(timestamp).toISOString() : null,
-    });
-  });
+      return res.json({
+        pattern,
+        timestamp,
+        lastInvalidation: timestamp > 0 ? new Date(timestamp).toISOString() : null,
+      });
+    },
+  );
 
   logger.info(
     "[Routes] Unified metrics endpoints registered: /api/metrics, /api/metrics/cache, /api/metrics/database, /api/metrics/http, /api/metrics/system, /api/metrics/errors, /api/metrics/alerts, /api/health/db, /api/cache/invalidation-time",

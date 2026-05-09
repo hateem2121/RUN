@@ -146,11 +146,14 @@ const PRODUCT_DETAIL_COLUMNS = {
   customizationOptions: products.customizationOptions,
   metaTitle: products.metaTitle,
   metaDescription: products.metaDescription,
+  metadata: products.metadata,
   urlPath: products.urlPath,
+  fiberComposition: products.fiberComposition,
 
   // Timestamps
   createdAt: products.createdAt,
   updatedAt: products.updatedAt,
+  deletedAt: products.deletedAt,
 } as const;
 
 export class ProductRepository {

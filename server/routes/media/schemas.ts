@@ -17,7 +17,7 @@ export const MediaListQuerySchema = z.object({
 });
 
 export const MediaIdParamSchema = z.object({
-  id: z.string().regex(/^\d+$/, "ID must be a numeric string").transform(Number),
+  id: z.string().regex(/^\d+$/, "ID must be a numeric string"),
 });
 
 export const MediaUploadParamSchema = z.object({
@@ -50,4 +50,24 @@ export const MediaUpdateSchema = insertMediaAssetSchema
 
 export const PerformanceQuerySchema = z.object({
   path: z.string().optional(),
+});
+
+export const MediaUploadInitSchema = z.object({
+  filename: z.string().min(1),
+  fileSize: z.number().positive(),
+  mimeType: z.string().min(1),
+  originalName: z.string().optional(),
+});
+
+export const MediaChunkSchema = z.object({
+  uploadId: z.string().uuid(),
+  chunkNumber: z.coerce.number().int().min(0),
+});
+
+export const MediaFinalizeSchema = z.object({
+  uploadId: z.string().uuid(),
+});
+
+export const CacheInvalidationQuerySchema = z.object({
+  pattern: z.string().optional(),
 });

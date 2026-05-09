@@ -36,7 +36,7 @@ export class HomepageService {
   }
 
   // Hero
-  async getHero(bypassCache = false): Promise<Result<HomepageHero, AppError>> {
+  async getHero(_bypassCache = false): Promise<Result<HomepageHero, AppError>> {
     try {
       const hero = await withCircuit(
         "get-homepage-hero",
@@ -365,6 +365,10 @@ export class HomepageService {
         () => homepageRepository.updateHomepageSectionById(id, data),
         DB_CIRCUIT_OPTIONS,
       );
+
+      if (!updated) {
+        return err(new NotFoundError(`Homepage section with ID ${id}`));
+      }
 
       await this.invalidateCache();
       return ok(updated);

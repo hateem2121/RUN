@@ -345,21 +345,11 @@ async function cleanupOrphanedFiles(
  */
 async function cleanupOrphanedSessions(): Promise<void> {
   try {
-    const { uploadSessions } = await import("../../routes/media/services.js");
-
-    const oneHourAgo = Date.now() - 60 * 60 * 1000;
-    let cleaned = 0;
-
-    for (const [uploadId, session] of uploadSessions.entries()) {
-      if (session.lastActivityAt.getTime() < oneHourAgo) {
-        uploadSessions.delete(uploadId);
-        cleaned++;
-      }
-    }
-
-    if (cleaned > 0) {
-      logger.info(`[Lifecycle] Cleaned up ${cleaned} orphaned upload sessions`);
-    }
+    // The legacy uploadSessions Map has been deprecated.
+    // Session management is now handled internally by MediaUploadService.
+    // This function is kept for compatibility but is now a no-op.
+    // MediaUploadService handles its own session cleanup via TTL-based expiry.
+    logger.debug("[Lifecycle] Session cleanup delegated to MediaUploadService (no-op)");
   } catch (error) {
     logger.error(`[Lifecycle] Failed to cleanup orphaned sessions:`, serializeError(error));
   }

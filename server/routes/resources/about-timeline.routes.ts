@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
+import { validateRequest } from "zod-express-middleware";
+import type { InsertAboutTimelineEntry } from "../../../shared/index.js";
 import { insertAboutTimelineEntrySchema } from "../../../shared/index.js";
 import { ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
@@ -15,7 +17,11 @@ const router = Router();
  * Retrieve all timeline entries
  */
 router.get("/", async (_req, res) => {
-  const result = await withTimeout(aboutService.getTimeline(), 10000, "Get timeline entries");
+  const result = await withTimeout(
+    aboutService.getTimelineEntries(),
+    10000,
+    "Get timeline entries",
+  );
 
   if (result.isErr()) {
     throw result.error;
@@ -52,54 +58,55 @@ router.get("/:id", async (req, res) => {
  * POST /api/v1/about-timeline
  * Create new timeline entry
  */
-router.post("/", authService.requireAdmin, async (req, res) => {
-  const validation = insertAboutTimelineEntrySchema.safeParse(req.body);
+router.post(
+  "/",
+  authService.requireAdmin,
+  validateRequest({ body: insertAboutTimelineEntrySchema }),
+  async (req, res) => {
+    const result = await withTimeout(
+      aboutService.createTimelineEntry(removeUndefined(req.body as InsertAboutTimelineEntry)),
+      10000,
+      "Create timeline entry",
+    );
 
-  if (!validation.success) {
-    throw new ValidationError("Invalid timeline entry data", { issues: validation.error.issues });
-  }
+    if (result.isErr()) {
+      throw result.error;
+    }
 
-  const result = await withTimeout(
-    aboutService.createTimelineEntry(removeUndefined(validation.data)),
-    10000,
-    "Create timeline entry",
-  );
-
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  logger.info(`[AboutTimeline] Created entry ${result.value.id}`);
-  return res.status(201).json(result.value);
-});
+    logger.info(`[AboutTimeline] Created entry ${result.value.id}`);
+    return res.status(201).json(result.value);
+  },
+);
 
 /**
  * PATCH /api/v1/about-timeline/:id
  * Update timeline entry
  */
-router.patch("/:id", authService.requireAdmin, async (req, res) => {
-  const id = validateIdParam(req, res, "id", "Timeline Entry");
-  if (id === null) return;
+router.patch(
+  "/:id",
+  authService.requireAdmin,
+  validateRequest({ body: insertAboutTimelineEntrySchema.partial() }),
+  async (req, res) => {
+    const id = validateIdParam(req, res, "id", "Timeline Entry");
+    if (id === null) return;
 
-  const validation = insertAboutTimelineEntrySchema.partial().safeParse(req.body);
+    const result = await withTimeout(
+      aboutService.updateTimelineEntry(
+        id,
+        removeUndefined(req.body as Partial<InsertAboutTimelineEntry>),
+      ),
+      10000,
+      "Update timeline entry",
+    );
 
-  if (!validation.success) {
-    throw new ValidationError("Invalid timeline update data", { issues: validation.error.issues });
-  }
+    if (result.isErr()) {
+      throw result.error;
+    }
 
-  const result = await withTimeout(
-    aboutService.updateTimelineEntry(id, removeUndefined(validation.data)),
-    10000,
-    "Update timeline entry",
-  );
-
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  logger.info(`[AboutTimeline] Updated entry ${id}`);
-  return res.json(result.value);
-});
+    logger.info(`[AboutTimeline] Updated entry ${id}`);
+    return res.json(result.value);
+  },
+);
 
 /**
  * DELETE /api/v1/about-timeline/:id
@@ -137,28 +144,28 @@ const reorderSchema = z.object({
  * PATCH /api/v1/about-timeline/reorder
  * Reorder timeline entries
  */
-router.patch("/reorder", authService.requireAdmin, async (req, res) => {
-  const validation = reorderSchema.safeParse(req.body);
+router.patch(
+  "/reorder",
+  authService.requireAdmin,
+  validateRequest({ body: reorderSchema }),
+  async (req, res) => {
+    const validatedData = req.body as z.infer<typeof reorderSchema>;
+    // Extract ordered IDs
+    const orderedIds = validatedData.entries.map((e) => e.id);
 
-  if (!validation.success) {
-    throw new ValidationError("Invalid reorder data", { issues: validation.error.issues });
-  }
+    const result = await withTimeout(
+      aboutService.reorderTimelineEntries(orderedIds),
+      15000,
+      "Reorder timeline entries",
+    );
 
-  // Extract ordered IDs
-  const orderedIds = validation.data.entries.map((e) => e.id);
+    if (result.isErr()) {
+      throw result.error;
+    }
 
-  const result = await withTimeout(
-    aboutService.reorderTimelineEntries(orderedIds),
-    15000,
-    "Reorder timeline entries",
-  );
-
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  logger.info(`[AboutTimeline] Reordered ${orderedIds.length} entries`);
-  return res.json({ success: true, updated: orderedIds.length });
-});
+    logger.info(`[AboutTimeline] Reordered ${orderedIds.length} entries`);
+    return res.json({ success: true, updated: orderedIds.length });
+  },
+);
 
 export default router;

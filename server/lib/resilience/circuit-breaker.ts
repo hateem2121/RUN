@@ -51,6 +51,7 @@ export function createCircuit<TResult>(
   name: string,
   fn: (...args: unknown[]) => Promise<TResult>,
   options: Partial<CircuitBreakerConfig> = {},
+  fallback?: (...args: unknown[]) => Promise<TResult> | TResult,
 ): CircuitBreaker {
   const existingCircuit = circuits.get(name);
   if (existingCircuit) {
@@ -63,6 +64,10 @@ export function createCircuit<TResult>(
   };
 
   const circuit = new CircuitBreaker(fn, mergedOptions);
+
+  if (fallback) {
+    circuit.fallback(fallback);
+  }
 
   // Initialize metrics
   metricsStore.set(name, {
@@ -144,9 +149,20 @@ export async function withCircuit<T>(
   name: string,
   operation: () => Promise<T>,
   options: Partial<CircuitBreakerConfig> = {},
+  fallback?: (err: Error) => Promise<T> | T,
 ): Promise<T> {
-  const circuit = createCircuit(name, operation, options);
-  return (await circuit.fire()) as T;
+  // biome-ignore lint/suspicious/noExplicitAny: Complex generic alignment
+  const circuit = createCircuit(name, operation as any, options, fallback as any);
+  try {
+    return (await circuit.fire()) as T;
+  } catch (error) {
+    if (fallback) {
+      const metrics = metricsStore.get(name);
+      if (metrics) metrics.fallbacks++;
+      return fallback(error as Error);
+    }
+    throw error;
+  }
 }
 
 /**

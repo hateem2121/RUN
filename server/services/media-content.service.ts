@@ -14,7 +14,7 @@ export class MediaContentService {
    * Generates a signed URL for a media asset's primary content.
    * Automatically handles responsive variants and fallbacks.
    */
-  async getSignedUrl(id: string, ttl = 300): Promise<Result<string, AppError>> {
+  async getSignedUrl(id: number, ttl = 300): Promise<Result<string, AppError>> {
     try {
       const asset = await withCircuit(
         `get-media-content-${id}`,
@@ -53,7 +53,7 @@ export class MediaContentService {
    * Generates a signed URL for a media asset's thumbnail.
    * Implements fallback logic to original content if thumbnail is missing.
    */
-  async getThumbnailUrl(id: string, ttl = 300): Promise<Result<string, AppError>> {
+  async getThumbnailUrl(id: number, ttl = 300): Promise<Result<string, AppError>> {
     try {
       const asset = await withCircuit(
         `get-media-thumbnail-${id}`,
@@ -99,28 +99,28 @@ export class MediaContentService {
   /**
    * Retrieves media geometry (e.g. for 3D models or image analysis)
    */
-  async getMediaGeometry(id: string): Promise<Result<any, AppError>> {
+  async getMediaGeometry(id: number): Promise<Result<Record<string, unknown>, AppError>> {
     return ok({ id, geometry: "Geometry extraction not implemented in service layer yet" });
   }
 
   /**
    * Retrieves raw media content
    */
-  async getMediaRaw(id: string): Promise<Result<string, AppError>> {
+  async getMediaRaw(id: number): Promise<Result<string, AppError>> {
     return this.getSignedUrl(id);
   }
 
   /**
    * Proxies media content via signed URL
    */
-  async getMediaProxy(id: string): Promise<Result<string, AppError>> {
+  async getMediaProxy(id: number): Promise<Result<string, AppError>> {
     return this.getSignedUrl(id);
   }
 
   /**
    * Proxies thumbnail content via signed URL
    */
-  async getThumbnailProxy(id: string): Promise<Result<string, AppError>> {
+  async getThumbnailProxy(id: number): Promise<Result<string, AppError>> {
     return this.getThumbnailUrl(id);
   }
 
@@ -139,7 +139,7 @@ export class MediaContentService {
   /**
    * Returns system performance dashboard data
    */
-  async getPerformanceDashboard(): Promise<Result<any, AppError>> {
+  async getPerformanceDashboard(): Promise<Result<Record<string, unknown>, AppError>> {
     return ok({
       status: "operational",
       performance: "excellent",
@@ -150,7 +150,7 @@ export class MediaContentService {
   /**
    * Returns detailed performance metrics
    */
-  async getPerformanceMetrics(): Promise<Result<any, AppError>> {
+  async getPerformanceMetrics(): Promise<Result<Record<string, unknown>, AppError>> {
     return ok({
       uptime: process.uptime(),
       memory: process.memoryUsage(),
@@ -161,7 +161,7 @@ export class MediaContentService {
   /**
    * Returns overall system status
    */
-  async getSystemStatus(): Promise<Result<any, AppError>> {
+  async getSystemStatus(): Promise<Result<Record<string, unknown>, AppError>> {
     return ok({
       status: "healthy",
       timestamp: new Date().toISOString(),

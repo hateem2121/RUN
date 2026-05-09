@@ -1,8 +1,7 @@
 import os from "node:os";
-import { sql } from "drizzle-orm";
 import { type Request, type Response, Router } from "express";
-import { db } from "../../db.js";
 import { logger } from "../../lib/monitoring/logger.js";
+import { systemService } from "../../services/system.service.js";
 
 const router = Router();
 
@@ -10,7 +9,6 @@ interface HealthServices {
   database: { status: string; latencyMs: number };
   memory: { status: string; usage: number; limit: number };
   system: { uptime: number; loadAvg: number[] };
-  directDatabase?: { status: string; latencyMs?: number; note?: string };
 }
 
 router.get("/deep", async (_req: Request, res: Response) => {
@@ -26,34 +24,14 @@ router.get("/deep", async (_req: Request, res: Response) => {
 
   // Database Check (Pooled)
   const dbStart = performance.now();
-  await db.execute(sql`SELECT 1`);
+  const dbResult = await systemService.checkDatabaseConnectivity();
   health.services.database.latencyMs = Math.round(performance.now() - dbStart);
-  health.services.database.status = "up";
 
-  // Database Check (Direct - for LISTEN/NOTIFY)
-  const dbConfig = (await import("../../config/environment.js")).database;
-  if (dbConfig.directUrl) {
-    const directStart = performance.now();
-    // Use the shared pooled connection even for "direct" checks if possible,
-    // or strictly manage a singleton pool. For now, we reuse the persistent 'db'
-    // because instantiating a new Client() per request is a critical leak.
-    // If we REALLY need to bypass pgbouncer for LISTEN/NOTIFY, we should use a
-    // singleton listener, not a per-request probe.
-    // For health checks, measuring the pool's health is usually sufficient.
-    //
-    // HOWEVER, if the user explicitly wants to test the direct connection:
-    // We will perform a lightweight check without opening a new connection if possible,
-    // or accepting that this specific 'deep' check is expensive and infrequent.
-    //
-    // BETTER FIX: Use the existing `db` for all health checks, assuming `db`
-    // is configured correctly.
-    await db.execute(sql`SELECT 1`); // Re-using db to avoid leak
-
-    health.services.directDatabase = {
-      status: "up",
-      latencyMs: Math.round(performance.now() - directStart),
-      note: "Checked via shared pool to prevent connection leaks",
-    };
+  if (dbResult.isOk()) {
+    health.services.database.status = "up";
+  } else {
+    health.services.database.status = "down";
+    health.status = "unhealthy";
   }
 
   // Memory Check
