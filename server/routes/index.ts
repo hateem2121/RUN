@@ -91,8 +91,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.use("/inquiry-admin", criticalTier, inquiryAdminRouter);
 
   // 1.5 Resources (Public Page Content - Must be before Admin/Core to avoid conflicts)
-  apiRouter.use("/resources", publicTier, resourcesRouter);
-  apiRouter.use("/footer-config", publicTier, footerConfigRouter);
+  apiRouter.use(publicTier, resourcesRouter);
+  apiRouter.use(publicTier, footerConfigRouter);
 
   // 2. Core Business Domains
   apiRouter.use(apiTier, v1CoreRouter);

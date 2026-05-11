@@ -11,6 +11,7 @@ import {
   Zap,
 } from "lucide-react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { cn, sanitizeContent } from "@/lib/utils";
 
 interface PublicCapabilitySectionProps {
@@ -200,10 +201,14 @@ export function PublicCapabilitySection({
                 {isLarge && imgSrc && (
                   <>
                     <div className="absolute inset-0 z-0 bg-gradient-to-t from-manufacturing-bg/95 via-transparent to-transparent"></div>
-                    <img
+                    <OptimizedImage
+                      mediaId={cap.imageId ?? undefined}
+                      src={!cap.imageId ? cap.imageSrc : undefined}
                       alt={cap.title}
-                      className="absolute inset-0 w-full h-full object-cover -z-10 opacity-30 mix-blend-overlay group-hover:scale-105 transition-transform duration-700 grayscale group-hover:grayscale-0"
-                      src={imgSrc}
+                      className="absolute inset-0 w-full h-full -z-10"
+                      imageClassName="opacity-30 mix-blend-overlay group-hover:scale-105 transition-transform duration-700 grayscale group-hover:grayscale-0"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      loading="lazy"
                     />
                   </>
                 )}

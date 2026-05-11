@@ -1,11 +1,7 @@
-/**
- * RESOURCE BATCH ROUTES
- * Aggregated endpoint for modular content resources
- */
-
 import { type Request, Router } from "express";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { ValidationError } from "../../lib/errors.js";
+import { shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { accessoryService } from "../../services/accessory.service.js";
 import { miscService } from "../../services/misc.service.js";
 
@@ -74,6 +70,7 @@ router.get("/batch", async (req: Request, res) => {
       return data;
     },
     {
+      bypassCache: shouldBypassCache(req),
       swrConfig: {
         ttl: 15 * 60 * 1000, // 15 min fresh
         staleWhileRevalidate: 60 * 60 * 1000, // 1 hr stale

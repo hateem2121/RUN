@@ -6,6 +6,7 @@ import type {
 } from "../../shared/index.js";
 import { safeQuery } from "../db.js";
 import { CacheKeys, CacheOperations } from "../lib/cache/cache-strategies.js";
+import { twoTierBatchCache } from "../lib/cache/two-tier-batch.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
 import { miscRepository } from "../lib/db/repositories/index.js";
 import { type AppError, NotFoundError } from "../lib/errors.js";
@@ -31,7 +32,7 @@ const normalizeItems = (items: NavigationItem[]): NavigationItem[] => {
 
 export const NavigationService = {
   /**
-   * Get all navigation items with caching strategy
+   * Get all navigation items with two-tier caching strategy (PC-403)
    */
   getItems: async (
     bypassCache = false,
@@ -39,75 +40,52 @@ export const NavigationService = {
     Result<
       {
         data: NavigationItem[];
-        metadata: { cacheHit: boolean; responseTime: number; ttl: number };
+        metadata: { cacheHit: string; responseTime: number; ttl: number };
       },
       AppError
     >
   > => {
     const startTime = performance.now();
-    const storage = miscRepository;
+    const cacheKey = CacheKeys.navigation.items();
 
-    // Admin/Bypass path
-    if (bypassCache) {
-      logger.info("[Navigation] Bypassing cache for real-time data", { bypassCache });
-      const result = await safeQuery(
-        withCircuit(
-          "get-navigation-items-bypass",
-          () => withTimeout(storage.getNavigationItems(), 5000, "Get navigation items (bypass)"),
-          DB_CIRCUIT_OPTIONS,
-        ),
-      );
+    const { data, benchmark } = (await twoTierBatchCache.get(
+      cacheKey,
+      async () => {
+        const result = await safeQuery(
+          withCircuit(
+            "get-navigation-items",
+            () => withTimeout(miscRepository.getNavigationItems(), 5000, "Get navigation items"),
+            DB_CIRCUIT_OPTIONS,
+          ),
+        );
 
-      if (result.isErr()) {
-        return err(result.error);
-      }
+        if (result.isErr()) throw result.error;
+        return normalizeItems(result.value);
+      },
+      {
+        bypassCache,
+        swrConfig: {
+          ttl: CACHE_TTL_NAVIGATION * 1000,
+          staleWhileRevalidate: CACHE_TTL_NAVIGATION * 2 * 1000,
+        },
+      },
+    )) || { data: [], benchmark: { hit: "MISS" } };
 
+    if (!data) {
       return ok({
-        data: normalizeItems(result.value),
+        data: [],
         metadata: {
-          cacheHit: false,
+          cacheHit: "MISS",
           responseTime: performance.now() - startTime,
           ttl: 0,
         },
       });
     }
 
-    // Public/Cached path
-    const cacheKey = CacheKeys.navigation.items();
-    const cached = await unifiedCache.get(cacheKey);
-
-    if (cached) {
-      const items = Array.isArray(cached) ? cached : [cached];
-      return ok({
-        data: normalizeItems(items),
-        metadata: {
-          cacheHit: true,
-          responseTime: performance.now() - startTime,
-          ttl: CACHE_TTL_NAVIGATION,
-        },
-      });
-    }
-
-    // Cache miss
-    const result = await safeQuery(
-      withCircuit(
-        "get-navigation-items",
-        () => withTimeout(storage.getNavigationItems(), 5000, "Get navigation items"),
-        DB_CIRCUIT_OPTIONS,
-      ),
-    );
-
-    if (result.isErr()) {
-      return err(result.error);
-    }
-
-    const normalized = normalizeItems(result.value);
-    await unifiedCache.set(cacheKey, normalized, CACHE_TTL_NAVIGATION);
-
     return ok({
-      data: normalized,
+      data: data as NavigationItem[],
       metadata: {
-        cacheHit: false,
+        cacheHit: benchmark.hit,
         responseTime: performance.now() - startTime,
         ttl: CACHE_TTL_NAVIGATION,
       },

@@ -238,15 +238,23 @@ export const setSecureCORSHeaders = (res: Response, origin?: string): void => {
 };
 
 /**
- * Determines if the request should bypass caching mechanisms
- * Checks for 'nocache' query param or admin referer
+ * Determines if the request should bypass caching mechanisms.
+ * PC-401 RESOLVED: Centralized secure bypass logic.
+ * Only allows bypass if:
+ * 1. Request originates from the admin panel (referer check)
+ * 2. Admin user explicitly requests refresh via ?refresh=1 or no-cache header
  */
 // biome-ignore lint/suspicious/noExplicitAny: Generic request support
 export function shouldBypassCache(req: Request<any, any, any, any>): boolean {
+  const isAdmin = (req as any).session?.user?.role === "admin";
   const referer = req.headers.referer || "";
-  const nocache = req.query.nocache === "true";
-  // Bypass if referer contains /admin or nocache param is true
-  return referer.includes("/admin") || nocache;
+  const isFromAdmin = referer.includes("/admin");
+
+  // PC-401: Unauthenticated refresh=1 is a DoS vector. Strictly gate by isAdmin.
+  const explicitRefresh =
+    isAdmin && (req.query.refresh === "1" || req.headers["cache-control"] === "no-cache");
+
+  return isFromAdmin || explicitRefresh;
 }
 
 // ============================================================================

@@ -50,9 +50,12 @@ router.get("/navigation-items", async (req, res) => {
  * Returns navigation-specific UI settings (glassmorphism, etc.)
  */
 router.get("/navigation-settings", async (_req, res) => {
+  const startTime = performance.now();
   const result = await NavigationService.getGlassmorphismSettings();
 
   if (result.isErr()) throw result.error;
+  
+  res.setHeader("X-Response-Time", (performance.now() - startTime).toFixed(2));
   return res.json(result.value);
 });
 

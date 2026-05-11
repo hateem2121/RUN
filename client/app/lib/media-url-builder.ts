@@ -166,6 +166,19 @@ export class MediaUrlBuilder {
   }
 
   /**
+   * PC-501: Build srcSet for responsive images
+   * Leverages /thumbnail and /content endpoints as variants
+   */
+  static buildSrcSet(id: number | undefined | null): string | undefined {
+    if (!id || id <= 0) return undefined;
+
+    const thumbnail = `/api/media/${id}/thumbnail`;
+    const content = `/api/media/${id}/content`;
+
+    return `${thumbnail} 400w, ${content} 1200w`;
+  }
+
+  /**
    * Smart URL builder - automatically chooses thumbnail for grid contexts
    */
   static buildSmartUrl(

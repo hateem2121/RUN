@@ -15,9 +15,11 @@ const router = Router();
 
 // GET /api/logo-animation-settings
 router.get("/logo-animation-settings", async (_req, res) => {
+  const startTime = performance.now();
   const result = await homepageService.getLogoAnimationSettings();
   if (result.isErr()) throw result.error;
 
+  res.setHeader("X-Response-Time", (performance.now() - startTime).toFixed(2));
   return res.json(result.value);
 });
 

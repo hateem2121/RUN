@@ -7,6 +7,7 @@
   font-family: "Neue Stance";
   src:
     local("Neue Stance Regular"),
+    url("/fonts/NeueStance-Regular.woff2") format("woff2"),
     url("/fonts/NeueStance-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
@@ -17,6 +18,7 @@
   font-family: "Neue Stance";
   src:
     local("Neue Stance Bold"),
+    url("/fonts/NeueStance-Bold.woff2") format("woff2"),
     url("/fonts/NeueStance-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;

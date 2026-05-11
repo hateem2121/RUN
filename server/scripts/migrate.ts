@@ -8,7 +8,8 @@ async function runMigrations() {
     // If run from server directory: "migrations"
     await migrate(db, { migrationsFolder: "migrations" });
     process.exit(0);
-  } catch (_err) {
+  } catch (err) {
+    console.error("Migration failed:", err);
     process.exit(1);
   }
 }

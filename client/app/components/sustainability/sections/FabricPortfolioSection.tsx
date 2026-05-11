@@ -65,6 +65,7 @@ function FabricCard({
               <img
                 src={imageUrl}
                 alt={`${fabric.name} sustainable fabric`}
+                loading="lazy"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
             ) : (

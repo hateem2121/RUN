@@ -3,7 +3,9 @@ import { gunzip, gzip } from "node:zlib";
 import { SpanStatusCode, trace } from "@opentelemetry/api";
 import { LRUCache } from "lru-cache";
 import { logger } from "../monitoring/logger.js";
-import { REDIS_CIRCUIT_OPTIONS, withCircuit } from "../resilience/circuit-breaker.js";
+// PC-301 RESOLVED: Circuit breaker protection is handled at the Upstash proxy level
+// (upstash-client.ts wraps every Redis method call via Proxy + withCircuit).
+// Removed duplicate withCircuit wrapping here to prevent double circuit-breaker nesting.
 import { isRedisEnabled, redis } from "./upstash-client.js";
 
 /**
@@ -190,7 +192,7 @@ export class UnifiedCache {
   }
 
   // P2 OPTIMIZATION: Separate L2 write method for compression logic
-  // Protected by circuit breaker to prevent cascade failures
+  // Circuit breaker protection is handled at the Upstash proxy level (PC-301)
   private async writeL2<T>(key: string, value: T, ttlSeconds: number): Promise<void> {
     let payload = JSON.stringify(value);
 
@@ -201,24 +203,14 @@ export class UnifiedCache {
       payload = `gz:${buffer.toString("base64")}`;
     }
 
-    // Use circuit breaker for Redis operations
-    await withCircuit(
-      "redis-cache-write",
-      async () => redis.set(key, payload, { ex: ttlSeconds }),
-      REDIS_CIRCUIT_OPTIONS,
-    );
+    await redis.set(key, payload, { ex: ttlSeconds });
   }
 
   // Helper to read and potentially decompress
-  // Protected by circuit breaker to prevent cascade failures
+  // Circuit breaker protection is handled at the Upstash proxy level (PC-301)
   private async readL2<T>(key: string): Promise<T | null> {
     try {
-      // Use circuit breaker for Redis operations
-      const data = await withCircuit(
-        "redis-cache-read",
-        async () => redis.get(key),
-        REDIS_CIRCUIT_OPTIONS,
-      );
+      const data = await redis.get(key);
       if (!data) {
         return null;
       }

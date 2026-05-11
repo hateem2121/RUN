@@ -162,7 +162,7 @@ export default function CategoryProductsPage() {
     });
 
     const optimizedSrc = urls?.large || urls?.medium || fallbackUrl;
-    return <img src={optimizedSrc} alt={alt} className="h-full w-full object-cover" />;
+    return <img src={optimizedSrc} alt={alt} loading="eager" fetchPriority="high" className="h-full w-full object-cover" />;
   };
 
   if (!category) {
@@ -240,6 +240,7 @@ export default function CategoryProductsPage() {
                                 subcat.imageUrl
                               }
                               alt={subcat.name}
+                              loading="lazy"
                               className="h-12 w-12 rounded-lg object-cover"
                             />
                           )}

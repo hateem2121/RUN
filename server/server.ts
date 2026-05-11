@@ -68,8 +68,19 @@ export const serverReady: Promise<void> = (async () => {
     // 6. Setup Static Serving (Production only, fallback if not handled by Nginx)
     // ... continues ...
     if (config.app.environment === "production" || process.env.NODE_ENV === "production") {
-      // Serve static assets from the built client directory
       const staticPath = path.resolve(process.cwd(), "../client/build/client");
+
+      // PC-106: Block source map files from being served publicly.
+      // Source maps are uploaded to Sentry during build but must not be accessible to end users.
+      app.use((req, _res, next) => {
+        if (req.path.endsWith(".map")) {
+          _res.status(404).end();
+          return;
+        }
+        next();
+      });
+
+      // Serve static assets from the built client directory
       app.use(express.static(staticPath, { index: false }));
       logger.info(`[Production] Serving static assets from: ${staticPath}`);
     }

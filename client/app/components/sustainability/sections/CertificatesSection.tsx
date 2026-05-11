@@ -20,6 +20,7 @@ function HexNode({ certificate }: { certificate: Certificate }) {
             <img
               src={certificate.imageUrl}
               alt={certificate.name}
+              loading="lazy"
               className="max-h-16 max-w-[100px] object-contain transition-transform group-hover:scale-110 duration-300"
             />
           ) : (

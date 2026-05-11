@@ -129,6 +129,7 @@ export const Stats: React.FC = () => {
             src="/images/homepage/stats-bg.png"
             alt="Factory Background"
             crossOrigin="anonymous"
+            loading="lazy"
             decoding="async"
             className="h-full w-full object-cover opacity-50 contrast-125"
           />

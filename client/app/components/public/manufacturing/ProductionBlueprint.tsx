@@ -263,6 +263,8 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
                             : "opacity-40 grayscale contrast-125 group-hover:grayscale-0 group-hover:opacity-60",
                         )}
                         src={phase.fallbackImg}
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div className="absolute inset-0 tech-grid-manufacturing opacity-20 pointer-events-none"></div>
                       <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-manufacturing-bg)] via-[var(--color-manufacturing-bg)]/40 to-transparent opacity-90"></div>

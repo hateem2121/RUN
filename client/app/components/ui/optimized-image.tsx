@@ -106,6 +106,7 @@ const LegacyImage = ({
   onError,
   aspectRatio = "aspect-3/4",
   objectFit = "cover",
+  sizes,
   ...props
 }: OptimizedImageProps) => {
   if (mediaId === undefined) {
@@ -114,11 +115,14 @@ const LegacyImage = ({
 
   // Use the legacy MediaUrlBuilder
   const src = MediaUrlBuilder.buildUrlSafe(mediaId);
+  const srcSet = MediaUrlBuilder.buildSrcSet(mediaId);
 
   // Forward to DirectImage to handle all loading states consistently
   return (
     <DirectImage
       src={src}
+      srcSet={srcSet}
+      sizes={sizes || "(max-width: 768px) 100vw, 50vw"}
       className={className}
       imageClassName={imageClassName}
       alt={alt || `Media ${mediaId}`}

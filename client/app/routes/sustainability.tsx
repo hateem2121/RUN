@@ -793,7 +793,7 @@ function SustainabilityInner() {
 
             <div className="flex flex-col items-center justify-between gap-6 border-t border-sustainability-border pt-12 md:flex-row">
               <div className="flex items-center gap-6">
-                <img src="/logo.png" alt="RUN Logo" className="h-8 w-auto invert" />
+                <img src="/logo.png" alt="RUN Logo" loading="lazy" className="h-8 w-auto invert" />
                 <p className="text-sm text-sustainability-muted">
                   © {new Date().getFullYear()} RUN APPAREL (PVT) LTD. All rights reserved.
                 </p>

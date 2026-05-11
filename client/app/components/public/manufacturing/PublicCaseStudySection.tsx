@@ -2,6 +2,7 @@ import type { ManufacturingCaseStudy, MediaAsset } from "@shared/index";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { sanitizeContent } from "@/lib/utils";
 
 interface PublicCaseStudySectionProps {
@@ -15,12 +16,12 @@ export function PublicCaseStudySection({
 }: PublicCaseStudySectionProps) {
   const [activeIdx, setActiveIdx] = useState(0);
 
-  const getAssetUrl = (mediaId?: string | number | null) => {
+  const getAssetInfo = (mediaId?: string | number | null) => {
     if (!mediaId) return undefined;
     const asset = Array.isArray(mediaAssets)
       ? mediaAssets.find((a) => a.id.toString() === mediaId.toString())
       : undefined;
-    return asset ? `/api/media/${asset.id}` : undefined;
+    return asset;
   };
 
   const defaultProjects = [
@@ -29,6 +30,7 @@ export function PublicCaseStudySection({
       tag: "Teamwear Series",
       desc: "Developed ultra-lightweight, aerodynamic kits for the 2025 championships. Our proprietary woven structure reduced drag by 4% while maintaining thermal regulation.",
       img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCKk0UjiS1IFhcvopcCQI_fufULGOhNl9cA07UoogcPLYmkoc51-cZfUexrGnb23Z80jDdJDXYonCnntVGIvqE2nL-LVaab33PRJxXXxz2X8uYW1TUzFuieziS3G7n8rEXWzDwN1mZcbka7kSzDqYeola64LrFVAdXz2jH3fyeKCxqvF3HkXNFd0soCUz4L1FGpT0FQLQM3eHMoLo3OKj-oSoLT269492rkStFFWplJ-ju1UuZywi-YF_EBxRTiYOqA8bw4CLnI_5E",
+      id: null,
       stats: [
         { label: "Fabric Weight", val: "85 GSM" },
         { label: "Units Delivered", val: "1,200" },
@@ -40,6 +42,7 @@ export function PublicCaseStudySection({
       tag: "Outerwear Shells",
       desc: "Engineered 3-layer waterproof, breathable shells capable of withstanding extreme high-altitude conditions. Fully seam-taped with laser-cut vents.",
       img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBOL2PIqcRGBO2TgfVf1iQdoEmLIWktgqCAjhzuUj4IVhN8xprZaaTgcbaLX27E-ww0FaHcNjrzuvj0KZx52Dzndj1BYlRgZimO7eeG9Mj05br1deVh8zCNTY_CYO-t0KlKdQE-uwYWxUaJl5rl74jsJ4GguKyOpc6PrSTsyUO9CJmkWtpbN9cMiFHilR0_37a_vxOnOKe0aTHKP-ai_TgxibtD7pXildES8NGVWknLagjK5GCMtBps0yfAF0BGWIaCI2-jjISa0JA",
+      id: null,
       stats: [
         { label: "Water Rating", val: "20k mm" },
         { label: "Units Delivered", val: "450" },
@@ -51,16 +54,20 @@ export function PublicCaseStudySection({
   const displayProjects =
     caseStudies.length > 0
       ? caseStudies
-          .map((cs) => ({
-            title: sanitizeContent(cs.client),
-            tag: sanitizeContent(cs.type),
-            desc: sanitizeContent(cs.description),
-            img: getAssetUrl(cs.imageId) || defaultProjects[0]?.img || "",
-            stats: [
-              { label: "Metric", val: sanitizeContent(cs.metric) },
-              { label: "Author", val: sanitizeContent(cs.author) },
-            ],
-          }))
+          .map((cs) => {
+            const asset = getAssetInfo(cs.imageId);
+            return {
+              title: sanitizeContent(cs.client),
+              tag: sanitizeContent(cs.type),
+              desc: sanitizeContent(cs.description),
+              img: asset ? `/api/media/${asset.id}` : (defaultProjects[0]?.img || ""),
+              id: asset ? asset.id : null,
+              stats: [
+                { label: "Metric", val: sanitizeContent(cs.metric) },
+                { label: "Author", val: sanitizeContent(cs.author) },
+              ],
+            };
+          })
           .filter((p) => p.title !== "" || p.desc !== "")
       : defaultProjects;
 
@@ -131,11 +138,15 @@ export function PublicCaseStudySection({
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 border border-white/10 bg-manufacturing-bg/80 backdrop-blur-md shadow-2xl">
             {/* Image Side */}
             <div className="lg:col-span-3 pb-[60%] lg:pb-0 relative overflow-hidden group">
-              <img
+              <OptimizedImage
                 key={currentProject.img}
+                mediaId={currentProject.id ?? undefined}
+                src={!currentProject.id ? currentProject.img : undefined}
                 alt={currentProject.title}
-                className="absolute inset-0 w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-105"
-                src={currentProject.img}
+                className="absolute inset-0 w-full h-full"
+                imageClassName="grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-105"
+                sizes="(max-width: 1024px) 100vw, 60vw"
+                priority={true}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-transparent to-manufacturing-bg hidden lg:block opacity-90"></div>
               <div className="absolute inset-0 bg-gradient-to-t from-manufacturing-bg to-transparent lg:hidden opacity-90"></div>

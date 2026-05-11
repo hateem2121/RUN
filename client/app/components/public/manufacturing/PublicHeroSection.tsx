@@ -178,6 +178,8 @@ export function PublicHeroSection({
               <img
                 alt="Macro photography of sewing machine needle"
                 className="w-full h-full object-cover opacity-20 grayscale sepia hue-rotate-15 mix-blend-overlay"
+                loading="eager"
+                fetchPriority="high"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkSaFr8satMiHuubKnq6ZmnTrhos9xLMveFMM4olbG-J23bK5ywE9wF3atm-z3ne_0ztbPnL1etAMv6bRuKpUbC42HETMKBh0VuEUmOffoQdi7Y_2ipx8QjbDa12BKfSsZhvdoahTOEOsW20djY3Hi8a29So3_Cd0OMzm7Kl1UHZViy2Skj4o7hv61vKsFdjYtgSJp7klmS0SdpX6k9ltAN73ADtT0Yb4TZM_DIhlFs2pGb5ygJWMVAcZJz9wEh5bBtgRByWiLhmw"
               />
             )}

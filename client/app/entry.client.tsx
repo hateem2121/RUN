@@ -1,18 +1,13 @@
 import { StrictMode, startTransition } from "react";
 import { hydrateRoot } from "react-dom/client";
 import { HydratedRouter } from "react-router/dom";
-import { onCLS, onFCP, onINP, onLCP, onTTFB } from "web-vitals";
-import { reportWebVitals } from "@/lib/performance";
 import { initSentry } from "@/lib/sentry";
 
-initSentry();
+// PC-603 RESOLVED: Web Vitals registration is handled exclusively in root.tsx
+// via reportWebVitals() from @/lib/web-vitals (called in Layout useEffect).
+// Removed duplicate onCLS/onFCP/onINP/onLCP/onTTFB registration here.
 
-// Performance Monitoring (PHASE 2 Integration)
-onCLS(reportWebVitals);
-onFCP(reportWebVitals);
-onINP(reportWebVitals);
-onLCP(reportWebVitals);
-onTTFB(reportWebVitals);
+initSentry();
 
 startTransition(() => {
   hydrateRoot(

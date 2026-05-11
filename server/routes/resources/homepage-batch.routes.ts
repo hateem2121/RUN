@@ -11,14 +11,15 @@
  * Server-side two-tier batch cache (UnifiedCache) remains active for performance.
  */
 
-import express from "express";
+import { Router } from "express";
 import type { HomepageProcessCard } from "../../../shared/schemas/content/home.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { homepageRepository, productRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
+import { shouldBypassCache } from "../../lib/utilities/core-utils.js";
 
-const router = express.Router();
+const router = Router();
 
 /**
  * CHUNK 5: Homepage Batch API - Optimized with two-tier cache + stale-while-revalidate
@@ -29,10 +30,7 @@ router.get("/homepage-batch", async (req, res) => {
   const startTime = performance.now();
 
   // Support forced refresh for authenticated admins only — unauthenticated bypass is a DoS vector
-  const isAdmin =
-    (req as { session?: { user?: { role?: string } } }).session?.user?.role === "admin";
-  const bypassCache =
-    req.query.refresh === "1" || (isAdmin && req.headers["cache-control"] === "no-cache");
+  const bypassCache = shouldBypassCache(req);
 
   if (bypassCache) {
     logger.debug("[Homepage Batch] Force refresh requested - invalidating all caches");
@@ -95,6 +93,8 @@ router.get("/homepage-batch", async (req, res) => {
 
   // CHUNK 5: Log performance metrics and benchmark results
   res.setHeader("X-Cache-Hit", benchmark.hit);
+  res.setHeader("X-Response-Time", responseTime.toFixed(2));
+
   // Conditional Cache-Control: serve CDN-friendly headers on cache hits, origin-only on misses
   if (benchmark.hit !== "MISS") {
     res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=3600");
@@ -181,6 +181,7 @@ router.get("/performance-monitoring", async (_req, res) => {
 // They are split into this standalone endpoint intentionally for lazy loading and to prevent hydration waterfalls,
 // not due to redundancy with the main /homepage-batch endpoint.
 router.get("/homepage-process-cards", async (req, res) => {
+  const startTime = performance.now();
   // Apply same admin-only bypass guard as /homepage-batch — unauthenticated refresh=1 is a DoS vector
   const isAdmin =
     (req as { session?: { user?: { role?: string } } }).session?.user?.role === "admin";
@@ -205,6 +206,7 @@ router.get("/homepage-process-cards", async (req, res) => {
 
   // CHUNK 5: Log performance metrics
   res.setHeader("X-Cache-Hit", benchmark.hit);
+  res.setHeader("X-Response-Time", (performance.now() - startTime).toFixed(2));
   res.setHeader("Cache-Control", "public, max-age=600");
 
   if (benchmark.hit !== "MISS") {

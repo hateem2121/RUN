@@ -137,6 +137,8 @@ export function FactoryGallery() {
                 alt={item.title}
                 className="w-full h-full object-cover grayscale opacity-60 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-105"
                 src={item.img}
+                loading="lazy"
+                decoding="async"
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-manufacturing-bg via-manufacturing-bg/40 to-transparent opacity-80 z-10"></div>
