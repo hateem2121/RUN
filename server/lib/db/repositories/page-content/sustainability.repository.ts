@@ -21,6 +21,7 @@ import {
 import { db } from "../../../../db.js";
 import { emitCacheInvalidation } from "../../../cache/cache-events.js";
 import { UnifiedCache } from "../../../cache/unified-cache.js";
+import { invalidateHtmlCache } from "../../../../middleware/ssr-cache.js";
 import { StorageSingleton } from "../../../storage-singleton.js";
 
 const unifiedCache = UnifiedCache.getInstance();
@@ -69,6 +70,7 @@ export class SustainabilityRepository {
       .returning();
     if (!created) throw new Error("Failed to create sustainability hero");
     await emitCacheInvalidation("sustainability:hero", "create");
+    await invalidateHtmlCache("/sustainability");
     return created;
   }
 
@@ -137,7 +139,8 @@ export class SustainabilityRepository {
       .returning();
 
     if (!updated) throw new Error(`Failed to update sustainability goal with id ${id}`);
-    await emitCacheInvalidation("sustainability:goals", "update");
+    await emitCacheInvalidation("sustainability:goal", "update");
+    await invalidateHtmlCache("/sustainability");
     return updated;
   }
 
@@ -261,6 +264,7 @@ export class SustainabilityRepository {
 
     await unifiedCache.del("sustainability:metrics");
     await emitCacheInvalidation("sustainability:metrics", "update");
+    await invalidateHtmlCache("/sustainability");
     return updated;
   }
 
@@ -370,6 +374,7 @@ export class SustainabilityRepository {
 
     await unifiedCache.del("sustainability:initiatives:*");
     await emitCacheInvalidation("sustainability:initiatives", "update");
+    await invalidateHtmlCache("/sustainability");
     return updated;
   }
 

@@ -19,6 +19,8 @@ export function ImageWithSkeleton({
       {isLoading && <Skeleton className="absolute inset-0 h-full w-full animate-pulse bg-muted" />}
       <img
         {...props}
+        srcSet={props.srcSet}
+        sizes={props.sizes}
         alt={alt}
         className={cn(
           "transition-opacity duration-500 ease-in-out",

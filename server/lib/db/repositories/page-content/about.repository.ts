@@ -604,7 +604,7 @@ export class AboutRepository {
 
     let mediaAssets: MediaAsset[] = [];
     if (mediaIds.size > 0) {
-      const { mediaRepository } = await import("../../repositories/index.js");
+      const { mediaRepository } = await import("../media-repository.js");
       mediaAssets = await mediaRepository.getMediaAssetsByIds(Array.from(mediaIds).map(String));
     }
 

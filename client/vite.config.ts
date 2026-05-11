@@ -121,7 +121,6 @@ export default defineConfig(
                     id.includes("/sonner/")
                   )
                     return "vendor-ui";
-                  if (id.includes("/@google/model-viewer")) return "vendor-3d";
                   if (id.includes("/recharts/")) return "vendor-charts";
                   if (id.includes("/lucide-react/")) return "vendor-icons";
                   if (id.includes("/@run-remix/shared") || id.includes("/drizzle-orm/"))

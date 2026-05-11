@@ -22,6 +22,7 @@ import {
 import { db } from "../../../../db.js";
 import { emitCacheInvalidation } from "../../../cache/cache-events.js";
 import { UnifiedCache } from "../../../cache/unified-cache.js";
+import { invalidateHtmlCache } from "../../../../middleware/ssr-cache.js";
 import { logger } from "../../../monitoring/logger.js";
 import { StorageSingleton } from "../../../storage-singleton.js";
 
@@ -104,6 +105,7 @@ export class HomepageRepository {
       if (!updated) throw new Error("Failed to update homepage hero");
       result = updated;
       await emitCacheInvalidation("homepage:hero", "update");
+      await invalidateHtmlCache("/");
     }
 
     return result;
@@ -147,6 +149,7 @@ export class HomepageRepository {
     const [created] = await db.insert(homepageSlogans).values(slogan).returning();
     if (!created) throw new Error("Failed to create homepage slogan");
     await emitCacheInvalidation("homepage:slogans", "create");
+    await invalidateHtmlCache("/");
     return created;
   }
 
@@ -168,6 +171,7 @@ export class HomepageRepository {
 
     if (!updated) throw new Error(`Failed to update homepage slogan with id ${id}`);
     await emitCacheInvalidation("homepage:slogans", "update");
+    await invalidateHtmlCache("/");
     return updated;
   }
 
@@ -257,6 +261,7 @@ export class HomepageRepository {
     const [created] = await db.insert(homepageProcessCards).values(card).returning();
     if (!created) throw new Error("Failed to create homepage process card");
     await emitCacheInvalidation("homepage:process_cards", "create");
+    await invalidateHtmlCache("/");
     return created;
   }
 
@@ -374,6 +379,7 @@ export class HomepageRepository {
     }
 
     await emitCacheInvalidation("homepage:sections", "update");
+    await invalidateHtmlCache("/");
     return result;
   }
 

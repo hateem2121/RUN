@@ -83,8 +83,8 @@ router.get("/homepage-batch", async (req, res) => {
     {
       bypassCache,
       swrConfig: {
-        ttl: 60 * 60 * 1000, // 1 hour fresh TTL
-        staleWhileRevalidate: 6 * 60 * 60 * 1000, // serve stale for 6h while revalidating in background
+        ttl: 5 * 60 * 1000, // 5 minutes fresh TTL
+        staleWhileRevalidate: 30 * 60 * 1000, // serve stale for 30min while revalidating
       },
     },
   )) || { data: null, benchmark: { hit: "MISS", totalTime: 0, l1Time: 0, l2Time: 0, dbTime: 0 } };
