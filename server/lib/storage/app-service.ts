@@ -96,6 +96,27 @@ export class AppStorageService {
   }
 
   /**
+   * Get metadata for an asset
+   */
+  async getAssetMetadata(
+    key: string,
+  ): Promise<{ size: number; contentType?: string | undefined; updated?: string | undefined }> {
+    try {
+      const bucket = this.storage.bucket(this.bucketName);
+      const file = bucket.file(key);
+      const [metadata] = await file.getMetadata();
+      return {
+        size: metadata.size ? parseInt(String(metadata.size), 10) : 0,
+        contentType: metadata.contentType,
+        updated: metadata.updated,
+      };
+    } catch (error) {
+      logger.error(`❌ Failed to get metadata for ${key}:`, serializeError(error));
+      return { size: 0 };
+    }
+  }
+
+  /**
    * Upload an asset to GCS
    */
   async uploadAsset(
@@ -114,15 +135,8 @@ export class AppStorageService {
         resumable: false,
       };
 
-      // If public, we might want to set ACLs, but typically we use signed URLs or a public bucket
-      // For now, we'll assume private by default unless configured otherwise
-
       await file.save(data as Buffer, options);
-
       logger.info(`✅ Uploaded asset to GCS: ${key}`);
-
-      // Return the public URL if it's a public bucket, or just the key
-      // For compatibility, we'll return the key or a constructed URL
       return `https://storage.googleapis.com/${this.bucketName}/${key}`;
     } catch (error) {
       logger.error(`❌ Upload failed for ${key}:`, serializeError(error));
@@ -154,7 +168,6 @@ export class AppStorageService {
       logger.info(`✅ Deleted asset from GCS: ${key}`);
       return true;
     } catch (error: unknown) {
-      // If file doesn't exist, consider it deleted
       const err = error as { code?: number };
       if (err.code === 404) {
         return true;
@@ -182,6 +195,27 @@ export class AppStorageService {
   }
 
   /**
+   * List assets with size metadata
+   */
+  async listAssetsWithMetadata(
+    prefix?: string,
+  ): Promise<Array<{ name: string; size: number; updated?: string | undefined }>> {
+    try {
+      const bucket = this.storage.bucket(this.bucketName);
+      const [files] = await bucket.getFiles(prefix ? { prefix } : undefined);
+
+      return files.map((file) => ({
+        name: file.name,
+        size: file.metadata.size ? parseInt(String(file.metadata.size), 10) : 0,
+        updated: file.metadata.updated,
+      }));
+    } catch (error) {
+      logger.error(`❌ List with metadata failed for prefix ${prefix}:`, serializeError(error));
+      return [];
+    }
+  }
+
+  /**
    * Check if asset exists in GCS
    */
   async assetExists(key: string): Promise<boolean> {
@@ -205,7 +239,6 @@ export class AppStorageService {
       metadata?: { contentType?: string | undefined; isPublic?: boolean };
     }>,
   ): Promise<string[]> {
-    // Parallel uploads
     const uploadPromises = assets.map((asset) =>
       this.uploadAsset(asset.key, asset.data, asset.metadata),
     );
@@ -259,16 +292,8 @@ export class AppStorageService {
     ttlSeconds: number = 300,
     method: "GET" | "PUT" | "DELETE" | "HEAD" = "GET",
   ): Promise<string> {
-    // FORENSIC INVESTIGATION - Phase 3: Add timeout to signed URL generation
     return this.withTimeoutAndRetry(
       async () => {
-        logger.info(`🔐 [SIGNED URL DEBUG] Generating signed URL:`, {
-          bucketName: this.bucketName,
-          key,
-          ttlSeconds,
-          method,
-        });
-
         try {
           const bucket = this.storage.bucket(this.bucketName);
           const file = bucket.file(key);
@@ -279,24 +304,15 @@ export class AppStorageService {
             expires: Date.now() + ttlSeconds * 1000,
           });
 
-          logger.info(`✅ [SIGNED URL DEBUG] Generated signed URL:`, {
-            key,
-            ttl: `${ttlSeconds}s`,
-            urlLength: url.length,
-            urlPreview: `${url.substring(0, 150)}...`,
-          });
           return url;
         } catch (error) {
-          // Fallback for local development or when credentials are missing
           const errorMessage = (error as Error).message || "";
-
           if (
             errorMessage.includes("Cannot sign data") ||
             errorMessage.includes("Could not load the default credentials") ||
             errorMessage.includes("Service account") ||
             !this.bucketName
           ) {
-            // Local Fallback: Check if file exists in public/ directory
             if (process.env.NODE_ENV !== "production") {
               const fs = await import("node:fs/promises");
               const path = await import("node:path");
@@ -304,18 +320,13 @@ export class AppStorageService {
 
               try {
                 await fs.access(publicPath);
-                logger.info(`🏠 [Local Fallback] Found asset in public directory: ${key}`);
-                return `/${key}`; // Serve directly from public/
+                return `/${key}`;
               } catch (_fsError) {
                 // Not in public/ either
               }
             }
 
             const fallbackUrl = `https://storage.googleapis.com/${this.bucketName || "run-dev-assets"}/${key}`;
-            logger.warn(`⚠️ GCS Signing failed, falling back to public URL for ${key}`, {
-              error: errorMessage,
-              fallbackUrl,
-            });
             return fallbackUrl;
           }
           throw error;
@@ -323,13 +334,11 @@ export class AppStorageService {
       },
       `signedUrl:${key}`,
       5000,
-    ); // 5s timeout for signing (faster than download)
+    );
   }
 
   /**
    * Get circuit breaker status (Mock implementation for GCS)
-   * GCS SDK handles retries internally, so we don't need a complex circuit breaker here anymore.
-   * Returning a healthy status to satisfy AlertManager.
    */
   getCircuitStatus() {
     return {

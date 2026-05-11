@@ -3,6 +3,7 @@ import { AdminErrorBoundary } from "@/components/admin/AdminErrorBoundary";
 import { AdminLayout } from "@/components/admin/admin-layout";
 import { UnsavedChangesGuard } from "@/components/admin/UnsavedChangesGuard";
 import { ProtectedAdminRoute } from "@/components/auth/ProtectedAdminRoute";
+import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
 import { AdminProvider } from "@/context/AdminContext";
 import type { Route } from "./+types/admin";
 
@@ -10,7 +11,7 @@ export function meta({}: Route.MetaArgs) {
   return [{ title: "Admin Console | RUN APPAREL" }];
 }
 
-export { AdminErrorBoundary as ErrorBoundary };
+export { AdminErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
 
 export default function AdminRoute() {
   const location = useLocation();

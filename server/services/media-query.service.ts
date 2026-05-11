@@ -4,6 +4,7 @@ import { mediaRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
+import { correctMimeType } from "../lib/utilities/core-utils.js";
 
 /**
  * Service for querying and managing existing media assets.
@@ -232,22 +233,77 @@ export class MediaQueryService {
    * Performs a health scan of the media database
    */
   async getHealthScan(): Promise<Result<{ status: string; issues: unknown[] }, AppError>> {
-    // Basic implementation for now
-    return ok({ status: "healthy", issues: [] });
+    try {
+      const allAssetsResult = await this.getAllAssets();
+      if (allAssetsResult.isErr()) return err(allAssetsResult.error);
+
+      const issues: unknown[] = [];
+      const { appStorageService } = await import("../lib/storage/app-service.js");
+
+      // Check first 50 assets to keep scan time reasonable for now
+      const assetsToCheck = allAssetsResult.value.slice(0, 50);
+
+      for (const asset of assetsToCheck) {
+        if (asset.storagePath) {
+          const exists = await appStorageService.assetExists(asset.storagePath);
+          if (!exists) {
+            issues.push({ id: asset.id, issue: "missing_file", path: asset.storagePath });
+          }
+        }
+      }
+
+      return ok({
+        status: issues.length > 0 ? "needs_attention" : "healthy",
+        issues,
+      });
+    } catch (error) {
+      return err(new InternalError("Health scan failed", { error }));
+    }
   }
 
   /**
    * Repairs database integrity (maintenance)
    */
   async repairDatabaseIntegrity(): Promise<Result<{ repaired: number }, AppError>> {
-    return ok({ repaired: 0 });
+    try {
+      const scanResult = await this.getHealthScan();
+      if (scanResult.isErr()) return err(scanResult.error);
+
+      let repaired = 0;
+      for (const issue of scanResult.value.issues as { id: number; issue: string }[]) {
+        if (issue.issue === "missing_file") {
+          // Deactivate records with missing files
+          await mediaRepository.updateMediaAsset(issue.id, { isActive: false });
+          repaired++;
+        }
+      }
+      return ok({ repaired });
+    } catch (error) {
+      return err(new InternalError("Repair failed", { error }));
+    }
   }
 
   /**
    * Repairs MIME types for consistency
    */
   async repairMimeTypes(): Promise<Result<{ repaired: number }, AppError>> {
-    return ok({ repaired: 0 });
+    try {
+      const assets = await mediaRepository.getMediaAssets(1000, 0);
+      let repaired = 0;
+
+      for (const asset of assets) {
+        if (asset.filename && (asset.mimeType === "application/octet-stream" || !asset.mimeType)) {
+          const correctedMime = correctMimeType(asset.filename, asset.mimeType || "application/octet-stream");
+          if (correctedMime !== asset.mimeType) {
+            await mediaRepository.updateMediaAsset(asset.id, { mimeType: correctedMime });
+            repaired++;
+          }
+        }
+      }
+      return ok({ repaired });
+    } catch (error) {
+      return err(new InternalError("MIME repair failed", { error }));
+    }
   }
 
   /**

@@ -110,7 +110,7 @@ export function createCircuit<TResult>(
     if (metrics) {
       metrics.state = "OPEN";
     }
-    logger.error(`[CircuitBreaker] ${name} OPENED - circuit tripped`);
+    logger.warn(`[CircuitBreaker] ${name} OPENED - circuit tripped`);
   });
 
   circuit.on("halfOpen", () => {

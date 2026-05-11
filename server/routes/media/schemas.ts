@@ -60,12 +60,14 @@ export const MediaUploadInitSchema = z.object({
 });
 
 export const MediaChunkSchema = z.object({
-  uploadId: z.string().uuid(),
+  // FIXED [MD-115]: Matches service-generated IDs
+  uploadId: z.string().regex(/^[0-9]{13}[a-z0-9]+$/, "Invalid upload ID format"),
   chunkNumber: z.coerce.number().int().min(0),
 });
 
 export const MediaFinalizeSchema = z.object({
-  uploadId: z.string().uuid(),
+  // FIXED [MD-115]: Matches service-generated IDs
+  uploadId: z.string().regex(/^[0-9]{13}[a-z0-9]+$/, "Invalid upload ID format"),
 });
 
 export const CacheInvalidationQuerySchema = z.object({

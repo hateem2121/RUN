@@ -15,7 +15,7 @@ import { FloatingDockHeader } from "@/components/navigation/floating-dock-header
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { BackToTop } from "@/components/ui/back-to-top";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "sonner";
 import { getQueryClient } from "@/lib/queryClient";
 import "@/index.css";
 import { useEffect } from "react";
@@ -153,7 +153,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   <SkipLink targetId="main-content" />
                   <FloatingDockHeader />
                   {children}
-                  {mounted && <Toaster />}
+                  {mounted && (
+                    <Toaster
+                      position="bottom-right"
+                      richColors
+                      expand={true}
+                      theme="system"
+                    />
+                  )}
                   <BackToTop />
                   <OfflineIndicator />
                 </ScrollProvider>
@@ -196,7 +203,6 @@ export function ErrorBoundary() {
     details =
       error.status === 404 ? "The requested page could not be found." : error.statusText || details;
   } else if (error instanceof ApiError) {
-    // RFC 7807 Error Handling
     message = error.title || "Error";
     details = error.detail || error.message || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
@@ -205,14 +211,42 @@ export function ErrorBoundary() {
   }
 
   return (
-    <main id="main-content" className="container mx-auto p-4 pt-16">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full overflow-x-auto p-4">
-          <code>{stack}</code>
-        </pre>
-      )}
-    </main>
+    <html lang="en">
+      <head>
+        <title>{message} | RUN</title>
+        <Meta />
+        <Links />
+      </head>
+      <body className="bg-background text-foreground antialiased">
+        <main
+          id="main-content"
+          className="flex min-h-screen flex-col items-center justify-center p-6 text-center"
+        >
+          <div className="p-4 rounded-full bg-destructive/10 text-destructive mb-6">
+            <AlertCircle size={48} />
+          </div>
+          <h1 className="text-4xl font-bold tracking-tighter sm:text-6xl mb-4">{message}</h1>
+          <p className="text-muted-foreground max-w-md mx-auto mb-8">{details}</p>
+
+          {stack && (
+            <div className="w-full max-w-2xl mb-8 p-4 bg-muted rounded-lg text-left overflow-auto max-h-60 border">
+              <pre className="text-xs font-mono text-muted-foreground whitespace-pre-wrap">
+                {stack}
+              </pre>
+            </div>
+          )}
+
+          <a
+            href="/"
+            className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          >
+            Return to Safety
+          </a>
+        </main>
+        <Scripts />
+      </body>
+    </html>
   );
 }
+
+import { AlertCircle } from "lucide-react";

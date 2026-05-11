@@ -1,3 +1,8 @@
+import { RouteErrorBoundary } from "@/components/shared/RouteErrorBoundary";
+import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
+
+export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
+
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {

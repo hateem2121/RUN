@@ -820,20 +820,7 @@ function SustainabilityInner() {
   );
 }
 
-export function ErrorBoundary() {
-  const error = useRouteError();
-  if (isRouteErrorResponse(error)) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-black text-white">
-        <h1 className="text-4xl font-bold">
-          {error.status} {error.statusText}
-        </h1>
-      </div>
-    );
-  }
-  return (
-    <div className="flex h-screen items-center justify-center bg-black text-white">
-      <h1 className="text-4xl font-bold">An unexpected error occurred.</h1>
-    </div>
-  );
-}
+import { RouteErrorBoundary } from "@/components/shared/RouteErrorBoundary";
+import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
+
+export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };

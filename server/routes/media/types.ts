@@ -126,6 +126,7 @@ export interface MediaMetadata {
   altText?: string | undefined;
   caption?: string | undefined;
   folderId?: number | null;
+  metadata?: Record<string, unknown>;
 }
 
 export interface UploadSession {

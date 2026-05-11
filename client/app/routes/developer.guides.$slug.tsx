@@ -8,9 +8,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
+import { useLoaderData } from "react-router";
+import type { Route } from "./+types/developer.guides.$slug";
+
+export async function loader({ params }: Route.LoaderArgs) {
+  const { slug } = params;
+  const validSlugs = ["authentication", "webhooks"];
+  if (!slug || !validSlugs.includes(slug!)) {
+    throw new Response("Guide not found", { status: 404 });
+  }
+  return { slug };
+}
 
 export default function GuidePage() {
-  const { slug } = useParams();
+  const { slug } = useLoaderData<typeof loader>();
   const authRef = useRef<HTMLDivElement>(null);
   const webhooksRef = useRef<HTMLDivElement>(null);
 
@@ -166,14 +177,7 @@ function verify(payload, signature, secret) {
     );
   }
 
-  return (
-    <div className="flex flex-col items-center justify-center h-full space-y-4">
-      <Typography.H2>Guide Not Found</Typography.H2>
-      <Button asChild variant="outline">
-        <a href="/developer">Back to Getting Started</a>
-      </Button>
-    </div>
-  );
+  return null; // Should never reach here due to loader check
 }
 
 function Badge({

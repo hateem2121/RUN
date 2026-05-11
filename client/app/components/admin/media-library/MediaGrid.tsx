@@ -1,7 +1,7 @@
-import type { MediaAsset } from "@shared/index";
-import { AlertCircle, FileImage } from "lucide-react";
+import { AlertCircle, FileImage, RefreshCw } from "lucide-react";
 import { useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 // Import Extracted Components
 import { MediaGridItem } from "./components/MediaGridItem";
 import { MediaGridPagination } from "./components/MediaGridPagination";
@@ -32,7 +32,7 @@ export function MediaGrid({
   );
 
   // Use extracted query hook
-  const { displayAssets, pagination, batchContent, isLoading, error } = useMediaGridQuery();
+  const { displayAssets, pagination, batchContent, isLoading, error, refetch } = useMediaGridQuery();
 
   const totalAssets = pagination.total;
 
@@ -61,19 +61,26 @@ export function MediaGrid({
     },
     [setSelectedAsset, setLightboxOpen],
   );
-
   if (error) {
     return (
-      <div className="error-card-base rounded-lg p-6">
-        <div className="error-title">
+      <div className="error-card-base rounded-lg p-6 flex flex-col items-center text-center">
+        <div className="error-title flex items-center gap-2 text-destructive mb-2">
           <AlertCircle className="h-5 w-5" />
           Failed to load media
         </div>
-        <p className="error-message mt-2">
+        <p className="error-message mb-6 opacity-80">
           {error instanceof Error
             ? error.message
             : String(error) || "An error occurred while fetching media assets"}
         </p>
+        <Button
+          variant="outline"
+          onClick={() => refetch()}
+          className="flex items-center gap-2 border-destructive/20 hover:bg-destructive/10"
+        >
+          <RefreshCw className="h-4 w-4" />
+          Try Again
+        </Button>
       </div>
     );
   }

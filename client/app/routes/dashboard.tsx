@@ -1,3 +1,8 @@
+import { RouteErrorBoundary } from "@/components/shared/RouteErrorBoundary";
+import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
+
+export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
+
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import {

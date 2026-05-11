@@ -140,11 +140,27 @@ export class MediaContentService {
    * Returns system performance dashboard data
    */
   async getPerformanceDashboard(): Promise<Result<Record<string, unknown>, AppError>> {
-    return ok({
-      status: "operational",
-      performance: "excellent",
-      timestamp: new Date().toISOString(),
-    });
+    try {
+      const stats = await withCircuit(
+        "get-storage-stats",
+        () => mediaRepository.getStorageStats(),
+        DB_CIRCUIT_OPTIONS,
+      );
+
+      return ok({
+        status: "operational",
+        systemStatus: "operational",
+        performance: "excellent",
+        health: "healthy",
+        totalAssets: stats.count,
+        totalStorageBytes: stats.totalSize,
+        storageConnected: !!appStorageService.getBucketName(),
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      logger.error("[MediaContentService] Failed to fetch dashboard stats", error as Error);
+      return err(new InternalError("Failed to fetch dashboard stats", { error }));
+    }
   }
 
   /**

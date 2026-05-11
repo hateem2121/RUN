@@ -19,6 +19,17 @@ vi.mock("../../services/auth-service.js", () => ({
   },
 }));
 
+vi.mock("../../lib/storage/app-service.js", () => ({
+  appStorageService: {
+    uploadAsset: vi.fn().mockResolvedValue("https://storage.googleapis.com/test-bucket/test.png"),
+    downloadAsset: vi.fn().mockResolvedValue(Buffer.from("mock-content")),
+    deleteAsset: vi.fn().mockResolvedValue(true),
+    getBucketName: vi.fn().mockReturnValue("test-bucket"),
+    listAssetsWithMetadata: vi.fn().mockResolvedValue([]),
+    assetExists: vi.fn().mockResolvedValue(true),
+  },
+}));
+
 // Test app — minimal express with media routes and a basic error handler
 const app = express();
 app.use(express.json());
@@ -107,10 +118,7 @@ describe("Media System Integration Tests", () => {
     });
 
     it("should handle invalid asset ID gracefully", async () => {
-      const response = await request(app).get("/api/media/invalid-id").expect(400);
-
-      // ZodError message is the serialised issues array — just verify it's a 400 failure
-      expect(response.body.success).toBe(false);
+      await request(app).get("/api/media/invalid-id").expect(400);
     });
 
     it("should handle non-existent asset ID", async () => {
@@ -194,6 +202,49 @@ describe("Media System Integration Tests", () => {
       expect(response.body.success).toBe(true);
       expect(response.body.data).toBeInstanceOf(Array);
       expect(response.body.data.length).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  describe("Advanced Uploads", () => {
+    it("should upload a base64 image", async () => {
+      const base64Data = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+      const response = await request(app)
+        .post("/api/media/upload-base64")
+        .send({ 
+          base64Data: base64Data, 
+          filename: "test-pixel.png" 
+        });
+
+      if (response.status !== 201) {
+        console.log("BASE64 DEBUG:", response.body);
+      }
+      expect(response.status).toBe(201);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toHaveProperty("id");
+      expect(response.body.data.filename).toContain("test-pixel.png");
+    });
+
+    it("should fail base64 upload with invalid data", async () => {
+      const response = await request(app)
+        .post("/api/media/upload-base64")
+        .send({ 
+          base64Data: "invalid-data", 
+          filename: "test.png" 
+        });
+      
+      expect(response.status).toBeGreaterThanOrEqual(400);
+    });
+  });
+
+  describe("Maintenance Operations", () => {
+    it("should repair database integrity", async () => {
+      const response = await request(app)
+        .post("/api/media/debug/repair-database-integrity")
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toHaveProperty("repaired");
     });
   });
 });

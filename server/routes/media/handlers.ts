@@ -20,8 +20,10 @@ type MediaListQuery = z.infer<typeof MediaListQuerySchema>;
 // QUERY & LISTING HANDLERS
 // ============================================================================
 
-// biome-ignore lint/suspicious/noExplicitAny: Express 5 type hardening
-export async function getMediaAssets(req: Request<any, any, any, MediaListQuery>, res: Response) {
+export async function getMediaAssets(
+  req: Request<Record<string, string>, unknown, unknown, MediaListQuery>,
+  res: Response,
+) {
   const { page, limit, type, search, folderId } = req.query;
 
   if (shouldBypassCache(req)) {
@@ -77,9 +79,8 @@ export async function getMediaCount(req: Request, res: Response) {
   return res.json(createSuccessResponse({ count: result.value }));
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: Express type hardening
 export async function searchMediaAssets(
-  req: Request<any, any, any, MediaListQuery>,
+  req: Request<Record<string, string>, unknown, unknown, MediaListQuery>,
   res: Response,
 ) {
   const { search, type, limit, folderId } = req.query;
@@ -171,7 +172,7 @@ export async function uploadSingleFile(req: Request, res: Response) {
 
 export async function uploadBase64(req: Request, res: Response) {
   const { filename, base64Data } = req.body;
-  const result = await mediaService.uploadBase64(filename, base64Data);
+  const result = await mediaService.uploadBase64(base64Data, filename);
   if (result.isErr()) throw result.error;
   return res.status(201).json(createSuccessResponse(result.value));
 }

@@ -17,6 +17,7 @@ interface MediaGridQueryResult {
   batchContent: Record<number, string> | undefined;
   isLoading: boolean;
   error: Error | null;
+  refetch: () => void;
 }
 
 export function useMediaGridQuery(): MediaGridQueryResult {
@@ -52,6 +53,7 @@ export function useMediaGridQuery(): MediaGridQueryResult {
     data: mediaResponse,
     status,
     error,
+    refetch,
   } = useQuery({
     queryKey,
     queryFn: async ({ signal }) => {
@@ -203,5 +205,8 @@ export function useMediaGridQuery(): MediaGridQueryResult {
     batchContent,
     isLoading,
     error: error as Error | null,
+    refetch: () => {
+      refetch();
+    },
   };
 }

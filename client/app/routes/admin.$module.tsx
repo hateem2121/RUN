@@ -1,10 +1,14 @@
 import { lazy, Suspense } from "react";
 import { useParams } from "react-router"; // RR7 uses useParams from react-router
+import { AdminErrorBoundary } from "@/components/admin/AdminErrorBoundary";
 import { PlaceholderModule } from "@/components/admin/PlaceholderModule";
 import { ApiErrorFallback } from "@/components/admin/shared/ApiErrorFallback";
-import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
+import { ErrorBoundary as InlineErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { Typography } from "@/components/ui/typography";
 import type { Route } from "./+types/admin.$module";
+
+export { AdminErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
 
 // Lazy load all admin modules
 // Note: We are re-declaring these lazy imports here.
@@ -212,11 +216,11 @@ export default function AdminModule() {
   const moduleName = module ? module.charAt(0).toUpperCase() + module.slice(1) : "Module";
 
   return (
-    <ErrorBoundary
+    <InlineErrorBoundary
       key={module} // Reset error boundary when switching modules
       fallback={<ApiErrorFallback moduleName={moduleName} />}
     >
       <Suspense fallback={<ModuleLoader />}>{renderModule()}</Suspense>
-    </ErrorBoundary>
+    </InlineErrorBoundary>
   );
 }

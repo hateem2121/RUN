@@ -139,8 +139,8 @@ async function cleanupTempUploads(
   let errors = 0;
 
   try {
-    // List all files in temp/uploads directory
-    const allFiles = await appStorageService.listAssets(PREFIX);
+    // List all files with metadata in temp/uploads directory
+    const allFiles = await appStorageService.listAssetsWithMetadata(PREFIX);
 
     if (allFiles.length === 0) {
       logger.info(`[Lifecycle] No temp upload files found`);
@@ -152,9 +152,10 @@ async function cleanupTempUploads(
     // Filter files older than cutoff time
     // Note: We parse the uploadId timestamp from the path
     // Format: media/temp/uploads/{timestamp}{random}/chunk-{n}
-    const filesToDelete: string[] = [];
+    const filesToDelete: { name: string; size: number }[] = [];
 
-    for (const filePath of allFiles) {
+    for (const file of allFiles) {
+      const filePath = file.name;
       // Extract upload ID from path: media/temp/uploads/{uploadId}/chunk-{n}
       const pathParts = filePath.split("/");
       if (pathParts.length >= 4 && pathParts[2] === "uploads") {
@@ -169,7 +170,7 @@ async function cleanupTempUploads(
         const uploadTimestamp = parseInt(timestampStr, 10);
 
         if (!Number.isNaN(uploadTimestamp) && uploadTimestamp < cutoffTime) {
-          filesToDelete.push(filePath);
+          filesToDelete.push({ name: filePath, size: file.size });
 
           // Respect batch size and max deletions limit
           if (filesToDelete.length >= Math.min(batchSize, maxDeletions)) {
@@ -187,19 +188,19 @@ async function cleanupTempUploads(
     logger.info(`[Lifecycle] ${filesToDelete.length} temp files eligible for deletion`);
 
     // Delete files in batches
-    for (const filePath of filesToDelete) {
+    for (const fileToDelete of filesToDelete) {
+      const filePath = fileToDelete.name;
       try {
         if (dryRun) {
           logger.info(`[Lifecycle] [DRY RUN] Would delete: ${filePath}`);
         } else {
-          await appStorageService.deleteAsset(filePath);
           deleted++;
-          // Estimate freed space (chunk size is typically ~8MB, but we'll count it as freed)
-          freed += 8 * 1024 * 1024; // Estimate 8MB per chunk
+          freed += fileToDelete.size; // FIXED [MD-113]: Use size from object
 
           if (deleted % 10 === 0) {
             logger.debug(`[Lifecycle] Deleted ${deleted}/${filesToDelete.length} files`);
           }
+          await appStorageService.deleteAsset(filePath);
         }
       } catch (error) {
         errors++;
@@ -207,7 +208,7 @@ async function cleanupTempUploads(
       }
     }
 
-    return { deleted, freed, errors, filePaths: filesToDelete };
+    return { deleted, freed, errors, filePaths: filesToDelete.map((f) => f.name) };
   } catch (error) {
     logger.error(`[Lifecycle] Temp uploads cleanup failed:`, serializeError(error));
     errors++;
@@ -270,12 +271,13 @@ async function cleanupOrphanedFiles(
     // 2. Check each directory for orphaned files
     for (const directory of directories) {
       try {
-        const allFiles = await appStorageService.listAssets(directory);
+        const allFiles = await appStorageService.listAssetsWithMetadata(directory);
         logger.info(`[Lifecycle] Found ${allFiles.length} files in ${directory}`);
 
         // 3. Find and delete orphaned files (exist in storage but not in database)
         // Process files in batches, continuing until we've checked all files or hit max deletions
-        for (const filePath of allFiles) {
+        for (const file of allFiles) {
+          const filePath = file.name;
           checked++;
 
           // Check if this file has a corresponding database record
@@ -289,8 +291,7 @@ async function cleanupOrphanedFiles(
               } else {
                 await appStorageService.deleteAsset(filePath);
                 deleted++;
-                // Estimate freed space (average media file ~2MB)
-                freed += 2 * 1024 * 1024;
+                freed += file.size; // FIXED [MD-113]: Use actual file size from metadata
 
                 if (deleted % 10 === 0) {
                   logger.debug(`[Lifecycle] Deleted ${deleted} orphaned files`);

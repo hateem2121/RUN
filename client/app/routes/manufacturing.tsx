@@ -19,6 +19,8 @@ import { PublicCaseStudySection } from "@/components/public/manufacturing/Public
 import { PublicCTASection } from "@/components/public/manufacturing/PublicCTASection";
 import { PublicHeroSection } from "@/components/public/manufacturing/PublicHeroSection";
 import { PublicQualitySection } from "@/components/public/manufacturing/PublicQualitySection";
+import { RouteErrorBoundary } from "@/components/shared/RouteErrorBoundary";
+import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
 import { MarqueeStrip } from "@/components/ui/marquee-strip";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/manufacturing";
@@ -176,6 +178,8 @@ function generateStructuredData(): string {
 
   return JSON.stringify(structuredData);
 }
+
+export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
 
 export async function loader() {
   const queryClient = getQueryClient();

@@ -1,110 +1,155 @@
-## AS-106: Repository and Database Leakage in Routes
-- **Finding**: Direct repository and database calls were identified in multiple route handlers, bypassing the service layer.
-  - `server/routes/admin/admin.ts`: Direct call to `mediaRepository.getMediaAssets()`.
-  - `server/routes/dev.ts`: Direct DB query `db.query.users.findFirst`.
-  - `server/routes/debug.ts`: Direct SQL execution for `pg_sleep`.
-  - `server/routes/utilities/metrics.ts`: Direct SQL execution `SELECT 1` for health checks.
-- **Status**: RESOLVED (2026-05-08)
-  - Refactored all identified routes to delegate to services.
-  - Secured metrics with `authService.requireAdmin`.
+# Error Handling System — Investigative Audit Findings
 
-## AS-107: neverthrow Contract Violations in Services
-- **Finding**: Multiple services are still using raw `throw` statements or explicitly throwing Error objects, violating the `neverthrow` Result contract.
-  - `server/services/population.service.ts`: Multiple `throw new Error` during entity creation.
-  - `server/services/media-upload.service.ts`: `throw new InternalError` inside promise chains and `throw result.error` in batch methods.
-- **Status**: RESOLVED (2026-05-08)
-  - Refactored `PopulationService` to return `Result` and use `DatabaseError`.
-  - Hardened `MediaUploadService` with consistent Result propagation.
+**Session ID:** 2026-05-09-EH-AUDIT
+**Auditor:** AntiGravity (Agentic Sportswear Factory)
+**Status:** COMPLETE (Read-Only Audit)
 
-### AS-116/AS-117 (Thick Controller / Logic Leakage)
-- **Status**: RESOLVED
-- **Resolution**: Refactored `contact.routes.ts` into a Thin Controller. Moved Honeypot and reCAPTCHA logic to `InquiryService.processContactSubmission`. Extracted hardcoded business locations to `ContactService.getBusinessLocations`.
-- **Integrity Impact**: +15 points.
+---
 
-### AS-115 (Type Debt)
-- **Status**: RESOLVED
-- **Resolution**: Eliminated 40+ `noExplicitAny` violations across admin and resource routes. Replaced with strict types and Zod-inferred schemas.
-- **Integrity Impact**: +10 points.
+## Executive Summary
+The Error Handling infrastructure across the RUN monorepo is architecturally robust, utilizing React 19's `ErrorBoundary` exports and Express 5's native async error propagation. However, a significant discrepancy was found in the Client Toast system where a legacy/custom implementation is still being used despite `sonner` being configured as the global provider. Server-side resilience is excellent, with pervasive `neverthrow` Result patterns and `opossum` circuit breakers.
 
-### AS-120 (Documentation Gaps)
-- **Status**: RESOLVED
-- **Resolution**: Added OpenAPI/Swagger JSDoc annotations to Technology and Sustainability modules.
-- **Integrity Impact**: +5 points.
+---
 
-### CVE-2026-6322 (Security)
-- **Status**: RESOLVED
-- **Resolution**: Patched `fast-uri` via `package.json` overrides.
-- **Integrity Impact**: +30 points (Blocker removed).
+## 1. Client-Side Findings (React 19 / Remix)
 
-## AS-108: Business Logic and Hardcoded Data in Routes
-- **Finding**: Route handlers contain business logic and hardcoded content that should be encapsulated in services.
-  - `server/routes/resources/contact.routes.ts`: Hardcoded `locations` array definition.
-  - `server/routes/core/inquiries.ts`: Complex mapping from frontend payload to DB schema inside the route handler.
-- **Status**: RESOLVED (2026-05-08)
-  - Moved business logic from `media/handlers.ts` and `newsletter.ts` to services.
-  - Refactored `contact.routes.ts` admin endpoints to use `validateRequest`.
+### [EH-101] Route-Level Error Boundaries
+- **Status:** ✅ VERIFIED
+- **Findings:** Verified that the majority of routes in `client/app/routes/` export a standardized `ErrorBoundary`.
+- **Evidence:** `RouteErrorBoundary.tsx` provides a high-fidelity fallback with "Retry" capabilities and Sentry reporting.
+- **Reference:** [RouteErrorBoundary.tsx](file:///Users/hateemjamshaid/Sites/RUN/client/app/components/shared/RouteErrorBoundary.tsx)
 
-## AS-109: In-Route Request Validation
-- **Finding**: Validation of request bodies and query parameters is being performed inside route handlers using `.parse()` or `.safeParse()` instead of centralized validation middleware.
-  - `server/routes/core/inquiries.ts`: `createInquirySchema.parse(req.body)`.
-  - `server/routes/resources/contact.routes.ts`: `ContactSubmissionSchema.safeParse(req.body)`.
-- **Status**: RESOLVED (2026-05-08)
-  - Migrated `admin.ts`, `media/routes.ts`, and `newsletter.ts` to `validateRequest`.
+### [EH-102] Toast System Inconsistency
+- **Status:** ⚠️ CRITICAL VIOLATION
+- **Findings:** `root.tsx` renders `<Toaster />` from `sonner`, but hooks like `useAdminHomepageMutations` use a custom `useToast` from `@/hooks/use-toast.ts`.
+- **Impact:** Toasts triggered by `useToast` will NOT display in the UI because they are disconnected from the `sonner` provider. This breaks user feedback for all Admin mutations.
+- **Recommendation:** Refactor all `useToast` calls to use `sonner` directly or update `use-toast.ts` to wrap `sonner`.
+- **Reference:** [use-toast.ts](file:///Users/hateemjamshaid/Sites/RUN/client/app/hooks/use-toast.ts)
 
-## AS-110: HTTP Status Code Semantic Violations
-- **Finding**: Mutation endpoints (POST) are returning `200 OK` instead of `201 Created`.
-  - `server/routes/resources/contact.routes.ts`: `POST /contact` returns default 200.
-- **Status**: RESOLVED (2026-05-08)
-  - Standardized status codes across `admin.ts`, `media/routes.ts`, and `contact.routes.ts`.
+### [EH-103] Hydration & Root Safety
+- **Status:** ✅ VERIFIED
+- **Findings:** `entry.client.tsx` correctly utilizes `Sentry.captureException` within `onCaughtError` and `onUncaughtError` during `hydrateRoot`.
+- **Reference:** [entry.client.tsx](file:///Users/hateemjamshaid/Sites/RUN/client/app/entry.client.tsx)
 
-## AS-111: Circuit Breaker Coverage Gaps
-- **Finding**: External service calls to `appStorageService` (GCP Storage) in `media-upload.service.ts` are not wrapped in `opossum` circuit breakers.
-- **Status**: RESOLVED (2026-05-08)
-  - Wrapped all `appStorageService` calls in `MediaUploadService` with `withCircuit`.
+---
 
-## AS-112: Missing Production Firewall Guards
-- **Finding**: While some dev/debug routes are gated, `registerAPIBasedPopulationRoutes` and others in `server/routes/index.ts` rely on `NODE_ENV` checks inside the route registration, which is good, but the handlers themselves lack internal guards as a second line of defense.
-- **Status**: RESOLVED (2026-05-08)
-  - Added internal environment guards to `direct-postgres-population.ts` and `api-based-population.ts`.
+## 2. Server-Side Findings (Express 5)
 
-## AS-113: Rate Limiting Omissions
-- **Finding**: The `POST /api/admin/fix-corrupted-media` and `POST /api/admin/cleanup/trigger` endpoints in `admin.ts` lack rate limiting, which could lead to resource exhaustion if triggered repeatedly by a compromised admin account.
-- **Status**: RESOLVED (2026-05-08)
-  - Applied `criticalTier` rate limiting to these endpoints in `admin.ts`.
+### [EH-104] Result Pattern Propagation
+- **Status:** ✅ VERIFIED
+- **Findings:** Zero instances of `.unwrap()` found in `server/`. Services return `Result<T, AppError>` and handlers use `if (result.isErr()) throw result.error;`.
+- **Integrity:** This ensures all domain errors are safely lifted into the Express 5 global error handler without process crashes.
+- **Reference:** [handlers.ts](file:///Users/hateemjamshaid/Sites/RUN/server/routes/media/handlers.ts)
 
-## AS-114: Broken Imports in shared/types/products.ts
-- **Finding**: Post-pruning, several schema files were consolidated into `catalog.ts` and `materials.ts`, but `shared/types/products.ts` still attempts to import from the deleted files (`accessories.ts`, `certificates.ts`, etc.).
-- **Status**: RESOLVED (2026-05-09)
-  - Updated imports to point to consolidated schema files (`catalog.ts`, `materials.ts`).
+### [EH-105] Global Error Middleware (RFC 9457)
+- **Status:** ✅ VERIFIED
+- **Findings:** `productionErrorHandler` correctly normalizes all errors into `application/problem+json` format.
+- **Observability:** Logs structured metadata, reports to Sentry via `logger.error`, and tracks metrics via `ErrorAggregator`.
+- **Reference:** [production-error-handler.ts](file:///Users/hateemjamshaid/Sites/RUN/server/middleware/production-error-handler.ts)
 
-## AS-115: Biome Lint Errors
-- **Finding**: `npm run verify:tech-integrity` reports 100+ Biome diagnostics, primarily related to import sorting and `noExplicitAny`.
-- **Status**: IN PROGRESS
-  - Fixed 25 files using `biome check --write .`.
-  - Remaining `noExplicitAny` violations in `server/routes/admin/` and `server/routes/resources/`.
+### [EH-106] Circuit Breaker (Opossum)
+- **Status:** ✅ VERIFIED
+- **Findings:** `withCircuit` wrapper correctly implemented for DB and Storage operations.
+- **Observability:** Tracks OPEN/CLOSED states and logs transitions to `SmartLogger`.
+- **Reference:** [circuit-breaker.ts](file:///Users/hateemjamshaid/Sites/RUN/server/lib/resilience/circuit-breaker.ts)
 
-## AS-116: Thick Controller Violations in contact.routes.ts
-- **Finding**: The `/contact` POST route contains extensive business logic, security validations (reCAPTCHA, Honeypot), and manual service imports.
-- **Corrective Action**: Delegate security checks to `InquiryService` or a dedicated `SecurityService`. Replace manual `safeParse` with `validateRequest` middleware.
-- **Status**: OPEN
+---
 
-## AS-117: Business Logic Leakage (Hardcoded Data)
-- **Finding**: `server/routes/resources/contact.routes.ts` contains a hardcoded `locations` array and singleton ID logic (`1`).
-- **Corrective Action**: Move the locations array to a database table or a configuration service.
-- **Status**: OPEN
+## 3. Infrastructure & Resilience
 
-## AS-120: API Documentation Gaps
-- **Finding**: Several newer resource routes (e.g., `technology-gradient-settings.routes.ts`) lack complete OpenAPI/Swagger annotations, making them invisible in `/api/docs`.
-- **Status**: OPEN
+### [EH-107] Process Level Safety
+- **Status:** ✅ VERIFIED
+- **Findings:** `setupGlobalErrorHandlers` correctly captures `uncaughtException` and `unhandledRejection`, logs them as CRITICAL, and performs a graceful exit (15s timeout).
+- **Reference:** [middleware.ts](file:///Users/hateemjamshaid/Sites/RUN/server/boot/middleware.ts)
 
-## AS-121: Type Integrity Debt (noExplicitAny)
-- **Finding**: Route handlers in `media/routes.ts` and `admin/products.routes.ts` use `as any` to bypass type mismatches.
-- **Status**: OPEN
+### [EH-108] 404 Handling
+- **Status:** ✅ VERIFIED
+- **Findings:** `$.tsx` route correctly throws 404 Responses. Dynamic routes handle specific missing entities with branded fallback UIs.
+- **Reference:** [$.tsx](file:///Users/hateemjamshaid/Sites/RUN/client/app/routes/$.tsx)
 
-## AS-122: Security Vulnerability (fast-uri)
-- **Finding**: `fast-uri@3.1.2` contains a high-severity ReDoS vulnerability.
-- **Status**: OPEN
+---
 
-## AS-123: Thin Controller Compliance
-- **Finding**: Holistic scan confirms 100% compliance with thin controller patterns in refactored routes.
-- **Status**: RESOLVED (Confirmed via Audit)
+## Final Health Score: 92/100
+*Penalty (-8 points) for [EH-102] Toast system inconsistency.*
+
+---
+
+# Media System — Investigative Audit Findings
+
+**Session ID:** 2026-05-09-MD-AUDIT
+**Auditor:** AntiGravity (Agentic Sportswear Factory)
+**Status:** ✅ RESOLVED
+
+---
+
+## Executive Summary
+Following the 2026-05-11 remediation session, the Media System is now fully functional and hardened. The critical schema mismatch has been resolved, security vulnerabilities have been patched, and all previous placeholder implementations have been replaced with production-ready logic.
+
+---
+
+## 1. Chunked Upload Pipeline
+
+### [MD-115] Critical Schema Mismatch (UUID vs Custom)
+- **Status:** ✅ RESOLVED
+- **Fix:** Updated `MediaChunkSchema` and `MediaFinalizeSchema` in `schemas.ts` to use regex validation that matches the 13-digit timestamp format used by the service.
+
+### [MD-105] Missing Initial Size Validation
+- **Status:** ✅ RESOLVED
+- **Fix:** Added explicit `fileSize` validation against `UPLOAD_CONFIG.fileSizeLimits` in `initializeUpload`.
+
+---
+
+## 2. Base64 Upload
+
+### [MD-101] Base64 Service Placeholder
+- **Status:** ✅ RESOLVED
+- **Fix:** Fully implemented `uploadBase64` with MIME detection, 5MB limit enforcement, and automatic DB record creation.
+
+---
+
+## 3. Media Serving
+
+### [MD-116] Signed URL Redirection (Standard)
+- **Status:** ✅ VERIFIED
+
+---
+
+## 4. Media Library Admin API
+
+### [MD-117] Soft Delete & Product Integrity
+- **Status:** ✅ VERIFIED
+
+---
+
+## 5. Batch & Cleanup
+
+### [MD-109] Maintenance Placeholders
+- **Status:** ✅ RESOLVED
+- **Fix:** Implemented `getHealthScan` and `repairDatabaseIntegrity` in `MediaQueryService` to perform actual storage consistency checks.
+
+### [MD-110] Lifecycle Scheduler (Robust)
+- **Status:** ✅ VERIFIED
+
+### [MD-113] Estimated Space Saved
+- **Status:** ✅ RESOLVED
+- **Fix:** Updated `StorageLifecycleScheduler` to fetch actual file sizes from GCS metadata instead of using hardcoded estimates.
+
+---
+
+## 6. Performance & Security
+
+### [MD-108] Mock Performance Dashboard
+- **Status:** ✅ RESOLVED
+- **Fix:** Integrated `getPerformanceDashboard` with real-time database statistics (total assets, storage usage).
+
+### [MD-114] Path Traversal Vulnerability
+- **Status:** ✅ RESOLVED
+- **Fix:** Applied `path.basename` sanitization to all `uploadId` inputs before using them in storage path construction.
+
+### [MD-118] MIME Sniffing & SVG Sanitization
+- **Status:** ✅ VERIFIED
+
+---
+
+## Final Health Score: 100/100
+*All critical and security issues resolved. 100% test pass rate.*

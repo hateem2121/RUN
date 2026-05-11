@@ -1,7 +1,11 @@
 import { lazy, Suspense } from "react";
+import { AdminErrorBoundary } from "@/components/admin/AdminErrorBoundary";
 import { ProductsErrorFallback } from "@/components/admin/ProductsErrorFallback";
-import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
+import { ErrorBoundary as InlineErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { Typography } from "@/components/ui/typography";
+
+export { AdminErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
 
 // Lazy load Content Dashboard (Stitch Design)
 const ContentDashboard = lazy(() =>
@@ -24,10 +28,10 @@ function ModuleLoader() {
 
 export default function AdminIndex() {
   return (
-    <ErrorBoundary fallback={<ProductsErrorFallback />}>
+    <InlineErrorBoundary fallback={<ProductsErrorFallback />}>
       <Suspense fallback={<ModuleLoader />}>
         <ContentDashboard />
       </Suspense>
-    </ErrorBoundary>
+    </InlineErrorBoundary>
   );
 }

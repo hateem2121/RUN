@@ -1,3 +1,8 @@
+import { RouteErrorBoundary } from "@/components/shared/RouteErrorBoundary";
+import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
+
+export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
+
 import { useGSAP } from "@gsap/react";
 import type { Category, Certificate, Fabric, ProductSummary } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
@@ -26,8 +31,14 @@ export async function loader({ params }: Route.LoaderArgs) {
 
   const category = queryClient.getQueryData<Category>([`/api/categories/by-slug/${slug}`]);
 
-  if (category) {
-    // 2. Fetch dependencies in parallel
+  if (!category) {
+    throw new Response(JSON.stringify({ message: "Category not found" }), {
+      status: 404,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  // 2. Fetch dependencies in parallel
     await Promise.all([
       queryClient.prefetchQuery({
         queryKey: ["/api/categories"],
@@ -149,30 +160,7 @@ export default function CategoryDetail() {
     );
   }
 
-  // Error state
-  if (categoryError || !category) {
-    return (
-      <div className="container mx-auto max-w-6xl px-4 pt-20 pb-8 sm:pt-24 lg:pt-28">
-        <div className="py-16 text-center">
-          <AlertCircle className="mx-auto mb-4 h-16 w-16 text-red-500" />
-          <Typography.H2 className="mb-4 font-bold text-2xl text-foreground">
-            Category Not Found
-          </Typography.H2>
-          <Typography.P className="mb-8 text-muted-foreground">
-            The category you're looking for doesn't exist or has been moved.
-          </Typography.P>
-          <Link to="/categories">
-            <button
-              type="button"
-              className="inline-flex items-center bg-black px-6 py-3 font-semibold text-white transition-colors hover:bg-foreground/80"
-            >
-              Browse All Categories
-            </button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  // No manual error state needed as loader throws 404
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>

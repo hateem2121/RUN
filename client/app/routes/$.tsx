@@ -1,6 +1,10 @@
-import { Link } from "react-router";
+import { Link, type LoaderFunctionArgs } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
+
+export async function loader({}: LoaderFunctionArgs) {
+  throw new Response(null, { status: 404, statusText: "Not Found" });
+}
 
 export function meta() {
   return [

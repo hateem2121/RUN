@@ -11,6 +11,7 @@ import { injectSecretsToEnv, loadSecrets } from "./lib/secrets/secret-manager.js
 import "dotenv/config";
 import type express from "express";
 import { logger } from "./lib/monitoring/logger.js";
+import { initSentry } from "./lib/monitoring/sentry.js";
 
 export let app: express.Express;
 export const serverReady: Promise<void> = (async () => {
@@ -20,6 +21,9 @@ export const serverReady: Promise<void> = (async () => {
     const secrets = await loadSecrets();
     injectSecretsToEnv();
     logger.info(`[Bootstrap] Loaded ${Object.keys(secrets).length} secrets.`);
+
+    // 1.2. Initialize Sentry (ASAP after secrets/env are ready)
+    initSentry();
 
     // 1.5. Validate Environment Variables
     const { validateEnv } = await import("../shared/schemas/env.schema.js");

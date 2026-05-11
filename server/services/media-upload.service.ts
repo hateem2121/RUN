@@ -1,3 +1,4 @@
+import path from "node:path";
 import { err, ok, type Result } from "neverthrow";
 import type { MediaAsset } from "../../shared/index.js";
 import { generateResponsiveVariants, isImageFile, processImage } from "../image-processor.js";
@@ -54,19 +55,28 @@ export class MediaUploadService {
    */
   async initializeUpload(
     filename: string,
-    totalSize: number,
+    fileSize: number,
     mimeType: string,
-    originalName: string,
+    originalName?: string,
   ): Promise<Result<{ uploadId: string; chunkSize: number; totalChunks: number }, AppError>> {
+    // SECURITY [MD-105]: Validate file size against system limits before initializing
+    if (fileSize > (UPLOAD_CONFIG.fileSizeLimits?.DEFAULT || 100 * 1024 * 1024)) {
+      return err(
+        new BadRequestError(
+          `File size exceeds limit of ${(UPLOAD_CONFIG.fileSizeLimits?.DEFAULT || 100 * 1024 * 1024) / (1024 * 1024)}MB`,
+        ),
+      );
+    }
+
     const uploadId = Date.now().toString() + Math.random().toString(36).substring(2, 11);
     const chunkSize = UPLOAD_CONFIG.chunkSize;
-    const totalChunks = Math.ceil(totalSize / chunkSize);
+    const totalChunks = Math.ceil(fileSize / chunkSize);
 
     const session: UploadSession = {
       uploadId,
       filename,
       originalName: originalName || filename,
-      totalSize,
+      totalSize: fileSize,
       mimeType: correctMimeType(mimeType, originalName || filename),
       chunkSize,
       totalChunks,
@@ -106,7 +116,8 @@ export class MediaUploadService {
     }
 
     session.lastActivityAt = new Date();
-    const chunkKey = `${CHUNK_STORAGE_BASE}/${uploadId}/chunk-${chunkNumber}`;
+    const safeUploadId = path.basename(uploadId);
+    const chunkKey = `${CHUNK_STORAGE_BASE}/${safeUploadId}/chunk-${chunkNumber}`;
 
     try {
       await withCircuit(
@@ -170,6 +181,7 @@ export class MediaUploadService {
       const PARALLEL_BATCH_SIZE = 10;
       const orderedChunks: Buffer[] = new Array(session.totalChunks);
       let computedTotal = 0;
+      const safeUploadId = path.basename(uploadId);
 
       for (
         let batchStart = 0;
@@ -180,7 +192,7 @@ export class MediaUploadService {
         const batchPromises = [];
 
         for (let i = batchStart; i < batchEnd; i++) {
-          const chunkKey = `${CHUNK_STORAGE_BASE}/${uploadId}/chunk-${i}`;
+          const chunkKey = `${CHUNK_STORAGE_BASE}/${safeUploadId}/chunk-${i}`;
           batchPromises.push(
             withCircuit(
               "download-chunk-finalize",
@@ -323,10 +335,11 @@ export class MediaUploadService {
   private async cleanupSession(uploadId: string) {
     const session = this.sessions.get(uploadId);
     if (!session) return;
+    const safeUploadId = path.basename(uploadId);
 
     // Async cleanup of chunks
     for (let i = 0; i < session.totalChunks; i++) {
-      const chunkKey = `${CHUNK_STORAGE_BASE}/${uploadId}/chunk-${i}`;
+      const chunkKey = `${CHUNK_STORAGE_BASE}/${safeUploadId}/chunk-${i}`;
       withCircuit(
         "delete-chunk-cleanup",
         () => appStorageService.deleteAsset(chunkKey),
@@ -693,11 +706,63 @@ export class MediaUploadService {
    * Uploads file from Base64 data
    */
   async uploadBase64(
-    _filename: string,
-    _base64Data: string,
-  ): Promise<Result<Record<string, unknown>, AppError>> {
-    // Basic implementation for now
-    return ok({ status: "Base64 upload not fully implemented in service layer yet" });
+    base64Data: string,
+    filename: string,
+    metadata: Record<string, unknown> = {},
+  ): Promise<Result<MediaAsset, AppError>> {
+    try {
+      // SECURITY [MD-101]: Parse and validate base64 data
+      const matches = base64Data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+      if (!matches || matches.length !== 3) {
+        return err(new BadRequestError("Invalid base64 data format"));
+      }
+
+      const mimeType = matches[1]!;
+      const buffer = Buffer.from(matches[2]!, "base64");
+
+      // Validate size (limit to 5MB for base64 to avoid memory pressure)
+      const MAX_BASE64_SIZE = 5 * 1024 * 1024;
+      if (buffer.length > MAX_BASE64_SIZE) {
+        return err(new BadRequestError("Base64 upload limited to 5MB"));
+      }
+
+      // Validate MIME type
+      const allowedMimes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/svg+xml",
+        "application/pdf",
+      ];
+      if (!allowedMimes.includes(mimeType)) {
+        return err(new BadRequestError(`MIME type ${mimeType} not allowed for base64 upload`));
+      }
+
+      const slugifiedName = slugifyFilename(filename);
+      const mediaType = detectMediaType(mimeType);
+      const storagePath = generateOrganizedStoragePath(mediaType, slugifiedName);
+
+      // Upload to storage
+      const url = await appStorageService.uploadAsset(storagePath, buffer, { contentType: mimeType });
+
+      // Create DB record
+      const insertData = buildInsertMediaAsset({
+        filename: slugifiedName,
+        originalName: filename,
+        mimeType,
+        totalSize: buffer.length,
+        storagePath,
+        type: mediaType,
+        url,
+        metadata,
+      });
+
+      const asset = await mediaRepository.createMediaAsset(insertData);
+      return ok(asset);
+    } catch (error) {
+      logger.error("[MediaUploadService] Base64 upload failed", error as Error);
+      return err(new InternalError("Base64 upload failed", { error }));
+    }
   }
 
   /**
