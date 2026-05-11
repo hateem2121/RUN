@@ -1,23 +1,27 @@
+import {
+  type InquiryEmailJobData,
+  inquiryEmailJobSchema,
+  type MediaProcessingJobData,
+  mediaProcessingJobSchema,
+} from "@run-remix/shared";
 import express from "express";
-import { emailService, type InquiryEmailData } from "../lib/integrations/email-service.js";
+import { validateRequest } from "zod-express-middleware";
+import { generateResponsiveVariants, isImageFile, processImage } from "../image-processor.js";
+import { mediaRepository } from "../lib/db/repositories/index.js";
+import { emailService } from "../lib/integrations/email-service.js";
+import { getGLTFProcessor, isGLTFFile } from "../lib/integrations/gltf-processor.js";
 import { logger } from "../lib/monitoring/logger.js";
-import type { MediaOperation, MediaTaskPayload } from "../lib/queues/media-queue.js";
+import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
+import { appStorageService } from "../lib/storage/app-service.js";
 import { verifyCloudTaskToken } from "../lib/verify-cloud-task-token.js";
+import { workerTaskDuration } from "../services/job-metrics.service.js";
+import { generateOrganizedStoragePath, getVideoMetadata } from "./media/utils.js";
 
 const router = express.Router();
 
-// Allowed operations for validation
-const VALID_MEDIA_OPERATIONS: MediaOperation[] = [
-  "optimize",
-  "thumbnail",
-  "webp",
-  "avif",
-  "gltf-optimize",
-  "metadata",
-];
-
 // Worker route to handle async email sending from Cloud Tasks
-router.post("/workers/send-email", async (req, res) => {
+router.post("/send-email", validateRequest({ body: inquiryEmailJobSchema }), async (req, res) => {
+  const startTime = performance.now();
   // Verify request is from Cloud Tasks via OIDC token
   const isProduction = process.env.NODE_ENV === "production";
 
@@ -29,33 +33,51 @@ router.post("/workers/send-email", async (req, res) => {
     }
   }
 
-  const payload = req.body as InquiryEmailData;
-
-  if (!payload || !payload.email) {
-    logger.error("[Worker] Invalid payload received for email task");
-    return res.status(422).json({ error: "Invalid payload" });
-  }
+  const payload = req.body as InquiryEmailJobData;
 
   logger.info(`[Worker] Processing email task for inquiry #${payload.id}`);
 
   // Send emails synchronously here (since we are already in a background worker)
-  const [adminSent, customerSent] = await Promise.all([
+  const [adminResult, customerResult] = await Promise.all([
     emailService.sendAdminNotification(payload),
     emailService.sendCustomerConfirmation(payload),
   ]);
 
-  if (adminSent) {
+  let hasError = false;
+
+  if (adminResult.isOk()) {
     logger.info(`[Worker] Admin notification sent for inquiry #${payload.id}`);
   } else {
-    logger.error(`[Worker] Failed to send admin notification for inquiry #${payload.id}`);
+    logger.error(
+      `[Worker] Failed to send admin notification for inquiry #${payload.id}:`,
+      adminResult.error,
+    );
+    hasError = true;
   }
 
-  if (customerSent) {
+  if (customerResult.isOk()) {
     logger.info(`[Worker] Customer confirmation sent to ${payload.email}`);
   } else {
-    logger.error(`[Worker] Failed to send customer confirmation to ${payload.email}`);
+    logger.error(
+      `[Worker] Failed to send customer confirmation to ${payload.email}:`,
+      customerResult.error,
+    );
+    hasError = true;
   }
 
+  if (hasError) {
+    workerTaskDuration.observe(
+      { operation: "send-email", status: "error" },
+      (performance.now() - startTime) / 1000,
+    );
+    // Return 500 to trigger Cloud Tasks retry
+    return res.status(500).json({ error: "One or more email operations failed" });
+  }
+
+  workerTaskDuration.observe(
+    { operation: "send-email", status: "success" },
+    (performance.now() - startTime) / 1000,
+  );
   // Return success to Cloud Tasks to acknowledge completion
   return res.status(200).json({ success: true });
 });
@@ -66,79 +88,199 @@ router.post("/workers/send-email", async (req, res) => {
  *
  * Handles async media processing tasks queued by the media-queue module.
  */
-router.post("/process-media", async (req, res) => {
-  const startTime = performance.now();
+router.post(
+  "/process-media",
+  validateRequest({ body: mediaProcessingJobSchema }),
+  async (req, res) => {
+    const startTime = performance.now();
 
-  // Verify request is from Cloud Tasks via OIDC token
-  const isProduction = process.env.NODE_ENV === "production";
-  const taskName = req.header("X-CloudTasks-TaskName");
+    // Verify request is from Cloud Tasks via OIDC token
+    const isProduction = process.env.NODE_ENV === "production";
+    const taskName = req.header("X-CloudTasks-TaskName");
 
-  if (isProduction) {
-    const isAuthorized = await verifyCloudTaskToken(req);
-    if (!isAuthorized) {
-      logger.warn("[Worker:Media] Unauthorized access attempt");
-      return res.status(403).json({ error: "Forbidden: Invalid request source" });
+    if (isProduction) {
+      const isAuthorized = await verifyCloudTaskToken(req);
+      if (!isAuthorized) {
+        logger.warn("[Worker:Media] Unauthorized access attempt");
+        return res.status(403).json({ error: "Forbidden: Invalid request source" });
+      }
     }
-  }
 
-  const payload: MediaTaskPayload = req.body;
+    const payload = req.body as MediaProcessingJobData;
 
-  // Validate payload
-  if (!payload.mediaId || !payload.operation) {
-    logger.warn("[Worker:Media] Invalid payload - missing required fields");
-    return res.status(422).json({ error: "Missing mediaId or operation" });
-  }
+    logger.info("[Worker:Media] Processing task", {
+      mediaId: payload.mediaId,
+      operation: payload.operation,
+      taskName,
+      retryCount: payload.retryCount || 0,
+    });
 
-  if (!VALID_MEDIA_OPERATIONS.includes(payload.operation)) {
-    logger.warn("[Worker:Media] Invalid operation", { operation: payload.operation });
-    return res.status(422).json({ error: `Invalid operation: ${payload.operation}` });
-  }
+    try {
+      // 1. Fetch asset metadata from database
+      const numericId = Number.parseInt(payload.mediaId, 10);
+      const asset = await withCircuit(
+        "get-media-asset",
+        () => mediaRepository.getMediaAsset(numericId),
+        DB_CIRCUIT_OPTIONS,
+      );
 
-  logger.info("[Worker:Media] Processing task", {
-    mediaId: payload.mediaId,
-    operation: payload.operation,
-    taskName,
-    retryCount: payload.retryCount || 0,
-  });
+      if (!asset) {
+        logger.warn("[Worker:Media] Asset not found, skipping", { mediaId: payload.mediaId });
+        return res.status(200).json({ success: true, message: "Asset not found" });
+      }
 
-  // Process based on operation type
+      // 2. Download original file buffer
+      const buffer = await appStorageService.downloadAsset(asset.storagePath);
 
-  switch (payload.operation) {
-    case "optimize":
-      // TODO: Implement with Sharp when ready
-      logger.info("[Worker:Media] Optimizing image", { mediaId: payload.mediaId });
-      break;
-    case "thumbnail":
-      logger.info("[Worker:Media] Generating thumbnail", { mediaId: payload.mediaId });
-      break;
-    case "webp":
-    case "avif":
-      logger.info("[Worker:Media] Converting format", {
+      // 3. Idempotency Check: Skip if already processed
+      const metadata = (asset.metadata as Record<string, unknown>) || {};
+
+      // 4. Process based on operation type
+      switch (payload.operation) {
+        case "optimize":
+          if (metadata.optimized) {
+            logger.info("[Worker:Media] Asset already optimized, skipping", {
+              mediaId: payload.mediaId,
+            });
+            break;
+          }
+
+          if (isImageFile(asset.mimeType)) {
+            logger.info("[Worker:Media] Optimizing image", { mediaId: payload.mediaId });
+
+            // Generate optimized variants (SSOT: image-processor)
+            const variants = await generateResponsiveVariants(buffer, asset.filename);
+
+            // Update asset metadata to indicate optimization complete
+            await mediaRepository.updateMediaAsset(numericId, {
+              metadata: {
+                ...metadata,
+                optimized: true,
+                optimizedAt: new Date().toISOString(),
+              },
+              imageVariants: variants,
+            });
+          }
+          break;
+
+        case "metadata": {
+          if (metadata.metadataExtracted) {
+            logger.info("[Worker:Media] Metadata already extracted, skipping", {
+              mediaId: payload.mediaId,
+            });
+            break;
+          }
+
+          logger.info("[Worker:Media] Extracting metadata", { mediaId: payload.mediaId });
+
+          let metadataUpdate: Record<string, unknown> = {};
+
+          if (asset.mimeType.startsWith("video/")) {
+            const videoMeta = await getVideoMetadata(buffer);
+            metadataUpdate = { video: videoMeta };
+          } else if (isGLTFFile(asset.mimeType, asset.filename)) {
+            const processor = getGLTFProcessor();
+            const validation = await processor.validateForProductionUpload(buffer);
+            if (validation.valid) {
+              metadataUpdate = { gltf: { valid: true } }; // Or more detailed if needed
+            }
+          }
+
+          if (Object.keys(metadataUpdate).length > 0) {
+            await mediaRepository.updateMediaAsset(numericId, {
+              metadata: {
+                ...metadata,
+                ...metadataUpdate,
+                metadataExtracted: true,
+              },
+            });
+          }
+          break;
+        }
+
+        case "thumbnail":
+          if (asset.thumbnailUrl) {
+            logger.info("[Worker:Media] Thumbnail already exists, skipping", {
+              mediaId: payload.mediaId,
+            });
+            break;
+          }
+          // If it's an image, processImage generates a thumbnail automatically
+          if (isImageFile(asset.mimeType)) {
+            const thumbResult = await processImage(buffer, asset.filename);
+
+            if (thumbResult.thumbnailFilename) {
+              const thumbPath = generateOrganizedStoragePath(
+                "thumbnails",
+                thumbResult.thumbnailFilename,
+              );
+              await mediaRepository.updateMediaAsset(numericId, {
+                thumbnailUrl: `/api/media/thumbnail/${numericId}`,
+                thumbnailFilename: thumbResult.thumbnailFilename,
+                thumbnailStoragePath: thumbPath,
+              });
+            }
+          }
+          break;
+
+        default:
+          logger.info("[Worker:Media] Operation not implemented", { operation: payload.operation });
+      }
+
+      const duration = performance.now() - startTime;
+      workerTaskDuration.observe(
+        { operation: payload.operation, status: "success" },
+        duration / 1000,
+      );
+
+      // Final cleanup: remove isProcessing flag if all processing is likely done
+      // Note: In a real system, we'd check if ALL expected tasks for this asset are done.
+      // For now, we'll just clear it if this was an 'optimize' or 'metadata' task.
+      if (payload.operation === "optimize" || payload.operation === "metadata") {
+        const currentAsset = await mediaRepository.getMediaAsset(numericId);
+        if (currentAsset) {
+          const currentMeta = (currentAsset.metadata as Record<string, unknown>) || {};
+          await mediaRepository.updateMediaAsset(numericId, {
+            metadata: {
+              ...currentMeta,
+              isProcessing: false,
+              processedAt: new Date().toISOString(),
+            },
+          });
+        }
+      }
+
+      logger.info("[Worker:Media] Task completed", {
         mediaId: payload.mediaId,
-        format: payload.operation,
+        operation: payload.operation,
+        durationMs: Math.round(duration),
       });
-      break;
-    case "gltf-optimize":
-      logger.info("[Worker:Media] Optimizing GLTF model", { mediaId: payload.mediaId });
-      break;
-    case "metadata":
-      logger.info("[Worker:Media] Extracting metadata", { mediaId: payload.mediaId });
-      break;
-  }
 
-  const duration = performance.now() - startTime;
+      return res.status(200).json({
+        success: true,
+        durationMs: Math.round(duration),
+      });
+    } catch (error) {
+      const duration = (performance.now() - startTime) / 1000;
+      workerTaskDuration.observe({ operation: payload.operation, status: "error" }, duration);
 
-  logger.info("[Worker:Media] Task completed", {
-    mediaId: payload.mediaId,
-    operation: payload.operation,
-    durationMs: Math.round(duration),
-  });
+      logger.error(
+        "[Worker:Media] Processing failed",
+        {
+          mediaId: payload.mediaId,
+          operation: payload.operation,
+        },
+        error as Error,
+      );
 
-  return res.status(200).json({
-    success: true,
-    durationMs: Math.round(duration),
-  });
-});
+      // Return 500 to trigger retry
+      return res.status(500).json({
+        error: "Processing failed",
+        message: error instanceof Error ? error.message : String(error),
+      });
+    }
+  },
+);
 
 /**
  * Worker Health Check

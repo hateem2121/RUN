@@ -4,8 +4,8 @@ import { db, wakeupDatabase } from "../db.js";
 import { dbKeepAlive } from "../lib/db/keep-alive.js";
 import { adminNotifier } from "../lib/integrations/admin-notifier.js";
 import { getLifecycleScheduler } from "../lib/integrations/storage-lifecycle-scheduler.js";
+import { startWorker } from "../lib/jobs/workers/bullmq-worker.js";
 import { logger } from "../lib/monitoring/logger.js";
-import { startWorker } from "../lib/queue/worker.js";
 
 const config = getConfig();
 

@@ -1,7 +1,8 @@
+import type { MediaAsset } from "@shared/index";
 import { AlertCircle, FileImage, RefreshCw } from "lucide-react";
 import { useCallback, useRef } from "react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 // Import Extracted Components
 import { MediaGridItem } from "./components/MediaGridItem";
 import { MediaGridPagination } from "./components/MediaGridPagination";
@@ -32,7 +33,8 @@ export function MediaGrid({
   );
 
   // Use extracted query hook
-  const { displayAssets, pagination, batchContent, isLoading, error, refetch } = useMediaGridQuery();
+  const { displayAssets, pagination, batchContent, isLoading, error, refetch } =
+    useMediaGridQuery();
 
   const totalAssets = pagination.total;
 

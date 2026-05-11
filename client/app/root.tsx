@@ -11,11 +11,11 @@ import {
   useLoaderData,
   useRouteError,
 } from "react-router";
+import { Toaster } from "sonner";
 import { FloatingDockHeader } from "@/components/navigation/floating-dock-header";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { BackToTop } from "@/components/ui/back-to-top";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
-import { Toaster } from "sonner";
 import { getQueryClient } from "@/lib/queryClient";
 import "@/index.css";
 import { useEffect } from "react";
@@ -154,12 +154,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   <FloatingDockHeader />
                   {children}
                   {mounted && (
-                    <Toaster
-                      position="bottom-right"
-                      richColors
-                      expand={true}
-                      theme="system"
-                    />
+                    <Toaster position="bottom-right" richColors expand={true} theme="system" />
                   )}
                   <BackToTop />
                   <OfflineIndicator />

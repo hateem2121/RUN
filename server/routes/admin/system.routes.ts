@@ -21,6 +21,11 @@ const emptyBodySchema = z
   })
   .strict();
 
+const retryJobSchema = z.object({
+  queue: z.enum(["email", "cache"]),
+  id: z.string(),
+});
+
 /**
  * GET /api/admin/system/test
  * Connectivity and routing test
@@ -162,6 +167,40 @@ router.post(
     }
 
     return res.json({ success: true, message: "Audit configuration updated" });
+  },
+);
+
+/**
+ * GET /api/admin/system/jobs/failed
+ * List all failed BullMQ jobs
+ */
+router.get("/jobs/failed", authService.requireAdmin, async (_req, res) => {
+  const result = await adminService.getFailedJobs();
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return res.json(result.value);
+});
+
+/**
+ * POST /api/admin/system/jobs/retry
+ * Manually retry a failed BullMQ job
+ */
+router.post(
+  "/jobs/retry",
+  authService.requireAdmin,
+  validateRequest({ body: retryJobSchema }),
+  async (req, res) => {
+    const { queue, id } = req.body;
+    const result = await adminService.retryJob(queue, id);
+
+    if (result.isErr()) {
+      throw result.error;
+    }
+
+    return res.json({ success: true });
   },
 );
 

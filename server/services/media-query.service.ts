@@ -293,7 +293,10 @@ export class MediaQueryService {
 
       for (const asset of assets) {
         if (asset.filename && (asset.mimeType === "application/octet-stream" || !asset.mimeType)) {
-          const correctedMime = correctMimeType(asset.filename, asset.mimeType || "application/octet-stream");
+          const correctedMime = correctMimeType(
+            asset.filename,
+            asset.mimeType || "application/octet-stream",
+          );
           if (correctedMime !== asset.mimeType) {
             await mediaRepository.updateMediaAsset(asset.id, { mimeType: correctedMime });
             repaired++;

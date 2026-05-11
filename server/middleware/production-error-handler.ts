@@ -1,6 +1,7 @@
 // Production-Grade Error Handling
 // PHASE 4: Production Readiness - Error Management
 import type { ProblemDetails } from "@run-remix/shared";
+import * as Sentry from "@sentry/node";
 import type { NextFunction, Request, Response } from "express";
 import { getConfig } from "../config/production.js";
 import {
@@ -18,7 +19,6 @@ import { errorAggregator } from "../lib/monitoring/error-aggregator.js";
 import { correlationContext, logger } from "../lib/monitoring/logger.js";
 import { getRunbookUrl, shouldIncludeRunbook } from "../lib/runbook-registry.js";
 import { sanitizeForLogging } from "../lib/sanitize-for-logging.js";
-import * as Sentry from "@sentry/node";
 
 const config = getConfig();
 

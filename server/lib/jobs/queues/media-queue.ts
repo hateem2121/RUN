@@ -7,7 +7,8 @@
  */
 
 import { CloudTasksClient, type protos } from "@google-cloud/tasks";
-import { logger } from "../monitoring/logger.js";
+import type { MediaOperation, MediaProcessingJobData } from "@run-remix/shared";
+import { logger } from "../../monitoring/logger.js";
 
 // Environment configuration
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT || process.env.GCP_PROJECT_ID;
@@ -25,32 +26,8 @@ function getClient(): CloudTasksClient {
   return tasksClient;
 }
 
-/**
- * Media processing operations
- */
-export type MediaOperation =
-  | "optimize" // Image optimization (resize, compress)
-  | "thumbnail" // Generate thumbnails
-  | "webp" // Convert to WebP
-  | "avif" // Convert to AVIF
-  | "gltf-optimize" // 3D model optimization
-  | "metadata"; // Extract metadata
-
-/**
- * Task payload for media processing
- */
-export interface MediaTaskPayload {
-  mediaId: string;
-  operation: MediaOperation;
-  options?: {
-    width?: number;
-    height?: number;
-    quality?: number;
-    format?: string;
-  };
-  callbackUrl?: string;
-  retryCount?: number;
-}
+// Types are now imported from @run-remix/shared
+export type { MediaOperation, MediaProcessingJobData as MediaTaskPayload };
 
 /**
  * Task result for tracking
@@ -75,7 +52,7 @@ export interface QueueResult {
  * ```
  */
 export async function queueMediaProcessing(
-  payload: MediaTaskPayload,
+  payload: MediaProcessingJobData,
   delaySeconds = 0,
 ): Promise<QueueResult> {
   // Skip queue in development/test - process inline

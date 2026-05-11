@@ -19,18 +19,7 @@ interface EmailOptions {
   text?: string | undefined;
 }
 
-interface InquiryEmailData {
-  id: number;
-  name: string;
-  email: string;
-  company?: string | null | undefined;
-  phone?: string | null | undefined;
-  country?: string | null | undefined;
-  message: string;
-  preferredPlatform?: string | null | undefined;
-  submittedAt: Date;
-  items?: Array<{ productId: number; quantity: number; notes?: string | null }> | null | undefined;
-}
+import type { InquiryEmailJobData } from "@run-remix/shared";
 
 class EmailService {
   private transporter: Transporter | null = null;
@@ -110,7 +99,7 @@ class EmailService {
     }
   }
 
-  async sendAdminNotification(inquiry: InquiryEmailData): Promise<Result<boolean, AppError>> {
+  async sendAdminNotification(inquiry: InquiryEmailJobData): Promise<Result<boolean, AppError>> {
     const adminEmail = process.env.GMAIL_USER;
     if (!adminEmail) {
       logger.warn("[Email] Admin email not configured");
@@ -128,7 +117,7 @@ class EmailService {
     });
   }
 
-  async sendCustomerConfirmation(inquiry: InquiryEmailData): Promise<Result<boolean, AppError>> {
+  async sendCustomerConfirmation(inquiry: InquiryEmailJobData): Promise<Result<boolean, AppError>> {
     const subject = "Thank you for contacting RUN APPAREL";
     const html = this.generateCustomerEmailTemplate(inquiry);
 
@@ -140,7 +129,7 @@ class EmailService {
     });
   }
 
-  private generateAdminEmailTemplate(inquiry: InquiryEmailData): string {
+  private generateAdminEmailTemplate(inquiry: InquiryEmailJobData): string {
     const dashboardUrl = process.env.REPLIT_DEV_DOMAIN
       ? `https://${process.env.REPLIT_DEV_DOMAIN}/admin/inquiries/${inquiry.id}`
       : `http://localhost:${env.PORT}/admin/inquiries/${inquiry.id}`;
@@ -317,7 +306,7 @@ class EmailService {
     `.trim();
   }
 
-  private generateCustomerEmailTemplate(inquiry: InquiryEmailData): string {
+  private generateCustomerEmailTemplate(inquiry: InquiryEmailJobData): string {
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -397,4 +386,4 @@ class EmailService {
 }
 
 export const emailService = new EmailService();
-export type { InquiryEmailData };
+export type { InquiryEmailJobData as InquiryEmailData };

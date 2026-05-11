@@ -1,7 +1,7 @@
+import type { InquiryEmailJobData as InquiryEmailData } from "@run-remix/shared";
 import { Queue } from "bullmq";
-import type { InquiryEmailData } from "../integrations/email-service.js";
-import { logger } from "../monitoring/logger.js";
-import { isRedisConfigured, redisConnection } from "./connection.js";
+import { logger } from "../../monitoring/logger.js";
+import { isRedisConfigured, redisConnection } from "../connection.js";
 
 export const EMAIL_QUEUE_NAME = "email-queue";
 
@@ -16,7 +16,7 @@ if (isRedisConfigured && redisConnection) {
         type: "exponential",
         delay: 1000,
       },
-      removeOnComplete: true,
+      removeOnComplete: 100,
       removeOnFail: false,
     },
   });

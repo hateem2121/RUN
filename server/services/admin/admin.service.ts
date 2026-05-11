@@ -1189,6 +1189,81 @@ export class AdminService {
       return err(new InternalError("Failed to delete timeline entry", { id, error }));
     }
   }
+
+  /**
+   * Retrieves failed jobs from BullMQ for manual review [WJ-108]
+   */
+  async getFailedJobs(): Promise<Result<any[], AppError>> {
+    const failedJobs: any[] = [];
+
+    try {
+      // Lazy load to avoid circular dependencies or initialization issues
+      const { emailQueue } = await import("../../lib/jobs/queues/email-queue.js");
+      const { cacheInvalidationQueue } = await import(
+        "../../lib/jobs/queues/cache-invalidation-queue.js"
+      );
+
+      if (emailQueue) {
+        const jobs = await emailQueue.getFailed();
+        failedJobs.push(
+          ...jobs.map((j) => ({
+            id: j.id,
+            queue: "email",
+            name: j.name,
+            data: j.data,
+            failedReason: j.failedReason,
+            timestamp: j.timestamp,
+          })),
+        );
+      }
+
+      if (cacheInvalidationQueue) {
+        const jobs = await cacheInvalidationQueue.getFailed();
+        failedJobs.push(
+          ...jobs.map((j) => ({
+            id: j.id,
+            queue: "cache",
+            name: j.name,
+            data: j.data,
+            failedReason: j.failedReason,
+            timestamp: j.timestamp,
+          })),
+        );
+      }
+
+      return ok(failedJobs);
+    } catch (error) {
+      return err(new InternalError("Failed to fetch failed jobs", { cause: error }));
+    }
+  }
+
+  /**
+   * Manually retries a failed job [WJ-108]
+   */
+  async retryJob(queueName: string, jobId: string): Promise<Result<boolean, AppError>> {
+    try {
+      let queue = null;
+      if (queueName === "email") {
+        const { emailQueue } = await import("../../lib/jobs/queues/email-queue.js");
+        queue = emailQueue;
+      } else if (queueName === "cache") {
+        const { cacheInvalidationQueue } = await import(
+          "../../lib/jobs/queues/cache-invalidation-queue.js"
+        );
+        queue = cacheInvalidationQueue;
+      }
+
+      if (!queue) return err(new NotFoundError(`Queue ${queueName} not found or not initialized`));
+
+      const job = await queue.getJob(jobId);
+      if (!job) return err(new NotFoundError(`Job ${jobId} not found in queue ${queueName}`));
+
+      await job.retry();
+      return ok(true);
+    } catch (error) {
+      return err(new InternalError(`Failed to retry job ${jobId}`, { cause: error }));
+    }
+  }
 }
 
 export const adminService = new AdminService();

@@ -1,6 +1,6 @@
 import { Queue } from "bullmq";
-import { logger } from "../monitoring/logger.js";
-import { isRedisConfigured, redisConnection } from "./connection.js";
+import { logger } from "../../monitoring/logger.js";
+import { isRedisConfigured, redisConnection } from "../connection.js";
 
 export const CACHE_INVALIDATION_QUEUE_NAME = "cache-invalidation";
 
@@ -19,7 +19,7 @@ export const cacheInvalidationQueue =
             type: "exponential",
             delay: 1000,
           },
-          removeOnComplete: true,
+          removeOnComplete: 100,
           removeOnFail: 100,
         },
       })

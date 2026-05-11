@@ -1,12 +1,12 @@
-import { toast as sonnerToast } from "sonner";
 import type * as React from "react";
+import { toast as sonnerToast } from "sonner";
 
 /**
  * EH-102 Remediation: Legacy Toast Wrapper for Sonner
- * 
+ *
  * This hook preserves the existing shadcn-like API used throughout the codebase
  * but routes all calls to the 'sonner' provider rendered in root.tsx.
- * 
+ *
  * Success Criteria:
  * - Mutations show visible toasts again
  * - No need to refactor 37+ files
@@ -27,24 +27,22 @@ export interface ToastProps {
  * Standalone toast function for use outside of React components (e.g. in queryClient.ts)
  */
 export function toast({ title, description, variant, duration, action, ...props }: ToastProps) {
-  const options = {
+  const options: Record<string, any> = {
     description,
-    duration,
-    action: action as any, // sonner expects specific action format, but we cast for compat
     ...props,
   };
+
+  if (duration) options.duration = duration;
+  if (action && typeof action === "object" && "label" in action) {
+    options.action = action;
+  }
 
   if (variant === "destructive") {
     return sonnerToast.error(title, options);
   }
-  
-  // Default to success for 'default' variant if it has a title (usually success)
-  // or just a standard toast.
-  if (variant === "default" || !variant) {
-    return sonnerToast.success(title, options);
-  }
 
-  return sonnerToast(title, options);
+  // Default to success for 'default' variant or undefined (standard for positive feedback in this app)
+  return sonnerToast.success(title, options);
 }
 
 /**

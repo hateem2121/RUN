@@ -39,7 +39,7 @@ vi.mock("../../lib/monitoring/logger.js", () => ({
   },
 }));
 
-vi.mock("../lib/queue/email-queue.js", () => ({
+vi.mock("../lib/jobs/queues/email-queue.js", () => ({
   emailQueue: null, // Force fallback to EmailService for simple testing
 }));
 

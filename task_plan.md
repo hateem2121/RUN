@@ -149,6 +149,41 @@ Complete a comprehensive, read-only investigative audit of the Media System, inc
 - [x] **Status**: `[x] COMPLETED` (New Health Score: 100/100)
 - [x] **Ship**: Atomic deployment to GitHub main.
 
+## Session: 2026-05-11 (Media System — Full Investigative Audit Post-Remediation)
+**Objective**: Final read-only audit to verify all remediations are holding and no new regressions exist in the Media System.
+
+### Protocol 0 — Session Bookends
+- [x] START: Read and update `task_plan.md`
+- [x] END: Update `findings.md` and run `npm run verify:tech-integrity`
+
+### Investigation Scope
+- [x] 1. Chunked Upload Pipeline (init, chunk, finalize)
+- [x] 2. Base64 Upload Pipeline
+- [x] 3. Media Serving & Thumbnails
+- [x] 4. Media Library Browser (Admin)
+- [x] 5. Batch Operations & Cache Management
+- [x] 6. Corrupted Media & Cleanup Logic
+- [x] 7. Performance Dashboard Accuracy
+- [x] 8. Security & Path Sanitization
+
+### Status: [x] AUDIT COMPLETE (MD-119 through MD-125 recorded in findings.md)
+
+## Session: 2026-05-11 (Minor Issues Resolution — MD-119, EH-102)
+**Objective**: Resolve architectural and security observations identified during audits.
+
+### Protocol 0 — Session Bookends
+- [/] START: Read and update `task_plan.md`
+- [ ] END: Update `findings.md` and run `npm run verify:tech-integrity`
+
+### Tasks
+- [ ] 1. Implement chunk size validation in `MediaUploadService.uploadChunk` [MD-119]
+- [ ] 2. Standardize `useToast` to use `sonner` [EH-102]
+
+### Status: [/] IN PROGRESS
+
+
+
+
 ## Phase 6: Database & Schema Layer Remediation
 
 - [x] **Step B: Blueprint - Schema Hardening**
@@ -668,3 +703,22 @@ Complete a comprehensive, read-only investigative audit of the Error Handling sy
 ### Status: [x] COMPLETED
 
 
+
+## Session: 2026-05-11 (Workers & Jobs Layer — Verification Audit)
+
+### Objective
+Final read-only investigative audit to verify failure path recovery, observability, and security hardening of the Workers & Jobs layer.
+
+### Protocol 0 — Session Bookends
+- [x] START: Read and update `task_plan.md`
+- [x] END: Update `findings.md` and run `npm run verify:tech-integrity`
+
+### Investigation Scope
+- [x] 1. BullMQ Queue Configuration (retries, retention)
+- [x] 2. Cloud Tasks Security (OIDC, signature)
+- [x] 3. Worker Implementation (success reporting, validation)
+- [x] 4. Failure Path Recovery (Admin UI, retry logic)
+- [x] 5. Observability (Metrics, Sentry)
+- [x] 6. Newsletter Subscription Flow
+
+### Status: [x] AUDIT COMPLETE (WJ-110 through WJ-113 recorded in findings.md)

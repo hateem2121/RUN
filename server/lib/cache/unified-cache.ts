@@ -259,7 +259,7 @@ export class UnifiedCache {
     // 2. Offload L2 (Redis) invalidation to BullMQ for background processing
     // This makes the initiating request MUCH faster by avoiding synchronous SCAN/DEL
     if (isRedisEnabled) {
-      import("../queue/cache-invalidation-queue.js").then(({ queueCacheInvalidation }) => {
+      import("../jobs/queues/cache-invalidation-queue.js").then(({ queueCacheInvalidation }) => {
         queueCacheInvalidation(pattern).catch((err) =>
           logger.warn(`[UnifiedCache] Failed to queue background invalidation for ${pattern}`, err),
         );

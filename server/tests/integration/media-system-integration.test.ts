@@ -207,13 +207,12 @@ describe("Media System Integration Tests", () => {
 
   describe("Advanced Uploads", () => {
     it("should upload a base64 image", async () => {
-      const base64Data = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
-      const response = await request(app)
-        .post("/api/media/upload-base64")
-        .send({ 
-          base64Data: base64Data, 
-          filename: "test-pixel.png" 
-        });
+      const base64Data =
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+      const response = await request(app).post("/api/media/upload-base64").send({
+        base64Data: base64Data,
+        filename: "test-pixel.png",
+      });
 
       if (response.status !== 201) {
         console.log("BASE64 DEBUG:", response.body);
@@ -226,13 +225,11 @@ describe("Media System Integration Tests", () => {
     });
 
     it("should fail base64 upload with invalid data", async () => {
-      const response = await request(app)
-        .post("/api/media/upload-base64")
-        .send({ 
-          base64Data: "invalid-data", 
-          filename: "test.png" 
-        });
-      
+      const response = await request(app).post("/api/media/upload-base64").send({
+        base64Data: "invalid-data",
+        filename: "test.png",
+      });
+
       expect(response.status).toBeGreaterThanOrEqual(400);
     });
   });

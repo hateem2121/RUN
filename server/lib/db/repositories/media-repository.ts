@@ -369,43 +369,43 @@ export class MediaRepository {
     }
 
     // Use efficient DB COUNT with all filters applied
-      if (filters?.search) {
-        const searchPattern = `%${filters.search}%`;
-        conditions.push(
-          or(
-            ilike(mediaAssets.filename, searchPattern),
-            ilike(mediaAssets.originalName, searchPattern),
-            ilike(mediaAssets.altText, searchPattern),
-          )!,
-        );
-      }
-
-      // Use efficient DB COUNT with all filters applied
-      const result = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(mediaAssets)
-        .where(and(...conditions));
-
-      return Number(result[0]?.count || 0);
+    if (filters?.search) {
+      const searchPattern = `%${filters.search}%`;
+      conditions.push(
+        or(
+          ilike(mediaAssets.filename, searchPattern),
+          ilike(mediaAssets.originalName, searchPattern),
+          ilike(mediaAssets.altText, searchPattern),
+        )!,
+      );
     }
 
-    /**
-     * Aggregates storage statistics for the dashboard
-     */
-    async getStorageStats(): Promise<{ totalSize: number; count: number }> {
-      const result = await db
-        .select({
-          totalSize: sql<number>`COALESCE(SUM(${mediaAssets.size}), 0)`,
-          count: sql<number>`COUNT(*)`,
-        })
-        .from(mediaAssets)
-        .where(isNull(mediaAssets.deletedAt));
+    // Use efficient DB COUNT with all filters applied
+    const result = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(mediaAssets)
+      .where(and(...conditions));
 
-      return {
-        totalSize: Number(result[0]?.totalSize || 0),
-        count: Number(result[0]?.count || 0),
-      };
-    }
+    return Number(result[0]?.count || 0);
+  }
+
+  /**
+   * Aggregates storage statistics for the dashboard
+   */
+  async getStorageStats(): Promise<{ totalSize: number; count: number }> {
+    const result = await db
+      .select({
+        totalSize: sql<number>`COALESCE(SUM(${mediaAssets.size}), 0)`,
+        count: sql<number>`COUNT(*)`,
+      })
+      .from(mediaAssets)
+      .where(isNull(mediaAssets.deletedAt));
+
+    return {
+      totalSize: Number(result[0]?.totalSize || 0),
+      count: Number(result[0]?.count || 0),
+    };
+  }
 
   /**
    * NEON SERVERLESS OPTIMIZATION: Batch query helper

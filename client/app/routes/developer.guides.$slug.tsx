@@ -3,12 +3,11 @@ import gsap from "gsap";
 import { ArrowRight, Copy, ShieldCheck, Webhook } from "lucide-react";
 import type React from "react";
 import { useRef } from "react";
-import { useParams } from "react-router";
+import { useLoaderData } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
-import { useLoaderData } from "react-router";
 import type { Route } from "./+types/developer.guides.$slug";
 
 export async function loader({ params }: Route.LoaderArgs) {

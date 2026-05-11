@@ -9,7 +9,7 @@ import type { Fabric } from "@shared/schemas/materials";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { ArrowRight, Download } from "lucide-react";
 import { useMemo, useRef } from "react";
-import { isRouteErrorResponse, Link, useLoaderData, useRouteError } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { SEOMeta } from "@/components/seo/seo-meta";
 import {
   CertificatesSection,

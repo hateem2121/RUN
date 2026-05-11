@@ -3,7 +3,7 @@ import type { AboutBatchResponse } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { MessageSquare } from "lucide-react";
 import { useRef } from "react";
-import { isRouteErrorResponse, useLoaderData, useRouteError } from "react-router";
+import { useLoaderData } from "react-router";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { Card, CardContent, GlassCardDecorations } from "@/components/ui/card";
 import { GlowingShadow } from "@/components/ui/glowing-shadow";

@@ -11,9 +11,12 @@ import type { Inquiry, InsertInquiry } from "../../shared/schemas/content/common
 import { unifiedCache } from "../lib/cache/unified-cache.js";
 import { miscRepository } from "../lib/db/repositories/index.js";
 import { type AppError, DatabaseError, NotFoundError, ValidationError } from "../lib/errors.js";
-import { emailService, type InquiryEmailData } from "../lib/integrations/email-service.js";
+import {
+  emailService,
+  type InquiryEmailData as InquiryEmailJobData,
+} from "../lib/integrations/email-service.js";
+import { emailQueue } from "../lib/jobs/queues/email-queue.js";
 import { logger } from "../lib/monitoring/logger.js";
-import { emailQueue } from "../lib/queue/email-queue.js";
 import {
   DB_CIRCUIT_OPTIONS,
   EXTERNAL_API_CIRCUIT_OPTIONS,
@@ -184,7 +187,7 @@ export class InquiryService {
    * Internal helper to dispatch email automation via Cloud Tasks (Prod) or EmailService (Dev).
    */
   private async dispatchEmailAutomation(inquiry: Inquiry) {
-    const emailData = {
+    const emailData: InquiryEmailJobData = {
       id: inquiry.id,
       name: inquiry.name,
       email: inquiry.email,
@@ -220,7 +223,7 @@ export class InquiryService {
             const task = {
               httpRequest: {
                 httpMethod: "POST" as const,
-                url: `https://run-remix.app/api/workers/send-email`,
+                url: `${process.env.CLOUD_RUN_SERVICE_URL || "https://run-remix.app"}/api/worker/send-email`,
                 headers: { "Content-Type": "application/json" },
                 body: Buffer.from(JSON.stringify(emailData)).toString("base64"),
               },
@@ -239,7 +242,7 @@ export class InquiryService {
     }
   }
 
-  private async fallbackSyncEmail(emailData: InquiryEmailData) {
+  private async fallbackSyncEmail(emailData: InquiryEmailJobData) {
     try {
       await withCircuit(
         "fallback-sync-email",

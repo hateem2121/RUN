@@ -7,7 +7,7 @@ import { useGSAP } from "@gsap/react";
 import type { Category, Certificate, Fabric, ProductSummary } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import gsap from "gsap";
-import { AlertCircle, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronRight, Loader2 } from "lucide-react";
 import { useMemo, useRef } from "react";
 import { Link, useLoaderData, useParams } from "react-router";
 import { ProductGrid } from "@/components/products/ProductGrid";
@@ -39,25 +39,24 @@ export async function loader({ params }: Route.LoaderArgs) {
   }
 
   // 2. Fetch dependencies in parallel
-    await Promise.all([
-      queryClient.prefetchQuery({
-        queryKey: ["/api/categories"],
-        queryFn: () => apiRequest("/api/categories"),
-      }),
-      queryClient.prefetchQuery({
-        queryKey: ["/api/products", { category: category.id }],
-        queryFn: () => apiRequest(`/api/products?category=${category.id}`),
-      }),
-      queryClient.prefetchQuery({
-        queryKey: ["/api/fabrics"],
-        queryFn: () => apiRequest("/api/fabrics"),
-      }),
-      queryClient.prefetchQuery({
-        queryKey: ["/api/certificates"],
-        queryFn: () => apiRequest("/api/certificates"),
-      }),
-    ]);
-  }
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["/api/categories"],
+      queryFn: () => apiRequest("/api/categories"),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["/api/products", { category: category.id }],
+      queryFn: () => apiRequest(`/api/products?category=${category.id}`),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["/api/fabrics"],
+      queryFn: () => apiRequest("/api/fabrics"),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["/api/certificates"],
+      queryFn: () => apiRequest("/api/certificates"),
+    }),
+  ]);
 
   return { dehydratedState: dehydrate(queryClient) };
 }
@@ -81,11 +80,7 @@ export default function CategoryDetail() {
     { scope: heroRef },
   );
 
-  const {
-    data: category,
-    isLoading: categoryLoading,
-    error: categoryError,
-  } = useQuery<Category>({
+  const { data: category, isLoading: categoryLoading } = useQuery<Category>({
     queryKey: [`/api/categories/by-slug/${slug}`],
     queryFn: () => apiRequest(`/api/categories/by-slug/${slug}`),
     enabled: !!slug,

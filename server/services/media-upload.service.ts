@@ -1,11 +1,12 @@
 import path from "node:path";
 import { err, ok, type Result } from "neverthrow";
 import type { MediaAsset } from "../../shared/index.js";
-import { generateResponsiveVariants, isImageFile, processImage } from "../image-processor.js";
+import { isImageFile } from "../image-processor.js";
 import { mediaRepository } from "../lib/db/repositories/index.js";
 import { type AppError, BadRequestError, InternalError, NotFoundError } from "../lib/errors.js";
 import { getGLTFProcessor, isGLTFFile } from "../lib/integrations/gltf-processor.js";
-import { logger, serializeError } from "../lib/monitoring/logger.js";
+import { queueMediaProcessing } from "../lib/jobs/queues/media-queue.js";
+import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 import { withTimeout } from "../lib/resilience/request-timeout.js";
 import { appStorageService } from "../lib/storage/app-service.js";
@@ -16,7 +17,6 @@ import {
   buildInsertMediaAsset,
   detectMediaType,
   generateOrganizedStoragePath,
-  getVideoMetadata,
   slugifyFilename,
 } from "../routes/media/utils.js";
 import { webhookService } from "./webhook-service.js";
@@ -116,6 +116,17 @@ export class MediaUploadService {
     }
 
     session.lastActivityAt = new Date();
+
+    // SECURITY [MD-119]: Explicitly validate chunk size against session config
+    // Prevents memory pressure attacks from oversized chunks
+    if (buffer.length > session.chunkSize * 1.05) {
+      return err(
+        new BadRequestError(
+          `Chunk size ${buffer.length} exceeds session limit of ${session.chunkSize}`,
+        ),
+      );
+    }
+
     const safeUploadId = path.basename(uploadId);
     const chunkKey = `${CHUNK_STORAGE_BASE}/${safeUploadId}/chunk-${chunkNumber}`;
 
@@ -288,32 +299,39 @@ export class MediaUploadService {
         return err(new InternalError("Database record creation failed"));
       }
 
-      // Update URL to use API proxy
+      // [WJ-103] Offload media processing tasks (optimisation, thumbnails, etc.)
+      // Initial optimization, variants, and metadata extraction are handled by the background worker.
+      queueMediaProcessing({
+        mediaId: createdAsset.id.toString(),
+        operation: "optimize",
+      }).catch((err) =>
+        logger.error(
+          `[MediaUploadService] Failed to queue optimization for asset ${createdAsset.id}`,
+          err,
+        ),
+      );
+
+      queueMediaProcessing({
+        mediaId: createdAsset.id.toString(),
+        operation: "metadata",
+      }).catch((err) =>
+        logger.error(
+          `[MediaUploadService] Failed to queue metadata extraction for asset ${createdAsset.id}`,
+          err,
+        ),
+      );
+
+      // Final metadata update (minimal)
       const correctUrl = `/api/media/${createdAsset.id}/content`;
-      let finalAsset =
+      const finalAsset =
         (await mediaRepository.updateMediaAsset(createdAsset.id, {
           url: correctUrl,
+          metadata: {
+            ...(createdAsset.metadata as object),
+            isProcessing: true,
+            processingStartedAt: new Date().toISOString(),
+          },
         })) || createdAsset;
-
-      // Image Processing (Async)
-      if (mediaType === "images" || isImageFile(session.mimeType)) {
-        try {
-          const imageData = await processImage(assembledFile, session.filename);
-          const variants = await generateResponsiveVariants(assembledFile, session.filename);
-
-          finalAsset =
-            (await mediaRepository.updateMediaAsset(createdAsset.id, {
-              thumbnailUrl: `/api/media/thumbnail/${createdAsset.id}`,
-              metadata: {
-                dimensions: { width: imageData.width, height: imageData.height },
-                format: session.mimeType.split("/")[1],
-              },
-              imageVariants: variants || undefined,
-            })) || finalAsset;
-        } catch (procErr) {
-          logger.warn("[MediaUploadService] Image optimization failed", serializeError(procErr));
-        }
-      }
 
       // Cleanup session and trigger webhook
       this.cleanupSession(uploadId);
@@ -488,81 +506,31 @@ export class MediaUploadService {
         url: `/api/media/${asset.id}/content`,
       });
 
-      // Process thumbnails for images + generate compressed variants
-      if (fileType === "image") {
-        try {
-          const imageData = await processImage(file.buffer, file.originalname);
-          const imageMetadata = {
-            dimensions: {
-              width: imageData.width,
-              height: imageData.height,
-            },
-            format: correctedMime.split("/")[1],
-          };
+      // [WJ-103] Offload all processing tasks to the worker layer
+      queueMediaProcessing({
+        mediaId: asset.id.toString(),
+        operation: "optimize",
+      }).catch((err) =>
+        logger.error(
+          `[MediaUploadService] Failed to queue optimization for asset ${asset.id}`,
+          err,
+        ),
+      );
 
-          let imageVariants: Record<string, string> | undefined;
-          try {
-            imageVariants = (await generateResponsiveVariants(
-              file.buffer,
-              file.originalname,
-            )) as unknown as Record<string, string>;
-            logger.info("Responsive variants generated (single upload)", {
-              assetId: asset.id,
-              variants: Object.keys(imageVariants || {}),
-            });
-          } catch (variantError) {
-            logger.warn(
-              "Responsive variant generation failed (single upload):",
-              serializeError(variantError),
-            );
-          }
+      queueMediaProcessing({
+        mediaId: asset.id.toString(),
+        operation: "metadata",
+      }).catch((err) =>
+        logger.error(`[MediaUploadService] Failed to queue metadata for asset ${asset.id}`, err),
+      );
 
-          await storage.updateMediaAsset(asset.id, {
-            thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
-            metadata: imageMetadata,
-            imageVariants: imageVariants || undefined,
-          });
-        } catch (error) {
-          logger.error("Thumbnail generation failed:", serializeError(error));
-        }
-      }
-
-      // Process video metadata
-      if (fileType === "video") {
-        try {
-          const videoMetadata = await getVideoMetadata(file.buffer);
-
-          await storage.updateMediaAsset(asset.id, {
-            thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
-            metadata: videoMetadata,
-          });
-        } catch (error) {
-          logger.error("Video metadata extraction aborted:", serializeError(error));
-        }
-      }
-
-      // Process GLTF/GLB models
-      if (fileType === "model") {
-        try {
-          const gltfProcessor = getGLTFProcessor();
-          const processed = await gltfProcessor.processForUpload(file.buffer);
-
-          if (processed.success) {
-            const gltfMetadata = {
-              texturesEmbedded: processed.texturesEmbedded || 0,
-              processedSize: processed.processedSize || 0,
-              originalSize: processed.originalSize || 0,
-            };
-
-            await storage.updateMediaAsset(asset.id, {
-              thumbnailUrl: `/api/media/thumbnail/${asset.id}`,
-              metadata: gltfMetadata,
-            });
-          }
-        } catch (error) {
-          logger.error("GLTF processing failed:", serializeError(error));
-        }
-      }
+      // Set initial processing state
+      await storage.updateMediaAsset(asset.id, {
+        metadata: {
+          isProcessing: true,
+          processingStartedAt: new Date().toISOString(),
+        },
+      });
 
       // Fetch the updated asset with metadata
       const updatedAsset = await storage.getMediaAsset(asset.id);
@@ -712,7 +680,7 @@ export class MediaUploadService {
   ): Promise<Result<MediaAsset, AppError>> {
     try {
       // SECURITY [MD-101]: Parse and validate base64 data
-      const matches = base64Data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+      const matches = base64Data.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
       if (!matches || matches.length !== 3) {
         return err(new BadRequestError("Invalid base64 data format"));
       }
@@ -743,7 +711,9 @@ export class MediaUploadService {
       const storagePath = generateOrganizedStoragePath(mediaType, slugifiedName);
 
       // Upload to storage
-      const url = await appStorageService.uploadAsset(storagePath, buffer, { contentType: mimeType });
+      const url = await appStorageService.uploadAsset(storagePath, buffer, {
+        contentType: mimeType,
+      });
 
       // Create DB record
       const insertData = buildInsertMediaAsset({
@@ -758,6 +728,27 @@ export class MediaUploadService {
       });
 
       const asset = await mediaRepository.createMediaAsset(insertData);
+
+      // [WJ-103] Offload processing
+      queueMediaProcessing({
+        mediaId: asset.id.toString(),
+        operation: "optimize",
+      }).catch((err) =>
+        logger.error(
+          `[MediaUploadService] Failed to queue optimization for base64 asset ${asset.id}`,
+          err,
+        ),
+      );
+
+      // Set initial processing state
+      await mediaRepository.updateMediaAsset(asset.id, {
+        metadata: {
+          ...(metadata as object),
+          isProcessing: true,
+          processingStartedAt: new Date().toISOString(),
+        },
+      });
+
       return ok(asset);
     } catch (error) {
       logger.error("[MediaUploadService] Base64 upload failed", error as Error);
