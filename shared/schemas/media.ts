@@ -37,6 +37,13 @@ export const folders = pgTable("folders", {
   deletedAt: timestamp({ mode: "date", precision: 3 }),
 });
 
+export type ImageVariants = {
+  thumbnail?: string; // 200px - for cards/grids (<50KB)
+  medium?: string; // 800px - for product pages (<200KB)
+  large?: string; // 1600px - for lightbox/detail (<500KB)
+  original?: string; // Compressed original (<500KB)
+};
+
 /**
  * Media Assets Table - Centralized Asset Library
  */
@@ -56,12 +63,7 @@ export const mediaAssets = pgTable(
     thumbnailUrl: text("thumbnail_url"),
     thumbnailFilename: varchar("thumbnail_filename", { length: 255 }), // For thumbnail reference
     thumbnailStoragePath: text("thumbnail_storage_path"), // Thumbnail storage path in GCS
-    imageVariants: jsonb("image_variants").$type<{
-      thumbnail?: string; // 200px - for cards/grids (<50KB)
-      medium?: string; // 800px - for product pages (<200KB)
-      large?: string; // 1600px - for lightbox/detail (<500KB)
-      original?: string; // Compressed original (<500KB)
-    }>(),
+    imageVariants: jsonb("image_variants").$type<ImageVariants>(),
 
     // Storage information
     storagePath: text("storage_path").notNull(),

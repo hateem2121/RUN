@@ -136,11 +136,13 @@ export class TwoTierBatchCache {
 
       switch (result.source) {
         case "memory":
+        case "swr_hit":
           benchmark.hit = "L1";
           benchmark.l1Time = timingValue;
           this.metrics.l1Hits++;
           this.recordL1Time(timingValue);
           break;
+
         case "kv":
           benchmark.hit = "L2";
           benchmark.l2Time = timingValue;

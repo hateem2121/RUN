@@ -48,6 +48,8 @@ export interface DataWithTimestamp<T> {
   timestamp: string;
 }
 
+import type { ImageVariants } from "../schemas/media";
+
 /**
  * Visitor-facing product item (simplified for marquee/grid)
  */
@@ -57,6 +59,7 @@ export interface ProductItem {
   category: string;
   price: string;
   image: string;
+  imageVariants?: ImageVariants | null | undefined;
 }
 
 /**

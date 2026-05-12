@@ -20,9 +20,10 @@ import {
 } from "../../../../../shared/index.js";
 import { db } from "../../../../db.js";
 import { emitCacheInvalidation } from "../../../cache/cache-events.js";
+import { CacheOperations } from "../../../cache/cache-strategies.js";
 import { UnifiedCache } from "../../../cache/unified-cache.js";
-import { invalidateHtmlCache } from "../../../../middleware/ssr-cache.js";
 import { StorageSingleton } from "../../../storage-singleton.js";
+
 
 const unifiedCache = UnifiedCache.getInstance();
 const HOMEPAGE_CACHE_TTL = 3600; // 1 hour (in seconds)
@@ -50,7 +51,8 @@ export class SustainabilityRepository {
       return StorageSingleton.getInstance().updateSustainabilityHero(data);
     }
     const existing = await this.getSustainabilityHero();
-    await unifiedCache.del("sustainability:hero");
+    await CacheOperations.invalidateSustainability();
+
 
     if (existing) {
       const [updated] = await db
@@ -61,7 +63,10 @@ export class SustainabilityRepository {
 
       if (!updated) throw new Error("Failed to update sustainability hero");
       await emitCacheInvalidation("sustainability:hero", "update");
+      await CacheOperations.invalidateSustainability();
       return updated;
+
+
     }
 
     const [created] = await db
@@ -70,8 +75,9 @@ export class SustainabilityRepository {
       .returning();
     if (!created) throw new Error("Failed to create sustainability hero");
     await emitCacheInvalidation("sustainability:hero", "create");
-    await invalidateHtmlCache("/sustainability");
+    await CacheOperations.invalidateSustainability();
     return created;
+
   }
 
   async getSustainabilityGoals(includeInactive = false): Promise<SustainabilityGoal[]> {
@@ -119,7 +125,10 @@ export class SustainabilityRepository {
 
     await unifiedCache.del("sustainability:goals:*");
     await emitCacheInvalidation("sustainability:goals", "create");
+    await CacheOperations.invalidateSustainability();
     return created;
+
+
   }
 
   async updateSustainabilityGoal(
@@ -140,8 +149,9 @@ export class SustainabilityRepository {
 
     if (!updated) throw new Error(`Failed to update sustainability goal with id ${id}`);
     await emitCacheInvalidation("sustainability:goal", "update");
-    await invalidateHtmlCache("/sustainability");
+    await CacheOperations.invalidateSustainability();
     return updated;
+
   }
 
   async deleteSustainabilityGoal(id: number): Promise<boolean> {
@@ -151,14 +161,16 @@ export class SustainabilityRepository {
     await unifiedCache.del("sustainability:goals:*");
     const result = await db.delete(sustainabilityGoals).where(eq(sustainabilityGoals.id, id));
     await emitCacheInvalidation("sustainability:goals", "delete");
+    await CacheOperations.invalidateSustainability();
     return (result.rowCount ?? 0) > 0;
+
+
   }
 
   async reorderSustainabilityGoals(orderedIds: number[]): Promise<void> {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderSustainabilityGoals(orderedIds);
     }
-    await unifiedCache.del("sustainability:goals:*");
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
         await tx
@@ -168,7 +180,9 @@ export class SustainabilityRepository {
       }
     });
     await emitCacheInvalidation("sustainability:goals", "update");
+    await CacheOperations.invalidateSustainability();
   }
+
 
   async getSustainabilityMetrics(): Promise<SustainabilityMetric[]> {
     if (StorageSingleton.hasInstance()) {
@@ -231,7 +245,10 @@ export class SustainabilityRepository {
 
     await unifiedCache.del("sustainability:metrics");
     await emitCacheInvalidation("sustainability:metrics", "create");
+    await CacheOperations.invalidateSustainability();
     return created;
+
+
   }
 
   async updateSustainabilityMetric(
@@ -262,9 +279,8 @@ export class SustainabilityRepository {
       throw new Error(`Failed to update sustainability metric with id ${id}`);
     }
 
-    await unifiedCache.del("sustainability:metrics");
     await emitCacheInvalidation("sustainability:metrics", "update");
-    await invalidateHtmlCache("/sustainability");
+    await CacheOperations.invalidateSustainability();
     return updated;
   }
 
@@ -273,9 +289,11 @@ export class SustainabilityRepository {
       return StorageSingleton.getInstance().deleteSustainabilityMetric(id);
     }
     const result = await db.delete(sustainabilityMetrics).where(eq(sustainabilityMetrics.id, id));
-    await unifiedCache.del("sustainability:metrics");
     await emitCacheInvalidation("sustainability:metrics", "delete");
+    await CacheOperations.invalidateSustainability();
     return (result.rowCount ?? 0) > 0;
+
+
   }
 
   async reorderSustainabilityMetrics(orderedIds: number[]): Promise<void> {
@@ -290,9 +308,10 @@ export class SustainabilityRepository {
           .where(eq(sustainabilityMetrics.id, orderedIds[i] as number));
       }
     });
-    await unifiedCache.del("sustainability:metrics");
     await emitCacheInvalidation("sustainability:metrics", "update");
+    await CacheOperations.invalidateSustainability();
   }
+
 
   async getSustainabilityMetricHistory(metricId: number): Promise<SustainabilityMetricHistory[]> {
     return db
@@ -347,9 +366,11 @@ export class SustainabilityRepository {
       throw new Error("Failed to create sustainability initiative");
     }
 
-    await unifiedCache.del("sustainability:initiatives:*");
+    await CacheOperations.invalidateSustainability();
     await emitCacheInvalidation("sustainability:initiatives", "create");
     return created;
+
+
   }
 
   async updateSustainabilityInitiative(
@@ -372,9 +393,8 @@ export class SustainabilityRepository {
       throw new Error(`Failed to update sustainability initiative with id ${id}`);
     }
 
-    await unifiedCache.del("sustainability:initiatives:*");
     await emitCacheInvalidation("sustainability:initiatives", "update");
-    await invalidateHtmlCache("/sustainability");
+    await CacheOperations.invalidateSustainability();
     return updated;
   }
 
@@ -385,16 +405,17 @@ export class SustainabilityRepository {
     const result = await db
       .delete(sustainabilityInitiatives)
       .where(eq(sustainabilityInitiatives.id, id));
-    await unifiedCache.del("sustainability:initiatives:*");
     await emitCacheInvalidation("sustainability:initiatives", "delete");
+    await CacheOperations.invalidateSustainability();
     return (result.rowCount ?? 0) > 0;
+
+
   }
 
   async reorderSustainabilityInitiatives(orderedIds: number[]): Promise<void> {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderSustainabilityInitiatives(orderedIds);
     }
-    await unifiedCache.del("sustainability:initiatives:*");
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
         await tx
@@ -404,7 +425,9 @@ export class SustainabilityRepository {
       }
     });
     await emitCacheInvalidation("sustainability:initiatives", "update");
+    await CacheOperations.invalidateSustainability();
   }
+
 
   async getUnifiedSustainability(): Promise<UnifiedSustainability | undefined> {
     if (StorageSingleton.hasInstance()) {
@@ -428,7 +451,8 @@ export class SustainabilityRepository {
       return StorageSingleton.getInstance().updateUnifiedSustainability(data);
     }
     const existing = await this.getUnifiedSustainability();
-    await unifiedCache.del("sustainability:unified");
+    await CacheOperations.invalidateSustainability();
+
 
     if (existing) {
       const [updated] = await db
@@ -439,7 +463,10 @@ export class SustainabilityRepository {
 
       if (!updated) throw new Error("Failed to update unified sustainability");
       await emitCacheInvalidation("sustainability:unified", "update");
+      await CacheOperations.invalidateSustainability();
       return updated;
+
+
     }
 
     const [created] = await db
@@ -448,7 +475,10 @@ export class SustainabilityRepository {
       .returning();
     if (!created) throw new Error("Failed to create unified sustainability");
     await emitCacheInvalidation("sustainability:unified", "create");
+    await CacheOperations.invalidateSustainability();
     return created;
+
+
   }
 
   async migrateLegacySustainabilityData(): Promise<{ migrated: number }> {

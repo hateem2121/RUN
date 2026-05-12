@@ -277,7 +277,10 @@ export type ProductSummary = Pick<
   | "tags"
   | "urlPath"
   | "createdAt"
->;
+> & {
+  imageUrl?: string | undefined;
+  imageVariants?: import("./media").ImageVariants | null | undefined;
+};
 
 export type ProductDetail = Pick<
   Product,

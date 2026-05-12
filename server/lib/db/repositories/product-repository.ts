@@ -201,13 +201,23 @@ export class ProductRepository {
     }
 
     const result = await dbCircuitBreaker.execute(async () => {
-      return await db
-        .select(PRODUCT_SUMMARY_COLUMNS)
+      const rows = await db
+        .select({
+          product: PRODUCT_SUMMARY_COLUMNS,
+          imageVariants: mediaAssets.imageVariants,
+        })
         .from(products)
+        .leftJoin(mediaAssets, eq(products.primaryImageId, mediaAssets.id))
         .where(and(eq(products.isActive, true), isNull(products.deletedAt)))
         .orderBy(desc(products.createdAt))
         .limit(limit)
         .offset(offset);
+
+      return rows.map((row) => ({
+        ...row.product,
+        imageUrl: row.product.primaryImageId ? `/api/media/${row.product.primaryImageId}/content` : undefined,
+        imageVariants: row.imageVariants,
+      }));
     }, "getProducts");
 
     perfTracker.setCacheHit(false).complete();
@@ -305,14 +315,22 @@ export class ProductRepository {
     }
 
     const result = await dbCircuitBreaker.execute(async () => {
-      return await db
+      const rows = await db
         .select({
-          ...PRODUCT_SUMMARY_COLUMNS,
+          product: PRODUCT_SUMMARY_COLUMNS,
+          imageVariants: mediaAssets.imageVariants,
         })
         .from(products)
+        .leftJoin(mediaAssets, eq(products.primaryImageId, mediaAssets.id))
         .where(and(eq(products.isActive, true), isNull(products.deletedAt)))
         .orderBy(desc(products.isFeatured), desc(products.createdAt))
         .limit(limit);
+
+      return rows.map((row) => ({
+        ...row.product,
+        imageUrl: row.product.primaryImageId ? `/api/media/${row.product.primaryImageId}/content` : undefined,
+        imageVariants: row.imageVariants,
+      }));
     }, "getHomepageFeaturedProducts");
 
     perfTracker.setCacheHit(false).complete();

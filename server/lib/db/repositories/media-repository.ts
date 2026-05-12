@@ -347,6 +347,14 @@ export class MediaRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getMediaAssetsCount(filters);
     }
+
+    // PHASE 2 REMEDIATION (PC-130): Cache count queries to mitigate TTFB outliers
+    const cacheKey = `media:count:${normalizeFilters(filters)}`;
+    const cached = await unifiedCache.get<number>(cacheKey, "data");
+    if (cached !== null) {
+      return cached;
+    }
+
     const conditions = [isNull(mediaAssets.deletedAt), eq(mediaAssets.isActive, true)];
 
     if (filters?.type) {
@@ -367,26 +375,19 @@ export class MediaRepository {
         )!,
       );
     }
+    const [result] = await dbCircuitBreaker.execute(async () => {
+      return await db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(mediaAssets)
+        .where(and(...conditions));
+    }, "getMediaAssetsCount");
 
-    // Use efficient DB COUNT with all filters applied
-    if (filters?.search) {
-      const searchPattern = `%${filters.search}%`;
-      conditions.push(
-        or(
-          ilike(mediaAssets.filename, searchPattern),
-          ilike(mediaAssets.originalName, searchPattern),
-          ilike(mediaAssets.altText, searchPattern),
-        )!,
-      );
-    }
+    const count = result?.count ?? 0;
 
-    // Use efficient DB COUNT with all filters applied
-    const result = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(mediaAssets)
-      .where(and(...conditions));
+    // Cache the count result
+    await unifiedCache.set(cacheKey, count, MEDIA_CACHE_TTL, "data");
 
-    return Number(result[0]?.count || 0);
+    return count;
   }
 
   /**

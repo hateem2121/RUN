@@ -24,7 +24,9 @@ import {
 } from "../../../../../shared/index.js";
 import { db } from "../../../../db.js";
 import { emitCacheInvalidation } from "../../../cache/cache-events.js";
+import { CacheOperations } from "../../../cache/cache-strategies.js";
 import { UnifiedCache } from "../../../cache/unified-cache.js";
+
 import { StorageSingleton } from "../../../storage-singleton.js";
 
 const unifiedCache = UnifiedCache.getInstance();
@@ -51,7 +53,8 @@ export class TechnologyRepository {
       return StorageSingleton.getInstance().updateTechnologyHero(data);
     }
     const existing = await this.getTechnologyHero();
-    await unifiedCache.del("technology:hero");
+    await CacheOperations.invalidateTechnology();
+
 
     if (existing) {
       const [updated] = await db
@@ -94,7 +97,8 @@ export class TechnologyRepository {
     }
     const [created] = await db.insert(technologyCta).values(data).returning();
     if (!created) throw new Error("Failed to create technology cta");
-    await unifiedCache.del("technology:cta");
+    await CacheOperations.invalidateTechnology();
+
     await emitCacheInvalidation("technology:cta", "create");
     return created;
   }
@@ -104,7 +108,8 @@ export class TechnologyRepository {
       return StorageSingleton.getInstance().updateTechnologyCta(data);
     }
     const existing = await this.getTechnologyCta();
-    await unifiedCache.del("technology:cta");
+    await CacheOperations.invalidateTechnology();
+
 
     if (existing) {
       const [updated] = await db
@@ -130,7 +135,8 @@ export class TechnologyRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().deleteTechnologyCta(id);
     }
-    await unifiedCache.del("technology:cta");
+    await CacheOperations.invalidateTechnology();
+
     const result = await db.delete(technologyCta).where(eq(technologyCta.id, id));
     await emitCacheInvalidation("technology:cta", "delete");
     return (result.rowCount ?? 0) > 0;
@@ -181,7 +187,8 @@ export class TechnologyRepository {
       .returning();
 
     if (!created) throw new Error("Failed to create technology equipment");
-    await unifiedCache.del("technology:equipment");
+    await CacheOperations.invalidateTechnology();
+
     await emitCacheInvalidation("technology:equipment", "create");
     return created;
   }
@@ -195,7 +202,8 @@ export class TechnologyRepository {
       if (!result) throw new Error(`updateTechnologyEquipment returned undefined for id ${id}`);
       return result;
     }
-    await unifiedCache.del("technology:equipment");
+    await CacheOperations.invalidateTechnology();
+
     const [updated] = await db
       .update(technologyEquipment)
       .set(data)
@@ -211,7 +219,8 @@ export class TechnologyRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().deleteTechnologyEquipment(id);
     }
-    await unifiedCache.del("technology:equipment");
+    await CacheOperations.invalidateTechnology();
+
     const result = await db.delete(technologyEquipment).where(eq(technologyEquipment.id, id));
     await emitCacheInvalidation("technology:equipment", "delete");
     return (result.rowCount ?? 0) > 0;
@@ -221,7 +230,8 @@ export class TechnologyRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderTechnologyEquipment(orderedIds);
     }
-    await unifiedCache.del("technology:equipment");
+    await CacheOperations.invalidateTechnology();
+
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
         await tx
@@ -275,7 +285,8 @@ export class TechnologyRepository {
       .returning();
 
     if (!created) throw new Error("Failed to create technology innovation");
-    await unifiedCache.del("technology:innovations:*");
+    await CacheOperations.invalidateTechnology();
+
     await emitCacheInvalidation("technology:innovations", "create");
     return created;
   }
@@ -289,7 +300,8 @@ export class TechnologyRepository {
       if (!result) throw new Error(`updateTechnologyInnovation returned undefined for id ${id}`);
       return result;
     }
-    await unifiedCache.del("technology:innovations:*");
+    await CacheOperations.invalidateTechnology();
+
     const [updated] = await db
       .update(technologyInnovations)
       .set(data)
@@ -305,7 +317,8 @@ export class TechnologyRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().deleteTechnologyInnovation(id);
     }
-    await unifiedCache.del("technology:innovations:*");
+    await CacheOperations.invalidateTechnology();
+
     const result = await db.delete(technologyInnovations).where(eq(technologyInnovations.id, id));
     await emitCacheInvalidation("technology:innovations", "delete");
     return (result.rowCount ?? 0) > 0;
@@ -315,7 +328,8 @@ export class TechnologyRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderTechnologyInnovations(orderedIds);
     }
-    await unifiedCache.del("technology:innovations:*");
+    await CacheOperations.invalidateTechnology();
+
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
         await tx
@@ -367,7 +381,8 @@ export class TechnologyRepository {
       .returning();
 
     if (!created) throw new Error("Failed to create technology research item");
-    await unifiedCache.del("technology:research:*");
+    await CacheOperations.invalidateTechnology();
+
     await emitCacheInvalidation("technology:research", "create");
     return created;
   }
@@ -381,7 +396,8 @@ export class TechnologyRepository {
       if (!result) throw new Error(`updateTechnologyResearch returned undefined for id ${id}`);
       return result;
     }
-    await unifiedCache.del("technology:research:*");
+    await CacheOperations.invalidateTechnology();
+
     const [updated] = await db
       .update(technologyResearch)
       .set({ ...data, updatedAt: new Date() })
@@ -397,7 +413,8 @@ export class TechnologyRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().deleteTechnologyResearch(id);
     }
-    await unifiedCache.del("technology:research:*");
+    await CacheOperations.invalidateTechnology();
+
     const result = await db.delete(technologyResearch).where(eq(technologyResearch.id, id));
     await emitCacheInvalidation("technology:research", "delete");
     return (result.rowCount ?? 0) > 0;
@@ -407,7 +424,8 @@ export class TechnologyRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderTechnologyResearch(orderedIds);
     }
-    await unifiedCache.del("technology:research:*");
+    await CacheOperations.invalidateTechnology();
+
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
         await tx
@@ -459,7 +477,8 @@ export class TechnologyRepository {
       .returning();
 
     if (!created) throw new Error("Failed to create technology roadmap item");
-    await unifiedCache.del("technology:roadmap:*");
+    await CacheOperations.invalidateTechnology();
+
     await emitCacheInvalidation("technology:roadmap", "create");
     return created;
   }
@@ -473,7 +492,8 @@ export class TechnologyRepository {
       if (!result) throw new Error(`updateTechnologyRoadmap returned undefined for id ${id}`);
       return result;
     }
-    await unifiedCache.del("technology:roadmap:*");
+    await CacheOperations.invalidateTechnology();
+
     const [updated] = await db
       .update(technologyRoadmap)
       .set({ ...data, updatedAt: new Date() })
@@ -489,7 +509,8 @@ export class TechnologyRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().deleteTechnologyRoadmap(id);
     }
-    await unifiedCache.del("technology:roadmap:*");
+    await CacheOperations.invalidateTechnology();
+
     const result = await db.delete(technologyRoadmap).where(eq(technologyRoadmap.id, id));
     await emitCacheInvalidation("technology:roadmap", "delete");
     return (result.rowCount ?? 0) > 0;
@@ -499,7 +520,8 @@ export class TechnologyRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderTechnologyRoadmap(orderedIds);
     }
-    await unifiedCache.del("technology:roadmap:*");
+    await CacheOperations.invalidateTechnology();
+
     await db.transaction(async (tx) => {
       for (let i = 0; i < orderedIds.length; i++) {
         await tx
@@ -533,7 +555,8 @@ export class TechnologyRepository {
       return StorageSingleton.getInstance().updateTechnologyGradientSettings(data);
     }
     const existing = await this.getTechnologyGradientSettings();
-    await unifiedCache.del("technology:gradient");
+    await CacheOperations.invalidateTechnology();
+
 
     if (existing) {
       const [updated] = await db

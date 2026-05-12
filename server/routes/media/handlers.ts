@@ -200,8 +200,9 @@ export async function uploadChunkRaw(req: Request, res: Response) {
 
 export async function getMediaContent(req: Request<{ id: string }>, res: Response) {
   const { id } = req.params;
+  const { variant } = req.query as { variant?: string };
 
-  const result = await mediaService.getSignedUrl(Number(id));
+  const result = await mediaService.getSignedUrl(Number(id), 300, variant as any);
   if (result.isErr()) throw result.error;
 
   res.set("Access-Control-Allow-Origin", "*");

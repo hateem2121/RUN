@@ -3,7 +3,7 @@
  * Unified URL generation with consistent behavior across client and server
  */
 
-import type { MediaAsset } from "@shared/index";
+import type { MediaAsset, ImageVariants } from "@shared/index";
 
 // Type aliases using canonical MediaAsset from shared schema
 export type MediaAssetBasic = Pick<MediaAsset, "id" | "url">;
@@ -168,14 +168,37 @@ export class MediaUrlBuilder {
   /**
    * PC-501: Build srcSet for responsive images
    * Leverages /thumbnail and /content endpoints as variants
+   * REMEDIATION (PC-402): Support granular variants from database
    */
-  static buildSrcSet(id: number | undefined | null): string | undefined {
+  static buildSrcSet(id: number | undefined | null, variants?: ImageVariants): string | undefined {
     if (!id || id <= 0) return undefined;
 
-    const thumbnail = `/api/media/${id}/thumbnail`;
-    const content = `/api/media/${id}/content`;
+    const parts: string[] = [];
 
-    return `${thumbnail} 400w, ${content} 1200w`;
+    // Prioritize database variants if available
+    if (variants) {
+      if (variants.thumbnail) {
+        parts.push(`/api/media/${id}/content?variant=thumbnail 400w`);
+      }
+      if (variants.medium) {
+        parts.push(`/api/media/${id}/content?variant=medium 800w`);
+      }
+      if (variants.large) {
+        parts.push(`/api/media/${id}/content?variant=large 1200w`);
+      }
+      if (variants.original) {
+        parts.push(`/api/media/${id}/content?variant=original 1600w`);
+      }
+    }
+
+    // Fallback to legacy endpoint patterns if no granular variants exist
+    if (parts.length === 0) {
+      const thumbnail = `/api/media/${id}/thumbnail`;
+      const content = `/api/media/${id}/content`;
+      return `${thumbnail} 400w, ${content} 1200w`;
+    }
+
+    return parts.join(", ");
   }
 
   /**

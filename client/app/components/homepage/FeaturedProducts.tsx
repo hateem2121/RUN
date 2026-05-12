@@ -8,6 +8,7 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useCursorStore } from "@/stores/useCursorStore";
 import { useScroll } from "../../hooks/use-scroll";
 import { FEATURED_PRODUCTS } from "./constants";
+import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import type { HomepageFeaturedSettings, ProductItem } from "./types";
 
 interface FeaturedProductsProps {
@@ -112,6 +113,15 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
                       FEATURED_PRODUCTS[index % FEATURED_PRODUCTS.length]?.image ||
                       ""
                     }
+                    srcSet={
+                      product.id
+                        ? MediaUrlBuilder.buildSrcSet(
+                            Number(product.id),
+                            (product as any).imageVariants,
+                          )
+                        : undefined
+                    }
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     alt={product.name}
                     loading="lazy"
                     decoding="async"

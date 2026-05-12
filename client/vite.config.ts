@@ -125,6 +125,7 @@ export default defineConfig(
                   if (id.includes("/lucide-react/")) return "vendor-icons";
                   if (id.includes("/@run-remix/shared") || id.includes("/drizzle-orm/"))
                     return "vendor-schema";
+                  if (id.includes("/@google/model-viewer/")) return "vendor-3d";
                   return undefined;
                 },
           },

@@ -5,16 +5,22 @@ import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 import { appStorageService } from "../lib/storage/app-service.js";
 
+import type { ImageVariants } from "../../shared/schemas/media.js";
+
 /**
  * Service for serving media content and thumbnails via signed URLs.
  * Enforces Result-based patterns and circuit breaker protection.
  */
 export class MediaContentService {
   /**
-   * Generates a signed URL for a media asset's primary content.
+   * Generates a signed URL for a media asset's primary content or specific variant.
    * Automatically handles responsive variants and fallbacks.
    */
-  async getSignedUrl(id: number, ttl = 300): Promise<Result<string, AppError>> {
+  async getSignedUrl(
+    id: number,
+    ttl = 300,
+    variant?: keyof ImageVariants,
+  ): Promise<Result<string, AppError>> {
     try {
       const asset = await withCircuit(
         `get-media-content-${id}`,
@@ -28,8 +34,11 @@ export class MediaContentService {
 
       let pathToServe = asset.storagePath;
 
-      // PERFORMANCE: Use optimized compressed variant if available for images
-      if (asset.type === "image" && asset.imageVariants?.original) {
+      // PHASE 2 REMEDIATION (PC-402): Support specific image variants
+      if (asset.type === "image" && variant && asset.imageVariants?.[variant]) {
+        pathToServe = asset.imageVariants[variant]!;
+      } else if (asset.type === "image" && asset.imageVariants?.original) {
+        // PERFORMANCE: Default to original compressed variant if no specific variant requested
         const variantPath = asset.imageVariants.original;
         const variantExists = await appStorageService.assetExists(variantPath);
         if (variantExists) {
@@ -44,7 +53,7 @@ export class MediaContentService {
       const signedUrl = await appStorageService.generateSignedUrl(pathToServe, ttl);
       return ok(signedUrl);
     } catch (error) {
-      logger.error("[MediaContentService] Failed to generate signed URL", { id }, error as Error);
+      logger.error("[MediaContentService] Failed to generate signed URL", { id, variant }, error as Error);
       return err(new InternalError("Failed to generate signed URL", { error }));
     }
   }
@@ -67,13 +76,14 @@ export class MediaContentService {
 
       let pathToServe: string | null = null;
 
-      // Determine the best path to serve for the thumbnail
-      if (asset.thumbnailUrl && asset.storagePath) {
-        // Standard naming convention for thumbnails
+      // PHASE 2 REMEDIATION (PC-402): Prioritize explicit thumbnail variant from imageVariants
+      if (asset.type === "image" && asset.imageVariants?.thumbnail) {
+        pathToServe = asset.imageVariants.thumbnail;
+      } else if (asset.thumbnailUrl && asset.storagePath) {
+        // Fallback: Standard naming convention for legacy thumbnails
         pathToServe = asset.storagePath.replace("media/", "thumbnails/");
         const exists = await appStorageService.assetExists(pathToServe);
         if (!exists) {
-          // Fallback to original content
           pathToServe = asset.storagePath;
         }
       } else if (asset.storagePath) {
