@@ -59,7 +59,7 @@ describe("Auth V2 Integration Tests", () => {
 
   describe("Logout redirect", () => {
     it("should redirect on logout", async () => {
-      const res = await request(app).get("/api/logout");
+      const res = await request(app).get("/api/auth/logout");
       expect(res.status).toBe(302);
       expect(res.header.location).toBe("/");
     });

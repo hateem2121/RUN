@@ -7,8 +7,8 @@
  */
 
 import type { NextFunction, Request, Response } from "express";
-import { LRUCache } from "lru-cache";
 import { logger } from "../lib/monitoring/logger.js";
+import { unifiedCache } from "../lib/cache/unified-cache.js";
 
 // Public pages that can be cached at the edge
 const PUBLIC_CACHEABLE_PATHS = [
@@ -27,16 +27,25 @@ const PRIVATE_PATHS = ["/admin", "/api", "/auth"];
 /**
  * PC-102: Server-side HTML cache at the origin level.
  * Prevents redundant SSR renders for identical public pages.
- * - Max 50 entries (one per unique public path)
- * - 60s TTL (matches browser max-age)
- * - Max 50MB memory
+ * Delegated to UnifiedCache for L1/L2 coordination.
  */
-const htmlCache = new LRUCache<string, { html: string; headers: Record<string, string> }>({
-  max: 50,
-  ttl: 60 * 1000, // 60 seconds
-  maxSize: 50 * 1024 * 1024, // 50MB
-  sizeCalculation: (value) => Buffer.byteLength(value.html, "utf8"),
-});
+const HTML_CACHE_TTL = 60; // 60 seconds
+
+/**
+ * PC-101: Generates a Vary-aware cache key.
+ * Includes user role to prevent cross-user data leakage.
+ */
+function getCacheKey(req: Request): string {
+  const user = (req as Request & { user?: { role?: string } }).user;
+  const role = user?.role || "anon";
+  
+  // Include query parameters for key stability if filters are used
+  const queryString = Object.keys(req.query).length > 0 
+    ? `?${new URLSearchParams(req.query as Record<string, string>).toString()}`
+    : "";
+    
+  return `ssr:${role}:${req.path}${queryString}`;
+}
 
 /**
  * Determines if a path is publicly cacheable
@@ -94,7 +103,7 @@ function isAdminSession(req: Request): boolean {
  * app.use(ssrCacheMiddleware);
  * app.use(ssrHandler); // Must come after
  */
-export function ssrCacheMiddleware(req: Request, res: Response, next: NextFunction): void {
+export async function ssrCacheMiddleware(req: Request, res: Response, next: NextFunction): Promise<void> {
   // Only apply to GET requests (SSR pages)
   if (req.method !== "GET") {
     next();
@@ -123,10 +132,13 @@ export function ssrCacheMiddleware(req: Request, res: Response, next: NextFuncti
     res.setHeader("Cache-Control", "public, max-age=60, s-maxage=300, stale-while-revalidate=600");
     res.setHeader("Vary", "Accept-Encoding, Cookie");
 
-    // PC-102: Serve from server-side HTML cache if available
-    const cacheKey = `ssr:${req.path}`;
-    const cached = htmlCache.get(cacheKey);
+    // PC-102: Serve from server-side HTML cache if available (L1/L2 aware)
+    const cacheKey = getCacheKey(req);
+    logger.debug(`[SSR-Cache] Checking cache for ${cacheKey}`);
+    const cached = await unifiedCache.get<{ html: string; headers: Record<string, string> }>(cacheKey);
+    
     if (cached) {
+      logger.info(`[SSR-Cache] HIT for ${cacheKey}`);
       // Restore cached headers
       for (const [key, value] of Object.entries(cached.headers)) {
         res.setHeader(key, value);
@@ -142,12 +154,13 @@ export function ssrCacheMiddleware(req: Request, res: Response, next: NextFuncti
     res.send = function (body: unknown): Response {
       // Only cache successful HTML responses
       if (res.statusCode === 200 && typeof body === "string" && body.includes("<!DOCTYPE")) {
-        htmlCache.set(cacheKey, {
+        logger.info(`[SSR-Cache] Setting cache for ${cacheKey} (${Buffer.byteLength(body, "utf8")} bytes)`);
+        unifiedCache.set(cacheKey, {
           html: body,
           headers: {
             "Content-Type": res.getHeader("Content-Type")?.toString() || "text/html",
           },
-        });
+        }, HTML_CACHE_TTL).catch(err => logger.warn(`[SSR-Cache] Failed to set cache for ${cacheKey}`, err));
       }
       return originalSend(body);
     } as typeof res.send;
@@ -163,21 +176,15 @@ export function ssrCacheMiddleware(req: Request, res: Response, next: NextFuncti
  * Invalidate the server-side HTML cache.
  * Called by CacheOperations when CMS content changes.
  */
-export function invalidateHtmlCache(pattern?: string): void {
+export async function invalidateHtmlCache(pattern?: string): Promise<void> {
   if (!pattern) {
-    htmlCache.clear();
+    await unifiedCache.clearPattern("ssr:");
     logger.info("[SSR-Cache] HTML cache fully cleared");
     return;
   }
 
-  let cleared = 0;
-  for (const key of htmlCache.keys()) {
-    if (key.includes(pattern)) {
-      htmlCache.delete(key);
-      cleared++;
-    }
-  }
-  logger.info(`[SSR-Cache] HTML cache cleared ${cleared} entries matching "${pattern}"`);
+  await unifiedCache.invalidate(`ssr:.*${pattern}.*`);
+  logger.info(`[SSR-Cache] HTML cache invalidated matching pattern: "${pattern}"`);
 }
 
 // Export path utilities for testing

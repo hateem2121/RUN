@@ -51,6 +51,10 @@ export class RateLimiter {
 
   middleware = () => {
     return async (req: Request, res: Response, next: NextFunction) => {
+      // Skip rate limiting in test mode unless explicitly enabled
+      if (process.env.NODE_ENV === "test" && process.env.ENABLE_RATE_LIMIT_IN_TESTS !== "true") {
+        return next();
+      }
       const ip = req.ip || "unknown";
       const key = `ratelimit:${ip}`;
 

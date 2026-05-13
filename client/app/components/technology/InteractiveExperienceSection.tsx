@@ -218,7 +218,8 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
           alt="Technology Hero Display"
           imageClassName="h-full w-full object-cover opacity-90 mix-blend-multiply group-hover:scale-105 transition-transform duration-[15s]"
           className="h-full w-full"
-          priority={false}
+          priority={true}
+          sizes="100vw"
         />
       )}
 

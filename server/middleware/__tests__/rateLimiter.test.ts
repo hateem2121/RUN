@@ -28,6 +28,7 @@ describe("RateLimiter Middleware", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    process.env.ENABLE_RATE_LIMIT_IN_TESTS = "true";
     req = { ip: "127.0.0.1", headers: {} };
     res = {
       setHeader: vi.fn(),

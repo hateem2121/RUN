@@ -87,8 +87,8 @@ export class RateLimiter {
       const tracer = trace.getTracer("rate-limiter");
 
       return tracer.startActiveSpan("rate_limiter.check", async (span) => {
-        // Skip if configured to skip this request
-        if (this.config.skip(req)) {
+        // Skip if configured to skip this request or if in test mode (unless explicitly enabled)
+        if (this.config.skip(req) || (process.env.NODE_ENV === "test" && process.env.ENABLE_RATE_LIMIT_IN_TESTS !== "true")) {
           span.setAttribute("rate_limit.skipped", true);
           span.end();
           next();

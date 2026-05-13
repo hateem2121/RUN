@@ -6,6 +6,7 @@
 import express from "express";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ok, err } from "neverthrow";
 import { setupErrorHandling, setupMiddleware } from "../../boot/middleware.js";
 import productRouter from "../../routes/core/products.js";
 import { authService } from "../../services/auth-service.js";
@@ -75,7 +76,7 @@ describe("Admin Product Management Integration Tests", () => {
 
     // Mock verifyAdminAccess which is used by requireRole middleware
     vi.spyOn(authService, "verifyAdminAccess").mockImplementation(async (user: unknown) => {
-      return !!(user as Record<string, unknown>)?.isAdmin;
+      return ok(!!(user as Record<string, unknown>)?.isAdmin);
     });
 
     await setupMiddleware(app);

@@ -107,10 +107,11 @@ describe("AdminService", () => {
       vi.mocked(mediaRepository.getMediaAssets).mockResolvedValue([] as any);
 
       const result = await adminService.getInitialProductsData(1, 10);
+      const val = result._unsafeUnwrap();
 
-      expect(result.products).toHaveLength(1);
-      expect((result.meta as any).totalProducts).toBe(1);
-      expect(result.categories).toHaveLength(1);
+      expect(val.products).toHaveLength(1);
+      expect((val.meta as any).totalProducts).toBe(1);
+      expect(val.categories).toHaveLength(1);
     });
   });
 
@@ -134,8 +135,9 @@ describe("AdminService", () => {
       };
 
       const result = await adminService.fixCorruptedMedia(auditContext);
+      const val = result._unsafeUnwrap();
 
-      expect(result.fixedCount).toBe(1);
+      expect(val.fixedCount).toBe(1);
       expect(productRepository.updateCategory).toHaveBeenCalledWith(1, {
         featuredContent: {
           card1: { mediaUrl: "" },
@@ -153,8 +155,9 @@ describe("AdminService", () => {
       };
 
       const result = await adminService.triggerCleanup(auditContext, true);
+      const val = result._unsafeUnwrap();
 
-      expect(result.cleanedFiles).toContain("file1");
+      expect(val.cleanedFiles).toContain("file1");
       expect(systemRepository.createAuditLog).toHaveBeenCalled();
     });
   });
@@ -164,7 +167,8 @@ describe("AdminService", () => {
       vi.mocked(productRepository.restoreCategory).mockResolvedValue(true);
 
       const result = await adminService.restoreCategory({} as unknown as AuditContext, 1);
-      expect(result).toBe(true);
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap()).toBe(true);
       expect(productRepository.restoreCategory).toHaveBeenCalledWith(1);
     });
 
@@ -172,7 +176,8 @@ describe("AdminService", () => {
       vi.mocked(productRepository.restoreProduct).mockResolvedValue(true);
 
       const result = await adminService.restoreProduct({} as unknown as AuditContext, 1);
-      expect(result).toBe(true);
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap()).toBe(true);
       expect(productRepository.restoreProduct).toHaveBeenCalledWith(1);
     });
 
@@ -180,7 +185,8 @@ describe("AdminService", () => {
       vi.mocked(mediaRepository.restoreMediaAsset).mockResolvedValue(true);
 
       const result = await adminService.restoreMediaAsset({} as unknown as AuditContext, 1);
-      expect(result).toBe(true);
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap()).toBe(true);
       expect(mediaRepository.restoreMediaAsset).toHaveBeenCalledWith(1);
     });
   });
@@ -190,11 +196,12 @@ describe("AdminService", () => {
       vi.mocked(systemRepository.setAuditTrailEnabled).mockResolvedValue(true as any);
       vi.mocked(systemRepository.configureTrackedTables).mockResolvedValue(true as any);
 
-      await adminService.updateAuditConfig({} as unknown as AuditContext, {
+      const result = await adminService.updateAuditConfig({} as unknown as AuditContext, {
         enabled: true,
         trackedTables: ["products"],
       });
 
+      expect(result.isOk()).toBe(true);
       expect(systemRepository.setAuditTrailEnabled).toHaveBeenCalledWith(true);
       expect(systemRepository.configureTrackedTables).toHaveBeenCalledWith(["products"]);
       expect(systemRepository.createAuditLog).toHaveBeenCalled();

@@ -1,6 +1,7 @@
 import express from "express";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ok } from "neverthrow";
 import adminRouter from "./admin.ts";
 
 // Mock all dependencies admin.ts imports
@@ -76,7 +77,7 @@ describe("Admin Routes — Slug Validation (Fix 6)", () => {
 
   describe("GET /api/admin/products/check-slug", () => {
     it("returns 200 and availability result for a valid slug", async () => {
-      mockCheck.mockResolvedValue({ available: true, slug: "running-shorts" });
+      mockCheck.mockResolvedValue(ok({ available: true, slug: "running-shorts" }));
 
       const response = await request(app)
         .get("/api/admin/products/check-slug")
@@ -88,7 +89,7 @@ describe("Admin Routes — Slug Validation (Fix 6)", () => {
     });
 
     it("normalizes uppercase slugs before availability check", async () => {
-      mockCheck.mockResolvedValue({ available: true, slug: "running-shorts" });
+      mockCheck.mockResolvedValue(ok({ available: true, slug: "running-shorts" }));
 
       const response = await request(app)
         .get("/api/admin/products/check-slug")
@@ -100,7 +101,7 @@ describe("Admin Routes — Slug Validation (Fix 6)", () => {
     });
 
     it("coerces string excludeId to number before passing to service", async () => {
-      mockCheck.mockResolvedValue({ available: true, slug: "running-shorts" });
+      mockCheck.mockResolvedValue(ok({ available: true, slug: "running-shorts" }));
 
       const response = await request(app)
         .get("/api/admin/products/check-slug")

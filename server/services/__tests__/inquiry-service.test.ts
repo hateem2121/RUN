@@ -70,9 +70,10 @@ describe("InquiryService", () => {
       vi.mocked(miscRepository.createInquiry).mockResolvedValue(mockInquiry);
 
       const result = await service.createInquiry(mockData);
+      const val = result._unsafeUnwrap();
 
       expect(miscRepository.createInquiry).toHaveBeenCalledWith(mockData);
-      expect(result).toEqual(mockInquiry);
+      expect(val).toEqual(mockInquiry);
       expect(unifiedCache.delete).toHaveBeenCalledWith("inquiries:stats");
 
       // Verify email fallback (since emailQueue is mocked as null)
@@ -87,9 +88,9 @@ describe("InquiryService", () => {
       vi.mocked(unifiedCache.get).mockResolvedValue(mockStats);
 
       const result = await service.getStats();
+      const val = result._unsafeUnwrap();
 
-      expect(result.data).toEqual(mockStats);
-      expect(result.fromCache).toBe(true);
+      expect(val).toEqual(mockStats);
       expect(miscRepository.getInquiryStats).not.toHaveBeenCalled();
     });
 
@@ -99,9 +100,9 @@ describe("InquiryService", () => {
       vi.mocked(miscRepository.getInquiryStats).mockResolvedValue(mockStats);
 
       const result = await service.getStats();
+      const val = result._unsafeUnwrap();
 
-      expect(result.data).toEqual(mockStats);
-      expect(result.fromCache).toBe(false);
+      expect(val).toEqual(mockStats);
       expect(unifiedCache.set).toHaveBeenCalled();
     });
   });
@@ -112,9 +113,10 @@ describe("InquiryService", () => {
       vi.mocked(miscRepository.updateInquiry).mockResolvedValue(mockUpdated);
 
       const result = await service.updateInquiry(1, { status: "read" });
+      const val = result._unsafeUnwrap();
 
       expect(miscRepository.updateInquiry).toHaveBeenCalledWith(1, { status: "read" });
-      expect(result).toEqual(mockUpdated);
+      expect(val).toEqual(mockUpdated);
       expect(unifiedCache.delete).toHaveBeenCalledWith("inquiries:stats");
       expect(unifiedCache.delete).toHaveBeenCalledWith("inquiries:detail:1");
     });

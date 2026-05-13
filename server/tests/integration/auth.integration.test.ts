@@ -6,9 +6,11 @@
 import express from "express";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ok, err } from "neverthrow";
 import { setupErrorHandling, setupMiddleware } from "../../boot/middleware.js";
 import { adminCacheManager } from "../../lib/cache/admin-cache.js";
 import { getStorage } from "../../lib/storage-singleton.js";
+import adminRouter from "../../routes/admin/admin.js";
 import authRouter from "../../routes/auth.js";
 import { authService } from "../../services/auth-service.js";
 
@@ -95,9 +97,10 @@ describe("Auth Integration Tests", () => {
 
     await setupMiddleware(app);
 
-    // Register auth routes
+    // Register auth and admin routes
     const apiRouter = express.Router();
-    apiRouter.use(authRouter);
+    apiRouter.use("/auth", authRouter);
+    apiRouter.use("/admin", adminRouter);
     app.use("/api", apiRouter);
 
     setupErrorHandling(app);
@@ -166,7 +169,7 @@ describe("Auth Integration Tests", () => {
         isAdmin: false,
       };
 
-      vi.spyOn(authService, "verifyAdminAccess").mockResolvedValue(false);
+      vi.spyOn(authService, "verifyAdminAccess").mockResolvedValue(ok(false));
 
       const response = await request(app).post("/api/admin/cache/clear").send({ userId: "user-2" });
 
@@ -180,7 +183,7 @@ describe("Auth Integration Tests", () => {
         isAdmin: true,
       };
 
-      vi.spyOn(authService, "verifyAdminAccess").mockResolvedValue(true);
+      vi.spyOn(authService, "verifyAdminAccess").mockResolvedValue(ok(true));
 
       const response = await request(app).post("/api/admin/cache/clear").send({ userId: "user-2" });
 
@@ -194,7 +197,7 @@ describe("Auth Integration Tests", () => {
         claims: { sub: "admin-1" },
         isAdmin: true,
       };
-      vi.spyOn(authService, "verifyAdminAccess").mockResolvedValue(true);
+      vi.spyOn(authService, "verifyAdminAccess").mockResolvedValue(ok(true));
 
       const response = await request(app).get("/api/admin/cache/stats");
 
@@ -207,7 +210,7 @@ describe("Auth Integration Tests", () => {
     it("should clear session and redirect", async () => {
       mockUser = { id: "test-user" };
 
-      const response = await request(app).get("/api/logout");
+      const response = await request(app).get("/api/auth/logout");
 
       expect(response.status).toBe(302);
       expect(response.headers.location).toBe("/");

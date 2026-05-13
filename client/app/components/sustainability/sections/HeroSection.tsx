@@ -28,6 +28,7 @@ export function OptimizedSustainabilityHero({ media }: { media: MediaAsset }) {
           imageClassName="h-full w-full object-cover"
           className="h-full w-full"
           priority={true}
+          sizes="100vw"
         />
       )}
       <div className="absolute inset-0 bg-linear-to-b from-black/60 to-[#0A0A0A]/40" />

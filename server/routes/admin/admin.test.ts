@@ -1,10 +1,17 @@
 import express from "express";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ok } from "neverthrow";
 import adminRouter from "./admin.ts";
 
 // Use vi.hoisted to ensure the mock is available to the hoisted vi.mock call
 const { mockAdminService } = vi.hoisted(() => {
+  const ok = (value: any) => ({
+    isOk: () => true,
+    isErr: () => false,
+    value,
+    _unsafeUnwrap: () => value,
+  });
   const mock: {
     getInitialProductsData: ReturnType<typeof vi.fn>;
     fixCorruptedMedia: ReturnType<typeof vi.fn>;
@@ -18,6 +25,8 @@ const { mockAdminService } = vi.hoisted(() => {
     createAboutTimelineEntry: ReturnType<typeof vi.fn>;
     updateAboutTimelineEntry: ReturnType<typeof vi.fn>;
     deleteAboutTimelineEntry: ReturnType<typeof vi.fn>;
+    getMediaAssetsList: ReturnType<typeof vi.fn>;
+    getDashboardStats: ReturnType<typeof vi.fn>;
   } = {
     getInitialProductsData: vi.fn(),
     fixCorruptedMedia: vi.fn(),
@@ -31,6 +40,8 @@ const { mockAdminService } = vi.hoisted(() => {
     createAboutTimelineEntry: vi.fn(),
     updateAboutTimelineEntry: vi.fn(),
     deleteAboutTimelineEntry: vi.fn(),
+    getMediaAssetsList: vi.fn().mockResolvedValue(ok([])),
+    getDashboardStats: vi.fn().mockResolvedValue(ok({ products: 0, categories: 0, media: 0 })),
   };
 
   mock.fixCorruptedMedia.mockImplementation(async (audit: Record<string, unknown>) => {
@@ -44,7 +55,7 @@ const { mockAdminService } = vi.hoisted(() => {
       ipAddress: audit.ipAddress,
       metadata: { operation: "fix-corrupted-media", result },
     });
-    return result;
+    return ok(result);
   });
 
   mock.triggerCleanup.mockImplementation(
@@ -59,7 +70,7 @@ const { mockAdminService } = vi.hoisted(() => {
         ipAddress: audit.ipAddress,
         metadata: { operation: "cleanup", autoClean, report },
       });
-      return report;
+      return ok(report);
     },
   );
 
@@ -72,7 +83,7 @@ const { mockAdminService } = vi.hoisted(() => {
       userAgent: audit.userAgent,
       ipAddress: audit.ipAddress,
     });
-    return true;
+    return ok(true);
   });
 
   mock.restoreCategory.mockImplementation(async (audit: Record<string, unknown>, id: number) => {
@@ -84,7 +95,7 @@ const { mockAdminService } = vi.hoisted(() => {
       userAgent: audit.userAgent,
       ipAddress: audit.ipAddress,
     });
-    return true;
+    return ok(true);
   });
 
   mock.restoreProduct.mockImplementation(async (audit: Record<string, unknown>, id: number) => {
@@ -96,7 +107,7 @@ const { mockAdminService } = vi.hoisted(() => {
       userAgent: audit.userAgent,
       ipAddress: audit.ipAddress,
     });
-    return true;
+    return ok(true);
   });
 
   mock.restoreMediaAsset.mockImplementation(async (audit: Record<string, unknown>, id: number) => {
@@ -108,7 +119,7 @@ const { mockAdminService } = vi.hoisted(() => {
       userAgent: audit.userAgent,
       ipAddress: audit.ipAddress,
     });
-    return true;
+    return ok(true);
   });
 
   return { mockAdminService: mock };
@@ -170,7 +181,7 @@ describe("Admin Routes Integration", () => {
   describe("GET /api/admin/products/initial-data", () => {
     it("should return initial products data", async () => {
       const mockData = { products: [], meta: { total: 0 } };
-      mockAdminService.getInitialProductsData.mockResolvedValue(mockData);
+      mockAdminService.getInitialProductsData.mockResolvedValue(ok(mockData));
 
       const response = await request(app).get("/api/admin/products/initial-data");
       expect(response.status).toBe(200);
@@ -224,7 +235,7 @@ describe("Admin Routes Integration", () => {
   describe("POST /api/admin/enterprise/audit-config", () => {
     it("should update audit config", async () => {
       const response = await request(app)
-        .post("/api/admin/enterprise/audit-config")
+        .post("/api/admin/audit-config")
         .send({ enabled: true, trackedTables: ["products"] });
 
       if (response.status !== 200) {
@@ -272,7 +283,7 @@ describe("Admin Routes Integration", () => {
 
   describe("GET /api/admin/enterprise/audit-config", () => {
     it("should return audit config", async () => {
-      const response = await request(app).get("/api/admin/enterprise/audit-config");
+      const response = await request(app).get("/api/admin/audit-config");
       expect(response.status).toBe(200);
       expect(response.body.enabled).toBe(true);
       expect(Array.isArray(response.body.trackedTables)).toBe(true);
@@ -308,9 +319,9 @@ describe("Admin Routes Integration", () => {
       );
     });
 
-    it("should return 400 for invalid ID", async () => {
+    it("should return 422 for invalid ID", async () => {
       const response = await request(app).post("/api/admin/media-assets/invalid/restore").send({});
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(422);
       expect(response.body.message).toContain("expected numeric ID");
     });
   });
@@ -319,23 +330,23 @@ describe("Admin Routes Integration", () => {
     const mockEntry = { id: 1, title: "Test Entry", year: 2024 };
 
     it("GET /api/admin/about/timeline - should return timeline entries", async () => {
-      mockAdminService.getAboutTimelineEntries.mockResolvedValue([mockEntry]);
+      mockAdminService.getAboutTimelineEntries.mockResolvedValue(ok([mockEntry]));
       const response = await request(app).get("/api/admin/about/timeline");
       expect(response.status).toBe(200);
       expect(response.body).toEqual([mockEntry]);
     });
 
     it("POST /api/admin/about/timeline - should create entry", async () => {
-      mockAdminService.createAboutTimelineEntry.mockResolvedValue(mockEntry);
+      mockAdminService.createAboutTimelineEntry.mockResolvedValue(ok(mockEntry));
       const response = await request(app)
         .post("/api/admin/about/timeline")
-        .send({ title: "New", year: 2025 });
+        .send({ title: "New", year: "2025", description: "Test Description" });
       expect(response.status).toBe(201);
       expect(response.body).toEqual(mockEntry);
     });
 
     it("PATCH /api/admin/about/timeline/:id - should update entry", async () => {
-      mockAdminService.updateAboutTimelineEntry.mockResolvedValue(mockEntry);
+      mockAdminService.updateAboutTimelineEntry.mockResolvedValue(ok(mockEntry));
       const response = await request(app)
         .patch("/api/admin/about/timeline/1")
         .send({ title: "Updated" });
@@ -344,7 +355,7 @@ describe("Admin Routes Integration", () => {
     });
 
     it("DELETE /api/admin/about/timeline/:id - should delete entry", async () => {
-      mockAdminService.deleteAboutTimelineEntry.mockResolvedValue(true);
+      mockAdminService.deleteAboutTimelineEntry.mockResolvedValue(ok(true));
       const response = await request(app).delete("/api/admin/about/timeline/1");
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);

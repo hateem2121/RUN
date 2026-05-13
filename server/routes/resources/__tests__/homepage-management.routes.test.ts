@@ -1,42 +1,33 @@
 import express from "express";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { unifiedCache } from "../../../lib/cache/unified-cache.js";
-import { homepageRepository } from "../../../lib/db/repositories/index.js";
+import { ok, err } from "neverthrow";
+import { homepageService } from "../../../services/homepage.service.js";
 import homepageManagementRoutes from "../homepage-management.routes.js";
+import { ValidationError } from "../../../lib/errors.js";
+import { productionErrorHandler } from "../../../middleware/production-error-handler.js";
 
-vi.mock("../../../lib/cache/unified-cache.js", () => ({
-  unifiedCache: {
-    get: vi.fn(),
-    set: vi.fn(),
-    invalidate: vi.fn(),
-  },
-}));
-
-vi.mock("../../../lib/cache/cache-strategies.js", () => ({
-  CacheKeys: {
-    homepage: {
-      hero: vi.fn().mockReturnValue("homepage:hero"),
-      slogans: vi.fn().mockReturnValue("homepage:slogans"),
-      sections: vi.fn().mockReturnValue("homepage:sections"),
-      featuredProducts: vi.fn().mockReturnValue("homepage:featuredProducts"),
-    },
-  },
-  CacheOperations: {
-    invalidateHomepage: vi.fn(),
-  },
-}));
-
-vi.mock("../../../lib/cache/two-tier-batch.js", () => ({
-  twoTierBatchCache: {
-    invalidate: vi.fn(),
-  },
-}));
-
-vi.mock("../../../lib/db/repositories/index.js", () => ({
-  homepageRepository: {
-    getHomepageHero: vi.fn(),
-    updateHomepageHero: vi.fn(),
+vi.mock("../../../services/homepage.service.js", () => ({
+  homepageService: {
+    getHero: vi.fn(),
+    updateHero: vi.fn(),
+    getSlogans: vi.fn(),
+    getSlogan: vi.fn(),
+    createSlogan: vi.fn(),
+    updateSlogan: vi.fn(),
+    deleteSlogan: vi.fn(),
+    reorderSlogans: vi.fn(),
+    getProcessCards: vi.fn(),
+    getProcessCard: vi.fn(),
+    createProcessCard: vi.fn(),
+    updateProcessCard: vi.fn(),
+    deleteProcessCard: vi.fn(),
+    reorderProcessCards: vi.fn(),
+    getSections: vi.fn(),
+    getSectionById: vi.fn(),
+    updateSectionById: vi.fn(),
+    getFeaturedProductsSettings: vi.fn(),
+    updateFeaturedProductsSettings: vi.fn(),
   },
 }));
 
@@ -49,6 +40,7 @@ vi.mock("../../../services/auth-service.js", () => ({
 const app = express();
 app.use(express.json());
 app.use("/api", homepageManagementRoutes);
+app.use(productionErrorHandler);
 
 describe("Homepage Management Routes", () => {
   beforeEach(() => {
@@ -56,54 +48,45 @@ describe("Homepage Management Routes", () => {
   });
 
   describe("GET /api/homepage-hero", () => {
-    it("returns cached hero if available", async () => {
-      const mockHero = { title: "Cached Hero" };
-      vi.mocked(unifiedCache.get).mockResolvedValue(mockHero);
+    it("returns hero from service", async () => {
+      const mockHero = { title: "Hero" };
+      vi.mocked(homepageService.getHero).mockResolvedValue(ok(mockHero));
 
       const response = await request(app).get("/api/homepage-hero");
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(mockHero);
-      expect(response.headers["x-cache-hit"]).toBe("true");
-      expect(homepageRepository.getHomepageHero).not.toHaveBeenCalled();
+      expect(homepageService.getHero).toHaveBeenCalled();
     });
 
-    it("fetches hero from db if not in cache", async () => {
-      vi.mocked(unifiedCache.get).mockResolvedValue(null);
-      const mockHero = { title: "DB Hero" };
-      vi.mocked(homepageRepository.getHomepageHero).mockResolvedValue(
-        mockHero as unknown as Awaited<ReturnType<typeof homepageRepository.getHomepageHero>>,
-      );
+    it("handles service errors", async () => {
+      vi.mocked(homepageService.getHero).mockResolvedValue(err(new Error("Service error") as any));
 
       const response = await request(app).get("/api/homepage-hero");
 
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual(mockHero);
-      expect(unifiedCache.set).toHaveBeenCalledWith("homepage:hero", mockHero, expect.any(Number));
+      expect(response.status).toBe(500);
     });
   });
 
   describe("PATCH /api/homepage-hero", () => {
-    it("updates hero and invalidates cache", async () => {
+    it("updates hero through service", async () => {
       const updateData = { title: "Updated Hero" };
       const updatedHero = { id: 1, ...updateData };
-      vi.mocked(homepageRepository.updateHomepageHero).mockResolvedValue(
-        updatedHero as unknown as Awaited<ReturnType<typeof homepageRepository.updateHomepageHero>>,
-      );
+      vi.mocked(homepageService.updateHero).mockResolvedValue(ok(updatedHero));
 
       const response = await request(app).patch("/api/homepage-hero").send(updateData);
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(updatedHero);
-      expect(homepageRepository.updateHomepageHero).toHaveBeenCalledWith(updateData);
+      expect(homepageService.updateHero).toHaveBeenCalledWith(expect.objectContaining(updateData));
     });
 
-    it("returns 400 for invalid data", async () => {
+    it("returns 422 for invalid data", async () => {
       const invalidData = { title: 123 }; // Should be string
       const response = await request(app).patch("/api/homepage-hero").send(invalidData);
 
-      expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty("error");
+      expect(response.status).toBe(422);
+      expect(response.body).toHaveProperty("detail");
     });
   });
 });

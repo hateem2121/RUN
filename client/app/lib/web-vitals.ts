@@ -25,13 +25,19 @@ function sendToAnalytics(metric: MetricType) {
     console.groupEnd();
   } else {
     // Production: Send to analytics endpoint
-    const body = JSON.stringify(metric);
     const url = "/api/analytics/vitals";
+    const body = JSON.stringify(metric);
 
     if (navigator.sendBeacon) {
-      navigator.sendBeacon(url, body);
+      const blob = new Blob([body], { type: "application/json" });
+      navigator.sendBeacon(url, blob);
     } else {
-      fetch(url, { body, method: "POST", keepalive: true }).catch(() => {});
+      fetch(url, {
+        body,
+        method: "POST",
+        keepalive: true,
+        headers: { "Content-Type": "application/json" },
+      }).catch(() => {});
     }
   }
 }

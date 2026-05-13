@@ -47,7 +47,8 @@ export function requireRole(...allowedRoles: string[]) {
 
     for (const role of allowedRoles) {
       if (role === "admin") {
-        if (await authService.verifyAdminAccess(user)) {
+        const result = await authService.verifyAdminAccess(user);
+        if (result.isOk() && result.value) {
           hasRole = true;
           break;
         }

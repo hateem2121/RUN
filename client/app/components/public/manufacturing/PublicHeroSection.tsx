@@ -173,6 +173,7 @@ export function PublicHeroSection({
                 alt="Manufacturing Background"
                 className="w-full h-full object-cover opacity-20 grayscale sepia hue-rotate-15 mix-blend-overlay"
                 priority={true}
+                sizes="100vw"
               />
             ) : (
               <img

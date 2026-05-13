@@ -87,6 +87,9 @@ export class AuthService {
         logger.error(
           "Redis is required for session storage in production. Set REDIS_URL or UPSTASH_REDIS_REST_URL.",
         );
+        if (process.env.VITEST) {
+          throw new Error("Redis is required for session storage in production");
+        }
         process.exit(1);
       }
       if (process.env.NODE_ENV === "development") {
@@ -242,7 +245,7 @@ export class AuthService {
     const isMockEnabled = process.env.ENABLE_MOCK_ADMIN === "true";
     const isMockUser = user.claims.isMock === true;
 
-    return isDev && isMockEnabled && isMockUser;
+    return isDev && isMockEnabled && isMockUser && user.isAdmin;
   }
 
   /**
@@ -330,7 +333,10 @@ export class AuthService {
    * VERIFY ADMIN ACCESS
    */
   public async verifyAdminAccess(user: SessionUser): Promise<Result<boolean, AppError>> {
-    const userId = user.claims.sub;
+    const userId = user?.claims?.sub;
+    if (!userId) {
+      return ok(false);
+    }
     const cachedAdminStatus = adminCacheManager.get(userId);
 
     if (cachedAdminStatus !== null) {

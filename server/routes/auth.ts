@@ -1,8 +1,5 @@
 import { type Response, Router } from "express";
 import passport from "passport";
-import { z } from "zod";
-import { validateRequest } from "zod-express-middleware";
-import { adminCacheManager } from "../lib/cache/admin-cache.js";
 import { userRepository } from "../lib/db/repositories/index.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { authRateLimiter } from "../middleware/rateLimiter.js";
@@ -21,7 +18,7 @@ router.get(
 );
 
 // Mock Login Route (Development & Test Only)
-if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
+if (process.env.NODE_ENV === "development" || process.env.VITEST) {
   router.get("/mock-login", async (req, res) => {
     const mockUser: SessionUser = {
       id: "mock-admin-id",
@@ -91,14 +88,14 @@ if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
 
 // OAuth callback - completes authentication
 router.get(
-  "/auth/google/callback",
+  "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/api/login",
+    failureRedirect: "/api/auth/login",
   }),
   (req, res) => {
     const user = req.user as SessionUser;
     if (!user) {
-      return res.redirect("/api/login");
+      return res.redirect("/api/auth/login");
     }
 
     req.session.regenerate((err) => {
@@ -132,7 +129,7 @@ router.get("/logout", (req, res) => {
 
 // User info route
 router.get(
-  "/auth/user",
+  "/user",
   authService.isAuthenticated,
   async (req, res): Promise<undefined | Response> => {
     const user = req.user as SessionUser;
@@ -165,30 +162,5 @@ router.get(
     });
   },
 );
-
-// Admin Cache Management
-router.post(
-  "/admin/cache/clear",
-  authService.requireAdmin,
-  validateRequest({
-    body: z.object({
-      userId: z.string().optional(),
-    }),
-  }),
-  (req, res) => {
-    const { userId } = req.body;
-    if (userId) {
-      adminCacheManager.clearUser(userId);
-    } else {
-      adminCacheManager.clear();
-    }
-    res.json({ success: true, message: "Admin cache cleared" });
-  },
-);
-
-router.get("/admin/cache/stats", authService.requireAdmin, (_req, res) => {
-  const stats = adminCacheManager.getStats();
-  res.json({ ...stats, timestamp: new Date().toISOString() });
-});
 
 export default router;

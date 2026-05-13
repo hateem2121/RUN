@@ -33,6 +33,7 @@ export async function setupMiddleware(app: Express) {
           "frame-src": ["'self'", "*.google.com"],
           "connect-src": ["'self'", "*.google.com", "*.gstatic.com", "vitals.vercel-insights.com"],
           "img-src": ["'self'", "data:", "*.google.com", "*.gstatic.com", "https://*"],
+          "worker-src": ["'self'", "blob:"],
           "font-src": [
             "'self'",
             "https:",

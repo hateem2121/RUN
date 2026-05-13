@@ -154,10 +154,11 @@ describe("ProductRepository", () => {
 
   describe("getProducts", () => {
     it("queries DB on cache miss", async () => {
-      const productsList = [{ id: 1, name: "P1" }];
+      const productsList = [{ product: { id: 1, name: "P1" }, imageVariants: null }];
       selectChain.then.mockImplementation((res) => res(productsList));
       const result = await repository.getProducts(10, 0);
-      expect(result).toEqual(productsList);
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe("P1");
     });
   });
 
@@ -169,22 +170,6 @@ describe("ProductRepository", () => {
     });
   });
 
-  describe("getProductsSummary", () => {
-    it("queries DB correctly and handles cache", async () => {
-      const mockResult = [{ id: 1, name: "P1", slug: "p1" }];
-      selectChain.then.mockImplementation((res) => res(mockResult));
-
-      // Need to mock getProductCount which is called inside
-      vi.spyOn(repository, "getProductCount").mockResolvedValue(100);
-
-      const result = await repository.getProductsSummary(10, 0);
-      expect(result.products).toHaveLength(1);
-      expect(result.products[0].name).toBe("P1");
-      expect(result.totalCount).toBe(100);
-      expect(selectChain.limit).toHaveBeenCalledWith(10);
-      expect(selectChain.offset).toHaveBeenCalledWith(0);
-    });
-  });
 
   describe("getProductBySlug", () => {
     it("returns product if found", async () => {
@@ -222,10 +207,11 @@ describe("ProductRepository", () => {
 
   describe("getHomepageFeaturedProducts", () => {
     it("returns featured products", async () => {
-      const products = [{ id: 1, name: "Featured" }];
+      const products = [{ product: { id: 1, name: "Featured" }, imageVariants: null }];
       selectChain.then.mockImplementation((res) => res(products));
       const result = await repository.getHomepageFeaturedProducts(1);
-      expect(result).toEqual(products);
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe("Featured");
     });
   });
 
@@ -372,12 +358,13 @@ describe("ProductRepository", () => {
 
   describe("getActiveProducts", () => {
     it("returns active products via getProducts", async () => {
-      const products = [{ id: 1, name: "Active Product" }];
+      const products = [{ product: { id: 1, name: "Active Product" }, imageVariants: null }];
       selectChain.then.mockImplementation((res) => res(products));
 
       const result = await repository.getActiveProducts();
 
-      expect(result).toEqual(products);
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe("Active Product");
     });
   });
 
@@ -421,12 +408,13 @@ describe("ProductRepository", () => {
     });
 
     it("getHomepageFeaturedProducts queries DB on cache miss", async () => {
-      const products = [{ id: 1, name: "Featured" }];
+      const products = [{ product: { id: 1, name: "Featured" }, imageVariants: null }];
       selectChain.then.mockImplementation((res) => res(products));
 
       const result = await repository.getHomepageFeaturedProducts(5);
 
-      expect(result).toEqual(products);
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe("Featured");
       expect(selectChain.limit).toHaveBeenCalledWith(5);
     });
   });

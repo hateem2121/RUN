@@ -35,13 +35,13 @@ router.use("/system", systemRouter);
  * Direct mounts for routes expected at the root of /api/admin
  */
 
-// Products root aliases
-router.use("/", productsRouter); // Handles /products, /products/:id, etc.
+// System root aliases
+router.use("/", systemRouter); // Handles /media-assets, /cleanup, /test, /cache/stats, etc.
 
 // Content root aliases
 router.use("/", contentRouter); // Handles /certificates, /fibers, /about, etc.
 
-// System root aliases
-router.use("/", systemRouter); // Handles /media-assets, /cleanup, etc.
+// Products root aliases
+router.use("/", productsRouter); // Handles /products, /products/:id, etc.
 
 export default router;

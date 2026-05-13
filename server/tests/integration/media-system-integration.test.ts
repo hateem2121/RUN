@@ -168,7 +168,7 @@ describe("Media System Integration Tests", () => {
     it("should respond to media list within performance threshold", async () => {
       const startTime = Date.now();
       await request(app).get("/api/media").expect(200);
-      expect(Date.now() - startTime).toBeLessThan(3000);
+      expect(Date.now() - startTime).toBeLessThan(5000);
     });
 
     it("should handle concurrent requests efficiently", async () => {

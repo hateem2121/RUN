@@ -122,7 +122,7 @@ describe("Admin V2 Integration Tests", () => {
   describe("Audit Configuration", () => {
     it("should return audit configuration", async () => {
       const res = await request(app)
-        .get("/api/admin/enterprise/audit-config")
+        .get("/api/admin/audit-config")
         .set("X-Test-User", JSON.stringify(adminUser));
 
       expect(res.status).toBe(200);
@@ -132,7 +132,7 @@ describe("Admin V2 Integration Tests", () => {
 
     it("should update audit configuration", async () => {
       const res = await request(app)
-        .post("/api/admin/enterprise/audit-config")
+        .post("/api/admin/audit-config")
         .set("X-Test-User", JSON.stringify(adminUser))
         .send({
           enabled: false,

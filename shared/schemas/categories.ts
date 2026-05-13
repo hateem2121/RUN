@@ -112,6 +112,7 @@ export const categories = pgTable(
     // PERFORMANCE INDEXES for hot query paths
     index("categories_is_active_idx").on(table.isActive),
     index("categories_parent_id_idx").on(table.parentId),
+    index("categories_primary_image_id_idx").on(table.primaryImageId),
     index("categories_active_created_idx").on(table.isActive, table.createdAt.desc()),
     index("categories_featured_idx").on(table.featuredOnHomepage),
     // PERFORMANCE FIX: Index for hierarchical category queries

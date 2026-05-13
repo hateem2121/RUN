@@ -4,6 +4,7 @@ import { validateRequest } from "zod-express-middleware";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { criticalTier } from "../../middleware/rate-limit-tiers.js";
 import { getAuditContext } from "../../middleware/request-context.js";
+import { adminCacheManager } from "../../lib/cache/admin-cache.js";
 import { adminService } from "../../services/admin/index.js";
 import { authService } from "../../services/auth-service.js";
 
@@ -203,5 +204,32 @@ router.post(
     return res.json({ success: true });
   },
 );
+
+/**
+ * Admin Cache Management
+ */
+router.post(
+  "/cache/clear",
+  authService.requireAdmin,
+  validateRequest({
+    body: z.object({
+      userId: z.string().optional(),
+    }),
+  }),
+  (req, res) => {
+    const { userId } = req.body;
+    if (userId) {
+      adminCacheManager.clearUser(userId);
+    } else {
+      adminCacheManager.clear();
+    }
+    res.json({ success: true, message: "Admin cache cleared" });
+  },
+);
+
+router.get("/cache/stats", authService.requireAdmin, (_req, res) => {
+  const stats = adminCacheManager.getStats();
+  res.json({ ...stats, timestamp: new Date().toISOString() });
+});
 
 export default router;

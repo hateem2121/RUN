@@ -61,7 +61,7 @@ export class UnifiedCache {
     // Tuned for Cloud Run memory limits (usually 512MB - 2GB)
     this.memoryCache = new LRUCache({
       max: 5000, // Max 5000 items
-      maxSize: 100 * 1024 * 1024, // Max 100MB (approx)
+      maxSize: 50 * 1024 * 1024, // PC-801: Reduced to 50MB for better system stability
       sizeCalculation: (value: object, key: string) => {
         // Rough size estimation
         return JSON.stringify(value).length + key.length;
@@ -442,7 +442,7 @@ export class UnifiedCache {
     }
 
     // Check if cache is near capacity
-    const maxSize = 100 * 1024 * 1024; // 100MB
+    const maxSize = 50 * 1024 * 1024; // 50MB
     const usagePercent = (stats.calculatedSize / maxSize) * 100;
     if (usagePercent > 80) {
       issues.push(`High cache usage: ${Math.round(usagePercent)}% (threshold: 80%)`);

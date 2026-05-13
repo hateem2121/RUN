@@ -1,4 +1,4 @@
-import { ok } from "neverthrow";
+import { ok, err } from "neverthrow";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { miscRepository } from "../../../server/lib/db/repositories/index.js";
 import { aboutService } from "../../../server/services/about.service.js";
@@ -30,6 +30,7 @@ vi.mock("../../../server/services/about.service.js", () => ({
     createTimelineEntry: vi.fn(),
     updateTimelineEntry: vi.fn(),
     deleteTimelineEntry: vi.fn(),
+    getTimelineEntries: vi.fn(),
   },
 }));
 
@@ -44,7 +45,7 @@ vi.mock("../../../server/lib/db/repositories/system-repository.js", () => ({
 }));
 
 const mockAudit = {
-  user: { id: 1, email: "admin@run.com" },
+  user: { id: 1, email: "admin@run.com", claims: { sub: "1", email: "admin@run.com" } },
   userAgent: "testAgent",
   ipAddress: "127.0.0.1",
 };
@@ -57,7 +58,9 @@ describe("AdminService - Content Management", () => {
   describe("Fiber Management", () => {
     it("should get fibers list", async () => {
       vi.mocked(miscRepository.getFibers).mockResolvedValue([{ id: 1, name: "Polyester" }] as any);
-      const list = await adminService.getFibersList();
+      const result = await adminService.getFibersList();
+      expect(result.isOk()).toBe(true);
+      const list = result._unsafeUnwrap();
       expect(list).toHaveLength(1);
       expect(list[0].name).toBe("Polyester");
     });
@@ -68,7 +71,9 @@ describe("AdminService - Content Management", () => {
 
       const result = await adminService.createFiber(mockAudit as any, fiberData);
 
-      expect(result.id).toBe(2);
+      expect(result.isOk()).toBe(true);
+      const fiber = result._unsafeUnwrap();
+      expect(fiber.id).toBe(2);
       expect(miscRepository.createFiber).toHaveBeenCalled();
     });
   });
@@ -76,7 +81,9 @@ describe("AdminService - Content Management", () => {
   describe("Certificate Management", () => {
     it("should get certificates list", async () => {
       vi.mocked(miscRepository.getCertificates).mockResolvedValue([{ id: 1, name: "GOTS" }] as any);
-      const list = await adminService.getCertificatesList();
+      const result = await adminService.getCertificatesList();
+      expect(result.isOk()).toBe(true);
+      const list = result._unsafeUnwrap();
       expect(list).toHaveLength(1);
     });
 
@@ -86,7 +93,8 @@ describe("AdminService - Content Management", () => {
 
       const result = await adminService.deleteCertificate(mockAudit as any, 1);
 
-      expect(result).toBe(true);
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap()).toBe(true);
     });
   });
 
@@ -99,7 +107,9 @@ describe("AdminService - Content Management", () => {
 
       const result = await adminService.createAboutTimelineEntry(mockAudit as any, entryData);
 
-      expect(result.id).toBe(1);
+      expect(result.isOk()).toBe(true);
+      const entry = result._unsafeUnwrap();
+      expect(entry.id).toBe(1);
       expect(aboutService.createTimelineEntry).toHaveBeenCalledWith(entryData);
     });
   });

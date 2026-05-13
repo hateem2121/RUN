@@ -101,6 +101,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.use("/admin", criticalTier, v1AdminRouter);
   apiRouter.use("/media", uploadTier, v1MediaRouter);
 
+  // 4. Utilities
+  apiRouter.use("/analytics", analyticsRouter);
+
   // ARCH-001 FIX: Single canonical API mount
   app.use("/api", apiRouter);
 
@@ -134,7 +137,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }
 
   registerNewsletterRoutes(app);
-  app.use("/api/analytics", analyticsRouter);
 
   logger.info("[Routes] ✅ All routes registered successfully (Centralized Auth)");
 

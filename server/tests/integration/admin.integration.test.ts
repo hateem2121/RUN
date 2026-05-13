@@ -4,6 +4,7 @@
  */
 
 import express from "express";
+import { ok } from "neverthrow";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { setupErrorHandling, setupMiddleware } from "../../boot/middleware.js";
@@ -62,7 +63,7 @@ describe("Admin Operations Integration Tests", () => {
 
     vi.spyOn(authService, "setup").mockResolvedValue(undefined);
     vi.spyOn(authService, "verifyAdminAccess").mockImplementation(async (user: unknown) => {
-      return !!(user as Record<string, unknown>)?.isAdmin;
+      return ok(!!(user as Record<string, unknown>)?.isAdmin);
     });
 
     await setupMiddleware(app);
@@ -84,26 +85,31 @@ describe("Admin Operations Integration Tests", () => {
     });
 
     it("should trigger media fix with valid body", async () => {
-      vi.mocked(adminService.fixCorruptedMedia).mockResolvedValue({
-        fixedCount: 5,
-        fixedCategories: ["Cat 1"],
-      });
+      vi.mocked(adminService.fixCorruptedMedia).mockResolvedValue(
+        ok({
+          fixedCount: 5,
+          fixedCategories: ["Cat 1"],
+        }),
+      );
 
       const response = await request(app)
         .post("/api/admin/fix-corrupted-media")
         .send({ timeout: 10000 });
 
       expect(response.status).toBe(200);
-      expect(response.body.message).toContain("Corrupted media cleanup completed");
+      expect(response.body.success).toBe(true);
+      expect(response.body.fixedCount).toBe(5);
       expect(adminService.fixCorruptedMedia).toHaveBeenCalled();
     });
 
     it("should trigger system cleanup", async () => {
-      vi.mocked(adminService.triggerCleanup).mockResolvedValue({
-        cleanedFiles: [],
-        orphanedFiles: [],
-        spaceSaved: 0,
-      });
+      vi.mocked(adminService.triggerCleanup).mockResolvedValue(
+        ok({
+          cleanedFiles: [],
+          orphanedFiles: [],
+          spaceSaved: 0,
+        }),
+      );
 
       const response = await request(app)
         .post("/api/admin/cleanup/trigger")
@@ -115,10 +121,10 @@ describe("Admin Operations Integration Tests", () => {
     });
 
     it("should update audit configuration", async () => {
-      vi.mocked(adminService.updateAuditConfig).mockResolvedValue(true);
+      vi.mocked(adminService.updateAuditConfig).mockResolvedValue(ok(true));
 
       const response = await request(app)
-        .post("/api/admin/enterprise/audit-config")
+        .post("/api/admin/system/audit-config")
         .send({ enabled: true, trackedTables: ["products"] });
 
       expect(response.status).toBe(200);
@@ -133,7 +139,7 @@ describe("Admin Operations Integration Tests", () => {
     });
 
     it("should restore a deleted category", async () => {
-      vi.mocked(adminService.restoreCategory).mockResolvedValue(true);
+      vi.mocked(adminService.restoreCategory).mockResolvedValue(ok(true));
 
       const response = await request(app).post("/api/admin/categories/1/restore").send({}); // Needs empty object to satisfy emptyBodySchema
 
@@ -143,7 +149,7 @@ describe("Admin Operations Integration Tests", () => {
     });
 
     it("should restore a deleted product", async () => {
-      vi.mocked(adminService.restoreProduct).mockResolvedValue(true);
+      vi.mocked(adminService.restoreProduct).mockResolvedValue(ok(true));
 
       const response = await request(app).post("/api/admin/products/123/restore").send({});
 
@@ -152,10 +158,10 @@ describe("Admin Operations Integration Tests", () => {
       expect(adminService.restoreProduct).toHaveBeenCalledWith(expect.any(Object), 123);
     });
 
-    it("should return 400 for invalid ID in restore", async () => {
+    it("should return 422 for invalid ID in restore", async () => {
       const response = await request(app).post("/api/admin/products/invalid/restore").send({});
 
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(422);
     });
   });
 });

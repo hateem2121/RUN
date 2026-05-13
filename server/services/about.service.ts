@@ -541,7 +541,7 @@ export class AboutService {
   }
 
   // Batch
-  async getBatch(): Promise<Result<AboutBatchResponse, AppError>> {
+  async getAllAboutData(): Promise<Result<AboutBatchResponse, AppError>> {
     try {
       const batch = await withCircuit(
         "get-about-batch",
@@ -553,6 +553,11 @@ export class AboutService {
       logger.error("[AboutService] Failed to fetch about batch", error as Error);
       return err(new InternalError("Failed to fetch about page batch content", { error }));
     }
+  }
+
+  // Alias for backward compatibility with routes
+  async getBatch(): Promise<Result<AboutBatchResponse, AppError>> {
+    return this.getAllAboutData();
   }
 }
 

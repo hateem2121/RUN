@@ -39,6 +39,7 @@ export async function setupTestApp(storage?: MemoryStorage) {
     StorageSingleton.setInstance(testStorage);
     // Clear admin cache to ensure fresh state for each test run
     adminCacheManager.clear();
+    process.env.ENABLE_MOCK_ADMIN = "true";
 
     // Baseline Data Seeding for common endpoints in api-audit.test.ts
     // -------------------------------------------------------------------------
@@ -176,6 +177,7 @@ export function createMockSessionUser(overrides: Partial<SessionUser> = {}): Ses
     claims: {
       sub: combined.id,
       email: combined.email,
+      isMock: true,
       ...overrides.claims,
     },
   } as SessionUser;
