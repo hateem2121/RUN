@@ -85,6 +85,13 @@
       "when": 1778076735421,
       "tag": "0011_pretty_cargill",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1778656073281,
+      "tag": "0012_natural_shinobi_shaw",
+      "breakpoints": true
     }
   ]
 }

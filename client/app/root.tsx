@@ -1,5 +1,11 @@
 import { HydrationBoundary, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+// @ts-ignore
+import "@fontsource-variable/inter";
+// @ts-ignore
+import interWoff2 from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+// @ts-ignore - fontside-effect import
+import "@fontsource/material-symbols-outlined";
 import { HelmetProvider } from "react-helmet-async";
 import {
   isRouteErrorResponse,
@@ -28,30 +34,24 @@ import { ScrollProvider } from "./hooks/use-scroll";
 export const links: LinksFunction = () => [
   {
     rel: "preload",
-    href: "/fonts/NeueStance-Bold.ttf",
+    href: "/fonts/NeueStance-Bold.woff2",
     as: "font",
-    type: "font/ttf",
+    type: "font/woff2",
     crossOrigin: "anonymous",
   },
   {
     rel: "preload",
-    href: "/fonts/NeueStance-Regular.ttf",
+    href: "/fonts/NeueStance-Regular.woff2",
     as: "font",
-    type: "font/ttf",
+    type: "font/woff2",
     crossOrigin: "anonymous",
   },
   {
-    rel: "preconnect",
-    href: "https://fonts.googleapis.com",
-  },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
+    rel: "preload",
+    href: interWoff2,
+    as: "font",
+    type: "font/woff2",
     crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap",
   },
 ];
 

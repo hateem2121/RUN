@@ -8,7 +8,7 @@
 @import "./styles/sustainability-utilities.css";
 
 @theme {
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", system-ui, sans-serif;
   --font-size-footer-display: clamp(3rem, 12vw, 15rem);
   --color-theme-sun: var(--color-orange-500);
   --color-theme-moon: var(--color-blue-400);

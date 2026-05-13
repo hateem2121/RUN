@@ -7,6 +7,7 @@ startOtel();
 import { createServer } from "node:http";
 import path from "node:path";
 import express from "express";
+import expressStaticGzip from "express-static-gzip";
 import { setupErrorHandling, setupHealthChecks, setupMiddleware } from "./boot/middleware.js";
 import { setupRoutes } from "./boot/routes.js";
 import { startServices } from "./boot/services.js";
@@ -80,9 +81,17 @@ export const serverReady: Promise<void> = (async () => {
         next();
       });
 
-      // Serve static assets from the built client directory
-      app.use(express.static(staticPath, { index: false }));
-      logger.info(`[Production] Serving static assets from: ${staticPath}`);
+      // PC-020 RESOLVED: Serve pre-compressed Brotli/Gzip assets if they exist.
+      // This ensures that our compressed build artifacts (.br, .gz) are actually utilized.
+      app.use(
+        "/",
+        expressStaticGzip(staticPath, {
+          enableBrotli: true,
+          orderPreference: ["br", "gz"],
+          index: false,
+        }),
+      );
+      logger.info(`[Production] Serving compressed static assets from: ${staticPath}`);
     }
 
     // 7. Setup Error Handling (Must be last middleware)

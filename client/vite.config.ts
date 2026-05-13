@@ -13,6 +13,7 @@ import { sentryVitePlugin } from "@sentry/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
+import viteCompression from "vite-plugin-compression";
 import Inspect from "vite-plugin-inspect";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -24,6 +25,19 @@ export default defineConfig(
       plugins: [
         reactRouter(),
         tailwindcss(),
+        // PHASE 1: Asset compression (Gzip/Brotli)
+        viteCompression({
+          algorithm: "brotliCompress",
+          ext: ".br",
+          threshold: 1024,
+          verbose: false,
+        }),
+        viteCompression({
+          algorithm: "gzip",
+          ext: ".gz",
+          threshold: 1024,
+          verbose: false,
+        }),
         // FORENSIC: Bundle analysis (Opt-in via VITE_ANALYZE=true)
         process.env.VITE_ANALYZE === "true" &&
           visualizer({
@@ -126,7 +140,9 @@ export default defineConfig(
                   if (id.includes("/@run-remix/shared") || id.includes("/drizzle-orm/"))
                     return "vendor-schema";
                   if (id.includes("/@google/model-viewer/"))
-                    return "vendor-3d";
+                    return "vendor-3d-core";
+                  if (id.includes("/three/"))
+                    return "vendor-three"; // Segment Three.js if it's separate
                   return undefined;
                 },
           },

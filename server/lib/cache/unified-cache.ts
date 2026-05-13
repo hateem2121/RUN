@@ -7,6 +7,7 @@ import { logger } from "../monitoring/logger.js";
 // (upstash-client.ts wraps every Redis method call via Proxy + withCircuit).
 // Removed duplicate withCircuit wrapping here to prevent double circuit-breaker nesting.
 import { isRedisEnabled, redis } from "./upstash-client.js";
+import { postgresCache } from "./postgres-cache-provider.js";
 
 /**
  * UNIFIED CACHE - HYBRID L1/L2
@@ -33,6 +34,7 @@ const tracer = trace.getTracer("unified-cache", "1.0.0");
 export class UnifiedCache {
   private static instance: UnifiedCache | null = null;
   private memoryCache: LRUCache<string, object>;
+  private l2: any; // Type as any for now to handle both Redis and PostgresCacheProvider interfaces
 
   // Standard TTL presets
   public static readonly TTL_PRESETS = {
@@ -70,9 +72,11 @@ export class UnifiedCache {
     });
 
     if (isRedisEnabled) {
+      this.l2 = redis;
       logger.info("[Cache] ✅ Unified Hybrid Cache initialized (L1: Memory, L2: Redis)");
     } else {
-      logger.info("[Cache] ⚠️ Unified In-Memory Cache initialized (L2 Redis disabled)");
+      this.l2 = postgresCache;
+      logger.info("[Cache] ✅ Unified Hybrid Cache initialized (L1: Memory, L2: Postgres/Neon)");
     }
   }
 
@@ -104,27 +108,25 @@ export class UnifiedCache {
           return memoryValue;
         }
 
-        // 2. Check L2 Redis Cache (if enabled)
-        if (isRedisEnabled) {
-          try {
-            const redisValue = await this.readL2(key);
-            if (redisValue !== null) {
-              this.stats.hits++;
-              this.stats.l2Hits++;
-              span.setAttribute("cache.hit", true);
-              span.setAttribute("cache.source", "l2");
+        // 2. Check L2 Cache (Redis or Postgres)
+        try {
+          const l2Value = await this.readL2(key);
+          if (l2Value !== null) {
+            this.stats.hits++;
+            this.stats.l2Hits++;
+            span.setAttribute("cache.hit", true);
+            span.setAttribute("cache.source", "l2");
 
-              // Backfill L1 Memory Cache with default TTL
-              this.memoryCache.set(key, redisValue as unknown as object);
+            // Backfill L1 Memory Cache with default TTL
+            this.memoryCache.set(key, l2Value as unknown as object);
 
-              span.setStatus({ code: SpanStatusCode.OK });
-              span.end();
-              return redisValue;
-            }
-          } catch (error) {
-            logger.error(`[Cache] L2 Get failed for ${key}:`, error);
-            span.recordException(error as Error);
+            span.setStatus({ code: SpanStatusCode.OK });
+            span.end();
+            return l2Value;
           }
+        } catch (error) {
+          logger.error(`[Cache] L2 Get failed for ${key}:`, error);
+          span.recordException(error as Error);
         }
 
         // 3. Cache miss
@@ -169,12 +171,10 @@ export class UnifiedCache {
 
         // P2 OPTIMIZATION: Fire-and-forget L2 write (Parallelize)
         // We don't await the L2 write to keep the critical path fast.
-        if (isRedisEnabled) {
-          span.setAttribute("cache.l2", true);
-          this.writeL2(key, value, ttlSeconds).catch((err) => {
-            logger.warn(`[UnifiedCache] L2 Write Failed for ${key}:`, err);
-          });
-        }
+        span.setAttribute("cache.l2", true);
+        this.writeL2(key, value, ttlSeconds).catch((err) => {
+          logger.warn(`[UnifiedCache] L2 Write Failed for ${key}:`, err);
+        });
 
         this.stats.sets++;
         span.setStatus({ code: SpanStatusCode.OK });
@@ -203,14 +203,14 @@ export class UnifiedCache {
       payload = `gz:${buffer.toString("base64")}`;
     }
 
-    await redis.set(key, payload, { ex: ttlSeconds });
+    await this.l2.set(key, payload, { ex: ttlSeconds });
   }
 
   // Helper to read and potentially decompress
   // Circuit breaker protection is handled at the Upstash proxy level (PC-301)
   private async readL2<T>(key: string): Promise<T | null> {
     try {
-      const data = await redis.get(key);
+      const data = await this.l2.get(key);
       if (!data) {
         return null;
       }
@@ -248,15 +248,14 @@ export class UnifiedCache {
       }
     }
 
-    // 2. Offload L2 (Redis) invalidation to BullMQ for background processing
+    // 2. Offload L2 (Redis/Postgres) invalidation to BullMQ for background processing
     // This makes the initiating request MUCH faster by avoiding synchronous SCAN/DEL
-    if (isRedisEnabled) {
-      import("../jobs/queues/cache-invalidation-queue.js").then(({ queueCacheInvalidation }) => {
-        queueCacheInvalidation(pattern).catch((err) =>
-          logger.warn(`[UnifiedCache] Failed to queue background invalidation for ${pattern}`, err),
-        );
-      });
-    }
+    // NOTE: L2 is always enabled now (either Redis or Postgres)
+    import("../jobs/queues/cache-invalidation-queue.js").then(({ queueCacheInvalidation }) => {
+      queueCacheInvalidation(pattern).catch((err) =>
+        logger.warn(`[UnifiedCache] Failed to queue background invalidation for ${pattern}`, err),
+      );
+    });
 
     // 3. Emit invalidation event for frontend polling
     import("./cache-events.js").then(({ emitCacheInvalidation }) => {
@@ -272,11 +271,9 @@ export class UnifiedCache {
   async delete(key: string, _namespace?: string): Promise<void> {
     this.memoryCache.delete(key);
 
-    if (isRedisEnabled) {
-      redis.del(key).catch((err: unknown) => {
-        logger.error(`[Cache] L2 Delete failed for ${key}:`, err);
-      });
-    }
+    this.l2.del(key).catch((err: unknown) => {
+      logger.error(`[Cache] L2 Delete failed for ${key}:`, err);
+    });
 
     this.stats.deletes++;
 
@@ -302,12 +299,10 @@ export class UnifiedCache {
   async clear(): Promise<void> {
     this.memoryCache.clear();
 
-    if (isRedisEnabled) {
-      try {
-        await redis.flushdb();
-      } catch (error) {
-        logger.error("[Cache] L2 Clear failed:", error);
-      }
+    try {
+      await this.l2.flushdb();
+    } catch (error) {
+      logger.error("[Cache] L2 Clear failed:", error);
     }
 
     logger.info("[Cache] Cache cleared completely (L1 and L2)");
@@ -340,28 +335,26 @@ export class UnifiedCache {
       }
     }
 
-    // 2. Clear L2 Redis Cache (if enabled)
-    if (isRedisEnabled) {
-      try {
-        // Use SCAN to find keys matching pattern in L2
-        // For simplicity and matching current logic, we'll use wildcards
-        const redisPattern = isRegex ? pattern.replace("^", "").replace(".*", "*") : `*${pattern}*`;
-        let cursor = "0";
+    // 2. Clear L2 Redis/Postgres Cache
+    try {
+      // Use SCAN to find keys matching pattern in L2
+      // For simplicity and matching current logic, we'll use wildcards
+      const redisPattern = isRegex ? pattern.replace("^", "").replace(".*", "*") : `*${pattern}*`;
+      let cursor = "0";
 
-        do {
-          const [nextCursor, keys] = await redis.scan(cursor, {
-            match: redisPattern,
-            count: 100,
-          });
-          cursor = nextCursor;
+      do {
+        const [nextCursor, keys] = await this.l2.scan(cursor, {
+          match: redisPattern,
+          count: 100,
+        });
+        cursor = nextCursor;
 
-          if (keys.length > 0) {
-            await redis.del(...keys);
-          }
-        } while (cursor !== "0");
-      } catch (error: unknown) {
-        logger.error(`[Cache] L2 clearPattern failed for ${pattern}:`, error);
-      }
+        if (keys.length > 0) {
+          await this.l2.del(...keys);
+        }
+      } while (cursor !== "0");
+    } catch (error: unknown) {
+      logger.error(`[Cache] L2 clearPattern failed for ${pattern}:`, error);
     }
 
     // Emit invalidation event

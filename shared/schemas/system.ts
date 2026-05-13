@@ -154,6 +154,22 @@ export const storageChangeLogs = pgTable(
   (table) => [index("storage_logs_action_time_idx").on(table.action, table.createdAt)],
 );
 
+// Cache Entries Table - Distributed L2 Cache Fallback
+export const cacheEntries = pgTable(
+  "cache_entries",
+  {
+    id: serial("id").primaryKey(),
+    key: text("key").notNull().unique(),
+    value: jsonb("value").notNull(),
+    expiry: timestamp("expiry", { mode: "date", precision: 3 }).notNull(),
+    createdAt: timestamp("created_at", { mode: "date", precision: 3 }).defaultNow(),
+  },
+  (table) => [
+    index("cache_entries_key_idx").on(table.key),
+    index("cache_entries_expiry_idx").on(table.expiry),
+  ],
+);
+
 /**
  * Audit Logs Table - Comprehensive Change Tracking
  *
@@ -295,6 +311,9 @@ export type InsertAuditLog = typeof auditLogs.$inferInsert;
 export type AuditConfiguration = typeof auditConfiguration.$inferSelect;
 export type InsertAuditConfiguration = typeof auditConfiguration.$inferInsert;
 
+export type CacheEntry = typeof cacheEntries.$inferSelect;
+export type InsertCacheEntry = typeof cacheEntries.$inferInsert;
+
 // Zod Schemas
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
@@ -318,6 +337,9 @@ export const selectAuditLogSchema = createSelectSchema(auditLogs);
 
 export const insertAuditConfigurationSchema = createInsertSchema(auditConfiguration);
 export const selectAuditConfigurationSchema = createSelectSchema(auditConfiguration);
+
+export const insertCacheEntrySchema = createInsertSchema(cacheEntries);
+export const selectCacheEntrySchema = createSelectSchema(cacheEntries);
 
 // ============================================================================
 // Utility Schemas (Migrated from server/routes/utilities)

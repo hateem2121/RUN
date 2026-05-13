@@ -6,6 +6,7 @@ import { adminNotifier } from "../lib/integrations/admin-notifier.js";
 import { getLifecycleScheduler } from "../lib/integrations/storage-lifecycle-scheduler.js";
 import { startWorker } from "../lib/jobs/workers/bullmq-worker.js";
 import { logger } from "../lib/monitoring/logger.js";
+import { unifiedCache } from "../lib/cache/unified-cache.js";
 
 const config = getConfig();
 
@@ -83,11 +84,13 @@ async function handleColdStart() {
   }
 
   // Warm Cache (Non-blocking)
-  // retryDbOperation(() => unifiedCache.warmCache(), {
-  //   maxRetries: 3,
-  //   backoffMs: 500,
-  //   operationName: "Cache warming",
-  // }).catch(err => logger.warn("Cache warming failed", err));
+  logger.info("[Startup] Initiating cache warmup...");
+  
+  // Warm standard unified cache
+  unifiedCache.warm().catch(err => logger.warn("Unified cache warming failed", err));
+  
+  // Trigger initial database connectivity load
+  db.execute(sql`SELECT 1`).catch(() => {});
 }
 
 async function performInitialHealthCheck() {
