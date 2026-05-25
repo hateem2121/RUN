@@ -8,103 +8,92 @@
  * - Recovery after failures
  */
 
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
+import {
+  createCircuit,
+  REDIS_CIRCUIT_OPTIONS,
+  withCircuit,
+} from "../../server/lib/resilience/circuit-breaker.js";
 
 describe("Circuit Breaker Integration", () => {
-  beforeEach(() => {});
-
   describe("Circuit States", () => {
-    // Uses the custom CircuitBreaker class (server/lib/circuit-breaker.ts)
-    // which exposes .fire() and .getState() with CLOSED/OPEN/HALF_OPEN states.
     it("should start in CLOSED state", async () => {
-      const { CircuitBreaker } = await import("../../server/lib/circuit-breaker.js");
-
-      const breaker = new CircuitBreaker({ failureThreshold: 5, resetTimeout: 30000 });
-
-      expect(breaker.getState()).toBe("CLOSED");
+      const breaker = createCircuit("test-start-closed", async () => "ok");
+      expect(breaker.closed).toBe(true);
     });
 
     it("should open circuit after threshold failures", async () => {
-      const { CircuitBreaker } = await import("../../server/lib/circuit-breaker.js");
-
-      const breaker = new CircuitBreaker({ failureThreshold: 3, resetTimeout: 100 });
-
       const failingFn = async () => {
         throw new Error("Simulated failure");
       };
+      const breaker = createCircuit("test-threshold-failures", failingFn, {
+        volumeThreshold: 1,
+        errorThresholdPercentage: 1,
+        resetTimeout: 10000,
+      });
 
-      for (let i = 0; i < 3; i++) {
-        try {
-          await breaker.fire(failingFn);
-        } catch {
-          // Expected failures
-        }
+      try {
+        await breaker.fire();
+      } catch {
+        // Expected failure
       }
 
-      expect(breaker.getState()).toBe("OPEN");
+      expect(breaker.opened).toBe(true);
     });
 
     it("should reject calls when circuit is OPEN", async () => {
-      const { CircuitBreaker } = await import("../../server/lib/circuit-breaker.js");
-
-      const breaker = new CircuitBreaker({ failureThreshold: 1, resetTimeout: 60000 });
+      const failingFn = async () => {
+        throw new Error("Open circuit");
+      };
+      const breaker = createCircuit("test-reject-calls", failingFn, {
+        volumeThreshold: 1,
+        errorThresholdPercentage: 1,
+        resetTimeout: 60000,
+      });
 
       try {
-        await breaker.fire(async () => {
-          throw new Error("Open circuit");
-        });
+        await breaker.fire();
       } catch {
         // Expected
       }
 
-      const result = breaker.fire(async () => "should not run");
+      expect(breaker.opened).toBe(true);
+
+      const result = breaker.fire();
       await expect(result).rejects.toThrow();
     });
 
     it("should transition to HALF_OPEN after timeout", async () => {
-      const { CircuitBreaker } = await import("../../server/lib/circuit-breaker.js");
-
-      const breaker = new CircuitBreaker({ failureThreshold: 1, resetTimeout: 50 });
+      const failingFn = async () => {
+        throw new Error("Open it");
+      };
+      const breaker = createCircuit("test-half-open-timeout", failingFn, {
+        volumeThreshold: 1,
+        errorThresholdPercentage: 1,
+        resetTimeout: 50,
+      });
 
       try {
-        await breaker.fire(async () => {
-          throw new Error("Open it");
-        });
+        await breaker.fire();
       } catch {
         // Expected
       }
 
-      expect(breaker.getState()).toBe("OPEN");
+      expect(breaker.opened).toBe(true);
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      try {
-        await breaker.fire(async () => "test");
-      } catch {
-        // May or may not succeed
-      }
-
-      expect(["HALF_OPEN", "CLOSED"]).toContain(breaker.getState());
+      expect(breaker.halfOpen).toBe(true);
     });
   });
 
   describe("withCircuit helper", () => {
-    // Uses the opossum-backed withCircuit from server/lib/resilience/circuit-breaker.ts
     it("should execute function when circuit is closed", async () => {
-      const { withCircuit, REDIS_CIRCUIT_OPTIONS } = await import(
-        "../../server/lib/resilience/circuit-breaker.js"
-      );
-
       const result = await withCircuit("redis-test", async () => "success", REDIS_CIRCUIT_OPTIONS);
-
       expect(result).toBe("success");
     });
 
     it("should propagate errors for failed calls", async () => {
-      const { withCircuit, REDIS_CIRCUIT_OPTIONS } = await import(
-        "../../server/lib/resilience/circuit-breaker.js"
-      );
-
       const failingCall = withCircuit(
         "redis-fail-test",
         async () => {
@@ -119,25 +108,24 @@ describe("Circuit Breaker Integration", () => {
 
   describe("Graceful Degradation", () => {
     it("should provide fallback value when circuit is open", async () => {
-      const { CircuitBreaker } = await import("../../server/lib/circuit-breaker.js");
+      const failingFn = async () => {
+        throw new Error("Primary failed");
+      };
+      const breaker = createCircuit("test-graceful-fallback", failingFn, {
+        volumeThreshold: 1,
+        errorThresholdPercentage: 1,
+        resetTimeout: 60000,
+      });
 
-      const breaker = new CircuitBreaker({ failureThreshold: 1, resetTimeout: 60000 });
+      breaker.fallback(() => "fallback value");
 
       try {
-        await breaker.fire(async () => {
-          throw new Error("Primary failed");
-        });
+        await breaker.fire(); // first call fails, triggers fallback, opens circuit
       } catch {
         // Expected
       }
 
-      let result: string;
-      try {
-        result = await breaker.fire(async () => "primary value");
-      } catch {
-        result = "fallback value";
-      }
-
+      const result = await breaker.fire();
       expect(result).toBe("fallback value");
     });
   });
