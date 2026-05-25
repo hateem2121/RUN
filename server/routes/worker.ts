@@ -19,68 +19,79 @@ import { generateOrganizedStoragePath, getVideoMetadata } from "./media/utils.js
 
 const router = express.Router();
 
-// Worker route to handle async email sending from Cloud Tasks
-router.post("/send-email", validateRequest({ body: inquiryEmailJobSchema }), async (req, res) => {
-  const startTime = performance.now();
-  // Verify request is from Cloud Tasks via OIDC token
+const verifyWorkerAuth = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
   const isProduction = process.env.NODE_ENV === "production";
-
   if (isProduction) {
     const isAuthorized = await verifyCloudTaskToken(req);
     if (!isAuthorized) {
-      logger.warn("[Worker] Unauthorized access attempt to email worker");
-      return res.status(403).json({ error: "Unauthorized" });
+      logger.warn(`[Worker] Unauthorized access attempt to worker path: ${req.path}`);
+      res.status(403).json({ error: "Unauthorized" });
+      return;
     }
   }
+  next();
+};
 
-  const payload = req.body as InquiryEmailJobData;
+// Worker route to handle async email sending from Cloud Tasks
+router.post(
+  "/send-email",
+  verifyWorkerAuth,
+  validateRequest({ body: inquiryEmailJobSchema }),
+  async (req, res) => {
+    const startTime = performance.now();
+    const payload = req.body as InquiryEmailJobData;
 
-  logger.info(`[Worker] Processing email task for inquiry #${payload.id}`);
+    logger.info(`[Worker] Processing email task for inquiry #${payload.id}`);
 
-  // Send emails synchronously here (since we are already in a background worker)
-  const [adminResult, customerResult] = await Promise.all([
-    emailService.sendAdminNotification(payload),
-    emailService.sendCustomerConfirmation(payload),
-  ]);
+    // Send emails synchronously here (since we are already in a background worker)
+    const [adminResult, customerResult] = await Promise.all([
+      emailService.sendAdminNotification(payload),
+      emailService.sendCustomerConfirmation(payload),
+    ]);
 
-  let hasError = false;
+    let hasError = false;
 
-  if (adminResult.isOk()) {
-    logger.info(`[Worker] Admin notification sent for inquiry #${payload.id}`);
-  } else {
-    logger.error(
-      `[Worker] Failed to send admin notification for inquiry #${payload.id}:`,
-      adminResult.error,
-    );
-    hasError = true;
-  }
+    if (adminResult.isOk()) {
+      logger.info(`[Worker] Admin notification sent for inquiry #${payload.id}`);
+    } else {
+      logger.error(
+        `[Worker] Failed to send admin notification for inquiry #${payload.id}:`,
+        adminResult.error,
+      );
+      hasError = true;
+    }
 
-  if (customerResult.isOk()) {
-    logger.info(`[Worker] Customer confirmation sent to ${payload.email}`);
-  } else {
-    logger.error(
-      `[Worker] Failed to send customer confirmation to ${payload.email}:`,
-      customerResult.error,
-    );
-    hasError = true;
-  }
+    if (customerResult.isOk()) {
+      logger.info(`[Worker] Customer confirmation sent to ${payload.email}`);
+    } else {
+      logger.error(
+        `[Worker] Failed to send customer confirmation to ${payload.email}:`,
+        customerResult.error,
+      );
+      hasError = true;
+    }
 
-  if (hasError) {
+    if (hasError) {
+      workerTaskDuration.observe(
+        { operation: "send-email", status: "error" },
+        (performance.now() - startTime) / 1000,
+      );
+      // Return 500 to trigger Cloud Tasks retry
+      return res.status(500).json({ error: "One or more email operations failed" });
+    }
+
     workerTaskDuration.observe(
-      { operation: "send-email", status: "error" },
+      { operation: "send-email", status: "success" },
       (performance.now() - startTime) / 1000,
     );
-    // Return 500 to trigger Cloud Tasks retry
-    return res.status(500).json({ error: "One or more email operations failed" });
-  }
-
-  workerTaskDuration.observe(
-    { operation: "send-email", status: "success" },
-    (performance.now() - startTime) / 1000,
-  );
-  // Return success to Cloud Tasks to acknowledge completion
-  return res.status(200).json({ success: true });
-});
+    // Return success to Cloud Tasks to acknowledge completion
+    return res.status(200).json({ success: true });
+  },
+);
 
 /**
  * Media Processing Worker
@@ -90,22 +101,11 @@ router.post("/send-email", validateRequest({ body: inquiryEmailJobSchema }), asy
  */
 router.post(
   "/process-media",
+  verifyWorkerAuth,
   validateRequest({ body: mediaProcessingJobSchema }),
   async (req, res) => {
     const startTime = performance.now();
-
-    // Verify request is from Cloud Tasks via OIDC token
-    const isProduction = process.env.NODE_ENV === "production";
     const taskName = req.header("X-CloudTasks-TaskName");
-
-    if (isProduction) {
-      const isAuthorized = await verifyCloudTaskToken(req);
-      if (!isAuthorized) {
-        logger.warn("[Worker:Media] Unauthorized access attempt");
-        return res.status(403).json({ error: "Forbidden: Invalid request source" });
-      }
-    }
-
     const payload = req.body as MediaProcessingJobData;
 
     logger.info("[Worker:Media] Processing task", {

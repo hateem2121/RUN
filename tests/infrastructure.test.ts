@@ -99,8 +99,12 @@ vi.mock("@google-cloud/bigquery", () => {
 
 vi.mock("../server/lib/integrations/email-service.js", () => ({
   emailService: {
-    sendAdminNotification: vi.fn().mockResolvedValue(true),
-    sendCustomerConfirmation: vi.fn().mockResolvedValue(true),
+    sendAdminNotification: vi
+      .fn()
+      .mockResolvedValue({ isOk: () => true, isErr: () => false, value: true }),
+    sendCustomerConfirmation: vi
+      .fn()
+      .mockResolvedValue({ isOk: () => true, isErr: () => false, value: true }),
   },
 }));
 
@@ -149,7 +153,7 @@ describe("Infrastructure Remediation Verification", () => {
       message: "Hello world",
     });
 
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(422);
     expect(response.body.error).toContain("Bot detected");
   });
 
@@ -166,7 +170,7 @@ describe("Infrastructure Remediation Verification", () => {
     };
 
     const response = await request(app)
-      .post("/api/workers/send-email")
+      .post("/api/worker/send-email")
       .set("Authorization", "Bearer mock-valid-oidc-token")
       .send(payload);
 
@@ -184,7 +188,7 @@ describe("Infrastructure Remediation Verification", () => {
     // No Authorization header → verifyCloudTaskToken returns false
     vi.mocked(verifyCloudTaskToken).mockResolvedValueOnce(false);
 
-    const response = await request(app).post("/api/workers/send-email").send({});
+    const response = await request(app).post("/api/worker/send-email").send({});
 
     expect(response.status).toBe(403);
   });

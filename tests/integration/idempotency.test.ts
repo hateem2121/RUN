@@ -41,6 +41,11 @@ function buildApp() {
     res.json({ callCount });
   });
 
+  app.post("/api/error", (_req, res) => {
+    callCount++;
+    res.status(500).json({ error: "transient error", callCount });
+  });
+
   return { app, getCallCount: () => callCount };
 }
 
@@ -148,6 +153,19 @@ describe("Idempotency Middleware", () => {
     await request(app).get("/api/health").set("Idempotency-Key", key);
 
     // Both calls hit the handler
+    expect(getCallCount()).toBe(2);
+    expect(getIdempotencyStoreSize()).toBe(0);
+  });
+
+  it("should not cache 5xx server errors", async () => {
+    const { app, getCallCount } = buildApp();
+    const key = "error-key-001";
+
+    const first = await request(app).post("/api/error").set("Idempotency-Key", key);
+    const second = await request(app).post("/api/error").set("Idempotency-Key", key);
+
+    expect(first.status).toBe(500);
+    expect(second.status).toBe(500);
     expect(getCallCount()).toBe(2);
     expect(getIdempotencyStoreSize()).toBe(0);
   });

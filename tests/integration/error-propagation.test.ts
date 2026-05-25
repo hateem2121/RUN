@@ -8,10 +8,10 @@ describe("Express 5 Async Error Propagation", () => {
     await serverReady;
   });
 
-  it("should return 400 with error detail for non-numeric ID params", async () => {
-    // validateIdParam in server/utils.ts rejects non-numeric values with 400
+  it("should return 422 with error detail for non-numeric ID params", async () => {
+    // validateIdParam in server/utils.ts rejects non-numeric values with 422
     // Route: GET /api/products/:id — id must be a positive integer
-    const response = await request(app).get("/api/products/abc").expect(400);
+    const response = await request(app).get("/api/products/abc").expect(422);
 
     expect(response.body).toMatchObject({
       message: expect.stringContaining("product"),
@@ -25,10 +25,9 @@ describe("Express 5 Async Error Propagation", () => {
     const response = await request(app).get("/api/products/9999999").expect(404);
 
     expect(response.body).toMatchObject({
-      success: false,
-      error: expect.objectContaining({
-        message: expect.stringContaining("not found"),
-      }),
+      code: "RESOURCE_NOT_FOUND",
+      status: 404,
+      detail: expect.stringContaining("not found"),
     });
   });
 });

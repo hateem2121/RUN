@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
-import { logger } from "../../lib/monitoring/logger.js";
 import { redis } from "../../lib/cache/upstash-client.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { writeRateLimiter } from "../../middleware/rateLimiter.js";
 
 const router = Router();
@@ -44,7 +44,7 @@ router.post("/vitals", writeRateLimiter, (req, res) => {
         ...metric,
         timestamp: Date.now(),
         userAgent,
-        ip
+        ip,
       });
 
       await redis.lpush(listKey, payload);

@@ -1,11 +1,10 @@
 import { err, ok, type Result } from "neverthrow";
+import type { ImageVariants } from "../../shared/schemas/media.js";
 import { mediaRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 import { appStorageService } from "../lib/storage/app-service.js";
-
-import type { ImageVariants } from "../../shared/schemas/media.js";
 
 /**
  * Service for serving media content and thumbnails via signed URLs.
@@ -53,7 +52,11 @@ export class MediaContentService {
       const signedUrl = await appStorageService.generateSignedUrl(pathToServe, ttl);
       return ok(signedUrl);
     } catch (error) {
-      logger.error("[MediaContentService] Failed to generate signed URL", { id, variant }, error as Error);
+      logger.error(
+        "[MediaContentService] Failed to generate signed URL",
+        { id, variant },
+        error as Error,
+      );
       return err(new InternalError("Failed to generate signed URL", { error }));
     }
   }

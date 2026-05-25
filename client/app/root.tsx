@@ -1,10 +1,9 @@
 import { HydrationBoundary, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
-// @ts-ignore
+// @ts-expect-error
 import "@fontsource-variable/inter";
-// @ts-ignore
 import interWoff2 from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
-// @ts-ignore - fontside-effect import
+// @ts-expect-error - fontside-effect import
 import "@fontsource/material-symbols-outlined";
 import { HelmetProvider } from "react-helmet-async";
 import {

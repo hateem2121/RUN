@@ -48,19 +48,49 @@ export async function idempotencyMiddleware(
 
   try {
     // Replay cached response
-    const cached = await unifiedCache.get<CachedEntry>(cacheKey);
+    const cached = await unifiedCache.get<CachedEntry & { contentType?: string }>(cacheKey);
     if (cached) {
       res.setHeader("Idempotent-Replayed", "true");
-      res.status(cached.status).json(cached.body);
+      if (cached.contentType) {
+        res.setHeader("Content-Type", cached.contentType);
+      }
+      res.status(cached.status).send(cached.body);
       return;
     }
 
-    // Intercept the outgoing response and cache it
+    let cachedWritten = false;
+    const cacheResponse = (body: unknown) => {
+      if (cachedWritten) return;
+      if (res.statusCode < 500) {
+        cachedWritten = true;
+        const cacheBody = body instanceof Buffer ? body.toString("utf-8") : body;
+
+        unifiedCache
+          .set(
+            cacheKey,
+            {
+              status: res.statusCode,
+              body: cacheBody,
+              contentType: res.get("Content-Type"),
+            },
+            UnifiedCache.TTL_PRESETS.STATIC,
+          )
+          .catch((err) => {
+            logger.warn(`[Idempotency] Failed to cache response for key ${key}:`, err);
+          });
+      }
+    };
+
     const originalJson = res.json.bind(res) as typeof res.json;
     res.json = (body: unknown) => {
-      // Background cache write (fire-and-forget in UnifiedCache.set)
-      unifiedCache.set(cacheKey, { status: res.statusCode, body }, UnifiedCache.TTL_PRESETS.STATIC);
+      cacheResponse(body);
       return originalJson(body);
+    };
+
+    const originalSend = res.send.bind(res) as typeof res.send;
+    res.send = (body: unknown) => {
+      cacheResponse(body);
+      return originalSend(body);
     };
 
     next();

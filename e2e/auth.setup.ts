@@ -8,7 +8,7 @@ const authFile = path.join(__dirname, "../.auth/user.json");
 
 setup("authenticate as admin", async ({ page }) => {
   // 1. Visit mock login
-  await page.goto("/api/mock-login");
+  await page.goto("/api/auth/mock-login");
 
   // 2. Wait for redirect to /admin
   await page.waitForURL("**/admin");

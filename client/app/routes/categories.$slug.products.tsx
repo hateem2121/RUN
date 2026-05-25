@@ -162,7 +162,15 @@ export default function CategoryProductsPage() {
     });
 
     const optimizedSrc = urls?.large || urls?.medium || fallbackUrl;
-    return <img src={optimizedSrc} alt={alt} loading="eager" fetchPriority="high" className="h-full w-full object-cover" />;
+    return (
+      <img
+        src={optimizedSrc}
+        alt={alt}
+        loading="eager"
+        fetchPriority="high"
+        className="h-full w-full object-cover"
+      />
+    );
   };
 
   if (!category) {

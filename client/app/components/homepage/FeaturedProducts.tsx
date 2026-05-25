@@ -5,10 +5,10 @@ import { useRef } from "react";
 import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import { useCursorStore } from "@/stores/useCursorStore";
 import { useScroll } from "../../hooks/use-scroll";
 import { FEATURED_PRODUCTS } from "./constants";
-import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import type { HomepageFeaturedSettings, ProductItem } from "./types";
 
 interface FeaturedProductsProps {

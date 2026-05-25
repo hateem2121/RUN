@@ -60,7 +60,7 @@ export function PublicCaseStudySection({
               title: sanitizeContent(cs.client),
               tag: sanitizeContent(cs.type),
               desc: sanitizeContent(cs.description),
-              img: asset ? `/api/media/${asset.id}` : (defaultProjects[0]?.img || ""),
+              img: asset ? `/api/media/${asset.id}` : defaultProjects[0]?.img || "",
               id: asset ? asset.id : null,
               stats: [
                 { label: "Metric", val: sanitizeContent(cs.metric) },

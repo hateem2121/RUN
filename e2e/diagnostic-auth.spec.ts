@@ -16,7 +16,7 @@ test("diagnostic: check auth session", async ({ page }) => {
   });
 
   console.log("Navigating to mock-login...");
-  await page.goto("/api/mock-login");
+  await page.goto("/api/auth/mock-login");
 
   console.log("Waiting for URL to be /admin...");
   await page.waitForURL("**/admin", { timeout: 15000 });

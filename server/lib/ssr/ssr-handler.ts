@@ -33,7 +33,7 @@ export async function createSsrHandler(app: Express, server?: Server): Promise<R
     return (_req, _res, next) => next();
   }
 
-  if (!isProduction) {
+  if (!isProduction && process.env.SKIP_VITE_DEV_SERVER !== "true") {
     const { createServer } = await import("vite");
     const vite = await createServer({
       server: {

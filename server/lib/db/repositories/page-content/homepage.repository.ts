@@ -20,9 +20,9 @@ import {
   logoAnimationSettings,
 } from "../../../../../shared/index.js";
 import { db } from "../../../../db.js";
+import { invalidateHtmlCache } from "../../../../middleware/ssr-cache.js";
 import { emitCacheInvalidation } from "../../../cache/cache-events.js";
 import { UnifiedCache } from "../../../cache/unified-cache.js";
-import { invalidateHtmlCache } from "../../../../middleware/ssr-cache.js";
 import { logger } from "../../../monitoring/logger.js";
 import { StorageSingleton } from "../../../storage-singleton.js";
 

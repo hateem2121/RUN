@@ -1,11 +1,10 @@
 import express from "express";
+import { err, ok } from "neverthrow";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ok, err } from "neverthrow";
+import { productionErrorHandler } from "../../../middleware/production-error-handler.js";
 import { homepageService } from "../../../services/homepage.service.js";
 import homepageManagementRoutes from "../homepage-management.routes.js";
-import { ValidationError } from "../../../lib/errors.js";
-import { productionErrorHandler } from "../../../middleware/production-error-handler.js";
 
 vi.mock("../../../services/homepage.service.js", () => ({
   homepageService: {

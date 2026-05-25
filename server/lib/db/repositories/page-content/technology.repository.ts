@@ -55,7 +55,6 @@ export class TechnologyRepository {
     const existing = await this.getTechnologyHero();
     await CacheOperations.invalidateTechnology();
 
-
     if (existing) {
       const [updated] = await db
         .update(technologyHero)
@@ -109,7 +108,6 @@ export class TechnologyRepository {
     }
     const existing = await this.getTechnologyCta();
     await CacheOperations.invalidateTechnology();
-
 
     if (existing) {
       const [updated] = await db
@@ -556,7 +554,6 @@ export class TechnologyRepository {
     }
     const existing = await this.getTechnologyGradientSettings();
     await CacheOperations.invalidateTechnology();
-
 
     if (existing) {
       const [updated] = await db

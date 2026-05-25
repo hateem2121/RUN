@@ -7,8 +7,8 @@
  */
 
 import type { NextFunction, Request, Response } from "express";
-import { logger } from "../lib/monitoring/logger.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
+import { logger } from "../lib/monitoring/logger.js";
 
 // Public pages that can be cached at the edge
 const PUBLIC_CACHEABLE_PATHS = [
@@ -38,12 +38,13 @@ const HTML_CACHE_TTL = 60; // 60 seconds
 function getCacheKey(req: Request): string {
   const user = (req as Request & { user?: { role?: string } }).user;
   const role = user?.role || "anon";
-  
+
   // Include query parameters for key stability if filters are used
-  const queryString = Object.keys(req.query).length > 0 
-    ? `?${new URLSearchParams(req.query as Record<string, string>).toString()}`
-    : "";
-    
+  const queryString =
+    Object.keys(req.query).length > 0
+      ? `?${new URLSearchParams(req.query as Record<string, string>).toString()}`
+      : "";
+
   return `ssr:${role}:${req.path}${queryString}`;
 }
 
@@ -103,7 +104,11 @@ function isAdminSession(req: Request): boolean {
  * app.use(ssrCacheMiddleware);
  * app.use(ssrHandler); // Must come after
  */
-export async function ssrCacheMiddleware(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function ssrCacheMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   // Only apply to GET requests (SSR pages)
   if (req.method !== "GET") {
     next();
@@ -135,8 +140,10 @@ export async function ssrCacheMiddleware(req: Request, res: Response, next: Next
     // PC-102: Serve from server-side HTML cache if available (L1/L2 aware)
     const cacheKey = getCacheKey(req);
     logger.debug(`[SSR-Cache] Checking cache for ${cacheKey}`);
-    const cached = await unifiedCache.get<{ html: string; headers: Record<string, string> }>(cacheKey);
-    
+    const cached = await unifiedCache.get<{ html: string; headers: Record<string, string> }>(
+      cacheKey,
+    );
+
     if (cached) {
       logger.info(`[SSR-Cache] HIT for ${cacheKey}`);
       // Restore cached headers
@@ -151,19 +158,27 @@ export async function ssrCacheMiddleware(req: Request, res: Response, next: Next
     // Intercept res.send to capture rendered HTML for caching
     res.setHeader("X-SSR-Cache", "MISS");
     const originalSend = res.send.bind(res);
-    res.send = function (body: unknown): Response {
+    res.send = ((body: unknown): Response => {
       // Only cache successful HTML responses
       if (res.statusCode === 200 && typeof body === "string" && body.includes("<!DOCTYPE")) {
-        logger.info(`[SSR-Cache] Setting cache for ${cacheKey} (${Buffer.byteLength(body, "utf8")} bytes)`);
-        unifiedCache.set(cacheKey, {
-          html: body,
-          headers: {
-            "Content-Type": res.getHeader("Content-Type")?.toString() || "text/html",
-          },
-        }, HTML_CACHE_TTL).catch(err => logger.warn(`[SSR-Cache] Failed to set cache for ${cacheKey}`, err));
+        logger.info(
+          `[SSR-Cache] Setting cache for ${cacheKey} (${Buffer.byteLength(body, "utf8")} bytes)`,
+        );
+        unifiedCache
+          .set(
+            cacheKey,
+            {
+              html: body,
+              headers: {
+                "Content-Type": res.getHeader("Content-Type")?.toString() || "text/html",
+              },
+            },
+            HTML_CACHE_TTL,
+          )
+          .catch((err) => logger.warn(`[SSR-Cache] Failed to set cache for ${cacheKey}`, err));
       }
       return originalSend(body);
-    } as typeof res.send;
+    }) as typeof res.send;
   } else {
     // No caching for dynamic/private content
     res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");

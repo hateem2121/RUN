@@ -4,9 +4,9 @@
  */
 
 import express from "express";
+import { ok } from "neverthrow";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ok, err } from "neverthrow";
 import { setupErrorHandling, setupMiddleware } from "../../boot/middleware.js";
 import productRouter from "../../routes/core/products.js";
 import { authService } from "../../services/auth-service.js";

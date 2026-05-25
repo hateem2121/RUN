@@ -43,5 +43,9 @@ export const redis = new Proxy(
 );
 
 export const isRedisEnabled = Boolean(
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN,
+  process.env.UPSTASH_REDIS_REST_URL &&
+    process.env.UPSTASH_REDIS_REST_TOKEN &&
+    !process.env.UPSTASH_REDIS_REST_URL.includes("dummy") &&
+    !process.env.VITEST &&
+    process.env.NODE_ENV !== "test",
 );

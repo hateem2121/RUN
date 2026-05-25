@@ -1,7 +1,7 @@
 import express from "express";
+import { ok } from "neverthrow";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ok } from "neverthrow";
 import adminRouter from "./admin.ts";
 
 // Mock all dependencies admin.ts imports

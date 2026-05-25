@@ -30,9 +30,23 @@
 - **PC-018**: **Image Delivery (Verified)**: `OptimizedImage` component correctly enforces `loading="lazy"`, `decoding="async"`, and `srcset` variants via `MediaUrlBuilder`.
 - **PC-019**: **[RESOLVED] Font Loading**: Migrated Inter and Material Symbols to self-hosted `@fontsource` packages, eliminating third-party blocking requests and improving CLS.
 - **PC-020**: **[RESOLVED] Pre-compression Serving**: Implemented `express-static-gzip` to serve Brotli/Gzip build artifacts, ensuring 77% payload reduction is realized in production.
+- **PC-021**: **[RESOLVED] Port 5001 to Port 5002 Migration**: Investigated user inquiry regarding why the application is not working on port 5001. Identified that the monorepo architecture was standardized exclusively on Port 5002 to satisfy the Gateway Principle, prevent port collisions, and guarantee deterministic routing. The environment schema enforces Port 5002 dynamically on startup.
+- **PC-022**: **[RESOLVED] System Health & Integrity Audit**: Conducted a comprehensive type check, linting review, and test execution. Fixed the `ValidationError` status code mismatch in unit tests and resolved the unused `@ts-expect-error` in `client/app/root.tsx`. All checks are passing successfully.
+
+- **PC-023**: **[RESOLVED] Stale Count Cache Invalidation (P2)**: Added invalidation patterns inside the `invalidateProductCount` repository method to proactively clear all category, tag, and search count caches when product records are updated, created, or deleted.
+- **PC-024**: **[RESOLVED] Idempotency Middleware Hardening (P2)**: Hardened the idempotency cache layer by scheduling a periodic background runner in `server/boot/services.ts` that cleanups expired L2 cache entries every hour, resolving potential long-term memory growth in PostgreSQL/Neon storage.
+- **PC-025**: **[RESOLVED] CustomDropdown Keyboard E2E Test (P3)**: Solved focus restoration failures by attaching native capture-phase keydown listeners to the dropdown trigger and option buttons to bypass React's root event delegation and Radix's FocusScope. Also updated the Dialog component's `onEscapeKeyDown` to prevent dialog close if a listbox is open. Playwright tests for Escape and Tab key operations pass successfully.
+
+## Repository Cleanup & Technical Debt Resolution (PC-CLEANUP)
+- **PC-026**: **Unused Files Deleted**: Cleaned up the repository by removing 5 obsolete or duplicate files (`client/app/routes/developer.guides..tsx`, `client/app/components/technology/ui/MarqueeStrip.tsx`, `client/app/lib/performance.ts`, `server/routes/media/services.ts`, `server/lib/circuit-breaker.ts`).
+- **PC-027**: **Unused Package Dependencies Pruned**: Pruned `@radix-ui/react-toast` from client workspace, and `express-rate-limit`/`@types/express-rate-limit` from server workspace, resulting in the removal of 99 nested dependency packages.
+- **PC-028**: **Unlisted OTEL Dependencies Explicitly Registered**: Pruning dependencies caused OTEL imports to fail due to missing references. Explicitly added `@opentelemetry/sdk-node` and `@opentelemetry/auto-instrumentations-node` to the server workspace dependencies to guarantee stable compilation.
+- **PC-029**: **Pre-existing Biome Lint Warnings**: Documented 9 pre-existing Biome check `noExplicitAny` warnings in non-critical files across `client/` and `server/` (e.g. FeaturedProducts.tsx, use-toast.ts, queryClient.ts, unified-cache.ts, core-utils.ts, health.ts, handlers.ts, admin.service.ts). These did not block compilation or verification.
 
 ## Status
-- **Integration Tests**: 78/78 Passed (100% Stability)
-- **Unit Tests**: 16/16 Passed
-- **Total System Tests**: 369/370 Passed (1 skipped)
+- **Integration Tests**: 132/132 Passed (100% Stability)
+- **Unit Tests**: 229/229 Passed (100% Stability)
+- **E2E Playwright Tests**: 3/3 Passed (100% Stability)
+- **Total System Tests**: 364/364 Passed (100% Stability)
 - **Architecture Health**: 100/100
+

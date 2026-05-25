@@ -24,6 +24,7 @@
 import express from "express";
 import request from "supertest";
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
+import { setupErrorHandling } from "../../../server/boot/middleware.js";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MODULE MOCKS — must come before any import that pulls these in transitively
@@ -316,9 +317,10 @@ vi.mock("../../../server/lib/resilience/circuit-breaker.js", () => ({
   dbCircuitBreaker: {
     execute: vi.fn().mockImplementation(async (fn: () => Promise<unknown>) => fn()),
   },
-  CircuitBreaker: vi.fn().mockImplementation(() => ({
-    execute: vi.fn().mockImplementation(async (fn: () => Promise<unknown>) => fn()),
-  })),
+  withCircuit: vi.fn().mockImplementation(async (_name, operation) => operation()),
+  DB_CIRCUIT_OPTIONS: {},
+  REDIS_CIRCUIT_OPTIONS: {},
+  EXTERNAL_API_CIRCUIT_OPTIONS: {},
 }));
 
 // Upstash client — no-op
@@ -359,6 +361,7 @@ function buildApp(): express.Express {
   });
   app.use("/api", productRoutes);
   app.use("/api", categoryRoutes);
+  setupErrorHandling(app);
   return app;
 }
 
@@ -372,6 +375,7 @@ function buildAdminApp(): express.Express {
   });
   app.use("/api", productRoutes);
   app.use("/api", categoryRoutes);
+  setupErrorHandling(app);
   return app;
 }
 
@@ -510,7 +514,7 @@ describe("GET /api/products/by-path", () => {
     repo.getProductByPath.mockResolvedValueOnce(null);
     const res = await request(app).get("/api/products/by-path?path=/categories/bad/path");
     expect(res.status).toBe(404);
-    expect(res.body).toMatchObject({ success: false });
+    expect(res.body).toMatchObject({ code: "RESOURCE_NOT_FOUND" });
   });
 
   test("returns 4xx/5xx when path param is missing (Zod parse throws)", async () => {

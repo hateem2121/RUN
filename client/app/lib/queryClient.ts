@@ -191,12 +191,14 @@ export const createQueryClient = () =>
         networkMode: "always",
         retry: (failureCount, error) => {
           // Stop retries immediately for Rate Limits (429) or Conflicts (409)
-          if (error instanceof ApiError) {
-            if (error.status === 429 || error.status === 409) {
+          const errObj = error as any;
+          const status = errObj?.status;
+          if (typeof status === "number") {
+            if (status === 429 || status === 409) {
               return false;
             }
             // Don't retry client errors (4xx)
-            if (error.status >= 400 && error.status < 500) {
+            if (status >= 400 && status < 500) {
               return false;
             }
           }

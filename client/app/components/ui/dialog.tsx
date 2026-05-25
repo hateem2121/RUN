@@ -303,6 +303,14 @@ const DialogContent = ({
         aria-labelledby={headingId}
         aria-describedby={description ? descriptionId : undefined}
         onKeyDown={handleKeyDown}
+        onEscapeKeyDown={(event) => {
+          // Prevent dialog close on Escape if a dropdown listbox is currently open
+          if (document.querySelector('[role="listbox"]') !== null) {
+            event.preventDefault();
+          } else {
+            props.onEscapeKeyDown?.(event);
+          }
+        }}
         style={positionStyles}
         className={cn(
           "fixed top-[50%] left-[50%] w-full translate-x-[-50%] translate-y-[-50%]",

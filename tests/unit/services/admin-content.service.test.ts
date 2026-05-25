@@ -1,4 +1,4 @@
-import { ok, err } from "neverthrow";
+import { ok } from "neverthrow";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { miscRepository } from "../../../server/lib/db/repositories/index.js";
 import { aboutService } from "../../../server/services/about.service.js";

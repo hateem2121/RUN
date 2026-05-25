@@ -24,7 +24,6 @@ import { CacheOperations } from "../../../cache/cache-strategies.js";
 import { UnifiedCache } from "../../../cache/unified-cache.js";
 import { StorageSingleton } from "../../../storage-singleton.js";
 
-
 const unifiedCache = UnifiedCache.getInstance();
 const HOMEPAGE_CACHE_TTL = 3600; // 1 hour (in seconds)
 
@@ -53,7 +52,6 @@ export class SustainabilityRepository {
     const existing = await this.getSustainabilityHero();
     await CacheOperations.invalidateSustainability();
 
-
     if (existing) {
       const [updated] = await db
         .update(sustainabilityHero)
@@ -65,8 +63,6 @@ export class SustainabilityRepository {
       await emitCacheInvalidation("sustainability:hero", "update");
       await CacheOperations.invalidateSustainability();
       return updated;
-
-
     }
 
     const [created] = await db
@@ -77,7 +73,6 @@ export class SustainabilityRepository {
     await emitCacheInvalidation("sustainability:hero", "create");
     await CacheOperations.invalidateSustainability();
     return created;
-
   }
 
   async getSustainabilityGoals(includeInactive = false): Promise<SustainabilityGoal[]> {
@@ -127,8 +122,6 @@ export class SustainabilityRepository {
     await emitCacheInvalidation("sustainability:goals", "create");
     await CacheOperations.invalidateSustainability();
     return created;
-
-
   }
 
   async updateSustainabilityGoal(
@@ -151,7 +144,6 @@ export class SustainabilityRepository {
     await emitCacheInvalidation("sustainability:goal", "update");
     await CacheOperations.invalidateSustainability();
     return updated;
-
   }
 
   async deleteSustainabilityGoal(id: number): Promise<boolean> {
@@ -163,8 +155,6 @@ export class SustainabilityRepository {
     await emitCacheInvalidation("sustainability:goals", "delete");
     await CacheOperations.invalidateSustainability();
     return (result.rowCount ?? 0) > 0;
-
-
   }
 
   async reorderSustainabilityGoals(orderedIds: number[]): Promise<void> {
@@ -182,7 +172,6 @@ export class SustainabilityRepository {
     await emitCacheInvalidation("sustainability:goals", "update");
     await CacheOperations.invalidateSustainability();
   }
-
 
   async getSustainabilityMetrics(): Promise<SustainabilityMetric[]> {
     if (StorageSingleton.hasInstance()) {
@@ -247,8 +236,6 @@ export class SustainabilityRepository {
     await emitCacheInvalidation("sustainability:metrics", "create");
     await CacheOperations.invalidateSustainability();
     return created;
-
-
   }
 
   async updateSustainabilityMetric(
@@ -292,8 +279,6 @@ export class SustainabilityRepository {
     await emitCacheInvalidation("sustainability:metrics", "delete");
     await CacheOperations.invalidateSustainability();
     return (result.rowCount ?? 0) > 0;
-
-
   }
 
   async reorderSustainabilityMetrics(orderedIds: number[]): Promise<void> {
@@ -311,7 +296,6 @@ export class SustainabilityRepository {
     await emitCacheInvalidation("sustainability:metrics", "update");
     await CacheOperations.invalidateSustainability();
   }
-
 
   async getSustainabilityMetricHistory(metricId: number): Promise<SustainabilityMetricHistory[]> {
     return db
@@ -369,8 +353,6 @@ export class SustainabilityRepository {
     await CacheOperations.invalidateSustainability();
     await emitCacheInvalidation("sustainability:initiatives", "create");
     return created;
-
-
   }
 
   async updateSustainabilityInitiative(
@@ -408,8 +390,6 @@ export class SustainabilityRepository {
     await emitCacheInvalidation("sustainability:initiatives", "delete");
     await CacheOperations.invalidateSustainability();
     return (result.rowCount ?? 0) > 0;
-
-
   }
 
   async reorderSustainabilityInitiatives(orderedIds: number[]): Promise<void> {
@@ -427,7 +407,6 @@ export class SustainabilityRepository {
     await emitCacheInvalidation("sustainability:initiatives", "update");
     await CacheOperations.invalidateSustainability();
   }
-
 
   async getUnifiedSustainability(): Promise<UnifiedSustainability | undefined> {
     if (StorageSingleton.hasInstance()) {
@@ -453,7 +432,6 @@ export class SustainabilityRepository {
     const existing = await this.getUnifiedSustainability();
     await CacheOperations.invalidateSustainability();
 
-
     if (existing) {
       const [updated] = await db
         .update(unifiedSustainability)
@@ -465,8 +443,6 @@ export class SustainabilityRepository {
       await emitCacheInvalidation("sustainability:unified", "update");
       await CacheOperations.invalidateSustainability();
       return updated;
-
-
     }
 
     const [created] = await db
@@ -477,8 +453,6 @@ export class SustainabilityRepository {
     await emitCacheInvalidation("sustainability:unified", "create");
     await CacheOperations.invalidateSustainability();
     return created;
-
-
   }
 
   async migrateLegacySustainabilityData(): Promise<{ migrated: number }> {

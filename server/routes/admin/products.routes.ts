@@ -88,7 +88,11 @@ router.post(
 router.get("/check-slug", authService.requireAdmin, async (req, res) => {
   const slugQuery = z
     .object({
-      slug: z.string().min(1).max(200).transform(s => s.toLowerCase()),
+      slug: z
+        .string()
+        .min(1)
+        .max(200)
+        .transform((s) => s.toLowerCase()),
       excludeId: z.coerce.number().int().positive().optional(),
     })
     .parse(req.query);

@@ -215,7 +215,9 @@ export class ProductRepository {
 
       return rows.map((row) => ({
         ...row.product,
-        imageUrl: row.product.primaryImageId ? `/api/media/${row.product.primaryImageId}/content` : undefined,
+        imageUrl: row.product.primaryImageId
+          ? `/api/media/${row.product.primaryImageId}/content`
+          : undefined,
         imageVariants: row.imageVariants,
       }));
     }, "getProducts");
@@ -328,7 +330,9 @@ export class ProductRepository {
 
       return rows.map((row) => ({
         ...row.product,
-        imageUrl: row.product.primaryImageId ? `/api/media/${row.product.primaryImageId}/content` : undefined,
+        imageUrl: row.product.primaryImageId
+          ? `/api/media/${row.product.primaryImageId}/content`
+          : undefined,
         imageVariants: row.imageVariants,
       }));
     }, "getHomepageFeaturedProducts");
@@ -368,7 +372,15 @@ export class ProductRepository {
     await unifiedCache.delete(cacheKey);
     // Also invalidate featured count as featured products change frequently
     await unifiedCache.delete("products:count:featured");
-    logger.info("[ProductRepo] Product count caches invalidated");
+
+    // Invalidate category, tag, and search count caches to prevent stale pagination/metadata
+    await unifiedCache.invalidate("^products:count:category:");
+    await unifiedCache.invalidate("^products:count:tag:");
+    await unifiedCache.invalidate("^products:count:search:");
+
+    logger.info(
+      "[ProductRepo] Product count caches invalidated (including category, tag, and search counts)",
+    );
   }
 
   async getProductsByCategoryCount(categoryId: number): Promise<number> {

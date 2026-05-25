@@ -57,11 +57,12 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
     env: {
-      NODE_ENV: "test",
+      NODE_ENV: "development",
       ENABLE_OTEL: "false",
       SKIP_SECRET_MANAGER: "true",
       PORT: "5002",
-      VITEST: "true",
+      DOTENV_CONFIG_PATH: "../.env",
+      SKIP_VITE_DEV_SERVER: "true",
     },
   },
 });

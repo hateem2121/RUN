@@ -3,7 +3,7 @@
  * Unified URL generation with consistent behavior across client and server
  */
 
-import type { MediaAsset, ImageVariants } from "@shared/index";
+import type { ImageVariants, MediaAsset } from "@shared/index";
 
 // Type aliases using canonical MediaAsset from shared schema
 export type MediaAssetBasic = Pick<MediaAsset, "id" | "url">;

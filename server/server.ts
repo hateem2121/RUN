@@ -63,12 +63,13 @@ export const serverReady: Promise<void> = (async () => {
       });
     }
 
-    // 5. Setup Routes & SSR (Async - continues while server is listening)
-    await setupRoutes(app, httpServer);
-
     // 6. Setup Static Serving (Production only, fallback if not handled by Nginx)
-    // ... continues ...
-    if (config.app.environment === "production" || process.env.NODE_ENV === "production") {
+    // Mounted before routes & SSR so assets aren't shadowed by wildcard SSR handler
+    if (
+      config.app.environment === "production" ||
+      process.env.NODE_ENV === "production" ||
+      process.env.SKIP_VITE_DEV_SERVER === "true"
+    ) {
       const staticPath = path.resolve(process.cwd(), "../client/build/client");
 
       // PC-106: Block source map files from being served publicly.
@@ -93,6 +94,9 @@ export const serverReady: Promise<void> = (async () => {
       );
       logger.info(`[Production] Serving compressed static assets from: ${staticPath}`);
     }
+
+    // 5. Setup Routes & SSR (Async - continues while server is listening)
+    await setupRoutes(app, httpServer);
 
     // 7. Setup Error Handling (Must be last middleware)
     setupErrorHandling(app);

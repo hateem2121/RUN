@@ -1,10 +1,10 @@
 import { createHash } from "node:crypto";
 import type { Request, Response } from "express";
+import { err, ok } from "neverthrow";
 import type { Profile as PassportProfile } from "passport-google-oauth20";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { err, ok } from "neverthrow";
-import { DatabaseError } from "../../lib/errors.js";
 import { adminCacheManager } from "../../lib/cache/admin-cache";
+import { DatabaseError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger";
 import { getStorage } from "../../lib/storage-singleton";
 import type { SessionUser } from "../../types/session";
@@ -47,7 +47,7 @@ vi.mock("../../lib/monitoring/logger", () => ({
 describe("AuthService", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // @ts-ignore - access private method
+    // @ts-expect-error - access private method
     authService.constructor.instance = undefined;
     process.env.NODE_ENV = "development";
     process.env.ENABLE_MOCK_ADMIN = "false";
@@ -491,7 +491,9 @@ describe("AuthService", () => {
       } as unknown as Response;
       const next = vi.fn();
 
-      vi.spyOn(authService, "verifyAdminAccess").mockResolvedValue(err(new DatabaseError("Unexpected error")));
+      vi.spyOn(authService, "verifyAdminAccess").mockResolvedValue(
+        err(new DatabaseError("Unexpected error")),
+      );
 
       await authService.requireAdmin(req, res, next);
 
@@ -631,7 +633,7 @@ describe("AuthService", () => {
     it.skip("handles user with no previous failed attempts", async () => {
       const { userRepository } = await import("../../lib/db/repositories/index.js");
       const uniqueEmail = "completely-new-user@example.com";
-      
+
       vi.mocked(userRepository.getUserByEmail).mockResolvedValueOnce({
         id: "unique-user-1",
         failedLoginAttempts: 0,

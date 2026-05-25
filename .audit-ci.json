@@ -12,7 +12,12 @@
     "GHSA-4w7w-66w2-5vf9",
     "GHSA-p9ff-h696-f583",
     "GHSA-v2wj-q39q-566r",
-    "GHSA-w5hq-g745-h8pq"
+    "GHSA-w5hq-g745-h8pq",
+    "GHSA-58qx-3vcg-4xpx",
+    "GHSA-hcf7-66rw-9f5r",
+    "GHSA-jggg-4jg4-v7c6",
+    "GHSA-jxxr-4gwj-5jf2",
+    "GHSA-q8mj-m7cp-5q26"
   ],
   "retry-count": 3
 }

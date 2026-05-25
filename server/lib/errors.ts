@@ -12,6 +12,7 @@ export abstract class AppError extends Error {
     details?: Record<string, unknown>,
   ) {
     super(message);
+    this.name = this.constructor.name;
     this.statusCode = statusCode;
     this.code = code;
     this.isOperational = isOperational;

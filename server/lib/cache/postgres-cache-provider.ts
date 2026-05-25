@@ -1,6 +1,6 @@
-import { db } from "../../db.js";
 import { cacheEntries } from "@run-remix/shared";
 import { eq, lte, sql } from "drizzle-orm";
+import { db } from "../../db.js";
 import { logger } from "../monitoring/logger.js";
 
 export class PostgresCacheProvider {
@@ -19,7 +19,7 @@ export class PostgresCacheProvider {
 
       const entry = results[0];
       if (!entry) return null;
-      
+
       // Check expiry
       if (entry.expiry < new Date()) {
         // Asynchronously delete expired entry
@@ -89,11 +89,14 @@ export class PostgresCacheProvider {
   /**
    * Scan keys (Simplified for clearing patterns)
    */
-  async scan(_cursor: string, options: { match: string; count: number }): Promise<[string, string[]]> {
+  async scan(
+    _cursor: string,
+    options: { match: string; count: number },
+  ): Promise<[string, string[]]> {
     try {
       // Convert Redis-style glob (*) to SQL LIKE (%)
       const sqlPattern = options.match.replace(/\*/g, "%");
-      
+
       const results = await db
         .select({ key: cacheEntries.key })
         .from(cacheEntries)

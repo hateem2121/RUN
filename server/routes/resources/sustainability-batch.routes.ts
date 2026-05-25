@@ -29,12 +29,12 @@ router.get("/", async (req, res) => {
         ttl: 120 * 60 * 1000, // 120 min fresh (matches previous TTL)
         staleWhileRevalidate: 240 * 60 * 1000, // 240 min stale
       },
-    }
+    },
   )) || { data: null, benchmark: { hit: "MISS" } };
 
   res.setHeader("X-Cache-Hit", benchmark.hit);
   res.setHeader("X-Response-Time", (performance.now() - startTime).toFixed(2));
-  
+
   return res.json(batchData);
 });
 

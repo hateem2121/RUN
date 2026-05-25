@@ -4,9 +4,9 @@
  */
 
 import express from "express";
+import { ok } from "neverthrow";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ok, err } from "neverthrow";
 import { setupErrorHandling, setupMiddleware } from "../../boot/middleware.js";
 import { adminCacheManager } from "../../lib/cache/admin-cache.js";
 import { getStorage } from "../../lib/storage-singleton.js";

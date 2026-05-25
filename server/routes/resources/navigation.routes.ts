@@ -54,7 +54,7 @@ router.get("/navigation-settings", async (_req, res) => {
   const result = await NavigationService.getGlassmorphismSettings();
 
   if (result.isErr()) throw result.error;
-  
+
   res.setHeader("X-Response-Time", (performance.now() - startTime).toFixed(2));
   return res.json(result.value);
 });

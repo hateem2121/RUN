@@ -3,11 +3,11 @@ import { gunzip, gzip } from "node:zlib";
 import { SpanStatusCode, trace } from "@opentelemetry/api";
 import { LRUCache } from "lru-cache";
 import { logger } from "../monitoring/logger.js";
+import { postgresCache } from "./postgres-cache-provider.js";
 // PC-301 RESOLVED: Circuit breaker protection is handled at the Upstash proxy level
 // (upstash-client.ts wraps every Redis method call via Proxy + withCircuit).
 // Removed duplicate withCircuit wrapping here to prevent double circuit-breaker nesting.
 import { isRedisEnabled, redis } from "./upstash-client.js";
-import { postgresCache } from "./postgres-cache-provider.js";
 
 /**
  * UNIFIED CACHE - HYBRID L1/L2

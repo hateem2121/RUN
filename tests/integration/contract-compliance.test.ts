@@ -28,8 +28,8 @@ describe("API Contract Compliance", () => {
 
   describe("Validation Error Compliance", () => {
     it("should return standard error for invalid input", async () => {
-      // validateIdParam rejects non-numeric :id with 400
-      const res = await request(app).get("/api/products/abc").expect(400);
+      // validateIdParam rejects non-numeric :id with 422
+      const res = await request(app).get("/api/products/abc").expect(422);
 
       expect(res.body).toMatchObject({
         message: expect.stringContaining("product"),
@@ -40,15 +40,14 @@ describe("API Contract Compliance", () => {
   });
 
   describe("404 Error Compliance", () => {
-    it("should return standard ErrorEnvelope for non-existent resource", async () => {
+    it("should return standard RFC 9457 Error for non-existent resource", async () => {
       // 9999999 is valid integer but won't exist in mock DB (pool returns empty rows)
       const res = await request(app).get("/api/products/9999999").expect(404);
 
       expect(res.body).toMatchObject({
-        success: false,
-        error: expect.objectContaining({
-          message: expect.stringContaining("not found"),
-        }),
+        code: "RESOURCE_NOT_FOUND",
+        status: 404,
+        detail: expect.stringContaining("not found"),
       });
     });
   });

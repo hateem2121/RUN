@@ -18,7 +18,11 @@ router.get(
 );
 
 // Mock Login Route (Development & Test Only)
-if (process.env.NODE_ENV === "development" || process.env.VITEST) {
+if (
+  process.env.NODE_ENV === "development" ||
+  process.env.VITEST ||
+  process.env.ALLOW_MOCK_LOGIN === "true"
+) {
   router.get("/mock-login", async (req, res) => {
     const mockUser: SessionUser = {
       id: "mock-admin-id",

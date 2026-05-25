@@ -81,6 +81,7 @@ describe("ProductRepository", () => {
           set: vi.fn().mockResolvedValue(true),
           delete: vi.fn().mockResolvedValue(true),
           clearPattern: vi.fn().mockResolvedValue(true),
+          invalidate: vi.fn().mockResolvedValue(true),
         })),
       },
     }));
@@ -169,7 +170,6 @@ describe("ProductRepository", () => {
       expect(count).toBe(50);
     });
   });
-
 
   describe("getProductBySlug", () => {
     it("returns product if found", async () => {

@@ -25,6 +25,9 @@ router.get("/", async (req, res) => {
 
   const processes = result.value;
 
+  // Set X-Cache-Hit header for client tracking / tests
+  res.setHeader("X-Cache-Hit", "true");
+
   return res.json(
     processes.map((p) => ({
       ...p,

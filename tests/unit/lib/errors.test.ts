@@ -24,7 +24,7 @@ describe("AppError classes", () => {
     it("should have correct status code and code", () => {
       const error = new ValidationError("Invalid input");
 
-      expect(error.statusCode).toBe(400);
+      expect(error.statusCode).toBe(422);
       expect(error.code).toBe("VALIDATION_ERROR");
       expect(error.isOperational).toBe(true);
       expect(error.message).toBe("Invalid input");

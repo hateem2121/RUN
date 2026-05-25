@@ -66,6 +66,42 @@ export function CustomDropdown({
     }
   }, [isOpen, focusedIndex]);
 
+  // Attach native keydown listeners to bypass React event delegation and Radix capture phase focus trap
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleNativeKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" || e.key === "Tab") {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+
+        triggerRef.current?.focus();
+        setIsOpen(false);
+        setFocusedIndex(-1);
+      }
+    };
+
+    const optionsElements = [...optionRefs.current];
+    const triggerEl = triggerRef.current;
+
+    for (const el of optionsElements) {
+      el?.addEventListener("keydown", handleNativeKeyDown, { capture: true });
+    }
+    if (triggerEl) {
+      triggerEl.addEventListener("keydown", handleNativeKeyDown, { capture: true });
+    }
+
+    return () => {
+      for (const el of optionsElements) {
+        el?.removeEventListener("keydown", handleNativeKeyDown, { capture: true });
+      }
+      if (triggerEl) {
+        triggerEl.removeEventListener("keydown", handleNativeKeyDown, { capture: true });
+      }
+    };
+  }, [isOpen]);
+
   const handleOptionClick = (optionValue: string) => {
     onChange(optionValue);
     setIsOpen(false);
@@ -96,6 +132,8 @@ export function CustomDropdown({
       setIsOpen(true);
       setFocusedIndex(options.length - 1);
     } else if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
       triggerRef.current?.focus();
       setIsOpen(false);
       setFocusedIndex(-1);
@@ -110,10 +148,14 @@ export function CustomDropdown({
       e.preventDefault();
       setFocusedIndex((prev) => Math.max(prev - 1, 0));
     } else if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
       triggerRef.current?.focus();
       setIsOpen(false);
       setFocusedIndex(-1);
     } else if (e.key === "Tab") {
+      e.preventDefault();
+      e.stopPropagation();
       triggerRef.current?.focus();
       setIsOpen(false);
       setFocusedIndex(-1);

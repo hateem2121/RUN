@@ -53,7 +53,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { RichTextEditor } from "../shared/RichTextEditor";
 import { SEOPreview } from "./SEOPreview";
-import "../../../styles/editor.css";
+import "@/styles/editor.css";
 
 export function BlogManagement() {
   const [searchTerm, setSearchTerm] = useState("");

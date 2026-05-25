@@ -34,7 +34,7 @@ router.get("/about-batch", async (req, res) => {
         ttl: 120 * 60 * 1000,
         staleWhileRevalidate: 240 * 60 * 1000,
       },
-    }
+    },
   )) || { data: null, benchmark: { hit: "MISS" } };
 
   res.setHeader("X-Cache-Hit", benchmark.hit);
@@ -59,7 +59,7 @@ router.get("/technology-batch", async (req, res) => {
         ttl: 120 * 60 * 1000,
         staleWhileRevalidate: 240 * 60 * 1000,
       },
-    }
+    },
   )) || { data: null, benchmark: { hit: "MISS" } };
 
   res.setHeader("X-Cache-Hit", benchmark.hit);

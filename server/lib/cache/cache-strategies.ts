@@ -8,12 +8,11 @@
  * PHASE 5: Added CacheFetchStrategy for warmup optimization
  */
 
+import { invalidateHtmlCache } from "../../middleware/ssr-cache.js";
 import type { IStorage } from "../../repositories/storage-interfaces.js";
 import { logger } from "../monitoring/logger.js";
 import { CacheKeys, InvalidationPatterns } from "./cache-keys.js";
 import { UnifiedCache } from "./unified-cache.js";
-import { invalidateHtmlCache } from "../../middleware/ssr-cache.js";
-
 
 // PHASE 4: Lazy initialization to avoid circular dependency
 // Use getter function instead of module-level constant
@@ -227,7 +226,6 @@ export const CacheOperations = {
     logger.info("[Cache] Invalidated all homepage cache entries");
   },
 
-
   invalidateMedia: async (id?: number) => {
     if (id) {
       await getCache().delete(CacheKeys.media.asset(id));
@@ -251,7 +249,6 @@ export const CacheOperations = {
     await invalidateHtmlCache("/products");
   },
 
-
   // CHUNK 1: Page-specific cache invalidation methods
   invalidateAbout: async () => {
     await getCache().invalidate(InvalidationPatterns.about);
@@ -259,13 +256,11 @@ export const CacheOperations = {
     logger.info("[Cache] Invalidated all about page cache entries");
   },
 
-
   invalidateSustainability: async () => {
     await getCache().invalidate(InvalidationPatterns.sustainability);
     await invalidateHtmlCache("/sustainability");
     logger.info("[Cache] Invalidated all sustainability page cache entries");
   },
-
 
   invalidateManufacturing: async () => {
     await getCache().invalidate(InvalidationPatterns.manufacturing);
@@ -273,20 +268,17 @@ export const CacheOperations = {
     logger.info("[Cache] Invalidated all manufacturing page cache entries");
   },
 
-
   invalidateTechnology: async () => {
     await getCache().invalidate(InvalidationPatterns.technology);
     await invalidateHtmlCache("/technology");
     logger.info("[Cache] Invalidated all technology page cache entries");
   },
 
-
   invalidateContact: async () => {
     await getCache().invalidate(InvalidationPatterns.contact);
     await invalidateHtmlCache("/contact");
     logger.info("[Cache] Invalidated all contact page cache entries");
   },
-
 
   invalidateNavigation: async () => {
     await getCache().invalidate(InvalidationPatterns.navigation);

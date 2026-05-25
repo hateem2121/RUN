@@ -125,51 +125,57 @@ vi.mock("../../../server/lib/db/repositories/index.js", async (importOriginal) =
       getManufacturingProcesses: vi.fn().mockResolvedValue(mockManufacturingProcesses),
       getManufacturingProcess: vi
         .fn()
-        .mockImplementation(
-          (id: number) => mockManufacturingProcesses.find((p) => p.id === id) || null,
+        .mockImplementation((id: number) =>
+          Promise.resolve(mockManufacturingProcesses.find((p) => p.id === id) || null),
         ),
       createManufacturingProcess: vi
         .fn()
-        .mockImplementation((data) => ({ id: 4, ...data, createdAt: new Date() })),
+        .mockImplementation((data) => Promise.resolve({ id: 4, ...data, createdAt: new Date() })),
       updateManufacturingProcess: vi.fn().mockImplementation((id: number, data) => {
         const existing = mockManufacturingProcesses.find((p) => p.id === id);
-        return existing ? { ...existing, ...data } : null;
+        return Promise.resolve(existing ? { ...existing, ...data } : null);
       }),
       deleteManufacturingProcess: vi
         .fn()
-        .mockImplementation((id: number) => mockManufacturingProcesses.some((p) => p.id === id)),
+        .mockImplementation((id: number) =>
+          Promise.resolve(mockManufacturingProcesses.some((p) => p.id === id)),
+        ),
       getManufacturingCapabilities: vi.fn().mockResolvedValue(mockManufacturingCapabilities),
       getManufacturingCapability: vi
         .fn()
-        .mockImplementation(
-          (id: number) => mockManufacturingCapabilities.find((c) => c.id === id) || null,
+        .mockImplementation((id: number) =>
+          Promise.resolve(mockManufacturingCapabilities.find((c) => c.id === id) || null),
         ),
       createManufacturingCapability: vi
         .fn()
-        .mockImplementation((data) => ({ id: 3, ...data, createdAt: new Date() })),
+        .mockImplementation((data) => Promise.resolve({ id: 3, ...data, createdAt: new Date() })),
       updateManufacturingCapability: vi.fn().mockImplementation((id: number, data) => {
         const existing = mockManufacturingCapabilities.find((c) => c.id === id);
-        return existing ? { ...existing, ...data } : null;
+        return Promise.resolve(existing ? { ...existing, ...data } : null);
       }),
       deleteManufacturingCapability: vi
         .fn()
-        .mockImplementation((id: number) => mockManufacturingCapabilities.some((c) => c.id === id)),
+        .mockImplementation((id: number) =>
+          Promise.resolve(mockManufacturingCapabilities.some((c) => c.id === id)),
+        ),
       getManufacturingQualities: vi.fn().mockResolvedValue(mockManufacturingQualities),
       getManufacturingQuality: vi
         .fn()
-        .mockImplementation(
-          (id: number) => mockManufacturingQualities.find((q) => q.id === id) || null,
+        .mockImplementation((id: number) =>
+          Promise.resolve(mockManufacturingQualities.find((q) => q.id === id) || null),
         ),
       createManufacturingQuality: vi
         .fn()
-        .mockImplementation((data) => ({ id: 3, ...data, createdAt: new Date() })),
+        .mockImplementation((data) => Promise.resolve({ id: 3, ...data, createdAt: new Date() })),
       updateManufacturingQuality: vi.fn().mockImplementation((id: number, data) => {
         const existing = mockManufacturingQualities.find((q) => q.id === id);
-        return existing ? { ...existing, ...data } : null;
+        return Promise.resolve(existing ? { ...existing, ...data } : null);
       }),
       deleteManufacturingQuality: vi
         .fn()
-        .mockImplementation((id: number) => mockManufacturingQualities.some((q) => q.id === id)),
+        .mockImplementation((id: number) =>
+          Promise.resolve(mockManufacturingQualities.some((q) => q.id === id)),
+        ),
     },
   };
 });
