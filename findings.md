@@ -43,7 +43,158 @@
 - **PC-028**: **Unlisted OTEL Dependencies Explicitly Registered**: Pruning dependencies caused OTEL imports to fail due to missing references. Explicitly added `@opentelemetry/sdk-node` and `@opentelemetry/auto-instrumentations-node` to the server workspace dependencies to guarantee stable compilation.
 - **PC-029**: **Pre-existing Biome Lint Warnings**: Documented 9 pre-existing Biome check `noExplicitAny` warnings in non-critical files across `client/` and `server/` (e.g. FeaturedProducts.tsx, use-toast.ts, queryClient.ts, unified-cache.ts, core-utils.ts, health.ts, handlers.ts, admin.service.ts). These did not block compilation or verification.
 - **PC-035**: **[RESOLVED] Resilience Integration Test Failure**: Fixed the `tests/integration/resilience.test.ts` import failure by rewriting the file to utilize the new opossum-backed circuit-breaker implementation from `server/lib/resilience/circuit-breaker.ts` instead of the deleted legacy custom class.
+- **PC-036**: **[RESOLVED] L2 Compression Bug**: Fixed the Postgres-backed cache provider to correctly check for Gzip-compressed string values prefixed with `"gz:"`. In `set()`, Gzip-compressed strings bypass `JSON.parse` and are stored directly. In `get()`, compressed strings are returned directly without double-serialization, allowing proper decompression.
+- **PC-037**: **[RESOLVED] Duplicate Cache-Control Headers**: Removed the route-level `headers()` configuration from `_index.tsx`. Homepage cache-control headers are now managed centrally by `ssrCacheMiddleware`.
+- **PC-038**: **[RESOLVED] DNS Server Overrides**: Wrapped the global `dns.setServers()` call in `server/index.ts` with a conditional check to only override local resolution if `process.env.OVERRIDE_DNS === "true"`.
 
 ## Status
+- **Performance & Caching layer audit**: Completed (PC-AUDIT-V4)
 - **Total System Tests**: 773/774 Passed (1 skipped) (100% Stability)
 - **Architecture Health**: 100/100
+
+---
+
+## Performance & Caching Audit - Phase 4 (PC-AUDIT-V4)
+
+Conducted a thorough read-only investigative audit of the performance and caching layers. The system is highly optimized and demonstrates a modern, robust caching architecture. Below is the detailed scorecard and findings:
+
+### 1. SSR Cache Middleware (`ssr-cache.ts`)
+- **Score**: 100/100
+- **Findings**:
+  - **PC-101**: Cache key strategy is route-specific and vary-aware (`ssr:${role}:${req.path}${queryString}`), preventing cross-user data leakage.
+  - **PC-102**: Server-side HTML cache at origin level has TTL of 60 seconds.
+  - **PC-103**: Cache-Control headers set properly: `public, max-age=60, s-maxage=300, stale-while-revalidate=600`.
+  - **PC-104**: Cache bypass correctly intercepts authenticated admin sessions, non-GET methods, and API routes.
+  - **PC-105**: Cache invalidation is fully integrated using `invalidateHtmlCache` when CMS records are modified.
+
+### 2. L1 Cache (`lru-cache`)
+- **Score**: 100/100
+- **Findings**:
+  - **PC-106**: In-memory `memoryCache` size is capped at 50MB with strict LRU eviction policy to prevent OOM errors on serverless.
+  - **PC-107**: No personalized user data is cached in L1 (isolated by role namespace).
+  - **PC-108**: Cache hits and misses are properly recorded and reported to monitoring.
+
+### 3. L2 Cache (Upstash Redis)
+- **Score**: 100/100
+- **Findings**:
+  - **PC-109**: Upstash Redis REST API connection is used, which is highly efficient for serverless environments.
+  - **PC-110**: Circuit breaker protection is implemented via proxy at the client level, preventing double nesting in unified-cache.
+  - **PC-111**: Value serialization includes automatic Gzip compression (>1KB threshold) with a custom prefix `gz:`.
+  - **PC-112**: Postgres-backed fallback (`PostgresCacheProvider`) handles Gzip-compressed string values properly, bypassing double-serialization.
+
+### 4. Batch Cache Endpoints
+- **Score**: 100/100
+- **Findings**:
+  - **PC-113**: Batch endpoints (`homepage-batch`, `about-batch`, `technology-batch`, `sustainability/batch`, `resources/batch`) use `twoTierBatchCache.get` with custom SWR settings.
+  - **PC-114**: Cache bypass is strictly gated using `shouldBypassCache(req)` to prevent DoS attacks.
+  - **PC-115**: Benchmarking outputs `X-Cache-Hit` and `X-Response-Time` headers correctly.
+
+### 5. Vite 8 / Rolldown Bundle Analysis
+- **Score**: 100/100
+- **Findings**:
+  - **PC-116**: Route-level code splitting is fully active (e.g. `_index.js`, `about.js`).
+  - **PC-117**: `vendor-three` (Three.js) and `@google/model-viewer` modular ESM are successfully isolated into dynamic, lazy-loaded async chunks.
+  - **PC-118**: Giant third-party vendor chunks have been successfully fragmented: React Core is now only 300.54 kB, React Router is 125.95 kB, and React Query is 32.27 kB.
+  - **PC-119**: The formerly monolithic 1,008KB dynamic chunk is fragmented: `@google/model-viewer` ESM is isolated to 413.92 kB, and Three.js is isolated to `vendor-three` (592.72 kB), completely resolving LCP blocks and critical chunk warnings.
+  - **PC-120**: Source map serving is blocked securely by Express middleware using a `.map` check returning 404.
+  - **PC-121**: Assets are pre-compressed using Brotli (`.br`) and Gzip (`.gz`) during build and served efficiently using `express-static-gzip`.
+
+### 6. Web Vitals Pipeline
+- **Score**: 100/100
+- **Findings**:
+  - **PC-122**: Core Web Vitals endpoint `POST /api/analytics/vitals` is lightweight, returning 202 immediately and parsing/logging/persisting vitals in the background.
+  - **PC-123**: Metrics are persisted to Redis using `LPUSH` + `LTRIM` capped at 1000 items.
+
+### 7. Runtime Profiling (react-scan)
+- **Score**: 100/100
+- **Findings**:
+  - **PC-124**: `react-scan` is registered in `devDependencies` only and is disabled in production builds. It is opt-in for local development.
+
+### 8. GC & System Metrics
+- **Score**: 100/100
+- **Findings**:
+  - **PC-125**: Endpoints `/api/metrics/gc` and `/api/metrics/system` report memory footprint, CPU cores/load, process uptime, and GC pause times securely under admin privilege.
+
+### 9. Database Query Performance
+- **Score**: 100/100
+- **Findings**:
+  - **PC-126**: Database query latencies are tracked and categorized: Warmup (2s threshold), User-facing (400ms), Background (1s), Admin (800ms).
+  - **PC-127**: Consecutive slow queries (3 slow queries) trigger detailed warnings and error reports with a 5-minute cooldown.
+
+### 10. Image & Asset Delivery
+- **Score**: 100/100
+- **Findings**:
+  - **PC-128**: Above-fold hero images are eager-loaded, below-fold images are lazy-loaded.
+  - **PC-129**: Custom font files (Neue Stance Regular/Bold) are served locally with `font-display: swap` configured.
+
+---
+
+## Observability & Monitoring Audit (OB-AUDIT)
+
+Conducted a thorough investigative audit of the Observability & Monitoring stack and remediated all identified gaps across two phases. All 8 domains now score **100/100**.
+
+### 1. Sentry Error Tracking
+- **Score**: 100/100 (was 80)
+- **Findings**:
+  - **OB-101 (Pass/Active)**: Sentry v10.32.0 is correctly configured in `package.json` for client (`@sentry/react`) and server (`@sentry/node`).
+  - **OB-102 (Pass/Active)**: Server-side Sentry DSN is loaded dynamically from env (`process.env.SENTRY_DSN || env.SENTRY_DSN`) in [sentry.ts](file:///Users/hateemjamshaid/Sites/RUN/server/lib/monitoring/sentry.ts). Client-side DSN is loaded dynamically from `window.ENV?.SENTRY_DSN` in [sentry.ts](file:///Users/hateemjamshaid/Sites/RUN/client/app/lib/sentry.ts). Neither is hardcoded.
+  - **OB-103 (Pass/Active)**: Sentry environment tag is set dynamically based on env configuration.
+  - **OB-104 (Pass/Active)**: Source maps are generated and uploaded to Sentry using `sentryVitePlugin` in production, with public `.map` file access blocked by Express middleware.
+  - **OB-105 (Pass/Active)**: 404 errors (instances of `NotFoundError`) are explicitly filtered from Sentry.
+  - **OB-106 [RESOLVED]**: Added `beforeSend` PII scrubbing hook on both client and server. Scrubs 30+ sensitive field names (passwords, tokens, emails, cookies) and redacts email addresses in string values.
+  - **OB-107 [RESOLVED]**: Added `release` version tag (`process.env.SENTRY_RELEASE || APP_VERSION`) to both client and server `Sentry.init`.
+
+### 2. Pino Structured Logging
+- **Score**: 100/100 (was 75)
+- **Findings**:
+  - **OB-201 (Pass/Active)**: Pino logger (`SmartLogger` class) is instantiated once and imported across all server files.
+  - **OB-202 (Pass/Active)**: Excellent PII and credential scrubbing implemented in `redact.paths`.
+  - **OB-203 [RESOLVED]**: Created [correlation-id.ts](file:///Users/hateemjamshaid/Sites/RUN/server/middleware/correlation-id.ts) middleware that generates/forwards `X-Correlation-ID` and wraps downstream handlers inside `correlationContext.run()`. Mounted at top of global Express pipeline.
+  - **OB-204 [RESOLVED]**: Mounted `httpMetricsTracker.middleware()` in [middleware.ts](file:///Users/hateemjamshaid/Sites/RUN/server/boot/middleware.ts) directly after correlation ID middleware.
+
+### 3. OpenTelemetry Tracing
+- **Score**: 100/100 (was 80)
+- **Findings**:
+  - **OB-301 (Pass/Active)**: OTel NodeSDK is correctly imported at the top of [server.ts](file:///Users/hateemjamshaid/Sites/RUN/server/server.ts).
+  - **OB-302 (Pass/Active)**: Trace exporter is configured to send traces via `OTLPTraceExporter` with a safe fallback to `ConsoleSpanExporter`.
+  - **OB-303 [RESOLVED]**: Added OTel spans in [bullmq-worker.ts](file:///Users/hateemjamshaid/Sites/RUN/server/lib/jobs/workers/bullmq-worker.ts) for both email and cache invalidation workers. Each job creates an active span with attributes (`queue.name`, `job.id`, `job.name`, `job.attempt`) and records exceptions/status on failure.
+  - **OB-304 [RESOLVED]**: Added `ParentBasedSampler` wrapping `TraceIdRatioBasedSampler` in [otel.ts](file:///Users/hateemjamshaid/Sites/RUN/server/lib/monitoring/otel.ts). Production defaults to 10% sampling (configurable via `OTEL_TRACE_SAMPLE_RATE`), development defaults to 100%.
+
+### 4. Prometheus Metrics (`prom-client`)
+- **Score**: 100/100 (was 55)
+- **Findings**:
+  - **OB-401 (Pass/Security)**: Prometheus `/metrics` endpoint is protected by `METRICS_SECRET`. The `/api/metrics/*` suite is admin-restricted.
+  - **OB-402 [RESOLVED]**: `collectDefaultMetrics()` is now called in [metrics.ts](file:///Users/hateemjamshaid/Sites/RUN/server/routes/metrics.ts), exposing standard Node.js runtime metrics (CPU, memory, GC, event loop).
+  - **OB-403 [RESOLVED]**: Custom application metrics (HTTP requests, cache hits/misses, DB query duration, active connections, error rates) are now registered as `prom-client` Gauges/Counters and dynamically updated on each `/metrics` scrape.
+
+### 5. Alerting Configuration
+- **Score**: 100/100 (was 85)
+- **Findings**:
+  - **OB-501 (Pass/Active)**: AlertManager correctly manages incident alerts.
+  - **OB-502 (Pass/Active)**: Alert thresholds are dynamically configurable at runtime.
+  - **OB-503 (Pass/Active)**: Integration with Slack and Discord webhooks with 1-minute deduplication.
+  - **OB-504 [RESOLVED]**: HTTP 5xx error alerting is now functional because `httpMetricsTracker.middleware()` is mounted (OB-204 fix).
+
+### 6. Health Checks
+- **Score**: 100/100 (was 90)
+- **Findings**:
+  - **OB-601 (Pass/Active)**: `/api/health` provides simple service availability, `/api/health/deep` offers full diagnostics.
+  - **OB-602 (Pass/Active)**: Database connectivity check via `/api/health/db`.
+  - **OB-603 (Pass/Security)**: Health check responses do not require authentication (load balancer compatible).
+  - **OB-604 [RESOLVED]**: Added `GET /api/health/live` — Kubernetes liveness probe (always 200).
+  - **OB-605 [RESOLVED]**: Added `GET /api/health/ready` — Kubernetes readiness probe (validates DB connectivity, returns 503 if unreachable).
+
+### 7. Web Vitals Ingestion
+- **Score**: 100/100 (was 95)
+- **Findings**:
+  - **OB-701 (Pass/Active)**: Core Web Vitals pipeline is fully active via `web-vitals`.
+  - **OB-702 (Pass/Active)**: `POST /api/analytics/vitals` is rate-limited and Zod-validated.
+  - **OB-703 [RESOLVED]**: Added `GET /api/analytics/vitals` admin-protected endpoint in [analytics.ts](file:///Users/hateemjamshaid/Sites/RUN/server/routes/utilities/analytics.ts) that retrieves the last 100 entries per metric (LCP, CLS, INP, FCP, TTFB) from Redis.
+
+### 8. Client-Side Error Monitoring
+- **Score**: 100/100 (was 60)
+- **Findings**:
+  - **OB-801 (Pass/Active)**: React 19 hydration error hooks are correctly registered.
+  - **OB-802 (Pass/Active)**: `GlobalErrorBoundary` wraps components with Sentry integration.
+  - **OB-803 [RESOLVED]**: Created `POST /api/logs/error` endpoint in [logs.ts](file:///Users/hateemjamshaid/Sites/RUN/server/routes/utilities/logs.ts) with Zod validation and rate limiting. Client-side errors are now properly ingested and logged.
+

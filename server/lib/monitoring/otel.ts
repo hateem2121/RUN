@@ -3,9 +3,23 @@ import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { PinoInstrumentation } from "@opentelemetry/instrumentation-pino";
 import { resourceFromAttributes } from "@opentelemetry/resources";
 import { NodeSDK } from "@opentelemetry/sdk-node";
-import { ConsoleSpanExporter } from "@opentelemetry/sdk-trace-base";
+import {
+  ConsoleSpanExporter,
+  ParentBasedSampler,
+  TraceIdRatioBasedSampler,
+} from "@opentelemetry/sdk-trace-base";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 import { APP_VERSION } from "../utilities/version.js";
+
+/**
+ * OB-304: Configure trace sampler to avoid 100% sampling overhead in production.
+ * ParentBasedSampler ensures child spans inherit parent's sampling decision,
+ * preventing orphaned partial traces.
+ */
+const sampleRate =
+  process.env.NODE_ENV === "production"
+    ? Number.parseFloat(process.env.OTEL_TRACE_SAMPLE_RATE || "0.1")
+    : 1.0;
 
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
@@ -13,6 +27,9 @@ const sdk = new NodeSDK({
     [SemanticResourceAttributes.SERVICE_NAME]: "api-server",
     [SemanticResourceAttributes.SERVICE_VERSION]: APP_VERSION,
     [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV || "development",
+  }),
+  sampler: new ParentBasedSampler({
+    root: new TraceIdRatioBasedSampler(sampleRate),
   }),
   traceExporter: process.env.OTEL_EXPORTER_OTLP_ENDPOINT
     ? new OTLPTraceExporter({

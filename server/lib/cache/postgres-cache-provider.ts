@@ -27,6 +27,9 @@ export class PostgresCacheProvider {
         return null;
       }
 
+      if (typeof entry.value === "string" && entry.value.startsWith("gz:")) {
+        return entry.value;
+      }
       return JSON.stringify(entry.value);
     } catch (err) {
       logger.error(`[PostgresCache] Get failed for ${key}:`, err);
@@ -40,7 +43,7 @@ export class PostgresCacheProvider {
   async set(key: string, value: string, options: { ex: number }): Promise<void> {
     try {
       const expiry = new Date(Date.now() + options.ex * 1000);
-      const jsonValue = JSON.parse(value);
+      const jsonValue = value.startsWith("gz:") ? value : JSON.parse(value);
 
       await db
         .insert(cacheEntries)

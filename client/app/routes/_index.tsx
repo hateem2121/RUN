@@ -71,12 +71,6 @@ export async function loader() {
   };
 }
 
-export function headers() {
-  return {
-    "Cache-Control": "public, max-age=3600, s-maxage=3600",
-  };
-}
-
 export default function Index() {
   const loaderData = useLoaderData<typeof loader>();
   const [preloaderFinished, setPreloaderFinished] = useState(false);

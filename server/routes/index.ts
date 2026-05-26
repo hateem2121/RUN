@@ -29,6 +29,7 @@ import { registerDirectPostgresPopulationRoutes } from "./utilities/direct-postg
 import footerConfigRouter from "./utilities/footer-config.js";
 import inquiryAdminRouter from "./utilities/inquiry-admin.js";
 import { registerKVDiagnosticsRoutes } from "./utilities/kv-diagnostics.js";
+import logsRouter from "./utilities/logs.js";
 import { registerMetricsRoutes } from "./utilities/metrics.js";
 import { registerNewsletterRoutes } from "./utilities/newsletter.js";
 import workerRouter from "./worker.js";
@@ -103,6 +104,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // 4. Utilities
   apiRouter.use("/analytics", analyticsRouter);
+  apiRouter.use("/logs", logsRouter);
 
   // ARCH-001 FIX: Single canonical API mount
   app.use("/api", apiRouter);

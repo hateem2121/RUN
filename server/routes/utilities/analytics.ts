@@ -3,6 +3,7 @@ import { z } from "zod";
 import { redis } from "../../lib/cache/upstash-client.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { writeRateLimiter } from "../../middleware/rateLimiter.js";
+import { authService } from "../../services/auth-service.js";
 
 const router = Router();
 
@@ -12,6 +13,9 @@ const WebVitalSchema = z.object({
   delta: z.number(),
   id: z.string(),
 });
+
+/** Core Web Vital metric names tracked by the client */
+const VITAL_METRIC_NAMES = ["LCP", "CLS", "INP", "FCP", "TTFB"] as const;
 
 /**
  * POST /api/analytics/vitals
@@ -53,6 +57,39 @@ router.post("/vitals", writeRateLimiter, (req, res) => {
       logger.error("[Analytics] Failed to process vitals in background:", err);
     }
   })();
+});
+
+/**
+ * GET /api/analytics/vitals
+ * OB-703: Retrieves stored Web Vitals from Redis (admin-only).
+ * Returns the last 100 entries per metric as JSON.
+ */
+router.get("/vitals", authService.requireAdmin, async (_req, res) => {
+  try {
+    const results: Record<string, unknown[]> = {};
+
+    for (const metric of VITAL_METRIC_NAMES) {
+      const listKey = `vitals:${metric}`;
+      const rawEntries = await redis.lrange(listKey, 0, 99);
+
+      results[metric] = rawEntries.map((entry) => {
+        try {
+          return typeof entry === "string" ? JSON.parse(entry) : entry;
+        } catch {
+          return entry;
+        }
+      });
+    }
+
+    res.json({
+      status: "ok",
+      metrics: results,
+      retrievedAt: new Date().toISOString(),
+    });
+  } catch (err) {
+    logger.error("[Analytics] Failed to retrieve vitals from Redis:", err);
+    res.status(500).json({ error: "Failed to retrieve vitals data" });
+  }
 });
 
 export default router;

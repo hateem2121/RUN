@@ -9,7 +9,9 @@ import express, {
 } from "express";
 import helmet from "helmet";
 import { env } from "../lib/env.js";
+import { httpMetricsTracker } from "../lib/monitoring/http-metrics.js";
 import { logger } from "../lib/monitoring/logger.js";
+import { correlationIdMiddleware } from "../middleware/correlation-id.js";
 import { csrfProtection } from "../middleware/csrf.js";
 import { idempotencyMiddleware } from "../middleware/idempotency.js";
 import {
@@ -23,6 +25,10 @@ import { authService } from "../services/auth-service.js";
  * Global Middleware Configuration
  */
 export async function setupMiddleware(app: Express) {
+  // 0. Correlation ID & HTTP metrics tracker (Must be first to track entire request lifecycle)
+  app.use(correlationIdMiddleware);
+  app.use(httpMetricsTracker.middleware());
+
   // 1. Core Security Headers (Helmet)
   app.use(
     helmet({

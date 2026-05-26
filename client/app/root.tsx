@@ -99,7 +99,13 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
     console.error("[RootLoader] Error prefetching data:", error);
   }
 
-  return { cspNonce, dehydratedState: dehydrate(queryClient) };
+  const ENV = {
+    SENTRY_DSN: process.env.SENTRY_DSN,
+    SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT || process.env.NODE_ENV || "development",
+    SENTRY_RELEASE: process.env.SENTRY_RELEASE || process.env.GIT_SHA || "dev",
+  };
+
+  return { cspNonce, dehydratedState: dehydrate(queryClient), ENV };
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -142,7 +148,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
         />
         <Meta />
         <Links />
+        {/* Inject window.ENV for client-side configuration */}
+        <script
+          nonce={nonce}
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: safe injection of server-side environment parameters
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(loaderData?.ENV || {})};`,
+          }}
+        />
       </head>
+
       <body suppressHydrationWarning>
         <ThemeProvider>
           <HelmetProvider>

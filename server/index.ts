@@ -1,7 +1,9 @@
 import dns from "node:dns";
 
-// Set global DNS servers early to ensure all lookups (secrets, DB, etc) use reliable resolvers
-dns.setServers(["1.1.1.1", "8.8.8.8"]);
+// Set global DNS servers early if explicitly requested via env variable
+if (process.env.OVERRIDE_DNS === "true") {
+  dns.setServers(["1.1.1.1", "8.8.8.8"]);
+}
 
 // Port binding: PORT=5002 (resolved in server.ts via process.env.PORT, defaults to 5002)
 

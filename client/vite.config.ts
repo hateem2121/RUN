@@ -67,11 +67,10 @@ export default defineConfig((env) => {
         "@": path.resolve(__dirname, "app"),
         "@shared": path.resolve(__dirname, "../shared"), // Sibling folder
         "@assets": path.resolve(__dirname, "../attached_assets"),
-        // Use the self-contained dist bundle (includes three.js) rather than the ESM
-        // lib entry, which imports three as an external peer and requires an import map.
+        // Use the modular ESM build which allows tree-shaking three.js and separate chunking
         "@google/model-viewer": path.resolve(
           __dirname,
-          "../node_modules/@google/model-viewer/dist/model-viewer.min.js",
+          "../node_modules/@google/model-viewer/dist/model-viewer-module.min.js",
         ),
         "victory-vendor/d3-shape": path.resolve(
           __dirname,
@@ -121,31 +120,103 @@ export default defineConfig((env) => {
             ? undefined
             : (id: string): string | undefined => {
                 if (!id.includes("node_modules")) return undefined;
+
+                // React Core (precise match to avoid sucking in Sentry, TipTap, Radix, etc.)
                 if (
-                  id.includes("/react/") ||
-                  id.includes("/react-dom/") ||
-                  id.includes("/@tanstack/react-query") ||
+                  id.includes("/node_modules/react/") ||
+                  id.includes("/node_modules/react-dom/")
+                ) {
+                  return "vendor-react-core";
+                }
+
+                // React Router
+                if (
                   id.includes("/react-router/") ||
-                  id.includes("/react-router-dom/")
-                )
-                  return "vendor-react";
+                  id.includes("/react-router-dom/") ||
+                  id.includes("/@react-router/")
+                ) {
+                  return "vendor-react-router";
+                }
+
+                // TanStack React Query
+                if (id.includes("/@tanstack/react-query")) {
+                  return "vendor-react-query";
+                }
+
+                // Zod
+                if (id.includes("/zod/")) {
+                  return "vendor-zod";
+                }
+
+                // Date-fns
+                if (id.includes("/date-fns/")) {
+                  return "vendor-date-fns";
+                }
+
+                // React Hook Form
+                if (id.includes("/react-hook-form/")) {
+                  return "vendor-react-hook-form";
+                }
+
+                // Sentry
+                if (id.includes("/@sentry/")) {
+                  return "vendor-sentry";
+                }
+
+                // TipTap Rich Text Editor
+                if (id.includes("/@tiptap/") || id.includes("/tiptap")) {
+                  return "vendor-tiptap";
+                }
+
+                // GSAP Animations
+                if (id.includes("/gsap/") || id.includes("/@gsap/")) {
+                  return "vendor-gsap";
+                }
+
+                // Core Utilities (Clsx, Tailwind Merge, Class Variance Authority)
                 if (
                   id.includes("/clsx/") ||
                   id.includes("/tailwind-merge/") ||
-                  id.includes("/class-variance-authority/") ||
-                  id.includes("/date-fns/") ||
-                  id.includes("/zod/") ||
-                  id.includes("/react-hook-form/")
-                )
-                  return "vendor-utils";
-                if (id.includes("/@radix-ui/") || id.includes("/cmdk/") || id.includes("/sonner/"))
-                  return "vendor-ui";
-                if (id.includes("/recharts/")) return "vendor-charts";
-                if (id.includes("/lucide-react/")) return "vendor-icons";
-                if (id.includes("/@run-remix/shared") || id.includes("/drizzle-orm/"))
+                  id.includes("/class-variance-authority/")
+                ) {
+                  return "vendor-utils-core";
+                }
+
+                // Radix UI
+                if (id.includes("/@radix-ui/")) {
+                  return "vendor-radix";
+                }
+
+                // General UI Core (cmdk, sonner)
+                if (id.includes("/cmdk/") || id.includes("/sonner/")) {
+                  return "vendor-ui-core";
+                }
+
+                // Recharts
+                if (id.includes("/recharts/")) {
+                  return "vendor-recharts";
+                }
+
+                // D3 and Victory Vendor (dependencies of Recharts)
+                if (id.includes("/victory-vendor/") || id.includes("/d3-")) {
+                  return "vendor-d3";
+                }
+
+                // Lucide Icons
+                if (id.includes("/lucide-react/")) {
+                  return "vendor-icons";
+                }
+
+                // Shared Package Schemas & Drizzle ORM
+                if (id.includes("/@run-remix/shared") || id.includes("/drizzle-orm/")) {
                   return "vendor-schema";
-                if (id.includes("/@google/model-viewer/")) return "vendor-3d-core";
-                if (id.includes("/three/")) return "vendor-three"; // Segment Three.js if it's separate
+                }
+
+                // Three.js (now externalized from model-viewer module)
+                if (id.includes("/three/")) {
+                  return "vendor-three";
+                }
+
                 return undefined;
               },
         },
