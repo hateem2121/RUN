@@ -55,7 +55,10 @@ export function startWorker() {
                   `[Worker:Email] Admin notification failed for job ${job.id}:`,
                   adminResult.error,
                 );
-                span.setStatus({ code: SpanStatusCode.ERROR, message: "Admin notification failed" });
+                span.setStatus({
+                  code: SpanStatusCode.ERROR,
+                  message: "Admin notification failed",
+                });
                 throw adminResult.error;
               }
 

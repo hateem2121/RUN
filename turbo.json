@@ -5,7 +5,8 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["**/*.ts", "**/*.tsx", "**/*.css", "package.json", "tsconfig.json"],
-      "outputs": ["dist/**", "build/**", ".next/**"]
+      "outputs": ["dist/**", "build/**", ".next/**"],
+      "passThroughEnv": ["SENTRY_AUTH_TOKEN", "SENTRY_ORG", "SENTRY_PROJECT"]
     },
     "test": {
       "dependsOn": ["build"],

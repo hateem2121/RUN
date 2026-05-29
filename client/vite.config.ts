@@ -224,8 +224,16 @@ export default defineConfig((env) => {
     },
     ssr: {
       // P0: Externalize backend dependencies and CJS-only packages
-      external: ["pg", "drizzle-orm", "better-sqlite3", "fsevents", "react-fast-compare"],
-      noExternal: isSsrBuild ? true : [/^(?!react$|react-dom$|react-router$|@react-router\/node$)/],
+      external: [
+        "pg",
+        "drizzle-orm",
+        "better-sqlite3",
+        "fsevents",
+        "react-fast-compare",
+        "invariant",
+        "shallowequal",
+      ],
+      noExternal: isSsrBuild ? true : ["react-helmet-async", "recharts", "recharts-scale"],
     },
     server: {
       // FORENSIC: Dev server optimizations for faster module loading

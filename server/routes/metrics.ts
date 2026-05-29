@@ -78,10 +78,21 @@ const errorBySeverityTotal = new prom.Gauge({
  * Protected by METRICS_SECRET or HEALTH_CHECK_SECRET
  */
 router.get("/", async (req, res) => {
-  const secret = process.env.METRICS_SECRET || process.env.HEALTH_CHECK_SECRET;
+  const secret =
+    process.env.METRICS_SECRET ||
+    process.env.HEALTH_CHECK_SECRET ||
+    (process.env.NODE_ENV === "production" ? undefined : "dev-metrics-key");
   const providedSecret = req.headers["x-metrics-key"] || req.query.key;
 
-  if (secret && providedSecret !== secret) {
+  if (!secret) {
+    logger.error(
+      "[Metrics] METRICS_SECRET is missing in production. Refusing access for security.",
+    );
+    res.status(500).json({ error: "Metrics endpoint configuration error" });
+    return;
+  }
+
+  if (providedSecret !== secret) {
     logger.warn(`[Metrics] Unauthorized access attempt from ${req.ip}`);
     res.status(401).json({ error: "Unauthorized" });
     return;

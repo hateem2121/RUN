@@ -9,7 +9,11 @@ export interface RequestWithCorrelation extends Request {
 /**
  * Middleware to generate or forward correlation ID for tracking requests
  */
-export function correlationIdMiddleware(req: RequestWithCorrelation, res: Response, next: NextFunction) {
+export function correlationIdMiddleware(
+  req: RequestWithCorrelation,
+  res: Response,
+  next: NextFunction,
+) {
   const correlationId =
     (req.headers["x-correlation-id"] as string) ||
     (req.headers["x-request-id"] as string) ||
