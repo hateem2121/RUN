@@ -6,11 +6,11 @@ import { systemService } from "../../services/system.service.js";
 
 const router = Router();
 
-// biome-ignore lint/suspicious/noExplicitAny: health check services shape
 interface HealthServices {
   database: { status: string; latencyMs: number };
   memory: { status: string; usage: number; limit: number };
   system: { uptime: number; loadAvg: number[] };
+  // biome-ignore lint/suspicious/noExplicitAny: health check services shape
   jobs?: Record<string, any>;
 }
 
@@ -50,12 +50,16 @@ router.get("/ready", async (_req: Request, res: Response) => {
 });
 
 router.get("/deep", async (_req: Request, res: Response) => {
+  const memoryLimit = process.env.HEALTH_CHECK_MEMORY_LIMIT
+    ? Number.parseInt(process.env.HEALTH_CHECK_MEMORY_LIMIT, 10)
+    : 512 * 1024 * 1024; // 512MB default
+
   const health: { status: string; timestamp: string; services: HealthServices } = {
     status: "ok",
     timestamp: new Date().toISOString(),
     services: {
       database: { status: "unknown", latencyMs: 0 },
-      memory: { status: "unknown", usage: 0, limit: 120 * 1024 * 1024 }, // 120MB limit
+      memory: { status: "unknown", usage: 0, limit: memoryLimit },
       system: { uptime: os.uptime(), loadAvg: os.loadavg() },
       jobs: {},
     },

@@ -5,6 +5,7 @@
  * Reference: https://nodeshift.dev/opossum/
  */
 
+import { SpanStatusCode, trace } from "@opentelemetry/api";
 import CircuitBreaker from "opossum";
 import { logger } from "../monitoring/logger.js";
 
@@ -151,18 +152,34 @@ export async function withCircuit<T>(
   options: Partial<CircuitBreakerConfig> = {},
   fallback?: (err: Error) => Promise<T> | T,
 ): Promise<T> {
-  // biome-ignore lint/suspicious/noExplicitAny: Complex generic alignment
-  const circuit = createCircuit(name, operation as any, options, fallback as any);
-  try {
-    return (await circuit.fire()) as T;
-  } catch (error) {
-    if (fallback) {
-      const metrics = metricsStore.get(name);
-      if (metrics) metrics.fallbacks++;
-      return fallback(error as Error);
+  const tracer = trace.getTracer("run-remix-circuit-breaker");
+  return tracer.startActiveSpan(`circuit:${name}`, async (span) => {
+    span.setAttribute("circuit.name", name);
+    span.setAttribute("circuit.timeout", options.timeout || 5000);
+
+    // biome-ignore lint/suspicious/noExplicitAny: Complex generic alignment
+    const circuit = createCircuit(name, operation as any, options, fallback as any);
+    try {
+      const result = await circuit.fire();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result as T;
+    } catch (error) {
+      const errObj = error instanceof Error ? error : new Error(String(error));
+      span.recordException(errObj);
+      span.setStatus({
+        code: SpanStatusCode.ERROR,
+        message: errObj.message,
+      });
+      if (fallback) {
+        const metrics = metricsStore.get(name);
+        if (metrics) metrics.fallbacks++;
+        return fallback(errObj);
+      }
+      throw error;
+    } finally {
+      span.end();
     }
-    throw error;
-  }
+  });
 }
 
 /**
