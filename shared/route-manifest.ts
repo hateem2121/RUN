@@ -39,8 +39,6 @@ export const routeManifest: Record<string, string> = {
   "/admin/footer": "app/routes/admin.$module.tsx",
   // API Routes
   "/api/media": "app/routes/api.media.tsx",
-  "/api/navigation-items": "app/routes/api.navigation-items.tsx",
-  "/api/navigation-settings": "app/routes/api.navigation-settings.tsx",
   // Developer & Support
   "/developer": "app/routes/developer.tsx",
   "/developer/playground": "app/routes/developer.playground.tsx",

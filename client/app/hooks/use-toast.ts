@@ -27,7 +27,7 @@ export interface ToastProps {
  * Standalone toast function for use outside of React components (e.g. in queryClient.ts)
  */
 export function toast({ title, description, variant, duration, action, ...props }: ToastProps) {
-  const options: Record<string, any> = {
+  const options: Record<string, unknown> = {
     description,
     ...props,
   };

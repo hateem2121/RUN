@@ -224,3 +224,19 @@ export const baseQueryParamsSchema = z.object({
   startDate: z.string().optional(),
   endDate: z.string().optional(),
 });
+
+export const MediaUploadInitSchema = z.object({
+  filename: z.string().min(1),
+  fileSize: z.number().positive(),
+  mimeType: z.string().min(1),
+  originalName: z.string().optional(),
+});
+
+export const MediaChunkSchema = z.object({
+  uploadId: z.string().regex(/^[0-9]{13}[a-z0-9]+$/, "Invalid upload ID format"),
+  chunkNumber: z.coerce.number().int().min(0),
+});
+
+export const MediaFinalizeSchema = z.object({
+  uploadId: z.string().regex(/^[0-9]{13}[a-z0-9]+$/, "Invalid upload ID format"),
+});

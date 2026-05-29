@@ -16,7 +16,6 @@
       "@shared/*": ["../shared/*"],
       "@run-remix/shared": ["../shared/index.ts"],
       "@run-remix/shared/*": ["../shared/*"],
-      "@run-remix/server/*": ["../server/*"],
       "@assets/*": ["../attached_assets/*"]
     },
     "rootDirs": [".", "./.react-router/types"],
@@ -25,5 +24,5 @@
   },
   "include": ["app/**/*", "src/types/**/*", "vite.config.ts", ".react-router/types/**/*"],
   "exclude": ["dist", "node_modules", "**/*.spec.ts", "**/*.test.ts"],
-  "references": [{ "path": "../shared" }, { "path": "../server" }]
+  "references": [{ "path": "../shared" }]
 }

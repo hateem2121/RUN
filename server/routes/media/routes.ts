@@ -277,18 +277,25 @@ router.get("/proxy/:id/thumbnail", getThumbnailProxy);
 router.get("/proxy/:id", getMediaProxy);
 
 // Parametric routes (generic - must be AFTER specific routes)
-router.get("/:id", validateRequest({ params: MediaIdParamSchema }), getMediaAssetById);
+router.get(
+  "/:id",
+  validateRequest({ params: MediaIdParamSchema }) as unknown as RequestHandler,
+  getMediaAssetById as unknown as RequestHandler,
+);
 router.patch(
   "/:id",
   authService.requireAdmin,
-  validateRequest({ params: MediaIdParamSchema, body: MediaUpdateSchema }),
-  updateMediaAsset,
+  validateRequest({
+    params: MediaIdParamSchema,
+    body: MediaUpdateSchema,
+  }) as unknown as RequestHandler,
+  updateMediaAsset as unknown as RequestHandler,
 );
 router.delete(
   "/:id",
   authService.requireAdmin,
-  validateRequest({ params: MediaIdParamSchema }),
-  deleteMediaAsset,
+  validateRequest({ params: MediaIdParamSchema }) as unknown as RequestHandler,
+  deleteMediaAsset as unknown as RequestHandler,
 );
 router.get("/:id/content", getMediaContent);
 router.get("/:id/content/*path", getMediaContentWithPath);

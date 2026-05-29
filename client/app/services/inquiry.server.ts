@@ -22,39 +22,27 @@ export async function submitContactInquiry(data: ContactSubmissionData) {
     throw new Error("Invalid submission");
   }
 
-  // 3. reCAPTCHA v3 Validation (PHASE 4 REMEDIATION)
-  const { verifyRecaptcha } = await import("@run-remix/server/lib/security/recaptcha-verify.js");
-  const recaptchaResult = await verifyRecaptcha(validated.recaptchaToken, "server-action");
-
-  if (!recaptchaResult.success) {
-    console.warn(`[Inquiry] reCAPTCHA failed: ${recaptchaResult.error}`);
-    throw new Error(recaptchaResult.error || "Security check failed");
-  }
-
   try {
-    // 3. Insert into Database via Unified Service Layer
-    // NOTE: This ensures consistent AES-256-GCM encryption and blind indexing
-    const { inquiryService } = await import("@run-remix/server/services/inquiry-service.js");
-    const result = await inquiryService.createInquiry({
-      name: validated.name,
-      email: validated.email,
-      message: validated.message,
-      company: validated.company || null,
-      phone: validated.phone || null,
-      country: validated.country || null,
-      preferredPlatform: validated.preferredPlatform || null,
-      source: "contact-page",
-      status: "new",
+    const port = process.env.PORT || "5002";
+    const base = `http://localhost:${port}`;
+    const response = await fetch(`${base}/api/contact`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(validated),
     });
 
-    if (result.isErr()) {
-      throw result.error;
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || "Failed to submit inquiry");
     }
 
-    return { success: true, submissionId: result.value.id };
+    return { success: true, submissionId: result.submissionId };
   } catch (error) {
     console.error("[Inquiry] Failed to submit:", error);
-    throw new Error("Failed to submit inquiry");
+    throw error instanceof Error ? error : new Error("Failed to submit inquiry");
   }
 }
 

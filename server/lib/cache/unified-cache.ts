@@ -1,9 +1,10 @@
 import { promisify } from "node:util";
 import { gunzip, gzip } from "node:zlib";
 import { SpanStatusCode, trace } from "@opentelemetry/api";
+import type { Redis } from "@upstash/redis";
 import { LRUCache } from "lru-cache";
 import { logger } from "../monitoring/logger.js";
-import { postgresCache } from "./postgres-cache-provider.js";
+import { type PostgresCacheProvider, postgresCache } from "./postgres-cache-provider.js";
 // PC-301 RESOLVED: Circuit breaker protection is handled at the Upstash proxy level
 // (upstash-client.ts wraps every Redis method call via Proxy + withCircuit).
 // Removed duplicate withCircuit wrapping here to prevent double circuit-breaker nesting.
@@ -34,7 +35,7 @@ const tracer = trace.getTracer("unified-cache", "1.0.0");
 export class UnifiedCache {
   private static instance: UnifiedCache | null = null;
   private memoryCache: LRUCache<string, object>;
-  private l2: any; // Type as any for now to handle both Redis and PostgresCacheProvider interfaces
+  private l2: Redis | PostgresCacheProvider;
 
   // Standard TTL presets
   public static readonly TTL_PRESETS = {

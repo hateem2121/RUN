@@ -191,8 +191,10 @@ export const createQueryClient = () =>
         networkMode: "always",
         retry: (failureCount, error) => {
           // Stop retries immediately for Rate Limits (429) or Conflicts (409)
-          const errObj = error as any;
-          const status = errObj?.status;
+          const status =
+            error && typeof error === "object" && "status" in error
+              ? (error as { status: unknown }).status
+              : undefined;
           if (typeof status === "number") {
             if (status === 429 || status === 409) {
               return false;

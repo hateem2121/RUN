@@ -117,7 +117,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
                       product.id
                         ? MediaUrlBuilder.buildSrcSet(
                             Number(product.id),
-                            (product as any).imageVariants,
+                            product.imageVariants || undefined,
                           )
                         : undefined
                     }

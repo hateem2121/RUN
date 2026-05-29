@@ -1193,8 +1193,27 @@ export class AdminService {
   /**
    * Retrieves failed jobs from BullMQ for manual review [WJ-108]
    */
-  async getFailedJobs(): Promise<Result<any[], AppError>> {
-    const failedJobs: any[] = [];
+  async getFailedJobs(): Promise<
+    Result<
+      {
+        id: string | undefined;
+        queue: string;
+        name: string;
+        data: unknown;
+        failedReason: string;
+        timestamp: number;
+      }[],
+      AppError
+    >
+  > {
+    const failedJobs: {
+      id: string | undefined;
+      queue: string;
+      name: string;
+      data: unknown;
+      failedReason: string;
+      timestamp: number;
+    }[] = [];
 
     try {
       // Lazy load to avoid circular dependencies or initialization issues

@@ -154,3 +154,28 @@
 
 **Session Outcome**: Successfully implemented all necessary remediations across Sentry, Pino logging, OpenTelemetry tracing, Prometheus metrics, alerting thresholds, deep health checks, and client-side error boundaries. Re-ran health checks (yielding 200 OK) and keyed metrics scraper endpoints (yielding correct Prometheus formats), and verified that the technical integrity and full 773-test suite pass with 100% stability. All observability scorecard domains are now at a flawless **100/100** score.
 
+
+## 18. Monorepo & `@run-remix/shared` Package — Full Investigative Audit (Session Goal: Complete audit of the monorepo architecture and @run-remix/shared package - 2026-05-30) [COMPLETED]
+- [x] Workspace Configuration check
+- [x] `@run-remix/shared` Package Integrity check
+- [x] TypeScript Configuration (v6) check
+- [x] Biome Configuration (`2.3.10`) check
+- [x] Turborepo Pipeline check
+- [x] Dead Code (knip) check
+- [x] Dependency Hygiene check
+- [x] `npm run verify:tech-integrity` — Full Report check
+
+**Session Outcome**: Successfully conducted a thorough investigative audit of the Monorepo architecture and `@run-remix/shared` package. Documented key issues including cross-workspace boundary violations where client-side code directly imports server-side services (api loaders/actions), duplication of Zod validation schemas locally in server modules rather than using the shared package's canonical exports, incorrect directionality in client TSConfig references (`../server`), and knip dead code/dependency warnings. All findings were ranked and visually mapped via Mermaid diagrams.
+**Next Steps**: Schedule remediations to address the unlisted dependencies, resolve local Zod schema duplications, correct the TSConfig project references, prune unused devDependencies, and clean up the 8 remaining Biome `noExplicitAny` violations in the client and server paths.
+
+
+## 19. Monorepo & `@run-remix/shared` Package — Remediation (Session Goal: Resolve all monorepo, TSConfig, schema duplication, boundary violations, and Biome lint issues to achieve 100/100 status - 2026-05-30) [COMPLETED]
+- [x] Migrate missing media validation schemas to shared library
+- [x] Remove redundant/violating routes `api.navigation-items.tsx` and `api.navigation-settings.tsx`
+- [x] Refactor client-side `inquiry.server.ts` to call the public REST API endpoint instead of server services
+- [x] Harden `client/tsconfig.json` mappings and references
+- [x] Replace duplicated Zod schemas in server routes with imports from `@run-remix/shared`
+- [x] Clean up Biome `noExplicitAny` violations
+- [x] Run and verify tech integrity and tests
+- [x] Update findings to 100/100 scorecard
+

@@ -1,3 +1,4 @@
+import type { ImageVariants } from "@run-remix/shared";
 import type { Request, Response } from "express";
 import type { z } from "zod";
 import { BadRequestError } from "../../lib/errors.js";
@@ -54,8 +55,8 @@ export async function getMediaAssets(
   );
 }
 
-export async function getMediaAssetById(req: Request<{ id: string }>, res: Response) {
-  const id = parseInt(req.params.id, 10);
+export async function getMediaAssetById(req: Request<{ id: string | number }>, res: Response) {
+  const id = Number(req.params.id);
 
   if (shouldBypassCache(req)) {
     res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
@@ -99,8 +100,8 @@ export async function searchMediaAssets(
 // CRUD HANDLERS
 // ============================================================================
 
-export async function updateMediaAsset(req: Request<{ id: string }>, res: Response) {
-  const id = parseInt(req.params.id, 10);
+export async function updateMediaAsset(req: Request<{ id: string | number }>, res: Response) {
+  const id = Number(req.params.id);
   const data = req.body;
 
   const result = await mediaService.updateAsset(id, data);
@@ -109,8 +110,8 @@ export async function updateMediaAsset(req: Request<{ id: string }>, res: Respon
   return res.json(createSuccessResponse(result.value));
 }
 
-export async function deleteMediaAsset(req: Request<{ id: string }>, res: Response) {
-  const id = parseInt(req.params.id, 10);
+export async function deleteMediaAsset(req: Request<{ id: string | number }>, res: Response) {
+  const id = Number(req.params.id);
 
   const result = await mediaService.deleteAsset(id);
   if (result.isErr()) throw result.error;
@@ -200,9 +201,9 @@ export async function uploadChunkRaw(req: Request, res: Response) {
 
 export async function getMediaContent(req: Request<{ id: string }>, res: Response) {
   const { id } = req.params;
-  const { variant } = req.query as { variant?: string };
+  const { variant } = req.query as { variant?: keyof ImageVariants };
 
-  const result = await mediaService.getSignedUrl(Number(id), 300, variant as any);
+  const result = await mediaService.getSignedUrl(Number(id), 300, variant);
   if (result.isErr()) throw result.error;
 
   res.set("Access-Control-Allow-Origin", "*");
