@@ -1,4 +1,8 @@
-import { type InsertProduct, insertProductSchema } from "@run-remix/shared";
+import {
+  adminProductsQuerySchema,
+  type InsertProduct,
+  insertProductSchema,
+} from "@run-remix/shared";
 import { type RequestHandler, Router } from "express";
 import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
@@ -8,14 +12,7 @@ import { adminService } from "../../services/admin/index.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
-const productsQuerySchema = z.object({
-  page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().positive().default(50),
-  search: z.string().optional(),
-  categoryId: z.string().optional(),
-  status: z.string().optional(),
-});
-type ProductsQuery = z.infer<typeof productsQuerySchema>;
+type ProductsQuery = z.infer<typeof adminProductsQuerySchema>;
 
 /**
  * GET /api/admin/products/initial-data
@@ -39,7 +36,7 @@ router.get(
   "/",
   authService.requireAdmin,
   validateRequest({
-    query: productsQuerySchema,
+    query: adminProductsQuerySchema,
   }) as unknown as RequestHandler,
   async (req, res) => {
     const { page, limit, search, categoryId, status } = req.query as unknown as ProductsQuery;

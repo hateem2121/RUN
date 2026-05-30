@@ -92,6 +92,13 @@
       "when": 1778656073281,
       "tag": "0012_natural_shinobi_shaw",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1780123036920,
+      "tag": "0013_shocking_mephisto",
+      "breakpoints": true
     }
   ]
 }

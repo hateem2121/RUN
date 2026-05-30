@@ -164,7 +164,9 @@ export const products = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
 
     // Soft delete support
     deletedAt: timestamp({ mode: "date", precision: 3 }),

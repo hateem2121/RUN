@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import {
   boolean,
+  foreignKey,
   index,
   integer,
   jsonb,
@@ -15,27 +16,41 @@ import { pgTable } from "./common";
 /**
  * Folders Table - Media Organization Structure
  */
-export const folders = pgTable("folders", {
-  id: serial("id").primaryKey(),
-  name: varchar({ length: 255 }).notNull(),
-  description: text(),
-  parentId: integer(),
-  path: varchar({ length: 500 }),
-  level: integer().default(0),
-  isActive: boolean().default(true),
-  sortOrder: integer().default(0),
-  createdAt: timestamp({
-    mode: "date",
-    precision: 3,
-  }).defaultNow(),
-  updatedAt: timestamp({
-    mode: "date",
-    precision: 3,
-  }).defaultNow(),
+export const folders = pgTable(
+  "folders",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar({ length: 255 }).notNull(),
+    description: text(),
+    parentId: integer(),
+    path: varchar({ length: 500 }),
+    level: integer().default(0),
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
+    createdAt: timestamp({
+      mode: "date",
+      precision: 3,
+    }).defaultNow(),
+    updatedAt: timestamp({
+      mode: "date",
+      precision: 3,
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
 
-  // Soft delete support
-  deletedAt: timestamp({ mode: "date", precision: 3 }),
-});
+    // Soft delete support
+    deletedAt: timestamp({ mode: "date", precision: 3 }),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.parentId],
+      foreignColumns: [table.id],
+      name: "folders_parent_id_fk",
+    }).onDelete("set null"),
+    index("folders_parent_id_idx").on(table.parentId),
+    index("folders_is_active_idx").on(table.isActive),
+  ],
+);
 
 export type ImageVariants = {
   thumbnail?: string; // 200px - for cards/grids (<50KB)
@@ -93,7 +108,9 @@ export const mediaAssets = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
 
     // Soft delete support
     deletedAt: timestamp({ mode: "date", precision: 3 }),

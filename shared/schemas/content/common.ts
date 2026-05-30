@@ -16,50 +16,56 @@ import { pgTable } from "../common";
 import { mediaAssets } from "../media";
 
 // Navigation Items - Enhanced for floating dock navigation
-export const navigationItems = pgTable("navigation_items", {
-  id: serial("id").primaryKey(),
-  label: varchar({ length: 255 }).notNull(),
-  name: varchar({ length: 255 }), // Alias for label (frontend compatibility)
-  title: varchar({ length: 255 }), // Frontend display title (alias for label)
-  url: varchar({ length: 255 }),
-  href: varchar({ length: 255 }), // Alias for url (frontend compatibility)
-  path: varchar({ length: 255 }), // Path alias (frontend compatibility)
-  iconName: varchar({ length: 100 }),
+export const navigationItems = pgTable(
+  "navigation_items",
+  {
+    id: serial("id").primaryKey(),
+    label: varchar({ length: 255 }).notNull(),
+    name: varchar({ length: 255 }), // Alias for label (frontend compatibility)
+    title: varchar({ length: 255 }), // Frontend display title (alias for label)
+    url: varchar({ length: 255 }),
+    href: varchar({ length: 255 }), // Alias for url (frontend compatibility)
+    path: varchar({ length: 255 }), // Path alias (frontend compatibility)
+    iconName: varchar({ length: 100 }),
 
-  // Enhanced icon system (optional future expansion)
-  iconType: varchar({ length: 20 }).default("fallback"), // 'media' | 'fallback'
-  iconSize: varchar({ length: 20 }).default("medium"), // 'small' | 'medium' | 'large'
-  fallbackIcon: varchar({ length: 100 }).default("IconHome"), // Tabler icon name
-  mediaIconId: integer().references(() => mediaAssets.id, {
-    onDelete: "set null",
-  }),
+    // Enhanced icon system (optional future expansion)
+    iconType: varchar({ length: 20 }).default("fallback"), // 'media' | 'fallback'
+    iconSize: varchar({ length: 20 }).default("medium"), // 'small' | 'medium' | 'large'
+    fallbackIcon: varchar({ length: 100 }).default("IconHome"), // Tabler icon name
+    mediaIconId: integer().references(() => mediaAssets.id, {
+      onDelete: "set null",
+    }),
 
-  // Hierarchical navigation
-  parentId: integer(),
-  level: integer().default(0),
+    // Hierarchical navigation
+    parentId: integer(),
+    level: integer().default(0),
 
-  // Display settings
-  showOnDesktop: boolean().default(true),
-  showOnMobile: boolean().default(true),
+    // Display settings
+    showOnDesktop: boolean().default(true),
+    showOnMobile: boolean().default(true),
 
-  // Behavior settings
-  isExternal: boolean().default(false),
-  target: varchar({ length: 20 }).default("_self"),
-  isActive: boolean().default(true),
-  sortOrder: integer().default(0),
+    // Behavior settings
+    isExternal: boolean().default(false),
+    target: varchar({ length: 20 }).default("_self"),
+    isActive: boolean().default(true),
+    sortOrder: integer().default(0),
 
-  createdAt: timestamp({
-    mode: "date",
-    precision: 3,
-  }).defaultNow(),
-  updatedAt: timestamp({
-    mode: "date",
-    precision: 3,
-  }).defaultNow(),
+    createdAt: timestamp({
+      mode: "date",
+      precision: 3,
+    }).defaultNow(),
+    updatedAt: timestamp({
+      mode: "date",
+      precision: 3,
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
 
-  // Soft delete support
-  deletedAt: timestamp({ mode: "date", precision: 3 }),
-});
+    // Soft delete support
+    deletedAt: timestamp({ mode: "date", precision: 3 }),
+  },
+  (table) => [index("navigation_items_media_icon_id_idx").on(table.mediaIconId)],
+);
 
 // Contact Page Configuration
 export const contactPageConfigurations = pgTable("contact_page_configurations", {
@@ -117,7 +123,9 @@ export const contactPageConfigurations = pgTable("contact_page_configurations", 
   updatedAt: timestamp({
     mode: "date",
     precision: 3,
-  }).defaultNow(),
+  })
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 // Contact Inquiries - Customer inquiry/contact form submissions
@@ -248,7 +256,9 @@ export const footerConfiguration = pgTable("footer_configuration", {
   updatedAt: timestamp({
     mode: "date",
     precision: 3,
-  }).defaultNow(),
+  })
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 // Navigation Glassmorphism Settings
@@ -298,7 +308,9 @@ export const navigationGlassmorphismSettings = pgTable("navigation_glassmorphism
   updatedAt: timestamp({
     mode: "date",
     precision: 3,
-  }).defaultNow(),
+  })
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 // Types

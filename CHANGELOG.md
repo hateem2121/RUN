@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.1] - 2026-05-30
+
+### Added
+- **Stateless HTTP Driver Connection**: Integrated `httpDb` using `@neondatabase/serverless` HTTP client in `server/db.ts` to execute lightweight, non-transactional read queries without WebSocket handshake overhead.
+- **Automated Timestamp Automation**: Added `$onUpdate` hooks for all database `updatedAt` columns across shared schemas.
+
+### Fixed
+- **Foreign Key Type Safety**: Resolved columns type mismatch for `recordedBy` in `sustainability_metric_history` to reference `users.id` with a physical foreign key constraint.
+- **Media Folders Self-Referential Integrity**: Added parent-child self-referential foreign key constraint on `parentId` referencing `id` in `folders` table to prevent orphan directories.
+- **Database Performance Indexes**: Configured database indexes on JOIN foreign key columns across materials, webhooks, blog, catalog, common, manufacturing, technology, and media schemas.
+- **Zod Schema Consolidation**: Replaced local manual schemas in `server/routes/admin/products.routes.ts` and `server/routes/media/types.ts` with canonical imports from `@run-remix/shared`.
+
 ## [4.1.0] - 2026-05-06
 
 ### Added

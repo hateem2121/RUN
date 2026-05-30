@@ -39,7 +39,9 @@ export const aboutHero = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("about_hero_is_active_idx").on(table.isActive),
@@ -129,7 +131,9 @@ export const aboutSections = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("about_sections_is_active_idx").on(table.isActive),

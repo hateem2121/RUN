@@ -13,6 +13,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { pgTable } from "../common";
 import { mediaAssets } from "../media";
+import { users } from "../users";
 
 // Sustainability Hero
 export const sustainabilityHero = pgTable(
@@ -36,7 +37,9 @@ export const sustainabilityHero = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("sustainability_hero_is_active_idx").on(table.isActive),
@@ -66,7 +69,9 @@ export const sustainabilityMetrics = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("sustainability_metrics_is_active_idx").on(table.isActive),
@@ -84,7 +89,9 @@ export const sustainabilityMetricHistory = pgTable(
       .references(() => sustainabilityMetrics.id, { onDelete: "cascade" }),
     value: varchar({ length: 100 }).notNull(),
     recordedAt: timestamp("recorded_at", { mode: "date", precision: 3 }).defaultNow(),
-    recordedBy: integer("recorded_by"), // Reference to admin user id
+    recordedBy: varchar("recorded_by", { length: 255 }).references(() => users.id, {
+      onDelete: "set null",
+    }), // Reference to admin user id
     notes: text(),
   },
   (table) => [index("metric_history_metric_id_idx").on(table.metricId)],
@@ -119,7 +126,9 @@ export const sustainabilityInitiatives = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("sustainability_initiatives_is_active_idx").on(table.isActive),
@@ -156,7 +165,9 @@ export const sustainabilityGoals = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("sustainability_goals_is_active_idx").on(table.isActive),
@@ -234,7 +245,9 @@ export const unifiedSustainability = pgTable("unified_sustainability", {
   updatedAt: timestamp({
     mode: "date",
     precision: 3,
-  }).defaultNow(),
+  })
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 // Types

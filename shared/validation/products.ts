@@ -23,3 +23,16 @@ export const productByPathSchema = z.object({
 
 export type ProductsQueryData = z.infer<typeof productsQuerySchema>;
 export type ProductByPathData = z.infer<typeof productByPathSchema>;
+
+/**
+ * Validation schema for admin product listing queries.
+ */
+export const adminProductsQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().default(50),
+  search: z.string().optional(),
+  categoryId: z.string().optional(),
+  status: z.string().optional(),
+});
+
+export type AdminProductsQueryData = z.infer<typeof adminProductsQuerySchema>;

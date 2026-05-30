@@ -109,7 +109,9 @@ export const logoAnimationSettings = pgTable("logo_animation_settings", {
   updatedAt: timestamp({
     mode: "date",
     precision: 3,
-  }).defaultNow(),
+  })
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 // Storage Analysis Results
@@ -164,10 +166,7 @@ export const cacheEntries = pgTable(
     expiry: timestamp("expiry", { mode: "date", precision: 3 }).notNull(),
     createdAt: timestamp("created_at", { mode: "date", precision: 3 }).defaultNow(),
   },
-  (table) => [
-    index("cache_entries_key_idx").on(table.key),
-    index("cache_entries_expiry_idx").on(table.expiry),
-  ],
+  (table) => [index("cache_entries_expiry_idx").on(table.expiry)],
 );
 
 /**
@@ -286,7 +285,9 @@ export const auditConfiguration = pgTable("audit_configuration", {
   updatedAt: timestamp({
     mode: "date",
     precision: 3,
-  }).defaultNow(),
+  })
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 // Types
