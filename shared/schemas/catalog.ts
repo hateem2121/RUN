@@ -48,7 +48,9 @@ export const certificates = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
 
     // Soft delete support
     deletedAt: timestamp({ mode: "date", precision: 3 }),
@@ -57,6 +59,8 @@ export const certificates = pgTable(
     // PERFORMANCE INDEXES for certificate queries
     index("certificates_show_on_sustainability_idx").on(table.showOnSustainabilityPage),
     index("certificates_is_active_idx").on(table.isActive),
+    index("certificates_image_id_idx").on(table.imageId),
+    index("certificates_document_id_idx").on(table.documentId),
   ],
 );
 
@@ -86,7 +90,9 @@ export const sizeCharts = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
 
     // Soft delete support
     deletedAt: timestamp("deleted_at", { mode: "date", precision: 3 }),
@@ -96,6 +102,7 @@ export const sizeCharts = pgTable(
     index("size_charts_is_active_idx").on(table.isActive),
     index("size_charts_deleted_at_idx").on(table.deletedAt),
     index("size_charts_active_query_idx").on(table.isActive, table.deletedAt),
+    index("size_charts_image_id_idx").on(table.imageId),
   ],
 );
 
@@ -125,7 +132,9 @@ export const accessories = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
 
     // Soft delete support
     deletedAt: timestamp("deleted_at", { mode: "date", precision: 3 }),
@@ -134,6 +143,7 @@ export const accessories = pgTable(
     // PERFORMANCE INDEXES for accessory queries
     index("accessories_sku_idx").on(table.sku),
     index("accessories_is_active_idx").on(table.isActive),
+    index("accessories_image_id_idx").on(table.imageId),
 
     // CONSOLIDATED OPTIMIZATIONS (DS-007): Trigram indexes for multi-field search
     index("accessories_name_trgm_idx").using("gin", sql`${table.name} gin_trgm_ops`),

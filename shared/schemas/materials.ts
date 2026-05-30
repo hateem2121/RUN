@@ -157,12 +157,19 @@ export const fibers = pgTable(
 );
 
 // Fabric Compositions stub (for relationship queries)
-export const fabricCompositions = pgTable("fabric_compositions", {
-  id: serial("id").primaryKey(),
-  fabricId: integer().references(() => fabrics.id, { onDelete: "cascade" }),
-  fiberId: integer().references(() => fibers.id, { onDelete: "cascade" }),
-  percentage: decimal(),
-});
+export const fabricCompositions = pgTable(
+  "fabric_compositions",
+  {
+    id: serial("id").primaryKey(),
+    fabricId: integer().references(() => fabrics.id, { onDelete: "cascade" }),
+    fiberId: integer().references(() => fibers.id, { onDelete: "cascade" }),
+    percentage: decimal(),
+  },
+  (table) => [
+    index("fabric_compositions_fabric_id_idx").on(table.fabricId),
+    index("fabric_compositions_fiber_id_idx").on(table.fiberId),
+  ],
+);
 
 // Types
 export type Fabric = typeof fabrics.$inferSelect;

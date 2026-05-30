@@ -40,7 +40,10 @@ export const users = pgTable("users", {
 
   // Timestamps for audit trail
   createdAt: timestamp({ mode: "date", precision: 3 }).defaultNow().notNull(),
-  updatedAt: timestamp({ mode: "date", precision: 3 }).defaultNow().notNull(),
+  updatedAt: timestamp({ mode: "date", precision: 3 })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";

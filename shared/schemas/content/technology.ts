@@ -43,7 +43,9 @@ export const technologyHero = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("technology_hero_is_active_idx").on(table.isActive),
@@ -151,7 +153,9 @@ export const technologyResearch = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("technology_research_is_active_idx").on(table.isActive),
@@ -187,11 +191,15 @@ export const technologyRoadmap = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("technology_roadmap_is_active_idx").on(table.isActive),
     index("technology_roadmap_sort_order_idx").on(table.sortOrder),
+    index("technology_roadmap_image_id_idx").on(table.imageId),
+    index("technology_roadmap_video_id_idx").on(table.videoId),
   ],
 );
 
@@ -213,7 +221,9 @@ export const technologyGradientSettings = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [index("technology_gradient_settings_is_active_idx").on(table.isActive)],
 );
@@ -238,7 +248,9 @@ export const technologyCta = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [index("technology_cta_is_active_idx").on(table.isActive)],
 );

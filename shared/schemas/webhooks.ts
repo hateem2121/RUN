@@ -1,5 +1,14 @@
-import { boolean, integer, jsonb, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
-import { createSelectSchema } from "drizzle-zod";
+import {
+  boolean,
+  index,
+  integer,
+  jsonb,
+  serial,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import type { Category } from "./categories";
 import { pgTable } from "./common";
@@ -19,7 +28,9 @@ export const webhookSubscriptions = pgTable("webhook_subscriptions", {
   events: jsonb("events").$type<string[]>().notNull(),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 /**
@@ -27,19 +38,23 @@ export const webhookSubscriptions = pgTable("webhook_subscriptions", {
  *
  * @description Logs all webhook execution attempts and their results.
  */
-export const webhookDeliveries = pgTable("webhook_deliveries", {
-  id: serial("id").primaryKey(),
-  subscriptionId: integer("subscription_id")
-    .references(() => webhookSubscriptions.id, { onDelete: "cascade" })
-    .notNull(),
-  event: varchar("event", { length: 100 }).notNull(),
-  payload: jsonb("payload").notNull(),
-  responseStatus: integer("response_status"),
-  responseBody: text("response_body"),
-  attemptCount: integer("attempt_count").default(1),
-  deliveredAt: timestamp("delivered_at"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+export const webhookDeliveries = pgTable(
+  "webhook_deliveries",
+  {
+    id: serial("id").primaryKey(),
+    subscriptionId: integer("subscription_id")
+      .references(() => webhookSubscriptions.id, { onDelete: "cascade" })
+      .notNull(),
+    event: varchar("event", { length: 100 }).notNull(),
+    payload: jsonb("payload").notNull(),
+    responseStatus: integer("response_status"),
+    responseBody: text("response_body"),
+    attemptCount: integer("attempt_count").default(1),
+    deliveredAt: timestamp("delivered_at"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (table) => [index("webhook_deliveries_subscription_id_idx").on(table.subscriptionId)],
+);
 
 // Types
 export type WebhookSubscription = typeof webhookSubscriptions.$inferSelect;
@@ -49,11 +64,11 @@ export type InsertWebhookDelivery = typeof webhookDeliveries.$inferInsert;
 
 // Zod Schemas
 export const selectWebhookSubscriptionSchema = createSelectSchema(webhookSubscriptions);
-export const insertWebhookSubscriptionSchema = z.object({
-  url: z.string().url(),
-  events: z.array(z.string()).min(1),
-  isActive: z.boolean().optional(),
+export const insertWebhookSubscriptionSchema = createInsertSchema(webhookSubscriptions, {
+  url: (s) => s.url(),
 });
+export const selectWebhookDeliverySchema = createSelectSchema(webhookDeliveries);
+export const insertWebhookDeliverySchema = createInsertSchema(webhookDeliveries);
 
 export const webhookEventNames = [
   "product.created",

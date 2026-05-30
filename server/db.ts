@@ -4,9 +4,10 @@
  * Enables interactive transactions and persistent connections.
  */
 
-import { neonConfig, Pool, type PoolClient } from "@neondatabase/serverless";
+import { neon, neonConfig, Pool, type PoolClient } from "@neondatabase/serverless";
 import { trace } from "@opentelemetry/api";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
+import { drizzle as drizzleHttp } from "drizzle-orm/neon-http";
 import { drizzle, type NeonDatabase, type NeonQueryResultHKT } from "drizzle-orm/neon-serverless";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import { err, ok, type Result } from "neverthrow";
@@ -141,6 +142,21 @@ export const db: NeonDatabase<typeof schema> = drizzle(pool, {
   // Always enable metrics logger; use Drizzle's console logger only in development.
   logger: metricsLogger,
 });
+
+/**
+ * Stateless HTTP Database Instance
+ * Use for non-transactional read-only queries to minimize WebSocket pool
+ * consumption and cold-start latency in serverless contexts.
+ */
+const shouldUseHttpDb =
+  !isTestMode &&
+  process.env.MOCK_DB !== "true" &&
+  !(process.env.NODE_ENV === "development" && !process.env.DATABASE_URL) &&
+  database.url;
+
+export const httpDb = shouldUseHttpDb
+  ? drizzleHttp(neon(database.url), { schema, casing: "snake_case" })
+  : db; // Fallback to main db in test/mock mode
 
 // Type alias for database client - supports both direct db access and transactions
 export type DbClient =

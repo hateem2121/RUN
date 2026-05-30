@@ -3,48 +3,13 @@
  * All TypeScript interfaces, Zod schemas, and type definitions for media routes
  */
 
-import { z } from "zod";
-import type { InsertMediaAsset, MediaAsset } from "../../../shared/index.js";
+import type { InsertMediaAsset, MediaAsset } from "@run-remix/shared";
+import { baseQueryParamsSchema } from "@run-remix/shared";
+import type { z } from "zod";
 
 // Re-export shared types
 export type { MediaAsset, InsertMediaAsset };
-
-// ============================================================================
-// ZOD VALIDATION SCHEMAS
-// ============================================================================
-
-// Base query parameters schema
-export const baseQueryParamsSchema = z.object({
-  // Pagination with strict validation
-  page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
-  cursor: z.string().optional(),
-
-  // Search and filtering
-  search: z.string().max(500).optional(),
-  type: z.string().optional(),
-  folderId: z.coerce.number().int().positive().optional(),
-  tags: z.string().max(1000).optional(),
-
-  // Date range filtering
-  startDate: z.string().optional(),
-  endDate: z.string().optional(),
-
-  // Size range filtering (in bytes)
-  minSize: z.coerce.number().int().min(0).optional(),
-  maxSize: z.coerce.number().int().min(0).optional(),
-
-  // Sorting
-  sortBy: z
-    .enum(["uploadedAt", "filename", "size", "type", "name", "createdAt"])
-    .default("uploadedAt"),
-  sortOrder: z.enum(["asc", "desc"]).default("desc"),
-
-  // Performance options
-  includeAnalytics: z.coerce.boolean().default(false),
-  all: z.coerce.boolean().default(false),
-});
-
+export { baseQueryParamsSchema };
 export type MediaQueryParams = z.infer<typeof baseQueryParamsSchema>;
 
 // ============================================================================

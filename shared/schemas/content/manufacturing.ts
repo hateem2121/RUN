@@ -46,7 +46,9 @@ export const manufacturingHero = pgTable(
     updatedAt: timestamp("updated_at", {
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("manufacturing_hero_is_active_idx").on(table.isActive),
@@ -152,6 +154,7 @@ export const manufacturingQualities = pgTable(
     index("manufacturing_qualities_is_active_idx").on(table.isActive),
     index("manufacturing_qualities_image_id_idx").on(table.imageId),
     index("manufacturing_qualities_sort_order_idx").on(table.sortOrder),
+    index("manufacturing_qualities_certificate_id_idx").on(table.certificateId),
   ],
 );
 
@@ -178,7 +181,9 @@ export const manufacturingCaseStudies = pgTable(
     updatedAt: timestamp("updated_at", {
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("manufacturing_case_studies_is_active_idx").on(table.isActive),

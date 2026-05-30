@@ -9,7 +9,6 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod";
 import { pgTable } from "../common";
 import { mediaAssets } from "../media";
 
@@ -34,7 +33,9 @@ export const homepageHero = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("homepage_hero_is_active_idx").on(table.isActive),
@@ -124,7 +125,9 @@ export const homepageSections = pgTable(
     updatedAt: timestamp({
       mode: "date",
       precision: 3,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("homepage_sections_is_active_idx").on(table.isActive),
@@ -181,7 +184,9 @@ export const homepageFeaturedProductsSettings = pgTable("homepage_featured_produ
   updatedAt: timestamp({
     mode: "date",
     precision: 3,
-  }).defaultNow(),
+  })
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 // Types
@@ -201,50 +206,26 @@ export type HomepageFeaturedProductsSettings = typeof homepageFeaturedProductsSe
 export type InsertHomepageFeaturedProductsSettings =
   typeof homepageFeaturedProductsSettings.$inferInsert;
 
-// Zod Schemas
-export const insertHomepageHeroSchema = z.object({
-  title: z.string().min(1),
-  subtitle: z.string().nullable().optional(),
-  backgroundImageId: z.number().nullable().optional(),
-  ctaText: z.string().nullable().optional(),
-  ctaLink: z.string().nullable().optional(),
-  isActive: z.boolean().optional(),
-  sortOrder: z.number().optional(),
+// Zod Schemas — Generated from Drizzle table definitions (DS-006 standardization)
+export const insertHomepageHeroSchema = createInsertSchema(homepageHero, {
+  title: (s) => s.min(1),
 });
+export const selectHomepageHeroSchema = createSelectSchema(homepageHero);
 
-export const insertHomepageSloganSchema = z.object({
-  text: z.string().min(1),
-  position: z
-    .union([z.string(), z.number()])
-    .transform((val) => String(val))
-    .optional(), // Accept both, convert to string
-  fontSize: z.string().optional(),
-  color: z.string().optional(),
-  animationType: z.string().optional(),
-  isActive: z.boolean().optional(),
-  sortOrder: z.number().optional(),
+export const insertHomepageSloganSchema = createInsertSchema(homepageSlogans, {
+  text: (s) => s.min(1),
 });
+export const selectHomepageSloganSchema = createSelectSchema(homepageSlogans);
 
-export const insertHomepageProcessCardSchema = z.object({
-  title: z.string().min(1),
-  step: z.number().int().positive(),
-  description: z.string().optional(),
-
-  // Additional fields to match frontend expectations
-  icon: z.string().optional(), // For text/emoji icons
-  iconMediaId: z.number().nullable().optional(), // For image icons - accepts null
-  iconType: z.enum(["text", "image"]).nullable().optional(), // Icon type selector - accepts null
-  category: z.string().optional(), // Process category
-  position: z.number().optional(), // Position/order
-
-  isActive: z.boolean().optional(),
+export const insertHomepageProcessCardSchema = createInsertSchema(homepageProcessCards, {
+  title: (s) => s.min(1),
 });
+export const selectHomepageProcessCardSchema = createSelectSchema(homepageProcessCards);
 
-export const insertHomepageSectionSchema = z.object({
-  name: z.string().min(1),
-  content: z.string().optional(),
-  isActive: z.boolean().optional(),
+export const insertHomepageSectionSchema = createInsertSchema(homepageSections, {
+  name: (s) => s.min(1),
 });
+export const selectHomepageSectionSchema = createSelectSchema(homepageSections);
 
 export const insertHomepageFeaturedProductsSettingsSchema = createInsertSchema(
   homepageFeaturedProductsSettings,
