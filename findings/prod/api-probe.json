@@ -1,0 +1,122 @@
+[
+  {
+    "endpoint": "/api/products?page=1&limit=12",
+    "status": 200,
+    "timeMs": 2,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": "public, max-age=60, stale-while-revalidate=300",
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "b9eb01a6-6ca5-493b-961a-26291fb2eee1"
+    },
+    "body": {
+      "data": [],
+      "pagination": {
+        "page": 1,
+        "limit": 12,
+        "total": 0,
+        "pages": 0,
+        "hasMore": false
+      }
+    }
+  },
+  {
+    "endpoint": "/api/products?category=activewear",
+    "status": 200,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": "public, max-age=60, stale-while-revalidate=300",
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "30cb9a5a-9259-454d-9414-cf8ad773a5c3"
+    },
+    "body": {
+      "data": [],
+      "pagination": {
+        "page": 1,
+        "limit": 20,
+        "total": 0,
+        "pages": 0,
+        "hasMore": false
+      }
+    }
+  },
+  {
+    "endpoint": "/api/products?search=jersey&page=1",
+    "status": 200,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": "public, max-age=60, stale-while-revalidate=300",
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "c5ac9fbd-a843-446a-90e0-953b95361c06"
+    },
+    "body": {
+      "data": [],
+      "pagination": {
+        "page": 1,
+        "limit": 20,
+        "total": 0,
+        "pages": 0,
+        "hasMore": false
+      }
+    }
+  },
+  {
+    "endpoint": "/api/products?featured=true",
+    "status": 200,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": "public, max-age=60, stale-while-revalidate=300",
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "a9ed48f2-9b55-43c3-8383-7213a704e261"
+    },
+    "body": {
+      "data": [],
+      "pagination": {
+        "page": 1,
+        "limit": 20,
+        "total": 0,
+        "pages": 0,
+        "hasMore": false
+      }
+    }
+  },
+  {
+    "endpoint": "/api/products/1",
+    "status": 404,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/problem+json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": "public, max-age=60, stale-while-revalidate=300",
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "288e8b38-cd0d-44b2-b448-e02b8f075ef7"
+    },
+    "body": "{\"type\":\"https://api.run-remix.com/errors/resource-not-found\",\"title\":\"Resource Not Found\",\"status\":404,\"detail\":\"Product with ID 1 not found\",\"instance\":\"/api/products/1\",\"requestId\":\"288e8b38-cd0d-44b2-b448-e02b8f075ef7\",\"timestamp\":\"2026-06-01T05:46:40.449Z\",\"code\":\"RESOURCE_NOT_FOUND\"}"
+  },
+  {
+    "endpoint": "/api/products/1/3d-model",
+    "status": 404,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/problem+json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "f524f145-51a5-4be8-995b-6ca4ad71b4ce"
+    },
+    "body": "{\"type\":\"https://api.run-remix.com/errors/resource-not-found\",\"title\":\"Resource Not Found\",\"status\":404,\"detail\":\"3D model for product 1 not found\",\"instance\":\"/api/products/1/3d-model\",\"requestId\":\"f524f145-51a5-4be8-995b-6ca4ad71b4ce\",\"timestamp\":\"2026-06-01T05:46:40.451Z\",\"code\":\"RESOURCE_NOT_FOUND\"}"
+  }
+]

@@ -49,6 +49,7 @@ import type {
   InsertHomepageSlogan,
   InsertHomepageSustainability,
   InsertInquiry,
+  InsertLegalPolicy,
   InsertLogoAnimationSettings,
   InsertManufacturingCapability,
   InsertManufacturingCaseStudy,
@@ -60,6 +61,7 @@ import type {
   InsertNavigationItem,
   InsertPerformanceMetric,
   InsertProduct,
+  InsertService,
   InsertSizeChart,
   InsertStorageAnalysisResult,
   InsertStorageChangeLog,
@@ -77,6 +79,7 @@ import type {
   InsertUnifiedSustainability,
   InsertWebhookDelivery,
   InsertWebhookSubscription,
+  LegalPolicy,
   LogoAnimationSettings,
   ManufacturingCapability,
   ManufacturingCaseStudy,
@@ -88,6 +91,7 @@ import type {
   NavigationItem,
   PerformanceMetric,
   Product,
+  Service,
   SizeChart,
   StorageAnalysisResult,
   StorageChangeLog,
@@ -689,6 +693,27 @@ export interface IBlogRepository {
   deleteBlogCategory(id: number): Promise<boolean>;
 }
 
+export interface IServicesRepository {
+  getServices(includeInactive?: boolean): Promise<Service[]>;
+  getService(id: number): Promise<Service | undefined>;
+  createService(service: InsertService): Promise<Service>;
+  updateService(id: number, service: Partial<InsertService>): Promise<Service | undefined>;
+  deleteService(id: number): Promise<boolean>;
+  reorderServices?(orderedIds: number[]): Promise<void>;
+}
+
+export interface ILegalRepository {
+  getLegalPolicies(includeInactive?: boolean): Promise<LegalPolicy[]>;
+  getLegalPolicyBySlug(slug: string, includeInactive?: boolean): Promise<LegalPolicy | undefined>;
+  getLegalPolicy(id: number): Promise<LegalPolicy | undefined>;
+  createLegalPolicy(policy: InsertLegalPolicy): Promise<LegalPolicy>;
+  updateLegalPolicy(
+    id: number,
+    policy: Partial<InsertLegalPolicy>,
+  ): Promise<LegalPolicy | undefined>;
+  deleteLegalPolicy(id: number): Promise<boolean>;
+}
+
 export interface IStorage
   extends IUserRepository,
     ICategoryRepository,
@@ -708,4 +733,6 @@ export interface IStorage
     ITechnologyRepository,
     IWebhookRepository,
     ISystemRepository,
-    IBlogRepository {}
+    IBlogRepository,
+    IServicesRepository,
+    ILegalRepository {}

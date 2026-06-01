@@ -45,15 +45,22 @@ if (
 
     // Seed user if in test environment
     if (process.env.NODE_ENV === "test") {
-      await userRepository.upsertUser({
-        id: mockUser.id,
-        email: mockUser.email,
-        emailIndex: mockUser.emailIndex,
-        firstName: mockUser.firstName,
-        lastName: mockUser.lastName,
-        profileImageUrl: mockUser.profileImageUrl,
-        isAdmin: mockUser.isAdmin,
-      });
+      try {
+        await userRepository.upsertUser({
+          id: mockUser.id,
+          email: mockUser.email,
+          emailIndex: mockUser.emailIndex,
+          firstName: mockUser.firstName,
+          lastName: mockUser.lastName,
+          profileImageUrl: mockUser.profileImageUrl,
+          isAdmin: mockUser.isAdmin,
+        });
+      } catch (error) {
+        logger.warn(
+          "[Auth] Failed to seed mock user in database, continuing mock session without db persistence:",
+          error,
+        );
+      }
     }
 
     req.session.regenerate((err) => {

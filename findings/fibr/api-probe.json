@@ -1,0 +1,16 @@
+[
+  {
+    "endpoint": "/api/resources/batch",
+    "status": 422,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/problem+json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "91a98444-2acb-4e1c-ac3a-b63feeb54cfe"
+    },
+    "body": "{\"type\":\"https://api.run-remix.com/errors/validation-failed\",\"title\":\"Validation Failed\",\"status\":422,\"detail\":\"Missing types query parameter\",\"instance\":\"/api/resources/batch\",\"requestId\":\"91a98444-2acb-4e1c-ac3a-b63feeb54cfe\",\"timestamp\":\"2026-06-01T05:46:40.457Z\",\"code\":\"VALIDATION_ERROR\"}"
+  }
+]

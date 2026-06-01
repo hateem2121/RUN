@@ -93,7 +93,7 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
             const isLoopHidden = loop > 1;
             return (
               <ul key={`loop-${loop}`} aria-hidden={isLoopHidden} className="flex">
-                {(data || CATEGORIES).map((cat, index) => {
+                {(data && data.length > 0 ? data : CATEGORIES).map((cat, index) => {
                   const uniqueIndex = `${loop}-${index}`;
                   return (
                     <CategoryMarqueeItem

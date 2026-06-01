@@ -16,12 +16,16 @@ interface SlogansProps {
   data: SloganItem[] | undefined;
 }
 
-export const Slogans: React.FC<SlogansProps> = ({ data }) => {
-  const slogans = data?.filter((s) => s.isActive !== false);
+const DEFAULT_SLOGANS: SloganItem[] = [
+  { id: 1, text: "PRECISION CUT", isActive: true, sortOrder: 1 },
+  { id: 2, text: "HERITAGE CRAFT", isActive: true, sortOrder: 2 },
+  { id: 3, text: "ETHICAL PRODUCTION", isActive: true, sortOrder: 3 },
+  { id: 4, text: "SUSTAINABLE PERFORMANCE", isActive: true, sortOrder: 4 },
+];
 
-  if (!slogans || slogans.length === 0) {
-    return null;
-  }
+export const Slogans: React.FC<SlogansProps> = ({ data }) => {
+  const activeData = data?.filter((s) => s.isActive !== false);
+  const slogans = activeData && activeData.length > 0 ? activeData : DEFAULT_SLOGANS;
 
   const sortedSlogans = [...slogans].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 

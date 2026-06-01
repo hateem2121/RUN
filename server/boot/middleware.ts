@@ -35,7 +35,14 @@ export async function setupMiddleware(app: Express) {
       contentSecurityPolicy: {
         directives: {
           ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-          "script-src": ["'self'", "'unsafe-inline'", "*.google.com", "*.gstatic.com"],
+          "script-src": [
+            "'self'",
+            "'unsafe-inline'",
+            "'wasm-unsafe-eval'",
+            "'unsafe-eval'",
+            "*.google.com",
+            "*.gstatic.com",
+          ],
           "frame-src": ["'self'", "*.google.com"],
           "connect-src": ["'self'", "*.google.com", "*.gstatic.com", "vitals.vercel-insights.com"],
           "img-src": ["'self'", "data:", "*.google.com", "*.gstatic.com", "https://*"],

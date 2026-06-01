@@ -5,13 +5,16 @@ import certificatesRouter from "./certificates.js";
 import fabricsRouter from "./fabrics.js";
 import healthRouter from "./health.js";
 import inquiriesRouter from "./inquiries.js";
+import legalRouter from "./legal.js";
 import materialsRouter from "./materials.js";
 import productsRouter from "./products.js";
+import servicesRouter from "./services.js";
 import sizeChartsRouter from "./size-charts.js";
 
 const router = Router();
 
-router.use(healthRouter);
+router.use("/health", healthRouter);
+router.use(healthRouter); // Maintain legacy support for /api/live, /api/ready, /api/deep
 router.use(inquiriesRouter);
 router.use(categoriesRouter);
 router.use(productsRouter);
@@ -20,5 +23,7 @@ router.use(materialsRouter);
 router.use(certificatesRouter);
 router.use(accessoriesRouter);
 router.use(sizeChartsRouter);
+router.use(servicesRouter);
+router.use(legalRouter);
 
 export default router;

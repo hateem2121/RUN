@@ -161,9 +161,8 @@ export default function CategoryDetail() {
     <HydrationBoundary state={loaderData?.dehydratedState}>
       <div className="min-h-screen bg-white">
         {/* SEO Meta Tags - Rendered manually since RR7 meta function is static, but we can iterate later */}
-        <title>
-          {category ? category.metaTitle || `${category.name} | Category` : "Category Not Found"}
-        </title>
+        {/* biome-ignore format: Keep inline to prevent React title array warning */}
+        <title>{category ? category.metaTitle || `${category.name} | Category` : "Category Not Found"}</title>
         {category && (
           <meta
             name="description"

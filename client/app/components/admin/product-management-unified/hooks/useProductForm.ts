@@ -260,27 +260,49 @@ export function useProductForm(product?: Product | null) {
   }, [product]);
 
   // ── Slug auto-generation (debounced, with API uniqueness check placeholder) ──
-  const generateSlugAndCheck = useCallback(async (name: string) => {
-    if (!name.trim()) return;
-    setIsGeneratingSlug(true);
+  const generateSlugAndCheck = useCallback(
+    async (name: string) => {
+      if (!name.trim()) return;
+      setIsGeneratingSlug(true);
 
-    const baseSlug = name
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, "")
-      .replace(/[\s_-]+/g, "-")
-      .replace(/^-+|-+$/g, "");
+      const baseSlug = name
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/[\s_-]+/g, "-")
+        .replace(/^-+|-+$/g, "");
 
-    try {
-      // TODO: call GET /api/v1/admin/products/check-slug?slug={baseSlug}&excludeId={product?.id}
-      // and append suffix if taken (e.g. baseSlug + "-2")
-      dispatch({ type: "SET_FIELD", field: "slug", value: baseSlug });
-    } catch {
-      dispatch({ type: "SET_FIELD", field: "slug", value: baseSlug });
-    } finally {
-      setIsGeneratingSlug(false);
-    }
-  }, []);
+      try {
+        let currentSlug = baseSlug;
+        let attempt = 1;
+        let isAvailable = false;
+        const excludeParam = product?.id ? `&excludeId=${product.id}` : "";
+
+        while (!isAvailable && attempt <= 10) {
+          const checkSlug = attempt === 1 ? baseSlug : `${baseSlug}-${attempt}`;
+          const response = await fetch(
+            `/api/admin/products/check-slug?slug=${checkSlug}${excludeParam}`,
+          );
+          if (!response.ok) {
+            break;
+          }
+          const data = (await response.json()) as { available: boolean };
+          if (data.available) {
+            currentSlug = checkSlug;
+            isAvailable = true;
+          } else {
+            attempt++;
+          }
+        }
+        dispatch({ type: "SET_FIELD", field: "slug", value: currentSlug });
+      } catch {
+        dispatch({ type: "SET_FIELD", field: "slug", value: baseSlug });
+      } finally {
+        setIsGeneratingSlug(false);
+      }
+    },
+    [product],
+  );
 
   const debouncedGenerateSlug = useMemo(
     () => debounce(generateSlugAndCheck, 500),

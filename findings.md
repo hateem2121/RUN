@@ -701,3 +701,87 @@ graph TD
     DB -->|Runs database trigger or Drizzle $onUpdate hook| DB
     note["Database updates updatedAt column automatically"]
 ```
+
+---
+
+### Audit Findings — June 2026
+
+#### 10. AUDIT-010: Prompt Engineer Agent Skill Audit
+- **Severity**: Low / Documentation alignment
+- **Description**: Conducted a comprehensive audit comparing gstack agent workspace capabilities with the live RUN Remix monorepo versions.
+- **Key Findings**:
+  - gstack is at `v1.26.3.0` (with native `/sync-gbrain`, `/scrape`, `/skillify`, and `/pdf` commands).
+  - The monorepo tech stack features Node.js `v24.15.0`, React `19.2.4`, Vite `^8.0.10`, TypeScript `^6.0.3`, Tailwind CSS `4.2.4`, React Router `^7.14.2`, and Drizzle `^0.45.2`.
+  - Stale references in `SKILL.md` have been documented in a detailed report (`analysis_results.md`).
+  - Verified `analysis_results.md` content programmatically against all 408 distinct sub-questions in the `Answers needed for Claude` block files (Blocks A through L), establishing a 100% complete and exhaustive mapping with zero gaps.
+  - Technical integrity validations successfully passed.
+
+#### 11. AUDIT-011: Public-Facing Route Directory Mapping & Verification
+- **Severity**: Low / Documentation
+- **Description**: Conducted a complete mapping and programmatic verification of all public-facing pages, static fallback files, and system/API routes configured in the RUN Remix monorepo.
+- **Key Findings**:
+  - Mapped 26 core React Router routes wrapped by the public layout (Core, Catalog, Resources, Developer, Gated, Legal).
+  - Cross-referenced all 32 `.tsx` files in `client/app/routes` against `routes.ts` configuration, ensuring no pages were left uncataloged.
+  - Mapped and verified static pages (such as `/offline.html` for PWA support) and crawler rules (such as `/robots.txt`).
+  - Cataloged system endpoints registered by the Express master router, including `/metrics`, `/docs`, `/api-docs`, public POST API endpoints (`/api/contact`, `/api/newsletter/subscribe`, `/api/logs/error`), and authentication endpoints (`/api/auth/*`).
+  - Documented cache-key discrepancies between the React Router configurations and the shared `routeManifest` mappings (e.g. root resources nesting mismatch and dynamic parameter guides caching bypass).
+  - Verified system integrity successfully via `npm run verify:tech-integrity`.
+
+#### 12. AUDIT-012: Full-Site Forensic Investigation Checklist Audit
+- **Severity**: Low / Process Verification
+- **Description**: Programmatically and manually verified coverage of all 27 prompt files inside the `Investigative prompts for website` folder against the master forensic checklist (`task.md`).
+- **Key Findings**:
+  - Double-checked all 26 parallel crawl sub-agent instructions and the master orchestrator framework.
+  - Identified and resolved minor checklist gaps including Wide (1920px) viewport screenshot requirements, About page `.js` routes checks, detailed dynamic endpoint curl loops, `task_plan.md` spawn logging tree, and `AGENTS.md` block compliance.
+  - Compiled the complete checklist with ~600+ checkboxes into the master artifact `task.md`.
+  - Re-run `npm run verify:tech-integrity` to confirm codebase readiness.
+
+#### 13. AUDIT-013: Full-Site Forensic Investigation Execution & Synthesis
+- **Severity**: P0 / P1 / P2
+- **Description**: Executed the full-site forensic investigation covering 20 public routes, dynamic admin screens, and ~45 REST endpoints under test mode overrides.
+- **Key Findings**:
+  - **P0 Critical**: Dummy Redis Latency Injection (`GLBL-001`) causes a 4.3s delay per request in dev/test setups when unconfigured.
+  - **P0 Critical**: Mock Auth Boot Failure (`DASH-001`) returns a 500 error when PostgreSQL is offline because it attempts a Drizzle database write rather than a mock-only state.
+  - **P0 Critical**: Redis Circuit Breaker Blocking (`ANLX-001`) hangs `/api/analytics/vitals` for 2000ms before returning 500 on Redis connection timeout.
+  - **P1 Major**: CSP WebAssembly Block (`PROD-001`) breaks the `@google/model-viewer` 3D rendering due to missing `'unsafe-eval'`.
+  - **P1 Major**: Health check endpoint mismatch (`APIX-001`) mounts liveness/readiness probes at `/api/live`, `/api/ready`, `/api/deep` instead of the expected `/api/health/*` namespace.
+  - **P1 Major**: Missing route implementations for `/blog` and `/gallery` return the catch-all 404 (`MISS-001`).
+  - **P1 Major**: Route cache key manifest mismatch (`SSRC-001`) in `shared/route-manifest.ts`.
+  - **P1 Major**: Lack of SSR loaders on homepage (`HOME-001`) renders empty initial shells, blocking SEO crawlers.
+  - **Status**: Read-Only investigation completed with zero source code file modifications. All findings synthesized in `findings/master-report.md`.
+
+#### 14. ERR-001: Agent Executor TCP Read EADDRNOTAVAIL Network Error
+- **Severity**: Low / Infrastructure Environment
+- **Description**: The agent executor terminated with a TCP connection error during a streaming model invocation. The error trace indicates that while reading the Server-Sent Events (SSE) stream from Gemini (`daily-cloudcode-pa.googleapis.com`), the operation failed with `EADDRNOTAVAIL` ("can't assign requested address").
+- **Key Findings**:
+  - **Error Pattern**: `read tcp 192.168.18.124:58685->142.250.76.74:443: read: can't assign requested address`. This occurred on a read operation on an already established socket, rather than a connection dial block, meaning the network interface changed state mid-invocation.
+  - **Network State Mismatch**: The socket was bound to the local IP `192.168.18.124`, but active system interfaces now show the local IP address has changed to `192.168.18.103`.
+  - **Lingering Subnets**: Discovered multiple stale `node` backend servers running the `server/index.ts` daemon process bound to a previous subnet (`192.168.1.22`). These processes were started when the developer was on a different network subnet and have not been restarted.
+  - **Root Cause**: The host machine's Wi-Fi or local IP address changed or disconnected/reconnected (e.g. DHCP lease renewal or VPN status change) during a long-running agent streaming call. When the bound local IP address became unavailable on the system interfaces, the macOS kernel returned `EADDRNOTAVAIL` for subsequent read operations on that socket.
+  - **Status**: Read-only diagnostic investigation completed. Recommendations documented.
+
+---
+
+#### 15. REM-001: Forensic Audit Issues Remediation
+- **Severity**: Success Verification / Resolution
+- **Description**: Successfully completed the remaining implementation and verification steps for the approved Forensic Audit Issues Remediation plan.
+- **Key Actions & Resolutions**:
+  - **Slug Collision Resolution in `useProductForm.ts`**: Integrated a real check-slug API fetch loop in `generateSlugAndCheck`. If a slug collision is found (`available === false`), the resolver dynamically appends incremental numeric suffixes (`slug-2`, `slug-3`, etc., up to 10 attempts) until a unique slug is secured, resolving `PROD-002`.
+  - **Homepage Hydration Mismatch Resolution in `use-homepage-data.ts`**: Refactored the homepage batch query data hook to align its `queryKey` with the server-side preloader loader's queryKey (`queryKeys.homepage.batch()`). Replaced raw relative `fetch` calls with `apiRequest` to ensure the preloaded query cache hydration works seamlessly across SSR boundaries and client navigation without generating network fetch timeouts or blank server shells, resolving `HOME-001`.
+  - **Zero-Data Component Fallback Integrations on Homepage**: Hardened `Categories.tsx`, `Slogans.tsx`, and `Sections.tsx` to handle zero-data or unconfigured states gracefully. Instead of rendering blank blocks when lists are empty (`[]`), the components now correctly fallback to premium static constants (`CATEGORIES`, `DEFAULT_SLOGANS`, and `DEFAULT_SECTIONS` respectively), keeping the layout visually complete.
+  - **Code Quality & Validation**: Ran Biome formatting auto-fixes to ensure zero syntax/style issues, followed by the complete `verify:tech-integrity` script and full production build. All 8 integrity checks passed cleanly with zero type errors, unused exports, or build issues.
+
+---
+
+#### 16. REM-002: Forensic Audit Remediation Phase 2 — Dynamic Pages & Streaming Cache
+- **Severity**: Success Verification / Resolution
+- **Description**: Successfully completed Phase 2 of the forensic remediation checklist, introducing database-driven page content and a streaming-aware edge caching layer.
+- **Key Actions & Resolutions**:
+  - **Relational Schema & DB Migrations**: Defined new Drizzle schemas and generated/applied migrations for `services` and `legal_policies` tables in `@run-remix/shared` and `@run-remix/server`. Implemented query-efficient indexing on columns `isActive` and `sortOrder`.
+  - **Repository & Service Layers**: Implemented database repositories with cache-invalidation events, and created `ServicesService` and `LegalService` incorporating `neverthrow` result contracts and robust in-memory fallbacks to prevent rendering crashes when databases are unseeded.
+  - **Server Routing & API controllers**: Created routers for `/api/services` and `/api/legal-policies` supporting public read requests and administrative CRUD mutations (under `/api/admin/`), mounted flatly on `v1CoreRouter`.
+  - **Edge Caching Middleware Stream Interception**: Upgraded `ssrCacheMiddleware` in `server/middleware/ssr-cache.ts` to intercept streaming HTML chunks by overriding `res.write` and `res.end` with type-safe, context-preserving `.call(res, ...)` wrapper calls. This resolves the previous limitation where the caching middleware could only intercept non-streamed `res.send` calls, resulting in 100% caching coverage and verified `X-SSR-Cache: HIT` headers on cacheable pages.
+  - **Client Loaders & SEO Optimization**: Refactored route components `services.tsx`, `privacy.tsx`, and `terms.tsx` to prefetch query content server-side in loaders, allowing immediate dynamic hydration of the page content into the initial HTML response.
+  - **JSX Title Rendering Hardening**: Corrected categories detail route `<title>` rendering whitespace structure and protected it with a `biome-ignore format` comment to prevent Biome formatting wrapper splits, eliminating React 19 title child array warnings.
+  - **Validation & Integrity**: Formatted and compiled all changes. Remediated test suite failures by restricting loopback/localhost IP rateLimiter whitelisting to development mode only and enriching client fetch query mocks with necessary response header properties. Verified that the entire Vitest integration test suite (773/773 tests) and technical integrity checks pass cleanly with zero errors.
+

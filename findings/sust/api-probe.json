@@ -1,0 +1,82 @@
+[
+  {
+    "endpoint": "/api/sustainability/batch",
+    "status": 200,
+    "timeMs": 2,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "c68f435b-0904-4b30-93c4-f1731b1f3669"
+    },
+    "body": {
+      "hero": null,
+      "metrics": [],
+      "initiatives": [],
+      "goals": [],
+      "certificates": [],
+      "fabrics": [],
+      "_meta": {
+        "fetchedAt": "2026-06-01T05:46:40.431Z"
+      }
+    }
+  },
+  {
+    "endpoint": "/api/sustainability",
+    "status": 404,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/problem+json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "811935d0-811e-4148-b853-c922c64aaf44"
+    },
+    "body": "{\"type\":\"https://api.run-remix.com/errors/resource-not-found\",\"title\":\"Resource Not Found\",\"status\":404,\"detail\":\"Unified sustainability configuration not found\",\"instance\":\"/api/sustainability\",\"requestId\":\"811935d0-811e-4148-b853-c922c64aaf44\",\"timestamp\":\"2026-06-01T05:46:40.432Z\",\"code\":\"RESOURCE_NOT_FOUND\"}"
+  },
+  {
+    "endpoint": "/api/sustainability-metrics",
+    "status": 200,
+    "timeMs": 0,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "f886c4f8-9c16-4395-a55d-16cdb6e8d04f"
+    },
+    "body": []
+  },
+  {
+    "endpoint": "/api/sustainability-initiatives",
+    "status": 200,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "e1c0d819-fa69-43ab-aa14-a6dc7053f86d"
+    },
+    "body": []
+  },
+  {
+    "endpoint": "/api/sustainability-goals",
+    "status": 200,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "5825e8fe-f0e7-457a-9473-967ca9b5b9b0"
+    },
+    "body": []
+  }
+]

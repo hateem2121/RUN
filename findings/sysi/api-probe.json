@@ -1,0 +1,206 @@
+[
+  {
+    "endpoint": "/api/health",
+    "status": 200,
+    "timeMs": 0,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "3617b87e-1ef2-43d5-af95-09e8add8e5d7"
+    },
+    "body": {
+      "status": "UP",
+      "timestamp": "2026-06-01T05:46:40.462Z",
+      "uptime": 13.279574
+    }
+  },
+  {
+    "endpoint": "/api/health/live",
+    "status": 404,
+    "timeMs": 0,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "29403475-b90c-44ae-9e4e-54cd0ef6cf87"
+    },
+    "body": {
+      "success": false,
+      "error": {
+        "code": "RESOURCE_NOT_FOUND",
+        "message": "The requested resource was not found"
+      }
+    }
+  },
+  {
+    "endpoint": "/api/health/ready",
+    "status": 404,
+    "timeMs": 0,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "bac87e6f-f91b-4b41-946d-a84b09a421dc"
+    },
+    "body": {
+      "success": false,
+      "error": {
+        "code": "RESOURCE_NOT_FOUND",
+        "message": "The requested resource was not found"
+      }
+    }
+  },
+  {
+    "endpoint": "/api/health/deep",
+    "status": 404,
+    "timeMs": 0,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "b4633f5a-e65e-417d-b606-c7677cf228d7"
+    },
+    "body": {
+      "success": false,
+      "error": {
+        "code": "RESOURCE_NOT_FOUND",
+        "message": "The requested resource was not found"
+      }
+    }
+  },
+  {
+    "endpoint": "/api/worker/health",
+    "status": 200,
+    "timeMs": 0,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "d1f6e5bc-e034-453b-a0cb-6424fbaf4e95"
+    },
+    "body": {
+      "status": "healthy",
+      "workers": ["email", "media-processor"],
+      "timestamp": "2026-06-01T05:46:40.464Z"
+    }
+  },
+  {
+    "endpoint": "/api/media/health-scan",
+    "status": 200,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "a3774fb1-1574-4785-ae8a-594c9284741e"
+    },
+    "body": {
+      "success": true,
+      "data": {
+        "status": "healthy",
+        "issues": []
+      }
+    }
+  },
+  {
+    "endpoint": "/api/media/rate-limiter/health",
+    "status": 200,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "963de521-611f-4bef-b8e3-e08d73646b87"
+    },
+    "body": {
+      "success": true,
+      "data": {
+        "overall": {
+          "healthy": true,
+          "status": "healthy"
+        },
+        "limiters": {
+          "general": {
+            "healthy": true,
+            "status": "healthy",
+            "stats": {
+              "mode": "memory",
+              "activeKeys": 0,
+              "config": {
+                "windowMs": 900000,
+                "max": 100,
+                "testMode": false,
+                "warningThreshold": 80
+              },
+              "stats": {
+                "totalRequests": 0,
+                "blockedRequests": 0,
+                "warningsSent": 0
+              }
+            },
+            "issues": [],
+            "timestamp": 1780292800465
+          },
+          "admin": {
+            "healthy": true,
+            "status": "healthy",
+            "stats": {
+              "mode": "memory",
+              "activeKeys": 0,
+              "config": {
+                "windowMs": 900000,
+                "max": 30,
+                "testMode": false,
+                "warningThreshold": 80
+              },
+              "stats": {
+                "totalRequests": 0,
+                "blockedRequests": 0,
+                "warningsSent": 0
+              }
+            },
+            "issues": [],
+            "timestamp": 1780292800465
+          },
+          "diagnostic": {
+            "healthy": true,
+            "status": "healthy",
+            "stats": {
+              "mode": "memory",
+              "activeKeys": 0,
+              "config": {
+                "windowMs": 60000,
+                "max": 10,
+                "testMode": false,
+                "warningThreshold": 80
+              },
+              "stats": {
+                "totalRequests": 0,
+                "blockedRequests": 0,
+                "warningsSent": 0
+              }
+            },
+            "issues": [],
+            "timestamp": 1780292800465
+          }
+        },
+        "timestamp": 1780292800466
+      }
+    }
+  }
+]

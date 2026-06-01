@@ -1,17 +1,22 @@
 import {
   Award,
   BarChart,
+  Box,
   Building2,
+  Cpu,
   Facebook,
   Factory,
+  FileCheck,
   Globe,
   Instagram,
+  Layers,
   Leaf,
   Linkedin,
   type LucideIcon,
   Mail,
   MapPin,
   Package,
+  PenTool,
   Phone,
   Recycle,
   ShieldCheck,
@@ -27,6 +32,15 @@ import {
  * Returns a fallback icon (Globe) if no match is found.
  */
 export const iconMap: Record<string, LucideIcon> = {
+  // Services
+  pentool: PenTool,
+  "pen-tool": PenTool,
+  layers: Layers,
+  box: Box,
+  filecheck: FileCheck,
+  "file-check": FileCheck,
+  cpu: Cpu,
+
   // Sustainability & Nature
   leaf: Leaf,
   recycle: Recycle,

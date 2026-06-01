@@ -29,6 +29,7 @@ const EXCLUDED_ROUTES = [
   "/api/debug/ip-check", // Integration testing
   "/api/test/crash", // Integration testing
   "/api/inquiries", // Public inquiry/quote submission
+  "/api/logs/error", // Client error logging endpoint
 ];
 
 /**
