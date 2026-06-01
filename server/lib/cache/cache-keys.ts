@@ -138,6 +138,20 @@ export const CacheKeys = {
     query: (hash: string) => `computed:query:${hash}`,
     batch: (type: string, hash: string) => `computed:batch:${type}:${hash}`,
   },
+
+  services: {
+    list: () => "services",
+    all: () => "services:all",
+    item: (id: number) => `services:item:${id}`,
+  },
+
+  legal: {
+    list: () => "legal",
+    all: () => "legal:all",
+    slug: (slug: string) => `legal:slug:${slug}`,
+    slugAll: (slug: string) => `legal:slug:${slug}:all`,
+    item: (id: number) => `legal:item:${id}`,
+  },
 };
 
 // Cache invalidation patterns - proper regex for reliable matching
@@ -158,4 +172,6 @@ export const InvalidationPatterns = {
   sizeCharts: "^size_charts:.*",
   accessories: "^accessories:.*",
   computed: "^computed:.*",
+  services: "^services:.*|^services$",
+  legal: "^legal:.*|^legal$",
 };

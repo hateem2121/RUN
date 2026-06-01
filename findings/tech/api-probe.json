@@ -1,0 +1,100 @@
+[
+  {
+    "endpoint": "/api/technology-hero",
+    "status": 404,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/problem+json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "c3c376a3-3378-4b78-9eda-224bfef969bd"
+    },
+    "body": "{\"type\":\"https://api.run-remix.com/errors/resource-not-found\",\"title\":\"Resource Not Found\",\"status\":404,\"detail\":\"Technology hero configuration not found\",\"instance\":\"/api/technology-hero\",\"requestId\":\"c3c376a3-3378-4b78-9eda-224bfef969bd\",\"timestamp\":\"2026-06-01T05:46:40.439Z\",\"code\":\"RESOURCE_NOT_FOUND\"}"
+  },
+  {
+    "endpoint": "/api/technology-innovations",
+    "status": 200,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "66e1034d-950c-4fa5-88ff-2de382da4215"
+    },
+    "body": []
+  },
+  {
+    "endpoint": "/api/technology-equipment",
+    "status": 200,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "9c87806d-9e6a-4439-bcf2-79b0477ac9d9"
+    },
+    "body": []
+  },
+  {
+    "endpoint": "/api/technology-research",
+    "status": 200,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "0b1c217b-b56a-41d3-8fe6-2cf204b0d978"
+    },
+    "body": []
+  },
+  {
+    "endpoint": "/api/technology-roadmap",
+    "status": 200,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "d4478c3d-6efb-4ac5-9b7b-0244453dc072"
+    },
+    "body": []
+  },
+  {
+    "endpoint": "/api/technology-cta",
+    "status": 404,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/problem+json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "071495d0-b09f-49c7-9066-435fc5bbac49"
+    },
+    "body": "{\"type\":\"https://api.run-remix.com/errors/resource-not-found\",\"title\":\"Resource Not Found\",\"status\":404,\"detail\":\"Technology CTA configuration not found\",\"instance\":\"/api/technology-cta\",\"requestId\":\"071495d0-b09f-49c7-9066-435fc5bbac49\",\"timestamp\":\"2026-06-01T05:46:40.443Z\",\"code\":\"RESOURCE_NOT_FOUND\"}"
+  },
+  {
+    "endpoint": "/api/technology-gradient-settings",
+    "status": 404,
+    "timeMs": 1,
+    "headers": {
+      "content-type": "application/problem+json; charset=utf-8",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "cache-control": null,
+      "x-rate-limit-remaining": null,
+      "x-correlation-id": "02877519-e555-4637-9a8f-e466ed886d1e"
+    },
+    "body": "{\"type\":\"https://api.run-remix.com/errors/resource-not-found\",\"title\":\"Resource Not Found\",\"status\":404,\"detail\":\"Technology gradient settings not found\",\"instance\":\"/api/technology-gradient-settings\",\"requestId\":\"02877519-e555-4637-9a8f-e466ed886d1e\",\"timestamp\":\"2026-06-01T05:46:40.444Z\",\"code\":\"RESOURCE_NOT_FOUND\"}"
+  }
+]

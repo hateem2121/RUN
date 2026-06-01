@@ -19,14 +19,45 @@ interface SectionsProps {
   data: SectionItem[] | undefined;
 }
 
-export const Sections: React.FC<SectionsProps> = ({ data }) => {
-  const sections = data
-    ?.filter((s) => s.isActive !== false)
-    ?.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+const DEFAULT_SECTIONS: SectionItem[] = [
+  {
+    id: 1,
+    name: "manufacturing",
+    title: "Precision Manufacturing",
+    content:
+      "Our state-of-the-art facility integrates advanced circular knitting, precision laser cutting, and automated sewing systems to deliver consistent high-performance athletic wear at scale.",
+    sectionType: "manufacturing",
+    isActive: true,
+    sortOrder: 1,
+  },
+  {
+    id: 2,
+    name: "technology",
+    title: "Technological Edge",
+    content:
+      "Using virtual prototyping and 3D fit visualization tools, we accelerate the R&D process from concept to approved design, drastically reducing sample lead times and fabric waste.",
+    sectionType: "technology",
+    isActive: true,
+    sortOrder: 2,
+  },
+  {
+    id: 3,
+    name: "sustainability",
+    title: "Circular Sustainability",
+    content:
+      "We offer certified GOTS organic cotton, GRS recycled polyester, and biodegradable synthetics. Our facility is zero-discharge certified, reusing 95% of water in our dyehouse.",
+    sectionType: "sustainability",
+    isActive: true,
+    sortOrder: 3,
+  },
+];
 
-  if (!sections || sections.length === 0) {
-    return null;
-  }
+export const Sections: React.FC<SectionsProps> = ({ data }) => {
+  const activeData = data?.filter((s) => s.isActive !== false);
+  const sections =
+    activeData && activeData.length > 0
+      ? [...activeData].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+      : DEFAULT_SECTIONS;
 
   return (
     <section className="w-full bg-background px-4 py-32 md:px-8" aria-labelledby="sections-heading">

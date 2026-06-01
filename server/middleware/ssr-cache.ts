@@ -19,6 +19,18 @@ const PUBLIC_CACHEABLE_PATHS = [
   "/technology",
   "/manufacturing",
   "/contact",
+  "/developer",
+  "/services",
+  "/privacy",
+  "/terms",
+  "/blog",
+  "/gallery",
+  "/collections",
+  "/fabrics",
+  "/fibers",
+  "/accessories",
+  "/certifications",
+  "/size-charts",
 ];
 
 // Pages with dynamic content should not be cached
@@ -67,8 +79,13 @@ function isPublicCacheablePath(path: string): boolean {
     return true;
   }
 
-  // Check category pages: /category/:slug
-  if (path.startsWith("/category/")) {
+  // Check category pages: /category/:slug or /categories/:slug
+  if (path.startsWith("/category/") || path.startsWith("/categories/")) {
+    return true;
+  }
+
+  // Check developer portal pages: /developer/:slug
+  if (path.startsWith("/developer/")) {
     return true;
   }
 
@@ -155,30 +172,83 @@ export async function ssrCacheMiddleware(
       return;
     }
 
-    // Intercept res.send to capture rendered HTML for caching
+    // Intercept response write/end stream to capture rendered HTML for caching (supporting streaming responses)
     res.setHeader("X-SSR-Cache", "MISS");
-    const originalSend = res.send.bind(res);
-    res.send = ((body: unknown): Response => {
-      // Only cache successful HTML responses
-      if (res.statusCode === 200 && typeof body === "string" && body.includes("<!DOCTYPE")) {
-        logger.info(
-          `[SSR-Cache] Setting cache for ${cacheKey} (${Buffer.byteLength(body, "utf8")} bytes)`,
-        );
-        unifiedCache
-          .set(
-            cacheKey,
-            {
-              html: body,
-              headers: {
-                "Content-Type": res.getHeader("Content-Type")?.toString() || "text/html",
-              },
-            },
-            HTML_CACHE_TTL,
-          )
-          .catch((err) => logger.warn(`[SSR-Cache] Failed to set cache for ${cacheKey}`, err));
+
+    const chunks: Buffer[] = [];
+    const originalWrite = res.write;
+    const originalEnd = res.end;
+
+    res.write = (
+      chunk: unknown,
+      encodingOrCb?: string | ((error: Error | null | undefined) => void),
+      cb?: (error: Error | null | undefined) => void,
+    ): boolean => {
+      if (chunk) {
+        const encoding =
+          typeof encodingOrCb === "string" ? (encodingOrCb as BufferEncoding) : "utf8";
+        const buf = Buffer.isBuffer(chunk)
+          ? chunk
+          : typeof chunk === "string"
+            ? Buffer.from(chunk, encoding)
+            : Buffer.from(String(chunk));
+        chunks.push(buf);
       }
-      return originalSend(body);
-    }) as typeof res.send;
+      return (
+        originalWrite as (this: typeof res, c: unknown, e?: unknown, cbFn?: unknown) => boolean
+      ).call(res, chunk, encodingOrCb, cb);
+    };
+
+    res.end = ((
+      chunk?: unknown,
+      encodingOrCb?: string | (() => void),
+      cb?: () => void,
+    ): Response | undefined => {
+      if (chunk && typeof chunk !== "function") {
+        const encoding =
+          typeof encodingOrCb === "string" ? (encodingOrCb as BufferEncoding) : "utf8";
+        const buf = Buffer.isBuffer(chunk)
+          ? chunk
+          : typeof chunk === "string"
+            ? Buffer.from(chunk, encoding)
+            : Buffer.from(String(chunk));
+        chunks.push(buf);
+      }
+
+      // Concatenate all chunks to check if it's a successful HTML page
+      if (res.statusCode === 200) {
+        const contentType = (res.getHeader("Content-Type") || "").toString();
+        if (contentType.includes("text/html")) {
+          const body = Buffer.concat(chunks).toString("utf8");
+          if (body.includes("<!DOCTYPE") || body.includes("<html")) {
+            logger.info(
+              `[SSR-Cache] Setting cache for ${cacheKey} (${Buffer.byteLength(body, "utf8")} bytes)`,
+            );
+            unifiedCache
+              .set(
+                cacheKey,
+                {
+                  html: body,
+                  headers: {
+                    "Content-Type": contentType || "text/html",
+                  },
+                },
+                HTML_CACHE_TTL,
+              )
+              .catch((err) => logger.warn(`[SSR-Cache] Failed to set cache for ${cacheKey}`, err));
+          }
+        }
+      }
+
+      return (
+        originalEnd as (
+          this: typeof res,
+          c?: unknown,
+          e?: unknown,
+          cbFn?: unknown,
+        ) => Response | undefined
+      ).call(res, chunk, encodingOrCb, cb);
+    }) as unknown as typeof res.end;
   } else {
     // No caching for dynamic/private content
     res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");

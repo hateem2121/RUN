@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
-import { redis } from "../../lib/cache/upstash-client.js";
+import { isRedisEnabled, redis } from "../../lib/cache/upstash-client.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { writeRateLimiter } from "../../middleware/rateLimiter.js";
 import { authService } from "../../services/auth-service.js";
@@ -65,6 +65,16 @@ router.post("/vitals", writeRateLimiter, (req, res) => {
  * Returns the last 100 entries per metric as JSON.
  */
 router.get("/vitals", authService.requireAdmin, async (_req, res) => {
+  if (!isRedisEnabled) {
+    res.json({
+      status: "ok",
+      metrics: { LCP: [], CLS: [], INP: [], FCP: [], TTFB: [] },
+      retrievedAt: new Date().toISOString(),
+      fallback: true,
+    });
+    return;
+  }
+
   try {
     const results: Record<string, unknown[]> = {};
 

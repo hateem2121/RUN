@@ -351,8 +351,20 @@ export const CacheOperations = {
       await getCache().invalidate("^products:categories(?:$|:.*)");
       // Also invalidate product lists that may include category data
       await getCache().invalidate("^products:list(?:$|:.*)");
-      logger.info("[Cache] Invalidated all categories and related product list cache entries");
     }
+  },
+
+  invalidateServices: async () => {
+    await getCache().invalidate(InvalidationPatterns.services);
+    await invalidateHtmlCache("/services");
+    logger.info("[Cache] Invalidated all services cache entries");
+  },
+
+  invalidateLegal: async () => {
+    await getCache().invalidate(InvalidationPatterns.legal);
+    await invalidateHtmlCache("/privacy");
+    await invalidateHtmlCache("/terms");
+    logger.info("[Cache] Invalidated all legal page cache entries");
   },
 
   // Cache warming for critical application data

@@ -50,6 +50,7 @@ import type {
   InsertHomepageSlogan,
   InsertHomepageSustainability,
   InsertInquiry,
+  InsertLegalPolicy,
   InsertLogoAnimationSettings,
   InsertManufacturingCapability,
   InsertManufacturingCaseStudy,
@@ -61,6 +62,7 @@ import type {
   InsertNavigationItem,
   InsertPerformanceMetric,
   InsertProduct,
+  InsertService,
   InsertSizeChart,
   InsertStorageAnalysisResult,
   InsertStorageChangeLog,
@@ -79,6 +81,7 @@ import type {
   InsertUnifiedSustainability,
   InsertWebhookDelivery,
   InsertWebhookSubscription,
+  LegalPolicy,
   LogoAnimationSettings,
   ManufacturingCapability,
   ManufacturingCaseStudy,
@@ -90,6 +93,7 @@ import type {
   NavigationItem,
   PerformanceMetric,
   Product,
+  Service,
   SizeChart,
   StorageAnalysisResult,
   StorageChangeLog,
@@ -172,8 +176,12 @@ export class MemoryStorage implements IStorage {
   private performanceMetrics = new Map<number, PerformanceMetric>();
   private storageAnalysisResults = new Map<number, StorageAnalysisResult>();
   private storageChangeLogs = new Map<number, StorageChangeLog>();
+  private servicesMap = new Map<number, Service>();
+  private legalPoliciesMap = new Map<number, LegalPolicy>();
 
   private nextIds = {
+    service: 1,
+    legalPolicy: 1,
     category: 1,
     product: 1,
     media: 1,
@@ -2439,5 +2447,96 @@ export class MemoryStorage implements IStorage {
   }
   async getDeletedCategories(): Promise<Category[]> {
     return Array.from(this.categories.values()).filter((c) => !!c.deletedAt);
+  }
+
+  // Services Repository
+  async getServices(includeInactive = false): Promise<Service[]> {
+    const list = Array.from(this.servicesMap.values());
+    if (includeInactive) return list;
+    return list.filter((s) => s.isActive);
+  }
+
+  async getService(id: number): Promise<Service | undefined> {
+    return this.servicesMap.get(id);
+  }
+
+  async createService(service: InsertService): Promise<Service> {
+    const id = this.nextIds.service++;
+    const newService: Service = {
+      ...service,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as unknown as Service;
+    this.servicesMap.set(id, newService);
+    return newService;
+  }
+
+  async updateService(id: number, service: Partial<InsertService>): Promise<Service | undefined> {
+    const existing = this.servicesMap.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...service, updatedAt: new Date() } as Service;
+    this.servicesMap.set(id, updated);
+    return updated;
+  }
+
+  async deleteService(id: number): Promise<boolean> {
+    return this.servicesMap.delete(id);
+  }
+
+  async reorderServices(orderedIds: number[]): Promise<void> {
+    for (let i = 0; i < orderedIds.length; i++) {
+      const id = orderedIds[i]!;
+      const existing = this.servicesMap.get(id);
+      if (existing) {
+        this.servicesMap.set(id, { ...existing, sortOrder: i + 1, updatedAt: new Date() });
+      }
+    }
+  }
+
+  // Legal Repository
+  async getLegalPolicies(includeInactive = false): Promise<LegalPolicy[]> {
+    const list = Array.from(this.legalPoliciesMap.values());
+    if (includeInactive) return list;
+    return list.filter((lp) => lp.isActive);
+  }
+
+  async getLegalPolicyBySlug(
+    slug: string,
+    includeInactive = false,
+  ): Promise<LegalPolicy | undefined> {
+    const list = Array.from(this.legalPoliciesMap.values());
+    return list.find((lp) => lp.slug === slug && (includeInactive || lp.isActive));
+  }
+
+  async getLegalPolicy(id: number): Promise<LegalPolicy | undefined> {
+    return this.legalPoliciesMap.get(id);
+  }
+
+  async createLegalPolicy(policy: InsertLegalPolicy): Promise<LegalPolicy> {
+    const id = this.nextIds.legalPolicy++;
+    const newPolicy: LegalPolicy = {
+      ...policy,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as unknown as LegalPolicy;
+    this.legalPoliciesMap.set(id, newPolicy);
+    return newPolicy;
+  }
+
+  async updateLegalPolicy(
+    id: number,
+    policy: Partial<InsertLegalPolicy>,
+  ): Promise<LegalPolicy | undefined> {
+    const existing = this.legalPoliciesMap.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...policy, updatedAt: new Date() } as LegalPolicy;
+    this.legalPoliciesMap.set(id, updated);
+    return updated;
+  }
+
+  async deleteLegalPolicy(id: number): Promise<boolean> {
+    return this.legalPoliciesMap.delete(id);
   }
 }

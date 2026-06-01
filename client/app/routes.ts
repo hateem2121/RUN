@@ -4,6 +4,9 @@ export default [
   // Public Layout Wrapper
   layout("routes/_public.tsx", [
     index("routes/_index.tsx"),
+    route("blog", "routes/blog.tsx"),
+    route("gallery", "routes/gallery.tsx"),
+    route("collections", "routes/collections.tsx"),
     route("about", "routes/about.tsx"),
     route("accessories", "routes/accessories.tsx"),
     route("analytics", "routes/analytics.tsx"),

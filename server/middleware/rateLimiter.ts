@@ -24,8 +24,15 @@ export class RateLimiter {
   constructor(config: RateLimitConfig) {
     this.config = config;
 
-    // Try to initialize Redis
-    if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+    // Try to initialize Redis (skip if dummy URL)
+    const isDummyRedis =
+      process.env.UPSTASH_REDIS_REST_URL?.includes("dummy") ||
+      process.env.UPSTASH_REDIS_REST_URL === "";
+    if (
+      process.env.UPSTASH_REDIS_REST_URL &&
+      process.env.UPSTASH_REDIS_REST_TOKEN &&
+      !isDummyRedis
+    ) {
       try {
         this.redis = Redis.fromEnv();
       } catch (_error) {
@@ -56,6 +63,16 @@ export class RateLimiter {
         return next();
       }
       const ip = req.ip || "unknown";
+      // Whitelist localhost/loopback in dev to avoid crawling/testing lockouts
+      if (
+        process.env.NODE_ENV === "development" &&
+        (ip === "127.0.0.1" ||
+          ip === "::1" ||
+          ip === "::ffff:127.0.0.1" ||
+          ip.startsWith("127.0.0."))
+      ) {
+        return next();
+      }
       const key = `ratelimit:${ip}`;
 
       let current = 0;
@@ -218,6 +235,15 @@ export class UploadRateLimiter {
   }
 
   middleware = (req: Request, res: Response, next: NextFunction): void => {
+    const ip = req.ip || "unknown";
+    // Whitelist localhost/loopback in dev to avoid crawling/testing lockouts
+    if (
+      process.env.NODE_ENV === "development" &&
+      (ip === "127.0.0.1" || ip === "::1" || ip === "::ffff:127.0.0.1" || ip.startsWith("127.0.0."))
+    ) {
+      next();
+      return;
+    }
     const key = this.getClientKey(req);
     const now = Date.now();
 

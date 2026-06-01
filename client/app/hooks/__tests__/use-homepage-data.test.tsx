@@ -37,6 +37,9 @@ describe("useHomepageData", () => {
 
     mockFetch.mockResolvedValueOnce({
       ok: true,
+      headers: {
+        get: (name: string) => (name === "content-type" ? "application/json" : null),
+      },
       json: async () => mockData,
     });
 
@@ -47,13 +50,19 @@ describe("useHomepageData", () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(result.current.data).toEqual(mockData);
-    expect(mockFetch).toHaveBeenCalledWith("/api/homepage-batch");
+    expect(mockFetch).toHaveBeenCalledWith("/api/homepage-batch", expect.any(Object));
   });
 
   it("should throw error when fetch fails", async () => {
     mockFetch.mockResolvedValueOnce({
       ok: false,
       status: 500,
+      headers: {
+        get: (name: string) => (name === "content-type" ? "application/json" : null),
+      },
+      json: async () => ({
+        detail: "Failed to fetch homepage batch data",
+      }),
     });
 
     const { result } = renderHook(() => useHomepageData(), {

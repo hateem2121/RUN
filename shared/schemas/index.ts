@@ -12,7 +12,9 @@ export * from "./content/about";
 export * from "./content/common";
 // Export content domains
 export * from "./content/home";
+export * from "./content/legal";
 export * from "./content/manufacturing";
+export * from "./content/services";
 export * from "./content/sustainability";
 export * from "./content/technology";
 export * from "./env.schema.js";

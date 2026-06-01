@@ -1,7 +1,7 @@
 # Task Plan — Performance Remediation (100/100)
 
-## Status: DATABASE & SCHEMA LAYER — REMEDIATION (Session Goal: Remediate all database & schema layer issues, generate migrations, resolve duplicate Zod validation schemas, and verify integration tests - 2026-05-30) [IN PROGRESS]
-**Finding ID Prefix:** `DS-`
+## Status: RESOLVED FORENSIC AUDIT ISSUES (Session Goal: Verify and finalize approved implementation plan execution - 2026-06-01) [COMPLETED]
+**Finding ID Prefix:** `ERR-`
 
 ---
 
@@ -204,5 +204,104 @@
 
 **Session Outcome**: Successfully remediated all database and schema layer anomalies, achieving a flawless **100/100** score on the database audit scorecard. Specifically, resolved the FK constraint type mismatch on `sustainability_metric_history`, added the self-referencing hierarchy FK on `folders`, built missing index mappings for foreign keys to prevent sequential scans, removed redundant indexes on unique cache fields, normalized manual schema objects to `drizzle-zod` definitions, consolidated and imported local Zod validations in server routes from `@run-remix/shared`, added stateless HTTP query capabilities (`httpDb`), and automated the `updatedAt` column hooks. Successfully generated Drizzle Kit schema migrations, which compiled perfectly with zero errors, and validated the system through both lints and the complete integration test suite of 773 tests.
 **Next Steps**: Defer to M. Hateem Jamshaid for final QA and verification in staging/production environment deployments. No outstanding database debt remains.
+
+---
+
+## 22. Prompt Engineer Agent Skill Audit — June 2026 (Session Goal: Complete prompt engineer agent skill audit and generate full report - 2026-05-30) [COMPLETED]
+- [x] Audit Block A: gstack agent workflow
+- [x] Audit Block B: Tech stack versions
+- [x] Audit Block C: Package additions/removals
+- [x] Audit Block D: Project version and changelogs
+- [x] Audit Block E: Hard rules and forbidden patterns
+- [x] Audit Block F: Build scripts, CI, and deployment
+- [x] Audit Block G: Protocols (Protocol 0, B.L.A.S.T., Uncertainty/Confusion)
+- [x] Audit Block H: Agent host ecosystem
+- [x] Audit Block I: Anthropic prompting and model dynamics
+- [x] Audit Block J: Templates and prompt patterns
+- [x] Audit Block K: Design system, CSS, and GSAP
+- [x] Audit Block L: Free-form delta updates
+- [x] Update findings.md and task_plan.md with outcome
+- [x] Run verify:tech-integrity checks
+- [x] Verify report completeness against all block questions (100% matched)
+
+**Session Outcome**: Successfully completed a comprehensive audit of gstack workflow capabilities and mapped them against the live RUN Remix monorepo versions. Verified the completeness of the generated audit report (`analysis_results.md`) against all block questions in the `Answers needed for Claude` folder, ensuring a 100% question-by-question mapping with zero gaps. All technical integrity validations passed cleanly.
+
+## 23. Public-Facing Route Directory (Session Goal: Map all public-facing pages and routes - 2026-05-31) [COMPLETED]
+- [x] Identify all public routes in the route-manifest.ts file
+- [x] Cross-reference with client router configuration to find all public-facing routes
+- [x] List all identified public-facing pages on the RUN Remix website
+- [x] Audit and map static files (/offline.html) and Express system routes (/metrics, /docs, /api-docs, /robots.txt)
+
+**Session Outcome**: Successfully mapped all public-facing pages, static paths, and backend system endpoints in the RUN Remix monorepo, resolving all discrepancies and generating a 100% verified route directory report.
+**Next Steps**: Review route alignment recommendations with M. Hateem Jamshaid.
+
+---
+
+## 24. Public-Facing Route Directory — Final Comprehensive Verification (Session Goal: Perform exhaustive file-by-file verification of all routes and finalise the report with 100% accuracy - 2026-05-31) [COMPLETED]
+- [x] Perform exhaustive cross-reference check of client/app/routes files against route config and manifest
+- [x] Check all server-side paths, assets, and APIs for public exposure
+- [x] Verify 100% accuracy of all compiled routes and metadata in route_directory_report.md
+- [x] Run verify:tech-integrity to ensure zero regressions
+
+**Session Outcome**: Successfully completed an exhaustive verification of all client-side and server-side routes and API endpoints in the RUN Remix monorepo. Compiled the absolute 100% verified route catalog report in `route_directory_report.md` detailing every layout boundary, HTTP method, and caching parameter. All 8 checks of `verify:tech-integrity` passed successfully.
+**Next Steps**: Awaiting review by M. Hateem Jamshaid to resolve the documented routing layout vs cache key manifest mismatches.
+
+---
+
+## 25. Known Issues & Triage Inquiry (Session Goal: Identify and prioritize known page issues and pain points - 2026-05-31) [COMPLETED]
+- [x] Review route directory report and findings.md for known issues
+- [x] Summarize key routing mismatches, documentation drift, and missing pages
+- [x] Present options and ask user which to prioritize first
+
+## 26. Full-Site Forensic Investigation Checklist Audit (Session Goal: Double-check that all 27 prompt files are fully covered in the master task list - 2026-06-01) [COMPLETED]
+- [x] Systematically read all 27 prompt files in `Investigative prompts for website` folder
+- [x] Perform cross-verification of task list against every prompt file check and curl command
+- [x] Address gaps (Wide viewport screenshots, About page .js route files check, specific curl requests, findings/task_plan.md structure, and AGENTS.md block context)
+- [x] Complete comprehensive overwrite of task list artifact at `.gemini/antigravity/brain/.../task.md`
+- [x] Run verify:tech-integrity to ensure zero regressions
+
+---
+
+## 27. Full-Site Forensic Investigation Execution & Synthesis (Session Goal: Execute full-site investigation and synthesize findings - 2026-06-01) [COMPLETED]
+- [x] Collect gated admin screenshots and complete crawlers
+- [x] Compile page-level reports (findings.md in each of the 26 folders)
+- [x] Synthesize master report (findings/master-report.md)
+- [x] Final session gate verification
+
+**Session Outcome**: Successfully completed a 100% read-only forensic site investigation across the RUN Remix monorepo's 26 page/system modules using the 27 prompt files in `Investigative prompts for website`. Probed ~45 endpoints, captured screenshots, generated page-level reports, and synthesized a master report (`findings/master-report.md`) ranking all findings. Killed the background dev server and ran full technical integrity verification, confirming zero source files were modified.
+**Next Steps**: Present the findings to the owner (M. Hateem Jamshaid) for prioritization and scheduling of remediation tasks.
+
+---
+
+## 28. Agent Execution Error Investigation (Session Goal: Investigate agent executor network error 019f4c92-62a1-4d26-9b2b-9a7cdd233e10 - 2026-06-01) [COMPLETED]
+- [x] Audit logs and active socket/port usage on the machine
+- [x] Investigate connection failures to daily-cloudcode-pa.googleapis.com
+- [x] Analyze TCP socket exhaustion / EADDRNOTAVAIL root causes on macOS
+- [x] Compile findings and recommendations to prevent socket/port exhaustion
+
+**Session Outcome**: Programmatically and forensically analyzed the `EADDRNOTAVAIL` ("can't assign requested address") network socket error for Trajectory ID `019f4c92-62a1-4d26-9b2b-9a7cdd233e10`. Diagnosed that the issue was caused by a network interface IP reassignment mid-invocation: the agent executor established a TCP connection bound to `192.168.18.124`, but the active subnet IP changed to `192.168.18.103` (due to DHCP lease/reconnect). This caused active read operations on the socket to fail. Also detected lingering backend processes bound to a separate previous subnet IP (`192.168.1.22`). Compiled recommendations for network stability and lingering process cleanup. All technical integrity checks pass.
+
+---
+
+## 29. Forensic Audit Remediation (Session Goal: Complete approved implementation plan execution - 2026-06-01) [COMPLETED]
+- [x] Implement slug check fetch and suffix resolver in `useProductForm.ts`
+- [x] Align queryKey and use `apiRequest` in `use-homepage-data.ts`
+- [x] Add static/default constants fallbacks on empty data in `Categories.tsx`
+- [x] Add static/default constants fallbacks on empty data in `Slogans.tsx`
+- [x] Add static/default constants fallbacks on empty data in `Sections.tsx`
+- [x] Run full system integrity verification and tests
+
+**Session Outcome**: Successfully implemented all remaining issues from the approved Forensic Audit Issues Remediation plan. Built out automated product slug collision handling (up to 10 sequential attempts via check-slug API), resolved homepage query cache preloading hydration mismatches across server/client boundaries by integrating `apiRequest` into the batch data hook, and deployed robust static fallbacks for Homepage categories, slogans, and sections to ensure a resilient UI even under zero-data database conditions. Formatted all modified files with Biome, and confirmed that the complete technical integrity suite of 8 checks passes successfully along with the full production build pipeline.
+
+---
+
+## 30. Forensic Audit Remediation Phase 2 & Verification (Session Goal: Verify Phase 2 execution, fix unit/integration test regressions, and pass all checks - 2026-06-01) [COMPLETED]
+- [x] Verify Dynamic page content retrieval and SSR loaders structure
+- [x] Resolve RateLimiter middleware whitelisting regression for loopback IP testing
+- [x] Correct queryClient apiRequest fetch test mock expectations for useHomepageData hook
+- [x] Run full technical integrity and test suites (773 tests passing cleanly)
+
+**Session Outcome**: Verified the comprehensive implementation of Phase 2 database-driven pages (Services, Privacy, and Terms of Service) and streaming HTML edge caching interception. Remediated test suite failures by restricting loopback/localhost whitelisting in rateLimiter to development mode only (allowing Vitest test cases to mock rate limits on loopback IPs) and aligning hook fetch mocks to include required response headers. All 8 checks of technical integrity, including the full Vitest suite (773/773 passing), pass successfully with zero errors.
+
 
 
