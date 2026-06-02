@@ -21,6 +21,11 @@ describe("Route Manifest", () => {
     // Fuzzy match for categories
     expect(getComponentForPath("/categories/running")).toBe("app/routes/categories.$slug.tsx");
 
+    // Fuzzy match for developer guides
+    expect(getComponentForPath("/developer/guides/getting-started")).toBe(
+      "app/routes/developer.guides.$slug.tsx",
+    );
+
     // Unknown route
     expect(getComponentForPath("/unknown-route")).toBeUndefined();
   });

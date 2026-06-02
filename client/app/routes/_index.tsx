@@ -3,7 +3,6 @@ import { isRouteErrorResponse, useRouteError } from "react-router";
 import { Hero } from "@/components/homepage/Hero";
 import { Preloader } from "@/components/homepage/Preloader";
 import { CustomCursor } from "@/components/ui/CustomCursor";
-import { useHomepageData } from "@/hooks/use-homepage-data";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 
@@ -28,18 +27,21 @@ const Values = lazy(() =>
   import("@/components/homepage/Values").then((m) => ({ default: m.Values })),
 );
 
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { useLoaderData } from "react-router";
-import { apiRequest, getQueryClient, queryKeys } from "@/lib/queryClient";
-
+import type { HomepageBatchResponse } from "@shared/index";
 import type { Route } from "./+types/_index";
 
-export function meta({}: Route.MetaArgs) {
+type LoaderData = {
+  homepageData: HomepageBatchResponse | null;
+};
+
+export function meta({ data }: { data: LoaderData | undefined }) {
+  const hero = data?.homepageData?.hero?.result;
   return [
-    { title: "RUN Apparel | Next-Gen B2B Sportswear Manufacturing Partner" },
+    { title: hero?.title || "RUN Apparel | Next-Gen B2B Sportswear Manufacturing Partner" },
     {
       name: "description",
       content:
+        hero?.subtitle ||
         "High-performance B2B sportswear manufacturing with precision engineering since 1889. Sustainable, scalable, and state-of-the-art apparel solutions for global brands.",
     },
     {
@@ -57,24 +59,23 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export async function loader() {
-  const queryClient = getQueryClient();
+export async function loader({ request }: Route.LoaderArgs) {
+  const base = new URL(request.url);
+  const get = (path: string) =>
+    fetch(new URL(path, base).toString())
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
 
-  // Prefetch the homepage batch data to eliminate hydration waterfalls
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.homepage.batch(),
-    queryFn: () => apiRequest(queryKeys.homepage.batch()[0]),
-  });
+  const [homepageData] = await Promise.all([get("/api/homepage-batch")]);
 
   return {
-    dehydratedState: dehydrate(queryClient),
+    homepageData,
   };
 }
 
-export default function Index() {
-  const loaderData = useLoaderData<typeof loader>();
+export default function Index({ loaderData }: { loaderData: LoaderData }) {
+  const { homepageData } = loaderData;
   const [preloaderFinished, setPreloaderFinished] = useState(false);
-  const { data: homepageData } = useHomepageData();
   const isMobile = useIsMobile();
 
   // Stable refs for skewable sections to avoid ref callback churn
@@ -123,7 +124,7 @@ export default function Index() {
   );
 
   return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
+    <>
       {!preloaderFinished && <Preloader onComplete={() => setPreloaderFinished(true)} />}
       <CustomCursor />
 
@@ -134,9 +135,11 @@ export default function Index() {
         </div>
 
         {/* Slogans Ticker: CMS-driven scrolling slogans */}
-        <Suspense fallback={null}>
-          <Slogans data={homepageData?.slogans?.result} />
-        </Suspense>
+        {homepageData?.slogans?.result && homepageData.slogans.result.length > 0 && (
+          <Suspense fallback={null}>
+            <Slogans data={homepageData.slogans.result} />
+          </Suspense>
+        )}
 
         {/* Stats Section: High height impact (150vh) */}
         <Suspense fallback={<div className="min-h-150vh bg-background animate-pulse" />}>
@@ -145,16 +148,20 @@ export default function Index() {
 
         {/* Content Section: Mid-page components */}
         <div ref={contentRef} className="origin-top transform-gpu will-change-transform">
-          <Suspense fallback={<div className="min-h-80vh bg-background animate-pulse" />}>
-            <Categories data={homepageData?.categories?.result} />
-          </Suspense>
+          {homepageData?.categories?.result && homepageData.categories.result.length > 0 && (
+            <Suspense fallback={<div className="min-h-80vh bg-background animate-pulse" />}>
+              <Categories data={homepageData.categories.result} />
+            </Suspense>
+          )}
 
-          <Suspense fallback={<div className="min-h-screen bg-background-alt animate-pulse" />}>
-            <FeaturedProducts
-              products={homepageData?.products?.result}
-              settings={homepageData?.featuredProductsSettings?.result}
-            />
-          </Suspense>
+          {homepageData?.products?.result && homepageData.products.result.length > 0 && (
+            <Suspense fallback={<div className="min-h-screen bg-background-alt animate-pulse" />}>
+              <FeaturedProducts
+                products={homepageData.products.result}
+                settings={homepageData.featuredProductsSettings?.result}
+              />
+            </Suspense>
+          )}
 
           <Suspense fallback={<div className="min-h-60vh bg-background-alt animate-pulse" />}>
             <Values />
@@ -162,16 +169,20 @@ export default function Index() {
         </div>
 
         {/* CMS Narrative Sections */}
-        <Suspense fallback={null}>
-          <Sections data={homepageData?.sections?.result} />
-        </Suspense>
+        {homepageData?.sections?.result && homepageData.sections.result.length > 0 && (
+          <Suspense fallback={null}>
+            <Sections data={homepageData.sections.result} />
+          </Suspense>
+        )}
 
         {/* Process Section: Viewport pinning needs static context */}
-        <Suspense fallback={<div className="min-h-screen bg-background animate-pulse" />}>
-          <Process />
-        </Suspense>
+        {homepageData?.processCards?.result && homepageData.processCards.result.length > 0 && (
+          <Suspense fallback={<div className="min-h-screen bg-background animate-pulse" />}>
+            <Process data={homepageData.processCards.result} />
+          </Suspense>
+        )}
       </main>
-    </HydrationBoundary>
+    </>
   );
 }
 

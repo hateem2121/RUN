@@ -1,23 +1,24 @@
 import { useGSAP } from "@gsap/react";
-import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import gsap from "gsap";
 import { ArrowRight, Globe } from "lucide-react";
 import { useRef } from "react";
-import { Link, useLoaderData } from "react-router";
+import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { resolveIcon } from "@/utils/icon-resolver";
 import type { Route } from "./+types/services";
 
-export async function loader() {
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["/api/services"],
-    queryFn: () => apiRequest("/api/services"),
-  });
-  return { dehydratedState: dehydrate(queryClient) };
+export async function loader({ request }: Route.LoaderArgs) {
+  const base = new URL(request.url);
+  const get = (path: string) =>
+    fetch(new URL(path, base).toString())
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+
+  const servicesList = await get("/api/services");
+
+  return { servicesList };
 }
 
 export function meta({}: Route.MetaArgs) {
@@ -33,16 +34,6 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Services() {
-  const loaderData = useLoaderData<typeof loader>();
-
-  return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <ServicesPageContent />
-    </HydrationBoundary>
-  );
-}
-
 interface ServiceData {
   id: number;
   iconName: string;
@@ -53,22 +44,69 @@ interface ServiceData {
   sortOrder: number;
 }
 
-function ServicesPageContent() {
+const FALLBACK_SERVICES: ServiceData[] = [
+  {
+    id: -1,
+    title: "Product Design & Development",
+    description:
+      "Collaborative design process translating your concepts into production-ready apparel tech packs.",
+    iconName: "Palette",
+    features: ["Tech pack creation", "3D virtual prototyping", "Colorway development"],
+    isActive: true,
+    sortOrder: 1,
+  },
+  {
+    id: -2,
+    title: "Fabric & Material Sourcing",
+    description:
+      "Access to a global network of sustainable, performance-driven fabric mills and trim suppliers.",
+    iconName: "Layers",
+    features: [
+      "Recycled polyester & organic cotton",
+      "Moisture-wicking fabrics",
+      "Custom dye options",
+    ],
+    isActive: true,
+    sortOrder: 2,
+  },
+  {
+    id: -3,
+    title: "Bulk Manufacturing",
+    description:
+      "State-of-the-art production lines delivering high-quality activewear at scale with ethical standards.",
+    iconName: "Cpu",
+    features: [
+      "Low minimum order quantities",
+      "Precision automated cutting",
+      "Skilled assembly craftsmanship",
+    ],
+    isActive: true,
+    sortOrder: 3,
+  },
+];
+
+type LoaderData = {
+  servicesList: ServiceData[] | null;
+};
+
+export default function Services({ loaderData }: { loaderData: LoaderData }) {
+  const { servicesList } = loaderData;
+
+  return <ServicesPageContent servicesList={servicesList} />;
+}
+
+function ServicesPageContent({ servicesList }: { servicesList: ServiceData[] | null }) {
   const servicesGridRef = useRef<HTMLDivElement>(null);
 
-  const { data: servicesList = [], isLoading } = useQuery<ServiceData[]>({
-    queryKey: ["/api/services"],
-    queryFn: () => apiRequest("/api/services"),
-    staleTime: 1000 * 60 * 5,
-  });
+  const list = servicesList && servicesList.length > 0 ? servicesList : FALLBACK_SERVICES;
 
   useGSAP(
     () => {
-      if (!isLoading && servicesList.length > 0) {
+      if (list.length > 0) {
         gsap.from(".service-card-item", { opacity: 0, y: 20, duration: 0.5, stagger: 0.1 });
       }
     },
-    { scope: servicesGridRef, dependencies: [servicesList, isLoading] },
+    { scope: servicesGridRef, dependencies: [list] },
   );
 
   return (
@@ -92,7 +130,7 @@ function ServicesPageContent() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl lg:max-w-none">
             <div ref={servicesGridRef} className="grid grid-cols-1 gap-x-8 gap-y-16 lg:grid-cols-3">
-              {servicesList.map((service) => {
+              {list.map((service) => {
                 const IconComponent = resolveIcon(service.iconName) || Globe;
                 return (
                   <div key={service.id} className="service-card-item flex flex-col">

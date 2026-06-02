@@ -6,12 +6,7 @@ import type {
   ManufacturingQuality,
   MediaAsset,
 } from "@shared/index";
-import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
-import { useLoaderData } from "react-router";
-import {
-  ManufacturingErrorBoundary,
-  ManufacturingLoadingSkeleton,
-} from "@/components/error-boundaries/manufacturing-error-boundary";
+import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
 import { FactoryGallery } from "@/components/public/manufacturing/FactoryGallery";
 import { ProductionBlueprint } from "@/components/public/manufacturing/ProductionBlueprint";
 import { PublicCapabilitySection } from "@/components/public/manufacturing/PublicCapabilitySection";
@@ -22,7 +17,6 @@ import { PublicQualitySection } from "@/components/public/manufacturing/PublicQu
 import { RouteErrorBoundary } from "@/components/shared/RouteErrorBoundary";
 import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
 import { MarqueeStrip } from "@/components/ui/marquee-strip";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/manufacturing";
 
 export function meta({}: Route.MetaArgs) {
@@ -181,110 +175,52 @@ function generateStructuredData(): string {
 
 export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
 
-export async function loader() {
-  const queryClient = getQueryClient();
+export async function loader({ request }: Route.LoaderArgs) {
+  const base = new URL(request.url);
+  const get = (path: string) =>
+    fetch(new URL(path, base).toString())
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: ["/api/manufacturing-hero"],
-      queryFn: () => apiRequest("/api/manufacturing-hero"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/manufacturing-processes"],
-      queryFn: () => apiRequest("/api/manufacturing-processes"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/manufacturing-capabilities"],
-      queryFn: () => apiRequest("/api/manufacturing-capabilities"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/manufacturing-qualities"],
-      queryFn: () => apiRequest("/api/manufacturing-qualities"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/manufacturing-case-studies"],
-      queryFn: () => apiRequest("/api/manufacturing-case-studies"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/media"],
-      queryFn: () => apiRequest("/api/media"),
-    }),
+  const [hero, processes, capabilities, qualities, caseStudies, mediaData] = await Promise.all([
+    get("/api/manufacturing-hero"),
+    get("/api/manufacturing-processes"),
+    get("/api/manufacturing-capabilities"),
+    get("/api/manufacturing-qualities"),
+    get("/api/manufacturing-case-studies"),
+    get("/api/media"),
   ]);
 
-  return { dehydratedState: dehydrate(queryClient) };
+  return {
+    hero,
+    processes: processes || [],
+    capabilities: capabilities || [],
+    qualities: qualities || [],
+    caseStudies: caseStudies || [],
+    mediaAssets: mediaData?.data || [],
+  };
 }
 
-export default function Manufacturing() {
-  const loaderData = useLoaderData<typeof loader>();
-  return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <ManufacturingInner />
-    </HydrationBoundary>
-  );
+type LoaderData = {
+  hero: ManufacturingHero | null;
+  processes: ManufacturingProcess[];
+  capabilities: ManufacturingCapability[];
+  qualities: ManufacturingQuality[];
+  caseStudies: ManufacturingCaseStudy[];
+  mediaAssets: MediaAsset[];
+};
+
+export default function Manufacturing({ loaderData }: { loaderData: LoaderData }) {
+  return <ManufacturingInner loaderData={loaderData} />;
 }
 
-function ManufacturingInner() {
-  // Standardized data fetching using optimized hooks
-  const { data: heroData, isPending: isHeroLoading } = useQuery<ManufacturingHero>({
-    queryKey: ["/api/manufacturing-hero"],
-    queryFn: () => apiRequest("/api/manufacturing-hero"),
-    staleTime: 5 * 60 * 1000,
-  });
+interface ManufacturingInnerProps {
+  loaderData: LoaderData;
+}
 
-  const { data: processesData, isPending: isProcessesLoading } = useQuery<ManufacturingProcess[]>({
-    queryKey: ["/api/manufacturing-processes"],
-    queryFn: () => apiRequest("/api/manufacturing-processes"),
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const { data: capabilitiesData, isPending: isCapabilitiesLoading } = useQuery<
-    ManufacturingCapability[]
-  >({
-    queryKey: ["/api/manufacturing-capabilities"],
-    queryFn: () => apiRequest("/api/manufacturing-capabilities"),
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const { data: qualitiesData, isPending: isQualitiesLoading } = useQuery<ManufacturingQuality[]>({
-    queryKey: ["/api/manufacturing-qualities"],
-    queryFn: () => apiRequest("/api/manufacturing-qualities"),
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const { data: caseStudiesData, isPending: isCaseStudiesLoading } = useQuery<
-    ManufacturingCaseStudy[]
-  >({
-    queryKey: ["/api/manufacturing-case-studies"],
-    queryFn: () => apiRequest("/api/manufacturing-case-studies"),
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const { data: mediaData, isPending: isMediaLoading } = useQuery<{ data: MediaAsset[] }>({
-    queryKey: ["/api/media"],
-    queryFn: () => apiRequest("/api/media"),
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const isPending =
-    isHeroLoading ||
-    isProcessesLoading ||
-    isCapabilitiesLoading ||
-    isQualitiesLoading ||
-    isCaseStudiesLoading ||
-    isMediaLoading;
-
-  // Global loading state for initial content
-  if (isPending) {
-    return <ManufacturingLoadingSkeleton />;
-  }
-
-  // Safely cast data with fallbacks
-  const hero = heroData;
-  const processes = processesData || [];
-  const capabilities = capabilitiesData || [];
-  const qualityItems = qualitiesData || [];
-  const caseStudies = caseStudiesData || [];
-  const mediaAssets = mediaData?.data || [];
+function ManufacturingInner({ loaderData }: ManufacturingInnerProps) {
+  const { hero, processes, capabilities, qualities, caseStudies, mediaAssets } = loaderData;
+  const qualityItems = qualities;
 
   // Calculate real manufacturing stats from database data
   const annualCapacity = capabilities
@@ -320,7 +256,11 @@ function ManufacturingInner() {
       <div className="min-h-screen bg-background text-foreground font-helvetica selection:bg-amber-500/30">
         {/* Hero Section */}
         <ManufacturingErrorBoundary>
-          <PublicHeroSection mediaAssets={mediaAssets} hero={hero} stats={derivedStats} />
+          <PublicHeroSection
+            mediaAssets={mediaAssets}
+            hero={hero || undefined}
+            stats={derivedStats}
+          />
         </ManufacturingErrorBoundary>
 
         {/* Brand Marquee */}

@@ -42,17 +42,28 @@ router.post("/vitals", writeRateLimiter, (req, res) => {
         ip: ip,
       });
 
-      // PC-602: Persist to Redis
-      const listKey = `vitals:${metric.name}`;
-      const payload = JSON.stringify({
-        ...metric,
-        timestamp: Date.now(),
-        userAgent,
-        ip,
-      });
+      if (isRedisEnabled) {
+        // PC-602: Persist to Redis
+        const listKey = `vitals:${metric.name}`;
+        const payload = JSON.stringify({
+          ...metric,
+          timestamp: Date.now(),
+          userAgent,
+          ip,
+        });
 
-      await redis.lpush(listKey, payload);
-      await redis.ltrim(listKey, 0, 999);
+        const timeout = new Promise<void>((_, reject) =>
+          setTimeout(() => reject(new Error("Redis write timeout")), 300),
+        );
+
+        await Promise.race([
+          (async () => {
+            await redis.lpush(listKey, payload);
+            await redis.ltrim(listKey, 0, 999);
+          })(),
+          timeout,
+        ]);
+      }
     } catch (err) {
       logger.error("[Analytics] Failed to process vitals in background:", err);
     }
@@ -78,18 +89,25 @@ router.get("/vitals", authService.requireAdmin, async (_req, res) => {
   try {
     const results: Record<string, unknown[]> = {};
 
-    for (const metric of VITAL_METRIC_NAMES) {
+    const promises = VITAL_METRIC_NAMES.map(async (metric) => {
       const listKey = `vitals:${metric}`;
-      const rawEntries = await redis.lrange(listKey, 0, 99);
+      const timeout = new Promise<string[]>((resolve) => setTimeout(() => resolve([]), 300));
 
-      results[metric] = rawEntries.map((entry) => {
+      const rawEntries = await Promise.race([
+        redis.lrange(listKey, 0, 99).catch(() => []),
+        timeout,
+      ]);
+
+      results[metric] = (rawEntries as unknown as (string | unknown)[]).map((entry) => {
         try {
           return typeof entry === "string" ? JSON.parse(entry) : entry;
         } catch {
           return entry;
         }
       });
-    }
+    });
+
+    await Promise.all(promises);
 
     res.json({
       status: "ok",

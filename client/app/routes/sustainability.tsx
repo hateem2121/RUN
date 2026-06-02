@@ -5,11 +5,9 @@ import type {
   SustainabilityInitiative,
   SustainabilityMetric,
 } from "@shared/schemas/content/sustainability";
-import type { Fabric } from "@shared/schemas/materials";
-import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { ArrowRight, Download } from "lucide-react";
 import { useMemo, useRef } from "react";
-import { Link, useLoaderData } from "react-router";
+import { Link } from "react-router";
 import { SEOMeta } from "@/components/seo/seo-meta";
 import {
   CertificatesSection,
@@ -22,18 +20,57 @@ import { Button } from "@/components/ui/button";
 import { MarqueeStrip } from "@/components/ui/marquee-strip";
 import { Typography } from "@/components/ui/typography";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { apiRequest, batchFetchMediaContent, getQueryClient } from "@/lib/queryClient";
 import { getSustainabilityIcon } from "@/lib/sustainability-utils";
 import { cn } from "@/lib/utils";
 import type { Route } from "./+types/sustainability";
 
-export async function loader() {
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["/api/sustainability/batch"],
-    queryFn: () => apiRequest("/api/sustainability/batch"),
-  });
-  return { dehydratedState: dehydrate(queryClient) };
+export async function loader({ request }: Route.LoaderArgs) {
+  const base = new URL(request.url);
+  const get = (path: string) =>
+    fetch(new URL(path, base).toString())
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+
+  const batchData: SustainabilityBatchResponse | null = await get("/api/sustainability/batch");
+
+  let backgroundMedia = null;
+  let fetchedMediaAssets: MediaAsset[] = [];
+
+  if (batchData) {
+    const hero = batchData.hero;
+    if (hero?.backgroundImageId) {
+      backgroundMedia = await get(`/api/media/${hero.backgroundImageId}`);
+    }
+
+    const activeInitiatives = batchData.initiatives?.filter((i) => i.isActive) || [];
+    const fabrics = batchData.fabrics || [];
+    const ids = new Set<number>();
+    if (hero?.backgroundImageId) {
+      ids.add(hero.backgroundImageId);
+    }
+    activeInitiatives.forEach((initiative) => {
+      if (initiative.imageId) {
+        ids.add(initiative.imageId);
+      }
+    });
+    fabrics.forEach((fabric) => {
+      if (fabric.visualSwatchId) {
+        ids.add(fabric.visualSwatchId);
+      }
+    });
+
+    const requiredMediaIds = Array.from(ids);
+    if (requiredMediaIds.length > 0) {
+      const mediaBatchRes = await get(
+        `/api/media/batch/content?ids=${requiredMediaIds.join(",")}&prefetch=true`,
+      );
+      if (mediaBatchRes?.success && Array.isArray(mediaBatchRes.data)) {
+        fetchedMediaAssets = mediaBatchRes.data as MediaAsset[];
+      }
+    }
+  }
+
+  return { batchData, backgroundMedia, fetchedMediaAssets };
 }
 
 export function meta({}: Route.MetaArgs) {
@@ -241,17 +278,33 @@ function ImpactCounterCard({ name, value, unit, description, iconName }: ImpactC
 /* ═════════════════════════════════════════════
    SUSTAINABILITY PAGE
    ═════════════════════════════════════════════ */
-export default function Sustainability() {
-  const loaderData = useLoaderData<typeof loader>();
+type LoaderData = {
+  batchData: SustainabilityBatchResponse | null;
+  backgroundMedia: MediaAsset | null;
+  fetchedMediaAssets: MediaAsset[];
+};
+
+export default function Sustainability({ loaderData }: { loaderData: LoaderData }) {
+  const { batchData, backgroundMedia, fetchedMediaAssets } = loaderData;
 
   return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <SustainabilityInner />
-    </HydrationBoundary>
+    <SustainabilityInner
+      batchData={batchData}
+      backgroundMedia={backgroundMedia}
+      fetchedMediaAssets={fetchedMediaAssets}
+    />
   );
 }
 
-function SustainabilityInner() {
+function SustainabilityInner({
+  batchData,
+  backgroundMedia,
+  fetchedMediaAssets = [],
+}: {
+  batchData: SustainabilityBatchResponse | null;
+  backgroundMedia: MediaAsset | null;
+  fetchedMediaAssets: MediaAsset[];
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -320,13 +373,6 @@ function SustainabilityInner() {
     },
     { scope: containerRef },
   );
-
-  // Queries for unified sustainability data (Batch Request)
-  const { data: batchData } = useQuery<SustainabilityBatchResponse>({
-    queryKey: ["/api/sustainability/batch"],
-    queryFn: () => apiRequest("/api/sustainability/batch"),
-    staleTime: 5 * 60 * 1000,
-  });
 
   const unifiedData = batchData?.hero;
   const activeImpactMetrics =
@@ -399,62 +445,6 @@ function SustainabilityInner() {
         ctaLink: unifiedData.ctaLink,
       }
     : null;
-
-  // OPTIMIZED: Fetch specific background media only if ID exists
-  const { data: backgroundMedia } = useQuery<MediaAsset>({
-    queryKey: ["/api/media", hero?.backgroundImageId],
-    queryFn: () => apiRequest(`/api/media/${hero?.backgroundImageId}`),
-    enabled: !!hero?.backgroundImageId,
-    staleTime: 10 * 60 * 1000,
-  });
-
-  // Correctly populate media assets for the page
-  const requiredMediaIds = useMemo(() => {
-    const ids = new Set<number>();
-
-    if (hero?.backgroundImageId) {
-      ids.add(hero.backgroundImageId);
-    }
-
-    activeInitiatives.forEach((initiative) => {
-      if (initiative.imageId) {
-        ids.add(initiative.imageId);
-      }
-    });
-
-    const fabricsToCollect = batchData?.fabrics || [];
-    fabricsToCollect.forEach((fabric: Fabric) => {
-      if (fabric.visualSwatchId) {
-        ids.add(fabric.visualSwatchId);
-      }
-    });
-
-    return Array.from(ids);
-  }, [hero?.backgroundImageId, activeInitiatives, batchData?.fabrics]);
-
-  const { data: fetchedMediaAssets = [] } = useQuery<MediaAsset[]>({
-    queryKey: ["/api/media", "batch", requiredMediaIds],
-    queryFn: async () => {
-      if (requiredMediaIds.length === 0) {
-        return [];
-      }
-      const results = await batchFetchMediaContent(requiredMediaIds);
-      return results.map(
-        (r: { id: number; url?: string; mimeType?: string; filename?: string; type?: string }) => ({
-          id: r.id,
-          url: r.url || "",
-          mimeType: r.mimeType || "image/jpeg",
-          filename: r.filename || "",
-          type: r.type || "image",
-          storagePath: "",
-          bucketName: "",
-          metadata: {},
-        }),
-      ) as MediaAsset[];
-    },
-    enabled: requiredMediaIds.length > 0,
-    staleTime: 10 * 60 * 1000,
-  });
 
   const mediaAssets = useMemo(() => {
     const combined = [...fetchedMediaAssets];

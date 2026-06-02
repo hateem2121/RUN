@@ -251,6 +251,22 @@ export const closeDatabaseConnection = async () => {
   await pool.end();
 };
 
+export async function isDatabasePoolHealthy(): Promise<boolean> {
+  if (process.env.MOCK_DB === "true") {
+    return false;
+  }
+  try {
+    const { sql: drizzleSql } = await import("drizzle-orm");
+    await Promise.race([
+      db.execute(drizzleSql`SELECT 1`),
+      new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 500)),
+    ]);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Safe Database Query Wrapper
  */

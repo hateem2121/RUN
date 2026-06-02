@@ -1,5 +1,6 @@
 import { type Response, Router } from "express";
 import passport from "passport";
+import { isDatabasePoolHealthy } from "../db.js";
 import { userRepository } from "../lib/db/repositories/index.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { authRateLimiter } from "../middleware/rateLimiter.js";
@@ -43,8 +44,10 @@ if (
       },
     };
 
-    // Seed user if in test environment
-    if (process.env.NODE_ENV === "test") {
+    // Seed user if pool is healthy and MOCK_DB is not forced
+    const skipDb = process.env.MOCK_DB === "true" || !(await isDatabasePoolHealthy());
+
+    if (!skipDb) {
       try {
         await userRepository.upsertUser({
           id: mockUser.id,
@@ -85,7 +88,7 @@ if (
             return;
           }
 
-          const returnTo = (req.query.returnTo as string) || "/admin";
+          const returnTo = (req.query.returnTo as string) || "/dashboard";
           if (req.headers.accept?.includes("application/json")) {
             res.json({ success: true, user: mockUser });
             return;

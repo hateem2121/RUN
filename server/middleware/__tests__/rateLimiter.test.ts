@@ -54,12 +54,15 @@ describe("RateLimiter Middleware", () => {
       };
       vi.mocked(Redis.fromEnv).mockReturnValue(mockRedis as unknown as Redis);
 
-      const limiter = new RateLimiter({
-        windowMs: 60000,
-        max: 5,
-        message: "Too many requests",
-        statusCode: 429,
-      });
+      const limiter = new RateLimiter(
+        {
+          windowMs: 60000,
+          max: 5,
+          message: "Too many requests",
+          statusCode: 429,
+        },
+        mockRedis as unknown as Redis,
+      );
 
       await limiter.middleware()(req, res, next);
 
@@ -74,12 +77,15 @@ describe("RateLimiter Middleware", () => {
       };
       vi.mocked(Redis.fromEnv).mockReturnValue(mockRedis as unknown as Redis);
 
-      const limiter = new RateLimiter({
-        windowMs: 60000,
-        max: 5,
-        message: "Limit hit",
-        statusCode: 429,
-      });
+      const limiter = new RateLimiter(
+        {
+          windowMs: 60000,
+          max: 5,
+          message: "Limit hit",
+          statusCode: 429,
+        },
+        mockRedis as unknown as Redis,
+      );
 
       await limiter.middleware()(req, res, next);
 

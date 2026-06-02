@@ -1,34 +1,28 @@
 import { useGSAP } from "@gsap/react";
+import type { HomepageProcessCard } from "@shared/schemas/content/home";
 import gsap from "gsap";
 import { ArrowRight } from "lucide-react";
 import type React from "react";
 import { useRef } from "react";
-import { useHomepageData } from "@/hooks/use-homepage-data";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { PROCESS_STEPS as FALLBACK_STEPS } from "./constants";
 
-export const Process: React.FC = () => {
-  const { data: batchData, isLoading } = useHomepageData();
+interface ProcessProps {
+  data?: HomepageProcessCard[];
+}
+
+export const Process: React.FC<ProcessProps> = ({ data }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
   // Use CMS data if available, otherwise fallback to constants
-  const steps = batchData?.processCards?.result?.length
-    ? batchData.processCards.result
-    : FALLBACK_STEPS;
+  const steps = data?.length ? data : FALLBACK_STEPS;
 
   useGSAP(
     () => {
-      // If no steps or loading, don't initialize GSAP yet (prevent layout shift/errors)
-      if (
-        isLoading ||
-        !steps.length ||
-        !sectionRef.current ||
-        !triggerRef.current ||
-        !pathRef.current
-      ) {
+      if (!steps.length || !sectionRef.current || !triggerRef.current || !pathRef.current) {
         return;
       }
 
@@ -118,17 +112,8 @@ export const Process: React.FC = () => {
         });
       });
     },
-    { dependencies: [isLoading, steps, prefersReducedMotion], scope: triggerRef },
+    { dependencies: [steps, prefersReducedMotion], scope: triggerRef },
   );
-
-  // Skeleton state for initial batch fetch to stabilize layout
-  if (isLoading) {
-    return (
-      <div className="h-screen w-full animate-pulse bg-surface/5 flex items-center justify-center">
-        <div className="h-32 w-32 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
-      </div>
-    );
-  }
 
   return (
     <section
@@ -180,7 +165,14 @@ export const Process: React.FC = () => {
                 {/* Image Side */}
                 <div className="group relative aspect-square overflow-hidden rounded-lg md:aspect-auto md:h-full">
                   <img
-                    src={step.image || FALLBACK_STEPS[index % FALLBACK_STEPS.length]?.image || ""}
+                    src={
+                      ("image" in step ? step.image : undefined) ||
+                      ("imageId" in step && step.imageId
+                        ? `/api/media/${step.imageId}/content`
+                        : undefined) ||
+                      FALLBACK_STEPS[index % FALLBACK_STEPS.length]?.image ||
+                      ""
+                    }
                     alt={step.title}
                     loading="lazy"
                     decoding="async"

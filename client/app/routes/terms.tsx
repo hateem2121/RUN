@@ -1,15 +1,17 @@
-import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
+import DOMPurify from "isomorphic-dompurify";
 import type { MetaFunction } from "react-router";
-import { useLoaderData } from "react-router";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import type { Route } from "./+types/terms";
 
-export async function loader() {
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["/api/legal-policies", "terms-of-service"],
-    queryFn: () => apiRequest("/api/legal-policies?slug=terms-of-service"),
-  });
-  return { dehydratedState: dehydrate(queryClient) };
+export async function loader({ request }: Route.LoaderArgs) {
+  const base = new URL(request.url);
+  const get = (path: string) =>
+    fetch(new URL(path, base).toString())
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+
+  const policy = await get("/api/legal-policies?slug=terms-of-service");
+
+  return { policy };
 }
 
 export const meta: MetaFunction = () => {
@@ -18,16 +20,6 @@ export const meta: MetaFunction = () => {
     { name: "description", content: "Terms of Service for RUN APPAREL (PVT) LTD." },
   ];
 };
-
-export default function TermsOfService() {
-  const loaderData = useLoaderData<typeof loader>();
-
-  return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <TermsOfServicePageContent />
-    </HydrationBoundary>
-  );
-}
 
 interface LegalPolicyData {
   id: number;
@@ -39,13 +31,13 @@ interface LegalPolicyData {
   updatedAt: string;
 }
 
-function TermsOfServicePageContent() {
-  const { data: policy } = useQuery<LegalPolicyData>({
-    queryKey: ["/api/legal-policies", "terms-of-service"],
-    queryFn: () => apiRequest("/api/legal-policies?slug=terms-of-service"),
-    staleTime: 1000 * 60 * 5,
-  });
+export default function TermsOfService({ loaderData }: Route.ComponentProps) {
+  const { policy } = loaderData;
 
+  return <TermsOfServicePageContent policy={policy} />;
+}
+
+function TermsOfServicePageContent({ policy }: { policy: LegalPolicyData | null }) {
   const title = policy?.title || "Terms of Service";
   const content =
     policy?.content ||
@@ -63,9 +55,11 @@ function TermsOfServicePageContent() {
         <p className="font-mono text-muted-foreground tracking-widest uppercase">
           [ PROTOCOL: SERVICE_TERMS ]
         </p>
-        <p className="mt-8 text-lg leading-relaxed text-muted-foreground whitespace-pre-line">
-          {content}
-        </p>
+        <div
+          className="mt-8 text-lg leading-relaxed text-muted-foreground"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: Sanitized via DOMPurify
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }}
+        />
         <div className="mt-12 border-t border-border pt-8">
           <p className="text-sm text-muted-foreground italic">Last Updated: {lastUpdated}</p>
         </div>

@@ -161,6 +161,24 @@ export class BlogService {
   }
 
   /**
+   * Get blog post by slug.
+   */
+  async getBlogPostBySlug(slug: string): Promise<Result<BlogPost, AppError>> {
+    try {
+      const post = await withCircuit(
+        "get-blog-post-by-slug",
+        () => blogRepository.getBlogPostBySlug(slug),
+        DB_CIRCUIT_OPTIONS,
+      );
+      if (!post) return err(new NotFoundError(`Blog post with slug ${slug}`));
+      return ok(post);
+    } catch (error) {
+      logger.error("[BlogService] Failed to fetch blog post by slug", { slug }, error as Error);
+      return err(new InternalError("Failed to fetch blog post by slug", { slug, error }));
+    }
+  }
+
+  /**
    * Update a blog post.
    */
   async updateBlogPost(id: number, data: unknown): Promise<Result<BlogPost, AppError>> {

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import accessoriesRouter from "./accessories.js";
+import blogRouter from "./blog.js";
 import categoriesRouter from "./categories.js";
 import certificatesRouter from "./certificates.js";
 import fabricsRouter from "./fabrics.js";
@@ -14,7 +15,6 @@ import sizeChartsRouter from "./size-charts.js";
 const router = Router();
 
 router.use("/health", healthRouter);
-router.use(healthRouter); // Maintain legacy support for /api/live, /api/ready, /api/deep
 router.use(inquiriesRouter);
 router.use(categoriesRouter);
 router.use(productsRouter);
@@ -25,5 +25,6 @@ router.use(accessoriesRouter);
 router.use(sizeChartsRouter);
 router.use(servicesRouter);
 router.use(legalRouter);
+router.use(blogRouter);
 
 export default router;

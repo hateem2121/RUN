@@ -16,7 +16,8 @@ export const routeManifest: Record<string, string> = {
   "/size-charts": "app/routes/size-charts.tsx",
   "/fabrics": "app/routes/fabrics.tsx",
   "/fibers": "app/routes/fibers.tsx",
-  "/blog": "app/routes/blog.tsx",
+  "/blog": "app/routes/blog._index.tsx",
+  "/blog/:slug": "app/routes/blog.$slug.tsx",
   "/gallery": "app/routes/gallery.tsx",
   "/collections": "app/routes/collections.tsx",
   // Admin routes
@@ -61,6 +62,11 @@ export const getComponentForPath = (pathName: string): string | undefined => {
   // Exact Match
   if (Object.hasOwn(routeManifest, cleanPath)) {
     return routeManifest[cleanPath as keyof typeof routeManifest];
+  }
+
+  // Fuzzy Match (Developer Guides)
+  if (cleanPath.startsWith("/developer/guides/")) {
+    return "app/routes/developer.guides.$slug.tsx";
   }
 
   // Fuzzy Match (Categories & Products)

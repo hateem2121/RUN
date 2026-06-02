@@ -3,6 +3,29 @@ import type { NextFunction, Request, Response } from "express";
 import { RateLimitError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 
+const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL ?? "";
+const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN ?? "";
+
+const DUMMY_PATTERNS = ["dummy", "placeholder", "example.com", "localhost"];
+
+const isRealRedisConfigured =
+  REDIS_URL.startsWith("https://") &&
+  !DUMMY_PATTERNS.some((p) => REDIS_URL.includes(p)) &&
+  REDIS_TOKEN.length > 10;
+
+// Only instantiate Upstash client if URL is real
+const redis = isRealRedisConfigured ? new Redis({ url: REDIS_URL, token: REDIS_TOKEN }) : null;
+
+logger.info("rateLimiter initialized", {
+  redis: isRealRedisConfigured ? "upstash" : "in-memory-fallback",
+});
+
+const LOOPBACK = new Set(["::1", "127.0.0.1", "::ffff:127.0.0.1"]);
+
+function isLoopback(ip: string): boolean {
+  return LOOPBACK.has(ip) || ip.startsWith("::ffff:127.");
+}
+
 interface RateLimitConfig {
   windowMs: number;
   max: number;
@@ -16,29 +39,15 @@ interface RateLimitEntry {
 }
 
 export class RateLimiter {
-  private redis: Redis | null = null;
+  private redis: Redis | null = redis;
   private store: Map<string, RateLimitEntry> = new Map();
   private config: RateLimitConfig;
   private cleanupInterval: NodeJS.Timeout | null = null;
 
-  constructor(config: RateLimitConfig) {
+  constructor(config: RateLimitConfig, customRedis?: Redis | null) {
     this.config = config;
-
-    // Try to initialize Redis (skip if dummy URL)
-    const isDummyRedis =
-      process.env.UPSTASH_REDIS_REST_URL?.includes("dummy") ||
-      process.env.UPSTASH_REDIS_REST_URL === "";
-    if (
-      process.env.UPSTASH_REDIS_REST_URL &&
-      process.env.UPSTASH_REDIS_REST_TOKEN &&
-      !isDummyRedis
-    ) {
-      try {
-        this.redis = Redis.fromEnv();
-      } catch (_error) {
-        logger.warn("[RateLimiter] Failed to initialize Redis, falling back to memory");
-      }
-    } else {
+    if (customRedis !== undefined) {
+      this.redis = customRedis;
     }
 
     // Cleanup interval for memory store
@@ -62,17 +71,11 @@ export class RateLimiter {
       if (process.env.NODE_ENV === "test" && process.env.ENABLE_RATE_LIMIT_IN_TESTS !== "true") {
         return next();
       }
-      const ip = req.ip || "unknown";
-      // Whitelist localhost/loopback in dev to avoid crawling/testing lockouts
-      if (
-        process.env.NODE_ENV === "development" &&
-        (ip === "127.0.0.1" ||
-          ip === "::1" ||
-          ip === "::ffff:127.0.0.1" ||
-          ip.startsWith("127.0.0."))
-      ) {
+      const clientIp = req.ip ?? req.socket.remoteAddress ?? "";
+      if (process.env.NODE_ENV !== "test" && isLoopback(clientIp)) {
         return next();
       }
+      const ip = clientIp || "unknown";
       const key = `ratelimit:${ip}`;
 
       let current = 0;
@@ -235,12 +238,8 @@ export class UploadRateLimiter {
   }
 
   middleware = (req: Request, res: Response, next: NextFunction): void => {
-    const ip = req.ip || "unknown";
-    // Whitelist localhost/loopback in dev to avoid crawling/testing lockouts
-    if (
-      process.env.NODE_ENV === "development" &&
-      (ip === "127.0.0.1" || ip === "::1" || ip === "::ffff:127.0.0.1" || ip.startsWith("127.0.0."))
-    ) {
+    const clientIp = req.ip ?? req.socket.remoteAddress ?? "";
+    if (process.env.NODE_ENV !== "test" && isLoopback(clientIp)) {
       next();
       return;
     }

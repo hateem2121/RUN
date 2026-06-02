@@ -6,6 +6,7 @@
 import type {
   HomepageFeaturedProductsSettings,
   HomepageHero,
+  HomepageProcessCard,
   HomepageSection,
   HomepageSlogan,
 } from "../schemas/content/home";
@@ -106,5 +107,5 @@ export interface HomepageBatchResponse {
   featuredProductsSettings: DataWithTimestamp<HomepageFeaturedSettings | undefined>;
   products: DataWithTimestamp<ProductItem[]>;
   categories: DataWithTimestamp<CategoryItem[]>;
-  processCards: DataWithTimestamp<ProcessStep[]>;
+  processCards: DataWithTimestamp<HomepageProcessCard[]>;
 }

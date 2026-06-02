@@ -1,9 +1,6 @@
-import { ABOUT_API } from "@shared/api-constants";
 import type { AboutBatchResponse } from "@shared/index";
-import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { MessageSquare } from "lucide-react";
 import { useRef } from "react";
-import { useLoaderData } from "react-router";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { Card, CardContent, GlassCardDecorations } from "@/components/ui/card";
 import { GlowingShadow } from "@/components/ui/glowing-shadow";
@@ -16,40 +13,48 @@ import { Typography } from "@/components/ui/typography";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useMediaResolver } from "@/lib/media-resolver";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { resolveIcon } from "@/utils/icon-resolver";
 import type { Route } from "./+types/about";
 
-export async function loader() {
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: [ABOUT_API.BATCH],
-    queryFn: () => apiRequest(ABOUT_API.BATCH),
-  });
-  return { dehydratedState: dehydrate(queryClient) };
+export async function loader({ request }: Route.LoaderArgs) {
+  const base = new URL(request.url);
+  const get = (path: string) =>
+    fetch(new URL(path, base).toString())
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+
+  const [batchData] = await Promise.all([get("/api/about-batch")]);
+
+  return { batchData };
 }
 
-export function meta({}: Route.MetaArgs) {
+type LoaderData = {
+  batchData: AboutBatchResponse | null;
+};
+
+export function meta({ data }: { data: LoaderData | undefined }) {
+  const hero = data?.batchData?.hero;
   return [
-    { title: "About Us | Run Apparel" },
+    { title: hero?.title || "About Us | Run Apparel" },
     {
       name: "description",
-      content: "Learn about our history, values, and manufacturing capabilities.",
+      content:
+        hero?.description || "Learn about our history, values, and manufacturing capabilities.",
     },
   ];
 }
 
-export default function About() {
-  const loaderData = useLoaderData<typeof loader>();
+export default function About({ loaderData }: { loaderData: LoaderData }) {
+  const { batchData } = loaderData;
 
-  return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <AboutPageContent />
-    </HydrationBoundary>
-  );
+  return <AboutPageContent batchData={batchData} />;
 }
 
-function AboutPageContent() {
+interface AboutPageContentProps {
+  batchData: AboutBatchResponse | null;
+}
+
+function AboutPageContent({ batchData }: AboutPageContentProps) {
   const isMobile = useIsMobile();
   const teamMessageRef = useRef<HTMLDivElement>(null);
   const statsHeadingRef = useRef<HTMLDivElement>(null);
@@ -102,14 +107,6 @@ function AboutPageContent() {
       for (const t of triggers) t.kill();
     };
   }, []);
-  // Fetch all about data in one optimized batch call
-  // This will now correctly find data in the cache from the HydrationBoundary
-  const { data: batchData, isLoading: batchLoading } = useQuery<AboutBatchResponse>({
-    queryKey: [ABOUT_API.BATCH],
-    queryFn: () => apiRequest(ABOUT_API.BATCH),
-    retry: 3,
-    staleTime: 1000 * 60 * 5, // 5 minutes (standard CMS staleTime)
-  });
 
   // Extract data from batch response
   const heroData = batchData?.hero;
@@ -124,7 +121,7 @@ function AboutPageContent() {
   const { getAsset, getAssetUrl } = useMediaResolver(mediaAssets);
 
   // Check if we have sufficient data to render
-  const isDataReady = !batchLoading;
+  const isDataReady = !!batchData;
 
   // Sorted arrays
   const sortedTimeline = [...timeline].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
@@ -196,12 +193,7 @@ function AboutPageContent() {
     "";
 
   if (!heroData || !isDataReady) {
-    return (
-      <LoadingState
-        fullScreen
-        text={batchLoading ? "Loading about page data..." : "Loading about page..."}
-      />
-    );
+    return <LoadingState fullScreen text="Loading about page..." />;
   }
 
   return (

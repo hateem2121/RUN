@@ -37,7 +37,6 @@ export async function setupMiddleware(app: Express) {
           ...helmet.contentSecurityPolicy.getDefaultDirectives(),
           "script-src": [
             "'self'",
-            "'unsafe-inline'",
             "'wasm-unsafe-eval'",
             "'unsafe-eval'",
             "*.google.com",

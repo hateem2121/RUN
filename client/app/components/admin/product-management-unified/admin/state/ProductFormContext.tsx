@@ -191,7 +191,7 @@ export function ProductFormProvider({
 
   // 7. Submission Handler
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
 
       const isValid = validateForm(formData);
@@ -199,6 +199,41 @@ export function ProductFormProvider({
         toast({
           title: "Validation Error",
           description: "Please fix the form errors before submitting",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Check slug uniqueness
+      const validateSlugUniqueness = async (slug: string): Promise<boolean> => {
+        if (!slug || slug.length < 2) return false;
+
+        const params = new URLSearchParams({ slug });
+        if (product?.id) params.append("excludeId", String(product.id));
+
+        const res = await fetch(`/api/admin/products/check-slug?${params}`, {
+          credentials: "include",
+        });
+
+        if (!res.ok) return true; // Fail-open on API error — do not block saves
+        const data = (await res.json()) as { available: boolean };
+        return data.available === true;
+      };
+
+      const isUnique = await validateSlugUniqueness(formData.slug);
+      if (!isUnique) {
+        setFormErrors((prev) => ({
+          ...prev,
+          slug: "This slug is already taken. Use a unique identifier.",
+        }));
+        setValidationSummary((prev) => ({
+          ...prev,
+          isValid: false,
+          errorCount: prev.errorCount + 1,
+        }));
+        toast({
+          title: "Validation Error",
+          description: "This slug is already taken. Use a unique identifier.",
           variant: "destructive",
         });
         return;
