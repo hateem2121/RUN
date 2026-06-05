@@ -103,7 +103,9 @@ const data = [
   { name: "Jul", sales: 3490, revenue: 4300 },
 ];
 
-export function Component() {
+import { ProtectedAdminRoute } from "@/components/auth/ProtectedAdminRoute";
+
+export default function Component() {
   const loaderData = useLoaderData<typeof loader>();
 
   const { data: analyticsData } = useQuery({
@@ -120,9 +122,10 @@ export function Component() {
   });
 
   return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="min-h-screen space-y-8 bg-muted/10 p-8">
-        <div className="flex items-center justify-between">
+    <ProtectedAdminRoute>
+      <HydrationBoundary state={loaderData?.dehydratedState}>
+        <div className="min-h-screen space-y-8 bg-muted/10 p-8">
+          <div className="flex items-center justify-between">
           <div>
             <Typography.H1 className="font-bold text-3xl tracking-tight">Analytics</Typography.H1>
             <Typography.P className="text-muted-foreground">
@@ -281,6 +284,7 @@ export function Component() {
           </Link>
         </div>
       </div>
-    </HydrationBoundary>
+      </HydrationBoundary>
+    </ProtectedAdminRoute>
   );
 }

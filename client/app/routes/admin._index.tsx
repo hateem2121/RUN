@@ -26,7 +26,7 @@ function ModuleLoader() {
   );
 }
 
-export function Component() {
+export default function Component() {
   return (
     <InlineErrorBoundary fallback={<ProductsErrorFallback />}>
       <Suspense fallback={<ModuleLoader />}>

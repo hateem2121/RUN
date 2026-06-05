@@ -67,7 +67,7 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export function Component() {
+export default function Component() {
   const loaderData = useLoaderData<typeof loader>();
   const params = useParams();
   const slug = params.slug;

@@ -64,7 +64,7 @@ export function ErrorBoundary() {
   );
 }
 
-export function Component({ loaderData }: { loaderData: LoaderData }) {
+export default function Component({ loaderData }: { loaderData: LoaderData }) {
   const { contactConfig } = loaderData;
   const isMobile = useIsMobile();
 

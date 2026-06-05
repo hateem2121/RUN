@@ -40,7 +40,7 @@ const FALLBACK_IMAGES = [
   { id: -6, title: "High-Visibility Teamwear Printing", category: "Product", url: "" },
 ];
 
-export function Component({ loaderData }: Route.ComponentProps) {
+export default function Component({ loaderData }: Route.ComponentProps) {
   const { mediaList } = loaderData;
 
   const list =

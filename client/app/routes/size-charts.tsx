@@ -34,7 +34,7 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export function Component() {
+export default function Component() {
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedCharts, setExpandedCharts] = useState<Set<number>>(new Set());
   const headerRef = useRef<HTMLDivElement>(null);

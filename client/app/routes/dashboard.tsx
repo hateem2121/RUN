@@ -35,7 +35,9 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export function Component() {
+import { ProtectedAdminRoute } from "@/components/auth/ProtectedAdminRoute";
+
+export default function Component() {
   const statsRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -46,8 +48,9 @@ export function Component() {
   );
 
   return (
-    <div className="min-h-screen bg-muted/10 p-8">
-      <div className="mx-auto max-w-7xl space-y-8">
+    <ProtectedAdminRoute>
+      <div className="min-h-screen bg-muted/10 p-8">
+        <div className="mx-auto max-w-7xl space-y-8">
         {/* Welcome Section */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
@@ -205,6 +208,7 @@ export function Component() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </ProtectedAdminRoute>
   );
 }

@@ -33,20 +33,6 @@ import { ScrollProvider } from "./hooks/use-scroll";
 export const links: LinksFunction = () => [
   {
     rel: "preload",
-    href: "/fonts/NeueStance-Bold.woff2",
-    as: "font",
-    type: "font/woff2",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "preload",
-    href: "/fonts/NeueStance-Regular.woff2",
-    as: "font",
-    type: "font/woff2",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "preload",
     href: interWoff2,
     as: "font",
     type: "font/woff2",

@@ -62,7 +62,10 @@ export class RateLimiter {
   middleware = () => {
     return async (req: Request, res: Response, next: NextFunction) => {
       // Skip rate limiting in test mode unless explicitly enabled
-      if (process.env.NODE_ENV === "test" && process.env.ENABLE_RATE_LIMIT_IN_TESTS !== "true") {
+      if (
+        (process.env.NODE_ENV === "test" && process.env.ENABLE_RATE_LIMIT_IN_TESTS !== "true") ||
+        process.env.NODE_ENV === "development"
+      ) {
         return next();
       }
       const clientIp = req.ip ?? req.socket.remoteAddress ?? "";
