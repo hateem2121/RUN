@@ -341,67 +341,67 @@ describe("CacheKeys", () => {
 
 describe("InvalidationPatterns", () => {
   it("should have homepage pattern", () => {
-    expect(InvalidationPatterns.homepage).toBe("^homepage:.*");
+    expect(InvalidationPatterns.homepage).toBe("^(batch:)?homepage:.*");
   });
 
   it("should have media pattern", () => {
-    expect(InvalidationPatterns.media).toBe("^media:.*");
+    expect(InvalidationPatterns.media).toBe("^(batch:)?media:.*");
   });
 
   it("should have products pattern", () => {
-    expect(InvalidationPatterns.products).toBe("^products:.*");
+    expect(InvalidationPatterns.products).toBe("^(batch:)?products:.*");
   });
 
   it("should have navigation pattern", () => {
-    expect(InvalidationPatterns.navigation).toBe("^navigation:.*");
+    expect(InvalidationPatterns.navigation).toBe("^(batch:)?navigation:.*");
   });
 
   it("should have about pattern", () => {
-    expect(InvalidationPatterns.about).toBe("^about:.*");
+    expect(InvalidationPatterns.about).toBe("^(batch:)?about:.*");
   });
 
   it("should have sustainability pattern", () => {
-    expect(InvalidationPatterns.sustainability).toBe("^sustainability:.*");
+    expect(InvalidationPatterns.sustainability).toBe("^(batch:)?sustainability:.*");
   });
 
   it("should have manufacturing pattern", () => {
-    expect(InvalidationPatterns.manufacturing).toBe("^manufacturing:.*");
+    expect(InvalidationPatterns.manufacturing).toBe("^(batch:)?manufacturing:.*");
   });
 
   it("should have technology pattern", () => {
-    expect(InvalidationPatterns.technology).toBe("^technology:.*");
+    expect(InvalidationPatterns.technology).toBe("^(batch:)?technology:.*");
   });
 
   it("should have contact pattern", () => {
-    expect(InvalidationPatterns.contact).toBe("^contact:.*");
+    expect(InvalidationPatterns.contact).toBe("^(batch:)?contact:.*");
   });
 
   it("should have inquiries pattern", () => {
-    expect(InvalidationPatterns.inquiries).toBe("^inquiries:.*");
+    expect(InvalidationPatterns.inquiries).toBe("^(batch:)?inquiries:.*");
   });
 
   it("should have fabrics pattern", () => {
-    expect(InvalidationPatterns.fabrics).toBe("^fabrics:.*");
+    expect(InvalidationPatterns.fabrics).toBe("^(batch:)?fabrics:.*");
   });
 
   it("should have fibers pattern", () => {
-    expect(InvalidationPatterns.fibers).toBe("^fibers:.*");
+    expect(InvalidationPatterns.fibers).toBe("^(batch:)?fibers:.*");
   });
 
   it("should have certificates pattern", () => {
-    expect(InvalidationPatterns.certificates).toBe("^certificates:.*");
+    expect(InvalidationPatterns.certificates).toBe("^(batch:)?certificates:.*");
   });
 
   it("should have sizeCharts pattern", () => {
-    expect(InvalidationPatterns.sizeCharts).toBe("^size_charts:.*");
+    expect(InvalidationPatterns.sizeCharts).toBe("^(batch:)?size_charts:.*");
   });
 
   it("should have accessories pattern", () => {
-    expect(InvalidationPatterns.accessories).toBe("^accessories:.*");
+    expect(InvalidationPatterns.accessories).toBe("^(batch:)?accessories:.*");
   });
 
   it("should have computed pattern", () => {
-    expect(InvalidationPatterns.computed).toBe("^computed:.*");
+    expect(InvalidationPatterns.computed).toBe("^(batch:)?computed:.*");
   });
 
   describe("regex matching", () => {

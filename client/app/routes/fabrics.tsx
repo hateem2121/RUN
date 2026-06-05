@@ -28,20 +28,10 @@ import type { Route } from "./+types/fabrics";
 
 export async function loader() {
   const queryClient = getQueryClient();
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: ["/api/fabrics"],
-      queryFn: () => apiRequest("/api/fabrics"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/fibers"],
-      queryFn: () => apiRequest("/api/fibers"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/certificates"],
-      queryFn: () => apiRequest("/api/certificates"),
-    }),
-  ]);
+  await queryClient.prefetchQuery({
+    queryKey: ["/api/resources/batch?types=fabric,fiber,certificate"],
+    queryFn: () => apiRequest("/api/resources/batch?types=fabric,fiber,certificate"),
+  });
   return { dehydratedState: dehydrate(queryClient) };
 }
 
@@ -86,20 +76,30 @@ function ExpandPanel({
 
   useEffect(() => {
     if (!panelRef.current || !shouldRender) return;
+    const isReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (isExpanded) {
-      gsap.fromTo(
-        panelRef.current,
-        { height: 0, opacity: 0 },
-        { height: "auto", opacity: 1, duration: 0.3, ease: "power2.out" },
-      );
+      if (isReduced) {
+        gsap.set(panelRef.current, { height: "auto", opacity: 1 });
+      } else {
+        gsap.fromTo(
+          panelRef.current,
+          { height: 0, opacity: 0 },
+          { height: "auto", opacity: 1, duration: 0.3, ease: "power2.out" },
+        );
+      }
     } else {
-      gsap.to(panelRef.current, {
-        height: 0,
-        opacity: 0,
-        duration: 0.3,
-        ease: "power2.in",
-        onComplete: () => setShouldRender(false),
-      });
+      if (isReduced) {
+        gsap.set(panelRef.current, { height: 0, opacity: 0 });
+        setShouldRender(false);
+      } else {
+        gsap.to(panelRef.current, {
+          height: 0,
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => setShouldRender(false),
+        });
+      }
     }
   }, [isExpanded, shouldRender]);
 
@@ -112,7 +112,7 @@ function ExpandPanel({
   );
 }
 
-export default function Fabrics() {
+export function Component() {
   const loaderData = useLoaderData<typeof loader>();
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedFabrics, setExpandedFabrics] = useState<Set<number>>(new Set());
@@ -120,36 +120,42 @@ export default function Fabrics() {
   const contentRef = useRef<HTMLDivElement>(null);
 
   const {
-    data: fabricsResponse,
+    data: batchData,
     isLoading,
     isPlaceholderData,
-  } = useQuery<Fabric[]>({
-    queryKey: ["/api/fabrics"],
-    queryFn: () => apiRequest("/api/fabrics"),
+  } = useQuery<{ fabrics?: Fabric[]; fibers?: Fiber[]; certificates?: Certificate[] }>({
+    queryKey: ["/api/resources/batch?types=fabric,fiber,certificate"],
+    queryFn: () => apiRequest("/api/resources/batch?types=fabric,fiber,certificate"),
     placeholderData: keepPreviousData,
   });
 
-  const fabrics = Array.isArray(fabricsResponse) ? fabricsResponse : [];
+  const fabrics = batchData?.fabrics || [];
+  const fibers = batchData?.fibers || [];
+  const certificates = batchData?.certificates || [];
 
-  const { data: fibers = [] } = useQuery<Fiber[]>({
-    queryKey: ["/api/fibers"],
-    queryFn: () => apiRequest("/api/fibers"),
-  });
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
-  const { data: certificates = [] } = useQuery<Certificate[]>({
-    queryKey: ["/api/certificates"],
-    queryFn: () => apiRequest("/api/certificates"),
-  });
+  useEffect(() => {
+    setPrefersReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
 
   // Hero entrance animation
   useGSAP(() => {
     if (!heroRef.current) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(heroRef.current, { opacity: 1, y: 0 });
+      return;
+    }
     gsap.from(heroRef.current, { opacity: 0, y: 20, duration: 0.5, ease: "power2.out" });
   }, []);
 
   // Animate content when it loads
   useGSAP(() => {
     if (!contentRef.current || isLoading) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(contentRef.current.querySelectorAll(".fabric-category-group"), { opacity: 1, y: 0 });
+      return;
+    }
     gsap.from(contentRef.current.querySelectorAll(".fabric-category-group"), {
       opacity: 0,
       y: 20,
@@ -362,7 +368,7 @@ export default function Fabrics() {
                                 >
                                   {/* Texture Preview / 3D Viewer */}
                                   <div className="relative h-48 overflow-hidden bg-muted/20">
-                                    {fabric.visualSwatchId ? (
+                                    {fabric.visualSwatchId && !prefersReducedMotion ? (
                                       <ModelViewerErrorBoundary>
                                         <LazyUnifiedModelViewer
                                           asset={
@@ -425,7 +431,13 @@ export default function Fabrics() {
                                           </Typography.P>
                                         )}
                                       </div>
-                                      <Button variant="ghost" size="sm" className="ml-2">
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="ml-2"
+                                        aria-label={isExpanded ? "Collapse" : "Expand"}
+                                        aria-expanded={isExpanded}
+                                      >
                                         {isExpanded ? (
                                           <ChevronUp className="h-4 w-4" />
                                         ) : (

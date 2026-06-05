@@ -13,6 +13,8 @@ const SUSTAINABILITY_PAGE_URL = "/sustainability";
 const ADMIN_SUSTAINABILITY_URL = "/admin/sustainability";
 
 test.describe("Sustainability Page - Public UI", () => {
+  test.describe.configure({ mode: "serial" });
+
   test.beforeEach(async ({ page }) => {
     await page.goto(SUSTAINABILITY_PAGE_URL);
     await page.waitForLoadState("networkidle");
@@ -20,9 +22,9 @@ test.describe("Sustainability Page - Public UI", () => {
 
   test("Page should load with correct title", async ({ page }) => {
     // Correct heading identified via browser inspection
-    const title = page.locator("h1");
+    const title = page.locator("h1").first();
     await expect(title).toBeVisible();
-    await expect(title).toContainText(/Sustainability Woven Into Every Thread/i);
+    await expect(title).toContainText(/Sustainability\s*Woven\s*Into\s*Every\s*Thread/i);
   });
 
   test("Should display impact metrics", async ({ page }) => {
@@ -47,7 +49,7 @@ test.describe("Sustainability Page - Public UI", () => {
     await page.waitForTimeout(500);
 
     // Headline might be slightly different or hidden in weird ways, check visibility
-    const headline = page.locator("h1");
+    const headline = page.locator("h1").first();
     // Some premium designs use different headings for mobile or hide them via GSAP
     // If h1 is not visible, check for a mobile-specific header
     if (!(await headline.isVisible())) {
@@ -90,13 +92,15 @@ test.describe("Sustainability Page - Quality & Accessibility", () => {
 
   test("SSR Verification", async ({ page }) => {
     await page.goto(SUSTAINABILITY_PAGE_URL, { waitUntil: "commit" });
-    const headline = page.locator("h1");
+    const headline = page.locator("h1").first();
     // Some pages might not have a visible H1 on commit due to animations, but locator should exist
     await expect(headline).toBeAttached();
   });
 });
 
 test.describe("Sustainability Admin CMS Tests", () => {
+  test.describe.configure({ mode: "serial" });
+
   // Use authentication state
   test.use({ storageState: ".auth/user.json" });
 
@@ -114,28 +118,36 @@ test.describe("Sustainability Admin CMS Tests", () => {
     await page.goto(ADMIN_SUSTAINABILITY_URL);
     await page.waitForLoadState("networkidle");
 
-    const titleInput = page.locator("input[name='title'], #hero-title").first();
-    const saveButton = page.locator("button:has-text('Save'), button[type='submit']").first();
+    const titleInput = page.locator("#headline").first();
+    const saveButton = page.locator("button:has-text('Sync Ecosystem')").first();
 
-    if ((await titleInput.isVisible()) && (await saveButton.isVisible())) {
-      const originalTitle = await titleInput.inputValue();
-      const newTitle = `Green Manufacturing Evolution${TEST_MARKER}`;
+    // Explicitly wait for loader to resolve and elements to become visible
+    await expect(titleInput).toBeVisible({ timeout: 15000 });
+    await expect(saveButton).toBeVisible({ timeout: 15000 });
 
-      await titleInput.fill(newTitle);
-      await saveButton.click();
+    const originalTitle = await titleInput.inputValue();
+    const newTitle = `Green Manufacturing Evolution${TEST_MARKER}`;
 
-      await page.waitForTimeout(2000);
+    await titleInput.fill(newTitle);
+    await saveButton.click();
 
-      // Verify
-      await page.goto(SUSTAINABILITY_PAGE_URL);
-      await page.waitForLoadState("networkidle");
-      await expect(page.locator("h1")).toContainText(newTitle);
+    // Wait for the mutation to finish saving and for the DB write to propagate
+    await page.waitForTimeout(2000);
 
-      // Cleanup
-      await page.goto(ADMIN_SUSTAINABILITY_URL);
-      await page.waitForLoadState("networkidle");
-      await titleInput.fill(originalTitle);
-      await saveButton.click();
-    }
+    // Verify
+    await page.goto(SUSTAINABILITY_PAGE_URL);
+    await page.waitForLoadState("networkidle");
+    const escapedTitle = newTitle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const expectedTitlePattern = new RegExp(escapedTitle.replace(/\s+/g, "\\s*"), "i");
+    await expect(page.locator("h1").first()).toContainText(expectedTitlePattern);
+
+    // Cleanup
+    await page.goto(ADMIN_SUSTAINABILITY_URL);
+    await page.waitForLoadState("networkidle");
+    await expect(titleInput).toBeVisible({ timeout: 15000 });
+    await expect(saveButton).toBeVisible({ timeout: 15000 });
+    await titleInput.fill(originalTitle);
+    await saveButton.click();
+    await page.waitForTimeout(2000);
   });
 });

@@ -7,14 +7,13 @@ import {
 import express from "express";
 import { validateRequest } from "zod-express-middleware";
 import { generateResponsiveVariants, isImageFile, processImage } from "../image-processor.js";
-import { mediaRepository } from "../lib/db/repositories/index.js";
 import { emailService } from "../lib/integrations/email-service.js";
 import { getGLTFProcessor, isGLTFFile } from "../lib/integrations/gltf-processor.js";
 import { logger } from "../lib/monitoring/logger.js";
-import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 import { appStorageService } from "../lib/storage/app-service.js";
 import { verifyCloudTaskToken } from "../lib/verify-cloud-task-token.js";
 import { workerTaskDuration } from "../services/job-metrics.service.js";
+import { mediaService } from "../services/media.service.js";
 import { generateOrganizedStoragePath, getVideoMetadata } from "./media/utils.js";
 
 const router = express.Router();
@@ -118,16 +117,14 @@ router.post(
     try {
       // 1. Fetch asset metadata from database
       const numericId = Number.parseInt(payload.mediaId, 10);
-      const asset = await withCircuit(
-        "get-media-asset",
-        () => mediaRepository.getMediaAsset(numericId),
-        DB_CIRCUIT_OPTIONS,
-      );
+      const assetResult = await mediaService.getAssetById(numericId);
 
-      if (!asset) {
+      if (assetResult.isErr()) {
         logger.warn("[Worker:Media] Asset not found, skipping", { mediaId: payload.mediaId });
         return res.status(200).json({ success: true, message: "Asset not found" });
       }
+
+      const asset = assetResult.value;
 
       // 2. Download original file buffer
       const buffer = await appStorageService.downloadAsset(asset.storagePath);
@@ -152,7 +149,7 @@ router.post(
             const variants = await generateResponsiveVariants(buffer, asset.filename);
 
             // Update asset metadata to indicate optimization complete
-            await mediaRepository.updateMediaAsset(numericId, {
+            await mediaService.updateAsset(numericId, {
               metadata: {
                 ...metadata,
                 optimized: true,
@@ -187,7 +184,7 @@ router.post(
           }
 
           if (Object.keys(metadataUpdate).length > 0) {
-            await mediaRepository.updateMediaAsset(numericId, {
+            await mediaService.updateAsset(numericId, {
               metadata: {
                 ...metadata,
                 ...metadataUpdate,
@@ -214,7 +211,7 @@ router.post(
                 "thumbnails",
                 thumbResult.thumbnailFilename,
               );
-              await mediaRepository.updateMediaAsset(numericId, {
+              await mediaService.updateAsset(numericId, {
                 thumbnailUrl: `/api/media/thumbnail/${numericId}`,
                 thumbnailFilename: thumbResult.thumbnailFilename,
                 thumbnailStoragePath: thumbPath,
@@ -237,10 +234,10 @@ router.post(
       // Note: In a real system, we'd check if ALL expected tasks for this asset are done.
       // For now, we'll just clear it if this was an 'optimize' or 'metadata' task.
       if (payload.operation === "optimize" || payload.operation === "metadata") {
-        const currentAsset = await mediaRepository.getMediaAsset(numericId);
-        if (currentAsset) {
-          const currentMeta = (currentAsset.metadata as Record<string, unknown>) || {};
-          await mediaRepository.updateMediaAsset(numericId, {
+        const currentAssetResult = await mediaService.getAssetById(numericId);
+        if (currentAssetResult.isOk()) {
+          const currentMeta = (currentAssetResult.value.metadata as Record<string, unknown>) || {};
+          await mediaService.updateAsset(numericId, {
             metadata: {
               ...currentMeta,
               isProcessing: false,

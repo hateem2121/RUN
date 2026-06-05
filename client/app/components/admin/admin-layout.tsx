@@ -101,7 +101,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
   // Fetch inquiries stats for badge
   const { data: inquiriesStats } = useQuery<{ newCount: number }>({
-    queryKey: ["/api/v1/admin/inquiries/stats"],
+    queryKey: ["/api/admin/inquiries/stats"],
     retry: false,
     staleTime: 60000,
   });

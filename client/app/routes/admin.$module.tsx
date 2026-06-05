@@ -142,7 +142,7 @@ const AdminSettings = ({ moduleName }: { moduleName: string }) => (
   <PlaceholderModule moduleName={moduleName} />
 );
 
-export default function AdminModule() {
+export function Component() {
   const { module } = useParams();
 
   const renderModule = () => {

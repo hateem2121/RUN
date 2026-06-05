@@ -100,74 +100,54 @@ router.get("/", async (req, res) => {
 
   // Register default Node.js metrics once
   if (!defaultMetricsRegistered) {
-    try {
-      prom.collectDefaultMetrics();
-      defaultMetricsRegistered = true;
-      logger.info("[Metrics] Default Node.js runtime metrics registered.");
-    } catch (_e) {
-      // Ignore if already registered
-    }
+    prom.collectDefaultMetrics();
+    defaultMetricsRegistered = true;
+    logger.info("[Metrics] Default Node.js runtime metrics registered.");
   }
 
   // 1. Update HTTP metrics dynamically
-  try {
-    const routeMetrics = httpMetricsTracker.getAllRouteMetrics();
-    for (const [key, metrics] of routeMetrics.entries()) {
-      const parts = key.split(" ");
-      const method = parts[0] || "GET";
-      const route = parts[1] || "/";
+  const routeMetrics = httpMetricsTracker.getAllRouteMetrics();
+  for (const [key, metrics] of routeMetrics.entries()) {
+    const parts = key.split(" ");
+    const method = parts[0] || "GET";
+    const route = parts[1] || "/";
 
-      // Set average duration (in seconds)
-      httpRequestDuration.set({ method, route }, metrics.avgDuration / 1000);
+    // Set average duration (in seconds)
+    httpRequestDuration.set({ method, route }, metrics.avgDuration / 1000);
 
-      // Set request count by status code
-      for (const [statusCode, count] of Object.entries(metrics.statusCodes)) {
-        httpRequestsTotal.set({ method, route, status_code: String(statusCode) }, count);
-      }
+    // Set request count by status code
+    for (const [statusCode, count] of Object.entries(metrics.statusCodes)) {
+      httpRequestsTotal.set({ method, route, status_code: String(statusCode) }, count);
     }
-  } catch (err) {
-    logger.warn("[Metrics] Failed to update HTTP scraping gauges", err);
   }
 
   // 2. Update Cache metrics dynamically
-  try {
-    const unifiedMetrics = UnifiedCache.getInstance().getMetrics();
-    cacheHitsTotal.set({ cache_type: "unified" }, unifiedMetrics.hits);
-    cacheMissesTotal.set({ cache_type: "unified" }, unifiedMetrics.misses);
+  const unifiedMetrics = UnifiedCache.getInstance().getMetrics();
+  cacheHitsTotal.set({ cache_type: "unified" }, unifiedMetrics.hits);
+  cacheMissesTotal.set({ cache_type: "unified" }, unifiedMetrics.misses);
 
-    const batchMetrics = twoTierBatchCache.getMetrics();
-    const batchHits = Math.round(batchMetrics.totalRequests * (batchMetrics.hitRate / 100));
-    const batchMisses = Math.round(batchMetrics.totalRequests * (batchMetrics.missRate / 100));
-    cacheHitsTotal.set({ cache_type: "batch" }, batchHits);
-    cacheMissesTotal.set({ cache_type: "batch" }, batchMisses);
-  } catch (err) {
-    logger.warn("[Metrics] Failed to update Cache scraping gauges", err);
-  }
+  const batchMetrics = twoTierBatchCache.getMetrics();
+  const batchHits = Math.round(batchMetrics.totalRequests * (batchMetrics.hitRate / 100));
+  const batchMisses = Math.round(batchMetrics.totalRequests * (batchMetrics.missRate / 100));
+  cacheHitsTotal.set({ cache_type: "batch" }, batchHits);
+  cacheMissesTotal.set({ cache_type: "batch" }, batchMisses);
 
   // 3. Update Database metrics dynamically
-  try {
-    const dbStats = queryPerformanceMonitor.getPerformanceStats();
-    dbQueryDuration.set({ operation: "all" }, dbStats.averageResponseTime / 1000);
+  const dbStats = queryPerformanceMonitor.getPerformanceStats();
+  dbQueryDuration.set({ operation: "all" }, dbStats.averageResponseTime / 1000);
 
-    const poolMetrics = getPoolMetrics();
-    dbConnectionsActive.set(poolMetrics.currentConcurrentQueries);
-  } catch (err) {
-    logger.warn("[Metrics] Failed to update DB scraping gauges", err);
-  }
+  const poolMetrics = getPoolMetrics();
+  dbConnectionsActive.set(poolMetrics.currentConcurrentQueries);
 
   // 4. Update Error metrics dynamically
-  try {
-    const errorMetrics = errorAggregator.getMetrics();
-    errorRateTotal.set(errorMetrics.totalErrors);
+  const errorMetrics = errorAggregator.getMetrics();
+  errorRateTotal.set(errorMetrics.totalErrors);
 
-    for (const [type, count] of Object.entries(errorMetrics.errorsByType)) {
-      errorByTypeTotal.set({ type }, count);
-    }
-    for (const [severity, count] of Object.entries(errorMetrics.errorsBySeverity)) {
-      errorBySeverityTotal.set({ severity }, count);
-    }
-  } catch (err) {
-    logger.warn("[Metrics] Failed to update Error scraping gauges", err);
+  for (const [type, count] of Object.entries(errorMetrics.errorsByType)) {
+    errorByTypeTotal.set({ type }, count);
+  }
+  for (const [severity, count] of Object.entries(errorMetrics.errorsBySeverity)) {
+    errorBySeverityTotal.set({ severity }, count);
   }
 
   res.set("Content-Type", prom.register.contentType);

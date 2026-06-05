@@ -2,7 +2,6 @@ import { lazy, Suspense } from "react";
 import type { ActionFunctionArgs } from "react-router";
 import { type ContactConfig, ContactForm } from "@/components/contact/contact-form";
 import { ContactInfoCardsSkeleton } from "@/components/contact/contact-info-skeleton";
-import { ClientOnly } from "@/components/shared/ClientOnly";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import type { Route } from "./+types/contact";
 
@@ -49,26 +48,27 @@ type LoaderData = {
   locations: unknown;
 };
 
-export default function Contact({ loaderData }: { loaderData: LoaderData }) {
+import { isRouteErrorResponse, useRouteError } from "react-router";
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  return (
+    <div className="min-h-screen bg-muted/30 pt-32 pb-24 text-foreground flex flex-col items-center justify-center">
+      <h1 className="text-2xl font-bold mb-4">Oops! Something went wrong.</h1>
+      <p className="text-muted-foreground">
+        {isRouteErrorResponse(error)
+          ? `${error.status} ${error.statusText}`
+          : "An unexpected error occurred."}
+      </p>
+    </div>
+  );
+}
+
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   const { contactConfig } = loaderData;
   const isMobile = useIsMobile();
 
-  return (
-    <ClientOnly
-      fallback={
-        <div className="min-h-screen bg-muted/30 pt-32 pb-24 text-foreground">
-          <div className="container mx-auto max-w-7xl p-6 md:p-8 lg:p-12">
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-5 relative z-10">
-              <div className="col-span-1 md:col-span-2 lg:col-span-3 h-[600px] bg-card/50 animate-pulse rounded-xl" />
-              <ContactInfoCardsSkeleton />
-            </div>
-          </div>
-        </div>
-      }
-    >
-      <ContactContent contactConfig={contactConfig} isMobile={isMobile} />
-    </ClientOnly>
-  );
+  return <ContactContent contactConfig={contactConfig} isMobile={isMobile} />;
 }
 
 import type { ContactPageConfiguration } from "@shared/index";
@@ -106,6 +106,14 @@ function ContactContent({
           </Suspense>
         </div>
       </div>
+    </div>
+  );
+}
+
+export function HydrateFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
     </div>
   );
 }

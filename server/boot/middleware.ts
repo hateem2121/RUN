@@ -1,12 +1,6 @@
 import crypto from "node:crypto";
 import cookieParser from "cookie-parser";
-import express, {
-  type Express,
-  type NextFunction,
-  type Request,
-  type RequestHandler,
-  type Response,
-} from "express";
+import express, { type Express, type Request, type RequestHandler } from "express";
 import helmet from "helmet";
 import { env } from "../lib/env.js";
 import { httpMetricsTracker } from "../lib/monitoring/http-metrics.js";
@@ -29,14 +23,18 @@ export async function setupMiddleware(app: Express) {
   app.use(correlationIdMiddleware);
   app.use(httpMetricsTracker.middleware());
 
-  // 1. Core Security Headers (Helmet)
-  app.use(
+  // 1. Core Security Headers (Helmet) with dynamic CSP Nonce
+  app.use((req, res, next) => {
+    const nonce = crypto.randomBytes(16).toString("base64url");
+    res.locals.cspNonce = nonce;
+
     helmet({
       contentSecurityPolicy: {
         directives: {
           ...helmet.contentSecurityPolicy.getDefaultDirectives(),
           "script-src": [
             "'self'",
+            `'nonce-${nonce}'`,
             "'wasm-unsafe-eval'",
             "'unsafe-eval'",
             "*.google.com",
@@ -56,8 +54,8 @@ export async function setupMiddleware(app: Express) {
         },
       },
       crossOriginEmbedderPolicy: false, // Required for some 3D/Media elements
-    }),
-  );
+    })(req, res, next);
+  });
 
   // 2. Cookie Parser (Required for CSRF and sessions)
   app.use(cookieParser());
@@ -67,7 +65,6 @@ export async function setupMiddleware(app: Express) {
 
   // 4. Basic Security & Identity
   app.use(createCorsMiddleware());
-  app.use(nonceMiddleware);
 
   // 5. CSRF Protection (Double-Submit Cookie pattern)
   app.use(csrfProtection);
@@ -126,15 +123,6 @@ function createCorsMiddleware(): RequestHandler {
     }
     next();
   };
-}
-
-/**
- * Helper: CSP Nonce Middleware
- */
-function nonceMiddleware(_req: Request, res: Response, next: NextFunction) {
-  const nonce = crypto.randomBytes(16).toString("base64url");
-  res.locals.cspNonce = nonce;
-  next();
 }
 
 /**

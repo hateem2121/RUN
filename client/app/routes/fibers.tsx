@@ -84,7 +84,7 @@ function ExpandPanel({
   );
 }
 
-export default function Fibers() {
+export function Component() {
   const loaderData = useLoaderData<typeof loader>();
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedFibers, setExpandedFibers] = useState<Set<number>>(new Set());
@@ -301,7 +301,13 @@ export default function Fibers() {
                                       )}
                                     </div>
                                   </div>
-                                  <Button variant="ghost" size="sm" className="ml-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="ml-2"
+                                    aria-label={isExpanded ? "Collapse" : "Expand"}
+                                    aria-expanded={isExpanded}
+                                  >
                                     {isExpanded ? (
                                       <ChevronUp className="h-4 w-4" />
                                     ) : (

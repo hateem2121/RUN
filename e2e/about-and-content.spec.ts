@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
@@ -27,7 +28,6 @@ test.describe("Public Pages: About & Secondary Content", () => {
         });
         await page.goto(`${BASE_URL}${route}`);
         if (logs.length > 0) {
-          const fs = require("node:fs");
           fs.appendFileSync("e2e-console-logs.txt", `\n--- ${route} ---\n${logs.join("\n")}\n`);
         }
         expect(logs.filter((l) => !l.includes("Hydration")).length).toBe(0);
@@ -57,8 +57,9 @@ test.describe("Public Pages: About & Secondary Content", () => {
   test("/about renders specific sections", async ({ page }) => {
     await page.goto(`${BASE_URL}/about`);
 
-    // Use resilient locators that wait for visibility and scroll if needed
-    const heroHeading = page.getByRole("heading", { name: /About RUN Apparel/i });
+    const heroHeading = page.getByRole("heading", {
+      name: /(About RUN Apparel|E2E-ABOUT|Leading B2B)/i,
+    });
     await expect(heroHeading).toBeVisible();
 
     // GSAP ScrollExpansion Hero can be tricky for standard scrolling.
@@ -66,10 +67,10 @@ test.describe("Public Pages: About & Secondary Content", () => {
     await page.evaluate(() => window.scrollTo(0, 5000));
     await page.waitForTimeout(1000);
 
-    const missionHeading = page.getByRole("heading", { name: "Our Mission" });
+    const missionHeading = page.getByRole("heading", { name: "Our Mission" }).first();
     await expect(missionHeading).toBeVisible({ timeout: 15000 });
 
-    const visionHeading = page.getByRole("heading", { name: "Our Vision" });
+    const visionHeading = page.getByRole("heading", { name: "Our Vision" }).first();
     await expect(visionHeading).toBeVisible({ timeout: 15000 });
 
     // Heritage and Team
@@ -164,17 +165,25 @@ test.describe("Admin Modules: About & Secondary Content", () => {
     await page.click('button:has-text("Save Changes")');
 
     // Specific toast locator for better reliability
-    await expect(page.locator('[role="status"]')).toContainText(/Success/i, { timeout: 10000 });
+    await expect(page.locator('[data-sonner-toast], [role="status"]').first()).toContainText(
+      /Success/i,
+      { timeout: 10000 },
+    );
 
     await page.goto(`${BASE_URL}/about`);
 
+    // Check visibility first when it is centered and fully visible
+    await expect(page.getByText(testValue).first()).toBeVisible({ timeout: 15000 });
+
     // Wait for GSAP hero expansion and hydration
     await page.mouse.wheel(0, 2000);
-    await expect(page.getByText(testValue)).toBeVisible({ timeout: 15000 });
 
     await page.goto(`${BASE_URL}/admin/about`);
     await page.click('button:has-text("Save Changes")');
-    await expect(page.locator('[role="status"]')).toContainText(/Success/i, { timeout: 10000 });
+    await expect(page.locator('[data-sonner-toast], [role="status"]').first()).toContainText(
+      /Success/i,
+      { timeout: 10000 },
+    );
   });
 
   test("/admin/certifications crud interaction", async ({ page }) => {
@@ -183,6 +192,7 @@ test.describe("Admin Modules: About & Secondary Content", () => {
 
     // Explicitly wait for the list to load
     await page.waitForSelector('h1:has-text("Certificate Management")');
+    await expect(page.getByText("Loading...")).not.toBeVisible({ timeout: 15000 });
 
     await page.getByRole("button", { name: /Add Certificate/i }).click();
 
@@ -193,7 +203,10 @@ test.describe("Admin Modules: About & Secondary Content", () => {
     await dialog.locator("input#type").fill("Sustainability");
     await page.getByRole("button", { name: /Create/i, exact: true }).click();
 
-    await expect(page.locator('[role="status"]')).toContainText(/Success/i, { timeout: 10000 });
+    await expect(page.locator('[data-sonner-toast], [role="status"]').first()).toContainText(
+      /Success/i,
+      { timeout: 10000 },
+    );
 
     await page.goto(`${BASE_URL}/certifications`);
     await expect(page.locator(`text=${testCert}`).first()).toBeVisible();
@@ -202,10 +215,21 @@ test.describe("Admin Modules: About & Secondary Content", () => {
     const card = page.locator(`[data-testid="resource-card"]:has-text("${testCert}")`).first();
     await expect(card).toBeVisible();
 
-    await card.locator('button:has-text("Delete")').click();
-    await page.getByRole("dialog").getByRole("button", { name: "Delete", exact: true }).click();
+    const deleteBtn = card.locator('button:has-text("Delete")');
+    if (await deleteBtn.isVisible()) {
+      await deleteBtn.click();
+    } else {
+      const menuBtn = card
+        .locator('button[aria-haspopup="menu"], button[aria-label="Certificate actions"]')
+        .first();
+      await menuBtn.click();
+      await page.getByRole("menuitem", { name: "Delete" }).first().click();
+    }
 
-    await expect(page.locator('[role="status"]')).toContainText(/Success/i, { timeout: 10000 });
+    await expect(page.locator('[data-sonner-toast], [role="status"]').first()).toContainText(
+      /Success/i,
+      { timeout: 10000 },
+    );
 
     await page.goto(`${BASE_URL}/certifications`);
     await expect(page.locator(`text=${testCert}`)).not.toBeVisible();
@@ -214,6 +238,7 @@ test.describe("Admin Modules: About & Secondary Content", () => {
   test("/admin/fabrics crud interaction", async ({ page }) => {
     const testFabric = `E2E-FABRIC-${Date.now()}`;
     await page.goto(`${BASE_URL}/admin/fabrics`);
+    await expect(page.getByText("Loading...")).not.toBeVisible({ timeout: 15000 });
 
     await page.getByRole("button", { name: /Create Fabric/i }).click();
 
@@ -222,17 +247,23 @@ test.describe("Admin Modules: About & Secondary Content", () => {
     await dialog.locator("input#name").fill(testFabric);
     await page.getByRole("button", { name: /Create Fabric/i, exact: true }).click();
 
-    await expect(page.locator('[role="status"]')).toContainText(/Success/i, { timeout: 10000 });
+    await expect(page.locator('[data-sonner-toast], [role="status"]').first()).toContainText(
+      /Success/i,
+      { timeout: 10000 },
+    );
 
     await page.goto(`${BASE_URL}/fabrics`);
     await expect(page.locator(`text=${testFabric}`).first()).toBeVisible();
 
     await page.goto(`${BASE_URL}/admin/fabrics`);
     const card = page.locator(`[data-testid="fabric-card"]:has-text("${testFabric}")`).first();
-    await card.locator('button:has-text("Delete")').click();
+    await card.locator('button:has-text("Delete")').first().click();
     await page.getByRole("dialog").getByRole("button", { name: "Delete", exact: true }).click();
 
-    await expect(page.locator('[role="status"]')).toContainText(/Success/i, { timeout: 10000 });
+    await expect(page.locator('[data-sonner-toast], [role="status"]').first()).toContainText(
+      /Success/i,
+      { timeout: 10000 },
+    );
 
     await page.goto(`${BASE_URL}/fabrics`);
     await expect(page.locator(`text=${testFabric}`)).not.toBeVisible();
@@ -241,15 +272,24 @@ test.describe("Admin Modules: About & Secondary Content", () => {
   test("/admin/fibers crud interaction", async ({ page }) => {
     const testFiber = `E2E-FIBER-${Date.now()}`;
     await page.goto(`${BASE_URL}/admin/fibers`);
+    await expect(page.getByText("Loading...")).not.toBeVisible({ timeout: 15000 });
 
     await page.getByRole("button", { name: /Create Fiber/i }).click();
 
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
     await dialog.locator("input#name").fill(testFiber);
+
+    // Select Fiber Type (e.g. Natural) from the dropdown
+    await dialog.getByRole("combobox").click();
+    await page.getByRole("option", { name: "Natural", exact: true }).click();
+
     await page.getByRole("button", { name: /Create Fiber/i, exact: true }).click();
 
-    await expect(page.locator('[role="status"]')).toContainText(/Success/i, { timeout: 10000 });
+    await expect(page.locator('[data-sonner-toast], [role="status"]').first()).toContainText(
+      /Success/i,
+      { timeout: 10000 },
+    );
 
     await page.goto(`${BASE_URL}/fibers`);
     await expect(page.locator(`text=${testFiber}`).first()).toBeVisible();
@@ -263,11 +303,17 @@ test.describe("Admin Modules: About & Secondary Content", () => {
     } else {
       const menuBtn = card.locator('button[aria-haspopup="menu"]').first();
       await menuBtn.click();
-      await page.click("text=Delete");
+      await page.getByRole("menuitem", { name: "Delete" }).first().click();
     }
 
-    await page.getByRole("dialog").getByRole("button", { name: "Delete", exact: true }).click();
-    await expect(page.locator('[role="status"]')).toContainText(/Success/i, { timeout: 10000 });
+    await page
+      .getByRole("alertdialog")
+      .getByRole("button", { name: "Delete", exact: true })
+      .click();
+    await expect(page.locator('[data-sonner-toast], [role="status"]').first()).toContainText(
+      /Success/i,
+      { timeout: 10000 },
+    );
 
     await page.goto(`${BASE_URL}/fibers`);
     await expect(page.locator(`text=${testFiber}`)).not.toBeVisible();

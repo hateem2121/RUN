@@ -1,33 +1,28 @@
-import type { ContactFormData } from "@shared/validation/contact";
-import type { UseFormReturn } from "react-hook-form";
 import { CustomSelect } from "@/components/ui/custom-select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Typography } from "@/components/ui/typography";
 import type { Country } from "@/data/countries";
 
 interface ContactFieldsProps {
-  form: UseFormReturn<ContactFormData>;
   isPending: boolean;
   countryOptions: Country[];
   selectedCountry: Country | null;
   onCountryChange: (country: Country) => void;
   platformOptions: string[];
+  selectedPlatform: string;
+  onPlatformChange: (platform: string) => void;
 }
 
 export function ContactFields({
-  form,
   isPending,
   countryOptions,
   selectedCountry,
   onCountryChange,
   platformOptions,
+  selectedPlatform,
+  onPlatformChange,
 }: ContactFieldsProps) {
-  const { register, formState, setValue, watch } = form;
-  const { errors } = formState;
-
-  const selectedPlatform = watch("platform");
   const showOtherPlatform = selectedPlatform === "Other";
 
   return (
@@ -43,19 +38,12 @@ export function ContactFields({
           </Label>
           <Input
             id="firstName"
+            name="firstName"
             data-testid="input-first-name"
             size="lg"
-            aria-required="true"
-            aria-invalid={!!errors.firstName}
-            aria-describedby={errors.firstName ? "firstName-error" : undefined}
-            {...register("firstName")}
+            required
             disabled={isPending}
           />
-          {errors.firstName && (
-            <Typography.P id="firstName-error" className="mt-2 text-destructive text-sm">
-              {errors.firstName.message}
-            </Typography.P>
-          )}
         </div>
         <div>
           <Label htmlFor="lastName" className="mb-2 block font-medium text-foreground text-sm">
@@ -66,19 +54,12 @@ export function ContactFields({
           </Label>
           <Input
             id="lastName"
+            name="lastName"
             data-testid="input-last-name"
             size="lg"
-            aria-required="true"
-            aria-invalid={!!errors.lastName}
-            aria-describedby={errors.lastName ? "lastName-error" : undefined}
-            {...register("lastName")}
+            required
             disabled={isPending}
           />
-          {errors.lastName && (
-            <Typography.P id="lastName-error" className="mt-2 text-destructive text-sm">
-              {errors.lastName.message}
-            </Typography.P>
-          )}
         </div>
       </div>
 
@@ -90,10 +71,9 @@ export function ContactFields({
           </Label>
           <Input
             id="jobTitle"
+            name="jobTitle"
             data-testid="input-job-title"
             size="lg"
-            aria-invalid={!!errors.jobTitle}
-            {...register("jobTitle")}
             disabled={isPending}
           />
         </div>
@@ -103,10 +83,9 @@ export function ContactFields({
           </Label>
           <Input
             id="companyName"
+            name="companyName"
             data-testid="input-company-name"
             size="lg"
-            aria-invalid={!!errors.companyName}
-            {...register("companyName")}
             disabled={isPending}
           />
         </div>
@@ -123,20 +102,13 @@ export function ContactFields({
           </Label>
           <Input
             id="email"
+            name="email"
             type="email"
             data-testid="input-email"
             size="lg"
-            aria-required="true"
-            aria-invalid={!!errors.email}
-            aria-describedby={errors.email ? "email-error" : undefined}
-            {...register("email")}
+            required
             disabled={isPending}
           />
-          {errors.email && (
-            <Typography.P id="email-error" className="mt-2 text-destructive text-sm">
-              {errors.email.message}
-            </Typography.P>
-          )}
         </div>
         <div>
           <Label
@@ -150,6 +122,7 @@ export function ContactFields({
             </span>
           </Label>
           <div className="relative">
+            <input type="hidden" name="country" value={selectedCountry?.name || ""} required />
             <CustomSelect
               id="country-select"
               aria-labelledby="country-label"
@@ -172,15 +145,8 @@ export function ContactFields({
               searchable
               data-testid="button-country-dropdown"
               aria-required="true"
-              aria-invalid={!!errors.country}
-              aria-describedby={errors.country ? "country-error" : undefined}
             />
           </div>
-          {errors.country && (
-            <Typography.P id="country-error" className="mt-2 text-destructive text-sm">
-              {errors.country.message}
-            </Typography.P>
-          )}
         </div>
       </div>
 
@@ -195,12 +161,13 @@ export function ContactFields({
             Preferred Platform
           </Label>
           <div className="relative">
+            <input type="hidden" name="platform" value={selectedPlatform} />
             <CustomSelect
               id="platform-select"
               aria-labelledby="platform-label"
-              value={selectedPlatform || null}
+              value={selectedPlatform}
               options={platformOptions}
-              onChange={(p) => setValue("platform", p)}
+              onChange={onPlatformChange}
               getLabel={(p) => p}
               getKey={(p) => p}
               placeholder="Select Platform"
@@ -225,10 +192,9 @@ export function ContactFields({
             </span>
             <Input
               id="contactNumber"
+              name="contactNumber"
               data-testid="input-contact-number"
               aria-labelledby="contact-number-label country-prefix"
-              aria-invalid={!!errors.contactNumber}
-              {...register("contactNumber")}
               variant="ghost"
               className="flex-1 border-0 bg-transparent p-3 h-full"
               disabled={isPending}
@@ -245,10 +211,9 @@ export function ContactFields({
           </Label>
           <Input
             id="otherPlatform"
+            name="otherPlatform"
             data-testid="input-other-platform"
             size="lg"
-            aria-invalid={!!errors.otherPlatform}
-            {...register("otherPlatform")}
             disabled={isPending}
           />
         </div>
@@ -264,20 +229,13 @@ export function ContactFields({
         </Label>
         <Textarea
           id="message"
+          name="message"
           data-testid="textarea-message"
           rows={5}
-          aria-required="true"
-          aria-invalid={!!errors.message}
-          aria-describedby={errors.message ? "message-error" : undefined}
-          {...register("message")}
+          required
           className="block w-full rounded-lg border-border p-3 shadow-sm transition-colors focus:border-primary focus:ring-2 focus:ring-primary min-h-[120px]"
           disabled={isPending}
         />
-        {errors.message && (
-          <Typography.P id="message-error" className="mt-2 text-red-500 text-sm">
-            {errors.message.message}
-          </Typography.P>
-        )}
       </div>
 
       {/* Contact Preference */}
@@ -300,7 +258,6 @@ export function ContactFields({
               value="email"
               id="contact-pref-email"
               defaultChecked
-              onChange={() => setValue("contactPreference", "email")}
               disabled={isPending}
               aria-label="Contact via email"
               className="h-4 w-4 border-border text-primary focus:ring-2 focus:ring-primary accent-primary"
@@ -315,7 +272,6 @@ export function ContactFields({
               name="contactPreference"
               value="platform"
               id="contact-pref-platform"
-              onChange={() => setValue("contactPreference", "platform")}
               disabled={isPending}
               aria-label="Contact via preferred platform"
               className="h-4 w-4 border-border text-primary focus:ring-2 focus:ring-primary accent-primary"
@@ -330,7 +286,7 @@ export function ContactFields({
       {/* Honeypot */}
       <div className="sr-only" aria-hidden="true">
         <Label htmlFor="honeypot">Do not fill this out if you are human:</Label>
-        <Input id="honeypot" {...register("honeypot")} tabIndex={-1} />
+        <Input id="honeypot" name="honeypot" tabIndex={-1} />
       </div>
     </div>
   );

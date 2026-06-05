@@ -54,7 +54,12 @@ export function meta({}: Route.MetaArgs) {
   return [{ title: "Category Products | Run Apparel" }];
 }
 
-export default function CategoryProductsPage() {
+import { RouteErrorBoundary } from "@/components/shared/RouteErrorBoundary";
+import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
+
+export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
+
+export function CategoryProductsPage() {
   const loaderData = useLoaderData<typeof loader>();
   const { slug } = useParams();
   const navigate = useNavigate();

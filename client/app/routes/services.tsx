@@ -89,7 +89,7 @@ type LoaderData = {
   servicesList: ServiceData[] | null;
 };
 
-export default function Services({ loaderData }: { loaderData: LoaderData }) {
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   const { servicesList } = loaderData;
 
   return <ServicesPageContent servicesList={servicesList} />;
@@ -104,6 +104,13 @@ function ServicesPageContent({ servicesList }: { servicesList: ServiceData[] | n
     () => {
       if (list.length > 0) {
         gsap.from(".service-card-item", { opacity: 0, y: 20, duration: 0.5, stagger: 0.1 });
+      }
+
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.utils.toArray<HTMLElement>(".service-card-item").forEach((card) => {
+          gsap.killTweensOf(card);
+          gsap.set(card, { clearProps: "all" });
+        });
       }
     },
     { scope: servicesGridRef, dependencies: [list] },
@@ -180,10 +187,13 @@ function ServicesPageContent({ servicesList }: { servicesList: ServiceData[] | n
             collection to life.
           </Typography.P>
           <div className="mt-10 flex items-center justify-center gap-x-6">
-            <Link to="/contact">
+            <Link to="/contact" aria-label="Get a quote for our end-to-end manufacturing services">
               <Button size="lg" variant="secondary" className="group">
                 Get a Quote
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight
+                  className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+                  aria-hidden="true"
+                />
               </Button>
             </Link>
           </div>

@@ -295,6 +295,10 @@ export const CacheOperations = {
       await getCache().invalidate(InvalidationPatterns.fabrics);
       logger.info("[Cache] Invalidated all fabric cache entries");
     }
+    await getCache()
+      .invalidate("^batch:resource-batch:.*")
+      .catch(() => {});
+    await invalidateHtmlCache("/fabrics").catch(() => {});
   },
 
   invalidateFibers: async (id?: number) => {
@@ -306,6 +310,10 @@ export const CacheOperations = {
       await getCache().invalidate(InvalidationPatterns.fibers);
       logger.info("[Cache] Invalidated all fiber cache entries");
     }
+    await getCache()
+      .invalidate("^batch:resource-batch:.*")
+      .catch(() => {});
+    await invalidateHtmlCache("/fibers").catch(() => {});
   },
 
   invalidateCertificates: async (id?: number) => {
@@ -317,6 +325,10 @@ export const CacheOperations = {
       await getCache().invalidate(InvalidationPatterns.certificates);
       logger.info("[Cache] Invalidated all certificate cache entries");
     }
+    await getCache()
+      .invalidate("^batch:resource-batch:.*")
+      .catch(() => {});
+    await invalidateHtmlCache("/certifications").catch(() => {});
   },
 
   invalidateSizeCharts: async (id?: number) => {
@@ -328,6 +340,10 @@ export const CacheOperations = {
       await getCache().invalidate(InvalidationPatterns.sizeCharts);
       logger.info("[Cache] Invalidated all size chart cache entries");
     }
+    await getCache()
+      .invalidate("^batch:resource-batch:.*")
+      .catch(() => {});
+    await invalidateHtmlCache("/size-charts").catch(() => {});
   },
 
   invalidateAccessories: async (id?: number) => {
@@ -339,6 +355,10 @@ export const CacheOperations = {
       await getCache().invalidate(InvalidationPatterns.accessories);
       logger.info("[Cache] Invalidated all accessory cache entries");
     }
+    await getCache()
+      .invalidate("^batch:resource-batch:.*")
+      .catch(() => {});
+    await invalidateHtmlCache("/accessories").catch(() => {});
   },
 
   // CHUNK 10: Categories cache invalidation

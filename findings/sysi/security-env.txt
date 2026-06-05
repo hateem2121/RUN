@@ -1,0 +1,12 @@
+client/app/root.tsx:103:    SENTRY_DSN: process.env.SENTRY_DSN,
+client/app/root.tsx:105:    SENTRY_RELEASE: process.env.SENTRY_RELEASE || process.env.GIT_SHA || "dev",
+client/app/lib/api.ts:110:    const port = envSchema.shape.PORT.parse(process.env.PORT);
+client/app/routes/products.tsx:79:  const port = process.env.PORT || "5002";
+client/app/services/inquiry.server.ts:26:    const port = process.env.PORT || "5002";
+client/vite.config.ts:2:process.env.UV_THREADPOOL_SIZE = process.env.UV_THREADPOOL_SIZE || "4";
+client/vite.config.ts:43:      process.env.VITE_ANALYZE === "true" &&
+client/vite.config.ts:51:        enable: process.env.ENABLE_REACT_SCAN === "true", // P1 OPTIMIZATION: Opt-in only to save CPU
+client/vite.config.ts:55:      process.env.VITE_INSPECT === "true" && Inspect(),
+client/vite.config.ts:58:        ...(process.env.SENTRY_ORG ? { org: process.env.SENTRY_ORG } : {}),
+client/vite.config.ts:59:        ...(process.env.SENTRY_PROJECT ? { project: process.env.SENTRY_PROJECT } : {}),
+client/vite.config.ts:60:        ...(process.env.SENTRY_AUTH_TOKEN ? { authToken: process.env.SENTRY_AUTH_TOKEN } : {}),

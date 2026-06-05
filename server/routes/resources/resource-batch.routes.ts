@@ -1,6 +1,5 @@
 import { type Request, Router } from "express";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
-import { ValidationError } from "../../lib/errors.js";
 import { shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { accessoryService } from "../../services/accessory.service.js";
 import { miscService } from "../../services/misc.service.js";
@@ -18,7 +17,7 @@ router.get("/batch", async (req: Request, res) => {
   const types = typesQuery.split(",").map((t) => t.trim().toLowerCase());
 
   if (!typesQuery) {
-    throw new ValidationError("Missing types query parameter");
+    return res.json({});
   }
 
   const cacheKey = `resource-batch:${types.sort().join(",")}`;
@@ -59,6 +58,15 @@ router.get("/batch", async (req: Request, res) => {
           // accessoryService returns { accessories, total }
           if (label === "accessories") {
             data[label] = (result.value as { accessories: unknown }).accessories;
+          } else if (label === "certificates") {
+            const certs = result.value as { expiryDate?: string | Date; isActive?: boolean }[];
+            const now = Date.now();
+            data[label] = certs.filter((c) => {
+              if (c.expiryDate) {
+                return new Date(c.expiryDate).getTime() > now;
+              }
+              return c.isActive !== false;
+            });
           } else {
             data[label] = result.value;
           }
@@ -80,6 +88,9 @@ router.get("/batch", async (req: Request, res) => {
 
   res.setHeader("X-Cache-Hit", benchmark.hit);
   res.setHeader("X-Response-Time", (performance.now() - startTime).toFixed(2));
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
 
   return res.json(batchData);
 });

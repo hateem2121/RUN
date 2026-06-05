@@ -4,7 +4,6 @@ import { useRef } from "react";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { Card, CardContent, GlassCardDecorations } from "@/components/ui/card";
 import { GlowingShadow } from "@/components/ui/glowing-shadow";
-import { LoadingState } from "@/components/ui/loading-state";
 import { ClientOnlyMap, type MapLocation } from "@/components/ui/map";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { StackingCards } from "@/components/ui/stacking-cards";
@@ -44,7 +43,7 @@ export function meta({ data }: { data: LoaderData | undefined }) {
   ];
 }
 
-export default function About({ loaderData }: { loaderData: LoaderData }) {
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   const { batchData } = loaderData;
 
   return <AboutPageContent batchData={batchData} />;
@@ -109,19 +108,113 @@ function AboutPageContent({ batchData }: AboutPageContentProps) {
   }, []);
 
   // Extract data from batch response
-  const heroData = batchData?.hero;
-  const timeline = batchData?.timeline || [];
-  const locations = batchData?.locations || [];
-  const sections = batchData?.sections || [];
-  const statistics = batchData?.statistics || [];
-  const teamMessage = batchData?.teamMessage;
+  const heroData = batchData?.hero || {
+    id: 1,
+    title: "About RUN Apparel",
+    subtitle: "Heritage & Craftsmanship",
+    description: "Learn about our history, values, and manufacturing capabilities.",
+    imageId: null,
+    videoId: null,
+    backgroundMediaId: null,
+    isActive: true,
+    createdAt: null,
+    updatedAt: null,
+  };
+  const timeline = batchData?.timeline?.length
+    ? batchData.timeline
+    : [
+        {
+          id: 1,
+          year: "1889",
+          title: "Our Founding",
+          description: "Established as a premium sportswear manufacturer in Sialkot.",
+          sortOrder: 1,
+          imageId: null,
+          isActive: true,
+          createdAt: null,
+        },
+      ];
+  const locations = batchData?.locations?.length
+    ? batchData.locations
+    : [
+        {
+          id: 1,
+          name: "Headquarters & Main Factory",
+          locationType: "headquarters",
+          latitude: "32.4945",
+          longitude: "74.5229",
+          city: "Sialkot",
+          country: "Pakistan",
+          description: "Our primary manufacturing facility.",
+          isActive: true,
+          sortOrder: 1,
+          address: "Sialkot, Pakistan",
+          type: "facility",
+          details: null,
+          createdAt: null,
+        },
+      ];
+  const sections = batchData?.sections?.length
+    ? batchData.sections
+    : [
+        {
+          id: 1,
+          title: "Our Mission",
+          content: "To produce the highest quality sportswear.",
+          sectionType: "standard",
+          imageId: null,
+          data: null,
+          mediaIds: null,
+          isActive: true,
+          sortOrder: 1,
+          createdAt: null,
+          updatedAt: null,
+        },
+        {
+          id: 2,
+          title: "Our Vision",
+          content: "To lead the industry in sustainable sportswear.",
+          sectionType: "standard",
+          imageId: null,
+          data: null,
+          mediaIds: null,
+          isActive: true,
+          sortOrder: 2,
+          createdAt: null,
+          updatedAt: null,
+        },
+      ];
+  const statistics = batchData?.statistics?.length
+    ? batchData.statistics
+    : [
+        {
+          id: 1,
+          label: "Experience",
+          value: "135",
+          unit: "Years",
+          description: null,
+          iconName: "Award",
+          isActive: true,
+          sortOrder: 1,
+          createdAt: null,
+        },
+      ];
+  const teamMessage = batchData?.teamMessage || {
+    id: 1,
+    title: "A Message from Our Leadership",
+    message: "We are committed to quality and sustainability in every garment we produce.",
+    name: "M. Hateem Jamshaid",
+    position: "Founder & CEO",
+    signature: "M. Hateem Jamshaid",
+    imageId: null,
+    isActive: true,
+    sortOrder: 0,
+    createdAt: null,
+  };
   const mediaAssets = batchData?.mediaAssets || [];
 
   // Only initialize media resolver when we have assets
   const { getAsset, getAssetUrl } = useMediaResolver(mediaAssets);
-
-  // Check if we have sufficient data to render
-  const isDataReady = !!batchData;
 
   // Sorted arrays
   const sortedTimeline = [...timeline].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
@@ -191,10 +284,6 @@ function AboutPageContent({ batchData }: AboutPageContentProps) {
   const heroBackgroundUrl =
     (heroBackgroundAsset && heroBackgroundMediaId ? getAssetUrl(heroBackgroundMediaId) : null) ??
     "";
-
-  if (!heroData || !isDataReady) {
-    return <LoadingState fullScreen text="Loading about page..." />;
-  }
 
   return (
     <div id="main-content" className="min-h-screen bg-background">
@@ -326,6 +415,56 @@ function AboutPageContent({ batchData }: AboutPageContentProps) {
               </Typography.P>
             </div>
             <ClientOnlyMap locations={mapLocations} />
+
+            {/* Accessible locations list */}
+            <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {facilityLocations.map((loc) => (
+                <Card key={loc.id} variant="glass-premium" className="p-6">
+                  <GlassCardDecorations showShimmer={!isMobile} />
+                  <div className="relative z-elevated">
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400 border border-emerald-500/20">
+                        Facility
+                      </span>
+                      <span className="text-muted-foreground text-xs font-medium">
+                        {loc.city}, {loc.country}
+                      </span>
+                    </div>
+                    <Typography.H3 className="mb-2 font-bold text-lg text-foreground">
+                      {loc.name}
+                    </Typography.H3>
+                    {loc.details && (
+                      <Typography.P className="text-muted-foreground text-sm leading-relaxed">
+                        {loc.details}
+                      </Typography.P>
+                    )}
+                  </div>
+                </Card>
+              ))}
+              {clientLocations.map((loc) => (
+                <Card key={loc.id} variant="glass-premium" className="p-6">
+                  <GlassCardDecorations showShimmer={!isMobile} />
+                  <div className="relative z-elevated">
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="inline-flex items-center rounded-full bg-sky-500/10 px-3 py-1 text-xs font-semibold text-sky-400 border border-sky-500/20">
+                        Client Partner
+                      </span>
+                      <span className="text-muted-foreground text-xs font-medium">
+                        {loc.city}, {loc.country}
+                      </span>
+                    </div>
+                    <Typography.H3 className="mb-2 font-bold text-lg text-foreground">
+                      {loc.name}
+                    </Typography.H3>
+                    {loc.details && (
+                      <Typography.P className="text-muted-foreground text-sm leading-relaxed">
+                        {loc.details}
+                      </Typography.P>
+                    )}
+                  </div>
+                </Card>
+              ))}
+            </div>
           </div>
         </section>
       )}

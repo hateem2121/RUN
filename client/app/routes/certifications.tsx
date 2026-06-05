@@ -23,13 +23,17 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Certifications() {
+export function Component() {
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedCerts, setExpandedCerts] = useState<Set<number>>(new Set());
   const headerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.set(headerRef.current, { opacity: 1, y: 0 });
+        return;
+      }
       gsap.from(headerRef.current, { opacity: 0, y: -20, duration: 0.6 });
     },
     { scope: headerRef },
@@ -92,9 +96,10 @@ export default function Certifications() {
             href={cert.documentUrl}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={`View documentation for ${cert.name}`}
             className="mt-1 flex items-center gap-1 text-blue-600 hover:text-blue-700"
           >
-            View Certificate <ExternalLink className="h-3 w-3" />
+            View Certificate <ExternalLink className="h-3 w-3" aria-hidden="true" />
           </a>
         </div>
       )}
@@ -183,6 +188,15 @@ export default function Certifications() {
             }}
           />
         )}
+
+        {/* Disclaimer */}
+        <div className="mt-12 rounded-lg bg-muted/30 p-6 text-center">
+          <Typography.P className="text-sm text-muted-foreground">
+            * Disclaimer: Some certifications are held by our partner suppliers and manufacturing
+            facilities, rather than RUN APPAREL directly. We ensure all partners maintain strict
+            adherence to these standards.
+          </Typography.P>
+        </div>
       </div>
     </div>
   );

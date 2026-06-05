@@ -138,6 +138,15 @@ export async function ssrCacheMiddleware(
     return;
   }
 
+  // Bypass cache for tests
+  if (process.env.PLAYWRIGHT_TEST === "true" || process.env.NODE_ENV === "test") {
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+    next();
+    return;
+  }
+
   // PC-101: Admin sessions always get private, no-cache headers
   if (isAdminSession(req)) {
     res.setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate");
@@ -168,7 +177,13 @@ export async function ssrCacheMiddleware(
         res.setHeader(key, value);
       }
       res.setHeader("X-SSR-Cache", "HIT");
-      res.send(cached.html);
+
+      const currentNonce = res.locals.cspNonce;
+      const htmlToSend = currentNonce
+        ? cached.html.replaceAll("__CSP_NONCE__", currentNonce)
+        : cached.html;
+
+      res.send(htmlToSend);
       return;
     }
 
@@ -224,11 +239,17 @@ export async function ssrCacheMiddleware(
             logger.info(
               `[SSR-Cache] Setting cache for ${cacheKey} (${Buffer.byteLength(body, "utf8")} bytes)`,
             );
+
+            const currentNonce = res.locals.cspNonce;
+            const bodyToCache = currentNonce
+              ? body.replaceAll(currentNonce, "__CSP_NONCE__")
+              : body;
+
             unifiedCache
               .set(
                 cacheKey,
                 {
-                  html: body,
+                  html: bodyToCache,
                   headers: {
                     "Content-Type": contentType || "text/html",
                   },

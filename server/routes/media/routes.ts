@@ -266,7 +266,7 @@ router.post(
 router.get("/batch/content", batchGetContent);
 
 // Analytics
-router.get("/analytics", getAnalytics);
+router.get("/analytics", authService.requireAdmin, getAnalytics);
 
 // Cache management
 router.post("/clear-cache/:id", authService.requireAdmin, clearMediaCache);

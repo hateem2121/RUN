@@ -1,17 +1,11 @@
-import { removeUndefined } from "../../lib/utilities/core-utils.js";
-
-/**
- * MATERIALS ROUTER MODULE
- * Handles fibers, fabrics, and certificates management
- * Extracted from routes.ts for better organization
- */
-
 import { Router } from "express";
 import { insertFiberSchema } from "../../../shared/index.js";
+import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
 import { miscRepository } from "../../lib/db/repositories/index.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
-import { validateIdParam } from "../../lib/utilities/core-utils.js";
+import { removeUndefined, validateIdParam } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
@@ -25,6 +19,9 @@ router.get("/fibers", async (_req, res) => {
     10000,
     "Get all fibers",
   );
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
   res.json(fibers);
 });
 
@@ -36,6 +33,9 @@ router.post("/fibers", authService.requireAdmin, async (req, res) => {
     }),
     10000,
     "Create fiber",
+  );
+  await CacheOperations.invalidateFibers().catch((err) =>
+    logger.warn("Failed to invalidate fibers cache", err),
   );
   return res.status(201).json(fiber);
 });
@@ -57,6 +57,9 @@ router.put("/fibers/:id", authService.requireAdmin, async (req, res) => {
   if (!fiber) {
     return res.status(404).json({ message: "Fiber not found" });
   }
+  await CacheOperations.invalidateFibers().catch((err) =>
+    logger.warn("Failed to invalidate fibers cache", err),
+  );
   return res.json(fiber);
 });
 
@@ -76,6 +79,9 @@ router.delete("/fibers/:id", authService.requireAdmin, async (req, res) => {
   if (!deleted) {
     return res.status(404).json({ message: "Fiber not found" });
   }
+  await CacheOperations.invalidateFibers().catch((err) =>
+    logger.warn("Failed to invalidate fibers cache", err),
+  );
   return res.status(204).send();
 });
 

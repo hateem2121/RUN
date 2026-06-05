@@ -1,3 +1,4 @@
+import { API_ROUTES } from "@run-remix/shared";
 import DOMPurify from "isomorphic-dompurify";
 import type { MetaFunction } from "react-router";
 import type { Route } from "./+types/terms";
@@ -9,7 +10,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       .then((r) => (r.ok ? r.json() : null))
       .catch(() => null);
 
-  const policy = await get("/api/legal-policies?slug=terms-of-service");
+  const policy = await get(`${API_ROUTES.CONTENT.LEGAL_POLICIES}?slug=terms-of-service`);
 
   return { policy };
 }
@@ -31,7 +32,7 @@ interface LegalPolicyData {
   updatedAt: string;
 }
 
-export default function TermsOfService({ loaderData }: Route.ComponentProps) {
+export function Component({ loaderData }: Route.ComponentProps) {
   const { policy } = loaderData;
 
   return <TermsOfServicePageContent policy={policy} />;

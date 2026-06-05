@@ -13,15 +13,17 @@ const TECHNOLOGY_PAGE_URL = "/technology";
 const ADMIN_TECHNOLOGY_URL = "/admin/technology";
 
 test.describe("Technology Page - Public UI", () => {
+  test.describe.configure({ mode: "serial" });
+
   test.beforeEach(async ({ page }) => {
     await page.goto(TECHNOLOGY_PAGE_URL);
     await page.waitForLoadState("networkidle");
   });
 
   test("Page should load with correct title", async ({ page }) => {
-    const title = page.locator("h1");
+    const title = page.locator("h1").first();
     await expect(title).toBeVisible();
-    await expect(title).toContainText(/WHERE SCIENCE MEETS FABRIC/i);
+    await expect(title).toContainText(/WHERE\s*SCIENCE\s*MEETS\s*FABRIC/i);
   });
 
   test("Should display innovation cards", async ({ page }) => {
@@ -56,7 +58,7 @@ test.describe("Technology Page - Public UI", () => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.waitForTimeout(500);
 
-    const headline = page.locator("h1");
+    const headline = page.locator("h1").first();
     if (!(await headline.isVisible())) {
       const mobileHeadline = page.locator("[data-testid='mobile-header'], h2").first();
       await expect(mobileHeadline).toBeVisible();
@@ -81,12 +83,14 @@ test.describe("Technology Page - Quality & Accessibility", () => {
 
   test("SSR Verification", async ({ page }) => {
     await page.goto(TECHNOLOGY_PAGE_URL, { waitUntil: "commit" });
-    const headline = page.locator("h1");
+    const headline = page.locator("h1").first();
     await expect(headline).toBeVisible();
   });
 });
 
 test.describe("Technology Admin CMS Tests", () => {
+  test.describe.configure({ mode: "serial" });
+
   test.use({ storageState: ".auth/user.json" });
 
   test("Admin can access technology CMS page", async ({ page }) => {
@@ -104,27 +108,35 @@ test.describe("Technology Admin CMS Tests", () => {
     await page.waitForLoadState("networkidle");
 
     const titleInput = page.locator("#title").first();
-    const saveButton = page.locator("button:has-text('SYNC HERO')").first();
+    const saveButton = page.locator("button:has-text('Sync Hero')").first();
 
-    if ((await titleInput.isVisible()) && (await saveButton.isVisible())) {
-      const originalTitle = await titleInput.inputValue();
-      const newTitle = `Next-Gen Fiber Intelligence${TEST_MARKER}`;
+    // Explicitly wait for loader to resolve and elements to become visible
+    await expect(titleInput).toBeVisible({ timeout: 15000 });
+    await expect(saveButton).toBeVisible({ timeout: 15000 });
 
-      await titleInput.fill(newTitle);
-      await saveButton.click();
+    const originalTitle = await titleInput.inputValue();
+    const newTitle = `Next-Gen Fiber Intelligence${TEST_MARKER}`;
 
-      await page.waitForTimeout(2000);
+    await titleInput.fill(newTitle);
+    await saveButton.click();
 
-      // Verify
-      await page.goto(TECHNOLOGY_PAGE_URL);
-      await page.waitForLoadState("networkidle");
-      await expect(page.locator("h1")).toContainText(newTitle);
+    // Wait for the mutation to finish saving and for the DB write to propagate
+    await page.waitForTimeout(2000);
 
-      // Cleanup
-      await page.goto(ADMIN_TECHNOLOGY_URL);
-      await page.waitForLoadState("networkidle");
-      await titleInput.fill(originalTitle);
-      await saveButton.click();
-    }
+    // Verify
+    await page.goto(TECHNOLOGY_PAGE_URL);
+    await page.waitForLoadState("networkidle");
+    const escapedTitle = newTitle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const expectedTitlePattern = new RegExp(escapedTitle.replace(/\s+/g, "\\s*"), "i");
+    await expect(page.locator("h1").first()).toContainText(expectedTitlePattern);
+
+    // Cleanup
+    await page.goto(ADMIN_TECHNOLOGY_URL);
+    await page.waitForLoadState("networkidle");
+    await expect(titleInput).toBeVisible({ timeout: 15000 });
+    await expect(saveButton).toBeVisible({ timeout: 15000 });
+    await titleInput.fill(originalTitle);
+    await saveButton.click();
+    await page.waitForTimeout(2000);
   });
 });

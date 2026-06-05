@@ -30,14 +30,16 @@ interface ContactFormProps {
 
 export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
   const {
-    form,
+    formAction,
     isPending,
     showSuccess,
     setShowSuccess,
     selectedCountry,
     setCountry,
-    submitForm,
+    selectedPlatform,
+    setSelectedPlatform,
     countryOptions,
+    state,
   } = useContactForm({
     successMessage: contactConfig?.successMessage || "Your message has been sent successfully.",
   });
@@ -68,18 +70,21 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
               {contactConfig?.heroTitle || "DROP US A MESSAGE"}
             </Typography.H1>
 
-            <form
-              onSubmit={form.handleSubmit(submitForm)}
-              className="space-y-5"
-              data-testid="form-contact"
-            >
+            {state?.error && (
+              <div className="mb-6 p-4 rounded bg-destructive/10 text-destructive text-sm font-medium">
+                {state.error}
+              </div>
+            )}
+
+            <form action={formAction} className="space-y-5" data-testid="form-contact">
               <ContactFields
-                form={form}
                 isPending={isPending}
                 countryOptions={countryOptions}
                 selectedCountry={selectedCountry}
                 onCountryChange={setCountry}
                 platformOptions={platformOptions}
+                selectedPlatform={selectedPlatform}
+                onPlatformChange={setSelectedPlatform}
               />
 
               {/* Submit Button */}

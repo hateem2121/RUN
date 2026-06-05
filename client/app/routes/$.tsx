@@ -13,7 +13,7 @@ export function meta() {
   ];
 }
 
-export default function NotFound() {
+export function NotFound() {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center">
       <Typography.H1 className="text-9xl font-bold text-primary">404</Typography.H1>
@@ -26,4 +26,20 @@ export default function NotFound() {
       </Button>
     </div>
   );
+}
+
+export function ErrorBoundary() {
+  return (
+    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center">
+      <Typography.H1 className="text-9xl font-bold text-primary">Error</Typography.H1>
+      <Typography.H2>Something went wrong</Typography.H2>
+      <Button asChild>
+        <Link to="/">Return Home</Link>
+      </Button>
+    </div>
+  );
+}
+
+export function HydrateFallback() {
+  return <div>Loading...</div>;
 }

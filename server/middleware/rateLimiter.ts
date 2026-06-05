@@ -20,12 +20,6 @@ logger.info("rateLimiter initialized", {
   redis: isRealRedisConfigured ? "upstash" : "in-memory-fallback",
 });
 
-const LOOPBACK = new Set(["::1", "127.0.0.1", "::ffff:127.0.0.1"]);
-
-function isLoopback(ip: string): boolean {
-  return LOOPBACK.has(ip) || ip.startsWith("::ffff:127.");
-}
-
 interface RateLimitConfig {
   windowMs: number;
   max: number;
@@ -72,9 +66,6 @@ export class RateLimiter {
         return next();
       }
       const clientIp = req.ip ?? req.socket.remoteAddress ?? "";
-      if (process.env.NODE_ENV !== "test" && isLoopback(clientIp)) {
-        return next();
-      }
       const ip = clientIp || "unknown";
       const key = `ratelimit:${ip}`;
 
@@ -238,11 +229,6 @@ export class UploadRateLimiter {
   }
 
   middleware = (req: Request, res: Response, next: NextFunction): void => {
-    const clientIp = req.ip ?? req.socket.remoteAddress ?? "";
-    if (process.env.NODE_ENV !== "test" && isLoopback(clientIp)) {
-      next();
-      return;
-    }
     const key = this.getClientKey(req);
     const now = Date.now();
 

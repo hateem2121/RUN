@@ -139,6 +139,8 @@ describe("AuthService", () => {
 
   describe("sessionSecurityMiddleware", () => {
     it("handles first request by storing UA hash", () => {
+      const originalEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = "production";
       const req = {
         session: {},
         user: {},
@@ -152,9 +154,12 @@ describe("AuthService", () => {
       expect(req.session.uaHash).toBeDefined();
       expect(req.session.lastRotated).toBeDefined();
       expect(next).toHaveBeenCalled();
+      process.env.NODE_ENV = originalEnv;
     });
 
     it("rejects session if UA hash mismatches", () => {
+      const originalEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = "production";
       const req = {
         session: { uaHash: "different-hash", destroy: vi.fn((cb) => cb()) },
         user: {},
@@ -171,6 +176,7 @@ describe("AuthService", () => {
       expect(req.session.destroy).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith(AuthErrors.SESSION_UA_MISMATCH);
+      process.env.NODE_ENV = originalEnv;
     });
 
     it("regenerates session after rotation interval", () => {

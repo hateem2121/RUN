@@ -23,38 +23,49 @@ export default function handleRequest(
     const readyOption =
       (userAgent && isbot(userAgent)) || routerContext.isSpaMode ? "onAllReady" : "onShellReady";
 
-    const { pipe, abort } = renderToPipeableStream(
-      <ServerRouter context={routerContext} url={request.url} />,
-      {
-        [readyOption]() {
-          shellRendered = true;
-          const body = new PassThrough();
-          const stream = createReadableStreamFromReadable(body);
+    const nonceVal = (_loadContext as { cspNonce?: string })?.cspNonce;
+    const options: Parameters<typeof renderToPipeableStream>[1] = {
+      [readyOption]() {
+        shellRendered = true;
+        const body = new PassThrough();
+        const stream = createReadableStreamFromReadable(body);
 
-          responseHeaders.set("Content-Type", "text/html");
+        responseHeaders.set("Content-Type", "text/html");
 
-          resolve(
-            new Response(stream, {
-              headers: responseHeaders,
-              status: responseStatusCode,
-            }),
-          );
+        resolve(
+          new Response(stream, {
+            headers: responseHeaders,
+            status: responseStatusCode,
+          }),
+        );
 
-          pipe(body);
-        },
-        onShellError(error: unknown) {
-          reject(error);
-        },
-        onError(error: unknown) {
-          responseStatusCode = 500;
-          // Log streaming rendering errors from inside the shell.  Don't log
-          // errors encountered during initial shell rendering since they'll
-          // reject and get logged in handleRequest.
-          if (shellRendered) {
-            console.error(error);
-          }
-        },
+        pipe(body);
       },
+      onShellError(error: unknown) {
+        reject(error);
+      },
+      onError(error: unknown) {
+        responseStatusCode = 500;
+        // Log streaming rendering errors from inside the shell.  Don't log
+        // errors encountered during initial shell rendering since they'll
+        // reject and get logged in handleRequest.
+        if (shellRendered) {
+          console.error(error);
+        }
+      },
+    };
+
+    if (nonceVal) {
+      options.nonce = nonceVal;
+    }
+
+    const { pipe, abort } = renderToPipeableStream(
+      <ServerRouter
+        context={routerContext}
+        url={request.url}
+        {...(nonceVal ? { nonce: nonceVal } : {})}
+      />,
+      options,
     );
 
     setTimeout(abort, streamTimeout + 1000);

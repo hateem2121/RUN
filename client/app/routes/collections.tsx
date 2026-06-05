@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-export default function Collections() {
+export function Component() {
   const collections = [
     {
       id: 1,

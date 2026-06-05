@@ -1,26 +1,12 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { type ContactFormData, ContactFormSchema } from "@shared/validation/contact";
-import { useEffect, useMemo, useState } from "react";
-import { type Resolver, useForm } from "react-hook-form";
-import { useFetcher } from "react-router";
+import { useActionState, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { type Country, countries } from "@/data/countries";
-import { useToast } from "@/hooks/use-toast";
-import { useServerValidation } from "@/hooks/useServerValidation";
-import { ApiError } from "@/lib/api";
 
 interface ActionState {
-  status: "idle" | "success" | "error";
-  message: string;
-  timestamp: number;
-  data?: {
-    submissionId?: string;
-  };
-  error?: {
-    status?: number;
-    title?: string;
-    message?: string;
-    "invalid-params"?: Record<string, string[]>;
-  };
+  success?: boolean;
+  message?: string;
+  error?: string;
+  submissionId?: string;
 }
 
 interface UseContactFormConfig {
@@ -36,38 +22,67 @@ declare global {
   }
 }
 
+async function submitAction(
+  _prevState: ActionState | null,
+  formData: FormData,
+): Promise<ActionState> {
+  const honeypot = formData.get("honeypot");
+  if (honeypot) {
+    return { success: true, message: "Message received." };
+  }
+
+  const csrfToken = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("csrf_token="))
+    ?.split("=")[1];
+
+  const recaptchaToken =
+    (typeof window !== "undefined" && window.grecaptcha?.getResponse?.()) || "";
+
+  const firstName = formData.get("firstName") as string;
+  const lastName = formData.get("lastName") as string;
+  const fullName = `${firstName || ""} ${lastName || ""}`.trim();
+
+  const payload = {
+    name: fullName,
+    email: formData.get("email") as string,
+    message: formData.get("message") as string,
+    company: (formData.get("companyName") as string) || undefined,
+    country: formData.get("country") as string,
+    phone: (formData.get("contactNumber") as string) || undefined,
+    preferredPlatform:
+      formData.get("platform") === "Other"
+        ? (formData.get("otherPlatform") as string) || undefined
+        : (formData.get("platform") as string) || undefined,
+    recaptchaToken,
+  };
+
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(csrfToken ? { "CSRF-Token": csrfToken } : {}),
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    return data;
+  } catch (_err) {
+    return { success: false, error: "Failed to connect to the server." };
+  }
+}
+
 export function useContactForm(config?: UseContactFormConfig) {
-  const { toast } = useToast();
   const [showSuccess, setShowSuccess] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+  const [selectedPlatform, setSelectedPlatform] = useState<string>("Phone Call");
 
-  const fetcher = useFetcher<ActionState>();
-  const isPending = fetcher.state !== "idle";
-  const state = fetcher.data || null;
-
-  const form = useForm<ContactFormData>({
-    resolver: zodResolver(ContactFormSchema) as Resolver<ContactFormData>,
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      jobTitle: "",
-      companyName: "",
-      email: "",
-      country: "",
-      platform: "Phone Call",
-      contactNumber: "",
-      otherPlatform: "",
-      message: "",
-      contactPreference: "email",
-      honeypot: "",
-    },
-  });
+  const [state, formAction, isPending] = useActionState(submitAction, null);
 
   // PHASE 4 REMEDIATION: Pre-warm Cloud Task pipeline on form focus
   useEffect(() => {
     const handleFocus = () => {
-      // Trigger a light-weight pre-warm request to the contact endpoint
-      // This initializes server-side connection pools for Google Cloud Clients
       fetch("/api/contact", { method: "HEAD", priority: "low" }).catch(() => {});
     };
 
@@ -75,75 +90,27 @@ export function useContactForm(config?: UseContactFormConfig) {
     return () => window.removeEventListener("focus", handleFocus);
   }, []);
 
-  const apiError = useMemo(() => {
-    if (state?.status === "error" && state.error) {
-      return new ApiError(state.error.status || 500, state.error);
-    }
-    return null;
-  }, [state]);
-
-  useServerValidation({ form, error: apiError });
-
   useEffect(() => {
     if (!state) return;
 
-    if (state.status === "success") {
-      form.reset();
+    if (state.success) {
       setShowSuccess(true);
-      toast({
-        title: "Success!",
+      toast.success("Success!", {
         description:
           config?.successMessage ||
           state.message ||
           "Thank you for your message. We'll get back to you soon!",
       });
-    } else if (state.status === "error") {
-      toast({
-        title: "Error",
-        description: state.message || "Failed to send message. Please try again.",
-        variant: "destructive",
+      if (window.grecaptcha) window.grecaptcha.reset();
+    } else if (state.error) {
+      toast.error("Error", {
+        description: state.error || "Failed to send message. Please try again.",
       });
     }
-  }, [state, form, config?.successMessage, toast]);
-
-  const submitForm = (data: ContactFormData) => {
-    if (data.honeypot) return;
-
-    const fullName = `${data.firstName} ${data.lastName}`.trim();
-    const company = data.companyName || "";
-    const phone = data.contactNumber || "";
-    const preferredPlatform = data.platform === "Other" ? data.otherPlatform || "" : data.platform;
-
-    const formData = new FormData();
-    formData.append("name", fullName);
-    formData.append("email", data.email);
-    formData.append("country", data.country);
-    formData.append("message", data.message);
-    if (company) formData.append("company", company);
-    if (phone) formData.append("phone", phone);
-    if (preferredPlatform) formData.append("preferredPlatform", preferredPlatform);
-    if (data.honeypot) formData.append("honeypot", data.honeypot);
-
-    const csrfToken = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("csrf_token="))
-      ?.split("=")[1];
-
-    // reCAPTCHA Token (PHASE 4 REMEDIATION)
-    const recaptchaToken = window.grecaptcha?.getResponse?.() || "";
-    if (recaptchaToken) formData.append("recaptchaToken", recaptchaToken);
-
-    if (csrfToken) formData.append("csrf_token", csrfToken);
-
-    fetcher.submit(formData, {
-      method: "post",
-      action: "/contact",
-    });
-  };
+  }, [state, config?.successMessage]);
 
   const setCountry = (country: Country) => {
     setSelectedCountry(country);
-    form.setValue("country", country.name);
   };
 
   const countryOptions = useMemo(() => {
@@ -151,14 +118,15 @@ export function useContactForm(config?: UseContactFormConfig) {
   }, []);
 
   return {
-    form,
-    fetcher,
+    formAction,
     isPending,
     showSuccess,
     setShowSuccess,
     selectedCountry,
     setCountry,
-    submitForm,
+    selectedPlatform,
+    setSelectedPlatform,
     countryOptions,
+    state,
   };
 }

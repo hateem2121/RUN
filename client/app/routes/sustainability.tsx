@@ -38,9 +38,6 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   if (batchData) {
     const hero = batchData.hero;
-    if (hero?.backgroundImageId) {
-      backgroundMedia = await get(`/api/media/${hero.backgroundImageId}`);
-    }
 
     const activeInitiatives = batchData.initiatives?.filter((i) => i.isActive) || [];
     const fabrics = batchData.fabrics || [];
@@ -60,13 +57,18 @@ export async function loader({ request }: Route.LoaderArgs) {
     });
 
     const requiredMediaIds = Array.from(ids);
-    if (requiredMediaIds.length > 0) {
-      const mediaBatchRes = await get(
-        `/api/media/batch/content?ids=${requiredMediaIds.join(",")}&prefetch=true`,
-      );
-      if (mediaBatchRes?.success && Array.isArray(mediaBatchRes.data)) {
-        fetchedMediaAssets = mediaBatchRes.data as MediaAsset[];
-      }
+    const [mediaBatchRes, bgMediaRes] = await Promise.all([
+      requiredMediaIds.length > 0
+        ? get(`/api/media/batch/content?ids=${requiredMediaIds.join(",")}&prefetch=true`)
+        : Promise.resolve(null),
+      hero?.backgroundImageId ? get(`/api/media/${hero.backgroundImageId}`) : Promise.resolve(null),
+    ]);
+
+    if (mediaBatchRes?.success && Array.isArray(mediaBatchRes.data)) {
+      fetchedMediaAssets = mediaBatchRes.data as MediaAsset[];
+    }
+    if (bgMediaRes) {
+      backgroundMedia = bgMediaRes;
     }
   }
 
@@ -284,7 +286,7 @@ type LoaderData = {
   fetchedMediaAssets: MediaAsset[];
 };
 
-export default function Sustainability({ loaderData }: { loaderData: LoaderData }) {
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   const { batchData, backgroundMedia, fetchedMediaAssets } = loaderData;
 
   return (
@@ -370,6 +372,16 @@ function SustainabilityInner({
       tl.from(".hero-esg", { opacity: 0, y: -15, duration: 0.8 }, 0.2)
         .from(".hero-sub", { opacity: 0, y: 30, duration: 0.8 }, 0.6)
         .from(".hero-btns", { opacity: 0, y: 30, duration: 0.8 }, 0.8);
+
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        tl.progress(1).kill();
+        gsap.utils
+          .toArray<HTMLElement>(".impact-card, .feature-card, .fade-up-scroll")
+          .forEach((card) => {
+            gsap.killTweensOf(card);
+            gsap.set(card, { clearProps: "all" });
+          });
+      }
     },
     { scope: containerRef },
   );
@@ -586,13 +598,19 @@ function SustainabilityInner({
 
       <main>
         {/* ─── Marquee Strip ─── */}
-        <div className="relative w-full overflow-hidden bg-sustainability-primary/10 py-4 backdrop-blur-sm border-b border-sustainability-primary/20">
+        <section
+          className="relative w-full overflow-hidden bg-sustainability-primary/10 py-4 backdrop-blur-sm border-b border-sustainability-primary/20"
+          aria-label="Sustainability practices ticker"
+        >
           <MarqueeStrip
-            text="Organic Cotton • Recycled Polyester • Regenerative Agriculture • Biodegradable Fibers • Circular Economy •"
+            text={
+              (unifiedData as unknown as Record<string, string>)?.marqueeText ||
+              "Organic Cotton • Recycled Polyester • Regenerative Agriculture • Biodegradable Fibers • Circular Economy •"
+            }
             accentColor="var(--color-sustainability-marquee-bg)"
             speed={80}
           />
-        </div>
+        </section>
 
         {/* ─── MERGED: Our Sustainable Impact (Features + Metrics) ─── */}
         <section

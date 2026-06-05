@@ -230,7 +230,7 @@ type LoaderData = {
   batchData: TechnologyBatchResponse | null;
 };
 
-export default function Technology({ loaderData }: { loaderData: LoaderData }) {
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   const { batchData } = loaderData;
 
   return <TechnologyInner batchData={batchData} />;
@@ -421,78 +421,80 @@ function TechnologyInner({ batchData }: { batchData: TechnologyBatchResponse | n
         </div>
       </header>
 
-      {/* Cyan Scrolling Marquee Strip */}
-      <MarqueeStrip
-        text="INNOVATION • 3D DESIGN • SMART TEXTILES • R&D • BIOMECHANICS • COMPUTATIONAL ANALYSIS"
-        accentColor="var(--color-technology-accent)"
-      />
-
-      {/* Technical Analysis Dashboard */}
-      <div className="tech-dashboard">
-        <InteractiveExperienceSection media={backgroundMedia} />
-      </div>
-
-      {/* Technology Stack */}
-      <div className="tech-stack">
-        <TechnologyStackSection
-          innovations={vm.innovations}
-          equipment={vm.equipment}
-          mediaAssets={mediaAssetsMap}
+      <main>
+        {/* Cyan Scrolling Marquee Strip */}
+        <MarqueeStrip
+          text="INNOVATION • 3D DESIGN • SMART TEXTILES • R&D • BIOMECHANICS • COMPUTATIONAL ANALYSIS"
+          accentColor="var(--color-technology-accent)"
         />
-      </div>
 
-      {/* Road Ahead Timeline */}
-      <div className="tech-roadmap">
-        <RoadAheadTimeline roadmap={vm.roadmap} research={vm.research} />
-      </div>
+        {/* Technical Analysis Dashboard */}
+        <div className="tech-dashboard">
+          <InteractiveExperienceSection media={backgroundMedia} />
+        </div>
 
-      {/* ============================================
-              CTA SECTION — Stitch Design
-              ============================================ */}
-      {vm.cta && (
-        <section className="tech-cta py-48 px-6 relative overflow-hidden flex items-center justify-center border-t border-slate-100 dark:border-white/[0.08] bg-technology-card dark:bg-technology-bg">
-          <div className="absolute inset-0 bg-grid-arctic dark:bg-grid-tech opacity-30 dark:opacity-20 z-0"></div>
+        {/* Technology Stack */}
+        <div className="tech-stack">
+          <TechnologyStackSection
+            innovations={vm.innovations}
+            equipment={vm.equipment}
+            mediaAssets={mediaAssetsMap}
+          />
+        </div>
 
-          {/* HUD micro-copy */}
-          <div className="absolute bottom-8 left-8 hidden md:block">
-            <span className="micro-copy dark:text-technology-accent">
-              LIVE FEED: ENCRYPTED_TUNNEL_CONNECTED
-            </span>
-          </div>
-          <div className="absolute top-8 right-8 hidden md:block">
-            <span className="micro-copy dark:text-technology-muted">ID: RUN_APP_LAB_849</span>
-          </div>
+        {/* Road Ahead Timeline */}
+        <div className="tech-roadmap">
+          <RoadAheadTimeline roadmap={vm.roadmap} research={vm.research} />
+        </div>
 
-          <div className="relative z-10 text-center max-w-4xl mx-auto">
-            <Typography.H2 className="text-6xl md:text-8xl lg:text-9xl font-neue-stance font-bold text-black dark:text-white mb-10 uppercase italic tracking-tighter leading-[0.85] dark:drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-              {vm.cta.headline.replace("?", "")} <br />
-              <span className="text-technology-primary dark:text-technology-accent dark:drop-shadow-[0_0_15px_var(--color-technology-accent)]">
-                Together?
+        {/* ============================================
+                CTA SECTION — Stitch Design
+                ============================================ */}
+        {vm.cta && (
+          <section className="tech-cta py-48 px-6 relative overflow-hidden flex items-center justify-center border-t border-slate-100 dark:border-white/[0.08] bg-technology-card dark:bg-technology-bg">
+            <div className="absolute inset-0 bg-grid-arctic dark:bg-grid-tech opacity-30 dark:opacity-20 z-0"></div>
+
+            {/* HUD micro-copy */}
+            <div className="absolute bottom-8 left-8 hidden md:block">
+              <span className="micro-copy dark:text-technology-accent">
+                LIVE FEED: ENCRYPTED_TUNNEL_CONNECTED
               </span>
-            </Typography.H2>
-
-            <Typography.P className="text-lg md:text-2xl text-technology-body mb-16 max-w-2xl mx-auto font-light leading-relaxed tracking-wide font-helvetica">
-              {vm.cta.subheadline ||
-                "Equip your team with technology designed for the next century of sport. Partner with us to redefine what is possible."}
-            </Typography.P>
-
-            <div className="flex flex-col sm:flex-row gap-8 justify-center">
-              <a
-                href="/contact"
-                className="px-14 py-6 bg-technology-primary dark:bg-technology-accent text-white dark:text-black font-bold uppercase tracking-[0.2em] shadow-2xl dark:shadow-[0_0_30px_var(--color-technology-accent)] hover:bg-technology-primary/80 dark:hover:bg-white dark:hover:shadow-[0_0_50px_rgba(255,255,255,0.6)] transition-all transform hover:-translate-y-1 text-xs"
-              >
-                {vm.cta.primaryText || "Book a Tech Demo"}
-              </a>
-              <button
-                type="button"
-                className="px-14 py-6 border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] text-black dark:text-white font-bold uppercase tracking-[0.2em] shadow-lg hover:border-technology-primary dark:hover:border-technology-accent hover:text-technology-primary dark:hover:text-technology-accent dark:hover:shadow-[0_0_20px_var(--color-technology-accent)] transition-all text-xs dark:backdrop-blur-xl"
-              >
-                View Equipment Specs
-              </button>
             </div>
-          </div>
-        </section>
-      )}
+            <div className="absolute top-8 right-8 hidden md:block">
+              <span className="micro-copy dark:text-technology-muted">ID: RUN_APP_LAB_849</span>
+            </div>
+
+            <div className="relative z-10 text-center max-w-4xl mx-auto">
+              <Typography.H2 className="text-6xl md:text-8xl lg:text-9xl font-neue-stance font-bold text-black dark:text-white mb-10 uppercase italic tracking-tighter leading-[0.85] dark:drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                {vm.cta.headline.replace("?", "")} <br />
+                <span className="text-technology-primary dark:text-technology-accent dark:drop-shadow-[0_0_15px_var(--color-technology-accent)]">
+                  Together?
+                </span>
+              </Typography.H2>
+
+              <Typography.P className="text-lg md:text-2xl text-technology-body mb-16 max-w-2xl mx-auto font-light leading-relaxed tracking-wide font-helvetica">
+                {vm.cta.subheadline ||
+                  "Equip your team with technology designed for the next century of sport. Partner with us to redefine what is possible."}
+              </Typography.P>
+
+              <div className="flex flex-col sm:flex-row gap-8 justify-center">
+                <a
+                  href="/contact"
+                  className="px-14 py-6 bg-technology-primary dark:bg-technology-accent text-white dark:text-black font-bold uppercase tracking-[0.2em] shadow-2xl dark:shadow-[0_0_30px_var(--color-technology-accent)] hover:bg-technology-primary/80 dark:hover:bg-white dark:hover:shadow-[0_0_50px_rgba(255,255,255,0.6)] transition-all transform hover:-translate-y-1 text-xs"
+                >
+                  {vm.cta.primaryText || "Book a Tech Demo"}
+                </a>
+                <button
+                  type="button"
+                  className="px-14 py-6 border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] text-black dark:text-white font-bold uppercase tracking-[0.2em] shadow-lg hover:border-technology-primary dark:hover:border-technology-accent hover:text-technology-primary dark:hover:text-technology-accent dark:hover:shadow-[0_0_20px_var(--color-technology-accent)] transition-all text-xs dark:backdrop-blur-xl"
+                >
+                  View Equipment Specs
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
+      </main>
     </div>
   );
 }

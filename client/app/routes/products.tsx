@@ -44,7 +44,7 @@ export function meta({ data, location }: Route.MetaArgs) {
 
   // Find category name if possible from loader data
   const loaderData = data as { categories?: Array<{ id: number; name: string }> };
-  const categories = loaderData?.categories || [];
+  const categories = Array.isArray(loaderData?.categories) ? loaderData.categories : [];
   const category = categories.find(
     (c: { id: number; name: string }) => c.id.toString() === categoryId,
   );
@@ -133,7 +133,7 @@ function ProductsLoader() {
   );
 }
 
-export default function ProductsPage() {
+export function Component() {
   // Direct Server Data (No client-side fetch required for initial load)
   const {
     categories: serverCategories,

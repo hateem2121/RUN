@@ -234,29 +234,50 @@ export class UnifiedCache {
    */
   async invalidate(pattern: string): Promise<void> {
     // 1. Clear L1 Memory Cache immediately for the CURRENT instance
-    const isRegex = pattern.startsWith("^") || pattern.includes("*");
-    const regex = isRegex ? new RegExp(pattern.replace("*", ".*")) : null;
+    const isRegex =
+      pattern.startsWith("^") ||
+      pattern.includes(".*") ||
+      pattern.includes("(") ||
+      pattern.includes("|");
+    const regex = isRegex
+      ? new RegExp(pattern)
+      : pattern.includes("*")
+        ? new RegExp(pattern.replace(/\*/g, ".*"))
+        : null;
 
+    logger.debug(`[UnifiedCache] Invalidating L1 pattern: ${pattern}. Compiled regex: ${regex}`);
+    let deletedCount = 0;
     for (const key of this.memoryCache.keys()) {
       if (regex) {
         if (regex.test(key)) {
           this.memoryCache.delete(key);
+          deletedCount++;
         }
       } else {
         if (key.includes(pattern)) {
           this.memoryCache.delete(key);
+          deletedCount++;
         }
       }
     }
+    if (deletedCount > 0) {
+      logger.debug(`[UnifiedCache] Invalidated ${deletedCount} L1 keys for pattern ${pattern}`);
+    }
 
-    // 2. Offload L2 (Redis/Postgres) invalidation to BullMQ for background processing
+    // 2. Offload L2 (Redis/Postgres) invalidation to BullMQ for background processing in production
     // This makes the initiating request MUCH faster by avoiding synchronous SCAN/DEL
-    // NOTE: L2 is always enabled now (either Redis or Postgres)
-    import("../jobs/queues/cache-invalidation-queue.js").then(({ queueCacheInvalidation }) => {
-      queueCacheInvalidation(pattern).catch((err) =>
-        logger.warn(`[UnifiedCache] Failed to queue background invalidation for ${pattern}`, err),
-      );
-    });
+    // In development or when Redis is disabled, clear synchronously to avoid race conditions.
+    if (process.env.NODE_ENV === "production" && isRedisEnabled) {
+      import("../jobs/queues/cache-invalidation-queue.js").then(({ queueCacheInvalidation }) => {
+        queueCacheInvalidation(pattern).catch((err) =>
+          logger.warn(`[UnifiedCache] Failed to queue background invalidation for ${pattern}`, err),
+        );
+      });
+    } else {
+      await this.clearPattern(pattern).catch((err) => {
+        logger.warn(`[UnifiedCache] Failed to clear L2 synchronously for ${pattern}`, err);
+      });
+    }
 
     // 3. Emit invalidation event for frontend polling
     import("./cache-events.js").then(({ emitCacheInvalidation }) => {
@@ -320,8 +341,16 @@ export class UnifiedCache {
    * Clear keys matching a pattern
    */
   async clearPattern(pattern: string): Promise<void> {
-    const isRegex = pattern.startsWith("^") || pattern.includes("*");
-    const regex = isRegex ? new RegExp(pattern.replace("*", ".*")) : null;
+    const isRegex =
+      pattern.startsWith("^") ||
+      pattern.includes(".*") ||
+      pattern.includes("(") ||
+      pattern.includes("|");
+    const regex = isRegex
+      ? new RegExp(pattern)
+      : pattern.includes("*")
+        ? new RegExp(pattern.replace(/\*/g, ".*"))
+        : null;
 
     // 1. Clear L1 Memory Cache
     for (const key of this.memoryCache.keys()) {
@@ -338,22 +367,47 @@ export class UnifiedCache {
 
     // 2. Clear L2 Redis/Postgres Cache
     try {
-      // Use SCAN to find keys matching pattern in L2
-      // For simplicity and matching current logic, we'll use wildcards
-      const redisPattern = isRegex ? pattern.replace("^", "").replace(".*", "*") : `*${pattern}*`;
-      let cursor = "0";
-
-      do {
-        const [nextCursor, keys] = await this.l2.scan(cursor, {
-          match: redisPattern,
-          count: 100,
-        });
-        cursor = nextCursor;
-
-        if (keys.length > 0) {
-          await this.l2.del(...keys);
+      if ("deletePattern" in this.l2 && typeof this.l2.deletePattern === "function") {
+        await this.l2.deletePattern(pattern);
+      } else {
+        // Use SCAN to find keys matching pattern in L2 for Redis
+        let redisPattern = pattern;
+        if (isRegex) {
+          // Replace ^(batch:)? with *
+          redisPattern = redisPattern.replace(/^\^\(batch:\)\?/, "*");
+          // Replace .* with *
+          redisPattern = redisPattern.replace(/\.\*/g, "*");
+          // Remove regex boundary anchors
+          redisPattern = redisPattern.replace(/\$/g, "");
+          // If pattern contains alternatives, use '*' fallback
+          if (redisPattern.includes("|")) {
+            redisPattern = "*";
+          }
+        } else {
+          redisPattern = `*${pattern}*`;
         }
-      } while (cursor !== "0");
+
+        let cursor = "0";
+
+        do {
+          const [nextCursor, keys] = await this.l2.scan(cursor, {
+            match: redisPattern,
+            count: 100,
+          });
+          cursor = nextCursor;
+
+          if (keys.length > 0) {
+            // Apply regex filter locally to ensure precise invalidation
+            const keysToDelete = regex
+              ? keys.filter((k) => regex.test(k))
+              : keys.filter((k) => k.includes(pattern));
+
+            if (keysToDelete.length > 0) {
+              await this.l2.del(...keysToDelete);
+            }
+          }
+        } while (cursor !== "0");
+      }
     } catch (error: unknown) {
       logger.error(`[Cache] L2 clearPattern failed for ${pattern}:`, error);
     }

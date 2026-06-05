@@ -9,7 +9,7 @@ import { CacheKeys, CacheOperations } from "../lib/cache/cache-strategies.js";
 import { twoTierBatchCache } from "../lib/cache/two-tier-batch.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
 import { miscRepository } from "../lib/db/repositories/index.js";
-import { type AppError, NotFoundError } from "../lib/errors.js";
+import { AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 import { withTimeout } from "../lib/resilience/request-timeout.js";
@@ -48,48 +48,55 @@ export const NavigationService = {
     const startTime = performance.now();
     const cacheKey = CacheKeys.navigation.items();
 
-    const { data, benchmark } = (await twoTierBatchCache.get(
-      cacheKey,
-      async () => {
-        const result = await safeQuery(
-          withCircuit(
-            "get-navigation-items",
-            () => withTimeout(miscRepository.getNavigationItems(), 5000, "Get navigation items"),
-            DB_CIRCUIT_OPTIONS,
-          ),
-        );
+    try {
+      const { data, benchmark } = (await twoTierBatchCache.get(
+        cacheKey,
+        async () => {
+          const result = await safeQuery(
+            withCircuit(
+              "get-navigation-items",
+              () => withTimeout(miscRepository.getNavigationItems(), 5000, "Get navigation items"),
+              DB_CIRCUIT_OPTIONS,
+            ),
+          );
 
-        if (result.isErr()) throw result.error;
-        return normalizeItems(result.value);
-      },
-      {
-        bypassCache,
-        swrConfig: {
-          ttl: CACHE_TTL_NAVIGATION * 1000,
-          staleWhileRevalidate: CACHE_TTL_NAVIGATION * 2 * 1000,
+          if (result.isErr()) throw result.error;
+          return normalizeItems(result.value);
         },
-      },
-    )) || { data: [], benchmark: { hit: "MISS" } };
+        {
+          bypassCache,
+          swrConfig: {
+            ttl: CACHE_TTL_NAVIGATION * 1000,
+            staleWhileRevalidate: CACHE_TTL_NAVIGATION * 2 * 1000,
+          },
+        },
+      )) || { data: [], benchmark: { hit: "MISS" } };
 
-    if (!data) {
+      if (!data) {
+        return ok({
+          data: [],
+          metadata: {
+            cacheHit: "MISS",
+            responseTime: performance.now() - startTime,
+            ttl: 0,
+          },
+        });
+      }
+
       return ok({
-        data: [],
+        data: data as NavigationItem[],
         metadata: {
-          cacheHit: "MISS",
+          cacheHit: benchmark.hit,
           responseTime: performance.now() - startTime,
-          ttl: 0,
+          ttl: CACHE_TTL_NAVIGATION,
         },
       });
+    } catch (error) {
+      if (error instanceof AppError) {
+        return err(error);
+      }
+      return err(new InternalError("Failed to fetch navigation items", { error }));
     }
-
-    return ok({
-      data: data as NavigationItem[],
-      metadata: {
-        cacheHit: benchmark.hit,
-        responseTime: performance.now() - startTime,
-        ttl: CACHE_TTL_NAVIGATION,
-      },
-    });
   },
 
   getItem: async (id: number): Promise<Result<NavigationItem, AppError>> => {

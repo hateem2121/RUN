@@ -5,16 +5,16 @@ import { z } from "zod";
  * Includes split name fields and UI-specific logic like 'otherPlatform'.
  */
 export const ContactFormSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  firstName: z.string().min(1, { error: "First name is required" }),
+  lastName: z.string().min(1, { error: "Last name is required" }),
   jobTitle: z.string().optional(),
   companyName: z.string().optional(),
-  email: z.string().email("Invalid email address"),
-  country: z.string().min(1, "Country is required"),
+  email: z.string().email({ error: "Invalid email address" }),
+  country: z.string().min(1, { error: "Country is required" }),
   platform: z.string().default("Phone Call"),
   contactNumber: z.string().optional(),
   otherPlatform: z.string().optional(),
-  message: z.string().min(1, "Message is required"),
+  message: z.string().min(1, { error: "Message is required" }),
   contactPreference: z.enum(["email", "platform"]).default("email"),
   honeypot: z.string().optional(),
 });
@@ -26,9 +26,9 @@ export type ContactFormData = z.infer<typeof ContactFormSchema>;
  * Matches the 'inquiries' table columns exactly.
  */
 export const ContactSubmissionSchema = z.object({
-  name: z.string().trim().min(1, "Name is required").max(100),
-  email: z.string().trim().email("Invalid email address"),
-  message: z.string().trim().min(1, "Message is required").max(5000),
+  name: z.string().trim().min(1, { error: "Name is required" }).max(100),
+  email: z.string().trim().email({ error: "Invalid email address" }),
+  message: z.string().trim().min(1, { error: "Message is required" }).max(5000),
   company: z
     .string()
     .trim()
@@ -64,9 +64,9 @@ export type ContactSubmissionData = z.input<typeof ContactSubmissionSchema>;
  */
 export const QuoteSubmissionSchema = z.object({
   contact: z.object({
-    name: z.string().min(2, "Name is required"),
-    email: z.string().email("Invalid email address"),
-    company: z.string().min(2, "Company name is required"),
+    name: z.string().min(2, { error: "Name is required" }),
+    email: z.string().email({ error: "Invalid email address" }),
+    company: z.string().min(2, { error: "Company name is required" }),
     phone: z.string().optional(),
     projectDescription: z.string().optional(),
   }),
@@ -78,18 +78,24 @@ export const QuoteSubmissionSchema = z.object({
         notes: z.string().optional(),
       }),
     )
-    .min(1, "At least one item must be added to the quote"),
+    .min(1, { error: "At least one item must be added to the quote" }),
 });
 
 export type QuoteSubmissionData = z.infer<typeof QuoteSubmissionSchema>;
 
 // Admin contact page CMS settings form schema
 export const contactContentFormSchema = z.object({
-  heroTitle: z.string().min(1, "Hero title is required").default("DROP US A MESSAGE"),
-  email: z.string().email("Invalid email address").default("hello@runapparel.co"),
-  phone: z.string().min(1, "Phone number is required").default("+1 (555) 123-4567"),
-  locationLine1: z.string().min(1, "Address line 1 is required").default("123 Innovation Drive"),
-  locationLine2: z.string().min(1, "Address line 2 is required").default("Tech Valley, CA 94043"),
+  heroTitle: z.string().min(1, { error: "Hero title is required" }).default("DROP US A MESSAGE"),
+  email: z.string().email({ error: "Invalid email address" }).default("hello@runapparel.co"),
+  phone: z.string().min(1, { error: "Phone number is required" }).default("+1 (555) 123-4567"),
+  locationLine1: z
+    .string()
+    .min(1, { error: "Address line 1 is required" })
+    .default("123 Innovation Drive"),
+  locationLine2: z
+    .string()
+    .min(1, { error: "Address line 2 is required" })
+    .default("Tech Valley, CA 94043"),
   locationButtonText: z.string().default("GET DIRECTIONS"),
   tradingHours: z
     .array(

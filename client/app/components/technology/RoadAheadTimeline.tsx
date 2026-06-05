@@ -142,14 +142,14 @@ export function RoadAheadTimeline({ roadmap, research, className }: RoadAheadTim
                 )}
 
                 {/* Timeline tag */}
-                <span className="text-[10px] text-slate-400 font-mono mb-2 block font-bold">
+                <span className="text-[10px] text-slate-600 dark:text-slate-400 font-mono mb-2 block font-bold">
                   {node.timeline}
                 </span>
 
                 <h4 className="text-black dark:text-white font-bold uppercase text-lg mb-3 font-neue-stance">
                   {node.title}
                 </h4>
-                <p className="text-xs text-slate-500 dark:text-[#E3DFD6] font-light leading-relaxed font-helvetica">
+                <p className="text-xs text-slate-600 dark:text-[#E3DFD6] font-light leading-relaxed font-helvetica">
                   {node.description}
                 </p>
 
@@ -159,10 +159,10 @@ export function RoadAheadTimeline({ roadmap, research, className }: RoadAheadTim
                     <div
                       className={cn(
                         "w-1.5 h-1.5 rounded-full",
-                        node.status === "Ongoing" ? "bg-amber-400" : "bg-green-500",
+                        node.status === "Ongoing" ? "bg-amber-500" : "bg-green-600",
                       )}
                     ></div>
-                    <span className="text-[9px] font-mono text-slate-400 uppercase">
+                    <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">
                       {node.status}
                     </span>
                   </div>

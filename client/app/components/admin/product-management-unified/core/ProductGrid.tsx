@@ -55,7 +55,7 @@ function ProductDisplay({
   // Handle product deletion
   const handleProductDelete = useCallback(() => {
     // Refresh the product list after deletion
-    queryClient.invalidateQueries({ queryKey: ["/api/v1/admin/products"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
   }, [queryClient]);
 
   // Render individual product item
@@ -232,7 +232,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
     };
   }>({
     queryKey: [
-      "/api/v1/admin/products",
+      "/api/admin/products",
       {
         page: currentPage,
         limit: pageSize,
@@ -242,7 +242,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
       },
     ],
     queryFn: async () => {
-      const response = await fetch(`/api/v1/admin/products?${queryParams.toString()}`);
+      const response = await fetch(`/api/admin/products?${queryParams.toString()}`);
       if (!response.ok) {
         throw new Error("Failed to fetch products");
       }

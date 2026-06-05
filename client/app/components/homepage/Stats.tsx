@@ -1,9 +1,7 @@
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type React from "react";
 import { useRef, useState } from "react";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { KEY_STATS } from "./constants";
 
 // Scramble Component

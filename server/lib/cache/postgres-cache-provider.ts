@@ -78,6 +78,27 @@ export class PostgresCacheProvider {
   }
 
   /**
+   * Delete values matching pattern from Postgres cache using POSIX regex
+   */
+  async deletePattern(pattern: string): Promise<void> {
+    try {
+      const isRegex =
+        pattern.startsWith("^") ||
+        pattern.includes(".*") ||
+        pattern.includes("(") ||
+        pattern.includes("|");
+      let pgRegex = pattern;
+      if (!isRegex && pattern.includes("*")) {
+        pgRegex = pattern.replace(/\*/g, ".*");
+      }
+      await db.delete(cacheEntries).where(sql`key ~ ${pgRegex}`);
+      logger.debug(`[PostgresCache] Deleted pattern: ${pattern} using regex: ${pgRegex}`);
+    } catch (err) {
+      logger.error(`[PostgresCache] Delete pattern failed for ${pattern}:`, err);
+    }
+  }
+
+  /**
    * Clear expired entries (Cleanup)
    */
   async cleanup(): Promise<void> {

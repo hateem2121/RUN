@@ -265,7 +265,7 @@ test.describe("CSS Load Order Analysis", () => {
 
     page.on("response", (response) => {
       const url = response.url();
-      const timing = response.timing();
+      const timing = response.request().timing();
       if (url.endsWith(".css")) {
         cssLoadTimes.push(timing.responseEnd);
       }

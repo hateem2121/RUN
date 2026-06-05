@@ -19,7 +19,12 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { slug };
 }
 
-export default function GuidePage() {
+import { RouteErrorBoundary } from "@/components/shared/RouteErrorBoundary";
+import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
+
+export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
+
+export function GuidePage() {
   const { slug } = useLoaderData<typeof loader>();
   const authRef = useRef<HTMLDivElement>(null);
   const webhooksRef = useRef<HTMLDivElement>(null);

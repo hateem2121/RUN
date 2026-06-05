@@ -1,8 +1,10 @@
+=== Protocol 0 ===
+Running npm run verify:tech-integrity
 
 > run-remix-monorepo@4.0.3 verify:tech-integrity
 > tsx scripts/verify-tech-integrity.ts
 
-(node:56862) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(node:31194) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
 (Use `node --trace-deprecation ...` to show where the warning was created)
 
 > run-remix-monorepo@4.0.3 typecheck
@@ -12,7 +14,7 @@
 > run-remix-monorepo@4.0.3 lint
 > biome check .
 
-Checked 924 files in 225ms. No fixes applied.
+Checked 961 files in 239ms. No fixes applied.
 
 > run-remix-monorepo@4.0.3 build
 > turbo run build
@@ -23,21 +25,21 @@ Checked 924 files in 225ms. No fixes applied.
    • Running build in 4 packages
    • Remote caching disabled
 
-@run-remix/shared:build: cache hit, replaying logs cc89abcc7a612389
+@run-remix/shared:build: cache hit, replaying logs e23b7232b71b2355
 @run-remix/shared:build: 
 @run-remix/shared:build: > @run-remix/shared@1.0.0 build
 @run-remix/shared:build: > tsc -b
 @run-remix/shared:build: 
-@run-remix/server:build: cache hit, replaying logs aea7d0826fdbc0a4
+@run-remix/server:build: cache hit, replaying logs 73d5c1f5141eedb0
 @run-remix/server:build: 
 @run-remix/server:build: > @run-remix/server@3.0.0 build
 @run-remix/server:build: > tsc -b && esbuild index.ts --bundle --platform=node --target=node24 --packages=external --format=esm --outfile=../dist/index.js
 @run-remix/server:build: 
 @run-remix/server:build: 
-@run-remix/server:build:   ../dist/index.js  1.2mb ⚠️
+@run-remix/server:build:   ../dist/index.js  1.3mb ⚠️
 @run-remix/server:build: 
-@run-remix/server:build: ⚡ Done in 14ms
-@run-remix/client:build: cache hit, replaying logs 2e468cea22690f3e
+@run-remix/server:build: ⚡ Done in 16ms
+@run-remix/client:build: cache hit, replaying logs 2093f0ac6537f535
 @run-remix/client:build: 
 @run-remix/client:build: > @run-remix/client@3.0.0 build
 @run-remix/client:build: > tsc -b && vite build
@@ -57,7 +59,7 @@ Checked 924 files in 225ms. No fixes applied.
 @run-remix/client:build:      secrets and not hard-coding them in
 @run-remix/client:build:      your source code.
 @run-remix/client:build: 
-@run-remix/client:build: @run-remix/client:build: transforming...✓ 9859 modules transformed.
+@run-remix/client:build: [2K@run-remix/client:build: transforming...✓ 9868 modules transformed.
 @run-remix/client:build: rendering chunks...
 @run-remix/client:build: [sentry-vite-plugin] Warning: No auth token provided. Will not create release. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
 @run-remix/client:build: You seem to be using Turborepo, did you forget to put SENTRY_AUTH_TOKEN in `passThroughEnv`? https://turbo.build/repo/docs/reference/configuration#passthroughenv
@@ -72,7 +74,7 @@ Checked 924 files in 225ms. No fixes applied.
 @run-remix/client:build: build/client/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2               25.96 kB
 @run-remix/client:build: build/client/assets/inter-latin-wght-normal-Dx4kXJAl.woff2                      48.25 kB
 @run-remix/client:build: build/client/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2                  85.06 kB
-@run-remix/client:build: build/client/.vite/manifest.json                                                90.10 kB │ gzip:   8.68 kB
+@run-remix/client:build: build/client/.vite/manifest.json                                                91.66 kB │ gzip:   8.87 kB
 @run-remix/client:build: build/client/assets/material-symbols-outlined-latin-400-normal-9XcxO1Ay.woff2  317.57 kB
 @run-remix/client:build: build/client/assets/material-symbols-outlined-latin-100-normal-0s59Udit.woff2  333.04 kB
 @run-remix/client:build: build/client/assets/material-symbols-outlined-latin-200-normal-Cmes_jNh.woff2  345.10 kB
@@ -83,205 +85,209 @@ Checked 924 files in 225ms. No fixes applied.
 @run-remix/client:build: build/client/assets/material-symbols-outlined-latin-200-normal-BDYtcQhh.woff   467.59 kB
 @run-remix/client:build: build/client/assets/blog-management-CX67F6_p.css                                 1.22 kB │ gzip:   0.45 kB
 @run-remix/client:build: build/client/assets/leaflet-vh-t_kPv.css                                        15.09 kB │ gzip:   6.36 kB
-@run-remix/client:build: build/client/assets/root-lwQFoQfU.css                                          352.53 kB │ gzip:  47.01 kB
-@run-remix/client:build: build/client/assets/api.media-BXCmFkXq.js                                        0.00 kB │ gzip:   0.02 kB
-@run-remix/client:build: build/client/assets/useCacheInvalidation-IgpleUFg.js                             0.54 kB │ gzip:   0.34 kB │ map:     0.87 kB
-@run-remix/client:build: build/client/assets/UnifiedModelViewer-CvXwipw8.js                               0.54 kB │ gzip:   0.33 kB
-@run-remix/client:build: build/client/assets/logger-B4dqzqs7.js                                           0.56 kB │ gzip:   0.35 kB │ map:     0.66 kB
-@run-remix/client:build: build/client/assets/gsap-DudmkS52.js                                             0.60 kB │ gzip:   0.38 kB │ map:     0.58 kB
-@run-remix/client:build: build/client/assets/collapsible-cECPvPgi.js                                      0.60 kB │ gzip:   0.39 kB │ map:     0.53 kB
-@run-remix/client:build: build/client/assets/fiber-utils-CmexTTxV.js                                      0.66 kB │ gzip:   0.41 kB │ map:     1.29 kB
-@run-remix/client:build: build/client/assets/product-DPzpO7CY.js                                          0.66 kB │ gzip:   0.43 kB │ map:     2.29 kB
-@run-remix/client:build: build/client/assets/utils-Dj74-G5R.js                                            0.71 kB │ gzip:   0.45 kB │ map:     2.63 kB
-@run-remix/client:build: build/client/assets/skeleton-B2fztuH8.js                                         0.72 kB │ gzip:   0.46 kB │ map:     0.47 kB
-@run-remix/client:build: build/client/assets/useCursorStore-heNR3lCd.js                                   0.73 kB │ gzip:   0.43 kB │ map:     1.04 kB
-@run-remix/client:build: build/client/assets/use-debounce-DKqtr3iG.js                                     0.77 kB │ gzip:   0.48 kB │ map:     0.71 kB
-@run-remix/client:build: build/client/assets/useOptimizedQuery-DsU4uxUE.js                                0.78 kB │ gzip:   0.48 kB │ map:     1.34 kB
-@run-remix/client:build: build/client/assets/use-homepage-data-8IjTkqjf.js                                0.80 kB │ gzip:   0.50 kB │ map:     1.13 kB
-@run-remix/client:build: build/client/assets/GlassCard-B5xm-mlX.js                                        0.82 kB │ gzip:   0.51 kB │ map:     0.84 kB
-@run-remix/client:build: build/client/assets/use-toast-Be9KuZjc.js                                        0.84 kB │ gzip:   0.51 kB │ map:     2.08 kB
-@run-remix/client:build: build/client/assets/separator-CvRjWtyS.js                                        0.85 kB │ gzip:   0.52 kB │ map:     0.99 kB
-@run-remix/client:build: build/client/assets/use-is-mobile-CgsYRPB0.js                                    0.86 kB │ gzip:   0.52 kB │ map:     0.88 kB
-@run-remix/client:build: build/client/assets/progress-CtkFni2G.js                                         0.93 kB │ gzip:   0.57 kB │ map:     1.14 kB
-@run-remix/client:build: build/client/assets/shared-IbDK5zmR.js                                           0.95 kB │ gzip:   0.55 kB │ map:    10.83 kB
-@run-remix/client:build: build/client/assets/use-reduced-motion-CnJP-Hnz.js                               0.95 kB │ gzip:   0.53 kB │ map:     1.40 kB
-@run-remix/client:build: build/client/assets/modifiers.esm-Bfc75_9F.js                                    0.97 kB │ gzip:   0.54 kB │ map:     3.83 kB
-@run-remix/client:build: build/client/assets/useResourceBatch-tzmiTWmk.js                                 0.97 kB │ gzip:   0.58 kB │ map:     1.84 kB
-@run-remix/client:build: build/client/assets/label-CysXEnxE.js                                            0.98 kB │ gzip:   0.58 kB │ map:     0.96 kB
-@run-remix/client:build: build/client/assets/use-hotkeys-XhlKZ8mx.js                                      1.04 kB │ gzip:   0.60 kB │ map:     1.79 kB
-@run-remix/client:build: build/client/assets/rolldown-runtime-BISPW01e.js                                 1.14 kB │ gzip:   0.65 kB
-@run-remix/client:build: build/client/assets/useAccordionPersistence-BPbzkK8O.js                          1.16 kB │ gzip:   0.63 kB │ map:     2.83 kB
-@run-remix/client:build: build/client/assets/icon-wrapper-Ce3p5QaI.js                                     1.19 kB │ gzip:   0.68 kB │ map:     2.03 kB
-@run-remix/client:build: build/client/assets/image-with-skeleton-B3jFHnJ5.js                              1.19 kB │ gzip:   0.70 kB │ map:     1.46 kB
-@run-remix/client:build: build/client/assets/sustainability-utils-Brex8nBC.js                             1.19 kB │ gzip:   0.65 kB │ map:     2.22 kB
-@run-remix/client:build: build/client/assets/react-I1y2H3V1.js                                            1.20 kB │ gzip:   0.69 kB │ map:     2.56 kB
-@run-remix/client:build: build/client/assets/media-query-keys-C7MLGEiu.js                                 1.21 kB │ gzip:   0.59 kB │ map:     5.44 kB
-@run-remix/client:build: build/client/assets/scroll-area-CrilNI7t.js                                      1.30 kB │ gzip:   0.69 kB │ map:     2.10 kB
-@run-remix/client:build: build/client/assets/switch-Dswre9-o.js                                           1.30 kB │ gzip:   0.69 kB │ map:     1.40 kB
-@run-remix/client:build: build/client/assets/checkbox-Dxx4IjvZ.js                                         1.30 kB │ gzip:   0.71 kB │ map:     1.37 kB
-@run-remix/client:build: build/client/assets/alert-CPzcIaXw.js                                            1.30 kB │ gzip:   0.70 kB │ map:     2.13 kB
-@run-remix/client:build: build/client/assets/_-BraMqT_z.js                                                1.33 kB │ gzip:   0.73 kB │ map:     1.52 kB
-@run-remix/client:build: build/client/assets/RouteHydrateFallback-BaxvMmRp.js                             1.33 kB │ gzip:   0.71 kB │ map:     1.44 kB
-@run-remix/client:build: build/client/assets/createReactComponent-8SV-W_y4.js                             1.39 kB │ gzip:   0.76 kB │ map:     2.82 kB
-@run-remix/client:build: build/client/assets/textarea-CeW7Frk8.js                                         1.39 kB │ gzip:   0.74 kB │ map:     1.71 kB
-@run-remix/client:build: build/client/assets/Slogans-C9epPCCm.js                                          1.47 kB │ gzip:   0.86 kB │ map:     2.60 kB
-@run-remix/client:build: build/client/assets/PlaceholderModule-BA5XPpM0.js                                1.48 kB │ gzip:   0.78 kB │ map:     1.48 kB
-@run-remix/client:build: build/client/assets/model-viewer-loader-Bq6vtYxE.js                              1.53 kB │ gzip:   0.79 kB │ map:     2.99 kB
-@run-remix/client:build: build/client/assets/tabs-C13K3aGv.js                                             1.56 kB │ gzip:   0.73 kB │ map:     2.19 kB
-@run-remix/client:build: build/client/assets/errorReporter-DiFKOrOj.js                                    1.61 kB │ gzip:   0.81 kB │ map:     5.20 kB
-@run-remix/client:build: build/client/assets/terms-CWIAIFzW.js                                            1.62 kB │ gzip:   0.86 kB │ map:     1.71 kB
-@run-remix/client:build: build/client/assets/DeleteConfirmationDialog-DBnlrazC.js                         1.63 kB │ gzip:   0.86 kB │ map:     3.37 kB
-@run-remix/client:build: build/client/assets/table-BF6QeRVp.js                                            1.64 kB │ gzip:   0.74 kB │ map:     3.69 kB
-@run-remix/client:build: build/client/assets/api-constants-By4CYaKc.js                                    1.64 kB │ gzip:   0.82 kB │ map:     4.00 kB
-@run-remix/client:build: build/client/assets/input-D2s3xbLJ.js                                            1.65 kB │ gzip:   0.85 kB │ map:     2.06 kB
-@run-remix/client:build: build/client/assets/privacy-cxtGdos6.js                                          1.66 kB │ gzip:   0.88 kB │ map:     1.75 kB
-@run-remix/client:build: build/client/assets/MapMarkers-BzJNNou9.js                                       1.68 kB │ gzip:   0.71 kB │ map:     2.87 kB
-@run-remix/client:build: build/client/assets/react-error-boundary-aKbOMop-.js                             1.74 kB │ gzip:   0.88 kB │ map:     4.40 kB
-@run-remix/client:build: build/client/assets/hover-card-3d-DAYFJB-O.js                                    1.79 kB │ gzip:   0.99 kB │ map:     4.26 kB
-@run-remix/client:build: build/client/assets/badge-BkHx9r9_.js                                            1.82 kB │ gzip:   0.79 kB │ map:     2.30 kB
-@run-remix/client:build: build/client/assets/Sections-Bt9kxeS9.js                                         1.93 kB │ gzip:   0.99 kB │ map:     3.48 kB
-@run-remix/client:build: build/client/assets/marquee-strip-CvGU6nSC.js                                    2.07 kB │ gzip:   1.17 kB │ map:     5.37 kB
-@run-remix/client:build: build/client/assets/RouteErrorBoundary-FsrX-OXH.js                               2.10 kB │ gzip:   1.05 kB │ map:     3.18 kB
-@run-remix/client:build: build/client/assets/AdminErrorBoundary-D7YtSpnR.js                               2.13 kB │ gzip:   1.03 kB │ map:     3.05 kB
-@run-remix/client:build: build/client/assets/form-CrL1Tl72.js                                             2.13 kB │ gzip:   1.02 kB │ map:     5.62 kB
-@run-remix/client:build: build/client/assets/dropdown-menu-CcLHHW-A.js                                    2.15 kB │ gzip:   1.03 kB │ map:     7.90 kB
-@run-remix/client:build: build/client/assets/button-fSUx3An-.js                                           2.28 kB │ gzip:   1.07 kB │ map:     3.15 kB
-@run-remix/client:build: build/client/assets/optimized-image-B_5qq8gQ.js                                  2.28 kB │ gzip:   1.23 kB │ map:     5.53 kB
-@run-remix/client:build: build/client/assets/use-optimized-media-wJtb9J_r.js                              2.29 kB │ gzip:   1.15 kB │ map:     7.57 kB
-@run-remix/client:build: build/client/assets/constants-5fdrwyr9.js                                        2.30 kB │ gzip:   1.07 kB │ map:     3.86 kB
-@run-remix/client:build: build/client/assets/fluid-glass-final-DleZnU4X.js                                2.34 kB │ gzip:   1.21 kB │ map:     4.97 kB
-@run-remix/client:build: build/client/assets/alert-dialog-CWpnhzl5.js                                     2.54 kB │ gzip:   1.03 kB │ map:     5.64 kB
-@run-remix/client:build: build/client/assets/LazyUnifiedModelViewer-C3-OOQmV.js                           2.58 kB │ gzip:   1.24 kB │ map:     2.12 kB
-@run-remix/client:build: build/client/assets/manufacturing-error-boundary-r2BlcqXq.js                     2.68 kB │ gzip:   1.20 kB │ map:     4.30 kB
-@run-remix/client:build: build/client/assets/ErrorBoundary-DI20G3Ss.js                                    2.78 kB │ gzip:   1.16 kB │ map:     6.14 kB
-@run-remix/client:build: build/client/assets/Categories-B8rDHHTK.js                                       2.92 kB │ gzip:   1.48 kB │ map:     5.83 kB
-@run-remix/client:build: build/client/assets/useQuoteStore-CQ2MZvZp.js                                    2.99 kB │ gzip:   1.39 kB │ map:    22.08 kB
-@run-remix/client:build: build/client/assets/card-niAQBU1_.js                                             3.02 kB │ gzip:   1.23 kB │ map:     5.15 kB
-@run-remix/client:build: build/client/assets/StandardMediaSelectionDialog-CCrh_haq.js                     3.03 kB │ gzip:   1.40 kB │ map:     6.02 kB
-@run-remix/client:build: build/client/assets/sheet-ChwnkJfb.js                                            3.07 kB │ gzip:   1.27 kB │ map:     5.39 kB
-@run-remix/client:build: build/client/assets/contact-M--zx0Nk.js                                          3.08 kB │ gzip:   1.31 kB │ map:     6.32 kB
-@run-remix/client:build: build/client/assets/select-C-Y6ge52.js                                           3.24 kB │ gzip:   1.31 kB │ map:     6.49 kB
-@run-remix/client:build: build/client/assets/typography-x2lp-NGH.js                                       3.25 kB │ gzip:   1.19 kB │ map:     7.17 kB
-@run-remix/client:build: build/client/assets/api-DHSLfzZ8.js                                              3.67 kB │ gzip:   1.74 kB │ map:     9.56 kB
-@run-remix/client:build: build/client/assets/admin._index-Cwgxu0Ty.js                                     3.77 kB │ gzip:   1.56 kB │ map:     5.27 kB
-@run-remix/client:build: build/client/assets/categories._slug-DdTgamtF.js                                 4.25 kB │ gzip:   1.79 kB │ map:    10.72 kB
-@run-remix/client:build: build/client/assets/developer._index-BrD8ET_g.js                                 4.30 kB │ gzip:   1.70 kB │ map:     6.82 kB
-@run-remix/client:build: build/client/assets/FeaturedProducts-C0kGMp2c.js                                 4.35 kB │ gzip:   1.98 kB │ map:     8.72 kB
-@run-remix/client:build: build/client/assets/Stats-ZdGt5DCW.js                                            4.42 kB │ gzip:   1.98 kB │ map:     8.75 kB
-@run-remix/client:build: build/client/assets/Values-B_gXOvx4.js                                           4.43 kB │ gzip:   1.92 kB │ map:     7.90 kB
-@run-remix/client:build: build/client/assets/certifications-CL0-UdNL.js                                   4.95 kB │ gzip:   1.97 kB │ map:     9.95 kB
-@run-remix/client:build: build/client/assets/lib-CJX-hWqP.js                                              4.96 kB │ gzip:   1.92 kB │ map:    19.81 kB
-@run-remix/client:build: build/client/assets/ResourceSkeleton-BSIf3ZnU.js                                 5.07 kB │ gzip:   1.83 kB │ map:    12.78 kB
-@run-remix/client:build: build/client/assets/Process-Bm39LzPe.js                                          5.19 kB │ gzip:   2.22 kB │ map:    10.68 kB
-@run-remix/client:build: build/client/assets/BasicInfoSection-B9M1ojfV.js                                 5.26 kB │ gzip:   1.55 kB │ map:    10.18 kB
-@run-remix/client:build: build/client/assets/size-charts-SEAFLN-x.js                                      5.28 kB │ gzip:   2.18 kB │ map:    12.26 kB
-@run-remix/client:build: build/client/assets/accessories-C3wlgpR8.js                                      5.30 kB │ gzip:   2.20 kB │ map:    12.43 kB
-@run-remix/client:build: build/client/assets/useMapMarkers-CZkDxZJm.js                                    5.67 kB │ gzip:   2.14 kB │ map:    14.97 kB
-@run-remix/client:build: build/client/assets/services-DHbiplmE.js                                         5.91 kB │ gzip:   2.49 kB │ map:     9.26 kB
-@run-remix/client:build: build/client/assets/contact-info-cards-BZ-Aq-6A.js                               6.02 kB │ gzip:   1.60 kB │ map:    10.14 kB
-@run-remix/client:build: build/client/assets/CategoryFabricSection-tj60L5ro.js                            6.05 kB │ gzip:   1.98 kB │ map:    14.04 kB
-@run-remix/client:build: build/client/assets/media-url-builder-Du_rN-BN.js                                6.14 kB │ gzip:   2.57 kB │ map:    22.88 kB
-@run-remix/client:build: build/client/assets/MediaFiltersPanel-5Ocr2sc9.js                                6.32 kB │ gzip:   1.89 kB │ map:    11.59 kB
-@run-remix/client:build: build/client/assets/developer.guides._slug-C5_SW1Rs.js                           6.33 kB │ gzip:   2.42 kB │ map:    11.05 kB
-@run-remix/client:build: build/client/assets/web-vitals-DkAusdlH.js                                       6.41 kB │ gzip:   2.71 kB │ map:    14.52 kB
-@run-remix/client:build: build/client/assets/CustomizationSEOSection-C-ga5lUO.js                          6.55 kB │ gzip:   2.02 kB │ map:    13.62 kB
-@run-remix/client:build: build/client/assets/dashboard-LgMwjOi-.js                                        6.73 kB │ gzip:   1.86 kB │ map:    12.51 kB
-@run-remix/client:build: build/client/assets/analytics-BGIzE00v.js                                        6.82 kB │ gzip:   2.29 kB │ map:    14.75 kB
-@run-remix/client:build: build/client/assets/ContentDashboard-DHl57kHG.js                                 6.89 kB │ gzip:   2.24 kB │ map:    13.06 kB
-@run-remix/client:build: build/client/assets/CertificationsSection-DSwn2CbK.js                            6.95 kB │ gzip:   1.94 kB │ map:    16.52 kB
-@run-remix/client:build: build/client/assets/developer-CcBf-5HU.js                                        7.04 kB │ gzip:   2.53 kB │ map:    19.00 kB
-@run-remix/client:build: build/client/assets/SimpleMapContainer-DmhXHtRd.js                               7.34 kB │ gzip:   2.89 kB │ map:    13.60 kB
-@run-remix/client:build: build/client/assets/categories._slug.products-BOPs8Geu.js                        7.63 kB │ gzip:   2.78 kB │ map:    18.69 kB
-@run-remix/client:build: build/client/assets/MediaSelectionWrapperUnified-DzcBWLdr.js                     8.35 kB │ gzip:   2.95 kB │ map:    21.46 kB
-@run-remix/client:build: build/client/assets/fibers-DNu1x_Rr.js                                           8.47 kB │ gzip:   2.98 kB │ map:    22.42 kB
-@run-remix/client:build: build/client/assets/developer.playground-CDOkq5Kf.js                             8.78 kB │ gzip:   3.15 kB │ map:    21.57 kB
-@run-remix/client:build: build/client/assets/ProductDetailsPanel-Ci9aSLYo.js                              9.21 kB │ gzip:   2.40 kB │ map:    18.96 kB
-@run-remix/client:build: build/client/assets/HeroSection-DM3eY4l3.js                                      9.46 kB │ gzip:   3.45 kB │ map:    26.86 kB
-@run-remix/client:build: build/client/assets/ModelViewerErrorBoundary-DYEChW53.js                         9.77 kB │ gzip:   3.01 kB │ map:    29.40 kB
-@run-remix/client:build: build/client/assets/resources-CmnPZDEX.js                                        9.88 kB │ gzip:   3.18 kB │ map:    24.56 kB
-@run-remix/client:build: build/client/assets/SpecificationsSection-4XKWCLCs.js                            9.90 kB │ gzip:   2.60 kB │ map:    24.59 kB
-@run-remix/client:build: build/client/assets/fabrics-u4G7yxfg.js                                         11.31 kB │ gzip:   3.89 kB │ map:    34.70 kB
-@run-remix/client:build: build/client/assets/StorageOptimizationDashboard-DzQpdyQy.js                    11.39 kB │ gzip:   2.67 kB │ map:    21.52 kB
-@run-remix/client:build: build/client/assets/MediaLibraryContainerEnhanced-0S6EJhpH.js                   11.50 kB │ gzip:   3.80 kB │ map:    21.76 kB
-@run-remix/client:build: build/client/assets/MediaLibraryContextEnhanced-C6mTClPv.js                     11.78 kB │ gzip:   3.59 kB │ map:    42.63 kB
-@run-remix/client:build: build/client/assets/categories._-BfRDIls9.js                                    12.45 kB │ gzip:   4.41 kB │ map:    28.75 kB
-@run-remix/client:build: build/client/assets/admin._module-CTjnx8r7.js                                   12.78 kB │ gzip:   4.13 kB │ map:    14.86 kB
-@run-remix/client:build: build/client/assets/MediaAssetsSection-BZr0wZ6y.js                              12.79 kB │ gzip:   3.80 kB │ map:    34.87 kB
-@run-remix/client:build: build/client/assets/dialog-CjJP31y4.js                                          12.79 kB │ gzip:   4.61 kB │ map:    48.86 kB
-@run-remix/client:build: build/client/assets/queryClient-q0RMI0ea.js                                     12.85 kB │ gzip:   4.33 kB │ map:    59.60 kB
-@run-remix/client:build: build/client/assets/UnifiedModelViewerCore-C5Bsb5j5.js                          14.37 kB │ gzip:   5.08 kB │ map:    46.70 kB
-@run-remix/client:build: build/client/assets/_index-CUJ9PJiK.js                                          14.90 kB │ gzip:   5.25 kB │ map:    31.43 kB
-@run-remix/client:build: build/client/assets/inquiry-management-DcsScTzk.js                              15.92 kB │ gzip:   4.42 kB │ map:    33.03 kB
-@run-remix/client:build: build/client/assets/FooterManagement-vYYbExzm.js                                16.10 kB │ gzip:   3.83 kB │ map:    33.48 kB
-@run-remix/client:build: build/client/assets/size-chart-management-enhanced-ChpBgeTk.js                  16.26 kB │ gzip:   5.00 kB │ map:    42.85 kB
-@run-remix/client:build: build/client/assets/MediaUploadEnhanced-BZlFo05x.js                             16.97 kB │ gzip:   5.80 kB │ map:    51.43 kB
-@run-remix/client:build: build/client/assets/ProductGrid-bxsoC1kS.js                                     18.42 kB │ gzip:   5.56 kB │ map:    49.28 kB
-@run-remix/client:build: build/client/assets/ContactPageSettings-6qDLeE_U.js                             18.90 kB │ gzip:   4.51 kB │ map:    40.71 kB
-@run-remix/client:build: build/client/assets/admin-DFh0jGE5.js                                           20.18 kB │ gzip:   5.91 kB │ map:    51.53 kB
-@run-remix/client:build: build/client/assets/MediaGrid-BPa1Cqrn.js                                       20.46 kB │ gzip:   6.81 kB │ map:    48.51 kB
-@run-remix/client:build: build/client/assets/accessory-management-enhanced-D7BqPYXX.js                   20.62 kB │ gzip:   4.90 kB │ map:    54.28 kB
-@run-remix/client:build: build/client/assets/vendor-date-fns-BOT5t-qO.js                                 21.78 kB │ gzip:   6.43 kB │ map:   151.40 kB
-@run-remix/client:build: build/client/assets/products-Dv2O2CiO.js                                        22.13 kB │ gzip:   6.77 kB │ map:    66.01 kB
-@run-remix/client:build: build/client/assets/about-CA8XNHoL.js                                           22.88 kB │ gzip:   7.32 kB │ map:    61.61 kB
-@run-remix/client:build: build/client/assets/fiber-management-r8vnfzIX.js                                24.95 kB │ gzip:   6.02 kB │ map:    62.10 kB
-@run-remix/client:build: build/client/assets/MediaViewerModal-C9soJNTy.js                                25.92 kB │ gzip:   7.79 kB │ map:    82.79 kB
-@run-remix/client:build: build/client/assets/_public-TPJYKCTe.js                                         26.00 kB │ gzip:   7.65 kB │ map:    59.96 kB
-@run-remix/client:build: build/client/assets/ProductCreateEditModal-Evl9_da4.js                          27.52 kB │ gzip:   8.59 kB │ map:    76.35 kB
-@run-remix/client:build: build/client/assets/contact-CQE2Fldz.js                                         28.50 kB │ gzip:   8.26 kB │ map:    59.72 kB
-@run-remix/client:build: build/client/assets/vendor-utils-core-BUHVJLoF.js                               28.52 kB │ gzip:   8.77 kB │ map:   134.84 kB
-@run-remix/client:build: build/client/assets/certificate-management-BT7hWIuW.js                          31.11 kB │ gzip:   6.97 kB │ map:    76.84 kB
-@run-remix/client:build: build/client/assets/categories._index-Cf-T4EdB.js                               31.71 kB │ gzip:   9.66 kB │ map:    90.85 kB
-@run-remix/client:build: build/client/assets/vendor-react-query-Cbu25wpW.js                              32.27 kB │ gzip:  10.14 kB │ map:   121.51 kB
-@run-remix/client:build: build/client/assets/vendor-react-hook-form-CpVUyCIq.js                          33.08 kB │ gzip:  11.78 kB │ map:   157.62 kB
-@run-remix/client:build: build/client/assets/vendor-schema-CLm43tNv.js                                   33.46 kB │ gzip:   8.08 kB │ map:   137.44 kB
-@run-remix/client:build: build/client/assets/fabric-management-enhanced-BUxmuaoo.js                      34.78 kB │ gzip:   7.86 kB │ map:    97.81 kB
-@run-remix/client:build: build/client/assets/use-scroll-DHFGSA7_.js                                      36.14 kB │ gzip:   9.51 kB │ map:    84.14 kB
-@run-remix/client:build: build/client/assets/root-BlGsHznn.js                                            38.82 kB │ gzip:  13.06 kB │ map:   129.20 kB
-@run-remix/client:build: build/client/assets/sustainability-Dg1RF9Ev.js                                  41.37 kB │ gzip:  10.70 kB │ map:    92.99 kB
-@run-remix/client:build: build/client/assets/vendor-icons-DMYDKR0C.js                                    41.67 kB │ gzip:  13.65 kB │ map:   166.85 kB
-@run-remix/client:build: build/client/assets/technology-4XG3qSAs.js                                      43.89 kB │ gzip:  10.69 kB │ map:    94.69 kB
-@run-remix/client:build: build/client/assets/blog-management-CBi7vcKw.js                                 45.66 kB │ gzip:  14.55 kB │ map:   139.72 kB
-@run-remix/client:build: build/client/assets/vendor-ui-core-Dlr04ZSY.js                                  46.02 kB │ gzip:  13.71 kB │ map:   109.35 kB
-@run-remix/client:build: build/client/assets/ProductManagementUnified-CvtiYBBG.js                        46.57 kB │ gzip:  11.83 kB │ map:   115.67 kB
-@run-remix/client:build: build/client/assets/category-management-simplified-DttC_-Q-.js                  47.81 kB │ gzip:  10.78 kB │ map:   137.12 kB
-@run-remix/client:build: build/client/assets/sortable.esm-B55D4XJd.js                                    51.06 kB │ gzip:  16.74 kB │ map:   191.48 kB
-@run-remix/client:build: build/client/assets/manufacturing-Z8-ftBw1.js                                   51.88 kB │ gzip:  15.99 kB │ map:   102.36 kB
-@run-remix/client:build: build/client/assets/AboutManagement-CXrmqgTM.js                                 52.36 kB │ gzip:  11.81 kB │ map:   146.82 kB
-@run-remix/client:build: build/client/assets/homepage-management-BWWtBBDL.js                             55.61 kB │ gzip:  11.20 kB │ map:   136.21 kB
-@run-remix/client:build: build/client/assets/vendor-d3-Cppakzg8.js                                       64.18 kB │ gzip:  20.95 kB │ map:   233.13 kB
-@run-remix/client:build: build/client/assets/shared-C6Sw1_ER.js                                          64.37 kB │ gzip:  14.54 kB │ map:   211.14 kB
-@run-remix/client:build: build/client/assets/manufacturing-management-DlD_1cal.js                       102.70 kB │ gzip:  18.60 kB │ map:   266.82 kB
-@run-remix/client:build: build/client/assets/unified-sustainability-management-FOS9DS9Z.js              104.00 kB │ gzip:  18.28 kB │ map:   254.54 kB
-@run-remix/client:build: build/client/assets/technology-management-zD1FC7ex.js                          112.38 kB │ gzip:  20.77 kB │ map:   259.46 kB
-@run-remix/client:build: build/client/assets/vendor-react-router-m8Ybmwv-.js                            125.95 kB │ gzip:  40.86 kB │ map:   612.27 kB
-@run-remix/client:build: build/client/assets/entry.client-DgisTrYL.js                                   126.26 kB │ gzip:  40.00 kB │ map:   420.56 kB
-@run-remix/client:build: build/client/assets/vendor-gsap-DWIhHsKe.js                                    129.26 kB │ gzip:  49.87 kB │ map:   573.47 kB
-@run-remix/client:build: build/client/assets/vendor-sentry-BUr5e0ol.js                                  138.45 kB │ gzip:  46.26 kB │ map:   860.91 kB
-@run-remix/client:build: build/client/assets/leaflet-src-CCELoEjH.js                                    148.81 kB │ gzip:  43.20 kB │ map:   626.18 kB
-@run-remix/client:build: build/client/assets/vendor-radix-Da9DFv9q.js                                   154.46 kB │ gzip:  46.55 kB │ map:   682.05 kB
-@run-remix/client:build: build/client/assets/LottieIcon-BhOISDlf.js                                     169.73 kB │ gzip:  47.69 kB │ map:   589.60 kB
-@run-remix/client:build: build/client/assets/vendor-zod-D8_Z3Pnx.js                                     279.43 kB │ gzip:  63.93 kB │ map:   819.17 kB
-@run-remix/client:build: build/client/assets/vendor-react-core-CzwLv6aP.js                              300.54 kB │ gzip:  92.77 kB │ map: 1,415.37 kB
-@run-remix/client:build: build/client/assets/vendor-recharts-Dm1mg1rT.js                                303.59 kB │ gzip:  86.21 kB │ map: 1,427.74 kB
-@run-remix/client:build: build/client/assets/vendor-tiptap-DBnpWEuL.js                                  378.36 kB │ gzip: 118.07 kB │ map: 1,438.54 kB
-@run-remix/client:build: build/client/assets/model-viewer-module.min-teWVV4z8.js                        413.92 kB │ gzip: 134.20 kB │ map:   755.29 kB
-@run-remix/client:build: build/client/assets/vendor-three-hg66FOPA.js                                   592.72 kB │ gzip: 149.47 kB │ map: 2,673.17 kB
+@run-remix/client:build: build/client/assets/root-DYzqq2ro.css                                          353.53 kB │ gzip:  47.09 kB
+@run-remix/client:build: build/client/assets/api.media-CHjqWCg4.js                                        0.00 kB │ gzip:   0.02 kB
+@run-remix/client:build: build/client/assets/useCacheInvalidation-DuNRPjyj.js                             0.54 kB │ gzip:   0.34 kB │ map:     0.87 kB
+@run-remix/client:build: build/client/assets/UnifiedModelViewer-DSVRgNoo.js                               0.54 kB │ gzip:   0.33 kB
+@run-remix/client:build: build/client/assets/logger-CRdcHpeQ.js                                           0.56 kB │ gzip:   0.35 kB │ map:     0.66 kB
+@run-remix/client:build: build/client/assets/gsap-Bm9ClF48.js                                             0.60 kB │ gzip:   0.38 kB │ map:     0.58 kB
+@run-remix/client:build: build/client/assets/collapsible-Bfijd_D5.js                                      0.60 kB │ gzip:   0.39 kB │ map:     0.53 kB
+@run-remix/client:build: build/client/assets/fiber-utils-B4q6ABGi.js                                      0.66 kB │ gzip:   0.41 kB │ map:     1.29 kB
+@run-remix/client:build: build/client/assets/product-Dpv2XwvH.js                                          0.66 kB │ gzip:   0.43 kB │ map:     2.29 kB
+@run-remix/client:build: build/client/assets/utils-BiRs7UWT.js                                            0.71 kB │ gzip:   0.45 kB │ map:     2.63 kB
+@run-remix/client:build: build/client/assets/skeleton-B3WpdKfK.js                                         0.72 kB │ gzip:   0.46 kB │ map:     0.47 kB
+@run-remix/client:build: build/client/assets/useCursorStore-DX7VyaVS.js                                   0.73 kB │ gzip:   0.43 kB │ map:     1.04 kB
+@run-remix/client:build: build/client/assets/use-debounce-DNI5e5YU.js                                     0.77 kB │ gzip:   0.48 kB │ map:     0.71 kB
+@run-remix/client:build: build/client/assets/GlassCard-CdRDHZcL.js                                        0.82 kB │ gzip:   0.51 kB │ map:     0.84 kB
+@run-remix/client:build: build/client/assets/use-toast-4cA98mqG.js                                        0.84 kB │ gzip:   0.52 kB │ map:     2.08 kB
+@run-remix/client:build: build/client/assets/separator-BcEH1Qt4.js                                        0.85 kB │ gzip:   0.52 kB │ map:     0.99 kB
+@run-remix/client:build: build/client/assets/use-is-mobile-CGXGvl_Q.js                                    0.86 kB │ gzip:   0.53 kB │ map:     0.88 kB
+@run-remix/client:build: build/client/assets/progress-CXc4SUXw.js                                         0.93 kB │ gzip:   0.58 kB │ map:     1.14 kB
+@run-remix/client:build: build/client/assets/shared-Dvk9qFTM.js                                           0.95 kB │ gzip:   0.55 kB │ map:    10.83 kB
+@run-remix/client:build: build/client/assets/use-reduced-motion-D5iEvDFn.js                               0.95 kB │ gzip:   0.53 kB │ map:     1.40 kB
+@run-remix/client:build: build/client/assets/modifiers.esm-DWAAL7wL.js                                    0.97 kB │ gzip:   0.54 kB │ map:     3.83 kB
+@run-remix/client:build: build/client/assets/useResourceBatch-CKkobyH3.js                                 0.97 kB │ gzip:   0.59 kB │ map:     1.84 kB
+@run-remix/client:build: build/client/assets/label-DFCT12ry.js                                            0.98 kB │ gzip:   0.58 kB │ map:     0.96 kB
+@run-remix/client:build: build/client/assets/use-hotkeys-DcKmXszc.js                                      1.04 kB │ gzip:   0.60 kB │ map:     1.79 kB
+@run-remix/client:build: build/client/assets/rolldown-runtime-DFf9VFR3.js                                 1.14 kB │ gzip:   0.65 kB
+@run-remix/client:build: build/client/assets/useAccordionPersistence-DL2D9UdW.js                          1.16 kB │ gzip:   0.63 kB │ map:     2.83 kB
+@run-remix/client:build: build/client/assets/icon-resolver-CDHePoaX.js                                    1.18 kB │ gzip:   0.73 kB │ map:     2.32 kB
+@run-remix/client:build: build/client/assets/sustainability-utils-DMSgk-0L.js                             1.18 kB │ gzip:   0.65 kB │ map:     2.22 kB
+@run-remix/client:build: build/client/assets/icon-wrapper-DleVWd8U.js                                     1.19 kB │ gzip:   0.68 kB │ map:     2.03 kB
+@run-remix/client:build: build/client/assets/image-with-skeleton-C1ymbm9w.js                              1.19 kB │ gzip:   0.70 kB │ map:     1.46 kB
+@run-remix/client:build: build/client/assets/react-JOwcVxqC.js                                            1.20 kB │ gzip:   0.69 kB │ map:     2.56 kB
+@run-remix/client:build: build/client/assets/media-query-keys-VdeHAIKv.js                                 1.21 kB │ gzip:   0.60 kB │ map:     5.44 kB
+@run-remix/client:build: build/client/assets/scroll-area-v9WxAM2U.js                                      1.30 kB │ gzip:   0.69 kB │ map:     2.10 kB
+@run-remix/client:build: build/client/assets/switch-DrcakhXD.js                                           1.30 kB │ gzip:   0.69 kB │ map:     1.40 kB
+@run-remix/client:build: build/client/assets/checkbox-DZ8dMRFJ.js                                         1.30 kB │ gzip:   0.71 kB │ map:     1.37 kB
+@run-remix/client:build: build/client/assets/alert-DQzS_Hjw.js                                            1.30 kB │ gzip:   0.70 kB │ map:     2.13 kB
+@run-remix/client:build: build/client/assets/_-d0ZtynQW.js                                                1.33 kB │ gzip:   0.73 kB │ map:     1.52 kB
+@run-remix/client:build: build/client/assets/RouteHydrateFallback-BEYbj0e-.js                             1.34 kB │ gzip:   0.71 kB │ map:     1.44 kB
+@run-remix/client:build: build/client/assets/createReactComponent-C6sM3Zv3.js                             1.39 kB │ gzip:   0.76 kB │ map:     2.82 kB
+@run-remix/client:build: build/client/assets/textarea-C0_H4Ks_.js                                         1.39 kB │ gzip:   0.74 kB │ map:     1.71 kB
+@run-remix/client:build: build/client/assets/PlaceholderModule-CDCI9O-o.js                                1.48 kB │ gzip:   0.78 kB │ map:     1.48 kB
+@run-remix/client:build: build/client/assets/model-viewer-loader-CW4BuUwg.js                              1.53 kB │ gzip:   0.79 kB │ map:     2.99 kB
+@run-remix/client:build: build/client/assets/tabs-6TNWzc66.js                                             1.56 kB │ gzip:   0.73 kB │ map:     2.19 kB
+@run-remix/client:build: build/client/assets/errorReporter-B1zsuzGC.js                                    1.61 kB │ gzip:   0.81 kB │ map:     5.20 kB
+@run-remix/client:build: build/client/assets/DeleteConfirmationDialog-Bg6UFQQO.js                         1.63 kB │ gzip:   0.86 kB │ map:     3.37 kB
+@run-remix/client:build: build/client/assets/table-D8qX64e1.js                                            1.64 kB │ gzip:   0.73 kB │ map:     3.69 kB
+@run-remix/client:build: build/client/assets/api-constants-DnvPoIWS.js                                    1.64 kB │ gzip:   0.82 kB │ map:     4.00 kB
+@run-remix/client:build: build/client/assets/input-D6NSUF-D.js                                            1.65 kB │ gzip:   0.84 kB │ map:     2.06 kB
+@run-remix/client:build: build/client/assets/MapMarkers-Cdze-mV2.js                                       1.68 kB │ gzip:   0.71 kB │ map:     2.87 kB
+@run-remix/client:build: build/client/assets/Slogans-BQI7OjGt.js                                          1.68 kB │ gzip:   0.97 kB │ map:     3.15 kB
+@run-remix/client:build: build/client/assets/react-error-boundary-D6b5bqLw.js                             1.74 kB │ gzip:   0.88 kB │ map:     4.40 kB
+@run-remix/client:build: build/client/assets/hover-card-3d-Cv56gJbd.js                                    1.79 kB │ gzip:   0.99 kB │ map:     4.26 kB
+@run-remix/client:build: build/client/assets/badge-Gf8jz5HP.js                                            1.82 kB │ gzip:   0.79 kB │ map:     2.30 kB
+@run-remix/client:build: build/client/assets/marquee-strip-BUrlW3hc.js                                    2.07 kB │ gzip:   1.17 kB │ map:     5.37 kB
+@run-remix/client:build: build/client/assets/terms-BwiVDXv1.js                                            2.07 kB │ gzip:   1.09 kB │ map:     3.49 kB
+@run-remix/client:build: build/client/assets/RouteErrorBoundary-CF0MChIE.js                               2.10 kB │ gzip:   1.06 kB │ map:     3.18 kB
+@run-remix/client:build: build/client/assets/privacy-Djxs6kBq.js                                          2.11 kB │ gzip:   1.11 kB │ map:     3.54 kB
+@run-remix/client:build: build/client/assets/AdminErrorBoundary-Ckv00oki.js                               2.13 kB │ gzip:   1.03 kB │ map:     3.05 kB
+@run-remix/client:build: build/client/assets/form-1agkpXoK.js                                             2.14 kB │ gzip:   1.03 kB │ map:     5.62 kB
+@run-remix/client:build: build/client/assets/dropdown-menu-wdMYEOIv.js                                    2.15 kB │ gzip:   1.03 kB │ map:     7.90 kB
+@run-remix/client:build: build/client/assets/button-BwriqZ_1.js                                           2.28 kB │ gzip:   1.07 kB │ map:     3.15 kB
+@run-remix/client:build: build/client/assets/optimized-image-B-MZIuHP.js                                  2.28 kB │ gzip:   1.23 kB │ map:     5.53 kB
+@run-remix/client:build: build/client/assets/use-optimized-media-DmsIYVHj.js                              2.29 kB │ gzip:   1.15 kB │ map:     7.57 kB
+@run-remix/client:build: build/client/assets/blog._slug-C-ZG-DSL.js                                       2.29 kB │ gzip:   1.17 kB │ map:     4.03 kB
+@run-remix/client:build: build/client/assets/constants-3AN2CAMa.js                                        2.30 kB │ gzip:   1.08 kB │ map:     3.86 kB
+@run-remix/client:build: build/client/assets/fluid-glass-final-ChaKqLEI.js                                2.34 kB │ gzip:   1.21 kB │ map:     4.97 kB
+@run-remix/client:build: build/client/assets/alert-dialog-lEW0qgnx.js                                     2.53 kB │ gzip:   1.03 kB │ map:     5.64 kB
+@run-remix/client:build: build/client/assets/LazyUnifiedModelViewer-gypNYtWj.js                           2.58 kB │ gzip:   1.24 kB │ map:     2.12 kB
+@run-remix/client:build: build/client/assets/manufacturing-error-boundary-bInXrFzR.js                     2.67 kB │ gzip:   1.19 kB │ map:     4.30 kB
+@run-remix/client:build: build/client/assets/ErrorBoundary-DNRXxQR9.js                                    2.78 kB │ gzip:   1.17 kB │ map:     6.14 kB
+@run-remix/client:build: build/client/assets/Sections-DlluDu_Y.js                                         2.83 kB │ gzip:   1.42 kB │ map:     4.94 kB
+@run-remix/client:build: build/client/assets/Categories-CivOAg0S.js                                       2.94 kB │ gzip:   1.50 kB │ map:     5.87 kB
+@run-remix/client:build: build/client/assets/collections-uNEIRF--.js                                      2.97 kB │ gzip:   1.34 kB │ map:     4.22 kB
+@run-remix/client:build: build/client/assets/useQuoteStore-C537q4cy.js                                    2.99 kB │ gzip:   1.39 kB │ map:    22.08 kB
+@run-remix/client:build: build/client/assets/card-BCVwBQVI.js                                             3.02 kB │ gzip:   1.23 kB │ map:     5.15 kB
+@run-remix/client:build: build/client/assets/StandardMediaSelectionDialog-DV9gBp7W.js                     3.03 kB │ gzip:   1.40 kB │ map:     6.02 kB
+@run-remix/client:build: build/client/assets/sheet-CzGMriV4.js                                            3.07 kB │ gzip:   1.27 kB │ map:     5.39 kB
+@run-remix/client:build: build/client/assets/contact-CRRSazlY.js                                          3.08 kB │ gzip:   1.31 kB │ map:     6.32 kB
+@run-remix/client:build: build/client/assets/select-DB2Rt4N6.js                                           3.24 kB │ gzip:   1.31 kB │ map:     6.49 kB
+@run-remix/client:build: build/client/assets/typography-C3FxTVXk.js                                       3.25 kB │ gzip:   1.19 kB │ map:     7.17 kB
+@run-remix/client:build: build/client/assets/gallery-CqG_zkC2.js                                          3.27 kB │ gzip:   1.56 kB │ map:     5.87 kB
+@run-remix/client:build: build/client/assets/api-B3k8B3nx.js                                              3.67 kB │ gzip:   1.74 kB │ map:     9.56 kB
+@run-remix/client:build: build/client/assets/admin._index-B4F3gpAW.js                                     3.77 kB │ gzip:   1.56 kB │ map:     5.27 kB
+@run-remix/client:build: build/client/assets/categories._slug-aePDZ4Pd.js                                 4.24 kB │ gzip:   1.79 kB │ map:    10.78 kB
+@run-remix/client:build: build/client/assets/developer._index-Cn6Ddmsk.js                                 4.30 kB │ gzip:   1.70 kB │ map:     6.82 kB
+@run-remix/client:build: build/client/assets/FeaturedProducts-OwJCfFXN.js                                 4.35 kB │ gzip:   1.98 kB │ map:     8.72 kB
+@run-remix/client:build: build/client/assets/blog._index-CgRkQ067.js                                      4.42 kB │ gzip:   1.63 kB │ map:     8.58 kB
+@run-remix/client:build: build/client/assets/Values-Dnys_Cg3.js                                           4.43 kB │ gzip:   1.92 kB │ map:     7.90 kB
+@run-remix/client:build: build/client/assets/Stats-DO94vZ7q.js                                            4.45 kB │ gzip:   1.99 kB │ map:     8.69 kB
+@run-remix/client:build: build/client/assets/Process-C8BvHBCX.js                                          4.94 kB │ gzip:   2.17 kB │ map:    10.37 kB
+@run-remix/client:build: build/client/assets/certifications-B9nD4qtb.js                                   4.95 kB │ gzip:   1.97 kB │ map:     9.95 kB
+@run-remix/client:build: build/client/assets/lib-D1aASrvo.js                                              4.96 kB │ gzip:   1.92 kB │ map:    19.81 kB
+@run-remix/client:build: build/client/assets/ResourceSkeleton-DpvcX-w_.js                                 5.07 kB │ gzip:   1.83 kB │ map:    12.78 kB
+@run-remix/client:build: build/client/assets/BasicInfoSection-E2OZhi9D.js                                 5.26 kB │ gzip:   1.55 kB │ map:    10.18 kB
+@run-remix/client:build: build/client/assets/size-charts-D0UoF_qu.js                                      5.28 kB │ gzip:   2.18 kB │ map:    12.26 kB
+@run-remix/client:build: build/client/assets/accessories-DUDFxUUH.js                                      5.30 kB │ gzip:   2.21 kB │ map:    12.43 kB
+@run-remix/client:build: build/client/assets/services-RXY7OqiC.js                                         5.33 kB │ gzip:   2.27 kB │ map:     9.81 kB
+@run-remix/client:build: build/client/assets/useMapMarkers-DOtKHBEz.js                                    5.67 kB │ gzip:   2.14 kB │ map:    14.97 kB
+@run-remix/client:build: build/client/assets/contact-info-cards-DGNbdX1h.js                               6.02 kB │ gzip:   1.60 kB │ map:    10.14 kB
+@run-remix/client:build: build/client/assets/CategoryFabricSection-A-yzQ-ZD.js                            6.05 kB │ gzip:   1.98 kB │ map:    14.04 kB
+@run-remix/client:build: build/client/assets/media-url-builder-DsANxTOC.js                                6.14 kB │ gzip:   2.57 kB │ map:    22.88 kB
+@run-remix/client:build: build/client/assets/MediaFiltersPanel-y_hASmfd.js                                6.32 kB │ gzip:   1.89 kB │ map:    11.59 kB
+@run-remix/client:build: build/client/assets/developer.guides._slug-1_RUAOcU.js                           6.33 kB │ gzip:   2.42 kB │ map:    11.05 kB
+@run-remix/client:build: build/client/assets/web-vitals-DrVcYuC1.js                                       6.41 kB │ gzip:   2.71 kB │ map:    14.52 kB
+@run-remix/client:build: build/client/assets/CustomizationSEOSection-ZTiSKnkL.js                          6.55 kB │ gzip:   2.02 kB │ map:    13.62 kB
+@run-remix/client:build: build/client/assets/dashboard-pa0vehAV.js                                        6.73 kB │ gzip:   1.87 kB │ map:    12.51 kB
+@run-remix/client:build: build/client/assets/analytics-BvdzEFeI.js                                        6.82 kB │ gzip:   2.29 kB │ map:    14.75 kB
+@run-remix/client:build: build/client/assets/ContentDashboard-DsNPdeIY.js                                 6.89 kB │ gzip:   2.24 kB │ map:    13.05 kB
+@run-remix/client:build: build/client/assets/CertificationsSection-DsKp5NqS.js                            6.95 kB │ gzip:   1.94 kB │ map:    16.52 kB
+@run-remix/client:build: build/client/assets/developer-DTUD0ZVO.js                                        7.04 kB │ gzip:   2.53 kB │ map:    19.00 kB
+@run-remix/client:build: build/client/assets/SimpleMapContainer-BY7sv7Sw.js                               7.34 kB │ gzip:   2.89 kB │ map:    13.60 kB
+@run-remix/client:build: build/client/assets/categories._slug.products-Y32JsuZ9.js                        7.63 kB │ gzip:   2.79 kB │ map:    18.69 kB
+@run-remix/client:build: build/client/assets/MediaSelectionWrapperUnified-b77TYreu.js                     8.35 kB │ gzip:   2.95 kB │ map:    21.46 kB
+@run-remix/client:build: build/client/assets/fibers-C1n3D88Q.js                                           8.52 kB │ gzip:   3.01 kB │ map:    22.75 kB
+@run-remix/client:build: build/client/assets/developer.playground-DN_qRHF5.js                             8.78 kB │ gzip:   3.16 kB │ map:    21.57 kB
+@run-remix/client:build: build/client/assets/ProductDetailsPanel-DtsYfNzt.js                              9.21 kB │ gzip:   2.40 kB │ map:    18.96 kB
+@run-remix/client:build: build/client/assets/HeroSection-CeGgPSrs.js                                      9.46 kB │ gzip:   3.45 kB │ map:    26.86 kB
+@run-remix/client:build: build/client/assets/ModelViewerErrorBoundary-uInnJkv3.js                         9.77 kB │ gzip:   3.01 kB │ map:    29.40 kB
+@run-remix/client:build: build/client/assets/resources-DDmEaSE1.js                                        9.88 kB │ gzip:   3.19 kB │ map:    24.56 kB
+@run-remix/client:build: build/client/assets/SpecificationsSection-BFhKucCH.js                            9.90 kB │ gzip:   2.60 kB │ map:    24.59 kB
+@run-remix/client:build: build/client/assets/fabrics-BaiGgvWf.js                                         11.37 kB │ gzip:   3.93 kB │ map:    35.06 kB
+@run-remix/client:build: build/client/assets/StorageOptimizationDashboard-DV7L-S1r.js                    11.39 kB │ gzip:   2.67 kB │ map:    21.52 kB
+@run-remix/client:build: build/client/assets/MediaLibraryContainerEnhanced-DPLJTMqD.js                   11.50 kB │ gzip:   3.81 kB │ map:    21.76 kB
+@run-remix/client:build: build/client/assets/MediaLibraryContextEnhanced-D-mEgMD8.js                     11.78 kB │ gzip:   3.59 kB │ map:    42.63 kB
+@run-remix/client:build: build/client/assets/categories._-ktPA8Dbd.js                                    12.45 kB │ gzip:   4.40 kB │ map:    28.75 kB
+@run-remix/client:build: build/client/assets/admin._module-DbTG3yol.js                                   12.77 kB │ gzip:   4.14 kB │ map:    14.86 kB
+@run-remix/client:build: build/client/assets/MediaAssetsSection-B63uziZ-.js                              12.79 kB │ gzip:   3.80 kB │ map:    34.87 kB
+@run-remix/client:build: build/client/assets/dialog-B_CbS4uK.js                                          12.79 kB │ gzip:   4.61 kB │ map:    48.86 kB
+@run-remix/client:build: build/client/assets/queryClient-GCrJqZZy.js                                     13.76 kB │ gzip:   4.65 kB │ map:    60.28 kB
+@run-remix/client:build: build/client/assets/UnifiedModelViewerCore-D77-RYTw.js                          14.37 kB │ gzip:   5.09 kB │ map:    46.70 kB
+@run-remix/client:build: build/client/assets/_index-CxY0Lqyn.js                                          15.29 kB │ gzip:   5.39 kB │ map:    32.97 kB
+@run-remix/client:build: build/client/assets/inquiry-management-D5kcQO6a.js                              15.92 kB │ gzip:   4.42 kB │ map:    33.03 kB
+@run-remix/client:build: build/client/assets/FooterManagement-jOkXVnC0.js                                16.10 kB │ gzip:   3.83 kB │ map:    33.48 kB
+@run-remix/client:build: build/client/assets/size-chart-management-enhanced-BOfT0j2W.js                  16.26 kB │ gzip:   5.01 kB │ map:    42.85 kB
+@run-remix/client:build: build/client/assets/MediaUploadEnhanced-BFfLG903.js                             16.97 kB │ gzip:   5.80 kB │ map:    51.43 kB
+@run-remix/client:build: build/client/assets/ProductGrid-BTlJ__F1.js                                     18.41 kB │ gzip:   5.56 kB │ map:    49.28 kB
+@run-remix/client:build: build/client/assets/ContactPageSettings-WmIrWlav.js                             18.90 kB │ gzip:   4.52 kB │ map:    40.71 kB
+@run-remix/client:build: build/client/assets/admin-_zD9MnRV.js                                           20.17 kB │ gzip:   5.92 kB │ map:    51.53 kB
+@run-remix/client:build: build/client/assets/MediaGrid-Cgbvnf7E.js                                       20.46 kB │ gzip:   6.81 kB │ map:    48.51 kB
+@run-remix/client:build: build/client/assets/accessory-management-enhanced-WrULD2Yn.js                   20.62 kB │ gzip:   4.91 kB │ map:    54.28 kB
+@run-remix/client:build: build/client/assets/blog-management-Cy8rFRRy.js                                 21.13 kB │ gzip:   5.73 kB │ map:    57.51 kB
+@run-remix/client:build: build/client/assets/vendor-date-fns-p_VpugYx.js                                 21.78 kB │ gzip:   6.43 kB │ map:   151.40 kB
+@run-remix/client:build: build/client/assets/products-DYQ7HYLS.js                                        22.16 kB │ gzip:   6.79 kB │ map:    66.08 kB
+@run-remix/client:build: build/client/assets/about-D6QLf_wh.js                                           24.46 kB │ gzip:   7.32 kB │ map:    64.01 kB
+@run-remix/client:build: build/client/assets/fiber-management-EHeSvgKt.js                                24.99 kB │ gzip:   6.03 kB │ map:    62.17 kB
+@run-remix/client:build: build/client/assets/browser-CRpxsuB0.js                                         24.99 kB │ gzip:   9.29 kB │ map:    91.63 kB
+@run-remix/client:build: build/client/assets/MediaViewerModal-io8wdMqa.js                                25.92 kB │ gzip:   7.80 kB │ map:    82.79 kB
+@run-remix/client:build: build/client/assets/_public-BF8DRhhd.js                                         26.04 kB │ gzip:   7.69 kB │ map:    60.18 kB
+@run-remix/client:build: build/client/assets/ProductCreateEditModal-DeK2GdHR.js                          28.27 kB │ gzip:   8.88 kB │ map:    78.83 kB
+@run-remix/client:build: build/client/assets/contact-DYGsoGbW.js                                         28.38 kB │ gzip:   8.19 kB │ map:    59.23 kB
+@run-remix/client:build: build/client/assets/vendor-utils-core-D2mCzwSa.js                               28.52 kB │ gzip:   8.77 kB │ map:   134.84 kB
+@run-remix/client:build: build/client/assets/certificate-management-CQPs4kH4.js                          31.68 kB │ gzip:   7.04 kB │ map:    78.36 kB
+@run-remix/client:build: build/client/assets/categories._index-a2b-M62N.js                               31.71 kB │ gzip:   9.67 kB │ map:    90.85 kB
+@run-remix/client:build: build/client/assets/vendor-react-query-DlkkxF3Z.js                              32.27 kB │ gzip:  10.14 kB │ map:   121.51 kB
+@run-remix/client:build: build/client/assets/vendor-react-hook-form-C02OUTZE.js                          33.08 kB │ gzip:  11.78 kB │ map:   157.62 kB
+@run-remix/client:build: build/client/assets/vendor-schema-BLxFGHjH.js                                   33.46 kB │ gzip:   8.08 kB │ map:   137.44 kB
+@run-remix/client:build: build/client/assets/fabric-management-enhanced-C1u0jUKf.js                      34.78 kB │ gzip:   7.87 kB │ map:    97.81 kB
+@run-remix/client:build: build/client/assets/use-scroll-CwIW1SjV.js                                      36.14 kB │ gzip:   9.51 kB │ map:    84.14 kB
+@run-remix/client:build: build/client/assets/root-D5165IMB.js                                            38.92 kB │ gzip:  13.08 kB │ map:   129.37 kB
+@run-remix/client:build: build/client/assets/sustainability-C73JLW53.js                                  40.67 kB │ gzip:  10.46 kB │ map:    91.73 kB
+@run-remix/client:build: build/client/assets/vendor-icons-CJLEbPU7.js                                    41.67 kB │ gzip:  13.65 kB │ map:   166.85 kB
+@run-remix/client:build: build/client/assets/technology-4jyZpR6R.js                                      43.30 kB │ gzip:  10.53 kB │ map:    93.32 kB
+@run-remix/client:build: build/client/assets/vendor-ui-core-Dwq-Ucqx.js                                  46.02 kB │ gzip:  13.71 kB │ map:   109.35 kB
+@run-remix/client:build: build/client/assets/ProductManagementUnified-0-jTGyX-.js                        46.56 kB │ gzip:  11.84 kB │ map:   115.66 kB
+@run-remix/client:build: build/client/assets/category-management-simplified-BVfMYotl.js                  47.81 kB │ gzip:  10.79 kB │ map:   137.12 kB
+@run-remix/client:build: build/client/assets/manufacturing-Cn6a17nA.js                                   51.03 kB │ gzip:  15.78 kB │ map:    99.76 kB
+@run-remix/client:build: build/client/assets/sortable.esm-BTokqncQ.js                                    51.06 kB │ gzip:  16.74 kB │ map:   191.48 kB
+@run-remix/client:build: build/client/assets/AboutManagement-E9RlGb1D.js                                 52.36 kB │ gzip:  11.82 kB │ map:   146.82 kB
+@run-remix/client:build: build/client/assets/homepage-management-C65jPpe5.js                             55.61 kB │ gzip:  11.21 kB │ map:   136.21 kB
+@run-remix/client:build: build/client/assets/vendor-d3-g2Vr3Pn0.js                                       64.18 kB │ gzip:  20.95 kB │ map:   233.13 kB
+@run-remix/client:build: build/client/assets/shared-OnuRV4E4.js                                          65.45 kB │ gzip:  14.68 kB │ map:   214.70 kB
+@run-remix/client:build: build/client/assets/manufacturing-management-DkPAju13.js                       102.85 kB │ gzip:  18.66 kB │ map:   268.05 kB
+@run-remix/client:build: build/client/assets/unified-sustainability-management-DuVp1z5o.js              104.00 kB │ gzip:  18.29 kB │ map:   254.54 kB
+@run-remix/client:build: build/client/assets/technology-management-CZhf2eBa.js                          112.38 kB │ gzip:  20.78 kB │ map:   259.45 kB
+@run-remix/client:build: build/client/assets/vendor-react-router-nEUaQ6C5.js                            126.02 kB │ gzip:  40.88 kB │ map:   612.31 kB
+@run-remix/client:build: build/client/assets/entry.client-Cd0goe65.js                                   126.26 kB │ gzip:  40.00 kB │ map:   420.56 kB
+@run-remix/client:build: build/client/assets/vendor-gsap-xw4lIgsj.js                                    129.26 kB │ gzip:  49.87 kB │ map:   573.47 kB
+@run-remix/client:build: build/client/assets/vendor-sentry-DRaY6ahA.js                                  138.45 kB │ gzip:  46.26 kB │ map:   860.91 kB
+@run-remix/client:build: build/client/assets/leaflet-src-DFmTLaKH.js                                    148.81 kB │ gzip:  43.20 kB │ map:   626.18 kB
+@run-remix/client:build: build/client/assets/vendor-radix-CMhdUIDW.js                                   154.46 kB │ gzip:  46.55 kB │ map:   682.05 kB
+@run-remix/client:build: build/client/assets/LottieIcon-CykBfAVG.js                                     169.73 kB │ gzip:  47.69 kB │ map:   589.60 kB
+@run-remix/client:build: build/client/assets/vendor-zod-BP_yt8Eh.js                                     279.43 kB │ gzip:  63.93 kB │ map:   819.17 kB
+@run-remix/client:build: build/client/assets/vendor-react-core-2uGX7pLx.js                              300.54 kB │ gzip:  92.78 kB │ map: 1,415.37 kB
+@run-remix/client:build: build/client/assets/vendor-recharts-DcKjaads.js                                303.59 kB │ gzip:  86.21 kB │ map: 1,427.74 kB
+@run-remix/client:build: build/client/assets/vendor-tiptap-DuhIb8tg.js                                  378.36 kB │ gzip: 118.07 kB │ map: 1,438.54 kB
+@run-remix/client:build: build/client/assets/model-viewer-module.min-mSA5OePb.js                        413.92 kB │ gzip: 134.20 kB │ map:   755.29 kB
+@run-remix/client:build: build/client/assets/vendor-three-C7E9HTk_.js                                   592.72 kB │ gzip: 149.47 kB │ map: 2,673.17 kB
 @run-remix/client:build: 
 @run-remix/client:build: [plugin builtin:vite-reporter] 
 @run-remix/client:build: (!) Some chunks are larger than 500 kB after minification. Consider:
 @run-remix/client:build: - Using dynamic import() to code-split the application
 @run-remix/client:build: - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
 @run-remix/client:build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-@run-remix/client:build: [PLUGIN_TIMINGS] Warning: Your build spent significant time in plugins. Here is a breakdown:
-@run-remix/client:build:   - react-router:virtual-modules (52%)
+@run-remix/client:build: [33m[PLUGIN_TIMINGS] Warning:[0m Your build spent significant time in plugins. Here is a breakdown:
+@run-remix/client:build:   - react-router:virtual-modules (48%)
 @run-remix/client:build:   - react-router:dot-server (31%)
-@run-remix/client:build:   - react-router:inject-hmr-runtime (12%)
+@run-remix/client:build:   - react-router:inject-hmr-runtime (16%)
 @run-remix/client:build: See https://rolldown.rs/options/checks#plugintimings for more details.
 @run-remix/client:build: 
-@run-remix/client:build: ✓ built in 6.40s
+@run-remix/client:build: ✓ built in 6.32s
 @run-remix/client:build: vite v8.0.10 building ssr environment for production...
 @run-remix/client:build: [sentry-vite-plugin] Info: Sending telemetry data on issues and performance to Sentry. To disable telemetry, set `options.telemetry` to `false`.
-@run-remix/client:build: @run-remix/client:build: transforming...✓ 697 modules transformed.
+@run-remix/client:build: [2K@run-remix/client:build: transforming...✓ 702 modules transformed.
 @run-remix/client:build: rendering chunks...
 @run-remix/client:build: [sentry-vite-plugin] Warning: No auth token provided. Will not create release. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
 @run-remix/client:build: You seem to be using Turborepo, did you forget to put SENTRY_AUTH_TOKEN in `passThroughEnv`? https://turbo.build/repo/docs/reference/configuration#passthroughenv
@@ -306,7 +312,7 @@ Checked 924 files in 225ms. No fixes applied.
 @run-remix/client:build: build/client/assets/material-symbols-outlined-latin-400-normal-9XcxO1Ay.woff2
 @run-remix/client:build: build/client/assets/material-symbols-outlined-latin-400-normal-mOgbcUQh.woff
 @run-remix/client:build: build/server/assets/blog-management-CX67F6_p.css
-@run-remix/client:build: build/server/assets/server-build-lwQFoQfU.css
+@run-remix/client:build: build/server/assets/server-build-DYzqq2ro.css
 @run-remix/client:build: 
 @run-remix/client:build: computing gzip size...
 @run-remix/client:build: build/server/assets/uploader-B_G9vYFb.js                                         5.04 kB
@@ -315,7 +321,7 @@ Checked 924 files in 225ms. No fixes applied.
 @run-remix/client:build: build/server/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2                   18.74 kB
 @run-remix/client:build: build/server/assets/inter-greek-wght-normal-CkhJZR-_.woff2                      18.99 kB
 @run-remix/client:build: build/server/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2               25.96 kB
-@run-remix/client:build: build/server/.vite/manifest.json                                                45.99 kB │ gzip:   5.18 kB
+@run-remix/client:build: build/server/.vite/manifest.json                                                45.83 kB │ gzip:   5.15 kB
 @run-remix/client:build: build/server/assets/inter-latin-wght-normal-Dx4kXJAl.woff2                      48.25 kB
 @run-remix/client:build: build/server/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2                  85.06 kB
 @run-remix/client:build: build/server/assets/material-symbols-outlined-latin-400-normal-9XcxO1Ay.woff2  317.57 kB
@@ -328,130 +334,129 @@ Checked 924 files in 225ms. No fixes applied.
 @run-remix/client:build: build/server/assets/material-symbols-outlined-latin-200-normal-BDYtcQhh.woff   467.59 kB
 @run-remix/client:build: build/server/assets/blog-management-CX67F6_p.css                                 1.22 kB │ gzip:   0.45 kB
 @run-remix/client:build: build/server/assets/leaflet-vh-t_kPv.css                                        15.09 kB │ gzip:   6.36 kB
-@run-remix/client:build: build/server/assets/server-build-lwQFoQfU.css                                  352.53 kB │ gzip:  47.01 kB
-@run-remix/client:build: build/server/assets/useCacheInvalidation-Dax2sZQz.js                             0.54 kB │ gzip:   0.34 kB │ map:     0.87 kB
-@run-remix/client:build: build/server/assets/UnifiedModelViewer-1nPQWGop.js                               0.54 kB │ gzip:   0.33 kB
-@run-remix/client:build: build/server/assets/logger-CYngAERZ.js                                           0.58 kB │ gzip:   0.37 kB │ map:     0.67 kB
-@run-remix/client:build: build/server/assets/collapsible-BBM9ug_W.js                                      0.63 kB │ gzip:   0.39 kB │ map:     0.55 kB
-@run-remix/client:build: build/server/assets/fiber-utils-CGjTHxBx.js                                      0.66 kB │ gzip:   0.41 kB │ map:     1.29 kB
-@run-remix/client:build: build/server/assets/vendor-d3-2WaHmW_B.js                                        0.67 kB │ gzip:   0.41 kB │ map:     0.72 kB
-@run-remix/client:build: build/server/assets/gsap-ffYpyOV9.js                                             0.68 kB │ gzip:   0.41 kB │ map:     0.58 kB
-@run-remix/client:build: build/server/assets/use-debounce-BZ0etLMy.js                                     0.68 kB │ gzip:   0.42 kB │ map:     0.69 kB
-@run-remix/client:build: build/server/assets/utils-BWRzlSaW.js                                            0.68 kB │ gzip:   0.43 kB │ map:     2.63 kB
-@run-remix/client:build: build/server/assets/skeleton-DWStiFjm.js                                         0.69 kB │ gzip:   0.44 kB │ map:     0.46 kB
-@run-remix/client:build: build/server/assets/useCursorStore-DGCOJxAv.js                                   0.72 kB │ gzip:   0.42 kB │ map:     1.04 kB
-@run-remix/client:build: build/server/assets/use-is-mobile-Bjz-rPYe.js                                    0.77 kB │ gzip:   0.47 kB │ map:     0.86 kB
-@run-remix/client:build: build/server/assets/GlassCard-BssUqJ-y.js                                        0.79 kB │ gzip:   0.50 kB │ map:     0.83 kB
-@run-remix/client:build: build/server/assets/use-homepage-data-Dw5hqhKg.js                                0.80 kB │ gzip:   0.50 kB │ map:     1.13 kB
-@run-remix/client:build: build/server/assets/use-toast-CjqQfcYs.js                                        0.82 kB │ gzip:   0.50 kB │ map:     2.09 kB
-@run-remix/client:build: build/server/assets/use-reduced-motion-DSF5530R.js                               0.87 kB │ gzip:   0.48 kB │ map:     1.38 kB
-@run-remix/client:build: build/server/assets/separator-CxJNuY2m.js                                        0.88 kB │ gzip:   0.53 kB │ map:     1.00 kB
-@run-remix/client:build: build/server/assets/label-BORs-7Pe.js                                            0.91 kB │ gzip:   0.54 kB │ map:     0.96 kB
-@run-remix/client:build: build/server/assets/use-hotkeys-QH1YVFN7.js                                      0.93 kB │ gzip:   0.55 kB │ map:     1.76 kB
-@run-remix/client:build: build/server/assets/progress-ET4i-Y2G.js                                         0.94 kB │ gzip:   0.58 kB │ map:     1.15 kB
-@run-remix/client:build: build/server/assets/rolldown-runtime-BIXogcz2.js                                 0.98 kB │ gzip:   0.56 kB
-@run-remix/client:build: build/server/assets/useAccordionPersistence-CJBZQtVH.js                          1.01 kB │ gzip:   0.58 kB │ map:     2.78 kB
-@run-remix/client:build: build/server/assets/shared-7OFQwZ6v.js                                           1.04 kB │ gzip:   0.58 kB
-@run-remix/client:build: build/server/assets/image-with-skeleton-D36uIykT.js                              1.06 kB │ gzip:   0.64 kB │ map:     1.42 kB
-@run-remix/client:build: build/server/assets/checkbox-Eh9bR7cy.js                                         1.21 kB │ gzip:   0.66 kB │ map:     1.36 kB
-@run-remix/client:build: build/server/assets/media-query-keys-DXeUcXB6.js                                 1.21 kB │ gzip:   0.59 kB │ map:     5.44 kB
-@run-remix/client:build: build/server/assets/switch-CMEr89Yv.js                                           1.32 kB │ gzip:   0.71 kB │ map:     1.40 kB
-@run-remix/client:build: build/server/assets/scroll-area-CFD_8hVW.js                                      1.34 kB │ gzip:   0.71 kB │ map:     2.09 kB
-@run-remix/client:build: build/server/assets/textarea-BNIoZ0cH.js                                         1.37 kB │ gzip:   0.73 kB │ map:     1.71 kB
-@run-remix/client:build: build/server/assets/LazyUnifiedModelViewer-D9luy6G1.js                           1.42 kB │ gzip:   0.78 kB │ map:     2.14 kB
-@run-remix/client:build: build/server/assets/DeleteConfirmationDialog-BqxtDfqD.js                         1.42 kB │ gzip:   0.78 kB │ map:     3.25 kB
-@run-remix/client:build: build/server/assets/PlaceholderModule-DU799b9C.js                                1.42 kB │ gzip:   0.77 kB │ map:     1.42 kB
-@run-remix/client:build: build/server/assets/Slogans-Ch0lQeLJ.js                                          1.43 kB │ gzip:   0.85 kB │ map:     2.55 kB
-@run-remix/client:build: build/server/assets/LottieIcon-BcS9jO_C.js                                       1.50 kB │ gzip:   0.83 kB │ map:     2.72 kB
-@run-remix/client:build: build/server/assets/input-DGhJpMqc.js                                            1.54 kB │ gzip:   0.79 kB │ map:     2.05 kB
-@run-remix/client:build: build/server/assets/MapMarkers-NAlUOCMK.js                                       1.57 kB │ gzip:   0.69 kB │ map:     2.74 kB
-@run-remix/client:build: build/server/assets/table-Cfr0uHU8.js                                            1.57 kB │ gzip:   0.72 kB │ map:     3.62 kB
-@run-remix/client:build: build/server/assets/tabs-BFKF0ErW.js                                             1.57 kB │ gzip:   0.73 kB │ map:     2.20 kB
-@run-remix/client:build: build/server/assets/api-constants-Dp1o47Z3.js                                    1.64 kB │ gzip:   0.82 kB │ map:     4.00 kB
-@run-remix/client:build: build/server/assets/StandardMediaSelectionDialog-DEiyB1FZ.js                     1.77 kB │ gzip:   0.92 kB │ map:     6.08 kB
-@run-remix/client:build: build/server/assets/badge-D_dlqChn.js                                            1.79 kB │ gzip:   0.78 kB │ map:     2.30 kB
-@run-remix/client:build: build/server/assets/Sections-5VjCWB-e.js                                         1.84 kB │ gzip:   0.98 kB │ map:     3.38 kB
-@run-remix/client:build: build/server/assets/form-Cwt76OEQ.js                                             2.03 kB │ gzip:   0.97 kB │ map:     5.55 kB
-@run-remix/client:build: build/server/assets/use-scroll-DD2635Nn.js                                       2.06 kB │ gzip:   1.01 kB │ map:     6.03 kB
-@run-remix/client:build: build/server/assets/optimized-image-B9CeHrzg.js                                  2.12 kB │ gzip:   1.17 kB │ map:     5.44 kB
-@run-remix/client:build: build/server/assets/fluid-glass-final-_x4kTH5c.js                                2.18 kB │ gzip:   1.14 kB │ map:     4.88 kB
-@run-remix/client:build: build/server/assets/dropdown-menu-Qgedygw_.js                                    2.20 kB │ gzip:   1.05 kB │ map:     7.95 kB
-@run-remix/client:build: build/server/assets/button-CF9dtaN3.js                                           2.29 kB │ gzip:   1.07 kB │ map:     3.14 kB
-@run-remix/client:build: build/server/assets/constants-NDJDpfDp.js                                        2.30 kB │ gzip:   1.08 kB │ map:     3.86 kB
-@run-remix/client:build: build/server/assets/alert-dialog-BSnp8fw-.js                                     2.55 kB │ gzip:   1.06 kB │ map:     5.64 kB
-@run-remix/client:build: build/server/assets/ErrorBoundary-DT-0_xyN.js                                    2.60 kB │ gzip:   1.14 kB │ map:     5.98 kB
-@run-remix/client:build: build/server/assets/alert-Brg1s1fP.js                                            2.68 kB │ gzip:   1.35 kB │ map:     7.89 kB
-@run-remix/client:build: build/server/assets/useOptimizedQuery-C3TtiDlE.js                                2.71 kB │ gzip:   1.26 kB │ map:     5.36 kB
-@run-remix/client:build: build/server/assets/Categories-agHV1H0e.js                                       2.74 kB │ gzip:   1.43 kB │ map:     5.70 kB
-@run-remix/client:build: build/server/assets/card-CbfrQe4p.js                                             2.85 kB │ gzip:   1.18 kB │ map:     5.04 kB
-@run-remix/client:build: build/server/assets/typography-D8HChHRF.js                                       3.11 kB │ gzip:   1.18 kB │ map:     7.03 kB
-@run-remix/client:build: build/server/assets/api-Cn-pH8gY.js                                              3.18 kB │ gzip:   1.50 kB │ map:     9.62 kB
-@run-remix/client:build: build/server/assets/select-DwX6mXfB.js                                           3.22 kB │ gzip:   1.32 kB │ map:     6.45 kB
-@run-remix/client:build: build/server/assets/contact-C4vNq-wu.js                                          3.42 kB │ gzip:   1.30 kB │ map:     6.62 kB
-@run-remix/client:build: build/server/assets/sustainability-utils-CRHuNYo8.js                             4.12 kB │ gzip:   1.74 kB │ map:     9.34 kB
-@run-remix/client:build: build/server/assets/FeaturedProducts-DrZ0B4J6.js                                 4.13 kB │ gzip:   1.93 kB │ map:     8.51 kB
-@run-remix/client:build: build/server/assets/Values-ChegIKa2.js                                           4.15 kB │ gzip:   1.86 kB │ map:     7.67 kB
-@run-remix/client:build: build/server/assets/Stats-7u4q7EM3.js                                            4.21 kB │ gzip:   1.94 kB │ map:     8.50 kB
-@run-remix/client:build: build/server/assets/BasicInfoSection-BWAriE9l.js                                 4.75 kB │ gzip:   1.48 kB │ map:     9.70 kB
-@run-remix/client:build: build/server/assets/Process-CFO13UV7.js                                          4.93 kB │ gzip:   2.18 kB │ map:    10.44 kB
-@run-remix/client:build: build/server/assets/useMapMarkers-B-tD9Vvl.js                                    5.04 kB │ gzip:   1.95 kB │ map:    15.81 kB
-@run-remix/client:build: build/server/assets/CategoryFabricSection-BaG-FFzG.js                            5.50 kB │ gzip:   1.92 kB │ map:    13.48 kB
-@run-remix/client:build: build/server/assets/contact-info-cards-2SSEF5wZ.js                               5.60 kB │ gzip:   1.58 kB │ map:     9.63 kB
-@run-remix/client:build: build/server/assets/MediaFiltersPanel-BnuaDzro.js                                5.74 kB │ gzip:   1.85 kB │ map:    10.98 kB
-@run-remix/client:build: build/server/assets/CustomizationSEOSection-Bs0yhKmw.js                          6.01 kB │ gzip:   1.97 kB │ map:    13.07 kB
-@run-remix/client:build: build/server/assets/media-url-builder-BOwKcJk0.js                                6.14 kB │ gzip:   2.57 kB │ map:    22.88 kB
-@run-remix/client:build: build/server/assets/CertificationsSection-DCOQfu9J.js                            6.34 kB │ gzip:   1.87 kB │ map:    15.92 kB
-@run-remix/client:build: build/server/assets/SimpleMapContainer-BmU9tuAV.js                               6.56 kB │ gzip:   2.70 kB │ map:    13.70 kB
-@run-remix/client:build: build/server/assets/ContentDashboard-B8kbFlp6.js                                 6.61 kB │ gzip:   2.25 kB │ map:    12.71 kB
-@run-remix/client:build: build/server/assets/queryClient-ByaszMUb.js                                      7.38 kB │ gzip:   2.82 kB │ map:    37.50 kB
-@run-remix/client:build: build/server/assets/MediaSelectionWrapperUnified-HNUPLbaK.js                     7.85 kB │ gzip:   2.90 kB │ map:    20.93 kB
-@run-remix/client:build: build/server/assets/ProductDetailsPanel-CYC54hHq.js                              8.39 kB │ gzip:   2.40 kB │ map:    17.97 kB
-@run-remix/client:build: build/server/assets/HeroSection-B6iav2jl.js                                      8.86 kB │ gzip:   3.41 kB │ map:    26.25 kB
-@run-remix/client:build: build/server/assets/MediaLibraryContainerEnhanced-CqwaVfq8.js                    8.92 kB │ gzip:   3.15 kB │ map:    22.00 kB
-@run-remix/client:build: build/server/assets/SpecificationsSection-C15HSUNb.js                            9.11 kB │ gzip:   2.52 kB │ map:    23.74 kB
-@run-remix/client:build: build/server/assets/ModelViewerErrorBoundary-CoNkNxvo.js                         9.14 kB │ gzip:   2.96 kB │ map:    29.34 kB
-@run-remix/client:build: build/server/assets/StorageOptimizationDashboard-B_FACwC_.js                    10.39 kB │ gzip:   2.66 kB │ map:    20.28 kB
-@run-remix/client:build: build/server/assets/MediaLibraryContextEnhanced-vxX82IAc.js                     11.18 kB │ gzip:   3.52 kB │ map:    42.26 kB
-@run-remix/client:build: build/server/assets/MediaAssetsSection-0-0LOwex.js                              11.97 kB │ gzip:   3.75 kB │ map:    33.91 kB
-@run-remix/client:build: build/server/assets/dialog-DPFJk6XA.js                                          12.39 kB │ gzip:   4.59 kB │ map:    48.57 kB
-@run-remix/client:build: build/server/assets/UnifiedModelViewerCore-BknKUb_k.js                          13.55 kB │ gzip:   4.98 kB │ map:    45.99 kB
-@run-remix/client:build: build/server/assets/inquiry-management-DHrEzdw_.js                              14.68 kB │ gzip:   4.38 kB │ map:    31.55 kB
-@run-remix/client:build: build/server/assets/FooterManagement-DH33wBNC.js                                14.91 kB │ gzip:   3.80 kB │ map:    32.10 kB
-@run-remix/client:build: build/server/assets/size-chart-management-enhanced-G2x5olcq.js                  14.94 kB │ gzip:   4.95 kB │ map:    41.36 kB
-@run-remix/client:build: build/server/assets/MediaUploadEnhanced-BBmx-0os.js                             16.08 kB │ gzip:   5.75 kB │ map:    51.55 kB
-@run-remix/client:build: build/server/assets/blog-management-zDTpsjI_.js                                 17.39 kB │ gzip:   5.13 kB │ map:    47.15 kB
-@run-remix/client:build: build/server/assets/ContactPageSettings-BZUdjVkG.js                             17.71 kB │ gzip:   4.52 kB │ map:    39.49 kB
-@run-remix/client:build: build/server/assets/MediaGrid-DrcnnK-C.js                                       18.86 kB │ gzip:   6.57 kB │ map:    48.83 kB
-@run-remix/client:build: build/server/assets/accessory-management-enhanced-Doo9CN2m.js                   18.98 kB │ gzip:   4.84 kB │ map:    52.39 kB
-@run-remix/client:build: build/server/assets/fiber-management-C-upttDR.js                                22.45 kB │ gzip:   5.96 kB │ map:    59.65 kB
-@run-remix/client:build: build/server/assets/MediaViewerModal-C8ETJ55W.js                                24.32 kB │ gzip:   7.77 kB │ map:    80.95 kB
-@run-remix/client:build: build/server/assets/ProductCreateEditModal-Cz7USv_S.js                          25.05 kB │ gzip:   8.03 kB │ map:    77.29 kB
-@run-remix/client:build: build/server/assets/certificate-management-DrmKnLol.js                          27.89 kB │ gzip:   6.95 kB │ map:    75.59 kB
-@run-remix/client:build: build/server/assets/fabric-management-enhanced-CGJU1IP3.js                      31.34 kB │ gzip:   7.80 kB │ map:    94.74 kB
-@run-remix/client:build: build/server/assets/ProductManagementUnified-BgT_GD_B.js                        41.57 kB │ gzip:  11.34 kB │ map:   116.64 kB
-@run-remix/client:build: build/server/assets/category-management-simplified-5PiNtuGE.js                  44.49 kB │ gzip:  10.80 kB │ map:   133.26 kB
-@run-remix/client:build: build/server/assets/AboutManagement-hXaCiWYp.js                                 47.90 kB │ gzip:  11.84 kB │ map:   141.97 kB
-@run-remix/client:build: build/server/assets/homepage-management-CHYydMPq.js                             52.11 kB │ gzip:  11.34 kB │ map:   132.40 kB
-@run-remix/client:build: build/server/assets/shared-DtaZWeGU.js                                          64.17 kB │ gzip:  13.33 kB │ map:   198.06 kB
-@run-remix/client:build: build/server/assets/manufacturing-management-C_xiD3ud.js                        95.39 kB │ gzip:  18.66 kB │ map:   259.18 kB
-@run-remix/client:build: build/server/assets/unified-sustainability-management-BceqRFxG.js               96.78 kB │ gzip:  18.16 kB │ map:   246.72 kB
-@run-remix/client:build: build/server/assets/technology-management-kQezljSA.js                          104.15 kB │ gzip:  20.78 kB │ map:   250.52 kB
-@run-remix/client:build: build/server/assets/vendor-recharts-FsLl2Uul.js                                210.15 kB │ gzip:  54.49 kB │ map:   939.22 kB
-@run-remix/client:build: build/server/assets/model-viewer-module.min-Cltd6M79.js                        415.70 kB │ gzip: 134.73 kB │ map:   760.44 kB
-@run-remix/client:build: build/server/index.js                                                          485.57 kB │ gzip: 122.65 kB │ map: 1,209.15 kB
+@run-remix/client:build: build/server/assets/server-build-DYzqq2ro.css                                  353.53 kB │ gzip:  47.09 kB
+@run-remix/client:build: build/server/assets/useCacheInvalidation-CsQvVjmM.js                             0.54 kB │ gzip:   0.34 kB │ map:     0.87 kB
+@run-remix/client:build: build/server/assets/UnifiedModelViewer-Db9cgmVQ.js                               0.54 kB │ gzip:   0.33 kB
+@run-remix/client:build: build/server/assets/logger-A3Z_Lywn.js                                           0.58 kB │ gzip:   0.37 kB │ map:     0.67 kB
+@run-remix/client:build: build/server/assets/collapsible-BdJUBFeY.js                                      0.63 kB │ gzip:   0.39 kB │ map:     0.55 kB
+@run-remix/client:build: build/server/assets/fiber-utils-amL57wB_.js                                      0.66 kB │ gzip:   0.41 kB │ map:     1.29 kB
+@run-remix/client:build: build/server/assets/gsap-CmQgnldx.js                                             0.66 kB │ gzip:   0.40 kB │ map:     0.58 kB
+@run-remix/client:build: build/server/assets/vendor-d3-B5XKs0gd.js                                        0.67 kB │ gzip:   0.41 kB │ map:     0.72 kB
+@run-remix/client:build: build/server/assets/use-debounce-A4Y2T0Jv.js                                     0.68 kB │ gzip:   0.43 kB │ map:     0.69 kB
+@run-remix/client:build: build/server/assets/utils-DGcR1GeV.js                                            0.68 kB │ gzip:   0.43 kB │ map:     2.63 kB
+@run-remix/client:build: build/server/assets/skeleton-DS-2I_Gh.js                                         0.69 kB │ gzip:   0.44 kB │ map:     0.46 kB
+@run-remix/client:build: build/server/assets/useCursorStore-CmCadFkz.js                                   0.72 kB │ gzip:   0.42 kB │ map:     1.04 kB
+@run-remix/client:build: build/server/assets/use-is-mobile-BLqnaEvF.js                                    0.77 kB │ gzip:   0.47 kB │ map:     0.86 kB
+@run-remix/client:build: build/server/assets/GlassCard-DRdcguX3.js                                        0.79 kB │ gzip:   0.50 kB │ map:     0.83 kB
+@run-remix/client:build: build/server/assets/use-toast-BrEL4ur0.js                                        0.82 kB │ gzip:   0.50 kB │ map:     2.09 kB
+@run-remix/client:build: build/server/assets/use-reduced-motion-ChJImT65.js                               0.87 kB │ gzip:   0.48 kB │ map:     1.38 kB
+@run-remix/client:build: build/server/assets/separator-gJWOowro.js                                        0.88 kB │ gzip:   0.53 kB │ map:     1.00 kB
+@run-remix/client:build: build/server/assets/label-B-Zu24dn.js                                            0.91 kB │ gzip:   0.54 kB │ map:     0.96 kB
+@run-remix/client:build: build/server/assets/use-hotkeys-DLy3p4bp.js                                      0.93 kB │ gzip:   0.54 kB │ map:     1.76 kB
+@run-remix/client:build: build/server/assets/progress-BFpDJ7Y3.js                                         0.94 kB │ gzip:   0.58 kB │ map:     1.15 kB
+@run-remix/client:build: build/server/assets/rolldown-runtime-Gpwo05GM.js                                 0.98 kB │ gzip:   0.56 kB
+@run-remix/client:build: build/server/assets/useAccordionPersistence-DVNSLxIr.js                          1.01 kB │ gzip:   0.58 kB │ map:     2.78 kB
+@run-remix/client:build: build/server/assets/shared-CXyhh_Mb.js                                           1.04 kB │ gzip:   0.58 kB
+@run-remix/client:build: build/server/assets/image-with-skeleton-Cjz4eSjQ.js                              1.06 kB │ gzip:   0.64 kB │ map:     1.42 kB
+@run-remix/client:build: build/server/assets/media-query-keys-C--Efvm8.js                                 1.21 kB │ gzip:   0.59 kB │ map:     5.44 kB
+@run-remix/client:build: build/server/assets/checkbox-DpA2-qy-.js                                         1.22 kB │ gzip:   0.67 kB │ map:     1.36 kB
+@run-remix/client:build: build/server/assets/switch-BFkttXqB.js                                           1.32 kB │ gzip:   0.71 kB │ map:     1.40 kB
+@run-remix/client:build: build/server/assets/scroll-area-DNV07P8X.js                                      1.34 kB │ gzip:   0.71 kB │ map:     2.09 kB
+@run-remix/client:build: build/server/assets/textarea-BoSAC3-j.js                                         1.37 kB │ gzip:   0.73 kB │ map:     1.71 kB
+@run-remix/client:build: build/server/assets/DeleteConfirmationDialog-DKhoEmyi.js                         1.42 kB │ gzip:   0.78 kB │ map:     3.25 kB
+@run-remix/client:build: build/server/assets/LazyUnifiedModelViewer-D9uMpEP0.js                           1.42 kB │ gzip:   0.78 kB │ map:     2.14 kB
+@run-remix/client:build: build/server/assets/PlaceholderModule-CJ7dtYWh.js                                1.42 kB │ gzip:   0.77 kB │ map:     1.42 kB
+@run-remix/client:build: build/server/assets/LottieIcon-D2z7oXhI.js                                       1.50 kB │ gzip:   0.83 kB │ map:     2.72 kB
+@run-remix/client:build: build/server/assets/input-DTthyRCY.js                                            1.54 kB │ gzip:   0.79 kB │ map:     2.05 kB
+@run-remix/client:build: build/server/assets/MapMarkers-rdJ2HTHa.js                                       1.57 kB │ gzip:   0.69 kB │ map:     2.74 kB
+@run-remix/client:build: build/server/assets/table-fEk442rH.js                                            1.57 kB │ gzip:   0.72 kB │ map:     3.62 kB
+@run-remix/client:build: build/server/assets/tabs-Ctl0E4Lc.js                                             1.57 kB │ gzip:   0.73 kB │ map:     2.20 kB
+@run-remix/client:build: build/server/assets/Slogans-3HppkdTG.js                                          1.63 kB │ gzip:   0.96 kB │ map:     3.10 kB
+@run-remix/client:build: build/server/assets/api-constants-5hs-bb7w.js                                    1.64 kB │ gzip:   0.82 kB │ map:     4.00 kB
+@run-remix/client:build: build/server/assets/StandardMediaSelectionDialog-CMl81yv8.js                     1.77 kB │ gzip:   0.91 kB │ map:     6.08 kB
+@run-remix/client:build: build/server/assets/badge-CvcX39ab.js                                            1.79 kB │ gzip:   0.78 kB │ map:     2.30 kB
+@run-remix/client:build: build/server/assets/form-D_Pa1LyJ.js                                             2.03 kB │ gzip:   0.97 kB │ map:     5.55 kB
+@run-remix/client:build: build/server/assets/use-scroll-CTqbRC1u.js                                       2.06 kB │ gzip:   1.01 kB │ map:     6.03 kB
+@run-remix/client:build: build/server/assets/optimized-image-DJnWHAkq.js                                  2.12 kB │ gzip:   1.17 kB │ map:     5.44 kB
+@run-remix/client:build: build/server/assets/fluid-glass-final-B777s8zk.js                                2.18 kB │ gzip:   1.14 kB │ map:     4.88 kB
+@run-remix/client:build: build/server/assets/dropdown-menu-D03pu3u8.js                                    2.20 kB │ gzip:   1.05 kB │ map:     7.95 kB
+@run-remix/client:build: build/server/assets/button-Mph74kuk.js                                           2.29 kB │ gzip:   1.07 kB │ map:     3.14 kB
+@run-remix/client:build: build/server/assets/constants-DUutyp8J.js                                        2.30 kB │ gzip:   1.08 kB │ map:     3.86 kB
+@run-remix/client:build: build/server/assets/manufacturing-error-boundary-CTUoKPVA.js                     2.45 kB │ gzip:   1.14 kB │ map:     4.13 kB
+@run-remix/client:build: build/server/assets/alert-dialog-DbXziZnF.js                                     2.55 kB │ gzip:   1.07 kB │ map:     5.64 kB
+@run-remix/client:build: build/server/assets/ErrorBoundary-GxhluHwU.js                                    2.60 kB │ gzip:   1.14 kB │ map:     5.98 kB
+@run-remix/client:build: build/server/assets/alert-CqGcbLwL.js                                            2.68 kB │ gzip:   1.35 kB │ map:     7.89 kB
+@run-remix/client:build: build/server/assets/Sections-CQCMoL04.js                                         2.75 kB │ gzip:   1.42 kB │ map:     4.84 kB
+@run-remix/client:build: build/server/assets/Categories-B0eEkwmq.js                                       2.76 kB │ gzip:   1.44 kB │ map:     5.74 kB
+@run-remix/client:build: build/server/assets/card-Ctih-rHJ.js                                             2.85 kB │ gzip:   1.18 kB │ map:     5.04 kB
+@run-remix/client:build: build/server/assets/typography-qL8Jb2WS.js                                       3.11 kB │ gzip:   1.17 kB │ map:     7.03 kB
+@run-remix/client:build: build/server/assets/api-DA5-K3WN.js                                              3.18 kB │ gzip:   1.50 kB │ map:     9.62 kB
+@run-remix/client:build: build/server/assets/select-DdZ1oGsB.js                                           3.22 kB │ gzip:   1.32 kB │ map:     6.45 kB
+@run-remix/client:build: build/server/assets/contact-CvO5JJIY.js                                          3.42 kB │ gzip:   1.30 kB │ map:     6.62 kB
+@run-remix/client:build: build/server/assets/sustainability-utils-DvcdSYx4.js                             4.12 kB │ gzip:   1.74 kB │ map:     9.34 kB
+@run-remix/client:build: build/server/assets/FeaturedProducts-Bbq2zS_8.js                                 4.13 kB │ gzip:   1.93 kB │ map:     8.51 kB
+@run-remix/client:build: build/server/assets/Stats-W5KuiXcU.js                                            4.14 kB │ gzip:   1.93 kB │ map:     8.43 kB
+@run-remix/client:build: build/server/assets/Values-DJLaxs-v.js                                           4.15 kB │ gzip:   1.87 kB │ map:     7.67 kB
+@run-remix/client:build: build/server/assets/Process-CJ70-Kff.js                                          4.70 kB │ gzip:   2.12 kB │ map:    10.14 kB
+@run-remix/client:build: build/server/assets/BasicInfoSection-Cdn9Zkjh.js                                 4.75 kB │ gzip:   1.48 kB │ map:     9.70 kB
+@run-remix/client:build: build/server/assets/useMapMarkers-Bom8kGJX.js                                    5.04 kB │ gzip:   1.95 kB │ map:    15.81 kB
+@run-remix/client:build: build/server/assets/CategoryFabricSection-BhR2yg1g.js                            5.50 kB │ gzip:   1.92 kB │ map:    13.48 kB
+@run-remix/client:build: build/server/assets/contact-info-cards-Bept_xxe.js                               5.60 kB │ gzip:   1.58 kB │ map:     9.63 kB
+@run-remix/client:build: build/server/assets/MediaFiltersPanel-DDvei0T4.js                                5.73 kB │ gzip:   1.84 kB │ map:    10.98 kB
+@run-remix/client:build: build/server/assets/CustomizationSEOSection-ClQNqsMD.js                          6.01 kB │ gzip:   1.97 kB │ map:    13.07 kB
+@run-remix/client:build: build/server/assets/media-url-builder-B9zTpHGE.js                                6.14 kB │ gzip:   2.57 kB │ map:    22.88 kB
+@run-remix/client:build: build/server/assets/CertificationsSection-CO-5mRHx.js                            6.34 kB │ gzip:   1.87 kB │ map:    15.92 kB
+@run-remix/client:build: build/server/assets/SimpleMapContainer-B-91U5dF.js                               6.56 kB │ gzip:   2.70 kB │ map:    13.70 kB
+@run-remix/client:build: build/server/assets/ContentDashboard-IVFd9pak.js                                 6.60 kB │ gzip:   2.25 kB │ map:    12.71 kB
+@run-remix/client:build: build/server/assets/queryClient-DQC6l4qs.js                                      7.38 kB │ gzip:   2.83 kB │ map:    37.50 kB
+@run-remix/client:build: build/server/assets/MediaSelectionWrapperUnified-VLblqz5t.js                     7.85 kB │ gzip:   2.89 kB │ map:    20.93 kB
+@run-remix/client:build: build/server/assets/ProductDetailsPanel--XJed5Ap.js                              8.39 kB │ gzip:   2.40 kB │ map:    17.97 kB
+@run-remix/client:build: build/server/assets/HeroSection-xEtDh77Z.js                                      8.86 kB │ gzip:   3.41 kB │ map:    26.25 kB
+@run-remix/client:build: build/server/assets/MediaLibraryContainerEnhanced-AariZ5ot.js                    8.92 kB │ gzip:   3.15 kB │ map:    22.00 kB
+@run-remix/client:build: build/server/assets/SpecificationsSection-DgTBCS5K.js                            9.11 kB │ gzip:   2.52 kB │ map:    23.74 kB
+@run-remix/client:build: build/server/assets/ModelViewerErrorBoundary-C-yKqr52.js                         9.14 kB │ gzip:   2.96 kB │ map:    29.34 kB
+@run-remix/client:build: build/server/assets/StorageOptimizationDashboard-BTc27GsI.js                    10.39 kB │ gzip:   2.66 kB │ map:    20.28 kB
+@run-remix/client:build: build/server/assets/MediaLibraryContextEnhanced-ZVvlDDs5.js                     11.18 kB │ gzip:   3.53 kB │ map:    42.26 kB
+@run-remix/client:build: build/server/assets/MediaAssetsSection-D_Y1I6ML.js                              11.97 kB │ gzip:   3.75 kB │ map:    33.91 kB
+@run-remix/client:build: build/server/assets/dialog-CzmLa7ne.js                                          12.39 kB │ gzip:   4.59 kB │ map:    48.57 kB
+@run-remix/client:build: build/server/assets/UnifiedModelViewerCore-DCAYpKw5.js                          13.55 kB │ gzip:   4.99 kB │ map:    45.99 kB
+@run-remix/client:build: build/server/assets/inquiry-management-BjDkmfaD.js                              14.68 kB │ gzip:   4.38 kB │ map:    31.55 kB
+@run-remix/client:build: build/server/assets/FooterManagement-COzGhOAE.js                                14.91 kB │ gzip:   3.80 kB │ map:    32.10 kB
+@run-remix/client:build: build/server/assets/size-chart-management-enhanced-Dfg_4iWP.js                  14.94 kB │ gzip:   4.94 kB │ map:    41.36 kB
+@run-remix/client:build: build/server/assets/MediaUploadEnhanced-C74GgUwn.js                             16.08 kB │ gzip:   5.75 kB │ map:    51.55 kB
+@run-remix/client:build: build/server/assets/blog-management-DhohO_jX.js                                 17.39 kB │ gzip:   5.13 kB │ map:    47.15 kB
+@run-remix/client:build: build/server/assets/ContactPageSettings-CjvgbcDb.js                             17.71 kB │ gzip:   4.51 kB │ map:    39.49 kB
+@run-remix/client:build: build/server/assets/MediaGrid-D7Bo4B_9.js                                       18.86 kB │ gzip:   6.56 kB │ map:    48.83 kB
+@run-remix/client:build: build/server/assets/accessory-management-enhanced-Bwtdei88.js                   18.98 kB │ gzip:   4.84 kB │ map:    52.39 kB
+@run-remix/client:build: build/server/assets/fiber-management-BWA9-eRa.js                                22.48 kB │ gzip:   5.96 kB │ map:    59.73 kB
+@run-remix/client:build: build/server/assets/MediaViewerModal-BQZlchN4.js                                24.32 kB │ gzip:   7.76 kB │ map:    80.95 kB
+@run-remix/client:build: build/server/assets/ProductCreateEditModal-h-k5LWYU.js                          25.80 kB │ gzip:   8.32 kB │ map:    79.78 kB
+@run-remix/client:build: build/server/assets/certificate-management-X2vSTc_Y.js                          28.47 kB │ gzip:   7.00 kB │ map:    77.11 kB
+@run-remix/client:build: build/server/assets/fabric-management-enhanced-B4diZ1_m.js                      31.34 kB │ gzip:   7.79 kB │ map:    94.74 kB
+@run-remix/client:build: build/server/assets/ProductManagementUnified-BOJvWi41.js                        41.56 kB │ gzip:  11.32 kB │ map:   116.64 kB
+@run-remix/client:build: build/server/assets/category-management-simplified-9O4XX7_O.js                  44.49 kB │ gzip:  10.79 kB │ map:   133.26 kB
+@run-remix/client:build: build/server/assets/AboutManagement-JwliowvY.js                                 47.90 kB │ gzip:  11.84 kB │ map:   141.97 kB
+@run-remix/client:build: build/server/assets/homepage-management-D6PUcDF3.js                             52.11 kB │ gzip:  11.34 kB │ map:   132.40 kB
+@run-remix/client:build: build/server/assets/shared-C_yWk1D3.js                                          65.24 kB │ gzip:  13.47 kB │ map:   201.62 kB
+@run-remix/client:build: build/server/assets/manufacturing-management-33oTp3Cd.js                        95.59 kB │ gzip:  18.73 kB │ map:   260.42 kB
+@run-remix/client:build: build/server/assets/unified-sustainability-management-BEgDvMnn.js               96.78 kB │ gzip:  18.15 kB │ map:   246.72 kB
+@run-remix/client:build: build/server/assets/technology-management-B2D1qd5F.js                          104.14 kB │ gzip:  20.78 kB │ map:   250.51 kB
+@run-remix/client:build: build/server/assets/vendor-recharts-CTw5h7Td.js                                210.15 kB │ gzip:  54.50 kB │ map:   939.22 kB
+@run-remix/client:build: build/server/assets/model-viewer-module.min-CR4zVGDT.js                        415.70 kB │ gzip: 134.73 kB │ map:   760.44 kB
+@run-remix/client:build: build/server/index.js                                                          501.99 kB │ gzip: 125.54 kB │ map: 1,238.75 kB
 @run-remix/client:build: 
-@run-remix/client:build: ✓ built in 1.92s
+@run-remix/client:build: ✓ built in 1.85s
 
  Tasks:    3 successful, 3 total
 Cached:    3 cached, 3 total
-  Time:    62ms >>> FULL TURBO
+  Time:    63ms >>> FULL TURBO
 
 
 > run-remix-monorepo@4.0.3 check:bundle
 > node scripts/check-bundle-size.mjs
 
 [bundle-size] WARN: No files matched "./client/build/client/assets/client-*.js" — skipping (run build first)
-✓ client/build/client/assets/root-lwQFoQfU.css: 45.8 kB gzip (limit: 300 kB)
+✓ client/build/client/assets/root-DYzqq2ro.css: 45.9 kB gzip (limit: 300 kB)
 
 [bundle-size] All bundles within size limits.
 
@@ -494,6 +499,8 @@ FILE: README.md
 [VITE-CONFIG-ARGS] {"command":"serve","mode":"production"}
 [VITE-CONFIG-ARGS] {"command":"build","mode":"development"}
 [VITE-CONFIG-ARGS] {"command":"build","mode":"production"}
+Unused files (1)
+client/app/components/ui/loading-state.tsx
 Unused devDependencies (14)
 @axe-core/react      client/package.json:83:6
 axe-core             client/package.json:91:6
@@ -516,7 +523,7 @@ tsx    package.json
 pkill  package.json       
 lhci   package.json       
 fuser  server/package.json
-Unused exports (330)
+Unused exports (335)
 navItems                                            client/app/components/admin/admin-layout.tsx:342:10                 
 CategoryTableRow                                    client/app/components/admin/categories/CategoryDisplay.tsx:409:10   
 CategoryGridCard                                    client/app/components/admin/categories/CategoryDisplay.tsx:409:28   
@@ -549,6 +556,7 @@ ManufacturingFormWrapper                  function  …ient/app/components/admin
 PerformanceMonitor                        function  client/app/components/admin/shared/PerformanceMonitor.tsx:23:17     
 VirtualizedList                           function  client/app/components/admin/shared/VirtualizedList.tsx:21:17        
 useVirtualizationConfig                   function  client/app/components/admin/shared/VirtualizedList.tsx:88:17        
+ManufacturingLoadingSkele…                          …/components/error-boundaries/manufacturing-error-boundary.tsx:61:14
 AssetPlaceholder                                    …/components/error-boundaries/manufacturing-error-boundary.tsx:77:14
 PARTNERS                                            client/app/components/homepage/constants.ts:78:14                   
 CursorVariant                                       client/app/components/homepage/types.ts:13:14                       
@@ -691,7 +699,7 @@ ResponseValidationError                   class     client/app/lib/validated-api
 submitContactInquiry                      function  client/app/services/inquiry.server.ts:15:23                         
 submitQuoteRequest                        function  client/app/services/inquiry.server.ts:53:23                         
 submitInquiry                                       client/app/services/inquiry.server.ts:155:34                        
-iconMap                                             client/app/utils/icon-resolver.ts:29:14                             
+iconMap                                             client/app/utils/icon-resolver.ts:34:14                             
 env                                                 server/config/environment.ts:13:14                                  
 isDevelopment                                       server/config/environment.ts:16:14                                  
 isProduction                                        server/config/environment.ts:17:14                                  
@@ -711,7 +719,7 @@ pool                                                server/db.ts:56:12
 httpDb                                              server/db.ts:157:14                                                 
 updateHealthCheckTime                     function  server/db.ts:246:17                                                 
 closeDatabaseConnection                             server/db.ts:250:14                                                 
-safeTransaction                           function  server/db.ts:285:23                                                 
+safeTransaction                           function  server/db.ts:301:23                                                 
 CacheStrategies                                     server/lib/cache/cache-strategies.ts:56:14                          
 InvalidationPatterns                                server/lib/cache/cache-strategies.ts:117:21                         
 TwoTierBatchCache                         class     server/lib/cache/two-tier-batch.ts:48:14                            
@@ -730,7 +738,9 @@ SystemRepository                                    server/lib/db/repositories/i
 WebhookRepository                                   server/lib/db/repositories/index.ts:54:10                           
 AboutRepository                           class     server/lib/db/repositories/page-content/about.repository.ts:33:14   
 HomepageRepository                        class     server/lib/db/repositories/page-content/homepage.repository.ts:34:14
+LegalRepository                           class     server/lib/db/repositories/page-content/legal.repository.ts:17:14   
 ManufacturingRepository                   class     …/lib/db/repositories/page-content/manufacturing.repository.ts:28:14
+ServicesRepository                        class     server/lib/db/repositories/page-content/services.repository.ts:13:14
 SustainabilityRepository                  class     …lib/db/repositories/page-content/sustainability.repository.ts:30:14
 TechnologyRepository                      class     …ver/lib/db/repositories/page-content/technology.repository.ts:35:14
 withTransaction                           function  server/lib/db/repositories/shared-utils.ts:15:23                    
@@ -774,16 +784,16 @@ isValidSlug                               function  server/lib/utilities/slug-ut
 getAppVersion                                       server/lib/utilities/version.ts:5:14                                
 CSRF_COOKIE_NAME                                    server/middleware/csrf.ts:12:14                                     
 CSRF_HEADER_NAME                                    server/middleware/csrf.ts:13:14                                     
-validateCsrfToken                         function  server/middleware/csrf.ts:76:17                                     
+validateCsrfToken                         function  server/middleware/csrf.ts:77:17                                     
 generateErrorResponse                     function  server/middleware/production-error-handler.ts:231:17                
 notFoundHandler                           function  server/middleware/production-error-handler.ts:438:17                
-apiRateLimiter                                      server/middleware/rateLimiter.ts:153:14                             
-uploadRateLimit                                     server/middleware/rateLimiter.ts:274:14                             
+apiRateLimiter                                      server/middleware/rateLimiter.ts:173:14                             
+uploadRateLimit                                     server/middleware/rateLimiter.ts:299:14                             
 canManageResource                         function  server/middleware/rbac.ts:105:17                                    
 xssSanitizer                              function  server/middleware/sanitization.ts:39:17                             
-isPublicCacheablePath                               server/middleware/ssr-cache.ts:206:10                               
-PUBLIC_CACHEABLE_PATHS                              server/middleware/ssr-cache.ts:206:33                               
-PRIVATE_PATHS                                       server/middleware/ssr-cache.ts:206:57                               
+isPublicCacheablePath                               server/middleware/ssr-cache.ts:297:10                               
+PUBLIC_CACHEABLE_PATHS                              server/middleware/ssr-cache.ts:297:33                               
+PRIVATE_PATHS                                       server/middleware/ssr-cache.ts:297:57                               
 handleUploadError                                   server/multer-optimized.ts:250:14                                   
 getAllMediaAssets                         function  server/routes/media/handlers.ts:391:23                              
 createErrorResponse                                 server/routes/media/index.ts:13:3                                   
@@ -818,6 +828,7 @@ ContactService                            class     server/services/contact.serv
 FooterService                             class     server/services/footer.service.ts:15:14                             
 HomepageService                           class     server/services/homepage.service.ts:26:14                           
 JobMetricsService                         class     server/services/job-metrics.service.ts:26:14                        
+LegalService                              class     server/services/legal.service.ts:32:14                              
 ManufacturingService                      class     server/services/manufacturing.service.ts:24:14                      
 MediaContentService                       class     server/services/media-content.service.ts:13:14                      
 MediaQueryService                         class     server/services/media-query.service.ts:13:14                        
@@ -827,6 +838,7 @@ MiscService                               class     server/services/misc.service
 NewsletterService                         class     server/services/newsletter.service.ts:10:14                         
 PopulationService                         class     server/services/population.service.ts:14:14                         
 ProductService                            class     server/services/product.service.ts:19:14                            
+ServicesService                           class     server/services/services.service.ts:58:14                           
 SustainabilityService                     class     server/services/sustainability.service.ts:25:14                     
 SystemService                             class     server/services/system.service.ts:12:14                             
 TechnologyService                         class     server/services/technology.service.ts:29:14                         
@@ -847,7 +859,7 @@ reorderProcessesSchema                              server/validation/manufactur
 reorderCapabilitiesSchema                           server/validation/manufacturing.ts:119:14                           
 reorderQualitiesSchema                              server/validation/manufacturing.ts:128:14                           
 reorderCaseStudiesSchema                            server/validation/manufacturing.ts:137:14                           
-Unused exported types (121)
+Unused exported types (123)
 NavItem                                  type       client/app/components/admin/admin-layout.tsx:343:15                 
 CapabilityManagementProps                interface  …t/app/components/admin/manufacturing/CapabilityManagement.tsx:77:18
 ProcessManagementProps                   interface  …ient/app/components/admin/manufacturing/ProcessManagement.tsx:62:18
@@ -933,25 +945,27 @@ MediaTaskPayload                         type       server/lib/jobs/queues/media
 QueueResult                              interface  server/lib/jobs/queues/media-queue.ts:35:18                         
 SafeIdResult                             interface  server/lib/utilities/core-utils.ts:14:18                            
 RequestWithCorrelation                   interface  server/middleware/correlation-id.ts:5:18                            
-CreateRateLimiterOptions                 interface  server/middleware/rateLimiter.ts:164:18                             
-IUserRepository                          interface  server/repositories/storage-interfaces.ts:118:18                    
-ICategoryRepository                      interface  server/repositories/storage-interfaces.ts:128:18                    
-IFiberRepository                         interface  server/repositories/storage-interfaces.ts:143:18                    
-IFabricRepository                        interface  server/repositories/storage-interfaces.ts:154:18                    
-ICertificateRepository                   interface  server/repositories/storage-interfaces.ts:165:18                    
-ISizeChartRepository                     interface  server/repositories/storage-interfaces.ts:179:18                    
-IAccessoryRepository                     interface  server/repositories/storage-interfaces.ts:190:18                    
-IMediaRepository                         interface  server/repositories/storage-interfaces.ts:210:18                    
-IProductRepository                       interface  server/repositories/storage-interfaces.ts:270:18                    
-INavigationRepository                    interface  server/repositories/storage-interfaces.ts:318:18                    
-IContactRepository                       interface  server/repositories/storage-interfaces.ts:338:18                    
-IInquiryRepository                       interface  server/repositories/storage-interfaces.ts:350:18                    
-IContentRepository                       interface  server/repositories/storage-interfaces.ts:376:18                    
-ISustainabilityRepository                interface  server/repositories/storage-interfaces.ts:472:18                    
-IManufacturingRepository                 interface  server/repositories/storage-interfaces.ts:521:18                    
-ITechnologyRepository                    interface  server/repositories/storage-interfaces.ts:566:18                    
-IWebhookRepository                       interface  server/repositories/storage-interfaces.ts:617:18                    
-ISystemRepository                        interface  server/repositories/storage-interfaces.ts:630:18                    
+CreateRateLimiterOptions                 interface  server/middleware/rateLimiter.ts:184:18                             
+IUserRepository                          interface  server/repositories/storage-interfaces.ts:122:18                    
+ICategoryRepository                      interface  server/repositories/storage-interfaces.ts:132:18                    
+IFiberRepository                         interface  server/repositories/storage-interfaces.ts:147:18                    
+IFabricRepository                        interface  server/repositories/storage-interfaces.ts:158:18                    
+ICertificateRepository                   interface  server/repositories/storage-interfaces.ts:169:18                    
+ISizeChartRepository                     interface  server/repositories/storage-interfaces.ts:183:18                    
+IAccessoryRepository                     interface  server/repositories/storage-interfaces.ts:194:18                    
+IMediaRepository                         interface  server/repositories/storage-interfaces.ts:214:18                    
+IProductRepository                       interface  server/repositories/storage-interfaces.ts:274:18                    
+INavigationRepository                    interface  server/repositories/storage-interfaces.ts:322:18                    
+IContactRepository                       interface  server/repositories/storage-interfaces.ts:342:18                    
+IInquiryRepository                       interface  server/repositories/storage-interfaces.ts:354:18                    
+IContentRepository                       interface  server/repositories/storage-interfaces.ts:380:18                    
+ISustainabilityRepository                interface  server/repositories/storage-interfaces.ts:476:18                    
+IManufacturingRepository                 interface  server/repositories/storage-interfaces.ts:525:18                    
+ITechnologyRepository                    interface  server/repositories/storage-interfaces.ts:570:18                    
+IWebhookRepository                       interface  server/repositories/storage-interfaces.ts:621:18                    
+ISystemRepository                        interface  server/repositories/storage-interfaces.ts:634:18                    
+IServicesRepository                      interface  server/repositories/storage-interfaces.ts:696:18                    
+ILegalRepository                         interface  server/repositories/storage-interfaces.ts:705:18                    
 MediaAsset                               type       server/routes/media/index.ts:10:15                                  
 MediaMetadata                            type       server/routes/media/index.ts:10:27                                  
 UploadSession                            type       server/routes/media/index.ts:10:42                                  
@@ -980,16 +994,16 @@ Configuration hints (6)
 > run-remix-monorepo@4.0.3 test
 > vitest run tests/unit/ssr/invariants.test.ts
 
- DEPRECATED  `test.poolOptions` was removed in Vitest 4. All previous `poolOptions` are now top-level options. Please, refer to the migration guide: https://vitest.dev/guide/migration#pool-rework
+[1m[43m DEPRECATED [49m[22m [33m`test.poolOptions` was removed in Vitest 4. All previous `poolOptions` are now top-level options. Please, refer to the migration guide: https://vitest.dev/guide/migration#pool-rework[39m
 
- RUN  v4.1.5 /Users/hateemjamshaid/Sites/RUN
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.5 [39m[90m/Users/hateemjamshaid/Sites/RUN[39m
 
- ✓ tests/unit/ssr/invariants.test.ts (3 tests) 4ms
+ [32m✓[39m tests/unit/ssr/invariants.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
 
- Test Files  1 passed (1)
-      Tests  3 passed (3)
-   Start at  10:21:27
-   Duration  615ms (transform 18ms, setup 66ms, import 23ms, tests 4ms, environment 421ms)
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+[2m   Start at [22m 12:07:33
+[2m   Duration [22m 669ms[2m (transform 21ms, setup 71ms, import 24ms, tests 4ms, environment 470ms)[22m
 
 
 > run-remix-monorepo@4.0.3 verify:docs-versions
@@ -999,7 +1013,7 @@ Configuration hints (6)
 > run-remix-monorepo@4.0.3 check:audit
 > audit-ci --config .audit-ci.json
 
-NPM audit report results:
+[36mNPM audit report results:[0m
 {
   "advisories": {
     "@google-cloud/storage": {
@@ -1123,6 +1137,35 @@ NPM audit report results:
       "range": "6.11.1 - 6.15.1",
       "nodes": [
         "node_modules/qs"
+      ],
+      "fixAvailable": true
+    },
+    "react-router": {
+      "name": "react-router",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        {
+          "source": 1120069,
+          "name": "react-router",
+          "dependency": "react-router",
+          "title": "React Router vulnerable to DoS via unbounded path expansion in __manifest endpoint",
+          "url": "https://github.com/advisories/GHSA-8x6r-g9mw-2r78",
+          "severity": "high",
+          "cwe": [
+            "CWE-400"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=7.0.0 <7.15.0"
+        }
+      ],
+      "effects": [],
+      "range": "7.0.0 - 7.14.2",
+      "nodes": [
+        "node_modules/react-router"
       ],
       "fixAvailable": true
     },
@@ -1302,9 +1345,9 @@ NPM audit report results:
       "info": 0,
       "low": 0,
       "moderate": 11,
-      "high": 0,
+      "high": 1,
       "critical": 0,
-      "total": 11
+      "total": 12
     },
     "dependencies": {
       "prod": 908,
@@ -1316,6 +1359,519 @@ NPM audit report results:
     }
   }
 }
-Found vulnerable allowlisted advisories: GHSA-58qx-3vcg-4xpx, GHSA-hcf7-66rw-9f5r, GHSA-jggg-4jg4-v7c6, GHSA-jxxr-4gwj-5jf2, GHSA-q8mj-m7cp-5q26, GHSA-w5hq-g745-h8pq.
-Consider not allowlisting advisories: GHSA-4hjh-wcwx-xvwj, GHSA-4w7w-66w2-5vf9, GHSA-67mh-4wv8-2f99, GHSA-6rw7-vpxm-498p, GHSA-72xf-g2v4-qvf3, GHSA-8hc4-vh64-cxmj, GHSA-fjxv-7rqg-78g4, GHSA-jr5f-v2jv-69x6, GHSA-p8p7-x288-28g6, GHSA-p9ff-h696-f583, GHSA-v2wj-q39q-566r.
-Passed npm security audit.
+[33mFound vulnerable allowlisted advisories: GHSA-58qx-3vcg-4xpx, GHSA-8x6r-g9mw-2r78, GHSA-hcf7-66rw-9f5r, GHSA-jggg-4jg4-v7c6, GHSA-jxxr-4gwj-5jf2, GHSA-q8mj-m7cp-5q26, GHSA-w5hq-g745-h8pq.[0m
+[33mConsider not allowlisting advisories: GHSA-4hjh-wcwx-xvwj, GHSA-4w7w-66w2-5vf9, GHSA-67mh-4wv8-2f99, GHSA-6rw7-vpxm-498p, GHSA-72xf-g2v4-qvf3, GHSA-8hc4-vh64-cxmj, GHSA-fjxv-7rqg-78g4, GHSA-jr5f-v2jv-69x6, GHSA-p8p7-x288-28g6, GHSA-p9ff-h696-f583, GHSA-v2wj-q39q-566r.[0m
+[32mPassed npm security audit.[0m
+
+Running npm run check
+
+> run-remix-monorepo@4.0.3 check
+> npm run typecheck && npm run lint
+
+
+> run-remix-monorepo@4.0.3 typecheck
+> tsc --noEmit -p client/tsconfig.json && tsc --noEmit -p server/tsconfig.json
+
+
+> run-remix-monorepo@4.0.3 lint
+> biome check .
+
+Checked 961 files in 227ms. No fixes applied.
+
+Running npm run build
+
+> run-remix-monorepo@4.0.3 build
+> turbo run build
+
+• turbo 2.9.6
+
+   • Packages in scope: @run-remix/client, @run-remix/scripts, @run-remix/server, @run-remix/shared
+   • Running build in 4 packages
+   • Remote caching disabled
+
+@run-remix/shared:build: cache hit, replaying logs e23b7232b71b2355
+@run-remix/shared:build: 
+@run-remix/shared:build: > @run-remix/shared@1.0.0 build
+@run-remix/shared:build: > tsc -b
+@run-remix/shared:build: 
+@run-remix/server:build: cache hit, replaying logs 73d5c1f5141eedb0
+@run-remix/server:build: 
+@run-remix/server:build: > @run-remix/server@3.0.0 build
+@run-remix/server:build: > tsc -b && esbuild index.ts --bundle --platform=node --target=node24 --packages=external --format=esm --outfile=../dist/index.js
+@run-remix/server:build: 
+@run-remix/server:build: 
+@run-remix/server:build:   ../dist/index.js  1.3mb ⚠️
+@run-remix/server:build: 
+@run-remix/server:build: ⚡ Done in 16ms
+@run-remix/client:build: cache hit, replaying logs 2093f0ac6537f535
+@run-remix/client:build: 
+@run-remix/client:build: > @run-remix/client@3.0.0 build
+@run-remix/client:build: > tsc -b && vite build
+@run-remix/client:build: 
+@run-remix/client:build: [VITE-CONFIG-ARGS] {"mode":"production","command":"build","isSsrBuild":false,"isPreview":false}
+@run-remix/client:build: [VITE-CONFIG-ARGS] {"command":"build","mode":"production"}
+@run-remix/client:build: [sentry-vite-plugin] Info: Sending telemetry data on issues and performance to Sentry. To disable telemetry, set `options.telemetry` to `false`.
+@run-remix/client:build: Using Vite Environment API (experimental)
+@run-remix/client:build: vite v8.0.10 building client environment for production...
+@run-remix/client:build: [sentry-vite-plugin] Info: Sending telemetry data on issues and performance to Sentry. To disable telemetry, set `options.telemetry` to `false`.
+@run-remix/client:build: 
+@run-remix/client:build:   ⚠️  Source maps are enabled in production
+@run-remix/client:build:      This makes your server code publicly
+@run-remix/client:build:      visible in the browser. This is highly
+@run-remix/client:build:      discouraged! If you insist, ensure that
+@run-remix/client:build:      you are using environment variables for
+@run-remix/client:build:      secrets and not hard-coding them in
+@run-remix/client:build:      your source code.
+@run-remix/client:build: 
+@run-remix/client:build: [2K@run-remix/client:build: transforming...✓ 9868 modules transformed.
+@run-remix/client:build: rendering chunks...
+@run-remix/client:build: [sentry-vite-plugin] Warning: No auth token provided. Will not create release. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
+@run-remix/client:build: You seem to be using Turborepo, did you forget to put SENTRY_AUTH_TOKEN in `passThroughEnv`? https://turbo.build/repo/docs/reference/configuration#passthroughenv
+@run-remix/client:build: [sentry-vite-plugin] Warning: No auth token provided. Will not upload source maps. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
+@run-remix/client:build: You seem to be using Turborepo, did you forget to put SENTRY_AUTH_TOKEN in `passThroughEnv`? https://turbo.build/repo/docs/reference/configuration#passthroughenv
+@run-remix/client:build: computing gzip size...
+@run-remix/client:build: build/client/assets/uploader-B_G9vYFb.js                                         5.04 kB
+@run-remix/client:build: build/client/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2                 10.25 kB
+@run-remix/client:build: build/client/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2                  11.23 kB
+@run-remix/client:build: build/client/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2                   18.74 kB
+@run-remix/client:build: build/client/assets/inter-greek-wght-normal-CkhJZR-_.woff2                      18.99 kB
+@run-remix/client:build: build/client/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2               25.96 kB
+@run-remix/client:build: build/client/assets/inter-latin-wght-normal-Dx4kXJAl.woff2                      48.25 kB
+@run-remix/client:build: build/client/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2                  85.06 kB
+@run-remix/client:build: build/client/.vite/manifest.json                                                91.66 kB │ gzip:   8.87 kB
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-400-normal-9XcxO1Ay.woff2  317.57 kB
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-100-normal-0s59Udit.woff2  333.04 kB
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-200-normal-Cmes_jNh.woff2  345.10 kB
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-300-normal-DcRj7u9U.woff2  345.26 kB
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-400-normal-mOgbcUQh.woff   426.03 kB
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-100-normal-CKfKfkLR.woff   456.06 kB
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-300-normal-DJ07wsoN.woff   467.12 kB
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-200-normal-BDYtcQhh.woff   467.59 kB
+@run-remix/client:build: build/client/assets/blog-management-CX67F6_p.css                                 1.22 kB │ gzip:   0.45 kB
+@run-remix/client:build: build/client/assets/leaflet-vh-t_kPv.css                                        15.09 kB │ gzip:   6.36 kB
+@run-remix/client:build: build/client/assets/root-DYzqq2ro.css                                          353.53 kB │ gzip:  47.09 kB
+@run-remix/client:build: build/client/assets/api.media-CHjqWCg4.js                                        0.00 kB │ gzip:   0.02 kB
+@run-remix/client:build: build/client/assets/useCacheInvalidation-DuNRPjyj.js                             0.54 kB │ gzip:   0.34 kB │ map:     0.87 kB
+@run-remix/client:build: build/client/assets/UnifiedModelViewer-DSVRgNoo.js                               0.54 kB │ gzip:   0.33 kB
+@run-remix/client:build: build/client/assets/logger-CRdcHpeQ.js                                           0.56 kB │ gzip:   0.35 kB │ map:     0.66 kB
+@run-remix/client:build: build/client/assets/gsap-Bm9ClF48.js                                             0.60 kB │ gzip:   0.38 kB │ map:     0.58 kB
+@run-remix/client:build: build/client/assets/collapsible-Bfijd_D5.js                                      0.60 kB │ gzip:   0.39 kB │ map:     0.53 kB
+@run-remix/client:build: build/client/assets/fiber-utils-B4q6ABGi.js                                      0.66 kB │ gzip:   0.41 kB │ map:     1.29 kB
+@run-remix/client:build: build/client/assets/product-Dpv2XwvH.js                                          0.66 kB │ gzip:   0.43 kB │ map:     2.29 kB
+@run-remix/client:build: build/client/assets/utils-BiRs7UWT.js                                            0.71 kB │ gzip:   0.45 kB │ map:     2.63 kB
+@run-remix/client:build: build/client/assets/skeleton-B3WpdKfK.js                                         0.72 kB │ gzip:   0.46 kB │ map:     0.47 kB
+@run-remix/client:build: build/client/assets/useCursorStore-DX7VyaVS.js                                   0.73 kB │ gzip:   0.43 kB │ map:     1.04 kB
+@run-remix/client:build: build/client/assets/use-debounce-DNI5e5YU.js                                     0.77 kB │ gzip:   0.48 kB │ map:     0.71 kB
+@run-remix/client:build: build/client/assets/GlassCard-CdRDHZcL.js                                        0.82 kB │ gzip:   0.51 kB │ map:     0.84 kB
+@run-remix/client:build: build/client/assets/use-toast-4cA98mqG.js                                        0.84 kB │ gzip:   0.52 kB │ map:     2.08 kB
+@run-remix/client:build: build/client/assets/separator-BcEH1Qt4.js                                        0.85 kB │ gzip:   0.52 kB │ map:     0.99 kB
+@run-remix/client:build: build/client/assets/use-is-mobile-CGXGvl_Q.js                                    0.86 kB │ gzip:   0.53 kB │ map:     0.88 kB
+@run-remix/client:build: build/client/assets/progress-CXc4SUXw.js                                         0.93 kB │ gzip:   0.58 kB │ map:     1.14 kB
+@run-remix/client:build: build/client/assets/shared-Dvk9qFTM.js                                           0.95 kB │ gzip:   0.55 kB │ map:    10.83 kB
+@run-remix/client:build: build/client/assets/use-reduced-motion-D5iEvDFn.js                               0.95 kB │ gzip:   0.53 kB │ map:     1.40 kB
+@run-remix/client:build: build/client/assets/modifiers.esm-DWAAL7wL.js                                    0.97 kB │ gzip:   0.54 kB │ map:     3.83 kB
+@run-remix/client:build: build/client/assets/useResourceBatch-CKkobyH3.js                                 0.97 kB │ gzip:   0.59 kB │ map:     1.84 kB
+@run-remix/client:build: build/client/assets/label-DFCT12ry.js                                            0.98 kB │ gzip:   0.58 kB │ map:     0.96 kB
+@run-remix/client:build: build/client/assets/use-hotkeys-DcKmXszc.js                                      1.04 kB │ gzip:   0.60 kB │ map:     1.79 kB
+@run-remix/client:build: build/client/assets/rolldown-runtime-DFf9VFR3.js                                 1.14 kB │ gzip:   0.65 kB
+@run-remix/client:build: build/client/assets/useAccordionPersistence-DL2D9UdW.js                          1.16 kB │ gzip:   0.63 kB │ map:     2.83 kB
+@run-remix/client:build: build/client/assets/icon-resolver-CDHePoaX.js                                    1.18 kB │ gzip:   0.73 kB │ map:     2.32 kB
+@run-remix/client:build: build/client/assets/sustainability-utils-DMSgk-0L.js                             1.18 kB │ gzip:   0.65 kB │ map:     2.22 kB
+@run-remix/client:build: build/client/assets/icon-wrapper-DleVWd8U.js                                     1.19 kB │ gzip:   0.68 kB │ map:     2.03 kB
+@run-remix/client:build: build/client/assets/image-with-skeleton-C1ymbm9w.js                              1.19 kB │ gzip:   0.70 kB │ map:     1.46 kB
+@run-remix/client:build: build/client/assets/react-JOwcVxqC.js                                            1.20 kB │ gzip:   0.69 kB │ map:     2.56 kB
+@run-remix/client:build: build/client/assets/media-query-keys-VdeHAIKv.js                                 1.21 kB │ gzip:   0.60 kB │ map:     5.44 kB
+@run-remix/client:build: build/client/assets/scroll-area-v9WxAM2U.js                                      1.30 kB │ gzip:   0.69 kB │ map:     2.10 kB
+@run-remix/client:build: build/client/assets/switch-DrcakhXD.js                                           1.30 kB │ gzip:   0.69 kB │ map:     1.40 kB
+@run-remix/client:build: build/client/assets/checkbox-DZ8dMRFJ.js                                         1.30 kB │ gzip:   0.71 kB │ map:     1.37 kB
+@run-remix/client:build: build/client/assets/alert-DQzS_Hjw.js                                            1.30 kB │ gzip:   0.70 kB │ map:     2.13 kB
+@run-remix/client:build: build/client/assets/_-d0ZtynQW.js                                                1.33 kB │ gzip:   0.73 kB │ map:     1.52 kB
+@run-remix/client:build: build/client/assets/RouteHydrateFallback-BEYbj0e-.js                             1.34 kB │ gzip:   0.71 kB │ map:     1.44 kB
+@run-remix/client:build: build/client/assets/createReactComponent-C6sM3Zv3.js                             1.39 kB │ gzip:   0.76 kB │ map:     2.82 kB
+@run-remix/client:build: build/client/assets/textarea-C0_H4Ks_.js                                         1.39 kB │ gzip:   0.74 kB │ map:     1.71 kB
+@run-remix/client:build: build/client/assets/PlaceholderModule-CDCI9O-o.js                                1.48 kB │ gzip:   0.78 kB │ map:     1.48 kB
+@run-remix/client:build: build/client/assets/model-viewer-loader-CW4BuUwg.js                              1.53 kB │ gzip:   0.79 kB │ map:     2.99 kB
+@run-remix/client:build: build/client/assets/tabs-6TNWzc66.js                                             1.56 kB │ gzip:   0.73 kB │ map:     2.19 kB
+@run-remix/client:build: build/client/assets/errorReporter-B1zsuzGC.js                                    1.61 kB │ gzip:   0.81 kB │ map:     5.20 kB
+@run-remix/client:build: build/client/assets/DeleteConfirmationDialog-Bg6UFQQO.js                         1.63 kB │ gzip:   0.86 kB │ map:     3.37 kB
+@run-remix/client:build: build/client/assets/table-D8qX64e1.js                                            1.64 kB │ gzip:   0.73 kB │ map:     3.69 kB
+@run-remix/client:build: build/client/assets/api-constants-DnvPoIWS.js                                    1.64 kB │ gzip:   0.82 kB │ map:     4.00 kB
+@run-remix/client:build: build/client/assets/input-D6NSUF-D.js                                            1.65 kB │ gzip:   0.84 kB │ map:     2.06 kB
+@run-remix/client:build: build/client/assets/MapMarkers-Cdze-mV2.js                                       1.68 kB │ gzip:   0.71 kB │ map:     2.87 kB
+@run-remix/client:build: build/client/assets/Slogans-BQI7OjGt.js                                          1.68 kB │ gzip:   0.97 kB │ map:     3.15 kB
+@run-remix/client:build: build/client/assets/react-error-boundary-D6b5bqLw.js                             1.74 kB │ gzip:   0.88 kB │ map:     4.40 kB
+@run-remix/client:build: build/client/assets/hover-card-3d-Cv56gJbd.js                                    1.79 kB │ gzip:   0.99 kB │ map:     4.26 kB
+@run-remix/client:build: build/client/assets/badge-Gf8jz5HP.js                                            1.82 kB │ gzip:   0.79 kB │ map:     2.30 kB
+@run-remix/client:build: build/client/assets/marquee-strip-BUrlW3hc.js                                    2.07 kB │ gzip:   1.17 kB │ map:     5.37 kB
+@run-remix/client:build: build/client/assets/terms-BwiVDXv1.js                                            2.07 kB │ gzip:   1.09 kB │ map:     3.49 kB
+@run-remix/client:build: build/client/assets/RouteErrorBoundary-CF0MChIE.js                               2.10 kB │ gzip:   1.06 kB │ map:     3.18 kB
+@run-remix/client:build: build/client/assets/privacy-Djxs6kBq.js                                          2.11 kB │ gzip:   1.11 kB │ map:     3.54 kB
+@run-remix/client:build: build/client/assets/AdminErrorBoundary-Ckv00oki.js                               2.13 kB │ gzip:   1.03 kB │ map:     3.05 kB
+@run-remix/client:build: build/client/assets/form-1agkpXoK.js                                             2.14 kB │ gzip:   1.03 kB │ map:     5.62 kB
+@run-remix/client:build: build/client/assets/dropdown-menu-wdMYEOIv.js                                    2.15 kB │ gzip:   1.03 kB │ map:     7.90 kB
+@run-remix/client:build: build/client/assets/button-BwriqZ_1.js                                           2.28 kB │ gzip:   1.07 kB │ map:     3.15 kB
+@run-remix/client:build: build/client/assets/optimized-image-B-MZIuHP.js                                  2.28 kB │ gzip:   1.23 kB │ map:     5.53 kB
+@run-remix/client:build: build/client/assets/use-optimized-media-DmsIYVHj.js                              2.29 kB │ gzip:   1.15 kB │ map:     7.57 kB
+@run-remix/client:build: build/client/assets/blog._slug-C-ZG-DSL.js                                       2.29 kB │ gzip:   1.17 kB │ map:     4.03 kB
+@run-remix/client:build: build/client/assets/constants-3AN2CAMa.js                                        2.30 kB │ gzip:   1.08 kB │ map:     3.86 kB
+@run-remix/client:build: build/client/assets/fluid-glass-final-ChaKqLEI.js                                2.34 kB │ gzip:   1.21 kB │ map:     4.97 kB
+@run-remix/client:build: build/client/assets/alert-dialog-lEW0qgnx.js                                     2.53 kB │ gzip:   1.03 kB │ map:     5.64 kB
+@run-remix/client:build: build/client/assets/LazyUnifiedModelViewer-gypNYtWj.js                           2.58 kB │ gzip:   1.24 kB │ map:     2.12 kB
+@run-remix/client:build: build/client/assets/manufacturing-error-boundary-bInXrFzR.js                     2.67 kB │ gzip:   1.19 kB │ map:     4.30 kB
+@run-remix/client:build: build/client/assets/ErrorBoundary-DNRXxQR9.js                                    2.78 kB │ gzip:   1.17 kB │ map:     6.14 kB
+@run-remix/client:build: build/client/assets/Sections-DlluDu_Y.js                                         2.83 kB │ gzip:   1.42 kB │ map:     4.94 kB
+@run-remix/client:build: build/client/assets/Categories-CivOAg0S.js                                       2.94 kB │ gzip:   1.50 kB │ map:     5.87 kB
+@run-remix/client:build: build/client/assets/collections-uNEIRF--.js                                      2.97 kB │ gzip:   1.34 kB │ map:     4.22 kB
+@run-remix/client:build: build/client/assets/useQuoteStore-C537q4cy.js                                    2.99 kB │ gzip:   1.39 kB │ map:    22.08 kB
+@run-remix/client:build: build/client/assets/card-BCVwBQVI.js                                             3.02 kB │ gzip:   1.23 kB │ map:     5.15 kB
+@run-remix/client:build: build/client/assets/StandardMediaSelectionDialog-DV9gBp7W.js                     3.03 kB │ gzip:   1.40 kB │ map:     6.02 kB
+@run-remix/client:build: build/client/assets/sheet-CzGMriV4.js                                            3.07 kB │ gzip:   1.27 kB │ map:     5.39 kB
+@run-remix/client:build: build/client/assets/contact-CRRSazlY.js                                          3.08 kB │ gzip:   1.31 kB │ map:     6.32 kB
+@run-remix/client:build: build/client/assets/select-DB2Rt4N6.js                                           3.24 kB │ gzip:   1.31 kB │ map:     6.49 kB
+@run-remix/client:build: build/client/assets/typography-C3FxTVXk.js                                       3.25 kB │ gzip:   1.19 kB │ map:     7.17 kB
+@run-remix/client:build: build/client/assets/gallery-CqG_zkC2.js                                          3.27 kB │ gzip:   1.56 kB │ map:     5.87 kB
+@run-remix/client:build: build/client/assets/api-B3k8B3nx.js                                              3.67 kB │ gzip:   1.74 kB │ map:     9.56 kB
+@run-remix/client:build: build/client/assets/admin._index-B4F3gpAW.js                                     3.77 kB │ gzip:   1.56 kB │ map:     5.27 kB
+@run-remix/client:build: build/client/assets/categories._slug-aePDZ4Pd.js                                 4.24 kB │ gzip:   1.79 kB │ map:    10.78 kB
+@run-remix/client:build: build/client/assets/developer._index-Cn6Ddmsk.js                                 4.30 kB │ gzip:   1.70 kB │ map:     6.82 kB
+@run-remix/client:build: build/client/assets/FeaturedProducts-OwJCfFXN.js                                 4.35 kB │ gzip:   1.98 kB │ map:     8.72 kB
+@run-remix/client:build: build/client/assets/blog._index-CgRkQ067.js                                      4.42 kB │ gzip:   1.63 kB │ map:     8.58 kB
+@run-remix/client:build: build/client/assets/Values-Dnys_Cg3.js                                           4.43 kB │ gzip:   1.92 kB │ map:     7.90 kB
+@run-remix/client:build: build/client/assets/Stats-DO94vZ7q.js                                            4.45 kB │ gzip:   1.99 kB │ map:     8.69 kB
+@run-remix/client:build: build/client/assets/Process-C8BvHBCX.js                                          4.94 kB │ gzip:   2.17 kB │ map:    10.37 kB
+@run-remix/client:build: build/client/assets/certifications-B9nD4qtb.js                                   4.95 kB │ gzip:   1.97 kB │ map:     9.95 kB
+@run-remix/client:build: build/client/assets/lib-D1aASrvo.js                                              4.96 kB │ gzip:   1.92 kB │ map:    19.81 kB
+@run-remix/client:build: build/client/assets/ResourceSkeleton-DpvcX-w_.js                                 5.07 kB │ gzip:   1.83 kB │ map:    12.78 kB
+@run-remix/client:build: build/client/assets/BasicInfoSection-E2OZhi9D.js                                 5.26 kB │ gzip:   1.55 kB │ map:    10.18 kB
+@run-remix/client:build: build/client/assets/size-charts-D0UoF_qu.js                                      5.28 kB │ gzip:   2.18 kB │ map:    12.26 kB
+@run-remix/client:build: build/client/assets/accessories-DUDFxUUH.js                                      5.30 kB │ gzip:   2.21 kB │ map:    12.43 kB
+@run-remix/client:build: build/client/assets/services-RXY7OqiC.js                                         5.33 kB │ gzip:   2.27 kB │ map:     9.81 kB
+@run-remix/client:build: build/client/assets/useMapMarkers-DOtKHBEz.js                                    5.67 kB │ gzip:   2.14 kB │ map:    14.97 kB
+@run-remix/client:build: build/client/assets/contact-info-cards-DGNbdX1h.js                               6.02 kB │ gzip:   1.60 kB │ map:    10.14 kB
+@run-remix/client:build: build/client/assets/CategoryFabricSection-A-yzQ-ZD.js                            6.05 kB │ gzip:   1.98 kB │ map:    14.04 kB
+@run-remix/client:build: build/client/assets/media-url-builder-DsANxTOC.js                                6.14 kB │ gzip:   2.57 kB │ map:    22.88 kB
+@run-remix/client:build: build/client/assets/MediaFiltersPanel-y_hASmfd.js                                6.32 kB │ gzip:   1.89 kB │ map:    11.59 kB
+@run-remix/client:build: build/client/assets/developer.guides._slug-1_RUAOcU.js                           6.33 kB │ gzip:   2.42 kB │ map:    11.05 kB
+@run-remix/client:build: build/client/assets/web-vitals-DrVcYuC1.js                                       6.41 kB │ gzip:   2.71 kB │ map:    14.52 kB
+@run-remix/client:build: build/client/assets/CustomizationSEOSection-ZTiSKnkL.js                          6.55 kB │ gzip:   2.02 kB │ map:    13.62 kB
+@run-remix/client:build: build/client/assets/dashboard-pa0vehAV.js                                        6.73 kB │ gzip:   1.87 kB │ map:    12.51 kB
+@run-remix/client:build: build/client/assets/analytics-BvdzEFeI.js                                        6.82 kB │ gzip:   2.29 kB │ map:    14.75 kB
+@run-remix/client:build: build/client/assets/ContentDashboard-DsNPdeIY.js                                 6.89 kB │ gzip:   2.24 kB │ map:    13.05 kB
+@run-remix/client:build: build/client/assets/CertificationsSection-DsKp5NqS.js                            6.95 kB │ gzip:   1.94 kB │ map:    16.52 kB
+@run-remix/client:build: build/client/assets/developer-DTUD0ZVO.js                                        7.04 kB │ gzip:   2.53 kB │ map:    19.00 kB
+@run-remix/client:build: build/client/assets/SimpleMapContainer-BY7sv7Sw.js                               7.34 kB │ gzip:   2.89 kB │ map:    13.60 kB
+@run-remix/client:build: build/client/assets/categories._slug.products-Y32JsuZ9.js                        7.63 kB │ gzip:   2.79 kB │ map:    18.69 kB
+@run-remix/client:build: build/client/assets/MediaSelectionWrapperUnified-b77TYreu.js                     8.35 kB │ gzip:   2.95 kB │ map:    21.46 kB
+@run-remix/client:build: build/client/assets/fibers-C1n3D88Q.js                                           8.52 kB │ gzip:   3.01 kB │ map:    22.75 kB
+@run-remix/client:build: build/client/assets/developer.playground-DN_qRHF5.js                             8.78 kB │ gzip:   3.16 kB │ map:    21.57 kB
+@run-remix/client:build: build/client/assets/ProductDetailsPanel-DtsYfNzt.js                              9.21 kB │ gzip:   2.40 kB │ map:    18.96 kB
+@run-remix/client:build: build/client/assets/HeroSection-CeGgPSrs.js                                      9.46 kB │ gzip:   3.45 kB │ map:    26.86 kB
+@run-remix/client:build: build/client/assets/ModelViewerErrorBoundary-uInnJkv3.js                         9.77 kB │ gzip:   3.01 kB │ map:    29.40 kB
+@run-remix/client:build: build/client/assets/resources-DDmEaSE1.js                                        9.88 kB │ gzip:   3.19 kB │ map:    24.56 kB
+@run-remix/client:build: build/client/assets/SpecificationsSection-BFhKucCH.js                            9.90 kB │ gzip:   2.60 kB │ map:    24.59 kB
+@run-remix/client:build: build/client/assets/fabrics-BaiGgvWf.js                                         11.37 kB │ gzip:   3.93 kB │ map:    35.06 kB
+@run-remix/client:build: build/client/assets/StorageOptimizationDashboard-DV7L-S1r.js                    11.39 kB │ gzip:   2.67 kB │ map:    21.52 kB
+@run-remix/client:build: build/client/assets/MediaLibraryContainerEnhanced-DPLJTMqD.js                   11.50 kB │ gzip:   3.81 kB │ map:    21.76 kB
+@run-remix/client:build: build/client/assets/MediaLibraryContextEnhanced-D-mEgMD8.js                     11.78 kB │ gzip:   3.59 kB │ map:    42.63 kB
+@run-remix/client:build: build/client/assets/categories._-ktPA8Dbd.js                                    12.45 kB │ gzip:   4.40 kB │ map:    28.75 kB
+@run-remix/client:build: build/client/assets/admin._module-DbTG3yol.js                                   12.77 kB │ gzip:   4.14 kB │ map:    14.86 kB
+@run-remix/client:build: build/client/assets/MediaAssetsSection-B63uziZ-.js                              12.79 kB │ gzip:   3.80 kB │ map:    34.87 kB
+@run-remix/client:build: build/client/assets/dialog-B_CbS4uK.js                                          12.79 kB │ gzip:   4.61 kB │ map:    48.86 kB
+@run-remix/client:build: build/client/assets/queryClient-GCrJqZZy.js                                     13.76 kB │ gzip:   4.65 kB │ map:    60.28 kB
+@run-remix/client:build: build/client/assets/UnifiedModelViewerCore-D77-RYTw.js                          14.37 kB │ gzip:   5.09 kB │ map:    46.70 kB
+@run-remix/client:build: build/client/assets/_index-CxY0Lqyn.js                                          15.29 kB │ gzip:   5.39 kB │ map:    32.97 kB
+@run-remix/client:build: build/client/assets/inquiry-management-D5kcQO6a.js                              15.92 kB │ gzip:   4.42 kB │ map:    33.03 kB
+@run-remix/client:build: build/client/assets/FooterManagement-jOkXVnC0.js                                16.10 kB │ gzip:   3.83 kB │ map:    33.48 kB
+@run-remix/client:build: build/client/assets/size-chart-management-enhanced-BOfT0j2W.js                  16.26 kB │ gzip:   5.01 kB │ map:    42.85 kB
+@run-remix/client:build: build/client/assets/MediaUploadEnhanced-BFfLG903.js                             16.97 kB │ gzip:   5.80 kB │ map:    51.43 kB
+@run-remix/client:build: build/client/assets/ProductGrid-BTlJ__F1.js                                     18.41 kB │ gzip:   5.56 kB │ map:    49.28 kB
+@run-remix/client:build: build/client/assets/ContactPageSettings-WmIrWlav.js                             18.90 kB │ gzip:   4.52 kB │ map:    40.71 kB
+@run-remix/client:build: build/client/assets/admin-_zD9MnRV.js                                           20.17 kB │ gzip:   5.92 kB │ map:    51.53 kB
+@run-remix/client:build: build/client/assets/MediaGrid-Cgbvnf7E.js                                       20.46 kB │ gzip:   6.81 kB │ map:    48.51 kB
+@run-remix/client:build: build/client/assets/accessory-management-enhanced-WrULD2Yn.js                   20.62 kB │ gzip:   4.91 kB │ map:    54.28 kB
+@run-remix/client:build: build/client/assets/blog-management-Cy8rFRRy.js                                 21.13 kB │ gzip:   5.73 kB │ map:    57.51 kB
+@run-remix/client:build: build/client/assets/vendor-date-fns-p_VpugYx.js                                 21.78 kB │ gzip:   6.43 kB │ map:   151.40 kB
+@run-remix/client:build: build/client/assets/products-DYQ7HYLS.js                                        22.16 kB │ gzip:   6.79 kB │ map:    66.08 kB
+@run-remix/client:build: build/client/assets/about-D6QLf_wh.js                                           24.46 kB │ gzip:   7.32 kB │ map:    64.01 kB
+@run-remix/client:build: build/client/assets/fiber-management-EHeSvgKt.js                                24.99 kB │ gzip:   6.03 kB │ map:    62.17 kB
+@run-remix/client:build: build/client/assets/browser-CRpxsuB0.js                                         24.99 kB │ gzip:   9.29 kB │ map:    91.63 kB
+@run-remix/client:build: build/client/assets/MediaViewerModal-io8wdMqa.js                                25.92 kB │ gzip:   7.80 kB │ map:    82.79 kB
+@run-remix/client:build: build/client/assets/_public-BF8DRhhd.js                                         26.04 kB │ gzip:   7.69 kB │ map:    60.18 kB
+@run-remix/client:build: build/client/assets/ProductCreateEditModal-DeK2GdHR.js                          28.27 kB │ gzip:   8.88 kB │ map:    78.83 kB
+@run-remix/client:build: build/client/assets/contact-DYGsoGbW.js                                         28.38 kB │ gzip:   8.19 kB │ map:    59.23 kB
+@run-remix/client:build: build/client/assets/vendor-utils-core-D2mCzwSa.js                               28.52 kB │ gzip:   8.77 kB │ map:   134.84 kB
+@run-remix/client:build: build/client/assets/certificate-management-CQPs4kH4.js                          31.68 kB │ gzip:   7.04 kB │ map:    78.36 kB
+@run-remix/client:build: build/client/assets/categories._index-a2b-M62N.js                               31.71 kB │ gzip:   9.67 kB │ map:    90.85 kB
+@run-remix/client:build: build/client/assets/vendor-react-query-DlkkxF3Z.js                              32.27 kB │ gzip:  10.14 kB │ map:   121.51 kB
+@run-remix/client:build: build/client/assets/vendor-react-hook-form-C02OUTZE.js                          33.08 kB │ gzip:  11.78 kB │ map:   157.62 kB
+@run-remix/client:build: build/client/assets/vendor-schema-BLxFGHjH.js                                   33.46 kB │ gzip:   8.08 kB │ map:   137.44 kB
+@run-remix/client:build: build/client/assets/fabric-management-enhanced-C1u0jUKf.js                      34.78 kB │ gzip:   7.87 kB │ map:    97.81 kB
+@run-remix/client:build: build/client/assets/use-scroll-CwIW1SjV.js                                      36.14 kB │ gzip:   9.51 kB │ map:    84.14 kB
+@run-remix/client:build: build/client/assets/root-D5165IMB.js                                            38.92 kB │ gzip:  13.08 kB │ map:   129.37 kB
+@run-remix/client:build: build/client/assets/sustainability-C73JLW53.js                                  40.67 kB │ gzip:  10.46 kB │ map:    91.73 kB
+@run-remix/client:build: build/client/assets/vendor-icons-CJLEbPU7.js                                    41.67 kB │ gzip:  13.65 kB │ map:   166.85 kB
+@run-remix/client:build: build/client/assets/technology-4jyZpR6R.js                                      43.30 kB │ gzip:  10.53 kB │ map:    93.32 kB
+@run-remix/client:build: build/client/assets/vendor-ui-core-Dwq-Ucqx.js                                  46.02 kB │ gzip:  13.71 kB │ map:   109.35 kB
+@run-remix/client:build: build/client/assets/ProductManagementUnified-0-jTGyX-.js                        46.56 kB │ gzip:  11.84 kB │ map:   115.66 kB
+@run-remix/client:build: build/client/assets/category-management-simplified-BVfMYotl.js                  47.81 kB │ gzip:  10.79 kB │ map:   137.12 kB
+@run-remix/client:build: build/client/assets/manufacturing-Cn6a17nA.js                                   51.03 kB │ gzip:  15.78 kB │ map:    99.76 kB
+@run-remix/client:build: build/client/assets/sortable.esm-BTokqncQ.js                                    51.06 kB │ gzip:  16.74 kB │ map:   191.48 kB
+@run-remix/client:build: build/client/assets/AboutManagement-E9RlGb1D.js                                 52.36 kB │ gzip:  11.82 kB │ map:   146.82 kB
+@run-remix/client:build: build/client/assets/homepage-management-C65jPpe5.js                             55.61 kB │ gzip:  11.21 kB │ map:   136.21 kB
+@run-remix/client:build: build/client/assets/vendor-d3-g2Vr3Pn0.js                                       64.18 kB │ gzip:  20.95 kB │ map:   233.13 kB
+@run-remix/client:build: build/client/assets/shared-OnuRV4E4.js                                          65.45 kB │ gzip:  14.68 kB │ map:   214.70 kB
+@run-remix/client:build: build/client/assets/manufacturing-management-DkPAju13.js                       102.85 kB │ gzip:  18.66 kB │ map:   268.05 kB
+@run-remix/client:build: build/client/assets/unified-sustainability-management-DuVp1z5o.js              104.00 kB │ gzip:  18.29 kB │ map:   254.54 kB
+@run-remix/client:build: build/client/assets/technology-management-CZhf2eBa.js                          112.38 kB │ gzip:  20.78 kB │ map:   259.45 kB
+@run-remix/client:build: build/client/assets/vendor-react-router-nEUaQ6C5.js                            126.02 kB │ gzip:  40.88 kB │ map:   612.31 kB
+@run-remix/client:build: build/client/assets/entry.client-Cd0goe65.js                                   126.26 kB │ gzip:  40.00 kB │ map:   420.56 kB
+@run-remix/client:build: build/client/assets/vendor-gsap-xw4lIgsj.js                                    129.26 kB │ gzip:  49.87 kB │ map:   573.47 kB
+@run-remix/client:build: build/client/assets/vendor-sentry-DRaY6ahA.js                                  138.45 kB │ gzip:  46.26 kB │ map:   860.91 kB
+@run-remix/client:build: build/client/assets/leaflet-src-DFmTLaKH.js                                    148.81 kB │ gzip:  43.20 kB │ map:   626.18 kB
+@run-remix/client:build: build/client/assets/vendor-radix-CMhdUIDW.js                                   154.46 kB │ gzip:  46.55 kB │ map:   682.05 kB
+@run-remix/client:build: build/client/assets/LottieIcon-CykBfAVG.js                                     169.73 kB │ gzip:  47.69 kB │ map:   589.60 kB
+@run-remix/client:build: build/client/assets/vendor-zod-BP_yt8Eh.js                                     279.43 kB │ gzip:  63.93 kB │ map:   819.17 kB
+@run-remix/client:build: build/client/assets/vendor-react-core-2uGX7pLx.js                              300.54 kB │ gzip:  92.78 kB │ map: 1,415.37 kB
+@run-remix/client:build: build/client/assets/vendor-recharts-DcKjaads.js                                303.59 kB │ gzip:  86.21 kB │ map: 1,427.74 kB
+@run-remix/client:build: build/client/assets/vendor-tiptap-DuhIb8tg.js                                  378.36 kB │ gzip: 118.07 kB │ map: 1,438.54 kB
+@run-remix/client:build: build/client/assets/model-viewer-module.min-mSA5OePb.js                        413.92 kB │ gzip: 134.20 kB │ map:   755.29 kB
+@run-remix/client:build: build/client/assets/vendor-three-C7E9HTk_.js                                   592.72 kB │ gzip: 149.47 kB │ map: 2,673.17 kB
+@run-remix/client:build: 
+@run-remix/client:build: [plugin builtin:vite-reporter] 
+@run-remix/client:build: (!) Some chunks are larger than 500 kB after minification. Consider:
+@run-remix/client:build: - Using dynamic import() to code-split the application
+@run-remix/client:build: - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+@run-remix/client:build: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+@run-remix/client:build: [33m[PLUGIN_TIMINGS] Warning:[0m Your build spent significant time in plugins. Here is a breakdown:
+@run-remix/client:build:   - react-router:virtual-modules (48%)
+@run-remix/client:build:   - react-router:dot-server (31%)
+@run-remix/client:build:   - react-router:inject-hmr-runtime (16%)
+@run-remix/client:build: See https://rolldown.rs/options/checks#plugintimings for more details.
+@run-remix/client:build: 
+@run-remix/client:build: ✓ built in 6.32s
+@run-remix/client:build: vite v8.0.10 building ssr environment for production...
+@run-remix/client:build: [sentry-vite-plugin] Info: Sending telemetry data on issues and performance to Sentry. To disable telemetry, set `options.telemetry` to `false`.
+@run-remix/client:build: [2K@run-remix/client:build: transforming...✓ 702 modules transformed.
+@run-remix/client:build: rendering chunks...
+@run-remix/client:build: [sentry-vite-plugin] Warning: No auth token provided. Will not create release. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
+@run-remix/client:build: You seem to be using Turborepo, did you forget to put SENTRY_AUTH_TOKEN in `passThroughEnv`? https://turbo.build/repo/docs/reference/configuration#passthroughenv
+@run-remix/client:build: [sentry-vite-plugin] Warning: No auth token provided. Will not upload source maps. Please set the `authToken` option. You can find information on how to generate a Sentry auth token here: https://docs.sentry.io/api/auth/
+@run-remix/client:build: You seem to be using Turborepo, did you forget to put SENTRY_AUTH_TOKEN in `passThroughEnv`? https://turbo.build/repo/docs/reference/configuration#passthroughenv
+@run-remix/client:build: 
+@run-remix/client:build: ✓ 18 assets cleaned from React Router server build.
+@run-remix/client:build: build/client/assets/leaflet-vh-t_kPv.css
+@run-remix/client:build: build/client/assets/inter-latin-wght-normal-Dx4kXJAl.woff2
+@run-remix/client:build: build/client/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2
+@run-remix/client:build: build/client/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2
+@run-remix/client:build: build/client/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2
+@run-remix/client:build: build/client/assets/inter-greek-wght-normal-CkhJZR-_.woff2
+@run-remix/client:build: build/client/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2
+@run-remix/client:build: build/client/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-100-normal-0s59Udit.woff2
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-100-normal-CKfKfkLR.woff
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-200-normal-Cmes_jNh.woff2
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-200-normal-BDYtcQhh.woff
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-300-normal-DcRj7u9U.woff2
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-300-normal-DJ07wsoN.woff
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-400-normal-9XcxO1Ay.woff2
+@run-remix/client:build: build/client/assets/material-symbols-outlined-latin-400-normal-mOgbcUQh.woff
+@run-remix/client:build: build/server/assets/blog-management-CX67F6_p.css
+@run-remix/client:build: build/server/assets/server-build-DYzqq2ro.css
+@run-remix/client:build: 
+@run-remix/client:build: computing gzip size...
+@run-remix/client:build: build/server/assets/uploader-B_G9vYFb.js                                         5.04 kB
+@run-remix/client:build: build/server/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2                 10.25 kB
+@run-remix/client:build: build/server/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2                  11.23 kB
+@run-remix/client:build: build/server/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2                   18.74 kB
+@run-remix/client:build: build/server/assets/inter-greek-wght-normal-CkhJZR-_.woff2                      18.99 kB
+@run-remix/client:build: build/server/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2               25.96 kB
+@run-remix/client:build: build/server/.vite/manifest.json                                                45.83 kB │ gzip:   5.15 kB
+@run-remix/client:build: build/server/assets/inter-latin-wght-normal-Dx4kXJAl.woff2                      48.25 kB
+@run-remix/client:build: build/server/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2                  85.06 kB
+@run-remix/client:build: build/server/assets/material-symbols-outlined-latin-400-normal-9XcxO1Ay.woff2  317.57 kB
+@run-remix/client:build: build/server/assets/material-symbols-outlined-latin-100-normal-0s59Udit.woff2  333.04 kB
+@run-remix/client:build: build/server/assets/material-symbols-outlined-latin-200-normal-Cmes_jNh.woff2  345.10 kB
+@run-remix/client:build: build/server/assets/material-symbols-outlined-latin-300-normal-DcRj7u9U.woff2  345.26 kB
+@run-remix/client:build: build/server/assets/material-symbols-outlined-latin-400-normal-mOgbcUQh.woff   426.03 kB
+@run-remix/client:build: build/server/assets/material-symbols-outlined-latin-100-normal-CKfKfkLR.woff   456.06 kB
+@run-remix/client:build: build/server/assets/material-symbols-outlined-latin-300-normal-DJ07wsoN.woff   467.12 kB
+@run-remix/client:build: build/server/assets/material-symbols-outlined-latin-200-normal-BDYtcQhh.woff   467.59 kB
+@run-remix/client:build: build/server/assets/blog-management-CX67F6_p.css                                 1.22 kB │ gzip:   0.45 kB
+@run-remix/client:build: build/server/assets/leaflet-vh-t_kPv.css                                        15.09 kB │ gzip:   6.36 kB
+@run-remix/client:build: build/server/assets/server-build-DYzqq2ro.css                                  353.53 kB │ gzip:  47.09 kB
+@run-remix/client:build: build/server/assets/useCacheInvalidation-CsQvVjmM.js                             0.54 kB │ gzip:   0.34 kB │ map:     0.87 kB
+@run-remix/client:build: build/server/assets/UnifiedModelViewer-Db9cgmVQ.js                               0.54 kB │ gzip:   0.33 kB
+@run-remix/client:build: build/server/assets/logger-A3Z_Lywn.js                                           0.58 kB │ gzip:   0.37 kB │ map:     0.67 kB
+@run-remix/client:build: build/server/assets/collapsible-BdJUBFeY.js                                      0.63 kB │ gzip:   0.39 kB │ map:     0.55 kB
+@run-remix/client:build: build/server/assets/fiber-utils-amL57wB_.js                                      0.66 kB │ gzip:   0.41 kB │ map:     1.29 kB
+@run-remix/client:build: build/server/assets/gsap-CmQgnldx.js                                             0.66 kB │ gzip:   0.40 kB │ map:     0.58 kB
+@run-remix/client:build: build/server/assets/vendor-d3-B5XKs0gd.js                                        0.67 kB │ gzip:   0.41 kB │ map:     0.72 kB
+@run-remix/client:build: build/server/assets/use-debounce-A4Y2T0Jv.js                                     0.68 kB │ gzip:   0.43 kB │ map:     0.69 kB
+@run-remix/client:build: build/server/assets/utils-DGcR1GeV.js                                            0.68 kB │ gzip:   0.43 kB │ map:     2.63 kB
+@run-remix/client:build: build/server/assets/skeleton-DS-2I_Gh.js                                         0.69 kB │ gzip:   0.44 kB │ map:     0.46 kB
+@run-remix/client:build: build/server/assets/useCursorStore-CmCadFkz.js                                   0.72 kB │ gzip:   0.42 kB │ map:     1.04 kB
+@run-remix/client:build: build/server/assets/use-is-mobile-BLqnaEvF.js                                    0.77 kB │ gzip:   0.47 kB │ map:     0.86 kB
+@run-remix/client:build: build/server/assets/GlassCard-DRdcguX3.js                                        0.79 kB │ gzip:   0.50 kB │ map:     0.83 kB
+@run-remix/client:build: build/server/assets/use-toast-BrEL4ur0.js                                        0.82 kB │ gzip:   0.50 kB │ map:     2.09 kB
+@run-remix/client:build: build/server/assets/use-reduced-motion-ChJImT65.js                               0.87 kB │ gzip:   0.48 kB │ map:     1.38 kB
+@run-remix/client:build: build/server/assets/separator-gJWOowro.js                                        0.88 kB │ gzip:   0.53 kB │ map:     1.00 kB
+@run-remix/client:build: build/server/assets/label-B-Zu24dn.js                                            0.91 kB │ gzip:   0.54 kB │ map:     0.96 kB
+@run-remix/client:build: build/server/assets/use-hotkeys-DLy3p4bp.js                                      0.93 kB │ gzip:   0.54 kB │ map:     1.76 kB
+@run-remix/client:build: build/server/assets/progress-BFpDJ7Y3.js                                         0.94 kB │ gzip:   0.58 kB │ map:     1.15 kB
+@run-remix/client:build: build/server/assets/rolldown-runtime-Gpwo05GM.js                                 0.98 kB │ gzip:   0.56 kB
+@run-remix/client:build: build/server/assets/useAccordionPersistence-DVNSLxIr.js                          1.01 kB │ gzip:   0.58 kB │ map:     2.78 kB
+@run-remix/client:build: build/server/assets/shared-CXyhh_Mb.js                                           1.04 kB │ gzip:   0.58 kB
+@run-remix/client:build: build/server/assets/image-with-skeleton-Cjz4eSjQ.js                              1.06 kB │ gzip:   0.64 kB │ map:     1.42 kB
+@run-remix/client:build: build/server/assets/media-query-keys-C--Efvm8.js                                 1.21 kB │ gzip:   0.59 kB │ map:     5.44 kB
+@run-remix/client:build: build/server/assets/checkbox-DpA2-qy-.js                                         1.22 kB │ gzip:   0.67 kB │ map:     1.36 kB
+@run-remix/client:build: build/server/assets/switch-BFkttXqB.js                                           1.32 kB │ gzip:   0.71 kB │ map:     1.40 kB
+@run-remix/client:build: build/server/assets/scroll-area-DNV07P8X.js                                      1.34 kB │ gzip:   0.71 kB │ map:     2.09 kB
+@run-remix/client:build: build/server/assets/textarea-BoSAC3-j.js                                         1.37 kB │ gzip:   0.73 kB │ map:     1.71 kB
+@run-remix/client:build: build/server/assets/DeleteConfirmationDialog-DKhoEmyi.js                         1.42 kB │ gzip:   0.78 kB │ map:     3.25 kB
+@run-remix/client:build: build/server/assets/LazyUnifiedModelViewer-D9uMpEP0.js                           1.42 kB │ gzip:   0.78 kB │ map:     2.14 kB
+@run-remix/client:build: build/server/assets/PlaceholderModule-CJ7dtYWh.js                                1.42 kB │ gzip:   0.77 kB │ map:     1.42 kB
+@run-remix/client:build: build/server/assets/LottieIcon-D2z7oXhI.js                                       1.50 kB │ gzip:   0.83 kB │ map:     2.72 kB
+@run-remix/client:build: build/server/assets/input-DTthyRCY.js                                            1.54 kB │ gzip:   0.79 kB │ map:     2.05 kB
+@run-remix/client:build: build/server/assets/MapMarkers-rdJ2HTHa.js                                       1.57 kB │ gzip:   0.69 kB │ map:     2.74 kB
+@run-remix/client:build: build/server/assets/table-fEk442rH.js                                            1.57 kB │ gzip:   0.72 kB │ map:     3.62 kB
+@run-remix/client:build: build/server/assets/tabs-Ctl0E4Lc.js                                             1.57 kB │ gzip:   0.73 kB │ map:     2.20 kB
+@run-remix/client:build: build/server/assets/Slogans-3HppkdTG.js                                          1.63 kB │ gzip:   0.96 kB │ map:     3.10 kB
+@run-remix/client:build: build/server/assets/api-constants-5hs-bb7w.js                                    1.64 kB │ gzip:   0.82 kB │ map:     4.00 kB
+@run-remix/client:build: build/server/assets/StandardMediaSelectionDialog-CMl81yv8.js                     1.77 kB │ gzip:   0.91 kB │ map:     6.08 kB
+@run-remix/client:build: build/server/assets/badge-CvcX39ab.js                                            1.79 kB │ gzip:   0.78 kB │ map:     2.30 kB
+@run-remix/client:build: build/server/assets/form-D_Pa1LyJ.js                                             2.03 kB │ gzip:   0.97 kB │ map:     5.55 kB
+@run-remix/client:build: build/server/assets/use-scroll-CTqbRC1u.js                                       2.06 kB │ gzip:   1.01 kB │ map:     6.03 kB
+@run-remix/client:build: build/server/assets/optimized-image-DJnWHAkq.js                                  2.12 kB │ gzip:   1.17 kB │ map:     5.44 kB
+@run-remix/client:build: build/server/assets/fluid-glass-final-B777s8zk.js                                2.18 kB │ gzip:   1.14 kB │ map:     4.88 kB
+@run-remix/client:build: build/server/assets/dropdown-menu-D03pu3u8.js                                    2.20 kB │ gzip:   1.05 kB │ map:     7.95 kB
+@run-remix/client:build: build/server/assets/button-Mph74kuk.js                                           2.29 kB │ gzip:   1.07 kB │ map:     3.14 kB
+@run-remix/client:build: build/server/assets/constants-DUutyp8J.js                                        2.30 kB │ gzip:   1.08 kB │ map:     3.86 kB
+@run-remix/client:build: build/server/assets/manufacturing-error-boundary-CTUoKPVA.js                     2.45 kB │ gzip:   1.14 kB │ map:     4.13 kB
+@run-remix/client:build: build/server/assets/alert-dialog-DbXziZnF.js                                     2.55 kB │ gzip:   1.07 kB │ map:     5.64 kB
+@run-remix/client:build: build/server/assets/ErrorBoundary-GxhluHwU.js                                    2.60 kB │ gzip:   1.14 kB │ map:     5.98 kB
+@run-remix/client:build: build/server/assets/alert-CqGcbLwL.js                                            2.68 kB │ gzip:   1.35 kB │ map:     7.89 kB
+@run-remix/client:build: build/server/assets/Sections-CQCMoL04.js                                         2.75 kB │ gzip:   1.42 kB │ map:     4.84 kB
+@run-remix/client:build: build/server/assets/Categories-B0eEkwmq.js                                       2.76 kB │ gzip:   1.44 kB │ map:     5.74 kB
+@run-remix/client:build: build/server/assets/card-Ctih-rHJ.js                                             2.85 kB │ gzip:   1.18 kB │ map:     5.04 kB
+@run-remix/client:build: build/server/assets/typography-qL8Jb2WS.js                                       3.11 kB │ gzip:   1.17 kB │ map:     7.03 kB
+@run-remix/client:build: build/server/assets/api-DA5-K3WN.js                                              3.18 kB │ gzip:   1.50 kB │ map:     9.62 kB
+@run-remix/client:build: build/server/assets/select-DdZ1oGsB.js                                           3.22 kB │ gzip:   1.32 kB │ map:     6.45 kB
+@run-remix/client:build: build/server/assets/contact-CvO5JJIY.js                                          3.42 kB │ gzip:   1.30 kB │ map:     6.62 kB
+@run-remix/client:build: build/server/assets/sustainability-utils-DvcdSYx4.js                             4.12 kB │ gzip:   1.74 kB │ map:     9.34 kB
+@run-remix/client:build: build/server/assets/FeaturedProducts-Bbq2zS_8.js                                 4.13 kB │ gzip:   1.93 kB │ map:     8.51 kB
+@run-remix/client:build: build/server/assets/Stats-W5KuiXcU.js                                            4.14 kB │ gzip:   1.93 kB │ map:     8.43 kB
+@run-remix/client:build: build/server/assets/Values-DJLaxs-v.js                                           4.15 kB │ gzip:   1.87 kB │ map:     7.67 kB
+@run-remix/client:build: build/server/assets/Process-CJ70-Kff.js                                          4.70 kB │ gzip:   2.12 kB │ map:    10.14 kB
+@run-remix/client:build: build/server/assets/BasicInfoSection-Cdn9Zkjh.js                                 4.75 kB │ gzip:   1.48 kB │ map:     9.70 kB
+@run-remix/client:build: build/server/assets/useMapMarkers-Bom8kGJX.js                                    5.04 kB │ gzip:   1.95 kB │ map:    15.81 kB
+@run-remix/client:build: build/server/assets/CategoryFabricSection-BhR2yg1g.js                            5.50 kB │ gzip:   1.92 kB │ map:    13.48 kB
+@run-remix/client:build: build/server/assets/contact-info-cards-Bept_xxe.js                               5.60 kB │ gzip:   1.58 kB │ map:     9.63 kB
+@run-remix/client:build: build/server/assets/MediaFiltersPanel-DDvei0T4.js                                5.73 kB │ gzip:   1.84 kB │ map:    10.98 kB
+@run-remix/client:build: build/server/assets/CustomizationSEOSection-ClQNqsMD.js                          6.01 kB │ gzip:   1.97 kB │ map:    13.07 kB
+@run-remix/client:build: build/server/assets/media-url-builder-B9zTpHGE.js                                6.14 kB │ gzip:   2.57 kB │ map:    22.88 kB
+@run-remix/client:build: build/server/assets/CertificationsSection-CO-5mRHx.js                            6.34 kB │ gzip:   1.87 kB │ map:    15.92 kB
+@run-remix/client:build: build/server/assets/SimpleMapContainer-B-91U5dF.js                               6.56 kB │ gzip:   2.70 kB │ map:    13.70 kB
+@run-remix/client:build: build/server/assets/ContentDashboard-IVFd9pak.js                                 6.60 kB │ gzip:   2.25 kB │ map:    12.71 kB
+@run-remix/client:build: build/server/assets/queryClient-DQC6l4qs.js                                      7.38 kB │ gzip:   2.83 kB │ map:    37.50 kB
+@run-remix/client:build: build/server/assets/MediaSelectionWrapperUnified-VLblqz5t.js                     7.85 kB │ gzip:   2.89 kB │ map:    20.93 kB
+@run-remix/client:build: build/server/assets/ProductDetailsPanel--XJed5Ap.js                              8.39 kB │ gzip:   2.40 kB │ map:    17.97 kB
+@run-remix/client:build: build/server/assets/HeroSection-xEtDh77Z.js                                      8.86 kB │ gzip:   3.41 kB │ map:    26.25 kB
+@run-remix/client:build: build/server/assets/MediaLibraryContainerEnhanced-AariZ5ot.js                    8.92 kB │ gzip:   3.15 kB │ map:    22.00 kB
+@run-remix/client:build: build/server/assets/SpecificationsSection-DgTBCS5K.js                            9.11 kB │ gzip:   2.52 kB │ map:    23.74 kB
+@run-remix/client:build: build/server/assets/ModelViewerErrorBoundary-C-yKqr52.js                         9.14 kB │ gzip:   2.96 kB │ map:    29.34 kB
+@run-remix/client:build: build/server/assets/StorageOptimizationDashboard-BTc27GsI.js                    10.39 kB │ gzip:   2.66 kB │ map:    20.28 kB
+@run-remix/client:build: build/server/assets/MediaLibraryContextEnhanced-ZVvlDDs5.js                     11.18 kB │ gzip:   3.53 kB │ map:    42.26 kB
+@run-remix/client:build: build/server/assets/MediaAssetsSection-D_Y1I6ML.js                              11.97 kB │ gzip:   3.75 kB │ map:    33.91 kB
+@run-remix/client:build: build/server/assets/dialog-CzmLa7ne.js                                          12.39 kB │ gzip:   4.59 kB │ map:    48.57 kB
+@run-remix/client:build: build/server/assets/UnifiedModelViewerCore-DCAYpKw5.js                          13.55 kB │ gzip:   4.99 kB │ map:    45.99 kB
+@run-remix/client:build: build/server/assets/inquiry-management-BjDkmfaD.js                              14.68 kB │ gzip:   4.38 kB │ map:    31.55 kB
+@run-remix/client:build: build/server/assets/FooterManagement-COzGhOAE.js                                14.91 kB │ gzip:   3.80 kB │ map:    32.10 kB
+@run-remix/client:build: build/server/assets/size-chart-management-enhanced-Dfg_4iWP.js                  14.94 kB │ gzip:   4.94 kB │ map:    41.36 kB
+@run-remix/client:build: build/server/assets/MediaUploadEnhanced-C74GgUwn.js                             16.08 kB │ gzip:   5.75 kB │ map:    51.55 kB
+@run-remix/client:build: build/server/assets/blog-management-DhohO_jX.js                                 17.39 kB │ gzip:   5.13 kB │ map:    47.15 kB
+@run-remix/client:build: build/server/assets/ContactPageSettings-CjvgbcDb.js                             17.71 kB │ gzip:   4.51 kB │ map:    39.49 kB
+@run-remix/client:build: build/server/assets/MediaGrid-D7Bo4B_9.js                                       18.86 kB │ gzip:   6.56 kB │ map:    48.83 kB
+@run-remix/client:build: build/server/assets/accessory-management-enhanced-Bwtdei88.js                   18.98 kB │ gzip:   4.84 kB │ map:    52.39 kB
+@run-remix/client:build: build/server/assets/fiber-management-BWA9-eRa.js                                22.48 kB │ gzip:   5.96 kB │ map:    59.73 kB
+@run-remix/client:build: build/server/assets/MediaViewerModal-BQZlchN4.js                                24.32 kB │ gzip:   7.76 kB │ map:    80.95 kB
+@run-remix/client:build: build/server/assets/ProductCreateEditModal-h-k5LWYU.js                          25.80 kB │ gzip:   8.32 kB │ map:    79.78 kB
+@run-remix/client:build: build/server/assets/certificate-management-X2vSTc_Y.js                          28.47 kB │ gzip:   7.00 kB │ map:    77.11 kB
+@run-remix/client:build: build/server/assets/fabric-management-enhanced-B4diZ1_m.js                      31.34 kB │ gzip:   7.79 kB │ map:    94.74 kB
+@run-remix/client:build: build/server/assets/ProductManagementUnified-BOJvWi41.js                        41.56 kB │ gzip:  11.32 kB │ map:   116.64 kB
+@run-remix/client:build: build/server/assets/category-management-simplified-9O4XX7_O.js                  44.49 kB │ gzip:  10.79 kB │ map:   133.26 kB
+@run-remix/client:build: build/server/assets/AboutManagement-JwliowvY.js                                 47.90 kB │ gzip:  11.84 kB │ map:   141.97 kB
+@run-remix/client:build: build/server/assets/homepage-management-D6PUcDF3.js                             52.11 kB │ gzip:  11.34 kB │ map:   132.40 kB
+@run-remix/client:build: build/server/assets/shared-C_yWk1D3.js                                          65.24 kB │ gzip:  13.47 kB │ map:   201.62 kB
+@run-remix/client:build: build/server/assets/manufacturing-management-33oTp3Cd.js                        95.59 kB │ gzip:  18.73 kB │ map:   260.42 kB
+@run-remix/client:build: build/server/assets/unified-sustainability-management-BEgDvMnn.js               96.78 kB │ gzip:  18.15 kB │ map:   246.72 kB
+@run-remix/client:build: build/server/assets/technology-management-B2D1qd5F.js                          104.14 kB │ gzip:  20.78 kB │ map:   250.51 kB
+@run-remix/client:build: build/server/assets/vendor-recharts-CTw5h7Td.js                                210.15 kB │ gzip:  54.50 kB │ map:   939.22 kB
+@run-remix/client:build: build/server/assets/model-viewer-module.min-CR4zVGDT.js                        415.70 kB │ gzip: 134.73 kB │ map:   760.44 kB
+@run-remix/client:build: build/server/index.js                                                          501.99 kB │ gzip: 125.54 kB │ map: 1,238.75 kB
+@run-remix/client:build: 
+@run-remix/client:build: ✓ built in 1.85s
+
+ Tasks:    3 successful, 3 total
+Cached:    3 cached, 3 total
+  Time:    40ms >>> FULL TURBO
+
+
+Running git status
+On branch fix/forensic-remediation-20260603
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   .audit-ci.json
+	modified:   .auth/user.json
+	modified:   client/app/components/admin/admin-layout.tsx
+	modified:   client/app/components/admin/certificate/certificate-management.tsx
+	modified:   client/app/components/admin/dashboard/ContentDashboard.tsx
+	modified:   client/app/components/admin/fiber/FiberList.tsx
+	modified:   client/app/components/admin/product-management-unified/admin/hooks/useProductMutations.ts
+	modified:   client/app/components/admin/product-management-unified/core/ProductGrid.tsx
+	modified:   client/app/components/admin/technology/TechnologyHeroManagement.tsx
+	modified:   client/app/components/homepage/Stats.tsx
+	modified:   client/app/components/layout/Footer.tsx
+	modified:   client/app/components/navigation/staggered-menu.tsx
+	modified:   client/app/components/technology/RoadAheadTimeline.tsx
+	modified:   client/app/entry.server.tsx
+	modified:   client/app/lib/gsap.ts
+	modified:   client/app/root.tsx
+	modified:   client/app/routes/about.tsx
+	modified:   client/app/routes/categories._index.tsx
+	modified:   client/app/routes/fabrics.tsx
+	modified:   client/app/routes/fibers.tsx
+	modified:   client/app/routes/manufacturing.tsx
+	modified:   client/app/routes/products.tsx
+	modified:   client/app/routes/technology.tsx
+	modified:   e2e/about-and-content.spec.ts
+	modified:   e2e/artifacts/cart-route.png
+	modified:   e2e/sustainability-cms-e2e.spec.ts
+	modified:   e2e/technology-cms-e2e.spec.ts
+	modified:   e2e/visual-regression-audit.spec.ts
+	modified:   findings.md
+	modified:   findings/system/protocol-0.txt
+	modified:   playwright.config.ts
+	modified:   server/boot/middleware.ts
+	modified:   server/lib/cache/cache-keys.ts
+	modified:   server/lib/cache/cache-strategies.ts
+	modified:   server/lib/cache/postgres-cache-provider.ts
+	modified:   server/lib/cache/unified-cache.ts
+	modified:   server/middleware/ssr-cache.ts
+	modified:   server/routes/auth.ts
+	modified:   server/routes/core/certificates.ts
+	modified:   server/routes/core/fabrics.ts
+	modified:   server/routes/core/materials.ts
+	modified:   server/routes/index.ts
+	modified:   server/routes/resources/resource-batch.routes.ts
+	modified:   server/services/auth-service.ts
+	modified:   task_plan.md
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	artifacts/
+	e2e-console-logs.txt
+	e2e/artifacts/contact-proof.png
+	findings/system/pre-fix-baseline.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")

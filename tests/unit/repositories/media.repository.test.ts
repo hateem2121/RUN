@@ -91,7 +91,7 @@ describe("MediaRepository", () => {
       const result = await repository.createMediaAsset({ filename: "new.jpg" } as any);
 
       expect(result).toEqual(createdAsset);
-      expect(mockUnifiedCache.clearPattern).toHaveBeenCalledWith("^media:.*");
+      expect(mockUnifiedCache.clearPattern).toHaveBeenCalledWith("^(batch:)?media:.*");
     });
   });
 });

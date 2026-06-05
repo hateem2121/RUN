@@ -21,6 +21,9 @@ export const API_ROUTES = {
   CONTENT: {
     NAVIGATION: "/api/navigation-items",
     HOMEPAGE_BATCH: "/api/homepage-batch",
+    RESOURCES_BATCH: "/api/resources/batch",
+    FABRICS: "/api/resources/fabrics",
+    LEGAL_POLICIES: "/api/legal-policies",
   },
 } as const;
 

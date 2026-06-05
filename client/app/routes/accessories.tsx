@@ -4,6 +4,7 @@ import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
 export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
 
 import { useGSAP } from "@gsap/react";
+import { API_ROUTES } from "@run-remix/shared";
 import type { Accessory, Certificate, Fabric, Fiber, SizeChart } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import gsap from "gsap";
@@ -49,7 +50,7 @@ export async function loader() {
   // Build URL with query parameters manually to match useResourceBatch logic
   const params = new URLSearchParams();
   params.set("types", typeString);
-  const apiUrl = `/api/resources/batch?${params}`;
+  const apiUrl = `${API_ROUTES.CONTENT.RESOURCES_BATCH}?${params}`;
 
   await queryClient.prefetchQuery({
     queryKey: [apiUrl],
@@ -59,7 +60,7 @@ export async function loader() {
   return { dehydratedState: dehydrate(queryClient) };
 }
 
-export default function Accessories() {
+export function Component() {
   const loaderData = useLoaderData<typeof loader>();
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedAccessories, setExpandedAccessories] = useState<Set<number>>(new Set());
@@ -67,6 +68,10 @@ export default function Accessories() {
 
   useGSAP(
     () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.set(headerRef.current, { opacity: 1, y: 0 });
+        return;
+      }
       gsap.from(headerRef.current, { opacity: 0, y: -20, duration: 0.6 });
     },
     { scope: headerRef },
@@ -77,7 +82,7 @@ export default function Accessories() {
   const typeString = types.join(",");
   const params = new URLSearchParams();
   params.set("types", typeString);
-  const apiUrl = `/api/resources/batch?${params}`;
+  const apiUrl = `${API_ROUTES.CONTENT.RESOURCES_BATCH}?${params}`;
 
   const { data, isPending: isLoading } = useQuery<BatchResponse>({
     queryKey: [apiUrl],

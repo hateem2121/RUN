@@ -112,7 +112,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Legacy v1 redirect for backward compatibility
   app.use("/api/v1", (req, res) => {
     const newUrl = req.originalUrl.replace("/api/v1", "/api");
-    res.redirect(301, newUrl);
+    res.redirect(308, newUrl);
   });
 
   // Documentation (Keep at /api/docs)

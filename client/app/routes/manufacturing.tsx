@@ -6,6 +6,7 @@ import type {
   ManufacturingQuality,
   MediaAsset,
 } from "@shared/index";
+import { useRouteLoaderData } from "react-router";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
 import { FactoryGallery } from "@/components/public/manufacturing/FactoryGallery";
 import { ProductionBlueprint } from "@/components/public/manufacturing/ProductionBlueprint";
@@ -210,7 +211,7 @@ type LoaderData = {
   mediaAssets: MediaAsset[];
 };
 
-export default function Manufacturing({ loaderData }: { loaderData: LoaderData }) {
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   return <ManufacturingInner loaderData={loaderData} />;
 }
 
@@ -219,6 +220,8 @@ interface ManufacturingInnerProps {
 }
 
 function ManufacturingInner({ loaderData }: ManufacturingInnerProps) {
+  const rootData = useRouteLoaderData<{ cspNonce?: string }>("root");
+  const nonce = rootData?.cspNonce;
   const { hero, processes, capabilities, qualities, caseStudies, mediaAssets } = loaderData;
   const qualityItems = qualities;
 
@@ -250,6 +253,7 @@ function ManufacturingInner({ loaderData }: ManufacturingInnerProps) {
     <>
       <script
         type="application/ld+json"
+        nonce={nonce}
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data is hardcoded, not user input
         dangerouslySetInnerHTML={{ __html: generateStructuredData() }}
       />

@@ -13,8 +13,8 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
   useRouteError,
+  useRouteLoaderData,
 } from "react-router";
 import { Toaster } from "sonner";
 import { FloatingDockHeader } from "@/components/navigation/floating-dock-header";
@@ -109,7 +109,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const loaderData = useLoaderData<typeof loader>();
+  const loaderData = useRouteLoaderData<typeof loader>("root");
   const nonce = loaderData?.cspNonce;
 
   // Create a client for the root (singleton on client, new on server per request)
@@ -130,6 +130,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* Theme script MUST be first to prevent FOUC - applies .dark before CSS loads */}
         <script
+          nonce={nonce}
+          suppressHydrationWarning
           // biome-ignore lint/security/noDangerouslySetInnerHtml: hardcoded theme-init script, no user input
           dangerouslySetInnerHTML={{
             __html: `
@@ -151,6 +153,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* Inject window.ENV for client-side configuration */}
         <script
           nonce={nonce}
+          suppressHydrationWarning
           // biome-ignore lint/security/noDangerouslySetInnerHtml: safe injection of server-side environment parameters
           dangerouslySetInnerHTML={{
             __html: `window.ENV = ${JSON.stringify(loaderData?.ENV || {})};`,
@@ -177,7 +180,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </QueryClientProvider>
           </HelmetProvider>
         </ThemeProvider>
-        <ScrollRestoration />
+        <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>
     </html>
@@ -222,7 +225,7 @@ export function ErrorBoundary() {
   return (
     <html lang="en">
       <head>
-        <title>{message} | RUN</title>
+        <title>{`${message} | RUN`}</title>
         <Meta />
         <Links />
       </head>

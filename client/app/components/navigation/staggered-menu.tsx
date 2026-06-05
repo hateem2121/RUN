@@ -1,7 +1,7 @@
-import { gsap } from "gsap";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { gsap } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 export interface StaggeredMenuItem {

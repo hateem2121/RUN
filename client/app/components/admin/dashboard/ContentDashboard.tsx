@@ -205,7 +205,7 @@ interface DashboardStats {
 export function ContentDashboard() {
   // Fetch dashboard stats from API
   const { data: stats } = useQuery<DashboardStats>({
-    queryKey: ["/api/v1/admin/dashboard/stats"],
+    queryKey: ["/api/admin/dashboard/stats"],
     retry: false,
     staleTime: 60000,
   });

@@ -147,5 +147,4 @@
 ./shared/schemas/products.ts:141:    // TODO: Candidate for deprecation - Currently used in PRODUCT_DETAIL_COLUMNS
 ./shared/schemas/categories.ts:66:    // TODO: Consider adding an index for faster queries
 ./client/app/components/admin/product-management-unified/size-chart-management-enhanced.tsx:410:    apparel: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
-./client/app/components/admin/product-management-unified/hooks/useProductForm.ts:275:      // TODO: call GET /api/v1/admin/products/check-slug?slug={baseSlug}&excludeId={product?.id}
 ./client/app/hooks/use-scroll.tsx:140: * DEPRECATED: Use ScrollProvider and useScroll instead.

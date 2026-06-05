@@ -73,7 +73,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   };
 }
 
-export default function Index({ loaderData }: { loaderData: LoaderData }) {
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   const { homepageData } = loaderData;
   const [preloaderFinished, setPreloaderFinished] = useState(false);
   const isMobile = useIsMobile();
@@ -228,6 +228,14 @@ export function ErrorBoundary() {
           {error instanceof Error ? error.stack : String(error)}
         </div>
       )}
+    </div>
+  );
+}
+
+export function HydrateFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
     </div>
   );
 }

@@ -42,14 +42,14 @@ export function useProductMutations({ onSuccess, productUrlPath }: UseProductMut
     }
 
     // Invalidate hierarchical product queries
-    queryClient.invalidateQueries({ queryKey: ["/api/v1/admin/products"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
     queryClient.invalidateQueries({ queryKey: ["/api/products/by-path"] });
     queryClient.invalidateQueries({ queryKey: ["/api/product-complete"] });
   };
 
   const createProductMutation = useMutation({
     mutationFn: (data: InsertProduct) =>
-      apiRequest("/api/v1/admin/products", {
+      apiRequest("/api/admin/products", {
         method: "POST",
         body: JSON.stringify(data),
       }) as Promise<Product>,
@@ -81,7 +81,7 @@ export function useProductMutations({ onSuccess, productUrlPath }: UseProductMut
 
   const updateProductMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<InsertProduct> }) =>
-      apiRequest(`/api/v1/admin/products/${id}`, {
+      apiRequest(`/api/admin/products/${id}`, {
         method: "PATCH",
         body: JSON.stringify(data),
       }) as Promise<Product>,

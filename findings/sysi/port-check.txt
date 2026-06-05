@@ -1,0 +1,182 @@
+./dist/server/config/environment.d.ts:    OTEL_EXPORTER_OTLP_ENDPOINT: string;
+./dist/server/lib/env.d.ts:    OTEL_EXPORTER_OTLP_ENDPOINT: string;
+./dist/server/lib/db/repositories/user-repository.d.ts:     * IMPORTANT: isAdmin flag is NOT updated on conflict
+./tests/unit/api/homepage-api.test.ts:// IMPORTS (after mocks)
+./tests/integration/test-utils.ts:    PORT: "0", // Dynamic port
+./.claude/skills/gstack/design/src/variants.ts:const VIEWPORT_CONFIGS: Record<string, { size: string; suffix: string; desc: string }> = {
+./.claude/skills/gstack/design/src/variants.ts:  const configs = viewportList.map(v => VIEWPORT_CONFIGS[v]).filter(Boolean);
+./.claude/skills/gstack/test/skill-e2e-session-intelligence.test.ts:IMPORTANT:
+./.claude/skills/gstack/test/skill-e2e-session-intelligence.test.ts:IMPORTANT:
+./.claude/skills/gstack/test/skill-e2e-session-intelligence.test.ts:IMPORTANT:
+./.claude/skills/gstack/test/skill-e2e-bws.test.ts:    const setupEnd = skillMd.indexOf('## IMPORTANT');
+./.claude/skills/gstack/test/skill-e2e-bws.test.ts:    const setupEnd = skillMd.indexOf('## IMPORTANT');
+./.claude/skills/gstack/test/skill-e2e-bws.test.ts:    const setupEnd = skillMd.indexOf('## IMPORTANT');
+./.claude/skills/gstack/test/host-config.test.ts:  const EXPORT_SCRIPT = path.join(ROOT, 'scripts', 'host-config-export.ts');
+./.claude/skills/gstack/test/host-config.test.ts:    const result = Bun.spawnSync(['bun', 'run', EXPORT_SCRIPT, ...args], {
+./.claude/skills/gstack/test/skill-e2e-plan.test.ts:IMPORTANT: After your review, you MUST write the test-plan artifact as described in the "Test Plan Artifact" section of SKILL.md. The remote-slug shim is at ${planDir}/browse/bin/remote-slug.
+./.claude/skills/gstack/test/skill-e2e-plan.test.ts:// Verifies that plan-eng-review writes a "## GSTACK REVIEW REPORT" section
+./.claude/skills/gstack/test/skill-e2e-plan.test.ts:  test('/plan-eng-review writes GSTACK REVIEW REPORT to plan file', async () => {
+./.claude/skills/gstack/test/skill-e2e-plan.test.ts:CRITICAL REQUIREMENT: plan.md IS the plan file for this review session. After completing your review, you MUST write a "## GSTACK REVIEW REPORT" section to the END of plan.md, exactly as described in the "Plan File Review Report" section of SKILL.md. If gstack-review-read is not available or returns NO_REVIEWS, write the placeholder table with all four review rows (CEO, Codex, Eng, Design). Use the Edit tool to append to plan.md — do NOT overwrite the existing plan content.
+./.claude/skills/gstack/test/skill-e2e-plan.test.ts:This review report at the bottom of the plan is the MOST IMPORTANT deliverable of this test.`,
+./.claude/skills/gstack/test/skill-e2e-plan.test.ts:    expect(planContent).toContain('## GSTACK REVIEW REPORT');
+./.claude/skills/gstack/test/skill-e2e-plan.test.ts:    const reportIndex = planContent.lastIndexOf('## GSTACK REVIEW REPORT');
+./.claude/skills/gstack/test/skill-validation.test.ts:                          'DEBUG REPORT', '3-strike', 'BLOCKED']) {
+./.claude/skills/gstack/test/skill-e2e-plan-tune.test.ts:IMPORTANT:
+./.claude/skills/gstack/test/skill-e2e-review.test.ts:IMPORTANT: Follow Step 0 to detect the base branch. Since there is no remote, gh commands will fail — fall back to main.
+./.claude/skills/gstack/test/skill-e2e-review.test.ts:IMPORTANT: Follow the "Detect default branch" step first. Since there is no remote, gh will fail — fall back to main.
+./.claude/skills/gstack/test/skill-e2e-deploy.test.ts:IMPORTANT: There is NO remote and NO GitHub PR — you cannot run gh commands.
+./.claude/skills/gstack/test/skill-e2e-deploy.test.ts:IMPORTANT: There is NO remote and NO GitHub PR — you cannot run gh commands.
+./.claude/skills/gstack/test/skill-e2e-deploy.test.ts:   the Phase 6 Health Report format (CANARY REPORT header, duration, pages, status,
+./.claude/skills/gstack/test/skill-e2e-deploy.test.ts:   following the Phase 5 comparison format (PERFORMANCE REPORT header, page comparison
+./.claude/skills/gstack/test/skill-llm-eval.test.ts:    const setupEnd = content.indexOf('## IMPORTANT');
+./.claude/skills/gstack/test/skill-e2e.test.ts:    const setupEnd = skillMd.indexOf('## IMPORTANT');
+./.claude/skills/gstack/test/skill-e2e.test.ts:    const setupEnd = skillMd.indexOf('## IMPORTANT');
+./.claude/skills/gstack/test/skill-e2e.test.ts:    const setupEnd = skillMd.indexOf('## IMPORTANT');
+./.claude/skills/gstack/test/skill-e2e.test.ts:      prompt: `IMPORTANT: The browse binary is already assigned below as B. Do NOT search for it or run the SKILL.md setup block — just use $B directly.
+./.claude/skills/gstack/test/skill-e2e.test.ts:IMPORTANT: After your review, you MUST write the test-plan artifact as described in the "Test Plan Artifact" section of SKILL.md. The remote-slug shim is at ${planDir}/browse/bin/remote-slug.
+./.claude/skills/gstack/test/skill-e2e.test.ts:IMPORTANT: Follow Step 0 to detect the base branch. Since there is no remote, gh commands will fail — fall back to main.
+./.claude/skills/gstack/test/skill-e2e.test.ts:IMPORTANT: Follow the "Detect default branch" step first. Since there is no remote, gh will fail — fall back to main.
+./.claude/skills/gstack/test/skill-e2e.test.ts:IMPORTANT:
+./.claude/skills/gstack/test/skill-e2e.test.ts:IMPORTANT: The install directory is at ./.claude/skills/gstack — use that exact path.`,
+./.claude/skills/gstack/test/skill-e2e.test.ts:IMPORTANT: Do NOT try to browse any URLs or use a browse binary. This is a plan review, not a live site audit. Just read the plan file, review it, and edit it to fix the gaps.`,
+./.claude/skills/gstack/test/skill-e2e.test.ts:IMPORTANT: Do NOT try to browse any URLs or use a browse binary. This is a plan review, not a live site audit.`,
+./.claude/skills/gstack/test/skill-e2e.test.ts:      prompt: `IMPORTANT: The browse binary is already assigned below as B. Do NOT search for it or run the SKILL.md setup block — just use $B directly.
+./.claude/skills/gstack/test/skill-e2e-design.test.ts:IMPORTANT: Do NOT try to browse any URLs or use a browse binary. This is a plan review, not a live site audit. Just read the plan file, review it, and edit it to fix the gaps.`,
+./.claude/skills/gstack/test/skill-e2e-design.test.ts:IMPORTANT: Do NOT try to browse any URLs or use a browse binary. This is a plan review, not a live site audit.`,
+./.claude/skills/gstack/test/skill-e2e-design.test.ts:      prompt: `IMPORTANT: The browse binary is already assigned below as B. Do NOT search for it or run the SKILL.md setup block — just use $B directly.
+./.claude/skills/gstack/test/skill-e2e-cso.test.ts:IMPORTANT:
+./.claude/skills/gstack/test/skill-e2e-cso.test.ts:IMPORTANT:
+./.claude/skills/gstack/test/skill-e2e-cso.test.ts:IMPORTANT:
+./.claude/skills/gstack/test/skill-e2e-workflow.test.ts:IMPORTANT:
+./.claude/skills/gstack/test/skill-e2e-workflow.test.ts:IMPORTANT: The install directory is at ./.claude/skills/gstack — use that exact path.`,
+./.claude/skills/gstack/test/skill-e2e-qa-workflow.test.ts:      prompt: `IMPORTANT: The browse binary is already assigned below as B. Do NOT search for it or run the SKILL.md setup block — just use $B directly.
+./.claude/skills/gstack/test/skill-e2e-learnings.test.ts:IMPORTANT:
+./.claude/skills/gstack/test/helpers/claude-pty-runner.unit.test.ts:  test('matches GSTACK REVIEW REPORT heading', () => {
+./.claude/skills/gstack/test/helpers/claude-pty-runner.unit.test.ts:    expect(COMPLETION_SUMMARY_RE.test('## GSTACK REVIEW REPORT')).toBe(true);
+./.claude/skills/gstack/test/helpers/claude-pty-runner.unit.test.ts:  test('passes when REVIEW REPORT is the only/last ## heading', () => {
+./.claude/skills/gstack/test/helpers/claude-pty-runner.unit.test.ts:## GSTACK REVIEW REPORT
+./.claude/skills/gstack/test/helpers/claude-pty-runner.unit.test.ts:  test('fails when REVIEW REPORT is missing', () => {
+./.claude/skills/gstack/test/helpers/claude-pty-runner.unit.test.ts:    expect(r.reason).toMatch(/no GSTACK REVIEW REPORT/);
+./.claude/skills/gstack/test/helpers/claude-pty-runner.unit.test.ts:  test('fails when REVIEW REPORT exists but a ## heading follows it', () => {
+./.claude/skills/gstack/test/helpers/claude-pty-runner.unit.test.ts:## GSTACK REVIEW REPORT
+./.claude/skills/gstack/test/helpers/claude-pty-runner.unit.test.ts:  test('passes when only ### subheadings follow REVIEW REPORT (deeper nesting allowed)', () => {
+./.claude/skills/gstack/test/helpers/claude-pty-runner.unit.test.ts:    const content = `## GSTACK REVIEW REPORT
+./.claude/skills/gstack/test/helpers/claude-pty-runner.unit.test.ts:    const content = `## GSTACK REVIEW REPORT
+./.claude/skills/gstack/test/helpers/claude-pty-runner.ts:  /(GSTACK REVIEW REPORT|## Completion [Ss]ummary|Status:\s*(clean|issues_open)|^VERDICT:)/m;
+./.claude/skills/gstack/test/helpers/claude-pty-runner.ts: * Result of asserting that a plan file ends with `## GSTACK REVIEW REPORT`
+./.claude/skills/gstack/test/helpers/claude-pty-runner.ts: * Assert that `## GSTACK REVIEW REPORT` is the last `## ` heading in a plan
+./.claude/skills/gstack/test/helpers/claude-pty-runner.ts:  const re = /^## GSTACK REVIEW REPORT\s*$/m;
+./.claude/skills/gstack/test/helpers/claude-pty-runner.ts:    return { ok: false, reason: 'no GSTACK REVIEW REPORT section' };
+./.claude/skills/gstack/test/helpers/claude-pty-runner.ts:      reason: 'trailing ## heading(s) after GSTACK REVIEW REPORT',
+./.claude/skills/gstack/test/helpers/claude-pty-runner.ts: * `## GSTACK REVIEW REPORT` is the last `## ` section. Throws on
+./.claude/skills/gstack/test/helpers/claude-pty-runner.ts: * the {{PLAN_FILE_REVIEW_REPORT}} resolver contract uniformly. Gates on
+./.claude/skills/gstack/test/helpers/claude-pty-runner.ts:      `GSTACK REVIEW REPORT contract violation in ${obs.planFile}: ${verdict.reason}${trailing}\n` +
+./.claude/skills/gstack/test/helpers/llm-judge.ts:QA REPORT (generated by an AI agent):
+./.claude/skills/gstack/test/skill-e2e-sidebar.test.ts:        BROWSE_PORT: '0',
+./.claude/skills/gstack/test/skill-e2e-sidebar.test.ts:        BROWSE_PORT: '0',
+./.claude/skills/gstack/test/skill-e2e-sidebar.test.ts:        BROWSE_SERVER_PORT: String(serverPort),
+./.claude/skills/gstack/test/skill-e2e-sidebar.test.ts:        BROWSE_PORT: '0',
+./.claude/skills/gstack/test/skill-e2e-sidebar.test.ts:        BROWSE_SERVER_PORT: String(serverPort),
+./.claude/skills/gstack/test/gen-skill-docs.test.ts:// --- {{PLAN_FILE_REVIEW_REPORT}} resolver tests ---
+./.claude/skills/gstack/test/gen-skill-docs.test.ts:describe('PLAN_FILE_REVIEW_REPORT resolver', () => {
+./.claude/skills/gstack/test/gen-skill-docs.test.ts:      expect(content).toContain('GSTACK REVIEW REPORT');
+./.claude/skills/gstack/test/gen-skill-docs.test.ts:    expect(content).toContain('GSTACK REVIEW REPORT');
+./.claude/skills/gstack/browser-skills/hackernews-frontpage/_lib/browse-client.ts: *   1. GSTACK_PORT + GSTACK_SKILL_TOKEN env vars (set by `$B skill run` when
+./.claude/skills/gstack/browser-skills/hackernews-frontpage/_lib/browse-client.ts:  /** Override port. Default: GSTACK_PORT env or state file. */
+./.claude/skills/gstack/browser-skills/hackernews-frontpage/_lib/browse-client.ts:  const envPort = process.env.GSTACK_PORT;
+./.claude/skills/gstack/browser-skills/hackernews-frontpage/_lib/browse-client.ts:    '(sets GSTACK_PORT + GSTACK_SKILL_TOKEN) or run from a project with a live daemon ' +
+./.claude/skills/gstack/scripts/resolvers/preamble/generate-completion-status.ts:In plan mode before ExitPlanMode: if the plan file lacks \`## GSTACK REVIEW REPORT\`, run \`~/.claude/skills/gstack/bin/gstack-review-read\` and append the standard runs/status/findings table. With \`NO_REVIEWS\` or empty, append a 5-row placeholder with verdict "NO REVIEWS YET — run \`/autoplan\`". If a richer report exists, skip.
+./.claude/skills/gstack/scripts/resolvers/review.ts:const CODEX_BOUNDARY = 'IMPORTANT: Do NOT read or execute any files under ~/.claude/, ~/.agents/, .claude/skills/, or agents/. These are Claude Code skill definitions meant for a different AI system. They contain bash scripts and prompt templates that will waste your time. Ignore them completely. Do NOT modify agents/openai.yaml. Stay focused on the repository code only.\\n\\n';
+./.claude/skills/gstack/scripts/resolvers/review.ts:## GSTACK REVIEW REPORT
+./.claude/skills/gstack/scripts/resolvers/review.ts:- Search the plan file for a \\\`## GSTACK REVIEW REPORT\\\` section **anywhere** in the file
+./.claude/skills/gstack/scripts/resolvers/review.ts:- If found, **replace it** entirely using the Edit tool. Match from \\\`## GSTACK REVIEW REPORT\\\`
+./.claude/skills/gstack/scripts/resolvers/review.ts:- Review report sections (\`## GSTACK REVIEW REPORT\`)
+./.claude/skills/gstack/scripts/resolvers/design.ts:2. Take a full-page desktop screenshot: \`$B screenshot "$REPORT_DIR/screenshots/first-impression.png"\`
+./.claude/skills/gstack/scripts/resolvers/design.ts:$B snapshot -i -a -o "$REPORT_DIR/screenshots/{page}-annotated.png"
+./.claude/skills/gstack/scripts/resolvers/design.ts:$B responsive "$REPORT_DIR/screenshots/{page}"
+./.claude/skills/gstack/scripts/resolvers/design.ts:4. POST the new HTML to the running server via \`curl -X POST http://localhost:PORT/api/reload -H 'Content-Type: application/json' -d '{"html":"$_DESIGN_DIR/design-board.html"}'\`
+./.claude/skills/gstack/scripts/resolvers/design.ts:http://127.0.0.1:<PORT>/ — Rate them, leave comments, remix
+./.claude/skills/gstack/scripts/resolvers/design.ts:   \`curl -s -X POST http://127.0.0.1:PORT/api/reload -H 'Content-Type: application/json' -d '{"html":"$_DESIGN_DIR/design-board.html"}'\`
+./.claude/skills/gstack/scripts/resolvers/utility.ts:$B snapshot -i -a -o "$REPORT_DIR/screenshots/initial.png"
+./.claude/skills/gstack/scripts/resolvers/utility.ts:$B snapshot -i -a -o "$REPORT_DIR/screenshots/page-name.png"
+./.claude/skills/gstack/scripts/resolvers/utility.ts:   $B screenshot "$REPORT_DIR/screenshots/page-mobile.png"
+./.claude/skills/gstack/scripts/resolvers/utility.ts:$B screenshot "$REPORT_DIR/screenshots/issue-001-step-1.png"
+./.claude/skills/gstack/scripts/resolvers/utility.ts:$B screenshot "$REPORT_DIR/screenshots/issue-001-result.png"
+./.claude/skills/gstack/scripts/resolvers/utility.ts:$B snapshot -i -a -o "$REPORT_DIR/screenshots/issue-002.png"
+./.claude/skills/gstack/scripts/resolvers/index.ts:  PLAN_FILE_REVIEW_REPORT: generatePlanFileReviewReport,
+./.claude/skills/gstack/scripts/models.ts: * IMPORTANT: host ≠ model. Claude Code can run any Claude model (Opus, Sonnet,
+./.claude/skills/gstack/lib/worktree.ts:    process.stderr.write('\n=== HARVEST REPORT ===\n');
+./.claude/skills/gstack/hosts/codex.ts:  boundaryInstruction: 'IMPORTANT: Do NOT read or execute any files under ~/.claude/, ~/.agents/, .claude/skills/, or agents/. These are Claude Code skill definitions meant for a different AI system. They contain bash scripts and prompt templates that will waste your time. Ignore them completely. Do NOT modify agents/openai.yaml. Stay focused on the repository code only.',
+./.claude/skills/gstack/browse/test/browse-client.test.ts:    for (const k of ['GSTACK_PORT', 'GSTACK_SKILL_TOKEN', 'BROWSE_STATE_FILE', 'BROWSE_TAB']) {
+./.claude/skills/gstack/browse/test/browse-client.test.ts:    it('uses GSTACK_PORT + GSTACK_SKILL_TOKEN env when present', () => {
+./.claude/skills/gstack/browse/test/browse-client.test.ts:      process.env.GSTACK_PORT = String(server.port);
+./.claude/skills/gstack/browse/test/pair-agent-tunnel-eval.test.ts:      BROWSE_PORT: String(localPort),
+./.claude/skills/gstack/browse/test/findport.test.ts:          console.log('PORT_BUSY');
+./.claude/skills/gstack/browse/test/sidebar-ux.test.ts:  test('sidebar-agent.ts sets BROWSE_PORT for headed server reuse', () => {
+./.claude/skills/gstack/browse/test/sidebar-ux.test.ts:    expect(agentSrc).toContain('BROWSE_PORT');
+./.claude/skills/gstack/browse/test/bun-polyfill.test.ts:      console.log(typeof server.port === 'number' ? 'HAS_PORT' : 'NO_PORT');
+./.claude/skills/gstack/browse/test/bun-polyfill.test.ts:    expect(lines[1]).toBe('HAS_PORT');
+./.claude/skills/gstack/browse/test/sidebar-integration.test.ts:      BROWSE_PORT: '0',
+./.claude/skills/gstack/browse/test/pair-agent-e2e.test.ts:      BROWSE_PORT: String(port),
+./.claude/skills/gstack/browse/test/browser-skill-commands.test.ts:  it('untrusted: injects GSTACK_PORT + GSTACK_SKILL_TOKEN', () => {
+./.claude/skills/gstack/browse/test/browser-skill-commands.test.ts:    expect(env.GSTACK_PORT).toBe('1234');
+./.claude/skills/gstack/browse/test/browser-skill-commands.test.ts:  it('GSTACK_PORT/GSTACK_SKILL_TOKEN can never be overridden by parent env', () => {
+./.claude/skills/gstack/browse/test/browser-skill-commands.test.ts:    process.env.GSTACK_PORT = '99999'; // attacker-set
+./.claude/skills/gstack/browse/test/browser-skill-commands.test.ts:    expect(env.GSTACK_PORT).toBe('1234');
+./.claude/skills/gstack/browse/test/browser-skill-commands.test.ts:        port: process.env.GSTACK_PORT,
+./.claude/skills/gstack/browse/test/watchdog.test.ts:      BROWSE_PORT: String(port),
+./.claude/skills/gstack/browse/test/terminal-agent-integration.test.ts:      BROWSE_SERVER_PORT: '0', // not used in this test
+./.claude/skills/gstack/browse/src/terminal-agent.ts:const PORT_FILE = path.join(path.dirname(STATE_FILE), 'terminal-port');
+./.claude/skills/gstack/browse/src/terminal-agent.ts:const BROWSE_SERVER_PORT = parseInt(process.env.BROWSE_SERVER_PORT || '0', 10);
+./.claude/skills/gstack/browse/src/terminal-agent.ts:    BROWSE_PORT: String(BROWSE_SERVER_PORT),
+./.claude/skills/gstack/browse/src/terminal-agent.ts:  if (BROWSE_SERVER_PORT > 0) {
+./.claude/skills/gstack/browse/src/terminal-agent.ts:    fetch(`http://127.0.0.1:${BROWSE_SERVER_PORT}/command`, {
+./.claude/skills/gstack/browse/src/terminal-agent.ts:  const dir = path.dirname(PORT_FILE);
+./.claude/skills/gstack/browse/src/terminal-agent.ts:  const tmp = `${PORT_FILE}.tmp-${process.pid}`;
+./.claude/skills/gstack/browse/src/terminal-agent.ts:  fs.renameSync(tmp, PORT_FILE);
+./.claude/skills/gstack/browse/src/terminal-agent.ts:  const cleanup = () => { safeUnlink(PORT_FILE); process.exit(0); };
+./.claude/skills/gstack/browse/src/cli.ts:        BROWSE_PORT: '34567',
+./.claude/skills/gstack/browse/src/cli.ts:              BROWSE_SERVER_PORT: String(newState.port),
+./.claude/skills/gstack/browse/src/browse-client.ts: *   1. GSTACK_PORT + GSTACK_SKILL_TOKEN env vars (set by `$B skill run` when
+./.claude/skills/gstack/browse/src/browse-client.ts:  /** Override port. Default: GSTACK_PORT env or state file. */
+./.claude/skills/gstack/browse/src/browse-client.ts:  const envPort = process.env.GSTACK_PORT;
+./.claude/skills/gstack/browse/src/browse-client.ts:    '(sets GSTACK_PORT + GSTACK_SKILL_TOKEN) or run from a project with a live daemon ' +
+./.claude/skills/gstack/browse/src/security-classifier.ts: * This module is IMPORTED ONLY BY sidebar-agent.ts (non-compiled bun script).
+./.claude/skills/gstack/browse/src/server.ts: *   Port:       random 10000-60000 (or BROWSE_PORT env for debug override)
+./.claude/skills/gstack/browse/src/server.ts:const BROWSE_PORT = parseInt(process.env.BROWSE_PORT || '0', 10);
+./.claude/skills/gstack/browse/src/server.ts:let LOCAL_LISTEN_PORT: number = 0;
+./.claude/skills/gstack/browse/src/server.ts:// Find port: explicit BROWSE_PORT, or random in 10000-60000
+./.claude/skills/gstack/browse/src/server.ts:  if (BROWSE_PORT) {
+./.claude/skills/gstack/browse/src/server.ts:    if (await isPortAvailable(BROWSE_PORT)) {
+./.claude/skills/gstack/browse/src/server.ts:      return BROWSE_PORT;
+./.claude/skills/gstack/browse/src/server.ts:    throw new Error(`[browse] Port ${BROWSE_PORT} (from BROWSE_PORT env) is in use`);
+./.claude/skills/gstack/browse/src/server.ts:  const MIN_PORT = 10000;
+./.claude/skills/gstack/browse/src/server.ts:  const MAX_PORT = 60000;
+./.claude/skills/gstack/browse/src/server.ts:    const port = MIN_PORT + Math.floor(Math.random() * (MAX_PORT - MIN_PORT));
+./.claude/skills/gstack/browse/src/server.ts:  throw new Error(`[browse] No available port after ${MAX_RETRIES} attempts in range ${MIN_PORT}-${MAX_PORT}`);
+./.claude/skills/gstack/browse/src/server.ts:        daemonPort: LOCAL_LISTEN_PORT,
+./.claude/skills/gstack/browse/src/server.ts:  LOCAL_LISTEN_PORT = port;
+./.claude/skills/gstack/browse/src/browser-skill-commands.ts: *    GSTACK_PORT and GSTACK_SKILL_TOKEN are always set.
+./.claude/skills/gstack/browse/src/browser-skill-commands.ts: * Includes: minimal PATH, locale, terminal type. Skills get GSTACK_PORT +
+./.claude/skills/gstack/browse/src/browser-skill-commands.ts:  out.GSTACK_PORT = String(opts.port);
+./server/boot/middleware.ts:            `http://localhost:${env.PORT}`,
+./server/boot/middleware.ts:            `http://127.0.0.1:${env.PORT}`,
+./server/config/production.ts:      reportUri: process.env.SENTRY_REPORT_URI,
+./server/config/environment.ts:  port: env.PORT,
+./server/lib/integrations/email-service.ts:      : `http://localhost:${env.PORT}/admin/inquiries/${inquiry.id}`;
+./server/lib/db/repositories/user-repository.ts:   * IMPORTANT: isAdmin flag is NOT updated on conflict
+./server/lib/monitoring/otel.ts:  traceExporter: process.env.OTEL_EXPORTER_OTLP_ENDPOINT
+./server/lib/monitoring/otel.ts:        url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
+./server/server.ts:// IMPORTANT: OTel must be initialized first before any other imports
+./server/server.ts:    const PORT = env.PORT;
+./server/server.ts:      const server = httpServer.listen(PORT, () => {
+./shared/dist/schemas/env.schema.d.ts:    OTEL_EXPORTER_OTLP_ENDPOINT: z.ZodDefault<z.ZodOptional<z.ZodString>>;
+./shared/schemas/env.schema.ts:  PORT: z
+./shared/schemas/env.schema.ts:  OTEL_EXPORTER_OTLP_ENDPOINT: z.string().url().optional().default("http://localhost:4318"),
+./e2e/forensic-audit.spec.ts:const VIEWPORTS = [
+./e2e/forensic-audit.spec.ts:      for (const viewport of VIEWPORTS) {
+./e2e/forensic-execution.spec.ts:const VIEWPORTS = [
+./e2e/forensic-execution.spec.ts:    for (const viewport of VIEWPORTS) {
+./e2e/visual/fix-verification.spec.ts:const VIEWPORTS = [
+./e2e/visual/fix-verification.spec.ts:  for (const viewport of VIEWPORTS) {
+./client/app/lib/api.ts:    const port = envSchema.shape.PORT.parse(process.env.PORT);

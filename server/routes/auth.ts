@@ -1,7 +1,5 @@
 import { type Response, Router } from "express";
 import passport from "passport";
-import { isDatabasePoolHealthy } from "../db.js";
-import { userRepository } from "../lib/db/repositories/index.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { authRateLimiter } from "../middleware/rateLimiter.js";
 import { authService } from "../services/auth-service.js";
@@ -44,27 +42,7 @@ if (
       },
     };
 
-    // Seed user if pool is healthy and MOCK_DB is not forced
-    const skipDb = process.env.MOCK_DB === "true" || !(await isDatabasePoolHealthy());
-
-    if (!skipDb) {
-      try {
-        await userRepository.upsertUser({
-          id: mockUser.id,
-          email: mockUser.email,
-          emailIndex: mockUser.emailIndex,
-          firstName: mockUser.firstName,
-          lastName: mockUser.lastName,
-          profileImageUrl: mockUser.profileImageUrl,
-          isAdmin: mockUser.isAdmin,
-        });
-      } catch (error) {
-        logger.warn(
-          "[Auth] Failed to seed mock user in database, continuing mock session without db persistence:",
-          error,
-        );
-      }
-    }
+    await authService.seedMockUser(mockUser);
 
     req.session.regenerate((err) => {
       if (err) {
@@ -88,7 +66,7 @@ if (
             return;
           }
 
-          const returnTo = (req.query.returnTo as string) || "/dashboard";
+          const returnTo = (req.query.returnTo as string) || "/admin";
           if (req.headers.accept?.includes("application/json")) {
             res.json({ success: true, user: mockUser });
             return;
@@ -161,10 +139,11 @@ router.get(
     }
 
     const userId = user.claims.sub;
-    const dbUser = await userRepository.getUser(userId);
-    if (!dbUser) {
+    const dbUserResult = await authService.getUserInfo(userId);
+    if (dbUserResult.isErr()) {
       return res.status(404).json({ message: "User not found" });
     }
+    const dbUser = dbUserResult.value;
 
     return res.json({
       id: dbUser.id,

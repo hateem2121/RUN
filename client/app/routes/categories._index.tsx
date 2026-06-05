@@ -6,7 +6,6 @@ export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFal
 import { useGSAP } from "@gsap/react";
 import type { Category } from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
-import { gsap } from "gsap";
 import { AlertCircle, Eye, Loader2 } from "lucide-react";
 // CHUNK 6: Lazy-load FluidGlass to defer three.js (565KB) from main bundle
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -15,6 +14,7 @@ import { CategoryFeaturedContent } from "@/components/categories/CategoryFeature
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { headingVariants, Typography } from "@/components/ui/typography";
+import { gsap } from "@/lib/gsap";
 import { apiRequest, batchFetchMediaContent, getQueryClient } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 
@@ -91,7 +91,7 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function CategoriesPage() {
+export function Component() {
   const loaderData = useLoaderData<typeof loader>();
   const containerRef = useRef<HTMLDivElement>(null);
 

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Typography } from "@/components/ui/typography";
 
-export default function GettingStarted() {
+export function Component() {
   const ref = useRef<HTMLDivElement>(null);
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);

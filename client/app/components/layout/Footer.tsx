@@ -27,7 +27,12 @@ const footerLinkVariants = cva(
   },
 );
 
+import { useRouteLoaderData } from "react-router";
+
 export const Footer: React.FC = () => {
+  const rootData = useRouteLoaderData<{ cspNonce?: string }>("root");
+  const nonce = rootData?.cspNonce;
+
   // Navigation Columns Fetching
   const { data: footerConfig, isLoading } = useQuery<
     FooterConfiguration & {
@@ -92,6 +97,7 @@ export const Footer: React.FC = () => {
       {footerConfig?.structuredData && (
         <script
           type="application/ld+json"
+          nonce={nonce}
           // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data is server-controlled, not user input
           dangerouslySetInnerHTML={{
             // Escape </script> sequences to prevent script tag break-out (Node's JSON.stringify

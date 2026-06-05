@@ -563,7 +563,12 @@ export function meta({ data }: Route.MetaArgs) {
   ];
 }
 
-export default function ProductDetailRoute() {
+import { RouteErrorBoundary } from "@/components/shared/RouteErrorBoundary";
+import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
+
+export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
+
+export function ProductDetailRoute() {
   const loaderData = useLoaderData<typeof loader>();
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>

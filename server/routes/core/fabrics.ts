@@ -6,8 +6,10 @@
 
 import { Router } from "express";
 import { type fabrics, insertFabricSchema } from "../../../shared/index.js";
+import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
 import { miscRepository } from "../../lib/db/repositories/index.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
@@ -25,6 +27,9 @@ router.get("/fabrics", async (_req, res) => {
     10000,
     "Get all fabrics",
   );
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
   res.json(fabrics);
 });
 
@@ -37,6 +42,9 @@ router.post("/fabrics", authService.requireAdmin, async (req, res) => {
     }),
     10000,
     "Create fabric",
+  );
+  await CacheOperations.invalidateFabrics().catch((err) =>
+    logger.warn("Failed to invalidate fabrics cache", err),
   );
   return res.status(201).json(fabric);
 });
@@ -66,6 +74,9 @@ router.put("/fabrics/:id", authService.requireAdmin, async (req, res) => {
     });
   }
 
+  await CacheOperations.invalidateFabrics().catch((err) =>
+    logger.warn("Failed to invalidate fabrics cache", err),
+  );
   return res.json(fabric);
 });
 
@@ -94,6 +105,9 @@ router.patch("/fabrics/:id", authService.requireAdmin, async (req, res) => {
     });
   }
 
+  await CacheOperations.invalidateFabrics().catch((err) =>
+    logger.warn("Failed to invalidate fabrics cache", err),
+  );
   return res.json(fabric);
 });
 
@@ -118,6 +132,9 @@ router.delete("/fabrics/:id", authService.requireAdmin, async (req, res) => {
     });
   }
 
+  await CacheOperations.invalidateFabrics().catch((err) =>
+    logger.warn("Failed to invalidate fabrics cache", err),
+  );
   return res.status(204).send();
 });
 

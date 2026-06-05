@@ -63,6 +63,7 @@ export default defineConfig({
       PORT: "5002",
       DOTENV_CONFIG_PATH: "../.env",
       SKIP_VITE_DEV_SERVER: "true",
+      PLAYWRIGHT_TEST: "true",
     },
   },
 });

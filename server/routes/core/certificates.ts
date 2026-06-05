@@ -24,6 +24,9 @@ router.get("/certificates", async (_req, res) => {
     10000,
     "Get all certificates",
   );
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
   res.json(certificates);
 });
 
@@ -45,7 +48,7 @@ router.post("/certificates", authService.requireAdmin, async (req, res) => {
   );
 
   // Invalidate certificates and sustainability caches (certificates may appear on sustainability page)
-  Promise.all([
+  await Promise.all([
     CacheOperations.invalidateCertificates(),
     CacheOperations.invalidateSustainability(),
   ])
@@ -81,7 +84,7 @@ router.put("/certificates/:id", authService.requireAdmin, async (req, res) => {
   }
 
   // Invalidate certificates and sustainability caches after certificate update
-  Promise.all([
+  await Promise.all([
     CacheOperations.invalidateCertificates(),
     CacheOperations.invalidateSustainability(),
   ])
@@ -108,7 +111,7 @@ router.delete("/certificates/:id", authService.requireAdmin, async (req, res) =>
   }
 
   // Invalidate certificates and sustainability caches after certificate deletion
-  Promise.all([
+  await Promise.all([
     CacheOperations.invalidateCertificates(),
     CacheOperations.invalidateSustainability(),
   ])
@@ -128,6 +131,9 @@ router.get("/sustainability-certificates", async (_req, res) => {
   const sustainabilityCertificates = certificates.filter(
     (cert) => cert.showOnSustainabilityPage === true && cert.isActive !== false,
   );
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
   res.json(sustainabilityCertificates);
 });
 

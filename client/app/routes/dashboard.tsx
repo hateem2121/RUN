@@ -35,7 +35,7 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Dashboard() {
+export function Component() {
   const statsRef = useRef<HTMLDivElement>(null);
 
   useGSAP(

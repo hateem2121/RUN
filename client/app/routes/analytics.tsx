@@ -103,7 +103,7 @@ const data = [
   { name: "Jul", sales: 3490, revenue: 4300 },
 ];
 
-export default function Analytics() {
+export function Component() {
   const loaderData = useLoaderData<typeof loader>();
 
   const { data: analyticsData } = useQuery({

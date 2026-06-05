@@ -262,20 +262,22 @@ export class AuthService {
 
     const uaHash = createHash("sha256").update(currentUA).digest("hex").substring(0, 16);
 
-    if (!sess.uaHash) {
-      sess.uaHash = uaHash;
-    } else if (sess.uaHash !== uaHash) {
-      logger.warn("[Auth] User agent mismatch detected, invalidating session", {
-        storedHash: sess.uaHash,
-        currentHash: uaHash,
-      });
+    if (process.env.NODE_ENV === "production") {
+      if (!sess.uaHash) {
+        sess.uaHash = uaHash;
+      } else if (sess.uaHash !== uaHash) {
+        logger.warn("[Auth] User agent mismatch detected, invalidating session", {
+          storedHash: sess.uaHash,
+          currentHash: uaHash,
+        });
 
-      return req.session.destroy((err) => {
-        if (err) {
-          logger.error("[Auth] Failed to destroy hijacked session", { error: err });
-        }
-        res.status(401).json(AuthErrors.SESSION_UA_MISMATCH);
-      });
+        return req.session.destroy((err) => {
+          if (err) {
+            logger.error("[Auth] Failed to destroy hijacked session", { error: err });
+          }
+          res.status(401).json(AuthErrors.SESSION_UA_MISMATCH);
+        });
+      }
     }
 
     let lastRotated = sess.lastRotated;
@@ -538,6 +540,56 @@ export class AuthService {
       return ok(sessionUser);
     } catch (error) {
       return err(new InternalError("Failed to perform dev login", { error }));
+    }
+  }
+
+  /**
+   * Seed mock user for development
+   */
+  public async seedMockUser(user: Partial<SessionUser>): Promise<Result<void, AppError>> {
+    const { isDatabasePoolHealthy } = await import("../db.js");
+    const { userRepository } = await import("../lib/db/repositories/index.js");
+
+    const skipDb = process.env.MOCK_DB === "true" || !(await isDatabasePoolHealthy());
+    if (skipDb) return ok(undefined);
+
+    try {
+      await withCircuit(
+        "seed-mock-user",
+        () =>
+          userRepository.upsertUser({
+            id: user.id as string,
+            email: user.email as string,
+            emailIndex: user.emailIndex as string,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            profileImageUrl: user.profileImageUrl,
+            isAdmin: user.isAdmin,
+          }),
+        DB_CIRCUIT_OPTIONS,
+      );
+      return ok(undefined);
+    } catch (error) {
+      logger.warn("[AuthService] Failed to seed mock user", error);
+      return err(new InternalError("Failed to seed mock user", { cause: error }));
+    }
+  }
+
+  /**
+   * Get user info wrapper for route handlers
+   */
+  public async getUserInfo(userId: string): Promise<Result<User, AppError>> {
+    const { userRepository } = await import("../lib/db/repositories/index.js");
+    try {
+      const dbUser = await withCircuit(
+        "get-user-info",
+        () => userRepository.getUser(userId),
+        DB_CIRCUIT_OPTIONS,
+      );
+      if (!dbUser) return err(new NotFoundError("User not found"));
+      return ok(dbUser);
+    } catch (error) {
+      return err(new InternalError("Failed to get user info", { cause: error }));
     }
   }
 }

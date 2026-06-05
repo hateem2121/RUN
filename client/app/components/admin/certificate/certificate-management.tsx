@@ -90,6 +90,12 @@ export function CertificateManagement() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/certificates"] });
+      getQueryClient().invalidateQueries({
+        predicate: (query) =>
+          query.queryKey.some(
+            (key) => typeof key === "string" && key.startsWith("/api/resources/batch"),
+          ),
+      });
       toast({ title: "Success", description: "Certificate created successfully" });
       resetForm();
       setIsCreateDialogOpen(false);
@@ -109,6 +115,12 @@ export function CertificateManagement() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/certificates"] });
+      getQueryClient().invalidateQueries({
+        predicate: (query) =>
+          query.queryKey.some(
+            (key) => typeof key === "string" && key.startsWith("/api/resources/batch"),
+          ),
+      });
       toast({ title: "Success", description: "Certificate updated successfully" });
       setIsEditDialogOpen(false);
       setEditingCertificate(null);
@@ -122,6 +134,12 @@ export function CertificateManagement() {
     mutationFn: (id: number) => apiRequest(`/api/certificates/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/certificates"] });
+      getQueryClient().invalidateQueries({
+        predicate: (query) =>
+          query.queryKey.some(
+            (key) => typeof key === "string" && key.startsWith("/api/resources/batch"),
+          ),
+      });
       toast({ title: "Success", description: "Certificate deleted successfully" });
     },
     onError: (error: Error) => {
@@ -139,6 +157,12 @@ export function CertificateManagement() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/certificates"] });
+      getQueryClient().invalidateQueries({
+        predicate: (query) =>
+          query.queryKey.some(
+            (key) => typeof key === "string" && key.startsWith("/api/resources/batch"),
+          ),
+      });
       toast({ title: "Success", description: "Certificates updated successfully" });
       setSelectedCertificates([]);
     },
@@ -152,6 +176,12 @@ export function CertificateManagement() {
       Promise.all(ids.map((id) => apiRequest(`/api/certificates/${id}`, { method: "DELETE" }))),
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/certificates"] });
+      getQueryClient().invalidateQueries({
+        predicate: (query) =>
+          query.queryKey.some(
+            (key) => typeof key === "string" && key.startsWith("/api/resources/batch"),
+          ),
+      });
       toast({ title: "Success", description: "Certificates deleted successfully" });
       setSelectedCertificates([]);
     },

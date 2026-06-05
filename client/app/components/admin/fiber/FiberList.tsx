@@ -106,6 +106,7 @@ export const FiberList: React.FC<FiberListProps> = ({
             <DropdownMenuItem
               data-testid={`menuitem-delete-fiber-${fiber.id}`}
               className="text-red-600 focus:text-red-600"
+              onSelect={(e) => e.preventDefault()}
             >
               <Trash2 className="mr-2 h-4 w-4" /> Delete
             </DropdownMenuItem>
