@@ -13,24 +13,35 @@ router.get("/legal-policies", async (req, res) => {
 
   if (slug) {
     const result = await legalService.getLegalPolicyBySlug(slug, false);
-    if (result.isErr()) throw result.error;
-    res.setHeader("Cache-Control", "public, max-age=3600");
-    return res.json(result.value);
+    return result.match(
+      (data) => {
+        res.setHeader("Cache-Control", "public, max-age=3600");
+        return res.json(data);
+      },
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   }
 
   const result = await legalService.getLegalPolicies(false);
-  if (result.isErr()) throw result.error;
-  res.setHeader("Cache-Control", "public, max-age=3600");
-  return res.json(result.value);
+  return result.match(
+    (data) => {
+      res.setHeader("Cache-Control", "public, max-age=3600");
+      return res.json(data);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // GET /api/legal-policies/admin - List all policies for administration
 router.get("/legal-policies/admin", authService.requireAdmin, async (_req, res) => {
   const result = await legalService.getLegalPolicies(true);
-  if (result.isErr()) throw result.error;
-
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  return res.json(result.value);
+  return result.match(
+    (data) => {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      return res.json(data);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // GET /api/legal-policies/:id - Get a policy by ID
@@ -41,10 +52,13 @@ router.get("/legal-policies/:id", async (req, res) => {
   }
 
   const result = await legalService.getLegalPolicy(id);
-  if (result.isErr()) throw result.error;
-
-  res.setHeader("Cache-Control", "public, max-age=3600");
-  return res.json(result.value);
+  return result.match(
+    (data) => {
+      res.setHeader("Cache-Control", "public, max-age=3600");
+      return res.json(data);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // POST /api/legal-policies - Create new policy
@@ -55,9 +69,10 @@ router.post("/legal-policies", authService.requireAdmin, async (req, res) => {
   }
 
   const result = await legalService.createLegalPolicy(removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.status(201).json(result.value);
+  return result.match(
+    (data) => res.status(201).json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // PUT /api/legal-policies/:id - Update policy
@@ -73,9 +88,10 @@ router.put("/legal-policies/:id", authService.requireAdmin, async (req, res) => 
   }
 
   const result = await legalService.updateLegalPolicy(id, removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // DELETE /api/legal-policies/:id - Delete policy
@@ -86,9 +102,10 @@ router.delete("/legal-policies/:id", authService.requireAdmin, async (req, res) 
   }
 
   const result = await legalService.deleteLegalPolicy(id);
-  if (result.isErr()) throw result.error;
-
-  return res.status(204).send();
+  return result.match(
+    () => res.status(204).send(),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 export default router;

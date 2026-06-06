@@ -59,7 +59,7 @@
     "react-hook-form": "^7.69.0",
     "react-is": "^19.2.0",
     "react-leaflet": "^5.0.0",
-    "react-router": "^7.14.2",
+    "react-router": "^7.16.0",
     "recharts": "^3.3.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
@@ -71,8 +71,8 @@
   },
   "scripts": {
     "dev": "vite --port 5002",
-    "build": "tsc -b && vite build",
-    "build:analyze": "VITE_ANALYZE=true tsc -b && vite build",
+    "build": "tsc -b && react-router build",
+    "build:analyze": "VITE_ANALYZE=true tsc -b && react-router build",
     "preview": "vite preview",
     "lint": "biome check .",
     "lint:html": "html-validate \"index.html\" \"public/**/*.html\" \"src/**/*.html\"",
@@ -81,7 +81,7 @@
   },
   "devDependencies": {
     "@axe-core/react": "^4.11.3",
-    "@react-router/dev": "^7.14.2",
+    "@react-router/dev": "^7.16.0",
     "@react-scan/vite-plugin-react-scan": "^0.2.3",
     "@sentry/vite-plugin": "^5.2.1",
     "@types/leaflet": "^1.9.19",

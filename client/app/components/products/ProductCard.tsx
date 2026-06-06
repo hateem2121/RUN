@@ -169,6 +169,7 @@ export const ProductCard = ({
             <ExternalLink className="h-4 w-4" />
           </Link>
           <button
+            aria-label="Action button"
             type="button"
             onClick={handleRequestQuote}
             disabled={alreadyInCart}

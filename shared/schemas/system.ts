@@ -10,7 +10,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { z } from "zod";
-import { pgTable } from "./common";
+import { pgTable } from "./common.js";
 
 /**
  * Performance Metrics Table - Frontend Performance Tracking

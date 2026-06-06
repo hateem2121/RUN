@@ -35,9 +35,10 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const id = parseInt(req.params.id as string, 10);
   const result = await technologyService.getInnovation(id);
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.post("/", authService.requireAdmin, async (req, res) => {
@@ -49,9 +50,10 @@ router.post("/", authService.requireAdmin, async (req, res) => {
   }
 
   const result = await technologyService.createInnovation(removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.status(201).json(result.value);
+  return result.match(
+    (data) => res.status(201).json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.patch("/:id", authService.requireAdmin, async (req, res) => {
@@ -64,17 +66,19 @@ router.patch("/:id", authService.requireAdmin, async (req, res) => {
   }
 
   const result = await technologyService.updateInnovation(id, removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.delete("/:id", authService.requireAdmin, async (req, res) => {
   const id = parseInt(req.params.id as string, 10);
   const result = await technologyService.deleteInnovation(id);
-  if (result.isErr()) throw result.error;
-
-  return res.status(204).send();
+  return result.match(
+    () => res.status(204).send(),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.patch("/reorder", authService.requireAdmin, async (req, res) => {
@@ -90,9 +94,10 @@ router.patch("/reorder", authService.requireAdmin, async (req, res) => {
     .map((item) => item.id);
 
   const result = await technologyService.reorderInnovations(orderedIds);
-  if (result.isErr()) throw result.error;
-
-  return res.json({ success: true, updated: orderedIds.length });
+  return result.match(
+    () => res.json({ success: true, updated: orderedIds.length }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 export default router;

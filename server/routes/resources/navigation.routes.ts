@@ -53,10 +53,13 @@ router.get("/navigation-settings", async (_req, res) => {
   const startTime = performance.now();
   const result = await NavigationService.getGlassmorphismSettings();
 
-  if (result.isErr()) throw result.error;
-
-  res.setHeader("X-Response-Time", (performance.now() - startTime).toFixed(2));
-  return res.json(result.value);
+  return result.match(
+    (data) => {
+      res.setHeader("X-Response-Time", (performance.now() - startTime).toFixed(2));
+      return res.json(data);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // ============================================================================
@@ -71,9 +74,10 @@ router.post("/admin/navigation-items", authService.requireAdmin, async (req, res
   }
 
   const result = await NavigationService.createItem(validatedData.data);
-  if (result.isErr()) throw result.error;
-
-  return res.status(201).json(result.value);
+  return result.match(
+    (data) => res.status(201).json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // Bulk reorder navigation items
@@ -86,9 +90,10 @@ router.patch("/admin/navigation-items/reorder", authService.requireAdmin, async 
   }
 
   const result = await NavigationService.reorderItems(validation.data.items);
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // Update navigation item
@@ -105,8 +110,10 @@ router.patch("/admin/navigation-items/:id", authService.requireAdmin, async (req
     validatedData.data as Record<string, unknown>,
   );
 
-  if (result.isErr()) throw result.error;
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // Delete navigation item
@@ -114,8 +121,10 @@ router.delete("/admin/navigation-items/:id", authService.requireAdmin, async (re
   const id = Number.parseInt(req.params.id as string, 10);
   const result = await NavigationService.deleteItem(id);
 
-  if (result.isErr()) throw result.error;
-  return res.status(204).send();
+  return result.match(
+    () => res.status(204).send(),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // Update glassmorphism settings
@@ -134,8 +143,10 @@ router.patch(
       validation.data as Record<string, unknown>,
     );
 
-    if (result.isErr()) throw result.error;
-    return res.json(result.value);
+    return result.match(
+      (data) => res.json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 

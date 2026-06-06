@@ -36,8 +36,10 @@ const reorderSchema = z.object({
  */
 router.get("/", async (_req, res) => {
   const result = await sustainabilityService.getMetrics();
-  if (result.isErr()) throw result.error;
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -61,8 +63,10 @@ router.get("/", async (_req, res) => {
 router.get("/:id", async (req, res) => {
   const id = parseInt(req.params.id as string, 10);
   const result = await sustainabilityService.getMetric(id);
-  if (result.isErr()) throw result.error;
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -90,8 +94,10 @@ router.post(
     const result = await sustainabilityService.createMetric(
       removeUndefined(req.body) as InsertSustainabilityMetric,
     );
-    if (result.isErr()) throw result.error;
-    return res.status(201).json(result.value);
+    return result.match(
+      (data) => res.status(201).json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -128,8 +134,10 @@ router.patch(
       id,
       removeUndefined(req.body as Partial<InsertSustainabilityMetric>),
     );
-    if (result.isErr()) throw result.error;
-    return res.json(result.value);
+    return result.match(
+      (data) => res.json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -153,8 +161,10 @@ router.patch(
 router.delete("/:id", authService.requireAdmin, async (req, res) => {
   const id = parseInt(req.params.id as string, 10);
   const result = await sustainabilityService.deleteMetric(id);
-  if (result.isErr()) throw result.error;
-  return res.status(204).send();
+  return result.match(
+    () => res.status(204).send(),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -193,8 +203,10 @@ router.patch(
       .map((item) => item.id);
 
     const result = await sustainabilityService.reorderMetrics(orderedIds);
-    if (result.isErr()) throw result.error;
-    return res.json({ success: true, updated: orderedIds.length });
+    return result.match(
+      () => res.json({ success: true, updated: orderedIds.length }),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 

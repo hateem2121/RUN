@@ -382,8 +382,7 @@ export function AccessoryManagementEnhanced() {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (_formDataAction: FormData) => {
 
     // Convert specifications array to object
     const specificationsObject = specifications.reduce(
@@ -488,7 +487,7 @@ export function AccessoryManagementEnhanced() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form action={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div>
                     <Label htmlFor="name">Name</Label>
@@ -818,7 +817,7 @@ export function AccessoryManagementEnhanced() {
             </DialogTitle>
           </DialogHeader>
           <div className="mt-4 max-h-viewport-70 overflow-y-auto pr-2">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form action={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                   <Label htmlFor="edit-name">Name</Label>

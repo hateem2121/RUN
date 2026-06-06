@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { insertProductSchema } from "../schemas/products";
+import { insertProductSchema } from "../schemas/products.js";
 
 describe("Schema Contracts", () => {
   it("insert product schema accepts valid payload", () => {

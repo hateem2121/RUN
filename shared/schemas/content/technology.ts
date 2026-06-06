@@ -11,8 +11,8 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { pgTable } from "../common";
-import { mediaAssets } from "../media";
+import { pgTable } from "../common.js";
+import { mediaAssets } from "../media.js";
 
 // Technology Hero
 export const technologyHero = pgTable(

@@ -40,6 +40,7 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
           "An unexpected error occurred while loading this component."}
       </p>
       <button
+        aria-label="Action button"
         type="button"
         onClick={resetErrorBoundary}
         className="text-foreground ring-border hover:bg-background dark:bg-muted/80 dark:ring-border dark:hover:bg-muted/70 rounded-md bg-white px-4 py-2 text-sm font-medium shadow-sm ring-1 ring-inset dark:text-white"

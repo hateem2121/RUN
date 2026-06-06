@@ -9,7 +9,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { pgTable } from "../common";
+import { pgTable } from "../common.js";
 
 export const services = pgTable(
   "services",
@@ -41,8 +41,14 @@ export const services = pgTable(
   ],
 );
 
+import { z } from "zod";
+
 export const insertServiceSchema = createInsertSchema(services);
 export const selectServiceSchema = createSelectSchema(services);
+
+export const serviceReorderSchema = z.object({
+  orderedIds: z.array(z.number()),
+});
 
 export type Service = typeof services.$inferSelect;
 export type InsertService = typeof services.$inferInsert;

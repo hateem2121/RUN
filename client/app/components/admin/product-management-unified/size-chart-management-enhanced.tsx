@@ -294,8 +294,7 @@ export function SizeChartManagementEnhanced() {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (_formDataAction: FormData) => {
     if (editingChart) {
       updateSizeChartMutation.mutate({ id: editingChart.id, data: formData });
     } else {
@@ -553,7 +552,7 @@ export function SizeChartManagementEnhanced() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form action={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div>
                     <Label htmlFor="name">Chart Name</Label>
@@ -717,6 +716,7 @@ export function SizeChartManagementEnhanced() {
                                   {key}: {value}
                                   {isCentimeterMeasurement(key) ? " cm" : ""}
                                   <button
+                                    aria-label="Action button"
                                     type="button"
                                     title="Remove measurement"
                                     onClick={() => removeMeasurement(size, key)}

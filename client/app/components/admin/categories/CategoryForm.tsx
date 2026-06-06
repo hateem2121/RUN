@@ -1,7 +1,6 @@
 import type { Category, InsertCategory, MediaAsset } from "@shared/index";
 import { FileText, Search, Star } from "lucide-react";
-import type React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -237,8 +236,7 @@ export function CategoryForm({
   };
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
+    (_formDataAction: globalThis.FormData) => {
 
       // Basic validation
       if (!formData.name.trim() || !formData.slug.trim()) {
@@ -368,8 +366,7 @@ export function CategoryForm({
 
   const handleManualSubmit = useCallback(() => {
     if (isValid) {
-      const e = { preventDefault: () => {} } as React.FormEvent;
-      handleSubmit(e);
+      handleSubmit(new window.FormData());
     }
   }, [isValid, handleSubmit]);
 
@@ -384,7 +381,7 @@ export function CategoryForm({
           </DialogHeader>
 
           <DialogBody>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form action={handleSubmit} className="space-y-6">
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="basic" className="flex items-center gap-2">

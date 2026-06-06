@@ -35,6 +35,7 @@ export function InquiryList({ inquiries, onSelect, selectedId }: InquiryListProp
       <div className="max-h-[600px] overflow-y-auto custom-scrollbar">
         {inquiries.map((inquiry) => (
           <button
+            aria-label="Action button"
             type="button"
             key={inquiry.id}
             onClick={() => onSelect(inquiry.id)}

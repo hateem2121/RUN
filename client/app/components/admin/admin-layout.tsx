@@ -232,6 +232,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 </div>
               </div>
               <button
+                aria-label="Action button"
                 type="button"
                 className="rounded-md p-1.5 text-admin-muted transition-colors hover:text-white"
                 title="Logout"
@@ -248,6 +249,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 M
               </div>
               <button
+                aria-label="Action button"
                 type="button"
                 className="text-admin-muted transition-colors hover:text-white"
                 title="Logout"

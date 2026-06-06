@@ -18,9 +18,10 @@ const router = Router();
 
 router.get("/", async (_req, res) => {
   const result = await sustainabilityService.getUnifiedConfig();
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.patch("/", authService.requireAdmin, async (req, res) => {
@@ -34,19 +35,18 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
   }
 
   const result = await sustainabilityService.updateUnifiedConfig(removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.json({
-    success: true,
-    data: result.value,
-  });
+  return result.match(
+    (data) => res.json({ success: true, data: data }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.get("/hero", async (_req, res) => {
   const result = await sustainabilityService.getHero();
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value || null);
+  return result.match(
+    (data) => res.json(data || null),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.patch("/hero", authService.requireAdmin, async (req, res) => {
@@ -58,9 +58,10 @@ router.patch("/hero", authService.requireAdmin, async (req, res) => {
   }
 
   const result = await sustainabilityService.updateHero(removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 export default router;

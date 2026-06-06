@@ -49,7 +49,7 @@ export interface DataWithTimestamp<T> {
   timestamp: string;
 }
 
-import type { ImageVariants } from "../schemas/media";
+import type { ImageVariants } from "../schemas/media.js";
 
 /**
  * Visitor-facing product item (simplified for marquee/grid)

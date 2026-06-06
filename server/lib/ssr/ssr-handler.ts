@@ -1,19 +1,14 @@
 import type { Server } from "node:http";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+
 import { createRequestHandler } from "@react-router/express";
 import type { Express, RequestHandler } from "express";
 import type { ServerBuild } from "react-router";
 import { logger } from "../monitoring/logger.js";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// server/lib/ssr -> ../../.. -> server root -> .. -> monorepo root
-// But wait, the previous code was `path.resolve(__dirname, "../..")`.
-// If __dirname is `/.../server/lib/ssr`, then `../..` is `/.../server`.
-// `client/vite.config.ts` is `../client/vite.config.ts` RELATIVE TO SERVER ROOT.
-// So if `root` is `server`, then `path.resolve(root, "client/vite.config.ts")` looks for `server/client/vite.config.ts`.
-// Correct: `root` should be monorepo root. `server` is at `monorepo/server`. `../..` from `server/lib/ssr` is `server`. `../../..` is monorepo root.
-const root = path.resolve(__dirname, "../../..");
+// Resolve monorepo root based on process.cwd() to support both tsc (nested) and esbuild (flattened)
+// The server is typically started from the 'server' directory or the monorepo root.
+const isCwdServer = process.cwd().endsWith("server");
+const root = isCwdServer ? path.resolve(process.cwd(), "..") : process.cwd();
 
 /**
  * Creates a Request Handler for React Router 7

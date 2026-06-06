@@ -12,7 +12,7 @@ interface InquiryFormProps {
 export function InquiryForm({ form, onSubmit }: InquiryFormProps) {
   return (
     <Form {...form}>
-      <form id="inquiry-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form id="inquiry-form" action={() => form.handleSubmit(onSubmit)()} className="space-y-6">
         <FormField
           control={form.control}
           name="contact.name"

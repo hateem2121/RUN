@@ -14,14 +14,14 @@ export function registerNewsletterRoutes(app: Express): void {
       const { email } = req.body;
       const subscribeResult = await newsletterService.subscribe(email);
 
-      if (subscribeResult.isErr()) {
-        throw subscribeResult.error;
-      }
-
-      return res.status(201).json({
-        status: "success",
-        message: "You have been subscribed!",
-      });
+      return subscribeResult.match(
+        () =>
+          res.status(201).json({
+            status: "success",
+            message: "You have been subscribed!",
+          }),
+        (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+      );
     },
   );
 

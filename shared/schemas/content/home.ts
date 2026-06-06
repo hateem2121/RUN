@@ -9,8 +9,8 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { pgTable } from "../common";
-import { mediaAssets } from "../media";
+import { pgTable } from "../common.js";
+import { mediaAssets } from "../media.js";
 
 // Homepage Hero
 export const homepageHero = pgTable(
@@ -227,9 +227,19 @@ export const insertHomepageSectionSchema = createInsertSchema(homepageSections, 
 });
 export const selectHomepageSectionSchema = createSelectSchema(homepageSections);
 
+import { z } from "zod";
+
 export const insertHomepageFeaturedProductsSettingsSchema = createInsertSchema(
   homepageFeaturedProductsSettings,
 );
 export const selectHomepageFeaturedProductsSettingsSchema = createSelectSchema(
   homepageFeaturedProductsSettings,
 );
+
+export const sloganReorderSchema = z.object({
+  slogans: z.array(z.number()),
+});
+
+export const processCardReorderSchema = z.object({
+  cards: z.array(z.number()),
+});

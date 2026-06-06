@@ -63,6 +63,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                 reach out with a detailed quote shortly.
               </p>
               <button
+                aria-label="Action button"
                 type="button"
                 onClick={onClose}
                 className="mt-10 rounded-full border border-border bg-muted/50 px-8 py-3 text-xs font-bold uppercase tracking-widest text-foreground transition-all hover:bg-muted hover:border-foreground active:scale-95"
@@ -109,6 +110,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
           {!success && items.length > 0 && (
             <div className="border-border border-t bg-background/80 p-6 backdrop-blur-xl">
               <button
+                aria-label="Action button"
                 type="submit"
                 form="inquiry-form"
                 disabled={mutation.isPending}

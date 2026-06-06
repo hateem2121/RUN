@@ -1,12 +1,14 @@
 import { err, ok, type Result } from "neverthrow";
 import { type Category, categoryReorderSchema, insertCategorySchema } from "../../shared/index.js";
 import { db } from "../db.js";
+import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { productRepository } from "../lib/db/repositories/index.js";
 import { AppError, BadRequestError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 import { withTimeout } from "../lib/resilience/request-timeout.js";
-import { removeUndefined } from "../lib/utilities/core-utils.js";
+import { removeUndefined, validateAndSanitizeInput } from "../lib/utilities/core-utils.js";
+import { webhookService } from "./webhook-service.js";
 
 export class CategoryService {
   /**
@@ -125,7 +127,13 @@ export class CategoryService {
         `[CategoryService] Bulk category reorder completed in ${duration}ms (${successCount} categories)`,
       );
 
-      return ok({ updated: successCount });
+      const updated = successCount;
+      CacheOperations.invalidateCategories().catch((cacheError) =>
+        logger.warn("[CACHE] Failed to invalidate category cache after reorder:", cacheError),
+      );
+      webhookService.trigger("category.reordered", { count: updated });
+
+      return ok({ updated });
     } catch (error) {
       logger.error("[CategoryService] Failed to reorder categories", undefined, error as Error);
       return err(new InternalError("Failed to reorder categories", { error }));
@@ -178,6 +186,12 @@ export class CategoryService {
   async createCategory(data: unknown): Promise<Result<Category, AppError>> {
     try {
       const validatedData = insertCategorySchema.parse(data);
+      if (validatedData.name)
+        validatedData.name = validateAndSanitizeInput(validatedData.name) as string;
+      if (validatedData.slug)
+        validatedData.slug = validateAndSanitizeInput(validatedData.slug) as string;
+      if (validatedData.description)
+        validatedData.description = validateAndSanitizeInput(validatedData.description) as string;
 
       const allCategories = await withCircuit(
         "get-categories-validation",
@@ -259,6 +273,12 @@ export class CategoryService {
       if (!category) {
         return err(new NotFoundError(`Category with ID ${id}`));
       }
+
+      CacheOperations.invalidateCategories(id).catch((cacheError) =>
+        logger.warn("[CACHE] Failed to invalidate category cache:", cacheError),
+      );
+      webhookService.trigger("category.updated", category);
+
       return ok(category);
     } catch (error) {
       logger.error("[CategoryService] Failed to update category", { id }, error as Error);
@@ -280,6 +300,12 @@ export class CategoryService {
       if (!deleted) {
         return err(new NotFoundError(`Category with ID ${id}`));
       }
+
+      CacheOperations.invalidateCategories(id).catch((cacheError) =>
+        logger.warn("[CACHE] Failed to invalidate category cache:", cacheError),
+      );
+      webhookService.trigger("category.deleted", { id });
+
       return ok(true);
     } catch (error) {
       logger.error("[CategoryService] Failed to delete category", { id }, error as Error);
@@ -300,6 +326,12 @@ export class CategoryService {
       if (!restored) {
         return err(new NotFoundError(`Category with ID ${id}`));
       }
+
+      CacheOperations.invalidateCategories(id).catch((cacheError) =>
+        logger.warn("[CACHE] Failed to invalidate category cache:", cacheError),
+      );
+      webhookService.trigger("category.restored", { id });
+
       return ok(true);
     } catch (error) {
       logger.error("[CategoryService] Failed to restore category", { id }, error as Error);
@@ -320,6 +352,12 @@ export class CategoryService {
       if (!hardDeleted) {
         return err(new NotFoundError(`Category with ID ${id}`));
       }
+
+      CacheOperations.invalidateCategories(id).catch((cacheError) =>
+        logger.warn("[CACHE] Failed to invalidate category cache:", cacheError),
+      );
+      webhookService.trigger("category.deleted", { id, permanent: true });
+
       return ok(true);
     } catch (error) {
       logger.error("[CategoryService] Failed to hard delete category", { id }, error as Error);

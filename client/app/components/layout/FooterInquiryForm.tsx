@@ -1,7 +1,6 @@
 import { cva } from "class-variance-authority";
 import gsap from "gsap";
-import type React from "react";
-import { useRef, useState } from "react";
+import { useState, useRef } from "react";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { cn } from "@/lib/utils";
 import { useCursorStore } from "@/stores/useCursorStore";
@@ -32,24 +31,21 @@ export function FooterInquiryForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = e.currentTarget as HTMLFormElement;
-
-    // Get form elements via namedItem for robustness
-    const companyInput = form.elements.namedItem("company") as HTMLInputElement;
-    const emailInput = form.elements.namedItem("email") as HTMLInputElement;
-    const specsInput = form.elements.namedItem("specs") as HTMLTextAreaElement;
+  const handleSubmit = async (formDataAction: FormData) => {
+    // Get form elements via formData for robustness
+    const company = formDataAction.get("company") as string;
+    const email = formDataAction.get("email") as string;
+    const specs = formDataAction.get("specs") as string;
 
     // Validation Logic
     const newErrors: { email?: string | undefined; specs?: string } = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailInput || !emailRegex.test(emailInput.value)) {
+    if (!email || !emailRegex.test(email)) {
       newErrors.email = "INVALID EMAIL FORMAT";
     }
 
-    if (!specsInput || specsInput.value.trim().length < 10) {
+    if (!specs || specs.trim().length < 10) {
       newErrors.specs = "DESCRIPTION TOO SHORT (MIN 10 CHARS)";
     }
 
@@ -81,16 +77,13 @@ export function FooterInquiryForm() {
         headers: {
           "Content-Type": "application/json",
           "x-csrf-token":
-            document.cookie
-              .split("; ")
-              .find((row) => row.startsWith("csrf_token="))
-              ?.split("=")[1] || "",
+            (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || "",
         },
         body: JSON.stringify({
           contact: {
-            company: companyInput?.value || "",
-            email: emailInput?.value || "",
-            projectDescription: specsInput?.value || "",
+            company: company || "",
+            email: email || "",
+            projectDescription: specs || "",
           },
           items: [],
           source: "footer_form",
@@ -139,7 +132,7 @@ export function FooterInquiryForm() {
         </div>
       </div>
 
-      <form ref={formRef} onSubmit={handleSubmit} className="mt-12 max-w-lg space-y-8">
+      <form ref={formRef} action={handleSubmit} className="mt-12 max-w-lg space-y-8">
         <div className="group">
           <label
             htmlFor="company"
@@ -220,6 +213,7 @@ export function FooterInquiryForm() {
 
         <Magnetic strength={0.4}>
           <button
+            aria-label="Action button"
             ref={btnRef}
             type="submit"
             disabled={isSubmitting || isSent}

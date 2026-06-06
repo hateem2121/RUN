@@ -253,9 +253,10 @@ router.get("/products", async (req, res): Promise<undefined | Response> => {
     limit: query.limit ? Number(query.limit) : undefined,
   });
 
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => { throw error; },
+  );
 });
 
 // GET /api/products/by-path - Get product by hierarchical URL path
@@ -292,10 +293,13 @@ router.get("/products/:id/3d-model", async (req, res): Promise<undefined | Respo
   if (id === null) return;
 
   const result = await productService.get3DModelMetadata(id);
-  if (result.isErr()) throw result.error;
-
-  res.set("Cache-Control", "public, max-age=900");
-  return res.json(result.value);
+  return result.match(
+    (data) => {
+      res.set("Cache-Control", "public, max-age=900");
+      return res.json(data);
+    },
+    (error) => { throw error; },
+  );
 });
 
 // GET /api/products/:id - Get single product
@@ -310,9 +314,10 @@ router.get("/products/:id", async (req, res): Promise<undefined | Response> => {
   if (id === null) return;
 
   const result = await productService.getProductById(id);
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => { throw error; },
+  );
 });
 
 import { requireRole } from "../../middleware/rbac.js";

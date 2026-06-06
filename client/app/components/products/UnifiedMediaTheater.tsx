@@ -856,6 +856,7 @@ export function UnifiedMediaTheater({
           >
             {sortedMedia.map((item, index) => (
               <button
+                aria-label="Action button"
                 type="button"
                 key={item.id}
                 onClick={() => {

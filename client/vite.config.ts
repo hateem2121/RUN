@@ -87,7 +87,7 @@ export default defineConfig((env) => {
     root: __dirname, // Current folder is client
     envDir: path.resolve(__dirname, ".."), // Load .env from root
     build: {
-      sourcemap: true, // Enable source maps for Sentry upload (plugin handles security/deletion if configured)
+      sourcemap: isSsrBuild ? "hidden" : false, // Enable source maps for Sentry upload (hidden mode)
       outDir: isSsrBuild
         ? path.resolve(__dirname, "../dist/server")
         : path.resolve(__dirname, "../dist/public"),
@@ -233,7 +233,7 @@ export default defineConfig((env) => {
         "invariant",
         "shallowequal",
       ],
-      noExternal: isSsrBuild ? true : ["react-helmet-async", "recharts", "recharts-scale"],
+      noExternal: ["@run-remix/shared", "react-helmet-async", "recharts", "recharts-scale"],
     },
     server: {
       // FORENSIC: Dev server optimizations for faster module loading

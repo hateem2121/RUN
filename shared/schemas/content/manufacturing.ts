@@ -8,9 +8,9 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { certificates } from "../catalog";
-import { pgTable } from "../common";
-import { mediaAssets } from "../media";
+import { certificates } from "../catalog.js";
+import { pgTable } from "../common.js";
+import { mediaAssets } from "../media.js";
 
 // Manufacturing Hero
 export const manufacturingHero = pgTable(

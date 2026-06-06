@@ -1,7 +1,7 @@
 import { boolean, index, integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { mediaAssets } from "./media";
-import { users } from "./users";
+import { mediaAssets } from "./media.js";
+import { users } from "./users.js";
 
 export const blogCategories = pgTable("blog_categories", {
   id: serial("id").primaryKey(),

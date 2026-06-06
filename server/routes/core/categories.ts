@@ -1,12 +1,10 @@
+import { categoryReorderSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { CacheOperations } from "../../lib/cache/cache-strategies.js";
-import { logger } from "../../lib/monitoring/logger.js";
-import { validateAndSanitizeInput, validateIdParam } from "../../lib/utilities/core-utils.js";
+import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { normalizeSlug } from "../../lib/utilities/slug-utils.js";
 import { createRateLimiter } from "../../middleware/rateLimiter.js";
 import { authService } from "../../services/auth-service.js";
 import { categoryService } from "../../services/category.service.js";
-import { webhookService } from "../../services/webhook-service.js";
 
 const writeRateLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000,
@@ -23,28 +21,27 @@ router.get("/categories", async (req, res) => {
   const limitNum = limit ? parseInt(limit, 10) : undefined;
 
   const result = await categoryService.getCategories(pageNum, limitNum);
-  if (result.isErr()) throw result.error;
-  return res.json(result.value);
+  return result.match(
+    (categories) => res.json(categories),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // Bulk reorder categories
 router.patch("/categories/reorder", authService.requireAdmin, async (req, res) => {
-  const result = await categoryService.reorderCategories(req.body);
-  if (result.isErr()) throw result.error;
+  const parsed = categoryReorderSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res
+      .status(400)
+      .json({ error: { code: "VALIDATION_ERROR", message: parsed.error.message } });
+  }
 
-  const { updated } = result.value;
-
-  CacheOperations.invalidateCategories().catch((cacheError) =>
-    logger.warn("[CACHE] Failed to invalidate category cache after reorder:", cacheError),
+  const result = await categoryService.reorderCategories(parsed.data);
+  return result.match(
+    ({ updated }) =>
+      res.json({ success: true, message: `Successfully reordered ${updated} categories`, updated }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
   );
-
-  webhookService.trigger("category.reordered", { count: updated });
-
-  return res.json({
-    success: true,
-    message: `Successfully reordered ${updated} categories`,
-    updated,
-  });
 });
 
 // GET /api/categories/by-slug/:slug
@@ -60,9 +57,10 @@ router.get("/categories/by-slug/:slug", async (req, res) => {
   const normalizedSlug = normalizeSlug(slug);
   const result = await categoryService.getCategoryBySlug(normalizedSlug);
 
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (category) => res.json(category),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // GET /api/categories/:id
@@ -71,28 +69,19 @@ router.get("/categories/:id", async (req, res) => {
   if (id === null) return;
 
   const result = await categoryService.getCategoryById(id);
-  if (result.isErr()) throw result.error;
-  return res.json(result.value);
+  return result.match(
+    (category) => res.json(category),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // POST /api/categories
 router.post("/categories", authService.requireAdmin, writeRateLimiter, async (req, res) => {
-  if (req.body.name) req.body.name = validateAndSanitizeInput(req.body.name);
-  if (req.body.slug) req.body.slug = validateAndSanitizeInput(req.body.slug);
-  if (req.body.description) req.body.description = validateAndSanitizeInput(req.body.description);
-
   const result = await categoryService.createCategory(req.body);
-  if (result.isErr()) throw result.error;
-
-  const category = result.value;
-
-  CacheOperations.invalidateCategories().catch((cacheError) =>
-    logger.warn("[CACHE] Failed to invalidate category cache:", cacheError),
+  return result.match(
+    (category) => res.status(201).json(category),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
   );
-
-  webhookService.trigger("category.created", category);
-
-  return res.status(201).json(category);
 });
 
 // PUT /api/categories/:id
@@ -101,17 +90,10 @@ router.put("/categories/:id", authService.requireAdmin, async (req, res) => {
   if (id === null) return;
 
   const result = await categoryService.updateCategory(id, req.body);
-  if (result.isErr()) throw result.error;
-
-  const category = result.value;
-
-  CacheOperations.invalidateCategories(id).catch((cacheError) =>
-    logger.warn("[CACHE] Failed to invalidate category cache:", cacheError),
+  return result.match(
+    (category) => res.json(category),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
   );
-
-  webhookService.trigger("category.updated", category);
-
-  return res.json(category);
 });
 
 // PATCH /api/categories/:id
@@ -120,17 +102,10 @@ router.patch("/categories/:id", authService.requireAdmin, async (req, res) => {
   if (id === null) return;
 
   const result = await categoryService.updateCategory(id, req.body);
-  if (result.isErr()) throw result.error;
-
-  const category = result.value;
-
-  CacheOperations.invalidateCategories(id).catch((cacheError) =>
-    logger.warn("[CACHE] Failed to invalidate category cache:", cacheError),
+  return result.match(
+    (category) => res.json(category),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
   );
-
-  webhookService.trigger("category.updated", category);
-
-  return res.json(category);
 });
 
 // DELETE /api/categories/:id
@@ -139,15 +114,10 @@ router.delete("/categories/:id", authService.requireAdmin, async (req, res) => {
   if (id === null) return;
 
   const result = await categoryService.deleteCategory(id);
-  if (result.isErr()) throw result.error;
-
-  CacheOperations.invalidateCategories(id).catch((cacheError) =>
-    logger.warn("[CACHE] Failed to invalidate category cache:", cacheError),
+  return result.match(
+    () => res.status(204).send(),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
   );
-
-  webhookService.trigger("category.deleted", { id });
-
-  return res.status(204).send();
 });
 
 // POST /api/categories/:id/restore
@@ -156,15 +126,10 @@ router.post("/categories/:id/restore", authService.requireAdmin, async (req, res
   if (id === null) return;
 
   const result = await categoryService.restoreCategory(id);
-  if (result.isErr()) throw result.error;
-
-  CacheOperations.invalidateCategories(id).catch((cacheError) =>
-    logger.warn("[CACHE] Failed to invalidate category cache:", cacheError),
+  return result.match(
+    () => res.json({ success: true, message: "Restored", id }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
   );
-
-  webhookService.trigger("category.restored", { id });
-
-  return res.json({ success: true, message: "Restored", id });
 });
 
 // DELETE /api/categories/:id/hard-delete
@@ -173,15 +138,10 @@ router.delete("/categories/:id/hard-delete", authService.requireAdmin, async (re
   if (id === null) return;
 
   const result = await categoryService.hardDeleteCategory(id);
-  if (result.isErr()) throw result.error;
-
-  CacheOperations.invalidateCategories(id).catch((cacheError) =>
-    logger.warn("[CACHE] Failed to invalidate category cache:", cacheError),
+  return result.match(
+    () => res.status(204).send(),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
   );
-
-  webhookService.trigger("category.deleted", { id, permanent: true });
-
-  return res.status(204).send();
 });
 
 export default router;

@@ -20,6 +20,10 @@ export async function setupRoutes(app: Express, httpServer: Server) {
 
   // API Documentation
   app.get("/api-docs", (_req, res) => {
+    if (process.env.NODE_ENV === "production") {
+      res.status(404).end();
+      return;
+    }
     const spec = generateOpenApiSpec();
     res.json(spec);
   });

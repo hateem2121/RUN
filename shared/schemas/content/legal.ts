@@ -1,6 +1,6 @@
 import { boolean, index, serial, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { pgTable } from "../common";
+import { pgTable } from "../common.js";
 
 export const legalPolicies = pgTable(
   "legal_policies",

@@ -122,7 +122,13 @@ export function ContactFields({
             </span>
           </Label>
           <div className="relative">
-            <input type="hidden" name="country" id="hidden-country" value={selectedCountry?.name || ""} required />
+            <input
+              type="hidden"
+              name="country"
+              id="hidden-country"
+              value={selectedCountry?.name || ""}
+              required
+            />
             <CustomSelect
               id="country-select"
               aria-labelledby="country-label"

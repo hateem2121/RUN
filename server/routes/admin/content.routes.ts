@@ -30,11 +30,10 @@ router.post("/categories/:id/restore", authService.requireAdmin, async (req, res
   const auditContext = getAuditContext(req);
   const result = await adminService.restoreCategory(auditContext, id);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json({ success: result.value });
+  return result.match(
+    () => res.json({ success: true }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // =============================================================================
@@ -48,11 +47,10 @@ router.post("/categories/:id/restore", authService.requireAdmin, async (req, res
 router.get("/certificates", authService.requireAdmin, async (_req, res) => {
   const result = await adminService.getCertificatesList();
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -67,11 +65,10 @@ router.post(
     const auditContext = getAuditContext(req);
     const result = await adminService.createCertificate(auditContext, req.body);
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    return res.status(201).json(result.value);
+    return result.match(
+      (data) => res.status(201).json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -93,11 +90,10 @@ router.patch(
       req.body as Partial<InsertCertificate>,
     );
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    return res.json(result.value);
+    return result.match(
+      (data) => res.json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -111,11 +107,10 @@ router.delete("/certificates/:id", authService.requireAdmin, async (req, res) =>
   const auditContext = getAuditContext(req);
   const result = await adminService.deleteCertificate(auditContext, id);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json({ success: result.value });
+  return result.match(
+    () => res.json({ success: true }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // =============================================================================
@@ -129,11 +124,10 @@ router.delete("/certificates/:id", authService.requireAdmin, async (req, res) =>
 router.get("/fibers", authService.requireAdmin, async (_req, res) => {
   const result = await adminService.getFibersList();
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -148,11 +142,10 @@ router.post(
     const auditContext = getAuditContext(req);
     const result = await adminService.createFiber(auditContext, req.body);
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    return res.status(201).json(result.value);
+    return result.match(
+      (data) => res.status(201).json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -174,11 +167,10 @@ router.patch(
       req.body as Partial<InsertFiber>,
     );
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    return res.json(result.value);
+    return result.match(
+      (data) => res.json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -192,11 +184,10 @@ router.delete("/fibers/:id", authService.requireAdmin, async (req, res) => {
   const auditContext = getAuditContext(req);
   const result = await adminService.deleteFiber(auditContext, id);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json({ success: result.value });
+  return result.match(
+    () => res.json({ success: true }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // =============================================================================
@@ -210,11 +201,10 @@ router.delete("/fibers/:id", authService.requireAdmin, async (req, res) => {
 router.get("/about/timeline", authService.requireAdmin, async (_req, res) => {
   const result = await adminService.getAboutTimelineEntries();
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -236,11 +226,10 @@ router.post(
     const auditContext = getAuditContext(req);
     const result = await adminService.createAboutTimelineEntry(auditContext, req.body);
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    return res.status(201).json(result.value);
+    return result.match(
+      (data) => res.status(201).json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -271,11 +260,10 @@ router.patch(
       req.body as Partial<InsertAboutTimelineEntry>,
     );
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    return res.json(result.value);
+    return result.match(
+      (data) => res.json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -289,11 +277,10 @@ router.delete("/about/timeline/:id", authService.requireAdmin, async (req, res) 
   const auditContext = getAuditContext(req);
   const result = await adminService.deleteAboutTimelineEntry(auditContext, id);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json({ success: result.value });
+  return result.match(
+    () => res.json({ success: true }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 export default router;

@@ -12,11 +12,11 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { sizeCharts } from "./catalog";
-import { categories } from "./categories";
-import { pgTable } from "./common";
-import { fabrics } from "./materials";
-import { mediaAssets } from "./media";
+import { sizeCharts } from "./catalog.js";
+import { categories } from "./categories.js";
+import { pgTable } from "./common.js";
+import { fabrics } from "./materials.js";
+import { mediaAssets } from "./media.js";
 
 // Schemas for JSONB columns
 const ProductTechnicalSpecsSchema = z.record(

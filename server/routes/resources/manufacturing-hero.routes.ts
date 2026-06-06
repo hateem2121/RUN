@@ -22,9 +22,10 @@ router.get("/manufacturing-hero", async (_req, res) => {
   }
 
   const result = await manufacturingService.getHero();
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value || null);
+  return result.match(
+    (data) => res.json(data || null),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // PATCH /api/manufacturing-hero
@@ -38,9 +39,10 @@ router.patch("/manufacturing-hero", authService.requireAdmin, async (req, res) =
   }
 
   const result = await manufacturingService.updateHero(removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 export default router;

@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import mongoSanitize from "express-mongo-sanitize";
-import xss from "xss";
+import DOMPurify from "isomorphic-dompurify";
 import { logger } from "../lib/monitoring/logger.js";
 
 /**
@@ -18,7 +18,7 @@ function sanitizeObject<T>(obj: T): T {
   if (!obj) return obj;
 
   if (typeof obj === "string") {
-    return xss(obj) as unknown as T;
+    return DOMPurify.sanitize(obj, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }) as unknown as T;
   }
 
   if (Array.isArray(obj)) {

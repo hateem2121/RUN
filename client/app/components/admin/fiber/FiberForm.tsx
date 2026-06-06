@@ -43,6 +43,7 @@ const SustainabilityRatingInput = ({
       <div className="flex items-center gap-1">
         {[1, 2, 3, 4, 5].map((score) => (
           <button
+            aria-label="Action button"
             key={score}
             type="button"
             title={`Rate ${score} stars`}

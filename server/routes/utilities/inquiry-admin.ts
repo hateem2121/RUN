@@ -27,21 +27,19 @@ router.get("/admin/inquiries", async (req, res) => {
     search: search || undefined,
   });
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.get("/admin/inquiries/stats", async (_req, res) => {
   const result = await inquiryService.getStats();
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.get("/admin/inquiries/:id", async (req, res) => {
@@ -50,11 +48,10 @@ router.get("/admin/inquiries/:id", async (req, res) => {
 
   const result = await inquiryService.getInquiryById(id);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.patch("/admin/inquiries/:id", async (req, res) => {
@@ -68,11 +65,10 @@ router.patch("/admin/inquiries/:id", async (req, res) => {
 
   const result = await inquiryService.updateInquiry(id, validation.data as Partial<InsertInquiry>);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.post("/admin/inquiries/:id/logs", async (req, res) => {
@@ -89,11 +85,10 @@ router.post("/admin/inquiries/:id/logs", async (req, res) => {
     user: (req as unknown as { user?: { email?: string } }).user?.email || "Admin",
   });
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.delete("/admin/inquiries/:id", async (req, res) => {
@@ -102,11 +97,10 @@ router.delete("/admin/inquiries/:id", async (req, res) => {
 
   const result = await inquiryService.deleteInquiry(id);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json({ success: true, message: "Inquiry deleted successfully" });
+  return result.match(
+    () => res.json({ success: true, message: "Inquiry deleted successfully" }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 export default router;

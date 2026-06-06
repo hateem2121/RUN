@@ -80,6 +80,8 @@ function ProductFormShell({ isOpen }: { isOpen: boolean }) {
     setIsMediaPickerOpen(false);
   };
 
+
+
   const getMediaAsset = (id: number) => {
     if (!Array.isArray(queries.mediaAssets)) return undefined;
     return queries.mediaAssets.find((m) => m && m.id === id);
@@ -112,7 +114,7 @@ function ProductFormShell({ isOpen }: { isOpen: boolean }) {
         <DialogBody>
           <ProductFormProgress />
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form action={() => handleSubmit({ preventDefault: () => {} } as any)} className="space-y-4">
             <Suspense
               fallback={
                 <div className="bg-white/[0.03] animate-pulse rounded-lg border border-white/5 p-4 text-admin-muted">

@@ -21,11 +21,10 @@ type ProductsQuery = z.infer<typeof adminProductsQuerySchema>;
 router.get("/initial-data", authService.requireAdmin, async (_req, res) => {
   const result = await adminService.getInitialProductsData();
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -50,11 +49,10 @@ router.get(
       }) as unknown as Parameters<typeof adminService.getProductsList>[0],
     );
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    return res.json(result.value);
+    return result.match(
+      (data) => res.json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -70,11 +68,10 @@ router.post(
     const auditContext = getAuditContext(req);
     const result = await adminService.createProduct(auditContext, req.body as InsertProduct);
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    return res.status(201).json(result.value);
+    return result.match(
+      (data) => res.status(201).json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -96,11 +93,10 @@ router.get("/check-slug", authService.requireAdmin, async (req, res) => {
 
   const result = await adminService.checkSlugAvailability(slugQuery.slug, slugQuery.excludeId);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -112,11 +108,10 @@ router.get("/:id", authService.requireAdmin, async (req, res) => {
   if (id === null) return;
   const result = await adminService.getProductById(id);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -138,11 +133,10 @@ router.patch(
       req.body as Partial<InsertProduct>,
     );
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    return res.json(result.value);
+    return result.match(
+      (data) => res.json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -160,11 +154,10 @@ router.put(
     const auditContext = getAuditContext(req);
     const result = await adminService.updateProduct(auditContext, id, req.body as InsertProduct);
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    return res.json(result.value);
+    return result.match(
+      (data) => res.json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -179,11 +172,10 @@ router.post("/:id/restore", authService.requireAdmin, async (req, res) => {
   const auditContext = getAuditContext(req);
   const result = await adminService.restoreProduct(auditContext, id);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json({ success: result.value });
+  return result.match(
+    () => res.json({ success: true }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -196,11 +188,10 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
   const auditContext = getAuditContext(req);
   const result = await adminService.softDeleteProduct(auditContext, id);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json({ success: result.value });
+  return result.match(
+    () => res.json({ success: true }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -214,11 +205,10 @@ router.delete("/:id/hard", authService.requireAdmin, async (req, res) => {
   const auditContext = getAuditContext(req);
   const result = await adminService.hardDeleteProduct(auditContext, id, confirm);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json({ success: result.value });
+  return result.match(
+    () => res.json({ success: true }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 export default router;

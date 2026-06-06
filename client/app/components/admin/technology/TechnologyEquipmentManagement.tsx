@@ -779,6 +779,7 @@ export function TechnologyEquipmentManagement({
                         </div>
                       )}
                       <button
+                        aria-label="Action button"
                         type="button"
                         onClick={() => setIsImagePickerOpen(true)}
                         className="absolute inset-0 flex items-center justify-center bg-surface-black/60 opacity-0 transition-opacity group-hover:opacity-100"

@@ -19,6 +19,7 @@ export function QuoteList({ items, updateQuantity, removeFromQuote, onClose }: Q
           Your quote list is empty.
         </p>
         <button
+          aria-label="Action button"
           type="button"
           onClick={onClose}
           className="mt-6 text-xs font-bold uppercase tracking-widest text-foreground underline underline-offset-4 transition-colors hover:text-muted-foreground"

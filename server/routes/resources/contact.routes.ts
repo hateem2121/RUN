@@ -49,7 +49,15 @@ router.post(
   criticalTier,
   validateRequest({ body: ContactSubmissionSchema }),
   async (req, res) => {
-    const result = await inquiryService.processContactSubmission(req.body, req.ip || "unknown");
+    const parsed = ContactSubmissionSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(422).json({
+        success: false,
+        error: parsed.error.message,
+      });
+    }
+
+    const result = await inquiryService.processContactSubmission(parsed.data, req.ip || "unknown");
 
     if (result.isErr()) {
       // Validation and security errors return 422 in this domain
@@ -133,8 +141,10 @@ router.get("/locations", async (req, res) => {
 
 router.get("/contact-page-configuration", authService.requireAdmin, async (_req, res) => {
   const result = await contactService.getContactPageConfiguration();
-  if (result.isErr()) throw result.error;
-  return res.json(result.value || {});
+  return result.match(
+    (data) => res.json(data || {}),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.post(
@@ -142,7 +152,13 @@ router.post(
   authService.requireAdmin,
   validateRequest({ body: insertContactPageConfigurationSchema }),
   async (req, res) => {
-    const result = await contactService.createContactPageConfiguration(req.body);
+    const parsed = insertContactPageConfigurationSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res
+        .status(400)
+        .json({ error: { code: "VALIDATION_ERROR", message: parsed.error.message } });
+    }
+    const result = await contactService.createContactPageConfiguration(parsed.data);
     if (result.isErr()) throw result.error;
 
     await CacheOperations.invalidateContact().catch((err) =>
@@ -159,7 +175,13 @@ router.patch(
   validateRequest({ body: insertContactPageConfigurationSchema.partial() }),
   async (req, res) => {
     // Singleton ID 1 logic maintained but delegated correctly
-    const result = await contactService.updateContactPageConfiguration(1, req.body);
+    const parsed = insertContactPageConfigurationSchema.partial().safeParse(req.body);
+    if (!parsed.success) {
+      return res
+        .status(400)
+        .json({ error: { code: "VALIDATION_ERROR", message: parsed.error.message } });
+    }
+    const result = await contactService.updateContactPageConfiguration(1, parsed.data);
     if (result.isErr()) throw result.error;
 
     await CacheOperations.invalidateContact().catch((err) =>

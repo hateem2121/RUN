@@ -17,10 +17,13 @@ const router = Router();
 router.get("/logo-animation-settings", async (_req, res) => {
   const startTime = performance.now();
   const result = await homepageService.getLogoAnimationSettings();
-  if (result.isErr()) throw result.error;
-
-  res.setHeader("X-Response-Time", (performance.now() - startTime).toFixed(2));
-  return res.json(result.value);
+  return result.match(
+    (data) => {
+      res.setHeader("X-Response-Time", (performance.now() - startTime).toFixed(2));
+      return res.json(data);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // PATCH /api/admin/logo-animation-settings
@@ -33,9 +36,10 @@ router.patch("/admin/logo-animation-settings", authService.requireAdmin, async (
   const result = await homepageService.updateLogoAnimationSettings(
     removeUndefined(validation.data),
   );
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 export default router;

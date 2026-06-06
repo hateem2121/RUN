@@ -72,6 +72,7 @@ export class EnhancedBentoCardErrorBoundary extends Component<Props, State> {
           <div className="flex flex-col gap-2">
             {this.state.retryCount < this.maxRetries && (
               <button
+                aria-label="Action button"
                 type="button"
                 onClick={this.handleRetry}
                 className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
@@ -82,6 +83,7 @@ export class EnhancedBentoCardErrorBoundary extends Component<Props, State> {
             )}
 
             <button
+              aria-label="Action button"
               type="button"
               onClick={() => {
                 window.location.href = "/";

@@ -41,6 +41,7 @@ export function MediaFiltersPanel() {
       <div className="flex items-center justify-between border-b border-white/5 p-4">
         <h2 className="font-semibold text-white">Filters</h2>
         <button
+          aria-label="Action button"
           type="button"
           className="z-popover inline-flex h-8 w-8 items-center justify-center rounded-md p-0 font-medium text-sm text-admin-muted transition-colors hover:bg-white/5 hover:text-white focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50 disabled:pointer-events-none disabled:opacity-50"
           onMouseDown={(e) => {

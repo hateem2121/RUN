@@ -253,7 +253,7 @@ export function ContactPageSettings() {
       </div>
 
       {/* Form */}
-      <form onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
+      <form action={() => form.handleSubmit(onSubmit, onInvalid)()}>
         <Accordion
           type="multiple"
           defaultValue={["hero", "location", "contact"]}

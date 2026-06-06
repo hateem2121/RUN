@@ -57,6 +57,7 @@ const PaginationLink = ({ className, isActive, size = "icon", ...props }: Pagina
 
   return (
     <button
+      aria-label="Action button"
       aria-current={isActive ? "page" : undefined}
       type="button"
       className={cn(

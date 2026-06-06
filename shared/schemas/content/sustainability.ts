@@ -11,9 +11,9 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import { pgTable } from "../common";
-import { mediaAssets } from "../media";
-import { users } from "../users";
+import { pgTable } from "../common.js";
+import { mediaAssets } from "../media.js";
+import { users } from "../users.js";
 
 // Sustainability Hero
 export const sustainabilityHero = pgTable(

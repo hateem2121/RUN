@@ -1,2 +1,2 @@
 // Re-export all viewmodel types
-export * from "./technology-viewmodels";
+export * from "./technology-viewmodels.js";

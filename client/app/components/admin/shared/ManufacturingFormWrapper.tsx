@@ -6,7 +6,7 @@ interface ManufacturingFormWrapperProps {
   title: string;
   description: string;
   children: React.ReactNode;
-  onSubmit: (e: React.FormEvent) => void;
+  action: (formData: FormData) => void | Promise<void>;
   isLoading?: boolean | undefined;
   submitLabel: string;
   showSubmitButton?: boolean | undefined;
@@ -21,7 +21,7 @@ export function ManufacturingFormWrapper({
   title,
   description,
   children,
-  onSubmit,
+  action,
   isLoading = false,
   submitLabel,
   showSubmitButton = true,
@@ -34,7 +34,7 @@ export function ManufacturingFormWrapper({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form action={action} className="space-y-4">
           {children}
           {showSubmitButton && (
             <Button type="submit" disabled={isLoading} className="w-full">

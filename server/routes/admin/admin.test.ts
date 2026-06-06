@@ -11,6 +11,7 @@ const { mockAdminService } = vi.hoisted(() => {
     isErr: () => false,
     value,
     _unsafeUnwrap: () => value,
+    match: (okFn: (val: any) => any, _errFn: (err: any) => any) => okFn(value),
   });
   const mock: {
     getInitialProductsData: ReturnType<typeof vi.fn>;

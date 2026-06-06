@@ -191,7 +191,7 @@ export function FooterManagement() {
           </TabsTrigger>
         </TabsList>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form action={() => handleSubmit(onSubmit)()}>
           {/* General Tab */}
           <TabsContent value="general" className="mt-6 space-y-6">
             <Card className="border-white/10 bg-black/40 backdrop-blur-xl shadow-2xl">

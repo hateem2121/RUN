@@ -91,6 +91,7 @@ export function InquiryManagement() {
           { id: "archived", label: "Archived", icon: Archive },
         ].map((tab) => (
           <button
+            aria-label="Action button"
             type="button"
             key={tab.id}
             onClick={() => setStatusFilter(tab.id)}

@@ -42,6 +42,7 @@ export function ModuleSearch({ links }: ModuleSearchProps) {
   return (
     <>
       <button
+        aria-label="Action button"
         type="button"
         onClick={() => setOpen(true)}
         className="flex items-center gap-2 rounded-md border border-white/[0.10] bg-white/[0.04] px-3 py-1.5 text-muted-foreground text-sm hover:border-brand-manufacturing hover:text-white transition-colors"

@@ -106,11 +106,10 @@ router.post("/slow-query", async (req, res) => {
 
   const result = await systemService.simulateSlowQuery(duration);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  res.json({ message: "Slow query execution complete", duration });
+  return result.match(
+    () => res.json({ message: "Slow query execution complete", duration }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 export default router;

@@ -126,6 +126,7 @@ export const CustomizationSEOSection = memo(function CustomizationSEOSection({
             <div className="flex flex-wrap gap-2">
               {presetOptions.map((option) => (
                 <button
+                  aria-label="Action button"
                   key={option}
                   type="button"
                   onClick={() => addPresetCustomizationOption(option)}

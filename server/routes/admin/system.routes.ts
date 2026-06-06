@@ -42,11 +42,10 @@ router.get("/test", authService.requireAdmin, (_req, res) => {
 router.get("/dashboard-stats", authService.requireAdmin, async (_req, res) => {
   const result = await adminService.getDashboardStats();
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -56,11 +55,10 @@ router.get("/dashboard-stats", authService.requireAdmin, async (_req, res) => {
 router.get("/media-assets", authService.requireAdmin, async (_req, res) => {
   const result = await adminService.getMediaAssetsList();
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -78,11 +76,10 @@ router.post(
     const auditContext = getAuditContext(req);
     const result = await adminService.restoreMediaAsset(auditContext, id);
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    return res.json({ success: result.value });
+    return result.match(
+      () => res.json({ success: true }),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -100,15 +97,10 @@ router.post(
     const auditContext = getAuditContext(req);
     const result = await adminService.fixCorruptedMedia(auditContext, timeout);
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    return res.json({
-      success: true,
-      ...result.value,
-      timestamp: Date.now(),
-    });
+    return result.match(
+      (data) => res.json({ success: true, ...data, timestamp: Date.now() }),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -121,11 +113,10 @@ router.post("/cleanup/trigger", authService.requireAdmin, criticalTier, async (r
   const auditContext = getAuditContext(req);
   const result = await adminService.triggerCleanup(auditContext, autoClean === true, timeout);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  res.json({ success: true, report: result.value });
+  return result.match(
+    (data) => res.json({ success: true, report: data }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -163,11 +154,10 @@ router.post(
     const auditContext = getAuditContext(req);
     const result = await adminService.updateAuditConfig(auditContext, req.body);
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    return res.json({ success: true, message: "Audit configuration updated" });
+    return result.match(
+      () => res.json({ success: true, message: "Audit configuration updated" }),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -178,11 +168,10 @@ router.post(
 router.get("/jobs/failed", authService.requireAdmin, async (_req, res) => {
   const result = await adminService.getFailedJobs();
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -197,11 +186,10 @@ router.post(
     const { queue, id } = req.body;
     const result = await adminService.retryJob(queue, id);
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    return res.json({ success: true });
+    return result.match(
+      () => res.json({ success: true }),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 

@@ -14,8 +14,10 @@ const router = Router();
 // GET /api/admin/blog/categories
 router.get("/categories", authService.requireAdmin, async (_req, res) => {
   const result = await blogService.getBlogCategories();
-  if (result.isErr()) throw result.error;
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // POST /api/admin/blog/categories
@@ -25,8 +27,10 @@ router.post(
   validateRequest({ body: insertBlogCategorySchema }),
   async (req, res) => {
     const result = await blogService.createBlogCategory(req.body);
-    if (result.isErr()) throw result.error;
-    return res.status(201).json(result.value);
+    return result.match(
+      (data) => res.status(201).json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -39,8 +43,10 @@ router.patch(
     const id = validateIdParam(req, res, "id", "category");
     if (id === null) return;
     const result = await blogService.updateBlogCategory(id, req.body);
-    if (result.isErr()) throw result.error;
-    return res.json(result.value);
+    return result.match(
+      (data) => res.json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -49,8 +55,10 @@ router.delete("/categories/:id", authService.requireAdmin, async (req, res) => {
   const id = validateIdParam(req, res, "id", "category");
   if (id === null) return;
   const result = await blogService.deleteBlogCategory(id);
-  if (result.isErr()) throw result.error;
-  return res.json({ success: true });
+  return result.match(
+    () => res.json({ success: true }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // ============================================================================
@@ -70,8 +78,10 @@ router.get("/posts", authService.requireAdmin, async (req, res) => {
     limit,
     removeUndefined({ search, categoryId, status }),
   );
-  if (result.isErr()) throw result.error;
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // POST /api/admin/blog/posts
@@ -84,8 +94,10 @@ router.post(
       req.body,
       req.user?.id ? String(req.user.id) : undefined,
     );
-    if (result.isErr()) throw result.error;
-    return res.status(201).json(result.value);
+    return result.match(
+      (data) => res.status(201).json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -94,8 +106,10 @@ router.get("/posts/:id", authService.requireAdmin, async (req, res) => {
   const id = validateIdParam(req, res, "id", "post");
   if (id === null) return;
   const result = await blogService.getBlogPostById(id);
-  if (result.isErr()) throw result.error;
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // PATCH /api/admin/blog/posts/:id
@@ -107,8 +121,10 @@ router.patch(
     const id = validateIdParam(req, res, "id", "post");
     if (id === null) return;
     const result = await blogService.updateBlogPost(id, req.body);
-    if (result.isErr()) throw result.error;
-    return res.json(result.value);
+    return result.match(
+      (data) => res.json(data),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
   },
 );
 
@@ -117,8 +133,10 @@ router.delete("/posts/:id", authService.requireAdmin, async (req, res) => {
   const id = validateIdParam(req, res, "id", "post");
   if (id === null) return;
   const result = await blogService.deleteBlogPost(id);
-  if (result.isErr()) throw result.error;
-  return res.json({ success: true });
+  return result.match(
+    () => res.json({ success: true }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // POST /api/admin/blog/posts/:id/restore
@@ -126,8 +144,10 @@ router.post("/posts/:id/restore", authService.requireAdmin, async (req, res) => 
   const id = validateIdParam(req, res, "id", "post");
   if (id === null) return;
   const result = await blogService.restoreBlogPost(id);
-  if (result.isErr()) throw result.error;
-  return res.json({ success: true });
+  return result.match(
+    () => res.json({ success: true }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 export default router;

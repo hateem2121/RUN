@@ -493,6 +493,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
               >
                 <span className="text-admin-muted mr-1">Search:</span> {searchQuery}
                 <button
+                  aria-label="Action button"
                   type="button"
                   data-testid="clear-search-filter-button"
                   onClick={() => setSearchQuery("")}
@@ -510,6 +511,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
                 <span className="text-admin-muted mr-1">Category:</span>{" "}
                 {categories.find((c) => c.id.toString() === categoryFilter)?.name}
                 <button
+                  aria-label="Action button"
                   type="button"
                   data-testid="clear-category-filter-button"
                   onClick={() => setCategoryFilter("all")}
@@ -526,6 +528,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
               >
                 <span className="text-admin-muted mr-1">Status:</span> {statusFilter}
                 <button
+                  aria-label="Action button"
                   type="button"
                   data-testid="clear-status-filter-button"
                   onClick={() => setStatusFilter("all")}

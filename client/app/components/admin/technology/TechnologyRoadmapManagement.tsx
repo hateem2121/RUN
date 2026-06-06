@@ -22,8 +22,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import type React from "react";
-import { useMemo, useState } from "react";
+import { useState, useMemo } from "react";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -170,8 +169,7 @@ export function TechnologyRoadmapManagement() {
   }, [roadmap, searchQuery]);
 
   // Handlers
-  const handleRoadmapSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleRoadmapSubmit = (_formDataAction: FormData) => {
     if (editingRoadmap) {
       updateRoadmapMutation.mutate({ id: editingRoadmap.id, data: roadmapForm });
     } else {
@@ -407,7 +405,7 @@ export function TechnologyRoadmapManagement() {
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleRoadmapSubmit} className="space-y-8 py-6">
+          <form action={handleRoadmapSubmit} className="space-y-8 py-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div className="space-y-2">

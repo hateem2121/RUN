@@ -228,6 +228,7 @@ export function ProductBulkOperations({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <button
+              aria-label="Action button"
               type="button"
               data-testid="select-all-products-button"
               onClick={handleSelectAll}

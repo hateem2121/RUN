@@ -5,6 +5,8 @@ import {
   insertHomepageProcessCardSchema,
   insertHomepageSectionSchema,
   insertHomepageSloganSchema,
+  processCardReorderSchema,
+  sloganReorderSchema,
 } from "../../../shared/index.js";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined, shouldBypassCache } from "../../lib/utilities/core-utils.js";
@@ -26,10 +28,13 @@ const router = Router();
 
 router.get("/homepage-hero", async (req, res) => {
   const result = await homepageService.getHero(shouldBypassCache(req));
-  if (result.isErr()) throw result.error;
-
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  return res.json(result.value);
+  return result.match(
+    (data) => {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      return res.json(data);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.patch("/homepage-hero", authService.requireAdmin, async (req, res) => {
@@ -39,9 +44,10 @@ router.patch("/homepage-hero", authService.requireAdmin, async (req, res) => {
   }
 
   const result = await homepageService.updateHero(removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // ================================
@@ -50,19 +56,25 @@ router.patch("/homepage-hero", authService.requireAdmin, async (req, res) => {
 
 router.get("/homepage-slogans", async (_req, res) => {
   const result = await homepageService.getSlogans();
-  if (result.isErr()) throw result.error;
-
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  return res.json(result.value);
+  return result.match(
+    (data) => {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      return res.json(data);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.get("/homepage-slogans/:id", async (req, res) => {
   const id = parseInt(req.params.id as string, 10);
   const result = await homepageService.getSlogan(id);
-  if (result.isErr()) throw result.error;
-
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  return res.json(result.value);
+  return result.match(
+    (data) => {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      return res.json(data);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.post("/homepage-slogans", authService.requireAdmin, async (req, res) => {
@@ -72,9 +84,10 @@ router.post("/homepage-slogans", authService.requireAdmin, async (req, res) => {
   }
 
   const result = await homepageService.createSlogan(removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.status(201).json(result.value);
+  return result.match(
+    (data) => res.status(201).json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.patch("/homepage-slogans/:id", authService.requireAdmin, async (req, res) => {
@@ -85,29 +98,32 @@ router.patch("/homepage-slogans/:id", authService.requireAdmin, async (req, res)
   }
 
   const result = await homepageService.updateSlogan(id, removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.delete("/homepage-slogans/:id", authService.requireAdmin, async (req, res) => {
   const id = parseInt(req.params.id as string, 10);
   const result = await homepageService.deleteSlogan(id);
-  if (result.isErr()) throw result.error;
-
-  return res.status(204).send();
+  return result.match(
+    () => res.status(204).send(),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.patch("/homepage-slogans/reorder", authService.requireAdmin, async (req, res) => {
-  const { slogans } = req.body;
-  if (!Array.isArray(slogans)) {
-    throw new ValidationError("Slogans must be an array of IDs");
+  const parsed = sloganReorderSchema.safeParse(req.body);
+  if (!parsed.success) {
+    throw new ValidationError("Slogans must be an array of IDs", { issues: parsed.error.issues });
   }
 
-  const result = await homepageService.reorderSlogans(slogans);
-  if (result.isErr()) throw result.error;
-
-  return res.json({ success: true });
+  const result = await homepageService.reorderSlogans(parsed.data.slogans);
+  return result.match(
+    () => res.json({ success: true }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // ================================
@@ -116,26 +132,33 @@ router.patch("/homepage-slogans/reorder", authService.requireAdmin, async (req, 
 
 router.get("/homepage-process-cards/admin", async (_req, res) => {
   const result = await homepageService.getProcessCards(true);
-  if (result.isErr()) throw result.error;
-
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  return res.json(result.value);
+  return result.match(
+    (data) => {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      return res.json(data);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.get("/homepage-process-cards", async (_req, res) => {
   const result = await homepageService.getProcessCards(false);
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.get("/homepage-process-cards/:id", async (req, res) => {
   const id = parseInt(req.params.id as string, 10);
   const result = await homepageService.getProcessCard(id);
-  if (result.isErr()) throw result.error;
-
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  return res.json(result.value);
+  return result.match(
+    (data) => {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      return res.json(data);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.post("/homepage-process-cards", authService.requireAdmin, async (req, res) => {
@@ -145,9 +168,10 @@ router.post("/homepage-process-cards", authService.requireAdmin, async (req, res
   }
 
   const result = await homepageService.createProcessCard(removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.status(201).json(result.value);
+  return result.match(
+    (data) => res.status(201).json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.patch("/homepage-process-cards/:id", authService.requireAdmin, async (req, res) => {
@@ -158,29 +182,32 @@ router.patch("/homepage-process-cards/:id", authService.requireAdmin, async (req
   }
 
   const result = await homepageService.updateProcessCard(id, removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.delete("/homepage-process-cards/:id", authService.requireAdmin, async (req, res) => {
   const id = parseInt(req.params.id as string, 10);
   const result = await homepageService.deleteProcessCard(id);
-  if (result.isErr()) throw result.error;
-
-  return res.status(204).send();
+  return result.match(
+    () => res.status(204).send(),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.patch("/homepage-process-cards/reorder", authService.requireAdmin, async (req, res) => {
-  const { cards } = req.body;
-  if (!Array.isArray(cards)) {
-    throw new ValidationError("Cards must be an array of IDs");
+  const parsed = processCardReorderSchema.safeParse(req.body);
+  if (!parsed.success) {
+    throw new ValidationError("Cards must be an array of IDs", { issues: parsed.error.issues });
   }
 
-  const result = await homepageService.reorderProcessCards(cards);
-  if (result.isErr()) throw result.error;
-
-  return res.json({ success: true });
+  const result = await homepageService.reorderProcessCards(parsed.data.cards);
+  return result.match(
+    () => res.json({ success: true }),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // ================================
@@ -189,19 +216,25 @@ router.patch("/homepage-process-cards/reorder", authService.requireAdmin, async 
 
 router.get("/homepage-sections", async (req, res) => {
   const result = await homepageService.getSections(shouldBypassCache(req));
-  if (result.isErr()) throw result.error;
-
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  return res.json(result.value);
+  return result.match(
+    (data) => {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      return res.json(data);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.get("/homepage-sections/:id", async (req, res) => {
   const id = parseInt(req.params.id as string, 10);
   const result = await homepageService.getSectionById(id);
-  if (result.isErr()) throw result.error;
-
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  return res.json(result.value);
+  return result.match(
+    (data) => {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      return res.json(data);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.patch("/homepage-sections/:id", authService.requireAdmin, async (req, res) => {
@@ -212,9 +245,10 @@ router.patch("/homepage-sections/:id", authService.requireAdmin, async (req, res
   }
 
   const result = await homepageService.updateSectionById(id, removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // ================================
@@ -223,10 +257,13 @@ router.patch("/homepage-sections/:id", authService.requireAdmin, async (req, res
 
 router.get("/homepage-featured-products-settings", async (_req, res) => {
   const result = await homepageService.getFeaturedProductsSettings();
-  if (result.isErr()) throw result.error;
-
-  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-  return res.json(result.value);
+  return result.match(
+    (data) => {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      return res.json(data);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.patch("/homepage-featured-products-settings", authService.requireAdmin, async (req, res) => {
@@ -238,9 +275,10 @@ router.patch("/homepage-featured-products-settings", authService.requireAdmin, a
   const result = await homepageService.updateFeaturedProductsSettings(
     removeUndefined(validation.data),
   );
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 export default router;

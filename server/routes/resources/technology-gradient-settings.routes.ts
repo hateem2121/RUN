@@ -29,9 +29,10 @@ registry.registerPath({
 });
 router.get("/", async (_req, res) => {
   const result = await technologyService.getGradientSettings();
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 registry.registerPath({
@@ -71,9 +72,10 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
   }
 
   const result = await technologyService.updateGradientSettings(removeUndefined(storageData));
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 export default router;

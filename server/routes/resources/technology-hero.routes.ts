@@ -15,9 +15,10 @@ const router = Router();
 
 router.get("/", async (_req, res) => {
   const result = await technologyService.getHero();
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value || {});
+  return result.match(
+    (data) => res.json(data || {}),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.patch("/", authService.requireAdmin, async (req, res) => {
@@ -29,9 +30,10 @@ router.patch("/", authService.requireAdmin, async (req, res) => {
   }
 
   const result = await technologyService.updateHero(removeUndefined(validation.data));
-  if (result.isErr()) throw result.error;
-
-  return res.json(result.value);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 export default router;

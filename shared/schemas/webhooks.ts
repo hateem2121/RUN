@@ -10,11 +10,11 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-import type { Category } from "./categories";
-import { pgTable } from "./common";
-import type { Inquiry } from "./content/common";
-import type { MediaAsset } from "./media";
-import type { ProductDetail } from "./products";
+import type { Category } from "./categories.js";
+import { pgTable } from "./common.js";
+import type { Inquiry } from "./content/common.js";
+import type { MediaAsset } from "./media.js";
+import type { ProductDetail } from "./products.js";
 
 /**
  * Webhook Subscriptions Table
