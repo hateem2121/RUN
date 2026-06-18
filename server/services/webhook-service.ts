@@ -18,7 +18,7 @@ import {
  * Handles triggering system events and delivering payloads to subscribers.
  * Includes HMAC signature generation for security and delivery logging for auditability.
  */
-export class WebhookService {
+class WebhookService {
   /**
    * Triggers a system event and delivers to all active subscribers.
    *

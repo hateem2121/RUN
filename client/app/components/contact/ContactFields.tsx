@@ -239,7 +239,7 @@ export function ContactFields({
           data-testid="textarea-message"
           rows={5}
           required
-          className="block w-full rounded-lg border-border p-3 shadow-sm transition-colors focus:border-primary focus:ring-2 focus:ring-primary min-h-[120px]"
+          className="block w-full rounded-lg border-border p-3 shadow-sm transition-colors focus:border-primary focus:ring-2 focus:ring-primary min-h-custom-space-130"
           disabled={isPending}
         />
       </div>

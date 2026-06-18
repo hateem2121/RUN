@@ -1,7 +1,7 @@
 // Production Environment Configuration
 // PHASE 4: Production Readiness - Environment Management
 
-export interface ProductionConfig {
+interface ProductionConfig {
   // Database Configuration
   database: {
     maxConnections: number;
@@ -55,7 +55,7 @@ export interface ProductionConfig {
   };
 }
 
-export const productionConfig: ProductionConfig = {
+const productionConfig: ProductionConfig = {
   database: {
     maxConnections: 20,
     queryTimeout: 30000, // 30 seconds
@@ -106,7 +106,7 @@ export const productionConfig: ProductionConfig = {
   },
 };
 
-export const stagingConfig: ProductionConfig = {
+const stagingConfig: ProductionConfig = {
   ...productionConfig,
   app: {
     ...productionConfig.app,
@@ -126,7 +126,7 @@ export const stagingConfig: ProductionConfig = {
   },
 };
 
-export const developmentConfig: ProductionConfig = {
+const developmentConfig: ProductionConfig = {
   ...productionConfig,
   app: {
     ...productionConfig.app,

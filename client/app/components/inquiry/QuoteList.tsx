@@ -32,7 +32,7 @@ export function QuoteList({ items, updateQuantity, removeFromQuote, onClose }: Q
 
   return (
     <div className="space-y-6">
-      <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+      <h3 className="text-custom-space-162 font-bold uppercase tracking-custom-misc-158 text-muted-foreground/60">
         Selected Items ({items.length})
       </h3>
       <div className="space-y-3">

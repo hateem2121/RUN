@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 const Select = SelectPrimitive.Root;
 
-const SelectGroup = SelectPrimitive.Group;
+export const SelectGroup = SelectPrimitive.Group;
 
 const SelectValue = SelectPrimitive.Value;
 
@@ -21,7 +21,7 @@ const SelectTrigger = ({
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-muted-foreground [&>span]:line-clamp-1",
+      "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-custom-misc-423:text-muted-foreground [&>span]:line-clamp-1",
       className,
     )}
     {...props}
@@ -75,9 +75,9 @@ const SelectContent = ({
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-popover max-h-96 min-w-32 overflow-hidden rounded-md border border-border bg-popover text-popover-foreground shadow-md data-[state=closed]:animate-out data-[state=open]:animate-in",
+        "data-custom-misc-424:fade-out-0 data-custom-misc-425:fade-in-0 data-custom-misc-426:zoom-out-95 data-custom-misc-427:zoom-in-95 data-custom-misc-428:slide-in-from-top-2 data-custom-misc-429:slide-in-from-right-2 data-custom-misc-430:slide-in-from-left-2 data-custom-misc-431:slide-in-from-bottom-2 relative z-popover max-h-96 min-w-32 overflow-hidden rounded-md border border-border bg-popover text-popover-foreground shadow-md data-custom-misc-432:animate-out data-custom-misc-433:animate-in",
         position === "popper" &&
-          "data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=bottom]:translate-y-1 data-[side=top]:-translate-y-1",
+          "data-custom-misc-434:-translate-x-1 data-custom-misc-435:translate-x-1 data-custom-misc-436:translate-y-1 data-custom-misc-437:-translate-y-1",
         className,
       )}
       position={position}
@@ -149,15 +149,4 @@ const SelectSeparator = ({
 );
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
-export {
-  Select,
-  SelectGroup,
-  SelectValue,
-  SelectTrigger,
-  SelectContent,
-  SelectLabel,
-  SelectItem,
-  SelectSeparator,
-  SelectScrollUpButton,
-  SelectScrollDownButton,
-};
+export { Select, SelectValue, SelectTrigger, SelectContent, SelectItem };

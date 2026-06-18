@@ -199,7 +199,7 @@ export const E2E_TOUCHFILES: Record<string, string[]> = {
   // Context skills E2E (live-fire, Skill-tool routing path) — see
   // test/skill-e2e-context-skills.test.ts. These are periodic-tier because
   // each one spawns claude -p and costs ~$0.20-$0.40. Collectively they
-  // verify the thing the /checkpoint → /context-save rename was for.
+  // verify the thing the /context-save → /context-save rename was for.
   'context-save-routing':                  ['context-save/**', 'scripts/resolvers/preamble.ts'],
   'context-save-then-restore-roundtrip':   ['context-save/**', 'context-restore/**', 'bin/gstack-slug'],
   'context-restore-fragment-match':        ['context-restore/**'],

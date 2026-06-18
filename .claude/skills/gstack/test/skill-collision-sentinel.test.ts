@@ -1,9 +1,9 @@
 /**
  * Collision Sentinel — insurance policy against upstream slash-command collisions.
  *
- * History: in April 2026 Claude Code shipped /checkpoint as a native alias
- * for /rewind, silently shadowing the gstack /checkpoint skill. Users
- * typed /checkpoint expecting to save state; agents routed to the built-in
+ * History: in April 2026 Claude Code shipped /context-save as a native alias
+ * for /rewind, silently shadowing the gstack /context-save skill. Users
+ * typed /context-save expecting to save state; agents routed to the built-in
  * or confabulated "this is a built-in you need to type directly" and nothing
  * was saved. We found out from users, not from tests.
  *
@@ -39,7 +39,7 @@ const KNOWN_BUILTINS: Record<string, string[]> = {
   'claude-code': [
     // Slash commands observed in 'claude --help' or cited in docs as of 2026-04.
     // Sources:
-    //   https://code.claude.com/docs/en/checkpointing
+    //   https://code.claude.com/docs/en/context-saveing
     //   https://claudelog.com/mechanics/rewind/
     //   claude --help output
     //   Claude Code skill list dumps from live sessions
@@ -153,7 +153,7 @@ describe('skill-collision-sentinel', () => {
 
   // Hard check: no gstack skill name collides with a known host built-in
   // unless the collision is explicitly tolerated. This is the test that
-  // would have caught the /checkpoint bug in April 2026.
+  // would have caught the /context-save bug in April 2026.
   for (const [host, builtins] of Object.entries(KNOWN_BUILTINS)) {
     test(`no skill name collides with a ${host} built-in (or has written justification)`, () => {
       const builtinSet = new Set(builtins);
@@ -166,7 +166,7 @@ describe('skill-collision-sentinel', () => {
       if (collisions.length > 0) {
         const msg = collisions.map(c =>
           `  /${c.skill} collides with ${host} built-in /${c.builtin}.\n` +
-          `    Fix: rename the gstack skill (precedent: /checkpoint → /context-save+/context-restore),\n` +
+          `    Fix: rename the gstack skill (precedent: /context-save → /context-save+/context-restore),\n` +
           `    OR add an entry to KNOWN_COLLISIONS_TOLERATED with a written justification.`
         ).join('\n\n');
         throw new Error(`Found ${collisions.length} unresolved collision(s) with ${host} built-ins:\n\n${msg}`);
@@ -196,9 +196,9 @@ describe('skill-collision-sentinel', () => {
     }
   });
 
-  // Self-check: the /checkpoint rename actually landed. If someone reverts
+  // Self-check: the /context-save rename actually landed. If someone reverts
   // the rename by accident, this catches it.
-  test('the /checkpoint collision that started this file is actually resolved', () => {
+  test('the /context-save collision that started this file is actually resolved', () => {
     const names = new Set(skills.map(s => s.name));
     expect(names.has('checkpoint')).toBe(false);
     // And the replacements exist.

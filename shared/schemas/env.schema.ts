@@ -118,6 +118,19 @@ export const envSchema = z.object({
     .transform((val) => val === "true"),
 
   // --- TESTING ---
+  HEALTH_CHECK_MEMORY_LIMIT: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : 500)),
+  ENABLE_DEBUG_ROUTES: z
+    .string()
+    .default("false")
+    .transform((val) => val === "true"),
+  DEBUG_ROUTE_TOKEN: z.string().optional(),
+  DEBUG_ROUTE_ALLOWLIST: z.string().optional(),
+  METRICS_SECRET: z.string().optional(),
+  HEALTH_CHECK_SECRET: z.string().optional(),
+
   VITEST: z
     .string()
     .optional()

@@ -1,23 +1,20 @@
-import { Redis } from "@upstash/redis";
 import type { NextFunction, Request, Response } from "express";
+import { Redis } from "ioredis";
 import { RateLimitError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 
-const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL ?? "";
-const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN ?? "";
+const REDIS_URL = process.env.REDIS_URL ?? "";
 
 const DUMMY_PATTERNS = ["dummy", "placeholder", "example.com", "localhost"];
 
 const isRealRedisConfigured =
-  REDIS_URL.startsWith("https://") &&
-  !DUMMY_PATTERNS.some((p) => REDIS_URL.includes(p)) &&
-  REDIS_TOKEN.length > 10;
+  REDIS_URL.length > 0 && !DUMMY_PATTERNS.some((p) => REDIS_URL.includes(p));
 
-// Only instantiate Upstash client if URL is real
-const redis = isRealRedisConfigured ? new Redis({ url: REDIS_URL, token: REDIS_TOKEN }) : null;
+// Only instantiate Redis client if URL is real
+const redis = isRealRedisConfigured ? new Redis(REDIS_URL) : null;
 
 logger.info("rateLimiter initialized", {
-  redis: isRealRedisConfigured ? "upstash" : "in-memory-fallback",
+  redis: isRealRedisConfigured ? "redis" : "in-memory-fallback",
 });
 
 interface RateLimitConfig {
@@ -175,7 +172,7 @@ export const apiRateLimiter = new RateLimiter({
  * Factory function to create rate limiters with custom configuration
  * Replaces deprecated createRateLimiter from rate-limiter.ts
  */
-export interface CreateRateLimiterOptions {
+interface CreateRateLimiterOptions {
   windowMs: number;
   max: number;
   message?: string;

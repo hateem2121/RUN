@@ -42,7 +42,7 @@ test.describe("Tailwind v4 Fix Verification", () => {
         // Ensure fonts are loaded
         await page.evaluateHandle(() => document.fonts.ready);
 
-        // Stabilize: additional wait for hydration/framer-motion to settle
+        // Stabilize: additional wait for hydration/gsap to settle
         await page.waitForTimeout(500);
 
         // Assert screenshot

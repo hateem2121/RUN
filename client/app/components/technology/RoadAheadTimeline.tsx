@@ -77,7 +77,7 @@ export function RoadAheadTimeline({ roadmap, research, className }: RoadAheadTim
     >
       {/* Vertical HUD text — left side */}
       <div className="absolute left-6 top-1/2 -translate-y-1/2 hidden md:block">
-        <span className="micro-copy opacity-20 dark:text-[#00D4FF] -rotate-90 origin-left whitespace-nowrap block">
+        <span className="micro-copy opacity-20 dark:text-custom-color-299 -rotate-90 origin-left whitespace-nowrap block">
           TIMELINE.JS_SYSTEM_V.03
         </span>
       </div>
@@ -85,7 +85,7 @@ export function RoadAheadTimeline({ roadmap, research, className }: RoadAheadTim
       {/* Centered Section Header — Stitch style */}
       <h2 className="text-5xl md:text-6xl font-neue-stance font-bold text-black dark:text-white uppercase mb-24 text-center tracking-tight">
         The Road{" "}
-        <span className="text-[#0047AB] dark:text-[#00D4FF] dark:drop-shadow-[0_0_10px_rgba(0,212,255,0.5)]">
+        <span className="text-custom-color-300 dark:text-custom-color-301 dark:drop-shadow-custom-misc-333">
           Ahead
         </span>
       </h2>
@@ -93,7 +93,7 @@ export function RoadAheadTimeline({ roadmap, research, className }: RoadAheadTim
       {/* 4-column grid with connecting line */}
       <div className="relative">
         {/* Horizontal connecting line — visible on md+ at center of circles */}
-        <div className="absolute top-[32px] left-0 right-0 h-px bg-slate-200 dark:bg-white/[0.08] hidden md:block"></div>
+        <div className="absolute top-custom-space-249 left-0 right-0 h-px bg-slate-200 dark:bg-white/[0.08] hidden md:block"></div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {nodes.map((node, index) => (
@@ -111,16 +111,16 @@ export function RoadAheadTimeline({ roadmap, research, className }: RoadAheadTim
                 className={cn(
                   "w-12 h-12 rounded-full border flex items-center justify-center z-10 mb-8 transition-all shadow-sm",
                   node.isCurrent
-                    ? "bg-white dark:bg-[#0A0A0A] border-[#0047AB] dark:border-[#00D4FF] timeline-pulse shadow-xl dark:shadow-[0_0_20px_rgba(0,212,255,0.3)]"
-                    : "bg-slate-50 dark:bg-white/[0.04] backdrop-blur-xl border-slate-200 dark:border-white/[0.08] group-hover:border-[#0047AB] dark:group-hover:border-[#00D4FF] dark:group-hover:bg-[#0A0A0A] dark:group-hover:shadow-[0_0_15px_rgba(0,212,255,0.2)]",
+                    ? "bg-white dark:bg-custom-color-302 border-custom-color-303 dark:border-custom-color-304 timeline-pulse shadow-xl dark:shadow-custom-misc-334"
+                    : "bg-slate-50 dark:bg-white/[0.04] backdrop-blur-xl border-slate-200 dark:border-white/[0.08] group-hover:border-custom-color-305 dark:group-hover:border-custom-color-306 dark:group-hover:bg-custom-color-307 dark:group-hover:shadow-custom-misc-335",
                 )}
               >
                 <div
                   className={cn(
                     "w-3 h-3 rounded-full transition-colors",
                     node.isCurrent
-                      ? "bg-[#0047AB] dark:bg-[#00D4FF] dark:shadow-[0_0_8px_#00D4FF]"
-                      : "bg-slate-300 dark:bg-slate-600 group-hover:bg-[#0047AB] dark:group-hover:bg-[#00D4FF] dark:group-hover:shadow-[0_0_8px_#00D4FF]",
+                      ? "bg-custom-color-308 dark:bg-custom-color-309 dark:shadow-custom-misc-336"
+                      : "bg-slate-300 dark:bg-slate-600 group-hover:bg-custom-color-310 dark:group-hover:bg-custom-color-311 dark:group-hover:shadow-custom-misc-337",
                   )}
                 ></div>
               </div>
@@ -130,26 +130,26 @@ export function RoadAheadTimeline({ roadmap, research, className }: RoadAheadTim
                 className={cn(
                   "lab-card p-8 w-full border-l-0 group-hover:opacity-100 transition-all rounded-xl dark:backdrop-blur-xl",
                   node.isCurrent
-                    ? "border-t-2 border-t-[#0047AB] dark:border-t-[#00D4FF] dark:bg-white/[0.04] border border-transparent dark:border-white/[0.08]"
+                    ? "border-t-2 border-t-custom-color-312 dark:border-t-custom-color-313 dark:bg-white/[0.04] border border-transparent dark:border-white/[0.08]"
                     : "border-t-2 border-t-slate-100 dark:border-t-white/[0.08] dark:bg-white/[0.02] border border-transparent dark:border-white/[0.08]",
                 )}
               >
                 {/* Current milestone badge */}
                 {node.isCurrent && (
-                  <span className="tech-badge !bg-[#0047AB] dark:!bg-[#00D4FF] !text-white dark:!text-black !border-[#0047AB] dark:!border-[#00D4FF] mb-4 block w-fit dark:shadow-[0_0_10px_rgba(0,212,255,0.4)]">
+                  <span className="tech-badge !bg-custom-color-314 dark:!bg-custom-color-315 !text-white dark:!text-black !border-custom-color-316 dark:!border-custom-color-317 mb-4 block w-fit dark:shadow-custom-misc-338">
                     Current Milestone
                   </span>
                 )}
 
                 {/* Timeline tag */}
-                <span className="text-[10px] text-slate-600 dark:text-slate-400 font-mono mb-2 block font-bold">
+                <span className="text-custom-space-250 text-slate-600 dark:text-slate-400 font-mono mb-2 block font-bold">
                   {node.timeline}
                 </span>
 
                 <h4 className="text-black dark:text-white font-bold uppercase text-lg mb-3 font-neue-stance">
                   {node.title}
                 </h4>
-                <p className="text-xs text-slate-600 dark:text-[#E3DFD6] font-light leading-relaxed font-helvetica">
+                <p className="text-xs text-slate-600 dark:text-custom-color-318 font-light leading-relaxed font-helvetica">
                   {node.description}
                 </p>
 
@@ -162,7 +162,7 @@ export function RoadAheadTimeline({ roadmap, research, className }: RoadAheadTim
                         node.status === "Ongoing" ? "bg-amber-500" : "bg-green-600",
                       )}
                     ></div>
-                    <span className="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">
+                    <span className="text-custom-space-251 font-mono text-slate-500 dark:text-slate-400 uppercase">
                       {node.status}
                     </span>
                   </div>

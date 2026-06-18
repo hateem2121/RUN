@@ -27,7 +27,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
         <div
           className={cn(
             "fixed inset-y-0 right-0 z-modal flex h-full w-full transform flex-col border-white/10 border-l bg-background shadow-2xl transition-transform duration-500 ease-out md:w-lg animate-in slide-in-from-right",
-            "dark:bg-[#0A0A0A]",
+            "dark:bg-custom-color-233",
           )}
         >
           {/* Header */}
@@ -115,7 +115,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                 form="inquiry-form"
                 disabled={mutation.isPending}
                 className={cn(
-                  "flex w-full items-center justify-center gap-3 rounded-full bg-foreground px-6 py-5 font-bold text-background transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50",
+                  "flex w-full items-center justify-center gap-3 rounded-full bg-foreground px-6 py-5 font-bold text-background transition-all active:scale-custom-misc-157 disabled:cursor-not-allowed disabled:opacity-50",
                   "hover:bg-foreground/90 hover:shadow-xl hover:shadow-foreground/10",
                 )}
               >

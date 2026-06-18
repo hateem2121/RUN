@@ -5,7 +5,7 @@
 
 import React, { type RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-export interface IntersectionOptions {
+interface IntersectionOptions {
   threshold?: number | number[];
   rootMargin?: string;
   root?: Element | null;
@@ -13,7 +13,7 @@ export interface IntersectionOptions {
   skip?: boolean;
 }
 
-export interface IntersectionResult {
+interface IntersectionResult {
   isIntersecting: boolean;
   hasIntersected: boolean;
   entry?: IntersectionObserverEntry;
@@ -82,7 +82,7 @@ class IntersectionManager {
   }
 }
 
-export const intersectionManager = new IntersectionManager();
+const intersectionManager = new IntersectionManager();
 
 // Performance-optimized intersection observer hook
 export function useIntersectionObserver(
@@ -299,7 +299,7 @@ export function useSmartAnimationScheduler(
 }
 
 // Device capability detection hook
-export function useDeviceCapabilities() {
+function useDeviceCapabilities() {
   return useMemo(() => {
     if (typeof window === "undefined") {
       return {
@@ -339,9 +339,7 @@ export function useDeviceCapabilities() {
 }
 
 // Performance-aware component wrapper with generic prop preservation
-export function withPerformanceOptimization<
-  P extends Record<string, unknown> = Record<string, unknown>,
->(
+export function withPerformanceOptimization<P extends Record<string, unknown> = Record<string, unknown>>(
   Component: React.ComponentType<P>,
   options: {
     lazyThreshold?: number;
@@ -368,7 +366,7 @@ export function withPerformanceOptimization<
     if (!hasIntersected) {
       return React.createElement("div", {
         ref: containerRef,
-        className: "min-h-[200px]",
+        className: "min-h-custom-space-280",
       });
     }
 

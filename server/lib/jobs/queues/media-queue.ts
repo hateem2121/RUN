@@ -25,14 +25,12 @@ function getClient(): CloudTasksClient {
   }
   return tasksClient;
 }
-
 // Types are now imported from @run-remix/shared
-export type { MediaOperation, MediaProcessingJobData as MediaTaskPayload };
 
 /**
  * Task result for tracking
  */
-export interface QueueResult {
+interface QueueResult {
   success: boolean;
   taskName?: string | undefined;
   error?: string | undefined;

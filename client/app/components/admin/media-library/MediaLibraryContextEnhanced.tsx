@@ -10,7 +10,7 @@ import {
   useReducer,
   useState,
 } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { invalidateMediaQueries, MediaQueryKeys } from "@/lib/media-query-keys";
 
 // Import extracted hooks
@@ -284,7 +284,6 @@ const MediaLibraryContext = createContext<MediaLibraryContextType | null>(null);
 export function MediaLibraryProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(mediaLibraryReducer, initialState);
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   // Asset state from React Query
   const [assets, setAssets] = useState<MediaAsset[]>([]);
@@ -384,10 +383,7 @@ export function MediaLibraryProvider({ children }: { children: React.ReactNode }
     },
     onSuccess: async () => {
       try {
-        toast({
-          title: "Upload Complete",
-          description: "Files uploaded successfully",
-        });
+        toast.success("Upload Complete", { description: "Files uploaded successfully" });
 
         dispatch({ type: "SET_UPLOAD_PROGRESS", payload: {} });
         dispatch({ type: "SET_IS_UPLOADING", payload: false });
@@ -397,10 +393,8 @@ export function MediaLibraryProvider({ children }: { children: React.ReactNode }
       } catch (_error) {}
     },
     onError: (error) => {
-      toast({
-        title: "Upload Failed",
-        description: error instanceof Error ? error.message : "Upload failed",
-        variant: "destructive",
+      toast.error("Upload Failed", {
+        description: error instanceof Error ? error.message : String(error),
       });
       dispatch({ type: "SET_IS_UPLOADING", payload: false });
     },
@@ -576,9 +570,5 @@ export function useMediaLibrary() {
   }
   return context;
 }
-
 // Export context for external components
-export { MediaLibraryContext };
-
 // Export types for external use
-export type { MediaLibraryContextType };

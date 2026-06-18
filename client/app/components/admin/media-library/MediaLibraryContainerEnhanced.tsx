@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { getQueryClient } from "@/lib/queryClient";
 import { MediaLibraryProvider, useMediaLibrary } from "./MediaLibraryContextEnhanced";
 
@@ -119,8 +119,6 @@ export function MediaLibraryContainerEnhanced({
   initialFilter = "all",
   onAssetSelect,
 }: MediaLibraryContainerEnhancedProps) {
-  const { toast } = useToast();
-
   // SIMPLIFIED: Pure traditional pagination mode (infinite scroll eliminated)
   const paginationMode = "traditional"; // Always traditional pagination for clean architecture
 
@@ -156,17 +154,9 @@ export function MediaLibraryContainerEnhanced({
       if (response.ok) {
         // Success case with enhanced feedback
         const cleanedCount = result.totalCleaned || 0;
-        const details = result.details || {};
+        // const details = result.details || {};
 
-        toast({
-          title: "Database Cleanup Complete",
-          description:
-            cleanedCount > 0
-              ? `Successfully cleaned ${cleanedCount} corrupt entries across ${
-                  Object.keys(details).length
-                } tables.`
-              : "Database scan completed - no corrupt entries found.",
-        });
+        toast.success("Database Cleanup Complete", { description: cleanedCount });
 
         // Refresh media library after cleanup
         invalidateMediaQueries(getQueryClient());
@@ -197,11 +187,7 @@ export function MediaLibraryContainerEnhanced({
         }
       }
 
-      toast({
-        title: errorTitle,
-        description: errorMessage,
-        variant: "destructive",
-      });
+      toast.error(errorTitle, { description: errorMessage });
     } finally {
       setIsCleaningUp(false);
     }
@@ -344,7 +330,7 @@ function MediaLibraryMainContent({
               aria-modal="true"
               aria-labelledby="filters-panel-title"
               tabIndex={-1}
-              className="fixed inset-y-0 left-0 w-80 max-w-md bg-[#121212] shadow-xl sm:max-w-lg border-r border-white/5"
+              className="fixed inset-y-0 left-0 w-80 max-w-md bg-custom-color-30 shadow-xl sm:max-w-lg border-r border-white/5"
               onClick={(e) => e.stopPropagation()}
               onKeyDown={(e) => e.stopPropagation()}
             >

@@ -25,7 +25,7 @@ export function LoadingState({
       aria-busy="true"
       className={cn(
         "flex flex-col items-center justify-center gap-4",
-        fullScreen ? "min-h-[50vh] w-full" : "w-full py-12",
+        fullScreen ? "min-h-custom-space-278 w-full" : "w-full py-12",
         className,
       )}
     >

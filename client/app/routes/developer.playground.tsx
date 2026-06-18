@@ -40,7 +40,7 @@ interface Endpoint {
   details: OpenApiEndpoint;
 }
 
-export default function Component() {
+export function Component() {
   const [spec, setSpec] = useState<OpenApiSpec | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -190,7 +190,7 @@ export default function Component() {
     );
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-120px)] overflow-hidden">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-custom-misc-477 overflow-hidden">
       {/* Sidebar: Endpoints List */}
       <div className="lg:col-span-4 flex flex-col space-y-4 h-full">
         <div className="relative">
@@ -232,13 +232,17 @@ export default function Component() {
                           ? "status-warning"
                           : "destructive"
                   }
-                  className="text-[10px] uppercase font-bold"
+                  className="text-custom-space-295 uppercase font-bold"
                 >
                   {e.method}
                 </Badge>
-                <code className="text-[11px] font-mono font-medium truncate">{e.path}</code>
+                <code className="text-custom-space-296 font-mono font-medium truncate">
+                  {e.path}
+                </code>
               </div>
-              <p className="text-[11px] text-muted-foreground line-clamp-1">{e.details.summary}</p>
+              <p className="text-custom-space-297 text-muted-foreground line-clamp-1">
+                {e.details.summary}
+              </p>
             </button>
           ))}
         </div>
@@ -347,7 +351,7 @@ export default function Component() {
                         value={authHeader}
                         onChange={(e) => setAuthHeader(e.target.value)}
                       />
-                      <p className="text-[10px] text-muted-foreground">
+                      <p className="text-custom-space-298 text-muted-foreground">
                         Note: Bearer prefix will be added if missing.
                       </p>
                     </div>
@@ -360,7 +364,7 @@ export default function Component() {
                   <Card>
                     <CardContent className="pt-6">
                       <Textarea
-                        className="font-mono text-sm min-h-[200px] bg-neutral-900 text-green-400 border-neutral-800"
+                        className="font-mono text-sm min-h-custom-space-299 bg-neutral-900 text-green-400 border-neutral-800"
                         placeholder='{ "key": "value" }'
                         value={requestBody}
                         onChange={(e) => setRequestBody(e.target.value)}

@@ -154,7 +154,7 @@ export function CategoryFeaturedContent({
         {/* Card 4 - Fluid Glass Lens */}
         <div className={cn("bento-card", getResponsiveSpanClasses("card4"))}>
           {featuredContent.card4 && (
-            <div className="max-h-modal-md relative h-auto min-h-[300px] overflow-hidden rounded-lg bg-linear-to-br from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
+            <div className="max-h-modal-md relative h-auto min-h-custom-space-129 overflow-hidden rounded-lg bg-linear-to-br from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
               {getMediaUrl(featuredContent.card4.mediaUrl) &&
                 (() => {
                   const resolvedUrl = getMediaUrl(featuredContent.card4!.mediaUrl)!;

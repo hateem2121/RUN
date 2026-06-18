@@ -64,7 +64,7 @@ export function ErrorBoundary() {
   );
 }
 
-export default function Component({ loaderData }: { loaderData: LoaderData }) {
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   const { contactConfig } = loaderData;
   const isMobile = useIsMobile();
 
@@ -85,7 +85,7 @@ function ContactContent({
       <div className="min-h-screen bg-muted/30 pt-32 pb-24 text-foreground">
         <div className="container mx-auto max-w-7xl p-6 md:p-8 lg:p-12">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-5 relative z-10">
-            <div className="col-span-1 md:col-span-2 lg:col-span-3 h-[600px] bg-card/50 animate-pulse rounded-xl" />
+            <div className="col-span-1 md:col-span-2 lg:col-span-3 h-custom-space-293 bg-card/50 animate-pulse rounded-xl" />
             <ContactInfoCardsSkeleton />
           </div>
         </div>

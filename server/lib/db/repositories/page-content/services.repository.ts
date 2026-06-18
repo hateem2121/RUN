@@ -10,7 +10,7 @@ import { StorageSingleton } from "../../../storage-singleton.js";
 const unifiedCache = UnifiedCache.getInstance();
 const SERVICES_CACHE_TTL = 3600; // 1 hour (in seconds)
 
-export class ServicesRepository {
+class ServicesRepository {
   async getServices(includeInactive = false): Promise<Service[]> {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getServices(includeInactive);

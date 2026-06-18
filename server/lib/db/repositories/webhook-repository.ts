@@ -14,7 +14,7 @@ import {
 import { db } from "../../../db.js";
 import { StorageSingleton } from "../../storage-singleton.js";
 
-export class WebhookRepository {
+class WebhookRepository {
   async getWebhookSubscriptions(): Promise<WebhookSubscription[]> {
     // In test mode with memory storage, redirect to the storage instance
     if (StorageSingleton.hasInstance()) {

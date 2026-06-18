@@ -18,7 +18,7 @@ export function BentoCardContainer({
     <div
       className={cn(
         "grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch bento-grid-container",
-        "auto-rows-[minmax(280px,auto)] md:auto-rows-[minmax(320px,auto)]",
+        "auto-rows-custom-misc-343 md:auto-rows-custom-misc-344",
         className,
       )}
       style={{

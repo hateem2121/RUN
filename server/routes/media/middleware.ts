@@ -54,7 +54,7 @@ export const UPLOAD_CONSTANTS = {
 // BACKEND UPLOAD MANAGER
 // ============================================================================
 
-export class BackendUploadManager {
+class BackendUploadManager {
   private activeUploads = new Set<string>();
   private maxConcurrent = MAX_CONCURRENT_UPLOADS;
 

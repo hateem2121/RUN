@@ -11,7 +11,7 @@ const UnifiedModelViewer = React.lazy(() =>
   import("@/components/ui/UnifiedModelViewer").then((m) => ({ default: m.UnifiedModelViewer })),
 );
 
-export interface MediaGridItemProps {
+interface MediaGridItemProps {
   asset: MediaAsset;
   isSelected: boolean;
   isOptimistic: boolean;
@@ -47,7 +47,7 @@ export const MediaGridItem = React.memo(
       <div
         className={cn(
           "group relative overflow-hidden rounded-lg border transition-all duration-200",
-          "hover:scale-[1.02] hover:shadow-lg",
+          "hover:scale-custom-misc-65 hover:shadow-lg",
           isOptimistic && "pointer-events-none opacity-60",
           isSelected
             ? "border-blue-500 ring-2 ring-blue-500/20"
@@ -200,7 +200,7 @@ export const MediaGridItem = React.memo(
           )}
 
           {/* Hover Overlay */}
-          <div className="center-flex pointer-events-none absolute inset-0 bg-black/0 opacity-0 backdrop-blur-[0px] transition-all duration-300 ease-out group-hover:bg-black/40 group-hover:opacity-100 group-hover:backdrop-blur-[2px]">
+          <div className="center-flex pointer-events-none absolute inset-0 bg-black/0 opacity-0 backdrop-blur-custom-space-53 transition-all duration-300 ease-out group-hover:bg-black/40 group-hover:opacity-100 group-hover:backdrop-blur-custom-space-54">
             <div className="pointer-events-auto flex translate-y-4 transform gap-2 transition-transform duration-300 group-hover:translate-y-0">
               <Button
                 size="sm"

@@ -1,14 +1,14 @@
 import type { Category } from "@shared/index";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { categoriesResponseSchema } from "@/lib/schemas/categories";
 import { validatedApiRequest } from "@/lib/validated-api";
 
 // Reusing the query key from the simpler hook if consistent, or defining new ones
 const CATEGORIES_QUERY_KEY = ["/api/categories"];
 
-export interface CategoryUIState {
+interface CategoryUIState {
   viewMode: "list" | "grid" | "tree";
   searchTerm: string;
   filterStatus: "all" | "active" | "inactive";
@@ -28,7 +28,6 @@ export interface CategoryUIState {
 }
 
 export function useCategoryOperationsConsolidated() {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Initial State
@@ -168,11 +167,11 @@ export function useCategoryOperationsConsolidated() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY });
-      toast({ title: "Category created" });
+      toast.success("Category created");
       closeDialogs();
     },
     onError: () => {
-      toast({ title: "Failed to create category", variant: "destructive" });
+      toast.error("Failed to create category");
     },
   });
 
@@ -183,7 +182,7 @@ export function useCategoryOperationsConsolidated() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY });
-      toast({ title: "Category updated" });
+      toast.success("Category updated");
       closeDialogs();
     },
   });
@@ -196,7 +195,7 @@ export function useCategoryOperationsConsolidated() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CATEGORIES_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: ["deleted-categories"] });
-      toast({ title: "Category deleted" });
+      toast.success("Category deleted");
       closeDialogs();
     },
   });
@@ -210,12 +209,12 @@ export function useCategoryOperationsConsolidated() {
 
   const restoreCategory = async (_id: number) => {
     // Mock logic
-    toast({ title: "Restore not implemented yet" });
+    toast.success("Restore not implemented yet");
   };
 
   const hardDeleteCategory = async (_id: number) => {
     // Mock logic
-    toast({ title: "Hard delete not implemented yet" });
+    toast.success("Hard delete not implemented yet");
   };
 
   const reorderCategories = async (_items: unknown[]) => {
@@ -224,7 +223,7 @@ export function useCategoryOperationsConsolidated() {
 
   const handleBulkAction = async (action: string) => {
     // Mock logic
-    toast({ title: `Bulk action ${action} not implemented` });
+    toast.success(`Bulk action ${action} not implemented`);
   };
 
   return {

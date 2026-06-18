@@ -247,7 +247,7 @@ export function ContentDashboard() {
                 </div>
                 <div>
                   <div className="mb-1 text-3xl font-bold text-white">{count}</div>
-                  <p className="text-xs text-[#9CA3AF]">{card.subtitle}</p>
+                  <p className="text-xs text-custom-color-5">{card.subtitle}</p>
                 </div>
               </Link>
             </Card>
@@ -272,7 +272,7 @@ export function ContentDashboard() {
                       key={stat.label}
                       className="flex items-end justify-between border-b border-white/[0.08] pb-2"
                     >
-                      <span className="text-sm text-[#9CA3AF]">{stat.label}</span>
+                      <span className="text-sm text-custom-color-6">{stat.label}</span>
                       <span className="font-medium text-white">{stat.value}</span>
                     </div>
                   ))}
@@ -289,28 +289,28 @@ export function ContentDashboard() {
           to="/admin/products"
           className="flex items-center gap-2 rounded-md bg-blue-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-600"
         >
-          <Shirt className="h-[18px] w-[18px]" />
+          <Shirt className="h-custom-space-9 w-custom-space-10" />
           New Product
         </Link>
         <Link
           to="/admin/media"
           className="flex items-center gap-2 rounded-md border border-white/[0.08] bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-white/[0.08]"
         >
-          <Image className="h-[18px] w-[18px]" />
+          <Image className="h-custom-space-11 w-custom-space-12" />
           Upload Media
         </Link>
         <Link
           to="/admin/blog"
           className="flex items-center gap-2 rounded-md border border-white/[0.08] bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-white/[0.08]"
         >
-          <FileText className="h-[18px] w-[18px]" />
+          <FileText className="h-custom-space-13 w-custom-space-14" />
           Write Blog Post
         </Link>
         <Link
           to="/admin/inquiries"
           className="flex items-center gap-2 rounded-md border border-white/[0.08] bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-white/[0.08]"
         >
-          <Mail className="h-[18px] w-[18px]" />
+          <Mail className="h-custom-space-15 w-custom-space-16" />
           View Inquiries
         </Link>
       </div>

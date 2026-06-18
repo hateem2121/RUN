@@ -337,7 +337,7 @@ const ScrollExpandMedia = ({
           </div>
 
           <div className="container relative z-elevated mx-auto flex flex-col items-center justify-start">
-            <div className="relative flex min-h-[100dvh] w-full flex-col items-center justify-center py-20">
+            <div className="relative flex min-h-custom-space-279 w-full flex-col items-center justify-center py-20">
               <div
                 className="absolute top-1/2 left-1/2 z-base rounded-2xl transition-none"
                 style={mediaStyle}

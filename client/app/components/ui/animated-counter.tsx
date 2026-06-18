@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useGSAP } from "@gsap/react";
+import { useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 
 interface AnimatedCounterProps {
@@ -21,23 +22,23 @@ export function AnimatedCounter({
   const containerRef = useRef<HTMLDivElement>(null);
   const [displayValue, setDisplayValue] = useState(0);
 
-  useEffect(() => {
-    const proxy = { value: 0 };
-    const tween = gsap.to(proxy, {
-      value,
-      duration,
-      ease: "power2.out",
-      onUpdate: () => setDisplayValue(proxy.value),
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 80%",
-        once: true,
-      },
-    });
-    return () => {
-      tween.kill();
-    };
-  }, [value, duration]);
+  useGSAP(
+    () => {
+      const proxy = { value: 0 };
+      gsap.to(proxy, {
+        value,
+        duration,
+        ease: "power2.out",
+        onUpdate: () => setDisplayValue(proxy.value),
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 80%",
+          once: true,
+        },
+      });
+    },
+    { dependencies: [value, duration], scope: containerRef },
+  );
 
   return (
     <div ref={containerRef} className={className}>

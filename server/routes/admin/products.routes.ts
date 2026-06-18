@@ -14,6 +14,10 @@ import { authService } from "../../services/auth-service.js";
 const router = Router();
 type ProductsQuery = z.infer<typeof adminProductsQuerySchema>;
 
+const hardDeleteSchema = z.object({
+  confirm: z.string().optional(),
+});
+
 /**
  * GET /api/admin/products/initial-data
  * Batch data for product creation/editing
@@ -198,17 +202,22 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
  * DELETE /api/admin/products/:id/hard
  * Permanent product deletion
  */
-router.delete("/:id/hard", authService.requireAdmin, async (req, res) => {
-  const id = validateIdParam(req, res, "id", "product");
-  if (id === null) return;
-  const confirm = req.body?.confirm as string;
-  const auditContext = getAuditContext(req);
-  const result = await adminService.hardDeleteProduct(auditContext, id, confirm);
+router.delete(
+  "/:id/hard",
+  authService.requireAdmin,
+  validateRequest({ body: hardDeleteSchema }),
+  async (req, res) => {
+    const id = validateIdParam(req, res, "id", "product");
+    if (id === null) return;
+    const confirm = req.body?.confirm as string;
+    const auditContext = getAuditContext(req);
+    const result = await adminService.hardDeleteProduct(auditContext, id, confirm);
 
-  return result.match(
-    () => res.json({ success: true }),
-    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
-  );
-});
+    return result.match(
+      () => res.json({ success: true }),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
+  },
+);
 
 export default router;

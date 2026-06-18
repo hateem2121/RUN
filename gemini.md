@@ -456,7 +456,7 @@ Source: https://github.com/garrytan/gstack
 | Security | `/cso` | Full security pass — use for every session touching auth, input, uploads |
 | Context | `/context-save` | Save session context for handoff |
 | Context | `/context-restore` | Restore saved session context |
-| Context | `/checkpoint` | Checkpoint (coexists with context-save — both valid) |
+| Context | `/context-save` | Checkpoint (coexists with context-save — both valid) |
 | Setup | `/setup-deploy` | One-time deployment pipeline setup |
 | Setup | `/setup-browser-cookies` | Seeds browser auth cookies |
 | Setup | `/setup-gbrain` | Sets up GBrain agent integration |

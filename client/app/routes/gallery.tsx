@@ -40,7 +40,7 @@ const FALLBACK_IMAGES = [
   { id: -6, title: "High-Visibility Teamwear Printing", category: "Product", url: "" },
 ];
 
-export default function Component({ loaderData }: Route.ComponentProps) {
+export function Component({ loaderData }: Route.ComponentProps) {
   const { mediaList } = loaderData;
 
   const list =
@@ -61,7 +61,7 @@ export default function Component({ loaderData }: Route.ComponentProps) {
           <p className="text-brand-lime font-mono text-xs tracking-widest uppercase mb-2">
             RUN PORTFOLIO
           </p>
-          <h1 className="text-[10vw] leading-[0.9] font-bold uppercase md:text-[5vw] tracking-tighter">
+          <h1 className="text-custom-space-300 leading-custom-misc-478 font-bold uppercase md:text-custom-space-301 tracking-tighter">
             MEDIA GALLERY
           </h1>
         </div>

@@ -78,7 +78,7 @@ export function HomepageSectionsTab({ sections }: HomepageSectionsTabProps) {
                       onCheckedChange={(checked) =>
                         updateSection.mutate({ id: section.id, data: { isActive: checked } })
                       }
-                      className="data-[state=checked]:bg-blue-500"
+                      className="data-custom-misc-40:bg-blue-500"
                     />
                     <div className="flex flex-col">
                       <span className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
@@ -140,7 +140,7 @@ export function HomepageSectionsTab({ sections }: HomepageSectionsTabProps) {
                   </Label>
                   <Textarea
                     id="edit-content"
-                    className="min-h-[250px] bg-white/5 border-white/10 text-white rounded-xl focus:ring-blue-500/50 resize-none font-mono text-sm leading-relaxed"
+                    className="min-h-custom-space-28 bg-white/5 border-white/10 text-white rounded-xl focus:ring-blue-500/50 resize-none font-mono text-sm leading-relaxed"
                     value={editingSection.content || ""}
                     onChange={(e) =>
                       setEditingSection({ ...editingSection, content: e.target.value })

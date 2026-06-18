@@ -193,7 +193,7 @@ function IconItem({
       </div>
 
       {/* Permanent title label with improved contrast */}
-      <div className="max-w-20 truncate rounded-full bg-white/5 px-2 py-0.5 whitespace-nowrap text-center font-medium text-foreground text-[10px] backdrop-blur-md drop-shadow-sm md:max-w-32 md:text-xs dark:bg-black/20">
+      <div className="max-w-20 truncate rounded-full bg-white/5 px-2 py-0.5 whitespace-nowrap text-center font-medium text-foreground text-custom-space-277 backdrop-blur-md drop-shadow-sm md:max-w-32 md:text-xs dark:bg-black/20">
         {title}
       </div>
     </Link>

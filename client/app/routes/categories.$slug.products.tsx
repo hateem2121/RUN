@@ -297,7 +297,7 @@ export function CategoryProductsPage() {
 
                 {/* Sort */}
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-full sm:w-[150px]">
+                  <SelectTrigger className="w-full sm:w-custom-space-288">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

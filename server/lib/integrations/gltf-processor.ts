@@ -8,7 +8,7 @@ import { KHRONOS_EXTENSIONS } from "@gltf-transform/extensions";
 import { dedup, draco, prune } from "@gltf-transform/functions";
 import { logger, serializeError } from "../monitoring/logger.js";
 
-export interface GLTFProcessingResult {
+interface GLTFProcessingResult {
   success: boolean;
   processedBuffer: Buffer;
   originalSize: number;
@@ -18,7 +18,7 @@ export interface GLTFProcessingResult {
   error?: string | undefined;
 }
 
-export interface GLTFValidationResult {
+interface GLTFValidationResult {
   isValid: boolean;
   hasEmbeddedTextures: boolean;
   hasExternalReferences: boolean;
@@ -31,7 +31,7 @@ export interface GLTFValidationResult {
 /**
  * PHASE 1.1: Core GLTF processor for texture embedding
  */
-export class GLTFProcessor {
+class GLTFProcessor {
   private io: NodeIO;
 
   constructor() {
@@ -534,7 +534,7 @@ export function isGLTFFile(mimeType: string, filename: string): boolean {
 /**
  * PHASE 1.1 NEW: Detect GLB format from buffer (static utility)
  */
-export function isGLBBuffer(buffer: Buffer): boolean {
+function isGLBBuffer(buffer: Buffer): boolean {
   // GLB files start with 'glTF' magic bytes (0x676C5446)
   return (
     buffer.length >= 4 &&

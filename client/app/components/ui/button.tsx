@@ -20,7 +20,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         glass:
-          "border border-white/10 bg-[image:var(--glass-premium)] text-white backdrop-blur-md hover:bg-white/20 hover:shadow-xl focus-visible:ring-white/50 active:bg-white/30",
+          "border border-white/10 bg-custom-misc-366 text-white backdrop-blur-md hover:bg-white/20 hover:shadow-xl focus-visible:ring-white/50 active:bg-white/30",
         "glowing-hover":
           "relative overflow-hidden rounded-full border-2 border-primary bg-linear-to-r from-muted to-muted/80 px-6 font-medium text-foreground transition-all duration-300 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-hard dark:border-primary dark:from-primary/10 dark:to-primary/20 dark:text-primary-foreground",
       },

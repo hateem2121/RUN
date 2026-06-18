@@ -58,7 +58,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
       className="col-span-1 p-8 md:col-span-2 md:p-10 lg:col-span-3 lg:p-12"
     >
       <GlassCardDecorations showShimmer={!isMobile} />
-      <div className="card-border-overlay rounded-[calc(0.75rem-1px)]" />
+      <div className="card-border-overlay rounded-custom-misc-149" />
 
       <div className="relative z-default">
         {!showSuccess ? (

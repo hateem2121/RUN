@@ -97,7 +97,7 @@ export function FeaturesTabContent(props: FeaturesTabContentProps) {
                 id="featuresDescription"
                 value={localForm.featuresDescription || ""}
                 onChange={(e) => onLocalUpdate({ featuresDescription: e.target.value })}
-                className="bg-white/5 border-white/10 text-white rounded-xl focus:ring-emerald-500/50 resize-none min-h-[80px]"
+                className="bg-white/5 border-white/10 text-white rounded-xl focus:ring-emerald-500/50 resize-none min-h-custom-space-74"
                 placeholder="Description for the features section"
                 rows={3}
               />
@@ -141,7 +141,7 @@ export function FeaturesTabContent(props: FeaturesTabContentProps) {
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
-                    <div className="space-y-4 max-w-[90%]">
+                    <div className="space-y-4 max-w-custom-space-75">
                       <div>
                         <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
                           Title

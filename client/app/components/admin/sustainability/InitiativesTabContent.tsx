@@ -370,7 +370,7 @@ export function InitiativesTabContent({
                 <Sparkles className="h-8 w-8 text-admin-muted/40" />
               </div>
               <h3 className="text-white font-bold mb-1">No Initiatives Operational</h3>
-              <p className="text-admin-muted text-sm max-w-[280px]">
+              <p className="text-admin-muted text-sm max-w-custom-space-87">
                 New sustainability programs have not been initialised.
               </p>
             </div>
@@ -489,7 +489,7 @@ export function InitiativesTabContent({
                 placeholder="Detail the operational scope and mission parameters..."
                 rows={3}
                 className={cn(
-                  "bg-white/5 border-white/10 text-white rounded-xl min-h-[100px] focus:ring-emerald-500/50 placeholder:text-white/20 resize-none",
+                  "bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-88 focus:ring-emerald-500/50 placeholder:text-white/20 resize-none",
                   !initiativeValidation.description.isValid && "border-red-500/50 bg-red-500/5",
                 )}
               />
@@ -520,7 +520,7 @@ export function InitiativesTabContent({
                 placeholder="Quantify the expected regenerative outcome..."
                 rows={2}
                 className={cn(
-                  "bg-white/5 border-white/10 text-white rounded-xl min-h-[80px] focus:ring-emerald-500/50 placeholder:text-white/20 resize-none",
+                  "bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-89 focus:ring-emerald-500/50 placeholder:text-white/20 resize-none",
                   !initiativeValidation.impact.isValid && "border-red-500/50 bg-red-500/5",
                 )}
               />
@@ -558,7 +558,7 @@ export function InitiativesTabContent({
                   type="button"
                   variant="outline"
                   onClick={() => setIsInitiativeMediaPickerOpen(true)}
-                  className="w-full h-[66px] bg-white/5 border-white/10 text-admin-muted rounded-xl hover:bg-white/10 hover:text-white transition-all border shadow-none"
+                  className="w-full h-custom-space-90 bg-white/5 border-white/10 text-admin-muted rounded-xl hover:bg-white/10 hover:text-white transition-all border shadow-none"
                 >
                   <ImageIcon className="mr-3 h-5 w-5 text-emerald-400" />
                   <span className="truncate">
@@ -588,7 +588,7 @@ export function InitiativesTabContent({
                 onCheckedChange={(checked) =>
                   setInitiativeForm((prev) => ({ ...prev, isActive: checked }))
                 }
-                className="data-[state=checked]:bg-emerald-600"
+                className="data-custom-misc-81:bg-emerald-600"
               />
             </div>
           </DialogBody>
@@ -652,7 +652,7 @@ export function InitiativesTabContent({
           </DialogHeader>
 
           <div className="px-8 pb-8 flex justify-center">
-            <div className="aspect-[9/16] w-full max-w-[280px] rounded-huge border-[8px] border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5 p-6 flex flex-col items-start">
+            <div className="aspect-custom-misc-82 w-full max-w-custom-space-91 rounded-huge border-custom-space-92 border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5 p-6 flex flex-col items-start">
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-transparent to-black z-0" />
 
               <div className="relative z-10 space-y-6 flex flex-col w-full h-full">
@@ -660,7 +660,7 @@ export function InitiativesTabContent({
                   <div className="size-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                     <IconDisplay iconName={initiativeForm.iconName} className="size-6" />
                   </div>
-                  <span className="text-[8px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                  <span className="text-custom-space-93 font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
                     {initiativeForm.category || "Strategic Initiative"}
                   </span>
                 </div>
@@ -676,7 +676,7 @@ export function InitiativesTabContent({
                 </div>
 
                 <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
-                  <span className="text-[8px] font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
+                  <span className="text-custom-space-94 font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
                     <Sparkles className="size-2" />
                     Environmental Impact
                   </span>

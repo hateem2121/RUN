@@ -105,7 +105,7 @@ const data = [
 
 import { ProtectedAdminRoute } from "@/components/auth/ProtectedAdminRoute";
 
-export default function Component() {
+export function Component() {
   const loaderData = useLoaderData<typeof loader>();
 
   const { data: analyticsData } = useQuery({
@@ -178,7 +178,7 @@ export default function Component() {
                 <CardDescription>Monthly revenue performance for the current year</CardDescription>
               </CardHeader>
               <CardContent className="pl-2">
-                <div className="h-[350px]">
+                <div className="h-custom-space-283">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={data}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -191,7 +191,7 @@ export default function Component() {
                               <div className="rounded-lg border bg-background p-2 shadow-xs">
                                 <div className="grid grid-cols-2 gap-2">
                                   <div className="flex flex-col">
-                                    <span className="text-[0.70rem] text-muted-foreground uppercase">
+                                    <span className="text-custom-space-284 text-muted-foreground uppercase">
                                       Sales
                                     </span>
                                     <span className="font-bold text-muted-foreground">
@@ -199,7 +199,7 @@ export default function Component() {
                                     </span>
                                   </div>
                                   <div className="flex flex-col">
-                                    <span className="text-[0.70rem] text-muted-foreground uppercase">
+                                    <span className="text-custom-space-285 text-muted-foreground uppercase">
                                       Revenue
                                     </span>
                                     <span className="font-bold text-muted-foreground">

@@ -2,6 +2,7 @@ import express, { type RequestHandler, type Router } from "express";
 import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
+import { env } from "../../lib/env.js";
 import { createRateLimiter } from "../../middleware/rateLimiter.js";
 import { authService } from "../../services/auth-service.js";
 import {
@@ -170,14 +171,14 @@ registry.registerPath({
 // Admin media library makes many legitimate requests during upload/refresh
 const bulkMediaLimiter = createRateLimiter({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: process.env.NODE_ENV === "production" ? 500 : 10000, // 10,000 in dev, 500 in prod
+  max: env.NODE_ENV === "production" ? 500 : 10000, // 10,000 in dev, 500 in prod
   message: "Too many media requests, please try again later",
   keyPrefix: "media",
   // Skip rate limiting for localhost connections (development)
   skip: (req: express.Request) => {
     const ip = req.ip || req.connection?.remoteAddress || "";
     const isLocalhost = ip === "::1" || ip === "127.0.0.1" || ip?.includes("localhost");
-    return isLocalhost && process.env.NODE_ENV !== "production";
+    return isLocalhost && env.NODE_ENV !== "production";
   },
 });
 
@@ -191,7 +192,7 @@ router.get("/cache/stats", authService.requireAdmin, getCacheStats);
 
 // Rate Limiter Monitoring (Development only)
 router.get("/media/rate-limiter/stats", (_req, res) => {
-  if (process.env.NODE_ENV === "production") {
+  if (env.NODE_ENV === "production") {
     return res.status(404).json({ error: "Not found" });
   }
 
@@ -199,11 +200,11 @@ router.get("/media/rate-limiter/stats", (_req, res) => {
   const limiterInfo = {
     config: {
       windowMs: 10 * 60 * 1000,
-      max: process.env.NODE_ENV === "production" ? 500 : 10000,
+      max: 10000,
       keyPrefix: "media",
     },
     description: "Bulk media query rate limiter",
-    localhostBypass: process.env.NODE_ENV !== "production",
+    localhostBypass: true,
   };
 
   return res.json({

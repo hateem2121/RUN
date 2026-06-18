@@ -1,27 +1,22 @@
-import { Redis } from "@upstash/redis";
+import { Redis } from "ioredis";
 import { logger } from "../monitoring/logger.js";
 
 const isProduction = process.env.NODE_ENV === "production";
 
-if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+if (!process.env.REDIS_URL) {
   if (isProduction) {
     logger.error(
-      "CRITICAL: UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is missing in PRODUCTION. System will fall back to volatile in-memory storage, which will break rate limiting and global cache consistency across multiple instances.",
+      "CRITICAL: REDIS_URL is missing in PRODUCTION. System will fall back to volatile in-memory storage, which will break rate limiting and global cache consistency across multiple instances.",
     );
   } else {
     logger.warn(
-      "UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is missing. Rate limiting and global caching will fall back to local in-memory storage.",
+      "REDIS_URL is missing. Rate limiting and global caching will fall back to local in-memory storage.",
     );
   }
 }
 
 export const redis = new Proxy(
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
-    ? new Redis({
-        url: process.env.UPSTASH_REDIS_REST_URL,
-        token: process.env.UPSTASH_REDIS_REST_TOKEN,
-      })
-    : ({} as unknown as Redis),
+  process.env.REDIS_URL ? new Redis(process.env.REDIS_URL) : ({} as unknown as Redis),
   {
     get: (target, prop, receiver) => {
       const value = Reflect.get(target, prop, receiver);
@@ -43,9 +38,8 @@ export const redis = new Proxy(
 );
 
 export const isRedisEnabled = Boolean(
-  process.env.UPSTASH_REDIS_REST_URL &&
-    process.env.UPSTASH_REDIS_REST_TOKEN &&
-    !process.env.UPSTASH_REDIS_REST_URL.includes("dummy") &&
+  process.env.REDIS_URL &&
+    !process.env.REDIS_URL.includes("dummy") &&
     !process.env.VITEST &&
     process.env.NODE_ENV !== "test",
 );

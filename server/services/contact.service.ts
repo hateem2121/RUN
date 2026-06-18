@@ -8,7 +8,7 @@ import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 
-export interface BusinessLocation {
+interface BusinessLocation {
   id: number;
   name: string;
   address: string;
@@ -19,7 +19,7 @@ export interface BusinessLocation {
 /**
  * Service for managing Contact Page configuration
  */
-export class ContactService {
+class ContactService {
   /**
    * Retrieves the contact page configuration
    */

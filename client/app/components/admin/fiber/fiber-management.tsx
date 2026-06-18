@@ -2,6 +2,7 @@ import type { Fiber } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { BarChart3, Grid2X2, Layers, List, Plus, Search } from "lucide-react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -20,7 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
 import { propertiesToObject } from "@/lib/fiber-utils";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { FiberDetails } from "./FiberDetails";
@@ -52,8 +52,6 @@ export function FiberManagement() {
   const [detailFiber, setDetailFiber] = useState<Fiber | null>(null);
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const [showStats, setShowStats] = useState(false);
-
-  const { toast } = useToast();
 
   const { data: fibers = [], isPending: isLoading } = useQuery<Fiber[]>({
     queryKey: ["/api/fibers"],
@@ -103,12 +101,12 @@ export function FiberManagement() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/fibers"] });
-      toast({ title: "Success", description: "Fiber created successfully" });
+      toast.success("Success", { description: "Fiber created successfully" });
       resetForm();
       setIsCreateDialogOpen(false);
     },
     onError: (error: Error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -132,12 +130,12 @@ export function FiberManagement() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/fibers"] });
-      toast({ title: "Success", description: "Fiber updated successfully" });
+      toast.success("Success", { description: "Fiber updated successfully" });
       setIsEditDialogOpen(false);
       setEditingFiber(null);
     },
     onError: (error: Error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -147,7 +145,7 @@ export function FiberManagement() {
     },
     onSuccess: (_, deletedId) => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/fibers"] });
-      toast({ title: "Success", description: "Fiber deleted successfully" });
+      toast.success("Success", { description: "Fiber deleted successfully" });
       setSelectedFibers((prev) => {
         const newSet = new Set(prev);
         newSet.delete(deletedId);
@@ -155,7 +153,7 @@ export function FiberManagement() {
       });
     },
     onError: (error: Error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -282,7 +280,7 @@ export function FiberManagement() {
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <Select value={filterType} onValueChange={setFilterType}>
-                <SelectTrigger className="w-[140px]">
+                <SelectTrigger className="w-custom-space-17">
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -293,7 +291,7 @@ export function FiberManagement() {
                 </SelectContent>
               </Select>
               <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger className="w-[120px]">
+                <SelectTrigger className="w-custom-space-18">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>

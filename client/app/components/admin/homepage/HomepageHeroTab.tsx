@@ -250,6 +250,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                           autoPlay
                           muted
                           loop
+                          playsInline
                           className="absolute inset-0 h-full w-full object-cover opacity-50 transition-opacity group-hover:opacity-30"
                         />
                       ) : selectedBackgroundMedia?.type === "image" ? (
@@ -299,7 +300,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                   name="isActive"
                   checked={optimisticActive}
                   onCheckedChange={(checked) => handleChange("isActive", checked)}
-                  className="data-[state=checked]:bg-blue-500"
+                  className="data-custom-misc-36:bg-blue-500"
                 />
                 <div className="grid gap-1.5 leading-none">
                   <Label
@@ -317,7 +318,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
 
             {/* Mobile Viewport Simulation */}
             {showPreview && (
-              <div className="relative mx-auto w-full max-w-[340px] h-[680px] rounded-[40px] border-[8px] border-black bg-surface-black shadow-2xl overflow-hidden mt-4 lg:mt-0 xl:max-w-[380px] xl:h-[760px] animate-in fade-in zoom-in-95 duration-500 hidden sm:block">
+              <div className="relative mx-auto w-full max-w-custom-space-20 h-custom-space-21 rounded-custom-space-22 border-custom-space-23 border-black bg-surface-black shadow-2xl overflow-hidden mt-4 lg:mt-0 xl:max-w-custom-space-24 xl:h-custom-space-25 animate-in fade-in zoom-in-95 duration-500 hidden sm:block">
                 {/* Dynamic Island Simulation */}
                 <div className="absolute top-0 inset-x-0 h-7 flex justify-center z-50">
                   <div className="w-1/3 h-5 bg-black rounded-b-3xl"></div>
@@ -331,6 +332,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
                       autoPlay
                       muted
                       loop
+                      playsInline
                       className="absolute inset-0 h-full w-full object-cover opacity-80"
                     />
                   ) : selectedBackgroundMedia?.type === "image" ? (
@@ -348,7 +350,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
 
                 {/* Hero Content Overlay */}
                 <div className="absolute inset-x-0 bottom-0 z-10 p-6 flex flex-col justify-end text-center pb-12">
-                  <h2 className="font-['Neue_Stance'] text-4xl font-bold uppercase leading-none text-white tracking-tighter mb-2">
+                  <h2 className="font-custom-misc-37 text-4xl font-bold uppercase leading-none text-white tracking-tighter mb-2">
                     {formData.title || "Headline Vector"}
                   </h2>
                   <p className="text-sm text-white/80 font-medium mb-6 px-4">

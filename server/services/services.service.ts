@@ -55,7 +55,7 @@ const DEFAULT_SERVICES: Service[] = [
   },
 ];
 
-export class ServicesService {
+class ServicesService {
   private async invalidateCache(): Promise<void> {
     try {
       await CacheOperations.invalidateServices?.();

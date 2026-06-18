@@ -1,6 +1,6 @@
 import type { InsertProduct, Product } from "@shared/index";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { apiRequest } from "@/lib/queryClient";
 
 interface UseProductMutationsProps {
@@ -9,7 +9,6 @@ interface UseProductMutationsProps {
 }
 
 export function useProductMutations({ onSuccess, productUrlPath }: UseProductMutationsProps) {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const invalidateProductCaches = (
@@ -62,20 +61,13 @@ export function useProductMutations({ onSuccess, productUrlPath }: UseProductMut
 
         invalidateProductCaches(newProduct);
 
-        toast({
-          title: "Success",
-          description: "Product created successfully",
-        });
+        toast.success("Success", { description: "Product created successfully" });
 
         onSuccess();
       } catch (_err) {}
     },
     onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to create product",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -94,20 +86,13 @@ export function useProductMutations({ onSuccess, productUrlPath }: UseProductMut
 
         invalidateProductCaches(updatedProduct, productUrlPath);
 
-        toast({
-          title: "Success",
-          description: "Product updated successfully",
-        });
+        toast.success("Success", { description: "Product updated successfully" });
 
         onSuccess();
       } catch (_err) {}
     },
     onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update product",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: error.message });
     },
   });
 

@@ -59,7 +59,7 @@ export function LottieIcon({ animationData, size, type }: LottieIconProps) {
       className="relative h-(--size) w-(--size) min-h-(--size) min-w-(--size)"
     >
       {/* Fallback content if Lottie fails */}
-      <div className="absolute inset-0 animate-pulse rounded-full border-2 border-white bg-[radial-gradient(circle,var(--fallback-color)_30%,transparent_70%)] shadow-[0_2px_8px_var(--fallback-shadow)]" />
+      <div className="absolute inset-0 animate-pulse rounded-full border-2 border-white bg-custom-misc-420 shadow-custom-misc-421" />
     </div>
   );
 }

@@ -9,13 +9,12 @@ import crypto from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
 import { logger } from "../lib/monitoring/logger.js";
 
-export const CSRF_COOKIE_NAME = "csrf_token";
-export const CSRF_HEADER_NAME = "x-csrf-token";
+const CSRF_COOKIE_NAME = "csrf_token";
+const CSRF_HEADER_NAME = "x-csrf-token";
 const CSRF_TOKEN_LENGTH = 32;
 
 // Routes excluded from CSRF protection
 const EXCLUDED_ROUTES = [
-  "/contact", // Public form - handled by standard CSRF but allows initial render
   "/api/auth/google", // OAuth flow
   "/api/auth/google/callback",
   "/api/health",
@@ -28,7 +27,6 @@ const EXCLUDED_ROUTES = [
   "/api/debug/slow-query", // Integration testing
   "/api/debug/ip-check", // Integration testing
   "/api/test/crash", // Integration testing
-  "/api/inquiries", // Public inquiry/quote submission
   "/api/logs/error", // Client error logging endpoint
 ];
 
@@ -74,7 +72,7 @@ export function csrfTokenGenerator(req: Request, res: Response, next: NextFuncti
  * Validate CSRF tokens
  * Returns null if valid, or an error object if invalid
  */
-export function validateCsrfToken(
+function validateCsrfToken(
   cookieToken: string | undefined,
   providedToken: string | undefined,
 ): { error: string; message: string; status: number } | null {

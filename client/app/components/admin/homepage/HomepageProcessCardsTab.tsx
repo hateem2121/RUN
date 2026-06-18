@@ -176,7 +176,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                         </Button>
                       </div>
 
-                      <div className="aspect-[16/10] relative bg-black/50 overflow-hidden flex items-center justify-center border-b border-white/5">
+                      <div className="aspect-custom-misc-38 relative bg-black/50 overflow-hidden flex items-center justify-center border-b border-white/5">
                         {imageUrl ? (
                           <img
                             src={imageUrl}
@@ -290,7 +290,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                   id="description"
                   value={newCard.description || ""}
                   onChange={(e) => setNewCard({ ...newCard, description: e.target.value })}
-                  className="bg-white/5 border-white/10 text-white rounded-xl min-h-[100px] focus:ring-blue-500/50 resize-none"
+                  className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-26 focus:ring-blue-500/50 resize-none"
                 />
               </div>
 
@@ -410,7 +410,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                     onChange={(e) =>
                       setEditingCard({ ...editingCard, description: e.target.value })
                     }
-                    className="bg-white/5 border-white/10 text-white rounded-xl min-h-[100px] focus:ring-blue-500/50 resize-none"
+                    className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-27 focus:ring-blue-500/50 resize-none"
                   />
                 </div>
 
@@ -466,7 +466,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                     onCheckedChange={(checked) =>
                       setEditingCard({ ...editingCard, isActive: checked })
                     }
-                    className="data-[state=checked]:bg-blue-500"
+                    className="data-custom-misc-39:bg-blue-500"
                   />
                   <div className="grid gap-1.5 leading-none">
                     <Label

@@ -224,7 +224,7 @@ IMPORTANT:
 - Use GSTACK_HOME="${gstackHome}" as an environment variable when running bin scripts.
 - The bin scripts are at ./bin/ (relative to this directory), not at ~/.claude/skills/gstack/bin/.
   Replace any references to ~/.claude/skills/gstack/bin/ with ./bin/ when running commands.
-- Save the file to ${projectDir}/checkpoints/ with a filename like "20260401-test-context.md".
+- Save the file to ${projectDir}/context-saves/ with a filename like "20260401-test-context.md".
 - Include YAML frontmatter with status, branch, and timestamp.
 - Include a summary of what's being worked on (you can see from git status).
 - Do NOT use AskUserQuestion.`,

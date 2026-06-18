@@ -3,6 +3,7 @@ import { ABOUT_API } from "@shared/api-constants";
 import { useQuery } from "@tanstack/react-query";
 import { Eye, Save, Trash2, Upload } from "lucide-react";
 import { useActionState, useEffect, useOptimistic, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { Button } from "@/components/ui/button";
@@ -10,11 +11,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 export function AboutHeroTab() {
-  const { toast } = useToast();
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<MediaAsset | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -70,17 +69,10 @@ export function AboutHeroTab() {
         getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.HERO] });
         getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
 
-        toast({
-          title: "Success",
-          description: "Hero section updated successfully",
-        });
+        toast.success("Success", { description: "Hero section updated successfully" });
         return { success: true };
       } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to update hero section",
-          variant: "destructive",
-        });
+        toast.error("Error", { description: "Failed to update hero section" });
         return { success: false, error };
       }
     },
@@ -212,7 +204,7 @@ export function AboutHeroTab() {
             </CardHeader>
             <CardContent className="relative min-h-96 flex-1 overflow-hidden rounded-b-lg border bg-background p-0">
               <div className="absolute inset-0 overflow-y-auto">
-                <div className="w-[125%] origin-top scale-[0.8] transform md:w-[125%] md:origin-top-left">
+                <div className="w-custom-space-2 origin-top scale-custom-misc-11 transform md:w-custom-space-3 md:origin-top-left">
                   <HeroSection
                     heroData={{
                       title: optimisticHero?.title || "",

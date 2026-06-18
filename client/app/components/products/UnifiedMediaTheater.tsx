@@ -29,6 +29,7 @@ import { useSwipeGesture } from "@/hooks/use-swipe-gesture";
 import type { ModelViewerConfig } from "@/lib/model-viewer-config";
 import { cn } from "@/lib/utils";
 import { useMediaPerformance } from "./MediaPerformanceMonitor";
+
 // PHASE 6 FIX: Consolidated features from MediaTabsViewer and LazyMediaGallery
 
 export interface EnhancedMediaAsset extends MediaAsset {
@@ -151,9 +152,14 @@ export function UnifiedMediaTheater({
     (asset) => asset.type === "3d_model" || asset.type === "model",
   );
 
-  // Feature detection
-  const features = useMemo(
-    () => ({
+  const [features, setFeatures] = useState({
+    hasTouch: false,
+    hasWebGL: false,
+    connectionSpeed: "unknown",
+  });
+
+  useEffect(() => {
+    setFeatures({
       hasTouch: "ontouchstart" in window,
       hasWebGL: (() => {
         try {
@@ -169,9 +175,8 @@ export function UnifiedMediaTheater({
       connectionSpeed:
         (navigator as unknown as { connection?: { effectiveType?: string } }).connection
           ?.effectiveType || "unknown",
-    }),
-    [],
-  );
+    });
+  }, []);
 
   // WebGL Context Recovery now handled by UnifiedModelViewer component
 

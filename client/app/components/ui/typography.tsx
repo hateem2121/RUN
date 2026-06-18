@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils";
 export const headingVariants = cva("text-balance font-bold transition-colors", {
   variants: {
     variant: {
-      h1: "mb-6 text-4xl leading-[1.2] lg:text-5xl",
-      h2: "mb-4 text-3xl leading-[1.25] lg:text-4xl",
-      h3: "mb-3 text-2xl leading-[1.25] lg:text-3xl",
+      h1: "mb-6 text-4xl leading-custom-misc-467 lg:text-5xl",
+      h2: "mb-4 text-3xl leading-custom-misc-468 lg:text-4xl",
+      h3: "mb-3 text-2xl leading-custom-misc-469 lg:text-3xl",
       h4: "mb-2 text-xl leading-snug",
       h5: "mb-2 text-lg leading-snug",
       h6: "mb-2 text-base leading-snug",
@@ -71,7 +71,7 @@ Heading.displayName = "Heading";
 
 // --- Text / Paragraphs ---
 
-export const textVariants = cva("text-pretty transition-colors", {
+const textVariants = cva("text-pretty transition-colors", {
   variants: {
     variant: {
       p: "mb-4 text-base leading-relaxed",
@@ -79,7 +79,7 @@ export const textVariants = cva("text-pretty transition-colors", {
       large: "font-semibold text-lg",
       small: "font-medium text-sm leading-none",
       muted: "text-muted-foreground text-sm",
-      tiny: "font-medium text-xs leading-[1.2]",
+      tiny: "font-medium text-xs leading-custom-misc-470",
       "subtle-caption": "font-semibold text-muted-foreground text-xs uppercase tracking-wider",
     },
     color: {
@@ -149,4 +149,4 @@ const Typography = {
   Heading,
 };
 
-export { Typography, Heading, Text };
+export { Typography };

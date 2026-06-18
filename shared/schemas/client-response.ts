@@ -51,34 +51,34 @@ export const CategoryResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
   slug: z.string(),
-  description: z.string().nullable().optional(),
-  parentId: z.number().nullable().optional(),
-  isActive: z.boolean().nullable().optional().default(true),
-  sortOrder: z.number().nullable().optional().default(0),
+  description: z.string().nullish(),
+  parentId: z.number().nullish(),
+  isActive: z.boolean().nullish().default(true),
+  sortOrder: z.number().nullish().default(0),
 });
 
 export const FabricResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
-  isActive: z.boolean().nullable().optional().default(true),
+  isActive: z.boolean().nullish().default(true),
 });
 
 export const CertificateResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
-  isActive: z.boolean().nullable().optional().default(true),
+  isActive: z.boolean().nullish().default(true),
 });
 
 export const SizeChartResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
-  isActive: z.boolean().nullable().optional().default(true),
+  isActive: z.boolean().nullish().default(true),
 });
 
 export const AccessoryResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
-  isActive: z.boolean().nullable().optional().default(true),
+  isActive: z.boolean().nullish().default(true),
 });
 
 export const ProductSummaryResponseSchema = z.object({
@@ -134,7 +134,7 @@ export const ProductDetailResponseSchema = z.object({
   context: z
     .object({
       breadcrumb: z.array(z.object({ name: z.string(), url: z.string() })).optional(),
-      category: CategoryResponseSchema.nullable().optional(),
+      category: CategoryResponseSchema.nullish(),
     })
     .optional(),
   media: z.array(MediaAssetSchema),

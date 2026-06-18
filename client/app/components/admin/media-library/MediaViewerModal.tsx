@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 // import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import { ChevronLeft, ChevronRight, Download, Edit, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 // import type { MediaAsset } from "@shared/index";
 import {
@@ -14,7 +15,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
 import { invalidateMediaQueries } from "@/lib/media-query-keys";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { useMediaLibrary } from "./MediaLibraryContextEnhanced";
@@ -98,7 +98,6 @@ export function MediaViewerModal() {
   } = useMediaLibrary();
 
   const { selectedAsset, lightboxOpen, editModalOpen, deleteModalOpen } = state;
-  const { toast } = useToast();
 
   // PHASE 1B FIX: Single asset delete mutation
   const deleteMutation = useMutation({
@@ -193,8 +192,7 @@ export function MediaViewerModal() {
     },
 
     onSuccess: () => {
-      toast({
-        title: "Asset deleted",
+      toast.success("Asset deleted", {
         description: "The media asset has been permanently removed",
       });
 
@@ -212,11 +210,7 @@ export function MediaViewerModal() {
         });
       }
 
-      toast({
-        title: "Delete failed",
-        description: error.message || "An error occurred while deleting the asset",
-        variant: "destructive",
-      });
+      toast.error("Delete failed", { description: error.message });
     },
 
     // Always invalidate to ensure data freshness after success or failure
@@ -348,10 +342,7 @@ export function MediaViewerModal() {
     },
 
     onSuccess: () => {
-      toast({
-        title: "Asset updated",
-        description: "Media asset has been updated successfully",
-      });
+      toast.success("Asset updated", { description: "Media asset has been updated successfully" });
       setEditModalOpen(false);
     },
 
@@ -368,11 +359,7 @@ export function MediaViewerModal() {
         setSelectedAsset(context.prevSelectedAsset);
       }
 
-      toast({
-        title: "Update failed",
-        description: error.message || "An error occurred while updating the asset",
-        variant: "destructive",
-      });
+      toast.error("Update failed", { description: error.message });
     },
 
     // Always invalidate to ensure data freshness after success or failure
@@ -479,7 +466,7 @@ export function MediaViewerModal() {
 
           <div className="flex min-h-0 flex-1 overflow-hidden pt-4">
             {/* Media display */}
-            <div className="mr-4 flex max-h-full max-w-[calc(100%-17rem)] flex-1 items-center justify-center rounded-lg bg-white/[0.03]">
+            <div className="mr-4 flex max-h-full max-w-custom-misc-64 flex-1 items-center justify-center rounded-lg bg-white/[0.03]">
               {selectedAsset && (
                 <div className="flex h-full w-full items-center justify-center">
                   <UnifiedMediaTheater

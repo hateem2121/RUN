@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { Archive, Download, MoreHorizontal, Trash2 } from "lucide-react";
 import React from "react";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,14 +10,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/hooks/use-toast";
 import { invalidateMediaQueries } from "@/lib/media-query-keys";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { useMediaLibrary } from "../MediaLibraryContextEnhanced";
 
 export const MediaBulkOperations = React.memo(() => {
   const { state, clearSelection } = useMediaLibrary();
-  const { toast } = useToast();
 
   const selectedCount = state.selectedAssets.size;
   const hasSelection = selectedCount > 0;
@@ -67,8 +66,7 @@ export const MediaBulkOperations = React.memo(() => {
     },
     onSuccess: (_, deletedIds) => {
       clearSelection();
-      toast({
-        title: "Bulk delete successful",
+      toast.success("Bulk delete successful", {
         description: `${deletedIds.length} items deleted successfully`,
       });
     },
@@ -76,10 +74,8 @@ export const MediaBulkOperations = React.memo(() => {
       if (context?.previousData) {
         getQueryClient().setQueryData(["/api/media"], context.previousData);
       }
-      toast({
-        title: "Bulk delete failed",
-        description: _err instanceof Error ? _err.message : "An error occurred during bulk delete",
-        variant: "destructive",
+      toast.error("Bulk delete failed", {
+        description: _err instanceof Error ? _err.message : String(_err),
       });
     },
     onSettled: async () => {
@@ -114,16 +110,13 @@ export const MediaBulkOperations = React.memo(() => {
       link.remove();
       globalThis.URL.revokeObjectURL(url);
 
-      toast({
-        title: "Download started",
+      toast.success("Download started", {
         description: `Downloading ${selectedCount} items as ZIP`,
       });
     },
     onError: (error) => {
-      toast({
-        title: "Download failed",
-        description: error instanceof Error ? error.message : "An error occurred during download",
-        variant: "destructive",
+      toast.error("Download failed", {
+        description: error instanceof Error ? error.message : String(error),
       });
     },
   });

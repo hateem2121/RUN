@@ -4,6 +4,18 @@
 # Deploys to us-central1 and europe-west1 with Global HTTPS Load Balancer
 
 steps:
+  # Install dependencies
+  - name: "node:24"
+    id: "install"
+    entrypoint: npm
+    args: ["ci"]
+
+  # Verify Technical Integrity
+  - name: "node:24"
+    id: "tech-integrity"
+    entrypoint: npm
+    args: ["run", "verify:tech-integrity"]
+
   # Build the container image
   - name: "gcr.io/cloud-builders/docker"
     id: "build"

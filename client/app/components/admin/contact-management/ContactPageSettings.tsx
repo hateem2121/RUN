@@ -22,6 +22,7 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
+import { toast } from "sonner";
 import {
   Accordion,
   AccordionContent,
@@ -33,7 +34,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 interface ContactConfig {
@@ -54,8 +54,6 @@ interface ContactConfig {
 }
 
 export function ContactPageSettings() {
-  const { toast } = useToast();
-
   const { data: config, isLoading } = useQuery<ContactConfig>({
     queryKey: ["/api/contact-info"],
     staleTime: 0,
@@ -147,17 +145,10 @@ export function ContactPageSettings() {
       getQueryClient().invalidateQueries({
         queryKey: ["/api/contact-page-configuration"],
       });
-      toast({
-        title: "Success",
-        description: "Contact page content updated successfully.",
-      });
+      toast.success("Success", { description: "Contact page content updated successfully." });
     },
     onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update contact page content.",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -166,10 +157,8 @@ export function ContactPageSettings() {
   };
 
   const onInvalid = (_errors: FieldErrors<ContactContentForm>) => {
-    toast({
-      title: "Validation Error",
+    toast.error("Validation Error", {
       description: "Please check all required fields are filled correctly.",
-      variant: "destructive",
     });
   };
 
@@ -193,7 +182,7 @@ export function ContactPageSettings() {
       {/* Header */}
       <div className="flex items-start justify-between mb-8">
         <div className="flex items-center gap-4">
-          <div className="size-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.1)]">
+          <div className="size-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shadow-custom-misc-16">
             <Mail className="h-6 w-6 text-blue-400" />
           </div>
           <div>
@@ -235,7 +224,7 @@ export function ContactPageSettings() {
             onClick={form.handleSubmit(onSubmit, onInvalid)}
             disabled={!isDirty || saveMutation.isPending}
             data-testid="button-save"
-            className="h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 shadow-[0_0_20px_rgba(37,99,235,0.2)] font-bold uppercase tracking-widest text-xxs outline-none border-0 transition-all active:scale-95"
+            className="h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 shadow-custom-misc-17 font-bold uppercase tracking-widest text-xxs outline-none border-0 transition-all active:scale-95"
           >
             {saveMutation.isPending ? (
               <>
@@ -637,7 +626,7 @@ export function ContactPageSettings() {
       </form>
 
       {/* Fixed Bottom Actions */}
-      <div className="sticky bottom-6 rounded-2xl border border-white/10 bg-surface-black/80 backdrop-blur-xl p-4 shadow-[0_8px_32px_rgba(0,0,0,0.5)] z-20">
+      <div className="sticky bottom-6 rounded-2xl border border-white/10 bg-surface-black/80 backdrop-blur-xl p-4 shadow-custom-misc-18 z-20">
         <div className="mx-auto flex max-w-4xl items-center justify-between">
           <div className="text-admin-muted text-sm font-medium">
             {isDirty ? "You have unsaved changes" : "All changes saved"}
@@ -654,7 +643,7 @@ export function ContactPageSettings() {
             <Button
               onClick={form.handleSubmit(onSubmit, onInvalid)}
               disabled={!isDirty || saveMutation.isPending}
-              className="h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 shadow-[0_0_20px_rgba(37,99,235,0.2)] font-bold uppercase tracking-widest text-xxs outline-none border-0 transition-all active:scale-95"
+              className="h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 shadow-custom-misc-19 font-bold uppercase tracking-widest text-xxs outline-none border-0 transition-all active:scale-95"
             >
               {saveMutation.isPending ? "Saving..." : "Save All Changes"}
             </Button>

@@ -53,7 +53,7 @@ const metrics = {
 };
 
 // Global Pool Instance
-export let pool: Pool;
+let pool: Pool;
 
 if (isTestMode && !enableRealDb) {
   logger.info("[Database] Test mode - using Mock Pool");

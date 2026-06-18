@@ -13,6 +13,7 @@ import {
   Video,
 } from "lucide-react";
 import { memo, useState } from "react";
+import { toast } from "sonner";
 import { DeleteConfirmationDialog } from "@/components/admin/shared";
 import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +26,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
-import { useToast } from "@/hooks/use-toast";
 import { RelationshipIndicators } from "./RelationshipIndicators";
 
 interface ProductCardProps {
@@ -52,7 +52,7 @@ export const ProductCard = memo(function ProductCard({
 }: ProductCardProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [show3DPreview, setShow3DPreview] = useState(false);
-  const { toast } = useToast();
+
   const queryClient = useQueryClient();
 
   // Inline helper to eliminate duplicate cache invalidation logic
@@ -95,19 +95,14 @@ export const ProductCard = memo(function ProductCard({
     onSuccess: () => {
       invalidateProductCaches();
 
-      toast({
-        title: "Product Deleted",
+      toast.success("Product Deleted", {
         description: `${product.name} has been deleted successfully.`,
       });
       onDelete?.();
     },
     onError: (error: Error | unknown) => {
       const errorMessage = error instanceof Error ? error.message : "Failed to delete product";
-      toast({
-        title: "Delete Failed",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      toast.error("Delete Failed", { description: errorMessage });
     },
   });
 
@@ -389,7 +384,7 @@ export const ProductCard = memo(function ProductCard({
           </div>
 
           {/* Hover Actions */}
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-custom-space-57 flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100">
             <div className="flex gap-2">
               <Button
                 data-testid={`view-product-grid-${product.id}`}

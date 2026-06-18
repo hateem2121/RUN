@@ -207,7 +207,7 @@ export function CategoryManagementSimplified() {
                 checked={uiState.showDeletedCategories}
                 onCheckedChange={(checked) => updateUIState({ showDeletedCategories: checked })}
                 data-testid="toggle-deleted-categories"
-                className="data-[state=checked]:bg-blue-500"
+                className="data-custom-misc-15:bg-blue-500"
               />
               <Label
                 htmlFor="show-deleted"

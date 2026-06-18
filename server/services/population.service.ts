@@ -11,7 +11,7 @@ interface PopulationResults {
   accessories: unknown[];
 }
 
-export class PopulationService {
+class PopulationService {
   async populateApiBased(port: string | number): Promise<Result<PopulationResults, AppError>> {
     try {
       const results: PopulationResults = {

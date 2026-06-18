@@ -184,7 +184,7 @@ function ProductSpecs({ specs }: ProductSpecsProps) {
       </div>
 
       {/* Fallback for browsers without subgrid or mobile */}
-      <dl className="grid grid-cols-[1fr_1fr] gap-x-4 gap-y-4 text-sm md:hidden">
+      <dl className="grid grid-cols-custom-misc-473 gap-x-4 gap-y-4 text-sm md:hidden">
         {specs.map((spec, i) => (
           <div key={i} className="contents">
             <dt className="font-medium text-muted-foreground">{spec.name}</dt>
@@ -256,7 +256,7 @@ function AddToCartSection({ product }: AddToCartSectionProps) {
           "flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 font-bold text-lg tracking-wide transition-all duration-300",
           optimisticState.status === "added"
             ? "bg-green-600 text-white hover:bg-green-700"
-            : "bg-black text-white hover:bg-neutral-800 active:scale-[0.98]",
+            : "bg-black text-white hover:bg-neutral-800 active:scale-custom-misc-474",
         )}
       >
         {optimisticState.status === "added" ? (
@@ -413,7 +413,7 @@ function ProductDetailContent() {
               </span>
             </div>
 
-            <Typography.H1 className="mb-6 text-balance font-black text-4xl leading-[0.9] tracking-tight md:text-5xl lg:text-6xl product-hero-reveal">
+            <Typography.H1 className="mb-6 text-balance font-black text-4xl leading-custom-misc-475 tracking-tight md:text-5xl lg:text-6xl product-hero-reveal">
               {product.name}
             </Typography.H1>
 

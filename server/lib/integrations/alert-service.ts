@@ -20,7 +20,7 @@ import { logger } from "../monitoring/logger.js";
 /**
  * Alert severity levels
  */
-export type AlertSeverity = "critical" | "error" | "warning" | "info";
+type AlertSeverity = "critical" | "error" | "warning" | "info";
 
 /**
  * Alert payload
@@ -199,7 +199,7 @@ async function sendSlackAlert(payload: AlertPayload): Promise<boolean> {
 /**
  * Alert Service - Free Tier
  */
-export class AlertService {
+class AlertService {
   private dedupeCache = new Map<string, number>();
   private dedupeTtlMs = 60000; // 1 minute deduplication
 

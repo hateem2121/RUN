@@ -3,7 +3,7 @@
  * Identifies media formats (3D models, images, videos) from URLs or MIME types
  */
 
-export type MediaType = "3d-model" | "image" | "video" | "unknown";
+type MediaType = "3d-model" | "image" | "video" | "unknown";
 
 const MODEL_EXTENSIONS = [".glb", ".gltf"];
 const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg", ".avif"];
@@ -23,7 +23,7 @@ const VIDEO_MIME_TYPES = ["video/mp4", "video/webm", "video/ogg", "video/quickti
 /**
  * Detects media type from URL file extension
  */
-export function detectMediaTypeFromUrl(url: string | null | undefined): MediaType {
+function detectMediaTypeFromUrl(url: string | null | undefined): MediaType {
   if (!url) {
     return "unknown";
   }
@@ -48,7 +48,7 @@ export function detectMediaTypeFromUrl(url: string | null | undefined): MediaTyp
 /**
  * Detects media type from MIME type
  */
-export function detectMediaTypeFromMime(mimeType: string | null | undefined): MediaType {
+function detectMediaTypeFromMime(mimeType: string | null | undefined): MediaType {
   if (!mimeType) {
     return "unknown";
   }

@@ -2,6 +2,7 @@ import type { InsertSizeChart, SizeChart } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AlertTriangle, Edit, Eye, Flag, Plus, RotateCcw, Ruler, X } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,7 +29,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 const getRegionFlag = (region: string) => {
@@ -202,8 +202,6 @@ export function SizeChartManagementEnhanced() {
   const [isPreviewDialogOpen, setIsPreviewDialogOpen] = useState(false);
   const [unitSystem, setUnitSystem] = useState<"metric" | "imperial">("metric");
 
-  const { toast } = useToast();
-
   const { data: sizeCharts, isPending: isLoading } = useQuery<SizeChart[]>({
     queryKey: ["/api/size-charts"],
   });
@@ -229,19 +227,12 @@ export function SizeChartManagementEnhanced() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/size-charts"] });
-      toast({
-        title: "Success",
-        description: "Size chart created successfully",
-      });
+      toast.success("Success", { description: "Size chart created successfully" });
       resetForm();
     },
 
     onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to create size chart",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -254,20 +245,13 @@ export function SizeChartManagementEnhanced() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/size-charts"] });
-      toast({
-        title: "Success",
-        description: "Size chart updated successfully",
-      });
+      toast.success("Success", { description: "Size chart updated successfully" });
       setEditingChart(null);
       resetForm();
     },
 
     onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update size chart",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -279,18 +263,11 @@ export function SizeChartManagementEnhanced() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/size-charts"] });
-      toast({
-        title: "Success",
-        description: "Size chart deleted successfully",
-      });
+      toast.success("Success", { description: "Size chart deleted successfully" });
     },
 
     onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to delete size chart",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -367,10 +344,8 @@ export function SizeChartManagementEnhanced() {
 
     // Check if template exists for this type
     if (!sizes || !measurements) {
-      toast({
-        title: "No Template Available",
+      toast.success("No Template Available", {
         description: `No predefined template for "${chartType}". You can manually add measurements below.`,
-        variant: "default",
       });
       return;
     }
@@ -390,8 +365,7 @@ export function SizeChartManagementEnhanced() {
       measurements: newMeasurements,
     }));
 
-    toast({
-      title: "Template Loaded",
+    toast.success("Template Loaded", {
       description: `Template for ${chartType} has been loaded with standard sizes and measurements.`,
     });
   };

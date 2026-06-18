@@ -1,7 +1,7 @@
 import { promisify } from "node:util";
 import { gunzip, gzip } from "node:zlib";
 import { SpanStatusCode, trace } from "@opentelemetry/api";
-import type { Redis } from "@upstash/redis";
+import type { Redis } from "ioredis";
 import { LRUCache } from "lru-cache";
 import { logger } from "../monitoring/logger.js";
 import { type PostgresCacheProvider, postgresCache } from "./postgres-cache-provider.js";
@@ -204,7 +204,7 @@ export class UnifiedCache {
       payload = `gz:${buffer.toString("base64")}`;
     }
 
-    await this.l2.set(key, payload, { ex: ttlSeconds });
+    await this.l2.set(key, payload, "EX", ttlSeconds);
   }
 
   // Helper to read and potentially decompress
@@ -390,17 +390,20 @@ export class UnifiedCache {
         let cursor = "0";
 
         do {
-          const [nextCursor, keys] = await this.l2.scan(cursor, {
-            match: redisPattern,
-            count: 100,
-          });
+          const [nextCursor, keys] = await this.l2.scan(
+            cursor,
+            "MATCH",
+            redisPattern,
+            "COUNT",
+            100,
+          );
           cursor = nextCursor;
 
           if (keys.length > 0) {
             // Apply regex filter locally to ensure precise invalidation
             const keysToDelete = regex
-              ? keys.filter((k) => regex.test(k))
-              : keys.filter((k) => k.includes(pattern));
+              ? keys.filter((k: string) => regex.test(k))
+              : keys.filter((k: string) => k.includes(pattern));
 
             if (keysToDelete.length > 0) {
               await this.l2.del(...keysToDelete);

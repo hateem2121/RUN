@@ -9,7 +9,7 @@ export const categoryReorderSchema = z.object({
     z.object({
       id: z.number(),
       sortOrder: z.number(),
-      parentId: z.number().nullable().optional(),
+      parentId: z.number().nullish(),
     }),
   ),
 });

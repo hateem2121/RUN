@@ -17,7 +17,7 @@ import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-break
  * Service for managing miscellaneous taxonomy data (Fibers, Fabrics, Certificates, Size Charts)
  * Enforces Result-based patterns and circuit breaker protection.
  */
-export class MiscService {
+class MiscService {
   // FIBERS
   async getFibers(): Promise<Result<Fiber[], AppError>> {
     try {

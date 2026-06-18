@@ -2,7 +2,7 @@ import { execSync } from "node:child_process";
 
 let cachedVersion: string | null = null;
 
-export const getAppVersion = (): string => {
+const getAppVersion = (): string => {
   if (cachedVersion) {
     return cachedVersion;
   }

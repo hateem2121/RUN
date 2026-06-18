@@ -230,7 +230,7 @@ type LoaderData = {
   batchData: TechnologyBatchResponse | null;
 };
 
-export default function Component({ loaderData }: { loaderData: LoaderData }) {
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   const { batchData } = loaderData;
 
   return <TechnologyInner batchData={batchData} />;
@@ -349,15 +349,15 @@ function TechnologyInner({ batchData }: { batchData: TechnologyBatchResponse | n
         <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col items-center text-center">
           {/* Version Badge */}
           <div className="hero-badge mb-12 inline-flex items-center gap-3 px-4 py-1.5 bg-white dark:bg-white/[0.04] border border-slate-100 dark:border-white/[0.08] shadow-sm rounded-full dark:backdrop-blur-xl">
-            <div className="w-1.5 h-1.5 bg-technology-primary dark:bg-technology-accent rounded-full shadow-[0_0_8px_rgba(0,71,171,0.5)] dark:shadow-[0_0_8px_var(--color-technology-accent)] dark:animate-pulse"></div>
-            <span className="text-[10px] font-mono font-bold text-technology-primary dark:text-technology-accent tracking-widest uppercase">
+            <div className="w-1.5 h-1.5 bg-technology-primary dark:bg-technology-accent rounded-full shadow-custom-misc-482 dark:shadow-custom-misc-483 dark:animate-pulse"></div>
+            <span className="text-custom-space-310 font-mono font-bold text-technology-primary dark:text-technology-accent tracking-widest uppercase">
               Version 2.04 Stable
             </span>
           </div>
 
           {/* Title Block */}
           <div className="hero-title flex flex-col items-center mb-12 space-y-4">
-            <Typography.H1 className="text-7xl md:text-display-lg lg:text-display-xl font-neue-stance font-bold text-black dark:text-white leading-[0.8] tracking-tight uppercase flex flex-col items-center">
+            <Typography.H1 className="text-7xl md:text-display-lg lg:text-display-xl font-neue-stance font-bold text-black dark:text-white leading-custom-misc-484 tracking-tight uppercase flex flex-col items-center">
               {firstWord && (
                 <span className="block text-slate-900 dark:text-white opacity-90">{firstWord}</span>
               )}
@@ -375,7 +375,7 @@ function TechnologyInner({ batchData }: { batchData: TechnologyBatchResponse | n
           </div>
 
           {/* Cobalt/Cyan accent bar */}
-          <div className="hero-accent h-1.5 w-24 bg-technology-primary dark:bg-technology-accent mb-14 shadow-sm dark:shadow-[0_0_15px_var(--color-technology-accent)]"></div>
+          <div className="hero-accent h-1.5 w-24 bg-technology-primary dark:bg-technology-accent mb-14 shadow-sm dark:shadow-custom-misc-485"></div>
 
           {/* Subtitle */}
           <Typography.P className="hero-desc text-base md:text-xl text-technology-body font-normal leading-relaxed max-w-2xl mb-16 tracking-wide font-helvetica">
@@ -387,7 +387,7 @@ function TechnologyInner({ batchData }: { batchData: TechnologyBatchResponse | n
           <div className="hero-cta flex justify-center group">
             <a
               href={vm.hero?.primaryCtaLink || "#"}
-              className="px-12 py-5 bg-technology-primary dark:bg-technology-accent text-white dark:text-black font-bold uppercase tracking-[0.25em] text-[10px] shadow-[0_10px_30px_-10px_rgba(0,71,171,0.5)] dark:shadow-[0_0_30px_-5px_var(--color-technology-accent)] hover:shadow-[0_15px_40px_-10px_rgba(0,71,171,0.6)] dark:hover:shadow-[0_0_50px_-5px_var(--color-technology-accent)] dark:hover:bg-white transition-all duration-500 flex items-center gap-4"
+              className="px-12 py-5 bg-technology-primary dark:bg-technology-accent text-white dark:text-black font-bold uppercase tracking-custom-misc-486 text-custom-space-311 shadow-custom-misc-487 dark:shadow-custom-misc-488 hover:shadow-custom-misc-489 dark:hover:shadow-custom-misc-490 dark:hover:bg-white transition-all duration-500 flex items-center gap-4"
             >
               {vm.hero?.primaryCtaText || "Explore Our Innovations"}
               <span className="material-symbols-outlined text-base group-hover:translate-y-1 transition-transform">
@@ -465,9 +465,9 @@ function TechnologyInner({ batchData }: { batchData: TechnologyBatchResponse | n
             </div>
 
             <div className="relative z-10 text-center max-w-4xl mx-auto">
-              <Typography.H2 className="text-6xl md:text-8xl lg:text-9xl font-neue-stance font-bold text-black dark:text-white mb-10 uppercase italic tracking-tighter leading-[0.85] dark:drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+              <Typography.H2 className="text-6xl md:text-8xl lg:text-9xl font-neue-stance font-bold text-black dark:text-white mb-10 uppercase italic tracking-tighter leading-custom-misc-491 dark:drop-shadow-custom-misc-492">
                 {vm.cta.headline.replace("?", "")} <br />
-                <span className="text-technology-primary dark:text-technology-accent dark:drop-shadow-[0_0_15px_var(--color-technology-accent)]">
+                <span className="text-technology-primary dark:text-technology-accent dark:drop-shadow-custom-misc-493">
                   Together?
                 </span>
               </Typography.H2>
@@ -480,13 +480,13 @@ function TechnologyInner({ batchData }: { batchData: TechnologyBatchResponse | n
               <div className="flex flex-col sm:flex-row gap-8 justify-center">
                 <a
                   href="/contact"
-                  className="px-14 py-6 bg-technology-primary dark:bg-technology-accent text-white dark:text-black font-bold uppercase tracking-[0.2em] shadow-2xl dark:shadow-[0_0_30px_var(--color-technology-accent)] hover:bg-technology-primary/80 dark:hover:bg-white dark:hover:shadow-[0_0_50px_rgba(255,255,255,0.6)] transition-all transform hover:-translate-y-1 text-xs"
+                  className="px-14 py-6 bg-technology-primary dark:bg-technology-accent text-white dark:text-black font-bold uppercase tracking-custom-misc-494 shadow-2xl dark:shadow-custom-misc-495 hover:bg-technology-primary/80 dark:hover:bg-white dark:hover:shadow-custom-misc-496 transition-all transform hover:-translate-y-1 text-xs"
                 >
                   {vm.cta.primaryText || "Book a Tech Demo"}
                 </a>
                 <button
                   type="button"
-                  className="px-14 py-6 border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] text-black dark:text-white font-bold uppercase tracking-[0.2em] shadow-lg hover:border-technology-primary dark:hover:border-technology-accent hover:text-technology-primary dark:hover:text-technology-accent dark:hover:shadow-[0_0_20px_var(--color-technology-accent)] transition-all text-xs dark:backdrop-blur-xl"
+                  className="px-14 py-6 border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] text-black dark:text-white font-bold uppercase tracking-custom-misc-497 shadow-lg hover:border-technology-primary dark:hover:border-technology-accent hover:text-technology-primary dark:hover:text-technology-accent dark:hover:shadow-custom-misc-498 transition-all text-xs dark:backdrop-blur-xl"
                 >
                   View Equipment Specs
                 </button>

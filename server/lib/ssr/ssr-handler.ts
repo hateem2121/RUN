@@ -5,6 +5,7 @@ import { createRequestHandler } from "@react-router/express";
 import type { Express, RequestHandler } from "express";
 import type { ServerBuild } from "react-router";
 import { logger } from "../monitoring/logger.js";
+
 // Resolve monorepo root based on process.cwd() to support both tsc (nested) and esbuild (flattened)
 // The server is typically started from the 'server' directory or the monorepo root.
 const isCwdServer = process.cwd().endsWith("server");

@@ -63,7 +63,7 @@ export function ModuleSearch({ links }: ModuleSearchProps) {
               placeholder="Type a command or search..."
               className="border-b border-white/[0.08] text-white placeholder:text-muted-foreground focus:ring-0 outline-none"
             />
-            <CommandList className="max-h-[300px] overflow-y-auto overflow-x-hidden">
+            <CommandList className="max-h-custom-space-1 overflow-y-auto overflow-x-hidden">
               <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">
                 No results found.
               </CommandEmpty>
@@ -72,7 +72,7 @@ export function ModuleSearch({ links }: ModuleSearchProps) {
                 <CommandItem
                   value="New Product"
                   onSelect={() => onSelect("/admin/products/new")}
-                  className="data-[selected=true]:bg-white/[0.06] data-[selected=true]:text-white cursor-pointer rounded-md my-1"
+                  className="data-custom-misc-1:bg-white/[0.06] data-custom-misc-2:text-white cursor-pointer rounded-md my-1"
                 >
                   <div className="mr-3 flex h-6 w-6 items-center justify-center rounded-sm bg-blue-500/20 text-blue-500">
                     <Plus className="h-4 w-4" />
@@ -82,7 +82,7 @@ export function ModuleSearch({ links }: ModuleSearchProps) {
                 <CommandItem
                   value="Upload Media"
                   onSelect={() => onSelect("/admin/media")}
-                  className="data-[selected=true]:bg-white/[0.06] data-[selected=true]:text-white cursor-pointer rounded-md my-1"
+                  className="data-custom-misc-3:bg-white/[0.06] data-custom-misc-4:text-white cursor-pointer rounded-md my-1"
                 >
                   <div className="mr-3 flex h-6 w-6 items-center justify-center rounded-sm bg-brand-manufacturing/20 text-brand-manufacturing">
                     <Upload className="h-4 w-4" />
@@ -92,7 +92,7 @@ export function ModuleSearch({ links }: ModuleSearchProps) {
                 <CommandItem
                   value="New Blog Post"
                   onSelect={() => onSelect("/admin/blog/new")}
-                  className="data-[selected=true]:bg-white/[0.06] data-[selected=true]:text-white cursor-pointer rounded-md my-1"
+                  className="data-custom-misc-5:bg-white/[0.06] data-custom-misc-6:text-white cursor-pointer rounded-md my-1"
                 >
                   <div className="mr-3 flex h-6 w-6 items-center justify-center rounded-sm bg-emerald-500/20 text-emerald-500">
                     <FileText className="h-4 w-4" />
@@ -102,7 +102,7 @@ export function ModuleSearch({ links }: ModuleSearchProps) {
                 <CommandItem
                   value="View Inquiries"
                   onSelect={() => onSelect("/admin/inquiries")}
-                  className="data-[selected=true]:bg-white/[0.06] data-[selected=true]:text-white cursor-pointer rounded-md my-1"
+                  className="data-custom-misc-7:bg-white/[0.06] data-custom-misc-8:text-white cursor-pointer rounded-md my-1"
                 >
                   <div className="mr-3 flex h-6 w-6 items-center justify-center rounded-sm bg-purple-500/20 text-purple-500">
                     <Inbox className="h-4 w-4" />
@@ -119,7 +119,7 @@ export function ModuleSearch({ links }: ModuleSearchProps) {
                     key={link.href}
                     value={link.label}
                     onSelect={() => onSelect(link.href)}
-                    className="data-[selected=true]:bg-white/[0.06] data-[selected=true]:text-white cursor-pointer rounded-md my-1"
+                    className="data-custom-misc-9:bg-white/[0.06] data-custom-misc-10:text-white cursor-pointer rounded-md my-1"
                   >
                     {link.icon && (
                       <div className="mr-3 flex h-6 w-6 items-center justify-center text-muted-foreground">

@@ -11,17 +11,25 @@ import type {
   ManufacturingProcess,
   ManufacturingQuality,
 } from "../../shared/index.js";
+import {
+  insertManufacturingCapabilitySchema,
+  insertManufacturingCaseStudySchema,
+  insertManufacturingHeroSchema,
+  insertManufacturingProcessSchema,
+  insertManufacturingQualitySchema,
+} from "../../shared/index.js";
 import { twoTierBatchCache } from "../lib/cache/two-tier-batch.js";
 import { manufacturingRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
+import { sanitizeHtml } from "../lib/sanitize-html.js";
 
 /**
  * Service for managing Manufacturing domain content
  * Enforces Result-based patterns and circuit breaker protection
  */
-export class ManufacturingService {
+class ManufacturingService {
   /**
    * Retrieves all manufacturing processes with tiered caching
    */
@@ -82,7 +90,14 @@ export class ManufacturingService {
     try {
       const created = await withCircuit(
         "create-manufacturing-process",
-        () => manufacturingRepository.createManufacturingProcess(data),
+        () =>
+          manufacturingRepository.createManufacturingProcess(
+            (() => {
+              const parsed = insertManufacturingProcessSchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -103,7 +118,15 @@ export class ManufacturingService {
     try {
       const updated = await withCircuit(
         `update-manufacturing-process-${id}`,
-        () => manufacturingRepository.updateManufacturingProcess(id, data),
+        () =>
+          manufacturingRepository.updateManufacturingProcess(
+            id,
+            (() => {
+              const parsed = insertManufacturingProcessSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -192,7 +215,14 @@ export class ManufacturingService {
     try {
       const created = await withCircuit(
         "create-manufacturing-capability",
-        () => manufacturingRepository.createManufacturingCapability(data),
+        () =>
+          manufacturingRepository.createManufacturingCapability(
+            (() => {
+              const parsed = insertManufacturingCapabilitySchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
       return ok(created);
@@ -209,7 +239,15 @@ export class ManufacturingService {
     try {
       const updated = await withCircuit(
         `update-manufacturing-capability-${id}`,
-        () => manufacturingRepository.updateManufacturingCapability(id, data),
+        () =>
+          manufacturingRepository.updateManufacturingCapability(
+            id,
+            (() => {
+              const parsed = insertManufacturingCapabilitySchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
       return ok(updated);
@@ -271,7 +309,14 @@ export class ManufacturingService {
     try {
       const created = await withCircuit(
         "create-manufacturing-case-study",
-        () => manufacturingRepository.createManufacturingCaseStudy(data),
+        () =>
+          manufacturingRepository.createManufacturingCaseStudy(
+            (() => {
+              const parsed = insertManufacturingCaseStudySchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
       return ok(created);
@@ -288,7 +333,15 @@ export class ManufacturingService {
     try {
       const updated = await withCircuit(
         `update-manufacturing-case-study-${id}`,
-        () => manufacturingRepository.updateManufacturingCaseStudy(id, data),
+        () =>
+          manufacturingRepository.updateManufacturingCaseStudy(
+            id,
+            (() => {
+              const parsed = insertManufacturingCaseStudySchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
       return ok(updated);
@@ -364,7 +417,14 @@ export class ManufacturingService {
     try {
       const updated = await withCircuit(
         "update-manufacturing-hero",
-        () => manufacturingRepository.updateManufacturingHero(data),
+        () =>
+          manufacturingRepository.updateManufacturingHero(
+            (() => {
+              const parsed = insertManufacturingHeroSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
       return ok(updated);
@@ -410,7 +470,14 @@ export class ManufacturingService {
     try {
       const created = await withCircuit(
         "create-manufacturing-quality",
-        () => manufacturingRepository.createManufacturingQuality(data),
+        () =>
+          manufacturingRepository.createManufacturingQuality(
+            (() => {
+              const parsed = insertManufacturingQualitySchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
       return ok(created);
@@ -427,7 +494,15 @@ export class ManufacturingService {
     try {
       const updated = await withCircuit(
         `update-manufacturing-quality-${id}`,
-        () => manufacturingRepository.updateManufacturingQuality(id, data),
+        () =>
+          manufacturingRepository.updateManufacturingQuality(
+            id,
+            (() => {
+              const parsed = insertManufacturingQualitySchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
       return ok(updated);

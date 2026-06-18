@@ -94,7 +94,7 @@ async function handleColdStart() {
   unifiedCache.warm().catch((err) => logger.warn("Unified cache warming failed", err));
 
   // Trigger initial database connectivity load
-  db.execute(sql`SELECT 1`).catch(() => {});
+  db.execute(sql`SELECT 1`).catch((err) => logger.error("Database warmup failed", err));
 }
 
 async function performInitialHealthCheck() {

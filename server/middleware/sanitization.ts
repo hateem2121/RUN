@@ -1,6 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
 import mongoSanitize from "express-mongo-sanitize";
-import DOMPurify from "isomorphic-dompurify";
 import { logger } from "../lib/monitoring/logger.js";
 
 /**
@@ -8,62 +7,9 @@ import { logger } from "../lib/monitoring/logger.js";
  * Prevents NoSQL Injection and XSS attacks by sanitizing request data.
  */
 
-// 1. NoSQL Injection Prevention
-// 1. NoSQL Injection Prevention
-// We will manually apply this to ensure we handle read-only properties gracefully
-
-// 2. XSS Prevention
-// Recursively sanitizes strings in an object against XSS
-function sanitizeObject<T>(obj: T): T {
-  if (!obj) return obj;
-
-  if (typeof obj === "string") {
-    return DOMPurify.sanitize(obj, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }) as unknown as T;
-  }
-
-  if (Array.isArray(obj)) {
-    return obj.map((item) => sanitizeObject(item)) as unknown as T;
-  }
-
-  if (typeof obj === "object") {
-    const cleanObj = {} as Record<string, unknown>;
-    for (const key of Object.keys(obj as object)) {
-      cleanObj[key] = sanitizeObject((obj as Record<string, unknown>)[key]);
-    }
-    return cleanObj as unknown as T;
-  }
-
-  return obj;
-}
-
-export function xssSanitizer(req: Request, _res: Response, next: NextFunction) {
-  if (req.body) {
-    try {
-      req.body = sanitizeObject(req.body);
-    } catch (_e) {
-      // Ignore if read-only
-    }
-  }
-  if (req.query) {
-    try {
-      req.query = sanitizeObject(req.query);
-    } catch (_e) {
-      // Ignore if read-only
-    }
-  }
-  if (req.params) {
-    try {
-      req.params = sanitizeObject(req.params);
-    } catch (_e) {
-      // Ignore if read-only
-    }
-  }
-  next();
-}
-
 // Combined Middleware
-export function requestSanitization(req: Request, res: Response, next: NextFunction) {
-  // 1. NoSQL Injection Prevention
+export function requestSanitization(req: Request, _res: Response, next: NextFunction) {
+  // 1. NoSQL Injection Prevention (Legacy Support)
   try {
     if (req.body) {
       req.body = mongoSanitize.sanitize(req.body);
@@ -86,6 +32,8 @@ export function requestSanitization(req: Request, res: Response, next: NextFunct
     logger.warn("[Sanitization] Failed to run NoSQL sanitizer", error);
   }
 
-  // 2. XSS Prevention
-  xssSanitizer(req, res, next);
+  // 2. Global XSS Prevention removed to support TipTap payloads.
+  // XSS sanitization must now be handled at the individual service boundary
+  // using Zod schemas and service-specific DOMPurify passes.
+  next();
 }

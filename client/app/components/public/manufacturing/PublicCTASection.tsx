@@ -7,18 +7,18 @@ export function PublicCTASection() {
     <ManufacturingErrorBoundary>
       <section className="py-32 relative bg-manufacturing-bg border-t border-manufacturing-accent/20 overflow-hidden">
         {/* Background Elements */}
-        <div className="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 400 400%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')] pointer-events-none mix-blend-overlay"></div>
+        <div className="absolute inset-0 opacity-20 bg-custom-misc-203 pointer-events-none mix-blend-overlay"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-manufacturing-accent/5 to-manufacturing-bg pointer-events-none"></div>
 
         <div className="max-w-5xl mx-auto px-6 relative z-10 text-center">
           <div className="inline-flex items-center gap-3 bg-black/40 border border-manufacturing-accent/30 px-4 py-2 mb-8 backdrop-blur-md">
             <span className="w-2 h-2 bg-manufacturing-accent rounded-none rotate-45 animate-pulse"></span>
-            <span className="text-manufacturing-accent text-[10px] uppercase font-mono tracking-widest font-bold">
+            <span className="text-manufacturing-accent text-custom-space-193 uppercase font-mono tracking-widest font-bold">
               New Accounts Open for Q3
             </span>
           </div>
 
-          <h2 className="text-5xl md:text-7xl font-neue-stance font-bold text-white uppercase tracking-tighter mb-8 italic skew-x-[-2deg] leading-[0.9]">
+          <h2 className="text-5xl md:text-7xl font-neue-stance font-bold text-white uppercase tracking-tighter mb-8 italic skew-x-custom-misc-204 leading-custom-misc-205">
             Ready to Manufacture <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-manufacturing-accent to-white">
               Excellence?
@@ -33,9 +33,9 @@ export function PublicCTASection() {
           <div className="flex flex-col md:flex-row items-center justify-center gap-6">
             <Link
               to="/contact"
-              className="w-full md:w-auto px-10 py-5 bg-manufacturing-accent text-[#0A0A0A] font-bold uppercase tracking-widest text-sm hover:bg-white transition-colors flex items-center justify-center gap-3 group skew-x-[-10deg] hover:shadow-[0_0_30px_rgba(212,168,83,0.4)]"
+              className="w-full md:w-auto px-10 py-5 bg-manufacturing-accent text-custom-color-234 font-bold uppercase tracking-widest text-sm hover:bg-white transition-colors flex items-center justify-center gap-3 group skew-x-custom-misc-206 hover:shadow-custom-misc-207"
             >
-              <span className="skew-x-[10deg] flex items-center gap-3">
+              <span className="skew-x-custom-misc-208 flex items-center gap-3">
                 Request a Quote
                 <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
               </span>
@@ -43,9 +43,9 @@ export function PublicCTASection() {
 
             <Link
               to="/resources/lookbook"
-              className="w-full md:w-auto px-10 py-5 border border-white/20 hover:border-manufacturing-accent text-white hover:text-manufacturing-accent bg-white/[0.02] backdrop-blur-sm transition-all font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-3 group skew-x-[-10deg]"
+              className="w-full md:w-auto px-10 py-5 border border-white/20 hover:border-manufacturing-accent text-white hover:text-manufacturing-accent bg-white/[0.02] backdrop-blur-sm transition-all font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-3 group skew-x-custom-misc-209"
             >
-              <span className="skew-x-[10deg] flex items-center gap-3">
+              <span className="skew-x-custom-misc-210 flex items-center gap-3">
                 <Download className="w-4 h-4" />
                 Download 2026 Lookbook
               </span>

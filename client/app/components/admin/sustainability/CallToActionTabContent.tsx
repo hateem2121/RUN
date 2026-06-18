@@ -111,7 +111,7 @@ export function CallToActionTabContent({
                 onChange={(e) => onLocalUpdate({ callToActionDescription: e.target.value })}
                 placeholder="Articulate the final value proposition and invitation to engage..."
                 rows={4}
-                className="bg-white/5 border-white/10 text-white rounded-xl min-h-[120px] focus:ring-emerald-500/50 placeholder:text-white/20 resize-none"
+                className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-65 focus:ring-emerald-500/50 placeholder:text-white/20 resize-none"
               />
             </div>
           </div>
@@ -159,7 +159,7 @@ export function CallToActionTabContent({
             <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="size-3 text-emerald-400" />
-                <span className="text-[8px] font-bold text-emerald-400 uppercase tracking-widest">
+                <span className="text-custom-space-66 font-bold text-emerald-400 uppercase tracking-widest">
                   UX Recommendation
                 </span>
               </div>
@@ -191,19 +191,19 @@ export function CallToActionTabContent({
           </DialogHeader>
 
           <div className="px-8 pb-8 flex justify-center">
-            <div className="aspect-[16/9] w-full rounded-huge border-[8px] border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5 p-8 flex flex-col items-center justify-center text-center">
+            <div className="aspect-custom-misc-73 w-full rounded-huge border-custom-space-67 border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5 p-8 flex flex-col items-center justify-center text-center">
               <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/10 to-black z-0" />
 
-              <div className="relative z-10 space-y-4 max-w-[320px]">
+              <div className="relative z-10 space-y-4 max-w-custom-space-68">
                 <h3 className="text-2xl font-bold text-white tracking-tight leading-tight">
                   {localForm.callToActionTitle || "Join the Future"}
                 </h3>
-                <p className="text-xxs text-white/50 leading-relaxed max-w-[280px] mx-auto">
+                <p className="text-xxs text-white/50 leading-relaxed max-w-custom-space-69 mx-auto">
                   {localForm.callToActionDescription ||
                     "Partner with us to redefine the environmental standards of global manufacturing."}
                 </p>
                 <div className="pt-2">
-                  <div className="inline-flex items-center gap-2 px-8 py-3 bg-emerald-600 rounded-full text-white text-xxs font-bold uppercase tracking-[0.2em] shadow-lg shadow-emerald-500/20">
+                  <div className="inline-flex items-center gap-2 px-8 py-3 bg-emerald-600 rounded-full text-white text-xxs font-bold uppercase tracking-custom-misc-74 shadow-lg shadow-emerald-500/20">
                     {localForm.callToActionButtonText || "Get Started"}
                     <Send className="size-3 ml-1" />
                   </div>

@@ -3,6 +3,7 @@ import type { AboutMapLocation, InsertAboutMapLocation } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Building2, Download, Edit, MapPin, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { CustomDropdown } from "@/components/admin/CustomDropdown";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,11 +18,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 export function AboutLocationsTab() {
-  const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingLocation, setEditingLocation] = useState<AboutMapLocation | null>(null);
   const [activeTab, setActiveTab] = useState<"client" | "facility">("facility");
@@ -53,15 +52,11 @@ export function AboutLocationsTab() {
         queryKey: [ABOUT_API.LOCATIONS],
       });
       getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
-      toast({ title: "Success", description: "Location added successfully" });
+      toast.success("Success", { description: "Location added successfully" });
       handleCloseDialog();
     },
     onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to add location",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: "Failed to add location" });
     },
   });
 
@@ -78,15 +73,11 @@ export function AboutLocationsTab() {
         queryKey: [ABOUT_API.LOCATIONS],
       });
       getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
-      toast({ title: "Success", description: "Location updated successfully" });
+      toast.success("Success", { description: "Location updated successfully" });
       handleCloseDialog();
     },
     onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update location",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: "Failed to update location" });
     },
   });
 
@@ -100,14 +91,10 @@ export function AboutLocationsTab() {
         queryKey: [ABOUT_API.LOCATIONS],
       });
       getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
-      toast({ title: "Success", description: "Location deleted successfully" });
+      toast.success("Success", { description: "Location deleted successfully" });
     },
     onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to delete location",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: "Failed to delete location" });
     },
   });
 

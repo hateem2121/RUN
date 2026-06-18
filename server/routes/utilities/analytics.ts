@@ -86,38 +86,30 @@ router.get("/vitals", authService.requireAdmin, async (_req, res) => {
     return;
   }
 
-  try {
-    const results: Record<string, unknown[]> = {};
+  const results: Record<string, unknown[]> = {};
 
-    const promises = VITAL_METRIC_NAMES.map(async (metric) => {
-      const listKey = `vitals:${metric}`;
-      const timeout = new Promise<string[]>((resolve) => setTimeout(() => resolve([]), 300));
+  const promises = VITAL_METRIC_NAMES.map(async (metric) => {
+    const listKey = `vitals:${metric}`;
+    const timeout = new Promise<string[]>((resolve) => setTimeout(() => resolve([]), 300));
 
-      const rawEntries = await Promise.race([
-        redis.lrange(listKey, 0, 99).catch(() => []),
-        timeout,
-      ]);
+    const rawEntries = await Promise.race([redis.lrange(listKey, 0, 99).catch(() => []), timeout]);
 
-      results[metric] = (rawEntries as unknown as (string | unknown)[]).map((entry) => {
-        try {
-          return typeof entry === "string" ? JSON.parse(entry) : entry;
-        } catch {
-          return entry;
-        }
-      });
+    results[metric] = (rawEntries as unknown as (string | unknown)[]).map((entry) => {
+      try {
+        return typeof entry === "string" ? JSON.parse(entry) : entry;
+      } catch {
+        return entry;
+      }
     });
+  });
 
-    await Promise.all(promises);
+  await Promise.all(promises);
 
-    res.json({
-      status: "ok",
-      metrics: results,
-      retrievedAt: new Date().toISOString(),
-    });
-  } catch (err) {
-    logger.error("[Analytics] Failed to retrieve vitals from Redis:", err);
-    res.status(500).json({ error: "Failed to retrieve vitals data" });
-  }
+  res.json({
+    status: "ok",
+    metrics: results,
+    retrievedAt: new Date().toISOString(),
+  });
 });
 
 export default router;

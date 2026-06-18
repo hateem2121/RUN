@@ -5,13 +5,14 @@
  */
 
 import { logger } from "../monitoring/logger.js";
+
 // import { z } from "zod";
 
 // ============================================================================
 // SAFE ID PARSING UTILITIES
 // ============================================================================
 
-export interface SafeIdResult {
+interface SafeIdResult {
   isValid: boolean;
   id?: number | undefined;
   error?: string | undefined;
@@ -22,7 +23,7 @@ export interface SafeIdResult {
 /**
  * Safely parses a string parameter to an integer with comprehensive validation
  */
-export function safeParseId(
+function safeParseId(
   param: string | undefined,
   context: string = "entity",
   requestInfo?: {
@@ -131,7 +132,7 @@ export function validateIdParam(
 // DATA TRANSFORMATION UTILITIES
 // ============================================================================
 
-export function transformNullToUndefined<T>(obj: T): T {
+function transformNullToUndefined<T>(obj: T): T {
   if (obj === null) {
     return undefined as T;
   }
@@ -459,24 +460,6 @@ export function correctMimeType(originalMimeType: string, filename: string): str
   // Return original if it looks correct
   return originalMimeType || "application/octet-stream";
 }
-
-export default {
-  transformNullToUndefined,
-  prepareForValidation,
-  cleanApiData,
-  validateAndSanitizeInput,
-  sanitizeString,
-  validateFilename,
-  validateMediaId,
-  setSecureCORSHeaders,
-  MediaUrlBuilder,
-  responseOptimizer,
-  UrlPathService,
-  RetryManager,
-  migrationService,
-  correctMimeType,
-  safeSerialize,
-};
 
 /**
  * Removes undefined properties from an object to satisfy exactOptionalPropertyTypes.

@@ -1,3 +1,4 @@
+import { trace } from "@opentelemetry/api";
 import { err, ok, type Result } from "neverthrow";
 import type {
   AboutBatchResponse,
@@ -14,16 +15,27 @@ import type {
   InsertAboutTeamMessage,
   InsertAboutTimelineEntry,
 } from "../../shared/index.js";
+import {
+  insertAboutHeroSchema,
+  insertAboutMapLocationSchema,
+  insertAboutSectionSchema,
+  insertAboutStatisticSchema,
+  insertAboutTeamMessageSchema,
+  insertAboutTimelineEntrySchema,
+} from "../../shared/index.js";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { aboutRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
+import { sanitizeHtml } from "../lib/sanitize-html.js";
 
 /**
  * Service for managing About page domain content
  * Enforces Result-based patterns and circuit breaker protection
  */
+const tracer = trace.getTracer("run-remix-services");
+
 export class AboutService {
   /**
    * Invalidates all about page related cache entries
@@ -38,29 +50,43 @@ export class AboutService {
 
   // Hero
   async getHero(includeInactive = false): Promise<Result<AboutHero, AppError>> {
-    try {
-      const hero = await withCircuit(
-        "get-about-hero",
-        () => aboutRepository.getAboutHero(includeInactive),
-        DB_CIRCUIT_OPTIONS,
-      );
+    return tracer.startActiveSpan("AboutService.getHero", async (span) => {
+      try {
+        const hero = await withCircuit(
+          "get-about-hero",
+          () => aboutRepository.getAboutHero(includeInactive),
+          DB_CIRCUIT_OPTIONS,
+        );
 
-      if (!hero) {
-        return err(new NotFoundError("About hero configuration"));
+        if (!hero) {
+          span.recordException(new Error("About hero configuration not found"));
+          span.end();
+          return err(new NotFoundError("About hero configuration"));
+        }
+
+        span.end();
+        return ok(hero);
+      } catch (error) {
+        logger.error("[AboutService] Failed to fetch hero", error as Error);
+        span.recordException(error as Error);
+        span.end();
+        return err(new InternalError("Failed to fetch about hero configuration", { error }));
       }
-
-      return ok(hero);
-    } catch (error) {
-      logger.error("[AboutService] Failed to fetch hero", error as Error);
-      return err(new InternalError("Failed to fetch about hero configuration", { error }));
-    }
+    });
   }
 
   async updateHero(data: Partial<InsertAboutHero>): Promise<Result<AboutHero, AppError>> {
     try {
       const updated = await withCircuit(
         "update-about-hero",
-        () => aboutRepository.updateAboutHero(data),
+        () =>
+          aboutRepository.updateAboutHero(
+            (() => {
+              const parsed = insertAboutHeroSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -114,7 +140,14 @@ export class AboutService {
     try {
       const created = await withCircuit(
         "create-about-timeline",
-        () => aboutRepository.createAboutTimelineEntry(data),
+        () =>
+          aboutRepository.createAboutTimelineEntry(
+            (() => {
+              const parsed = insertAboutTimelineEntrySchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -133,7 +166,15 @@ export class AboutService {
     try {
       const updated = await withCircuit(
         `update-about-timeline-${id}`,
-        () => aboutRepository.updateAboutTimelineEntry(id, data),
+        () =>
+          aboutRepository.updateAboutTimelineEntry(
+            id,
+            (() => {
+              const parsed = insertAboutTimelineEntrySchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -221,7 +262,14 @@ export class AboutService {
     try {
       const created = await withCircuit(
         "create-about-location",
-        () => aboutRepository.createAboutMapLocation(data),
+        () =>
+          aboutRepository.createAboutMapLocation(
+            (() => {
+              const parsed = insertAboutMapLocationSchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -240,7 +288,15 @@ export class AboutService {
     try {
       const updated = await withCircuit(
         `update-about-location-${id}`,
-        () => aboutRepository.updateAboutMapLocation(id, data),
+        () =>
+          aboutRepository.updateAboutMapLocation(
+            id,
+            (() => {
+              const parsed = insertAboutMapLocationSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -326,7 +382,14 @@ export class AboutService {
     try {
       const created = await withCircuit(
         "create-about-section",
-        () => aboutRepository.createAboutSection(data),
+        () =>
+          aboutRepository.createAboutSection(
+            (() => {
+              const parsed = insertAboutSectionSchema.parse(data);
+              if (parsed.content) parsed.content = sanitizeHtml(parsed.content);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -345,7 +408,15 @@ export class AboutService {
     try {
       const updated = await withCircuit(
         `update-about-section-${id}`,
-        () => aboutRepository.updateAboutSection(id, data),
+        () =>
+          aboutRepository.updateAboutSection(
+            id,
+            (() => {
+              const parsed = insertAboutSectionSchema.partial().parse(data);
+              if (parsed.content) parsed.content = sanitizeHtml(parsed.content);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -431,7 +502,14 @@ export class AboutService {
     try {
       const created = await withCircuit(
         "create-about-statistic",
-        () => aboutRepository.createAboutStatistic(data),
+        () =>
+          aboutRepository.createAboutStatistic(
+            (() => {
+              const parsed = insertAboutStatisticSchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -450,7 +528,15 @@ export class AboutService {
     try {
       const updated = await withCircuit(
         `update-about-statistic-${id}`,
-        () => aboutRepository.updateAboutStatistic(id, data),
+        () =>
+          aboutRepository.updateAboutStatistic(
+            id,
+            (() => {
+              const parsed = insertAboutStatisticSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -528,7 +614,14 @@ export class AboutService {
     try {
       const updated = await withCircuit(
         "update-about-team-message",
-        () => aboutRepository.updateAboutTeamMessage(data),
+        () =>
+          aboutRepository.updateAboutTeamMessage(
+            (() => {
+              const parsed = insertAboutTeamMessageSchema.partial().parse(data);
+              if (parsed.message) parsed.message = sanitizeHtml(parsed.message);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 

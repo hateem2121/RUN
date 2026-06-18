@@ -4,7 +4,7 @@
  * These spawn `claude -p "/context-save ..."` with the Skill tool enabled
  * and the skill installed in the workdir's .claude/skills/. Unlike the
  * older hand-fed-section tests, these exercise the ROUTING path — the
- * exact thing that broke with the /checkpoint name collision and the
+ * exact thing that broke with the /context-save name collision and the
  * whole reason this rename exists. If /context-save stops routing to
  * the skill (e.g., upstream ships a built-in by that name), these fail.
  *
@@ -359,7 +359,7 @@ Do NOT use AskUserQuestion.`,
   testConcurrentIfSelected('context-restore-legacy-compat', async () => {
     const { workDir, gstackHome, slug } = setupWorkdir('legacy');
 
-    // Seed a save file in the pre-rename format (exactly how old /checkpoint
+    // Seed a save file in the pre-rename format (exactly how old /context-save
     // wrote them). The storage dir name is still "checkpoints/" — kept for
     // exactly this reason.
     seedSave(gstackHome, slug, '20260301-120000-legacy-pre-rename-work.md',
@@ -402,7 +402,7 @@ Do NOT use AskUserQuestion.`,
     const routedToRestore = skillCalls(result).includes('context-restore');
     const exitOk = ['success', 'error_max_turns'].includes(result.exitReason);
 
-    recordE2E(evalCollector, 'legacy /checkpoint file loads via /context-restore', 'Context Skills E2E', result, {
+    recordE2E(evalCollector, 'legacy /context-save file loads via /context-restore', 'Context Skills E2E', result, {
       passed: exitOk && routedToRestore && loadedLegacy,
     });
 

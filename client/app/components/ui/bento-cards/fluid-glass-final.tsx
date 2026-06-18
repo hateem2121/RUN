@@ -74,7 +74,7 @@ export const FluidGlass = memo(function FluidGlass({
   return (
     <div
       ref={containerRef}
-      className="relative h-full w-full min-h-[400px]"
+      className="relative h-full w-full min-h-custom-space-267"
       style={{ perspective: "600px", perspectiveOrigin: "center" }}
     >
       <div

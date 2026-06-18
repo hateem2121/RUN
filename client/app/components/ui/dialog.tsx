@@ -65,8 +65,8 @@ const DialogOverlay = ({
         "pointer-events-none fixed inset-0",
         getZIndexClass(nestingLevel, true),
         baseOpacity,
-        "data-[state=closed]:animate-out data-[state=open]:animate-in",
-        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+        "data-custom-misc-374:animate-out data-custom-misc-375:animate-in",
+        "data-custom-misc-376:fade-out-0 data-custom-misc-377:fade-in-0",
         "transition-all duration-300 ease-out",
         nestingLevel > 0 && "nested-modal-overlay",
         className,
@@ -171,7 +171,7 @@ const DialogContent = ({
       if (contentType === "media-library") {
         return {
           width: preferredSize === "full" ? "max-w-vw-95" : baseSize,
-          height: preferredSize === "full" ? "h-[95vh]" : "h-modal-lg",
+          height: preferredSize === "full" ? "h-custom-space-268" : "h-modal-lg",
           padding: nestingLevel > 0 ? "p-4" : "p-6",
           layout: "flex flex-col overflow-hidden",
         };
@@ -229,7 +229,7 @@ const DialogContent = ({
         const fallbackSizes = {
           0: { width: "max-w-lg", height: "auto" }, // Base modal
           1: { width: "max-w-4xl", height: "max-h-modal-sm" }, // Nested - assume might contain media
-          2: { width: "max-w-2xl", height: "max-h-[75vh]" }, // Second-level nested
+          2: { width: "max-w-2xl", height: "max-h-custom-space-269" }, // Second-level nested
         };
 
         const fallback = fallbackSizes[nestingLevel as keyof typeof fallbackSizes] || {
@@ -313,14 +313,14 @@ const DialogContent = ({
         }}
         style={positionStyles}
         className={cn(
-          "fixed top-[50%] left-[50%] w-full translate-x-[-50%] translate-y-[-50%]",
+          "fixed top-custom-space-270 left-custom-space-271 w-full translate-x-custom-space-272 translate-y-custom-space-273",
           modalSizeAndLayout.layout,
           "gap-4 border bg-background shadow-lg duration-300",
-          "data-[state=closed]:animate-out data-[state=open]:animate-in",
-          "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-          "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-          "data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%]",
-          "data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]",
+          "data-custom-misc-378:animate-out data-custom-misc-379:animate-in",
+          "data-custom-misc-380:fade-out-0 data-custom-misc-381:fade-in-0",
+          "data-custom-misc-382:zoom-out-95 data-custom-misc-383:zoom-in-95",
+          "data-custom-misc-384:slide-out-to-left-1/2 data-custom-misc-385:slide-out-to-top-custom-space-274",
+          "data-custom-misc-386:slide-in-from-left-1/2 data-custom-misc-387:slide-in-from-top-custom-space-275",
           "sm:rounded-lg",
           "focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2",
           // Apply content-aware sizing
@@ -373,7 +373,7 @@ const DialogContent = ({
                 "transition-all duration-200 hover:scale-110 hover:opacity-100",
                 "focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2",
                 "disabled:pointer-events-none",
-                "data-[state=open]:bg-accent data-[state=open]:text-muted-foreground",
+                "data-custom-misc-388:bg-accent data-custom-misc-389:text-muted-foreground",
                 // Enhanced styling for nested modals
                 nestingLevel > 0 && "border bg-background/80",
               )}
@@ -479,7 +479,7 @@ interface NestedDialogProps {
   contentType?: "default" | "media-library" | "form" | "fullscreen";
 }
 
-function NestedDialog({
+export function NestedDialog({
   open,
   onOpenChange,
   trigger,
@@ -527,15 +527,11 @@ function NestedDialog({
 
 export {
   Dialog,
-  DialogPortal,
-  DialogOverlay,
   DialogClose,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogBody,
   DialogFooter,
   DialogTitle,
   DialogDescription,
-  NestedDialog,
 };

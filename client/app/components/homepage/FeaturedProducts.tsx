@@ -7,7 +7,6 @@ import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import { useCursorStore } from "@/stores/useCursorStore";
-import { useScroll } from "../../hooks/use-scroll";
 import { FEATURED_PRODUCTS } from "./constants";
 import type { HomepageFeaturedSettings, ProductItem } from "./types";
 
@@ -20,7 +19,6 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const { setCursor, resetCursor } = useCursorStore();
-  const { scroll } = useScroll();
 
   useGSAP(
     () => {
@@ -59,14 +57,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
 
   const handleCatalogueClick = () => {
     const catalogueSection = document.getElementById("catalogue");
-    if (catalogueSection && scroll) {
-      // Use Locomotive/Lenis scrollTo for synchronized movement
-      scroll.scrollTo(catalogueSection, {
-        duration: 1.2,
-        easing: (t: number) => Math.min(1, 1.001 - 2 ** (-10 * t)),
-      });
-    } else if (catalogueSection) {
-      // Fallback if scroll instance is not ready
+    if (catalogueSection) {
       catalogueSection.scrollIntoView({ behavior: "smooth" });
     }
   };
@@ -81,7 +72,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
         <div className="mb-16 flex items-end justify-between border-b border-foreground/10 pb-8">
           <h2
             id="featured-products-heading"
-            className="text-[12vw] leading-[0.9] font-bold uppercase md:text-[5vw]"
+            className="text-custom-space-136 leading-custom-misc-150 font-bold uppercase md:text-custom-space-137"
           >
             {settings?.title || "Archive"} <br /> 24/25
           </h2>

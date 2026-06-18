@@ -2,14 +2,14 @@ import sharp from "sharp";
 import { appStorageService } from "./lib/storage/app-service.js";
 import { generateOrganizedStoragePath } from "./routes/media/utils.js";
 
-export interface ImageVariants {
+interface ImageVariants {
   thumbnail: string; // 200px - for cards/grids
   medium: string; // 800px - for product pages
   large: string; // 1600px - for lightbox/detail
   original: string; // Compressed original (<500KB)
 }
 
-export interface ImageMetadata {
+interface ImageMetadata {
   width: number;
   height: number;
   thumbnailFilename?: string | undefined;

@@ -18,7 +18,7 @@ const AlertDialogOverlay = ({
 }) => (
   <AlertDialogPrimitive.Overlay
     className={cn(
-      "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-modal-backdrop bg-black/80 data-[state=closed]:animate-out data-[state=open]:animate-in",
+      "data-custom-misc-347:fade-out-0 data-custom-misc-348:fade-in-0 fixed inset-0 z-modal-backdrop bg-black/80 data-custom-misc-349:animate-out data-custom-misc-350:animate-in",
       className,
     )}
     {...props}
@@ -39,7 +39,7 @@ const AlertDialogContent = ({
     <AlertDialogPrimitive.Content
       ref={ref}
       className={cn(
-        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] fixed top-1/2 left-1/2 z-modal grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border border-border bg-background p-6 shadow-lg duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in sm:rounded-lg",
+        "data-custom-misc-351:fade-out-0 data-custom-misc-352:fade-in-0 data-custom-misc-353:zoom-out-95 data-custom-misc-354:zoom-in-95 data-custom-misc-355:slide-out-to-left-1/2 data-custom-misc-356:slide-out-to-top-custom-space-258 data-custom-misc-357:slide-in-from-left-1/2 data-custom-misc-358:slide-in-from-top-custom-space-259 fixed top-1/2 left-1/2 z-modal grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border border-border bg-background p-6 shadow-lg duration-200 data-custom-misc-359:animate-out data-custom-misc-360:animate-in sm:rounded-lg",
         className,
       )}
       {...props}
@@ -119,8 +119,6 @@ AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName;
 
 export {
   AlertDialog,
-  AlertDialogPortal,
-  AlertDialogOverlay,
   AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogHeader,

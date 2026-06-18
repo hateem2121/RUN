@@ -1452,7 +1452,7 @@ describe('preamble routing injection', () => {
     expect(shipContent).toContain('invoke /qa');
   });
 
-  test('routing section uses renamed checkpoint skills (not stale /checkpoint)', () => {
+  test('routing section uses renamed checkpoint skills (not stale /context-save)', () => {
     expect(shipContent).toContain('invoke /context-save');
     expect(shipContent).toContain('invoke /context-restore');
     expect(shipContent).not.toContain('invoke checkpoint');

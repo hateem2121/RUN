@@ -22,7 +22,8 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,7 +39,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 import { RoadmapKanbanBoard } from "./RoadmapKanbanBoard";
@@ -72,7 +72,6 @@ export interface TechnologyRoadmap {
 }
 
 export function TechnologyRoadmapManagement() {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // State
@@ -124,7 +123,7 @@ export function TechnologyRoadmapManagement() {
       queryClient.invalidateQueries({ queryKey: ["/api/technology-roadmap"] });
       setShowRoadmapDialog(false);
       resetForm();
-      toast({ title: "Success", description: "Milestone created" });
+      toast.success("Success", { description: "Milestone created" });
     },
   });
 
@@ -138,7 +137,7 @@ export function TechnologyRoadmapManagement() {
       queryClient.invalidateQueries({ queryKey: ["/api/technology-roadmap"] });
       setShowRoadmapDialog(false);
       setEditingRoadmap(null);
-      toast({ title: "Success", description: "Milestone updated" });
+      toast.success("Success", { description: "Milestone updated" });
     },
   });
 
@@ -146,7 +145,7 @@ export function TechnologyRoadmapManagement() {
     mutationFn: (id: number) => apiRequest(`/api/technology-roadmap/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/technology-roadmap"] });
-      toast({ title: "Success", description: "Milestone deleted" });
+      toast.success("Success", { description: "Milestone deleted" });
     },
   });
 
@@ -230,7 +229,7 @@ export function TechnologyRoadmapManagement() {
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="space-y-1">
             <h2 className="text-3xl font-black tracking-tight text-white uppercase sm:text-4xl">
-              Technology <span className="text-[#00D4FF]">Roadmap</span>
+              Technology <span className="text-custom-color-205">Roadmap</span>
             </h2>
             <p className="text-admin-foreground/60 text-sm font-medium tracking-wide italic">
               Future pipeline and strategic milestones
@@ -239,12 +238,12 @@ export function TechnologyRoadmapManagement() {
 
           <div className="flex flex-wrap items-center gap-3">
             <div className="relative group">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-foreground/30 transition-colors group-focus-within:text-[#00D4FF]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-foreground/30 transition-colors group-focus-within:text-custom-color-206" />
               <Input
                 placeholder="Search milestones..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-11 w-[240px] border-white/5 bg-white/[0.03] pl-10 text-admin-foreground transition-all focus:border-[#00D4FF]/40 focus:bg-white/[0.06] focus:ring-0"
+                className="h-11 w-custom-space-126 border-white/5 bg-white/[0.03] pl-10 text-admin-foreground transition-all focus:border-custom-color-207/40 focus:bg-white/[0.06] focus:ring-0"
               />
             </div>
 
@@ -253,7 +252,7 @@ export function TechnologyRoadmapManagement() {
                 resetForm();
                 setShowRoadmapDialog(true);
               }}
-              className="group h-11 border-none bg-[#00D4FF] px-6 font-bold text-[#0A0A0A] transition-all hover:bg-[#00D4FF]/90 hover:shadow-[0_0_20px_rgba(0,212,255,0.4)] active:scale-95"
+              className="group h-11 border-none bg-custom-color-208 px-6 font-bold text-custom-color-209 transition-all hover:bg-custom-color-210/90 hover:shadow-custom-misc-136 active:scale-95"
             >
               <Plus className="mr-2 h-5 w-5 transition-transform group-hover:rotate-90" />
               INITIALIZE MILESTONE
@@ -267,7 +266,7 @@ export function TechnologyRoadmapManagement() {
                 className={cn(
                   "h-8 px-2 rounded-md transition-all",
                   view === "list"
-                    ? "bg-[#00D4FF] text-[#0A0A0A] font-bold"
+                    ? "bg-custom-color-211 text-custom-color-212 font-bold"
                     : "text-admin-muted hover:text-white",
                 )}
               >
@@ -280,7 +279,7 @@ export function TechnologyRoadmapManagement() {
                 className={cn(
                   "h-8 px-2 rounded-md transition-all",
                   view === "kanban"
-                    ? "bg-[#00D4FF] text-[#0A0A0A] font-bold"
+                    ? "bg-custom-color-213 text-custom-color-214 font-bold"
                     : "text-admin-muted hover:text-white",
                 )}
               >
@@ -299,7 +298,7 @@ export function TechnologyRoadmapManagement() {
       </div>
 
       {/* Roadmap List */}
-      <div className="relative min-h-[400px]">
+      <div className="relative min-h-custom-space-127">
         {isLoading ? (
           <div className="grid gap-4 sm:grid-cols-1">
             {[1, 2, 3].map((i) => (
@@ -352,7 +351,7 @@ export function TechnologyRoadmapManagement() {
       {/* Footer Stats - Pipeline Growth */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5 backdrop-blur-xl">
-          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[#00D4FF]/10 text-[#00D4FF]">
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-custom-color-215/10 text-custom-color-216">
             <Zap className="h-5 w-5" />
           </div>
           <div className="text-2xl font-black text-white">{activeCount}</div>
@@ -393,12 +392,12 @@ export function TechnologyRoadmapManagement() {
       <Dialog open={showRoadmapDialog} onOpenChange={setShowRoadmapDialog}>
         <DialogContent className="max-w-2xl border-white/10 bg-surface-black/95 text-admin-foreground backdrop-blur-2xl">
           <DialogHeader className="border-b border-white/10 pb-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#00D4FF]/10 text-[#00D4FF] mb-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-custom-color-217/10 text-custom-color-218 mb-4">
               <Zap className="h-6 w-6" />
             </div>
             <DialogTitle className="text-2xl font-black text-white uppercase italic">
               {editingRoadmap ? "Update" : "Initialize"}{" "}
-              <span className="text-[#00D4FF]">Milestone</span>
+              <span className="text-custom-color-219">Milestone</span>
             </DialogTitle>
             <DialogDescription className="text-admin-muted font-medium tracking-wide">
               Define the strategic objectives and expected impact for this roadmap target.
@@ -409,25 +408,25 @@ export function TechnologyRoadmapManagement() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
+                  <Label className="text-xxs font-black uppercase tracking-custom-misc-137 text-admin-muted">
                     Milestone Title
                   </Label>
                   <Input
                     value={roadmapForm.title}
                     onChange={(e) => setRoadmapForm({ ...roadmapForm, title: e.target.value })}
-                    className="border-white/5 bg-white/[0.03] text-white focus:border-[#00D4FF]/40"
+                    className="border-white/5 bg-white/[0.03] text-white focus:border-custom-color-220/40"
                     placeholder="Enter milestone title..."
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
+                  <Label className="text-xxs font-black uppercase tracking-custom-misc-138 text-admin-muted">
                     Timeline Horizon
                   </Label>
                   <Input
                     value={roadmapForm.timeline}
                     onChange={(e) => setRoadmapForm({ ...roadmapForm, timeline: e.target.value })}
-                    className="border-white/5 bg-white/[0.03] text-white focus:border-[#00D4FF]/40"
+                    className="border-white/5 bg-white/[0.03] text-white focus:border-custom-color-221/40"
                     placeholder="e.g., Q3 2025"
                     required
                   />
@@ -437,14 +436,14 @@ export function TechnologyRoadmapManagement() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
+                    <Label className="text-xxs font-black uppercase tracking-custom-misc-139 text-admin-muted">
                       Current Status
                     </Label>
                     <select
                       title="Milestone Status"
                       value={roadmapForm.status}
                       onChange={(e) => setRoadmapForm({ ...roadmapForm, status: e.target.value })}
-                      className="w-full h-10 rounded-md border border-white/5 bg-white/[0.03] text-white focus:border-[#00D4FF]/40 outline-none px-3 text-sm"
+                      className="w-full h-10 rounded-md border border-white/5 bg-white/[0.03] text-white focus:border-custom-color-222/40 outline-none px-3 text-sm"
                     >
                       <option value="planned">Planned</option>
                       <option value="active">Active</option>
@@ -453,14 +452,14 @@ export function TechnologyRoadmapManagement() {
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
+                    <Label className="text-xxs font-black uppercase tracking-custom-misc-140 text-admin-muted">
                       Priority Level
                     </Label>
                     <select
                       title="Priority Level"
                       value={roadmapForm.priority}
                       onChange={(e) => setRoadmapForm({ ...roadmapForm, priority: e.target.value })}
-                      className="w-full h-10 rounded-md border border-white/5 bg-white/[0.03] text-white focus:border-[#00D4FF]/40 outline-none px-3 text-sm"
+                      className="w-full h-10 rounded-md border border-white/5 bg-white/[0.03] text-white focus:border-custom-color-223/40 outline-none px-3 text-sm"
                     >
                       <option value="low">Low</option>
                       <option value="medium">Medium</option>
@@ -469,13 +468,13 @@ export function TechnologyRoadmapManagement() {
                   </div>
                 </div>
 
-                <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
+                <Label className="text-xxs font-black uppercase tracking-custom-misc-141 text-admin-muted">
                   Executive Summary
                 </Label>
                 <Textarea
                   value={roadmapForm.description}
                   onChange={(e) => setRoadmapForm({ ...roadmapForm, description: e.target.value })}
-                  className="h-[120px] resize-none border-white/5 bg-white/[0.03] text-white focus:border-[#00D4FF]/40"
+                  className="h-custom-space-128 resize-none border-white/5 bg-white/[0.03] text-white focus:border-custom-color-224/40"
                   placeholder="Strategic overview..."
                 />
               </div>
@@ -484,10 +483,13 @@ export function TechnologyRoadmapManagement() {
             {/* Impact Section */}
             <div className="space-y-4 rounded-2xl bg-white/[0.02] p-6 ring-1 ring-white/5">
               <div className="flex items-center justify-between">
-                <Label className="text-xxs font-black uppercase tracking-[0.2em] text-admin-muted">
+                <Label className="text-xxs font-black uppercase tracking-custom-misc-142 text-admin-muted">
                   Strategic Impact
                 </Label>
-                <Badge variant="outline" className="border-[#00D4FF]/20 text-[#00D4FF] text-xxs">
+                <Badge
+                  variant="outline"
+                  className="border-custom-color-225/20 text-custom-color-226 text-xxs"
+                >
                   {roadmapForm.impact.length} Targets Defined
                 </Badge>
               </div>
@@ -496,7 +498,7 @@ export function TechnologyRoadmapManagement() {
                 {roadmapForm.impact.map((impact, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-2 rounded-lg bg-[#00D4FF]/5 px-3 py-1.5 ring-1 ring-[#00D4FF]/20"
+                    className="flex items-center gap-2 rounded-lg bg-custom-color-227/5 px-3 py-1.5 ring-1 ring-custom-color-228/20"
                   >
                     <span className="text-sm font-medium text-admin-foreground">{impact}</span>
                     <button
@@ -564,7 +566,7 @@ export function TechnologyRoadmapManagement() {
               <Switch
                 checked={roadmapForm.isActive}
                 onCheckedChange={(checked) => setRoadmapForm({ ...roadmapForm, isActive: checked })}
-                className="data-[state=checked]:bg-[#00D4FF]"
+                className="data-custom-misc-143:bg-custom-color-229"
               />
             </div>
 
@@ -579,7 +581,7 @@ export function TechnologyRoadmapManagement() {
               </Button>
               <Button
                 type="submit"
-                className="bg-[#00D4FF] font-black text-[#0A0A0A] hover:bg-[#00D4FF]/90"
+                className="bg-custom-color-230 font-black text-custom-color-231 hover:bg-custom-color-232/90"
               >
                 <Save className="mr-2 h-4 w-4" />
                 {editingRoadmap ? "UPDATE MILESTONE" : "SAVE MILESTONE"}

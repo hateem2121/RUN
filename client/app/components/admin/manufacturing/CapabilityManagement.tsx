@@ -74,7 +74,7 @@ type CapabilityFormData = Omit<
   unit: string | null;
 };
 
-export interface CapabilityManagementProps {
+interface CapabilityManagementProps {
   mediaAssets?: MediaAsset[];
 }
 
@@ -495,7 +495,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
           </Button>
         </div>
 
-        <div className="min-h-[400px]">
+        <div className="min-h-custom-space-36">
           {capabilitiesLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="flex space-x-2">
@@ -574,7 +574,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
               </div>
             </div>
 
-            <form action={formAction} className="flex-1 overflow-y-auto max-h-[70vh]">
+            <form action={formAction} className="flex-1 overflow-y-auto max-h-custom-space-37">
               <div className="p-8 space-y-8">
                 <div className={cn("grid gap-10", showPreview ? "lg:grid-cols-2" : "grid-cols-1")}>
                   <div className="space-y-8">
@@ -597,7 +597,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                               name: e.target.value,
                             })
                           }
-                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 placeholder:text-white/20"
+                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-7/50 placeholder:text-white/20"
                           placeholder="e.g., Advanced Fabric Bonding"
                           required
                         />
@@ -618,7 +618,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                             })
                           }
                         >
-                          <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-[50px] focus:ring-[#D4A853]/50">
+                          <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-custom-space-38 focus:ring-custom-color-8/50">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent className="bg-surface-black border-white/10 text-white">
@@ -654,7 +654,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                               capacity: e.target.value,
                             })
                           }
-                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 placeholder:text-white/20"
+                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-9/50 placeholder:text-white/20"
                           placeholder="e.g., 100,000 units/year"
                         />
                       </div>
@@ -675,7 +675,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                               category: e.target.value,
                             })
                           }
-                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 placeholder:text-white/20"
+                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-10/50 placeholder:text-white/20"
                           placeholder="e.g., Technical Teamwear"
                         />
                       </div>
@@ -698,7 +698,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                             description: e.target.value,
                           })
                         }
-                        className="bg-white/5 border-white/10 text-white rounded-xl min-h-[120px] focus:ring-[#D4A853]/50 placeholder:text-white/20 resize-none"
+                        className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-39 focus:ring-custom-color-11/50 placeholder:text-white/20 resize-none"
                         placeholder="Detail this technical capability..."
                       />
                     </div>
@@ -714,7 +714,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                             isActive: checked,
                           })
                         }
-                        className="data-[state=checked]:bg-brand-manufacturing"
+                        className="data-custom-misc-47:bg-brand-manufacturing"
                       />
                       <Label
                         htmlFor="capability-active"
@@ -763,7 +763,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                                 label: e.target.value,
                               })
                             }
-                            className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-[#D4A853]/50"
+                            className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-custom-color-12/50"
                           />
                           <Input
                             placeholder="Value (e.g., ISO-9001)"
@@ -774,7 +774,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                                 value: e.target.value,
                               })
                             }
-                            className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-[#D4A853]/50"
+                            className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-custom-color-13/50"
                           />
                           <Button
                             type="button"
@@ -814,7 +814,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                             placeholder="Add equipment (e.g., CNC Laser Cutter)"
                             value={newEquipment}
                             onChange={(e) => setNewEquipment(e.target.value)}
-                            className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-[#D4A853]/50"
+                            className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-custom-color-14/50"
                           />
                           <Button
                             type="button"

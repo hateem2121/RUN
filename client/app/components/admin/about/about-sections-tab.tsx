@@ -20,6 +20,7 @@ import type { AboutSection, InsertAboutSection, MediaAsset } from "@shared/index
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Edit, GripVertical, Image, Plus, Trash2, X } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { CustomDropdown } from "@/components/admin/CustomDropdown";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
@@ -36,7 +37,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { createMediaQueryKey } from "@/lib/media-query-keys";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
@@ -130,7 +130,6 @@ function SortableSectionItem({ section, onEdit, onDelete }: SectionItemProps) {
 }
 
 export function AboutSectionsTab() {
-  const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
   const [editingSection, setEditingSection] = useState<AboutSection | null>(null);
@@ -184,15 +183,11 @@ export function AboutSectionsTab() {
       // Invalidate both individual and batch cache for sync
       getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.SECTIONS] });
       getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
-      toast({ title: "Success", description: "Section created successfully" });
+      toast.success("Success", { description: "Section created successfully" });
       handleCloseDialog();
     },
     onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to create section",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: "Failed to create section" });
     },
   });
 
@@ -207,15 +202,11 @@ export function AboutSectionsTab() {
       // Invalidate both individual and batch cache for sync
       getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.SECTIONS] });
       getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
-      toast({ title: "Success", description: "Section updated successfully" });
+      toast.success("Success", { description: "Section updated successfully" });
       handleCloseDialog();
     },
     onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update section",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: "Failed to update section" });
     },
   });
 
@@ -227,14 +218,10 @@ export function AboutSectionsTab() {
       // Invalidate both individual and batch cache for sync
       getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.SECTIONS] });
       getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
-      toast({ title: "Success", description: "Section deleted successfully" });
+      toast.success("Success", { description: "Section deleted successfully" });
     },
     onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to delete section",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: "Failed to delete section" });
     },
   });
 

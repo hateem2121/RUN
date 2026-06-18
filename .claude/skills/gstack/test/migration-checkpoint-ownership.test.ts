@@ -51,7 +51,7 @@ describe('migration v1.1.3.0 — checkpoint ownership guard', () => {
     expect(fs.existsSync(topLevel)).toBe(false);
     // Also removes the gstack-owned inner copy (Shape 2 cleanup).
     expect(fs.existsSync(gstackCheckpoint)).toBe(false);
-    expect(result.stdout).toContain('Removed stale /checkpoint symlink');
+    expect(result.stdout).toContain('Removed stale /context-save symlink');
   });
 
   test('scenario B: directory with SKILL.md symlinked into gstack → removed', () => {
@@ -65,7 +65,7 @@ describe('migration v1.1.3.0 — checkpoint ownership guard', () => {
     const result = runMigration(tmpHome);
     expect(result.exitCode).toBe(0);
     expect(fs.existsSync(topLevel)).toBe(false);
-    expect(result.stdout).toContain('Removed stale /checkpoint install directory');
+    expect(result.stdout).toContain('Removed stale /context-save install directory');
   });
 
   test('scenario C: user-owned regular directory with custom content → preserved', () => {
@@ -74,7 +74,7 @@ describe('migration v1.1.3.0 — checkpoint ownership guard', () => {
     const topLevel = path.join(skillsDir, 'checkpoint');
     fs.mkdirSync(topLevel, { recursive: true });
     // User's own custom skill: regular file, not a symlink.
-    fs.writeFileSync(path.join(topLevel, 'SKILL.md'), '# my custom /checkpoint\n');
+    fs.writeFileSync(path.join(topLevel, 'SKILL.md'), '# my custom /context-save\n');
     fs.writeFileSync(path.join(topLevel, 'extra.txt'), 'user content\n');
 
     const result = runMigration(tmpHome);
@@ -93,7 +93,7 @@ describe('migration v1.1.3.0 — checkpoint ownership guard', () => {
     // User's own skill elsewhere on the filesystem.
     const userSkillDir = path.join(tmpHome, 'my-own-skill');
     fs.mkdirSync(userSkillDir, { recursive: true });
-    fs.writeFileSync(path.join(userSkillDir, 'SKILL.md'), '# my custom /checkpoint\n');
+    fs.writeFileSync(path.join(userSkillDir, 'SKILL.md'), '# my custom /context-save\n');
     fs.symlinkSync(userSkillDir, topLevel);
 
     const result = runMigration(tmpHome);
@@ -108,7 +108,7 @@ describe('migration v1.1.3.0 — checkpoint ownership guard', () => {
   test('scenario E: nothing to do → no-op exit 0 (idempotent)', () => {
     // No checkpoint install at all. First run: nothing removed.
     setupFakeGstackRoot(tmpHome);
-    // Delete the inner gstack/checkpoint to simulate post-upgrade state.
+    // Delete the inner gstack/context-save to simulate post-upgrade state.
     fs.rmSync(path.join(tmpHome, '.claude', 'skills', 'gstack', 'checkpoint'), { recursive: true, force: true });
 
     const result1 = runMigration(tmpHome);

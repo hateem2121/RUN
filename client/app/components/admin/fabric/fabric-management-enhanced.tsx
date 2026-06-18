@@ -2,6 +2,7 @@ import type { Certificate, Fabric, Fiber, MediaAsset } from "@shared/index";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Shirt } from "lucide-react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { FabricCard } from "./FabricCard";
 import { FabricFilters } from "./FabricFilters";
@@ -65,7 +65,6 @@ export function FabricManagementEnhancedV2() {
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
   const [selectedSwatchAsset, setSelectedSwatchAsset] = useState<MediaAsset | null>(null);
 
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Fetch data
@@ -171,14 +170,10 @@ export function FabricManagementEnhancedV2() {
       queryClient.invalidateQueries({ queryKey: ["/api/fabrics"] });
       setIsCreateModalOpen(false);
       resetForm();
-      toast({ title: "Success", description: "Fabric created successfully" });
+      toast.success("Success", { description: "Fabric created successfully" });
     },
     onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to create fabric",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -193,14 +188,10 @@ export function FabricManagementEnhancedV2() {
       setIsEditModalOpen(false);
       setEditingFabric(null);
       resetForm();
-      toast({ title: "Success", description: "Fabric updated successfully" });
+      toast.success("Success", { description: "Fabric updated successfully" });
     },
     onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update fabric",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -214,14 +205,10 @@ export function FabricManagementEnhancedV2() {
       queryClient.invalidateQueries({ queryKey: ["/api/fabrics"] });
       setDeleteConfirmOpen(false);
       setFabricToDelete(null);
-      toast({ title: "Success", description: "Fabric deleted successfully" });
+      toast.success("Success", { description: "Fabric deleted successfully" });
     },
     onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to delete fabric",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -263,8 +250,7 @@ export function FabricManagementEnhancedV2() {
         visualSwatchId: selectedAsset.id,
       }));
       setSelectedSwatchAsset(selectedAsset);
-      toast({
-        title: "Visual Swatch Selected",
+      toast.success("Visual Swatch Selected", {
         description: `Selected: ${selectedAsset.filename || "Media asset"}`,
       });
     }
@@ -338,11 +324,7 @@ export function FabricManagementEnhancedV2() {
 
   const handleSubmit = () => {
     if (!formData.name.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Fabric name is required",
-        variant: "destructive",
-      });
+      toast.error("Validation Error", { description: "Fabric name is required" });
       return;
     }
 

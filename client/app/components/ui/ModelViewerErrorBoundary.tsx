@@ -268,7 +268,7 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
               <div className="mt-4 max-w-xs rounded bg-background/80 p-2 text-xs backdrop-blur-sm text-left">
                 <div className="font-mono text-destructive">{error.message}</div>
                 {this.state.errorInfo && (
-                  <div className="mt-1 text-[10px] text-muted-foreground truncate">
+                  <div className="mt-1 text-custom-space-255 text-muted-foreground truncate">
                     {this.state.errorInfo.componentStack?.slice(0, 100)}...
                   </div>
                 )}
@@ -322,7 +322,7 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
               <div className="mt-4 max-w-xs rounded bg-background/80 p-2 text-xs backdrop-blur-sm text-left">
                 <div className="font-mono text-destructive">{error.message}</div>
                 {this.state.errorInfo && (
-                  <div className="mt-1 text-[10px] text-muted-foreground truncate">
+                  <div className="mt-1 text-custom-space-256 text-muted-foreground truncate">
                     {this.state.errorInfo.componentStack?.slice(0, 100)}...
                   </div>
                 )}
@@ -446,7 +446,7 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
 
       // Default error UI
       return (
-        <div className="flex h-full w-full min-h-[300px] items-center justify-center p-4">
+        <div className="flex h-full w-full min-h-custom-space-257 items-center justify-center p-4">
           {this.renderErrorContent()}
         </div>
       );

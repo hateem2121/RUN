@@ -29,7 +29,7 @@ interface BlogPost {
   createdAt: string;
 }
 
-export default function Component({ loaderData }: Route.ComponentProps) {
+export function Component({ loaderData }: Route.ComponentProps) {
   const { posts } = loaderData;
   const activePosts = posts || [];
 
@@ -41,7 +41,7 @@ export default function Component({ loaderData }: Route.ComponentProps) {
           <p className="text-brand-lime font-mono text-xs tracking-widest uppercase mb-2">
             RUN INSIGHTS
           </p>
-          <h1 className="text-[10vw] leading-[0.9] font-bold uppercase md:text-[5vw] tracking-tighter">
+          <h1 className="text-custom-space-286 leading-custom-misc-472 font-bold uppercase md:text-custom-space-287 tracking-tighter">
             BLOG & STORIES
           </h1>
         </div>

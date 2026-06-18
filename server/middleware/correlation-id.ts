@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
 import { correlationContext } from "../lib/monitoring/logger.js";
 
-export interface RequestWithCorrelation extends Request {
+interface RequestWithCorrelation extends Request {
   correlationId?: string;
 }
 

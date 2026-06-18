@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
 import type { User } from "@run-remix/shared";
-import type { Redis } from "@upstash/redis";
 import type { Express, RequestHandler } from "express";
 import session, { type Store } from "express-session";
+import type { Redis } from "ioredis";
 import { err, ok, type Result } from "neverthrow";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
@@ -69,7 +69,7 @@ export class AuthService {
   /**
    * Internal session setup
    */
-  private async getSessionMiddleware() {
+  private async getSessionMiddleware(): Promise<Result<RequestHandler, Error>> {
     const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
     const { RedisStore } = await import("connect-redis");
     const { redis, isRedisEnabled } = await import("../lib/cache/upstash-client.js");
@@ -83,12 +83,12 @@ export class AuthService {
       });
       logger.info("[Auth] Redis Session Store initialized", { ttl: sessionTtl / 1000 });
     } else {
-      if (process.env.NODE_ENV === "production" && process.env.ALLOW_MEMORY_SESSION !== "true") {
+      if (process.env.NODE_ENV === "production") {
         logger.error(
           "Redis is required for session storage in production. Set REDIS_URL or UPSTASH_REDIS_REST_URL.",
         );
         if (process.env.VITEST) {
-          throw new Error("Redis is required for session storage in production");
+          return err(new Error("Redis is required for session storage in production"));
         }
         process.exit(1);
       }
@@ -115,26 +115,31 @@ export class AuthService {
     const previousSecret = process.env.SESSION_SECRET_PREVIOUS;
     const secrets = previousSecret ? [finalSecret, previousSecret] : finalSecret;
 
-    return session({
-      secret: secrets,
-      store: sessionStore as session.Store,
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production" ? true : "auto",
-        sameSite: "lax",
-        maxAge: sessionTtl,
-      },
-    });
+    return ok(
+      session({
+        secret: secrets,
+        store: sessionStore as session.Store,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production" ? true : "auto",
+          sameSite: "lax",
+          maxAge: sessionTtl,
+        },
+      }),
+    );
   }
 
   /**
    * Configure Passport and Session
    */
-  public async setup(app: Express) {
-    const sessionMiddleware = await this.getSessionMiddleware();
-    app.use(sessionMiddleware);
+  public async setup(app: Express): Promise<void> {
+    const sessionResult = await this.getSessionMiddleware();
+    if (sessionResult.isErr()) {
+      return Promise.reject(sessionResult.error);
+    }
+    app.use(sessionResult.value);
     app.use(passport.initialize());
     app.use(passport.session());
 

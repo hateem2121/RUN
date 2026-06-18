@@ -257,7 +257,7 @@ export function MediaSelectionWrapperUnified({
       {/* Fixed/Floating selection confirmation bar */}
       {hasSelection && (
         <div
-          className="z-elevated flex shrink-0 flex-col gap-4 border-blue-300/50 border-t bg-linear-to-br from-blue-50/95 via-indigo-50/95 to-cyan-50/95 px-6 py-4 pb-[calc(theme(spacing.4)+env(safe-area-inset-bottom))] shadow-sm-blue-200/20 shadow-xl transition-all duration-300 ease-out supports-[backdrop-filter]:bg-white/90"
+          className="z-elevated flex shrink-0 flex-col gap-4 border-blue-300/50 border-t bg-linear-to-br from-blue-50/95 via-indigo-50/95 to-cyan-50/95 px-6 py-4 pb-custom-misc-70 shadow-sm-blue-200/20 shadow-xl transition-all duration-300 ease-out supports-custom-misc-71:bg-white/90"
           data-testid="bar-selection-confirmation"
         >
           {/* Selected assets display for multiple mode */}
@@ -272,7 +272,7 @@ export function MediaSelectionWrapperUnified({
                 {selectedAssetsForDisplay.map((asset: MediaAsset) => (
                   <div
                     key={asset.id}
-                    className={`group relative flex min-w-0 max-w-56 items-center gap-3 rounded-xl border-2 px-4 py-2.5 transition-all duration-200 hover:scale-[1.02] hover:shadow-md ${getAssetTypeColor(
+                    className={`group relative flex min-w-0 max-w-56 items-center gap-3 rounded-xl border-2 px-4 py-2.5 transition-all duration-200 hover:scale-custom-misc-72 hover:shadow-md ${getAssetTypeColor(
                       asset.type,
                     )} `}
                     data-testid={`badge-selected-asset-${asset.id}`}

@@ -34,7 +34,7 @@ interface HttpMetricsStats {
   timeWindow: string;
 }
 
-export class HttpMetricsTracker {
+class HttpMetricsTracker {
   private static instance: HttpMetricsTracker;
   private metrics: HttpMetric[] = [];
   private routeMetrics: Map<string, RouteMetrics> = new Map();

@@ -30,7 +30,7 @@ export const ApiErrorFallback = React.memo(function ApiErrorFallback({
   };
 
   return (
-    <div className="flex min-h-[400px] items-center justify-center p-6">
+    <div className="flex min-h-custom-space-59 items-center justify-center p-6">
       <Card className="w-full max-w-md border-destructive/20 shadow-lg">
         <CardHeader className="text-center pb-2">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
@@ -72,7 +72,7 @@ export const ApiErrorFallback = React.memo(function ApiErrorFallback({
               variant="default"
               size="sm"
               onClick={handleReload}
-              className="gap-2 sm:flex-1 h-9 rounded-full shadow-md bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]"
+              className="gap-2 sm:flex-1 h-9 rounded-full shadow-md bg-primary hover:bg-primary/90 transition-all active:scale-custom-misc-67"
             >
               <RefreshCw className="h-4 w-4" />
               Try Again

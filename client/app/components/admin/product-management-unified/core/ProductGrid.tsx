@@ -485,7 +485,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
 
         {/* Active Filters */}
         {(searchQuery || categoryFilter !== "all" || statusFilter !== "all") && (
-          <div className="flex flex-wrap gap-2 px-6 pb-6 pt-0 mt-[-16px]">
+          <div className="flex flex-wrap gap-2 px-6 pb-6 pt-0 mt-custom-space-58">
             {searchQuery && (
               <Badge
                 variant="outline"

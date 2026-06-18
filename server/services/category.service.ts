@@ -7,10 +7,11 @@ import { AppError, BadRequestError, InternalError, NotFoundError } from "../lib/
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 import { withTimeout } from "../lib/resilience/request-timeout.js";
+import { sanitizeHtml } from "../lib/sanitize-html.js";
 import { removeUndefined, validateAndSanitizeInput } from "../lib/utilities/core-utils.js";
 import { webhookService } from "./webhook-service.js";
 
-export class CategoryService {
+class CategoryService {
   /**
    * List all categories with optional pagination.
    */
@@ -191,7 +192,7 @@ export class CategoryService {
       if (validatedData.slug)
         validatedData.slug = validateAndSanitizeInput(validatedData.slug) as string;
       if (validatedData.description)
-        validatedData.description = validateAndSanitizeInput(validatedData.description) as string;
+        validatedData.description = sanitizeHtml(validatedData.description);
 
       const allCategories = await withCircuit(
         "get-categories-validation",
@@ -243,6 +244,8 @@ export class CategoryService {
   async updateCategory(id: number, data: unknown): Promise<Result<Category, AppError>> {
     try {
       const validatedData = insertCategorySchema.partial().parse(data);
+      if (validatedData.description)
+        validatedData.description = sanitizeHtml(validatedData.description);
       const cleanedData = removeUndefined(validatedData);
 
       const allCategories = await withCircuit(

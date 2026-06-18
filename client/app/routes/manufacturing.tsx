@@ -211,7 +211,7 @@ type LoaderData = {
   mediaAssets: MediaAsset[];
 };
 
-export default function Component({ loaderData }: { loaderData: LoaderData }) {
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   return <ManufacturingInner loaderData={loaderData} />;
 }
 

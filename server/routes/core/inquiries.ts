@@ -18,21 +18,22 @@ router.post(
   async (req, res) => {
     const result = await inquiryService.createFromPublicPayload(req.body);
 
-    if (result.isErr()) {
-      throw result.error;
-    }
+    return result.match(
+      (inquiry) => {
+        logger.info(
+          `[PublicInquiry] Successfully created inquiry #${inquiry.id} from ${inquiry.source}`,
+        );
 
-    const inquiry = result.value;
-
-    logger.info(
-      `[PublicInquiry] Successfully created inquiry #${inquiry.id} from ${inquiry.source}`,
+        return res.status(201).json({
+          success: true,
+          id: inquiry.id,
+          message: "Inquiry received successfully",
+        });
+      },
+      (error) => {
+        throw error;
+      },
     );
-
-    return res.status(201).json({
-      success: true,
-      id: inquiry.id,
-      message: "Inquiry received successfully",
-    });
   },
 );
 

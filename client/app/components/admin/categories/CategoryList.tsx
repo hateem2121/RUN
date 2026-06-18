@@ -294,6 +294,4 @@ export function CategoryList(props: CategoryListProps) {
     </DndContext>
   );
 }
-
 // Export individual view components for specific use cases
-export { CategoryTableView, CategoryGridView, CategoryTreeView };

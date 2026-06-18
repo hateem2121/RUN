@@ -483,7 +483,7 @@ export class QueryPerformanceMonitor {
  * Query tracking utility class
  * PHASE 2A: Enhanced with phase-level timing for granular performance analysis
  */
-export class QueryTracker {
+class QueryTracker {
   private startTime: number; // PHASE 2A: Wall-clock timestamp for TTL/alerting
   private perfStart: number; // PHASE 2A: High-precision timer for duration measurement
   private operation: string;

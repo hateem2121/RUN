@@ -50,7 +50,7 @@ export const ContactSubmissionSchema = z.object({
     .optional()
     .nullable()
     .transform((val) => val || null),
-  preferredPlatform: z.string().trim().max(50).optional().nullable(),
+  preferredPlatform: z.string().trim().max(50).nullish(),
   source: z.string().default("contact-page"),
   status: z.enum(["new", "read", "responded", "archived"]).default("new"),
   honeypot: z.string().optional(),

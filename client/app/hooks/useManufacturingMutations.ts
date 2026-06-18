@@ -1,8 +1,8 @@
 import { type QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { apiRequest } from "@/lib/queryClient";
 
-export type ManufacturingEntity =
+type ManufacturingEntity =
   | "process"
   | "factory"
   | "quality-standard"
@@ -45,7 +45,6 @@ export function useManufacturingMutations({
   onSuccess,
   onError,
 }: UseManufacturingMutationsOptions) {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Extract base endpoint for API requests (first element if array, or the string itself)
@@ -59,18 +58,11 @@ export function useManufacturingMutations({
       }),
     onSuccess: async () => {
       await invalidateManufacturingCache(queryClient, entity);
-      toast({
-        title: "Success",
-        description: `${entityType} created successfully`,
-      });
+      toast.success("Success", { description: `${entityType} created successfully` });
       onSuccess?.();
     },
     onError: (error) => {
-      toast({
-        title: "Error",
-        description: `Failed to create ${entityType.toLowerCase()}`,
-        variant: "destructive",
-      });
+      toast.error("Error", { description: `Failed to create ${entityType.toLowerCase()}` });
       onError?.(error);
     },
   });
@@ -83,18 +75,11 @@ export function useManufacturingMutations({
       }),
     onSuccess: async () => {
       await invalidateManufacturingCache(queryClient, entity);
-      toast({
-        title: "Success",
-        description: `${entityType} updated successfully`,
-      });
+      toast.success("Success", { description: `${entityType} updated successfully` });
       onSuccess?.();
     },
     onError: (error) => {
-      toast({
-        title: "Error",
-        description: `Failed to update ${entityType.toLowerCase()}`,
-        variant: "destructive",
-      });
+      toast.error("Error", { description: `Failed to update ${entityType.toLowerCase()}` });
       onError?.(error);
     },
   });
@@ -103,18 +88,11 @@ export function useManufacturingMutations({
     mutationFn: (id: number) => apiRequest(`${apiEndpoint}/${id}`, { method: "DELETE" }),
     onSuccess: async () => {
       await invalidateManufacturingCache(queryClient, entity);
-      toast({
-        title: "Success",
-        description: `${entityType} deleted successfully`,
-      });
+      toast.success("Success", { description: `${entityType} deleted successfully` });
       onSuccess?.();
     },
     onError: (error) => {
-      toast({
-        title: "Error",
-        description: `Failed to delete ${entityType.toLowerCase()}`,
-        variant: "destructive",
-      });
+      toast.error("Error", { description: `Failed to delete ${entityType.toLowerCase()}` });
       onError?.(error);
     },
   });
@@ -127,18 +105,11 @@ export function useManufacturingMutations({
       }),
     onSuccess: async () => {
       await invalidateManufacturingCache(queryClient, entity);
-      toast({
-        title: "Success",
-        description: `${entityTypePlural} reordered successfully`,
-      });
+      toast.success("Success", { description: `${entityTypePlural} reordered successfully` });
       onSuccess?.();
     },
     onError: (error) => {
-      toast({
-        title: "Error",
-        description: `Failed to reorder ${entityTypePlural.toLowerCase()}`,
-        variant: "destructive",
-      });
+      toast.error("Error", { description: `Failed to reorder ${entityTypePlural.toLowerCase()}` });
       onError?.(error);
     },
   });

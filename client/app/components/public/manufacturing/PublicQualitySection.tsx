@@ -100,7 +100,7 @@ export function PublicQualitySection({ qualities = [] }: PublicQualitySectionPro
           <div>
             <h2
               id="quality-title"
-              className="text-6xl md:text-8xl font-neue-stance font-bold text-white uppercase leading-none tracking-tighter mb-8 italic skew-x-[-5deg]"
+              className="text-6xl md:text-8xl font-neue-stance font-bold text-white uppercase leading-none tracking-tighter mb-8 italic skew-x-custom-misc-234"
             >
               Zero
               <br />
@@ -120,7 +120,7 @@ export function PublicQualitySection({ qualities = [] }: PublicQualitySectionPro
             {displayQualities.map((q, idx) => (
               <section
                 key={idx}
-                className="glass-premium p-6 rounded-none text-center transform transition-all hover:scale-105 hover:border-[var(--color-manufacturing-accent)]/30 group"
+                className="glass-premium p-6 rounded-none text-center transform transition-all hover:scale-105 hover:border-custom-misc-235/30 group"
                 aria-label={`Quality Metric: ${q.title}`}
               >
                 <div className="relative w-32 h-32 mx-auto mb-4 flex items-center justify-center">
@@ -139,7 +139,7 @@ export function PublicQualitySection({ qualities = [] }: PublicQualitySectionPro
                       strokeWidth="6"
                     ></circle>
                     <circle
-                      className="text-[var(--color-manufacturing-accent)] progress-ring-circle"
+                      className="text-custom-misc-236 progress-ring-circle"
                       data-target-offset={q.targetOffset}
                       cx="64"
                       cy="64"
@@ -164,11 +164,11 @@ export function PublicQualitySection({ qualities = [] }: PublicQualitySectionPro
                       : q.displayValue}
                   </span>
                 </div>
-                <h4 className="text-manufacturing-muted group-hover:text-[var(--color-manufacturing-accent)] transition-colors uppercase text-xs tracking-widest font-bold mb-2">
+                <h4 className="text-manufacturing-muted group-hover:text-custom-misc-237 transition-colors uppercase text-xs tracking-widest font-bold mb-2">
                   {sanitizeContent(q.title)}
                 </h4>
                 {q.description && q.description !== q.displayValue && (
-                  <p className="text-manufacturing-body text-[10px] leading-tight font-light opacity-0 group-hover:opacity-100 transition-opacity">
+                  <p className="text-manufacturing-body text-custom-space-201 leading-tight font-light opacity-0 group-hover:opacity-100 transition-opacity">
                     {sanitizeContent(q.description)}
                   </p>
                 )}

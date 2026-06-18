@@ -40,7 +40,7 @@ export function StorageOptimizationDashboard() {
               <span className="text-sm text-admin-muted">/ 10 GB</span>
             </div>
             <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
-              <div className="h-full w-[24%] bg-primary" />
+              <div className="h-full w-custom-space-64 bg-primary" />
             </div>
             <p className="mt-2 text-xs text-admin-muted">24% capacity used</p>
           </CardContent>

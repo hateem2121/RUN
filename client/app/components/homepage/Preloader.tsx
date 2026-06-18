@@ -1,6 +1,7 @@
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 const LOADING_TEXTS = [
@@ -23,15 +24,13 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   const textRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
-  useEffect(() => {
-    if (!containerRef.current) {
-      return;
-    }
+  useGSAP(
+    () => {
+      if (!containerRef.current) {
+        return;
+      }
 
-    // Explicitly use .current
-    const scope = containerRef.current;
-
-    const ctx = gsap.context(() => {
+      const scope = containerRef.current;
       const tl = gsap.timeline();
       // If prefers reduced motion, make it instant
       const duration = prefersReducedMotion ? 0.01 : 0.7; // Optimized loading time
@@ -97,10 +96,9 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
           onComplete();
         },
       });
-    }, scope);
-
-    return () => ctx.revert();
-  }, [onComplete, prefersReducedMotion]);
+    },
+    { dependencies: [onComplete, prefersReducedMotion], scope: containerRef },
+  );
 
   return (
     <div
@@ -119,7 +117,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
       {/* Center Percentage */}
       <div className="relative z-elevated flex w-full flex-col items-center justify-center">
-        <h1 className="select-none font-bold text-[25vw] tabular-nums leading-[0.8] tracking-tighter text-white mix-blend-normal">
+        <h1 className="select-none font-bold text-custom-space-143 tabular-nums leading-custom-misc-154 tracking-tighter text-white mix-blend-normal">
           {progress}
         </h1>
       </div>
@@ -129,7 +127,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
         <div className="mb-4 flex items-end justify-between">
           <div
             ref={textRef}
-            className="min-h-[20px] w-full font-mono text-xs tracking-wider md:w-auto md:text-sm"
+            className="min-h-custom-space-144 w-full font-mono text-xs tracking-wider md:w-auto md:text-sm"
           >
             [{loadingText}]
           </div>
@@ -139,7 +137,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
         </div>
 
         {/* Progress Bar Line */}
-        <div className="h-[2px] w-full overflow-hidden bg-white/20">
+        <div className="h-custom-space-145 w-full overflow-hidden bg-white/20">
           <div ref={barRef} className="h-full w-full origin-left scale-x-0 bg-primary" />
         </div>
       </div>

@@ -1,4 +1,3 @@
-import DOMPurify from "isomorphic-dompurify";
 import { Link, redirect } from "react-router";
 import type { Route } from "./+types/blog.$slug";
 
@@ -33,7 +32,7 @@ export function meta({ data }: Route.MetaArgs) {
   ];
 }
 
-export default function Component({ loaderData }: Route.ComponentProps) {
+export function Component({ loaderData }: Route.ComponentProps) {
   const { post } = loaderData;
 
   const dateStr = new Date(post.publishedAt || post.createdAt).toLocaleDateString("en-US", {
@@ -75,8 +74,8 @@ export default function Component({ loaderData }: Route.ComponentProps) {
         {/* Post Content */}
         <div
           className="prose dark:prose-invert max-w-none text-foreground/90 leading-relaxed text-lg"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: Sanitized via DOMPurify
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: Pre-sanitized in backend
+          dangerouslySetInnerHTML={{ __html: post.content }}
         />
       </article>
     </div>

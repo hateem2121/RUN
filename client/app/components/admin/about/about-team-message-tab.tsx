@@ -3,18 +3,17 @@ import { ABOUT_API, ADMIN_MEDIA_QUERIES, buildMediaApiParams } from "@shared/api
 import { useQuery } from "@tanstack/react-query";
 import { Save, Trash2, Upload } from "lucide-react";
 import { useActionState, useEffect, useOptimistic, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { createMediaQueryKey } from "@/lib/media-query-keys";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 export function AboutTeamMessageTab() {
-  const { toast } = useToast();
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<MediaAsset | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -95,17 +94,10 @@ export function AboutTeamMessageTab() {
         getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.TEAM_MESSAGE] });
         getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
 
-        toast({
-          title: "Success",
-          description: "Team message updated successfully",
-        });
+        toast.success("Success", { description: "Team message updated successfully" });
         return { success: true };
       } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to update team message",
-          variant: "destructive",
-        });
+        toast.error("Error", { description: "Failed to update team message" });
         return { success: false, error };
       }
     },

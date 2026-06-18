@@ -23,7 +23,7 @@ export const workerTaskDuration = new Histogram({
   buckets: [0.1, 0.5, 1, 2, 5, 10, 30, 60],
 });
 
-export class JobMetricsService {
+class JobMetricsService {
   /**
    * Updates Prometheus gauges with current BullMQ stats
    */

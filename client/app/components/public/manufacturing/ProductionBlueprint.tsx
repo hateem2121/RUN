@@ -122,7 +122,7 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
     <ManufacturingErrorBoundary>
       <section
         ref={containerRef}
-        className="py-24 border-b border-white/5 relative overflow-hidden bg-[var(--color-manufacturing-bg)]"
+        className="py-24 border-b border-white/5 relative overflow-hidden bg-custom-misc-169"
       >
         {/* Background Grid */}
         <div className="absolute inset-0 pointer-events-none opacity-10 tech-grid-manufacturing"></div>
@@ -130,34 +130,34 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
         {/* Header Area */}
         <div className="max-w-7xl mx-auto px-6 mb-16 flex flex-col md:flex-row justify-between md:items-end relative z-20">
           <div>
-            <h2 className="text-4xl md:text-5xl font-neue-stance font-bold text-white uppercase tracking-tighter italic skew-x-[-2deg]">
+            <h2 className="text-4xl md:text-5xl font-neue-stance font-bold text-white uppercase tracking-tighter italic skew-x-custom-misc-170">
               Production Blueprint
             </h2>
-            <p className="text-[var(--color-manufacturing-accent)] mt-3 font-mono text-sm tracking-wider uppercase border-l-4 border-[var(--color-manufacturing-accent)] pl-3 ml-1 font-bold">
+            <p className="text-custom-misc-171 mt-3 font-mono text-sm tracking-wider uppercase border-l-4 border-custom-misc-172 pl-3 ml-1 font-bold">
               Sequence: 001-A to 005-E
             </p>
           </div>
 
           {/* Timeline Mini-Map (Desktop) */}
           <div className="hidden md:flex flex-col items-end">
-            <div className="bg-manufacturing-card border border-[var(--color-manufacturing-accent)]/20 p-2 mb-2 shadow-lg shadow-black/50">
-              <div className="flex items-center space-x-1 font-mono text-[10px] uppercase text-manufacturing-muted mb-2 border-b border-white/5 pb-1 justify-between px-1">
+            <div className="bg-manufacturing-card border border-custom-misc-173/20 p-2 mb-2 shadow-lg shadow-black/50">
+              <div className="flex items-center space-x-1 font-mono text-custom-space-182 uppercase text-manufacturing-muted mb-2 border-b border-white/5 pb-1 justify-between px-1">
                 <span>Process Monitor</span>
-                <span className="w-1.5 h-1.5 bg-[var(--color-manufacturing-accent)] rounded-none rotate-45 animate-pulse"></span>
+                <span className="w-1.5 h-1.5 bg-custom-misc-174 rounded-none rotate-45 animate-pulse"></span>
               </div>
               <div className="flex items-center space-x-4">
                 {[1, 2, 3, 4, 5].map((num, i) => (
                   <div key={num} className="flex items-center">
                     <div className="group cursor-pointer">
-                      <div className="w-2 h-1 bg-gray-700 mb-1 group-hover:bg-[var(--color-manufacturing-accent)]/50 transition-colors"></div>
-                      <div className="text-[10px] text-gray-500 font-bold">0{num}</div>
+                      <div className="w-2 h-1 bg-gray-700 mb-1 group-hover:bg-custom-misc-175/50 transition-colors"></div>
+                      <div className="text-custom-space-183 text-gray-500 font-bold">0{num}</div>
                     </div>
-                    {i < 4 && <div className="w-4 h-[1px] bg-white/10 ml-4"></div>}
+                    {i < 4 && <div className="w-4 h-custom-space-184 bg-white/10 ml-4"></div>}
                   </div>
                 ))}
               </div>
             </div>
-            <div className="text-[10px] font-mono text-[var(--color-manufacturing-accent)] uppercase font-bold tracking-wider">
+            <div className="text-custom-space-185 font-mono text-custom-misc-176 uppercase font-bold tracking-wider">
               Interactive Timeline
             </div>
           </div>
@@ -165,8 +165,8 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
 
         {/* Scroll Indicator */}
         <div className="absolute bottom-12 right-12 z-30 hidden md:block opacity-50 transition-opacity duration-300 pointer-events-none">
-          <div className="bg-black/90 backdrop-blur-md border border-[var(--color-manufacturing-accent)]/50 text-[var(--color-manufacturing-accent)] px-5 py-3 flex items-center gap-3 pointer-events-auto shadow-[0_0_20px_rgba(255,77,0,0.15)] skew-x-[-10deg]">
-            <span className="text-xs font-bold uppercase tracking-widest font-mono skew-x-[10deg]">
+          <div className="bg-black/90 backdrop-blur-md border border-custom-misc-177/50 text-custom-misc-178 px-5 py-3 flex items-center gap-3 pointer-events-auto shadow-custom-misc-179 skew-x-custom-misc-180">
+            <span className="text-xs font-bold uppercase tracking-widest font-mono skew-x-custom-misc-181">
               Scroll Horizontally
             </span>
           </div>
@@ -175,34 +175,34 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
         {/* Horizontal Scroll Area */}
         <div
           ref={scrollContainerRef}
-          className="overflow-x-auto pb-16 pl-6 md:pl-[calc((100vw-1280px)/2)] pr-6 relative z-10 w-full scrollbar-hide no-scrollbar flex"
+          className="overflow-x-auto pb-16 pl-6 md:pl-custom-misc-182 pr-6 relative z-10 w-full scrollbar-hide no-scrollbar flex"
         >
           <div ref={timelineRef} className="flex w-max relative pt-12">
             {/* Connecting line */}
-            <div className="absolute top-[80px] left-0 w-full h-[1px] border-t-2 border-dotted border-transparent z-0 pointer-events-none dotted-line-manufacturing"></div>
+            <div className="absolute top-custom-space-186 left-0 w-full h-custom-space-187 border-t-2 border-dotted border-transparent z-0 pointer-events-none dotted-line-manufacturing"></div>
 
             {/* Timeline Items */}
             {displayPhases.map((phase, idx) => (
               <div
                 key={idx}
-                className="w-[380px] md:w-[420px] group relative mr-8 md:mr-16 shrink-0"
+                className="w-custom-space-188 md:w-custom-space-189 group relative mr-8 md:mr-16 shrink-0"
               >
                 {/* Number & Header */}
                 <div className="flex items-center mb-6 relative z-10 pl-6">
                   <div
                     className={cn(
-                      "absolute left-6 -top-3 w-4 h-4 bg-[var(--color-manufacturing-bg)] border-2 rotate-45 z-20 transition-colors",
+                      "absolute left-6 -top-3 w-4 h-4 bg-custom-misc-183 border-2 rotate-45 z-20 transition-colors",
                       idx === 0
-                        ? "border-[var(--color-manufacturing-accent)]"
-                        : "border-gray-700 group-hover:border-[var(--color-manufacturing-accent)]",
+                        ? "border-custom-misc-184"
+                        : "border-gray-700 group-hover:border-custom-misc-185",
                     )}
                   ></div>
                   <div
                     className={cn(
-                      "text-7xl font-neue-stance font-black transition-colors bg-[var(--color-manufacturing-bg)] pr-6 relative z-10 leading-none italic skew-x-[-5deg]",
+                      "text-7xl font-neue-stance font-black transition-colors bg-custom-misc-186 pr-6 relative z-10 leading-none italic skew-x-custom-misc-187",
                       idx === 0
-                        ? "text-[var(--color-manufacturing-accent)]"
-                        : "text-gray-800 group-hover:text-[var(--color-manufacturing-accent)]",
+                        ? "text-custom-misc-188"
+                        : "text-gray-800 group-hover:text-custom-misc-189",
                     )}
                   >
                     0{idx + 1}
@@ -212,8 +212,8 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
                       className={cn(
                         "text-xs font-mono font-bold uppercase tracking-widest mb-1 transition-colors",
                         idx === 0
-                          ? "text-[var(--color-manufacturing-accent)]"
-                          : "text-manufacturing-body group-hover:text-[var(--color-manufacturing-accent)]",
+                          ? "text-custom-misc-190"
+                          : "text-manufacturing-body group-hover:text-custom-misc-191",
                       )}
                     >
                       {phase.subtitle.split(" ")[0]} {phase.subtitle.split(" ")[1]}
@@ -228,7 +228,7 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
                 </div>
 
                 {/* Content Card */}
-                <div className="h-[480px] md:h-[520px] w-full bg-[var(--color-manufacturing-card)] border border-white/5 relative group-hover:border-[var(--color-manufacturing-accent)]/60 transition-colors duration-500 p-2">
+                <div className="h-custom-space-190 md:h-custom-space-191 w-full bg-custom-misc-192 border border-white/5 relative group-hover:border-custom-misc-193/60 transition-colors duration-500 p-2">
                   <div className="blueprint-corner blueprint-corner-tl"></div>
                   <div className="blueprint-corner blueprint-corner-tr"></div>
                   <div className="blueprint-corner blueprint-corner-bl"></div>
@@ -243,10 +243,10 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
                     <div className="absolute top-4 right-4 z-20 flex flex-col items-end">
                       <span
                         className={cn(
-                          "text-[10px] font-mono font-bold px-2 py-0.5 bg-black/80 backdrop-blur-sm transition-colors border",
+                          "text-custom-space-192 font-mono font-bold px-2 py-0.5 bg-black/80 backdrop-blur-sm transition-colors border",
                           idx === 0
-                            ? "text-[var(--color-manufacturing-accent)] border-[var(--color-manufacturing-accent)]/50"
-                            : "text-gray-500 group-hover:text-[var(--color-manufacturing-accent)] border-white/10 group-hover:border-[var(--color-manufacturing-accent)]/30",
+                            ? "text-custom-misc-194 border-custom-misc-195/50"
+                            : "text-gray-500 group-hover:text-custom-misc-196 border-white/10 group-hover:border-custom-misc-197/30",
                         )}
                       >
                         {phase.id}
@@ -267,10 +267,10 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
                         decoding="async"
                       />
                       <div className="absolute inset-0 tech-grid-manufacturing opacity-20 pointer-events-none"></div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-manufacturing-bg)] via-[var(--color-manufacturing-bg)]/40 to-transparent opacity-90"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-custom-misc-198 via-custom-misc-199/40 to-transparent opacity-90"></div>
                     </div>
 
-                    <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 border-t border-[var(--color-manufacturing-accent)]/10 bg-black/90 backdrop-blur-sm">
+                    <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 border-t border-custom-misc-200/10 bg-black/90 backdrop-blur-sm">
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="text-white font-neue-stance font-bold uppercase tracking-wider text-2xl italic">
                           {phase.title}
@@ -280,8 +280,8 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
                         className={cn(
                           "text-manufacturing-body text-sm leading-relaxed font-light border-l-2 pl-4 transition-colors",
                           idx === 0
-                            ? "border-[var(--color-manufacturing-accent)]"
-                            : "border-white/20 group-hover:border-[var(--color-manufacturing-accent)]",
+                            ? "border-custom-misc-201"
+                            : "border-white/20 group-hover:border-custom-misc-202",
                         )}
                       >
                         {phase.desc}

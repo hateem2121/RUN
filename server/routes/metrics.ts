@@ -1,3 +1,4 @@
+import { env } from "../lib/env.js";
 /**
  * Prometheus Metrics Endpoint
  * Exposes Node.js and application metrics in Prometheus format
@@ -5,13 +6,12 @@
 
 import { Router } from "express";
 import prom from "prom-client";
-import { getPoolMetrics } from "../db.js";
 import { twoTierBatchCache } from "../lib/cache/two-tier-batch.js";
 import { UnifiedCache } from "../lib/cache/unified-cache.js";
-import { queryPerformanceMonitor } from "../lib/db/query-performance.js";
 import { errorAggregator } from "../lib/monitoring/error-aggregator.js";
 import { httpMetricsTracker } from "../lib/monitoring/http-metrics.js";
 import { logger } from "../lib/monitoring/logger.js";
+import { metricsService } from "../services/metrics.service.js";
 
 const router = Router();
 let defaultMetricsRegistered = false;
@@ -79,9 +79,9 @@ const errorBySeverityTotal = new prom.Gauge({
  */
 router.get("/", async (req, res) => {
   const secret =
-    process.env.METRICS_SECRET ||
-    process.env.HEALTH_CHECK_SECRET ||
-    (process.env.NODE_ENV === "production" ? undefined : "dev-metrics-key");
+    env.METRICS_SECRET ||
+    env.HEALTH_CHECK_SECRET ||
+    (env.NODE_ENV === "production" ? undefined : "dev-metrics-key");
   const providedSecret = req.headers["x-metrics-key"] || req.query.key;
 
   if (!secret) {
@@ -133,11 +133,12 @@ router.get("/", async (req, res) => {
   cacheMissesTotal.set({ cache_type: "batch" }, batchMisses);
 
   // 3. Update Database metrics dynamically
-  const dbStats = queryPerformanceMonitor.getPerformanceStats();
-  dbQueryDuration.set({ operation: "all" }, dbStats.averageResponseTime / 1000);
-
-  const poolMetrics = getPoolMetrics();
-  dbConnectionsActive.set(poolMetrics.currentConcurrentQueries);
+  const metricsResult = await metricsService.getDatabaseMetrics();
+  if (metricsResult.isOk()) {
+    const dbStats = metricsResult.value;
+    dbQueryDuration.set({ operation: "all" }, dbStats.averageResponseTime / 1000);
+    dbConnectionsActive.set(dbStats.currentConcurrentQueries);
+  }
 
   // 4. Update Error metrics dynamically
   const errorMetrics = errorAggregator.getMetrics();

@@ -73,10 +73,10 @@ export function MediaPickerModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-custom-misc-68 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div
         data-testid="media-picker"
-        className="w-full max-w-[1100px] h-[80vh] bg-surface-black/90 backdrop-blur-2xl border border-white/10 rounded-2xl flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200"
+        className="w-full max-w-custom-space-60 h-custom-space-61 bg-surface-black/90 backdrop-blur-2xl border border-white/10 rounded-2xl flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200"
       >
         {/* Header */}
         <header className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-white/[0.02]">
@@ -102,7 +102,7 @@ export function MediaPickerModal({
 
         <div className="flex flex-1 overflow-hidden">
           {/* Sidebar */}
-          <aside className="w-[240px] border-r border-white/5 p-5 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
+          <aside className="w-custom-space-62 border-r border-white/5 p-5 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-admin-muted w-4 h-4" />
@@ -255,7 +255,7 @@ export function MediaPickerModal({
               className={cn(
                 "px-6 py-2 rounded-lg text-sm font-semibold transition-all shadow-lg",
                 selectedAssetId
-                  ? "bg-blue-500 text-white hover:bg-blue-600 shadow-blue-500/20 active:scale-[0.98]"
+                  ? "bg-blue-500 text-white hover:bg-blue-600 shadow-blue-500/20 active:scale-custom-misc-69"
                   : "bg-white/5 text-admin-muted cursor-not-allowed border border-white/5",
               )}
             >

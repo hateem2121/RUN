@@ -44,7 +44,7 @@ function normalizeFilters(filters?: { category?: string | undefined; search?: st
   return JSON.stringify(normalized);
 }
 
-export class AccessoryRepository {
+class AccessoryRepository {
   /**
    * Get single accessory by ID (with cache)
    */

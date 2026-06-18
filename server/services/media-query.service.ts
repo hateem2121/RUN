@@ -10,7 +10,7 @@ import { correctMimeType } from "../lib/utilities/core-utils.js";
  * Service for querying and managing existing media assets.
  * Enforces Result-based patterns and circuit breaker protection.
  */
-export class MediaQueryService {
+class MediaQueryService {
   /**
    * Retrieves assets with pagination and filtering
    */

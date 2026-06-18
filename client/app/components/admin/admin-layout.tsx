@@ -172,14 +172,14 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* Skip to content link for accessibility */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-custom-misc-12 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
       >
         Skip to main content
       </a>
 
       {/* Sidebar */}
       <aside
-        className={`flex flex-shrink-0 flex-col border-r border-white/10 bg-admin-surface transition-[width] duration-200 ease-in-out ${
+        className={`flex flex-shrink-0 flex-col border-r border-white/10 bg-admin-surface transition-custom-misc-13 duration-200 ease-in-out ${
           sidebarOpen ? "w-sidebar-expanded" : "w-sidebar-collapsed"
         }`}
       >
@@ -339,7 +339,4 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     </div>
   );
 }
-
 // Re-export for backwards compatibility
-export { navItems };
-export type { NavItem };

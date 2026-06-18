@@ -80,7 +80,6 @@
     "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
-    "@axe-core/react": "^4.11.3",
     "@react-router/dev": "^7.16.0",
     "@react-scan/vite-plugin-react-scan": "^0.2.3",
     "@sentry/vite-plugin": "^5.2.1",
@@ -88,7 +87,6 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.0",
-    "axe-core": "^4.11.4",
     "html-validate": "^10.13.1",
     "react-scan": "^0.5.3",
     "rollup-plugin-visualizer": "^7.0.1",

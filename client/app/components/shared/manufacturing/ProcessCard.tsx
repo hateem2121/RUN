@@ -53,7 +53,7 @@ export function ProcessCard({ process, index, mediaAssets }: ProcessCardProps) {
     <BentoGridItem gridSpan={gridSpan}>
       <Card
         className={cn(
-          "group manufacturing-card-hover manufacturing-focus-glow relative h-full min-h-[320px] rounded-none",
+          "group manufacturing-card-hover manufacturing-focus-glow relative h-full min-h-custom-space-204 rounded-none",
           "border-2 border-border transition-all duration-300",
         )}
       >

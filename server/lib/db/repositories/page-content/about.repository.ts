@@ -30,7 +30,7 @@ import { StorageSingleton } from "../../../storage-singleton.js";
 
 const unifiedCache = UnifiedCache.getInstance();
 
-export class AboutRepository {
+class AboutRepository {
   async getAboutHero(includeInactive: boolean = false): Promise<AboutHero | undefined> {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getAboutHero(includeInactive);

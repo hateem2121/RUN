@@ -1,11 +1,6 @@
 import type {
   CategoryItem,
-  DataWithTimestamp,
-  HeroData,
-  HomepageBatchResponse,
   HomepageFeaturedSettings,
-  HomepageSectionItem,
-  HomepageSloganItem,
   ProcessStep,
   ProductItem,
 } from "@shared/types/homepage";
@@ -36,14 +31,4 @@ export interface Partner {
 }
 
 // Re-export common types from shared for convenience in existing components
-export type {
-  HomepageBatchResponse,
-  ProductItem,
-  CategoryItem,
-  ProcessStep,
-  HeroData,
-  HomepageSloganItem,
-  HomepageSectionItem,
-  HomepageFeaturedSettings,
-  DataWithTimestamp,
-};
+export type { ProductItem, CategoryItem, ProcessStep, HomepageFeaturedSettings };

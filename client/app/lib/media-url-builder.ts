@@ -6,14 +6,11 @@
 import type { ImageVariants, MediaAsset } from "@shared/index";
 
 // Type aliases using canonical MediaAsset from shared schema
-export type MediaAssetBasic = Pick<MediaAsset, "id" | "url">;
-export type MediaAssetWithMetadata = Pick<
-  MediaAsset,
-  "id" | "mimeType" | "originalName" | "filename"
->;
+type MediaAssetBasic = Pick<MediaAsset, "id" | "url">;
+type MediaAssetWithMetadata = Pick<MediaAsset, "id" | "mimeType" | "originalName" | "filename">;
 
-export type MediaPriority = "low" | "medium" | "high";
-export type MediaContext = "grid" | "detail" | "thumbnail";
+type MediaPriority = "low" | "medium" | "high";
+type MediaContext = "grid" | "detail" | "thumbnail";
 
 // In-flight request tracking types
 interface InFlightRequest {

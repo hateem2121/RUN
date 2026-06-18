@@ -170,7 +170,7 @@ function verify(payload, signature, secret) {
                 className="p-3 rounded-lg border bg-card flex items-center justify-between"
               >
                 <code className="text-xs text-blue-600 dark:text-blue-400">{event}</code>
-                <Badge variant="outline" className="text-[10px]">
+                <Badge variant="outline" className="text-custom-space-294">
                   Active
                 </Badge>
               </div>

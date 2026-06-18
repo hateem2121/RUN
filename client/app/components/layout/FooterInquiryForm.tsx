@@ -1,11 +1,11 @@
 import { cva } from "class-variance-authority";
 import gsap from "gsap";
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { cn } from "@/lib/utils";
 import { useCursorStore } from "@/stores/useCursorStore";
 
-export const footerInputVariants = cva(
+const footerInputVariants = cva(
   "focus-visible:border-primary focus-visible:shadow-glow-primary focus-visible:bg-primary/5 focus-visible:text-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background w-full rounded-none border-b bg-transparent py-4 pl-4 font-mono text-xl transition-all duration-300 ease-out outline-none disabled:opacity-50",
   {
     variants: {

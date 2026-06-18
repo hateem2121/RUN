@@ -53,7 +53,7 @@ import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
-  const { cspNonce } = context as { cspNonce: string };
+  const { cspNonce } = context as unknown as { cspNonce: string };
   const queryClient = new QueryClient();
 
   // Use protocol and host from request to build a dynamic base URL

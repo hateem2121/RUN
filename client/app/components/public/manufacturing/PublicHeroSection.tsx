@@ -40,10 +40,10 @@ export function PublicHeroSection({
           const isHighlighted = word.startsWith("**") && word.endsWith("**");
           const cleanWord = isHighlighted ? word.slice(2, -2) : word;
           return `<span class="inline-block overflow-hidden pb-2 pr-4"><span class="word inline-block ${
-            isHighlighted ? "text-[var(--color-manufacturing-accent)] relative" : ""
+            isHighlighted ? "text-custom-misc-218 relative" : ""
           }">${cleanWord}${
             isHighlighted
-              ? '<span class="absolute -top-2 -right-4 w-3 h-3 bg-[var(--color-manufacturing-accent)] rotate-45 animate-pulse shadow-[0_0_10px_var(--color-manufacturing-accent)]"></span>'
+              ? '<span class="absolute -top-2 -right-4 w-3 h-3 bg-custom-misc-219 rotate-45 animate-pulse shadow-custom-misc-220"></span>'
               : ""
           }</span></span>`;
         })
@@ -123,14 +123,14 @@ export function PublicHeroSection({
     <ManufacturingErrorBoundary>
       <div ref={containerRef} className="relative bg-manufacturing-bg">
         {/* Header Section */}
-        <header className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
+        <header className="relative min-h-custom-space-199 flex items-center justify-center overflow-hidden pt-20">
           {/* Floating Sparks Animation Layer */}
-          <div className="absolute inset-0 z-[5] overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 z-custom-misc-221 overflow-hidden pointer-events-none">
             {[...Array(9)].map((_, i) => (
               <div
                 key={i}
                 className={cn(
-                  "absolute bg-manufacturing-accent shadow-[0_0_8px_var(--color-manufacturing-accent)] opacity-40 pointer-events-none spark",
+                  "absolute bg-manufacturing-accent shadow-custom-misc-222 opacity-40 pointer-events-none spark",
                   i % 3 === 0 ? "w-1 h-1" : i % 2 === 0 ? "w-1.5 h-1.5" : "w-0.5 h-0.5",
                 )}
                 style={
@@ -185,7 +185,7 @@ export function PublicHeroSection({
               />
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-manufacturing-bg via-manufacturing-bg/80 to-transparent"></div>
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_var(--color-manufacturing-bg)_100%)]"></div>
+            <div className="absolute inset-0 bg-custom-misc-223"></div>
             <div className="absolute inset-0 tech-grid-manufacturing [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
           </div>
 
@@ -203,7 +203,7 @@ export function PublicHeroSection({
               <h1
                 id="hero-title"
                 ref={headlineRef}
-                className="text-[clamp(2.5rem,8vw,5rem)] md:text-[clamp(3.5rem,9vw,7rem)] lg:text-[clamp(4.5rem,10vw,8rem)] font-neue-stance font-bold tracking-tighter uppercase italic leading-[0.85] mb-8 text-white relative transform skew-x-[-2deg] break-words text-balance pr-10"
+                className="text-custom-misc-224 md:text-custom-misc-225 lg:text-custom-misc-226 font-neue-stance font-bold tracking-tighter uppercase italic leading-custom-misc-227 mb-8 text-white relative transform skew-x-custom-misc-228 break-words text-balance pr-10"
                 aria-label={sanitizeContent(displayHeadline.replace(/\*\*/g, ""))}
               >
                 {sanitizeContent(displayHeadline)}
@@ -219,13 +219,13 @@ export function PublicHeroSection({
 
               <div ref={ctaRef} className="flex flex-col sm:flex-row gap-6">
                 <a
-                  className="inline-flex items-center justify-center bg-manufacturing-accent hover:bg-white hover:text-black text-black px-10 py-5 text-sm font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(255,77,0,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] skew-x-[-10deg]"
+                  className="inline-flex items-center justify-center bg-manufacturing-accent hover:bg-white hover:text-black text-black px-10 py-5 text-sm font-black uppercase tracking-widest transition-all shadow-custom-misc-229 hover:shadow-custom-misc-230 skew-x-custom-misc-231"
                   href={hero.ctaLink || "#process"}
                 >
                   {hero.ctaText || "Explore Our Process"}
                 </a>
                 <a
-                  className="inline-flex items-center justify-center border border-white/30 hover:border-manufacturing-accent hover:text-manufacturing-accent text-white px-10 py-5 text-sm font-bold uppercase tracking-widest transition-all hover:bg-manufacturing-card/50 backdrop-blur-sm skew-x-[-10deg]"
+                  className="inline-flex items-center justify-center border border-white/30 hover:border-manufacturing-accent hover:text-manufacturing-accent text-white px-10 py-5 text-sm font-bold uppercase tracking-widest transition-all hover:bg-manufacturing-card/50 backdrop-blur-sm skew-x-custom-misc-232"
                   href="#tour"
                 >
                   Request Factory Tour
@@ -248,14 +248,14 @@ export function PublicHeroSection({
                   key={i}
                   className="flex flex-col md:flex-row items-center gap-1 md:gap-3 group cursor-default"
                 >
-                  <span className="text-manufacturing-accent font-neue-stance font-bold italic text-3xl group-hover:scale-110 transition-transform skew-x-[-5deg] flex items-baseline">
+                  <span className="text-manufacturing-accent font-neue-stance font-bold italic text-3xl group-hover:scale-110 transition-transform skew-x-custom-misc-233 flex items-baseline">
                     {stat.value === 0.05 ? "<" : ""}
                     <span className="stat-number" data-target={stat.value}>
                       0
                     </span>
                     {stat.suffix}
                   </span>
-                  <span className="text-[10px] text-manufacturing-body uppercase tracking-widest border-t border-transparent group-hover:border-manufacturing-accent/50 pt-1 transition-all font-bold">
+                  <span className="text-custom-space-200 text-manufacturing-body uppercase tracking-widest border-t border-transparent group-hover:border-manufacturing-accent/50 pt-1 transition-all font-bold">
                     {stat.label}
                   </span>
                 </div>

@@ -28,7 +28,7 @@ const iconWrapperVariants = cva("inline-center-flex shrink-0", {
   },
 });
 
-export interface IconWrapperProps
+interface IconWrapperProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof iconWrapperVariants> {
   asChild?: boolean | undefined;
@@ -53,4 +53,4 @@ const IconWrapper = ({
 };
 IconWrapper.displayName = "IconWrapper";
 
-export { IconWrapper, iconWrapperVariants };
+export { IconWrapper };

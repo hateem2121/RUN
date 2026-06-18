@@ -125,7 +125,7 @@ export function FabricPortfolioTabContent({
                   onChange={(e) => onLocalUpdate({ fabricPortfolioDescription: e.target.value })}
                   placeholder="Describe the philosophical foundation of your material selection..."
                   rows={6}
-                  className="bg-white/5 border-white/10 text-white rounded-xl min-h-[150px] focus:ring-emerald-500/50 placeholder:text-white/20 resize-none"
+                  className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-71 focus:ring-emerald-500/50 placeholder:text-white/20 resize-none"
                 />
               </div>
             </div>
@@ -169,7 +169,7 @@ export function FabricPortfolioTabContent({
               </div>
             </div>
 
-            <Card className="glass-premium flex-1 min-h-[400px] border-white/5 relative overflow-hidden flex flex-col">
+            <Card className="glass-premium flex-1 min-h-custom-space-72 border-white/5 relative overflow-hidden flex flex-col">
               <ScrollArea className="flex-1">
                 {isLoadingFabrics ? (
                   <div className="p-20 flex flex-col items-center justify-center text-center">
@@ -214,7 +214,7 @@ export function FabricPortfolioTabContent({
                         >
                           <Check
                             className={cn(
-                              "size-3.5 stroke-[3] transition-opacity",
+                              "size-3.5 stroke-custom-misc-76 transition-opacity",
                               selectedFabricIds.includes(fabric.id) ? "opacity-100" : "opacity-0",
                             )}
                           />
@@ -240,7 +240,7 @@ export function FabricPortfolioTabContent({
 
                         {fabric.isActive && (
                           <div className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                            <span className="text-[8px] font-bold text-emerald-400 uppercase tracking-widest">
+                            <span className="text-custom-space-73 font-bold text-emerald-400 uppercase tracking-widest">
                               Active
                             </span>
                           </div>

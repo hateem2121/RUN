@@ -23,7 +23,7 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "fade-in-50 flex min-h-[400px] w-full animate-in flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center",
+        "fade-in-50 flex min-h-custom-space-276 w-full animate-in flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center",
         "border-border/50 bg-surface-subtle/50 dark:bg-muted/10",
         className,
       )}

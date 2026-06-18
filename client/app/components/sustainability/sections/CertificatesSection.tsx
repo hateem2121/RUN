@@ -21,16 +21,16 @@ function HexNode({ certificate }: { certificate: Certificate }) {
               src={certificate.imageUrl}
               alt={certificate.name}
               loading="lazy"
-              className="max-h-16 max-w-[100px] object-contain transition-transform group-hover:scale-110 duration-300"
+              className="max-h-16 max-w-custom-space-205 object-contain transition-transform group-hover:scale-110 duration-300"
             />
           ) : (
-            <span className="text-xl md:text-2xl font-bold text-[color:var(--s-text-head)] text-center leading-tight">
+            <span className="text-xl md:text-2xl font-bold text-custom-misc-240 text-center leading-tight">
               {certificate.name}
             </span>
           )}
-          <div className="flex items-center gap-1 bg-[color:var(--s-primary)]/10 px-2 py-0.5 rounded-full mt-2">
-            <CheckCircle className="h-3.5 w-3.5 text-[color:var(--s-primary)]" />
-            <span className="text-[10px] font-medium text-[color:var(--s-primary)] uppercase tracking-wide">
+          <div className="flex items-center gap-1 bg-custom-misc-241/10 px-2 py-0.5 rounded-full mt-2">
+            <CheckCircle className="h-3.5 w-3.5 text-custom-misc-242" />
+            <span className="text-custom-space-206 font-medium text-custom-misc-243 uppercase tracking-wide">
               Verified
             </span>
           </div>
@@ -56,11 +56,11 @@ function HexNode({ certificate }: { certificate: Certificate }) {
         {certificate.description && (
           <p className="text-xs leading-relaxed mb-3 text-white/60">{certificate.description}</p>
         )}
-        <div className="flex justify-between items-center border-t border-[color:var(--s-primary)]/30 pt-2">
-          <span className="text-[10px] uppercase text-[color:var(--s-primary)]/80">
+        <div className="flex justify-between items-center border-t border-custom-misc-244/30 pt-2">
+          <span className="text-custom-space-207 uppercase text-custom-misc-245/80">
             {certificate.type || "Status"}
           </span>
-          <span className="text-[10px] font-mono text-white/90">
+          <span className="text-custom-space-208 font-mono text-white/90">
             {certificate.status || "Verified"}
           </span>
         </div>
@@ -128,7 +128,7 @@ export function CertificatesSection({
   return (
     <section
       ref={sectionRef}
-      className="relative py-24 bg-[color:var(--s-bg-card)] border-t border-[color:var(--s-border-card)] z-10 overflow-hidden"
+      className="relative py-24 bg-custom-misc-246 border-t border-custom-misc-247 z-10 overflow-hidden"
     >
       {/* Hex pattern SVG background */}
       <div className="absolute inset-0 pointer-events-none z-0">
@@ -154,23 +154,21 @@ export function CertificatesSection({
 
       <div className="container mx-auto max-w-7xl px-6 lg:px-10 text-center relative z-10">
         <div className="cert-header-content mb-16">
-          <p className="text-sm font-bold uppercase tracking-widest text-[color:var(--s-primary)] mb-2">
+          <p className="text-sm font-bold uppercase tracking-widest text-custom-misc-248 mb-2">
             Verified Impact
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-[color:var(--s-text-head)]">
-            {title}
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-custom-misc-249">{title}</h2>
           {description && (
-            <p className="mt-4 mx-auto max-w-2xl text-[color:var(--s-text-muted)]">{description}</p>
+            <p className="mt-4 mx-auto max-w-2xl text-custom-misc-250">{description}</p>
           )}
         </div>
 
         {/* Hex Grid */}
         <div className="hex-grid relative pt-10 pb-5">
           {/* Decorative connector lines mapping to Stitch design */}
-          <div className="absolute top-[35%] left-[25%] w-[150px] h-[1px] bg-[color:var(--s-text-head)] opacity-5 rotate-12 hidden md:block pointer-events-none" />
-          <div className="absolute top-[35%] right-[25%] w-[150px] h-[1px] bg-[color:var(--s-text-head)] opacity-5 -rotate-12 hidden md:block pointer-events-none" />
-          <div className="absolute bottom-[35%] left-[30%] w-[100px] h-[1px] bg-[color:var(--s-text-head)] opacity-5 -rotate-45 hidden md:block pointer-events-none" />
+          <div className="absolute top-custom-space-209 left-custom-space-210 w-custom-space-211 h-custom-space-212 bg-custom-misc-251 opacity-5 rotate-12 hidden md:block pointer-events-none" />
+          <div className="absolute top-custom-space-213 right-custom-space-214 w-custom-space-215 h-custom-space-216 bg-custom-misc-252 opacity-5 -rotate-12 hidden md:block pointer-events-none" />
+          <div className="absolute bottom-custom-space-217 left-custom-space-218 w-custom-space-219 h-custom-space-220 bg-custom-misc-253 opacity-5 -rotate-45 hidden md:block pointer-events-none" />
 
           {certificates.map((certificate) => (
             <HexNode key={certificate.id} certificate={certificate} />
@@ -179,7 +177,7 @@ export function CertificatesSection({
 
         {/* Footer note */}
         {footerNote && (
-          <p className="cert-footer-note mx-auto max-w-2xl text-sm text-[color:var(--s-text-muted)] mt-12">
+          <p className="cert-footer-note mx-auto max-w-2xl text-sm text-custom-misc-254 mt-12">
             {footerNote}
           </p>
         )}

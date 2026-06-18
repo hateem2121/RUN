@@ -560,6 +560,3 @@ export function getLifecycleScheduler(
   }
   return schedulerInstance;
 }
-
-export type { LifecycleConfig, CleanupMetrics, CleanupReport };
-export { StorageLifecycleScheduler };

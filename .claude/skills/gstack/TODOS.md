@@ -288,9 +288,9 @@ scope of that PR; deliberately deferred to keep PTY-import small.
 
 **Pros:** Turns `/plan-eng-review`'s parallelization output into actionable resume state. Reduces context-loss across Conductor workspace handoffs for multi-workstream plans.
 
-**Cons:** Net-new functionality (not a port from the old `/checkpoint` skill). The "spawn new Conductor windows" part needs research into whether Conductor has a spawn CLI. Also requires lane-tagging discipline in the save step (manual or extracted).
+**Cons:** Net-new functionality (not a port from the old `/context-save` skill). The "spawn new Conductor windows" part needs research into whether Conductor has a spawn CLI. Also requires lane-tagging discipline in the save step (manual or extracted).
 
-**Context:** Source of the lane data model is `plan-eng-review/SKILL.md.tmpl:240-249` (the "Parallelization Strategy" output with Lane A/B/C dependency tables and conflict flags). Deferred from the v0.18.5.0 rename PR so the rename could land as a tight, low-risk fix. Saved files currently live at `~/.gstack/projects/$SLUG/checkpoints/YYYYMMDD-HHMMSS-<title>.md` with YAML frontmatter (branch, timestamp, etc.). The lane feature would add a `lane:` field to frontmatter and a `--lane` filter to both skills.
+**Context:** Source of the lane data model is `plan-eng-review/SKILL.md.tmpl:240-249` (the "Parallelization Strategy" output with Lane A/B/C dependency tables and conflict flags). Deferred from the v0.18.5.0 rename PR so the rename could land as a tight, low-risk fix. Saved files currently live at `~/.gstack/projects/$SLUG/context-saves/YYYYMMDD-HHMMSS-<title>.md` with YAML frontmatter (branch, timestamp, etc.). The lane feature would add a `lane:` field to frontmatter and a `--lane` filter to both skills.
 
 **Effort:** M (human: ~1-2 days / CC: ~45-60 min)
 **Priority:** P3 (nice-to-have, not blocking anyone yet)
@@ -1412,9 +1412,9 @@ Shipped in v0.6.5. TemplateContext in gen-skill-docs.ts bakes skill name into pr
 **Priority:** P2
 **Depends on:** Context recovery preamble
 
-### /checkpoint skill
+### /context-save skill
 
-**What:** Manual skill to snapshot current working state: what's being done and why, files being edited, decisions made (and rationale), what's done vs. remaining, critical types/signatures. Saved to `~/.gstack/projects/$SLUG/checkpoints/<timestamp>.md`.
+**What:** Manual skill to snapshot current working state: what's being done and why, files being edited, decisions made (and rationale), what's done vs. remaining, critical types/signatures. Saved to `~/.gstack/projects/$SLUG/context-saves/<timestamp>.md`.
 
 **Why:** Useful before stepping away from a long session, before known-complex operations that might trigger compaction, for handing off context to a different agent/workspace, or coming back to a project after days away.
 

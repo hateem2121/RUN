@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { Router } from "express";
+import { env } from "../lib/env.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { systemService } from "../services/system.service.js";
 
@@ -8,7 +9,7 @@ const router = Router();
 // SAFETY HEAD: Double-check env vars in case of logic error in index.ts
 router.use((req, res, next) => {
   // 1. Env & Gate Check
-  if (process.env.NODE_ENV === "production" || process.env.ENABLE_DEBUG_ROUTES !== "true") {
+  if (env.NODE_ENV === "production" || env.ENABLE_DEBUG_ROUTES !== true) {
     res.status(404).json({ error: "Debug routes invalid configuration" });
     return;
   }
@@ -19,7 +20,7 @@ router.use((req, res, next) => {
     `[Debug] Incoming request from ${req.ip}. X-Forwarded-For: ${req.headers["x-forwarded-for"]}`,
   );
   const token = req.headers["x-run-debug-token"];
-  const expectedToken = process.env.DEBUG_ROUTE_TOKEN;
+  const expectedToken = env.DEBUG_ROUTE_TOKEN;
 
   // FAIL CLOSED if token is not configured on server
   if (!expectedToken) {
@@ -47,7 +48,7 @@ router.use((req, res, next) => {
 
   // 3. Network Guard (Localhost Only by default)
   // Unless explicitly allowed via DEBUG_ROUTE_ALLOWLIST
-  const allowList = process.env.DEBUG_ROUTE_ALLOWLIST;
+  const allowList = env.DEBUG_ROUTE_ALLOWLIST;
   // Use socket address for physical connection "truth" to compare against localhost.
   // This bypasses 'trust proxy' headers, preventing IP spoofing via X-Forwarded-For.
   const ip = req.socket.remoteAddress || "";

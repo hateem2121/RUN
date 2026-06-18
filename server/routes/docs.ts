@@ -1,9 +1,10 @@
 import { Router } from "express";
+import { env } from "../lib/env.js";
 
 const router = Router();
 
 router.get("/", (_req, res) => {
-  if (process.env.NODE_ENV === "production") {
+  if (env.NODE_ENV === "production") {
     res.status(404).end();
     return;
   }

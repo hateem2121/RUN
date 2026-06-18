@@ -110,7 +110,7 @@ export function PublicCaseStudySection({
               <span className="text-manufacturing-accent font-mono text-xs uppercase tracking-widest font-bold">
                 Featured Case Studies
               </span>
-              <h2 className="text-5xl md:text-6xl font-neue-stance font-bold text-white uppercase mt-4 italic tracking-tighter skew-x-[-2deg]">
+              <h2 className="text-5xl md:text-6xl font-neue-stance font-bold text-white uppercase mt-4 italic tracking-tighter skew-x-custom-misc-213">
                 Recent Projects
               </h2>
             </div>
@@ -120,24 +120,24 @@ export function PublicCaseStudySection({
                 type="button"
                 onClick={prevProject}
                 aria-label="Previous project"
-                className="w-12 h-12 flex items-center justify-center border border-manufacturing-accent/30 bg-black/50 text-manufacturing-accent hover:bg-manufacturing-accent hover:text-black transition-colors skew-x-[-10deg]"
+                className="w-12 h-12 flex items-center justify-center border border-manufacturing-accent/30 bg-black/50 text-manufacturing-accent hover:bg-manufacturing-accent hover:text-black transition-colors skew-x-custom-misc-214"
               >
-                <ChevronLeft className="w-6 h-6 skew-x-[10deg]" />
+                <ChevronLeft className="w-6 h-6 skew-x-custom-misc-215" />
               </button>
               <button
                 type="button"
                 onClick={nextProject}
                 aria-label="Next project"
-                className="w-12 h-12 flex items-center justify-center border border-manufacturing-accent/30 bg-black/50 text-manufacturing-accent hover:bg-manufacturing-accent hover:text-black transition-colors skew-x-[-10deg]"
+                className="w-12 h-12 flex items-center justify-center border border-manufacturing-accent/30 bg-black/50 text-manufacturing-accent hover:bg-manufacturing-accent hover:text-black transition-colors skew-x-custom-misc-216"
               >
-                <ChevronRight className="w-6 h-6 skew-x-[10deg]" />
+                <ChevronRight className="w-6 h-6 skew-x-custom-misc-217" />
               </button>
             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 border border-white/10 bg-manufacturing-bg/80 backdrop-blur-md shadow-2xl">
             {/* Image Side */}
-            <div className="lg:col-span-3 pb-[60%] lg:pb-0 relative overflow-hidden group">
+            <div className="lg:col-span-3 pb-custom-space-196 lg:pb-0 relative overflow-hidden group">
               <OptimizedImage
                 key={currentProject.img}
                 mediaId={currentProject.id ?? undefined}
@@ -152,7 +152,7 @@ export function PublicCaseStudySection({
               <div className="absolute inset-0 bg-gradient-to-t from-manufacturing-bg to-transparent lg:hidden opacity-90"></div>
               <div className="absolute top-6 left-6 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
-                <span className="text-[10px] uppercase font-mono tracking-widest text-white/70 font-bold bg-black/50 px-2 py-0.5 border border-white/10 backdrop-blur-md">
+                <span className="text-custom-space-197 uppercase font-mono tracking-widest text-white/70 font-bold bg-black/50 px-2 py-0.5 border border-white/10 backdrop-blur-md">
                   REC
                 </span>
               </div>
@@ -175,7 +175,7 @@ export function PublicCaseStudySection({
               <div className="grid grid-cols-2 gap-y-6 gap-x-4 mb-10 border-t border-white/5 pt-8">
                 {currentProject.stats.map((stat, i) => (
                   <div key={i}>
-                    <div className="text-[10px] uppercase text-manufacturing-muted font-mono mb-1 font-bold">
+                    <div className="text-custom-space-198 uppercase text-manufacturing-muted font-mono mb-1 font-bold">
                       {stat.label}
                     </div>
                     <div className="text-white font-neue-stance font-medium text-xl italic">

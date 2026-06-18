@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -35,7 +36,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { CertificateAnalytics } from "./CertificateAnalytics";
 import { CertificateForm } from "./CertificateForm";
@@ -64,8 +64,6 @@ export function CertificateManagement() {
   const [viewMode, setViewMode] = useState<"grid" | "list" | "detailed">("grid");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [currentTab, setCurrentTab] = useState("certificates");
-
-  const { toast } = useToast();
 
   const { data: certificates = [], isPending: isLoading } = useQuery<Certificate[]>({
     queryKey: ["/api/certificates"],
@@ -96,12 +94,12 @@ export function CertificateManagement() {
             (key) => typeof key === "string" && key.startsWith("/api/resources/batch"),
           ),
       });
-      toast({ title: "Success", description: "Certificate created successfully" });
+      toast.success("Success", { description: "Certificate created successfully" });
       resetForm();
       setIsCreateDialogOpen(false);
     },
     onError: (error: Error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -121,12 +119,12 @@ export function CertificateManagement() {
             (key) => typeof key === "string" && key.startsWith("/api/resources/batch"),
           ),
       });
-      toast({ title: "Success", description: "Certificate updated successfully" });
+      toast.success("Success", { description: "Certificate updated successfully" });
       setIsEditDialogOpen(false);
       setEditingCertificate(null);
     },
     onError: (error: Error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -140,10 +138,10 @@ export function CertificateManagement() {
             (key) => typeof key === "string" && key.startsWith("/api/resources/batch"),
           ),
       });
-      toast({ title: "Success", description: "Certificate deleted successfully" });
+      toast.success("Success", { description: "Certificate deleted successfully" });
     },
     onError: (error: Error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -163,11 +161,11 @@ export function CertificateManagement() {
             (key) => typeof key === "string" && key.startsWith("/api/resources/batch"),
           ),
       });
-      toast({ title: "Success", description: "Certificates updated successfully" });
+      toast.success("Success", { description: "Certificates updated successfully" });
       setSelectedCertificates([]);
     },
     onError: (error: Error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -182,11 +180,11 @@ export function CertificateManagement() {
             (key) => typeof key === "string" && key.startsWith("/api/resources/batch"),
           ),
       });
-      toast({ title: "Success", description: "Certificates deleted successfully" });
+      toast.success("Success", { description: "Certificates deleted successfully" });
       setSelectedCertificates([]);
     },
     onError: (error: Error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -607,7 +605,7 @@ export function CertificateManagement() {
             if (asset?.id) {
               setFormData((prev: CertificateFormData) => ({ ...prev, imageId: asset.id }));
               setIsMediaPickerOpen(false);
-              toast({ title: "Success", description: "Image selected" });
+              toast.success("Success", { description: "Image selected" });
             }
           }}
           mediaPickerTarget="certificate-logo"

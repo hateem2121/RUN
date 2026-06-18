@@ -14,18 +14,10 @@ import {
   insertManufacturingQualitySchema,
 } from "../../shared/index.js";
 
-export {
-  insertManufacturingCapabilitySchema,
-  insertManufacturingCaseStudySchema,
-  insertManufacturingHeroSchema,
-  insertManufacturingProcessSchema,
-  insertManufacturingQualitySchema,
-};
-
 /**
  * Standard validation result type
  */
-export type ValidationResult<T> =
+type ValidationResult<T> =
   | { success: true; data: T }
   | { success: false; error: { message: string; details: z.ZodIssue[] } };
 
@@ -33,7 +25,7 @@ export type ValidationResult<T> =
  * Generic validation helper
  * Validates data against a Zod schema and returns standardized result
  */
-export function validate<T>(schema: ZodSchema<T>, data: unknown): ValidationResult<T> {
+function validate<T>(schema: ZodSchema<T>, data: unknown): ValidationResult<T> {
   const result = schema.safeParse(data);
 
   if (result.success) {
@@ -107,7 +99,7 @@ export function validateManufacturingCaseStudyPartial(data: unknown) {
 /**
  * Reorder validation schemas
  */
-export const reorderProcessesSchema = z.object({
+const reorderProcessesSchema = z.object({
   processes: z.array(
     z.object({
       id: z.number().int().positive(),
@@ -116,7 +108,7 @@ export const reorderProcessesSchema = z.object({
   ),
 });
 
-export const reorderCapabilitiesSchema = z.object({
+const reorderCapabilitiesSchema = z.object({
   capabilities: z.array(
     z.object({
       id: z.number().int().positive(),
@@ -125,7 +117,7 @@ export const reorderCapabilitiesSchema = z.object({
   ),
 });
 
-export const reorderQualitiesSchema = z.object({
+const reorderQualitiesSchema = z.object({
   qualities: z.array(
     z.object({
       id: z.number().int().positive(),
@@ -134,7 +126,7 @@ export const reorderQualitiesSchema = z.object({
   ),
 });
 
-export const reorderCaseStudiesSchema = z.object({
+const reorderCaseStudiesSchema = z.object({
   caseStudies: z.array(
     z.object({
       id: z.number().int().positive(),

@@ -12,17 +12,25 @@ import type {
   SustainabilityMetricHistory,
   UnifiedSustainability,
 } from "../../shared/index.js";
+import {
+  insertSustainabilityGoalSchema,
+  insertSustainabilityHeroSchema,
+  insertSustainabilityInitiativeSchema,
+  insertSustainabilityMetricSchema,
+  insertUnifiedSustainabilitySchema,
+} from "../../shared/index.js";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { miscRepository, sustainabilityRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
+import { sanitizeHtml } from "../lib/sanitize-html.js";
 
 /**
  * Service for managing Sustainability domain content
  * Enforces Result-based patterns and circuit breaker protection
  */
-export class SustainabilityService {
+class SustainabilityService {
   /**
    * Invalidates all sustainability related cache entries
    */
@@ -60,7 +68,14 @@ export class SustainabilityService {
     try {
       const updated = await withCircuit(
         "update-sustainability-hero",
-        () => sustainabilityRepository.updateSustainabilityHero(data),
+        () =>
+          sustainabilityRepository.updateSustainabilityHero(
+            (() => {
+              const parsed = insertSustainabilityHeroSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -112,7 +127,14 @@ export class SustainabilityService {
     try {
       const created = await withCircuit(
         "create-sustainability-goal",
-        () => sustainabilityRepository.createSustainabilityGoal(data),
+        () =>
+          sustainabilityRepository.createSustainabilityGoal(
+            (() => {
+              const parsed = insertSustainabilityGoalSchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -131,7 +153,15 @@ export class SustainabilityService {
     try {
       const updated = await withCircuit(
         `update-sustainability-goal-${id}`,
-        () => sustainabilityRepository.updateSustainabilityGoal(id, data),
+        () =>
+          sustainabilityRepository.updateSustainabilityGoal(
+            id,
+            (() => {
+              const parsed = insertSustainabilityGoalSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -219,7 +249,14 @@ export class SustainabilityService {
     try {
       const created = await withCircuit(
         "create-sustainability-metric",
-        () => sustainabilityRepository.createSustainabilityMetric(data),
+        () =>
+          sustainabilityRepository.createSustainabilityMetric(
+            (() => {
+              const parsed = insertSustainabilityMetricSchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -238,7 +275,15 @@ export class SustainabilityService {
     try {
       const updated = await withCircuit(
         `update-sustainability-metric-${id}`,
-        () => sustainabilityRepository.updateSustainabilityMetric(id, data),
+        () =>
+          sustainabilityRepository.updateSustainabilityMetric(
+            id,
+            (() => {
+              const parsed = insertSustainabilityMetricSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -352,7 +397,14 @@ export class SustainabilityService {
     try {
       const created = await withCircuit(
         "create-sustainability-initiative",
-        () => sustainabilityRepository.createSustainabilityInitiative(data),
+        () =>
+          sustainabilityRepository.createSustainabilityInitiative(
+            (() => {
+              const parsed = insertSustainabilityInitiativeSchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -371,7 +423,15 @@ export class SustainabilityService {
     try {
       const updated = await withCircuit(
         `update-sustainability-initiative-${id}`,
-        () => sustainabilityRepository.updateSustainabilityInitiative(id, data),
+        () =>
+          sustainabilityRepository.updateSustainabilityInitiative(
+            id,
+            (() => {
+              const parsed = insertSustainabilityInitiativeSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -450,7 +510,13 @@ export class SustainabilityService {
     try {
       const updated = await withCircuit(
         "update-unified-sustainability",
-        () => sustainabilityRepository.updateUnifiedSustainability(data),
+        () =>
+          sustainabilityRepository.updateUnifiedSustainability(
+            (() => {
+              const parsed = insertUnifiedSustainabilitySchema.partial().parse(data);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 

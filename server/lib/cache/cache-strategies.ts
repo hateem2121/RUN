@@ -53,7 +53,7 @@ type CacheOptions = {
 const TTL = UnifiedCache.TTL_PRESETS;
 
 // Cache strategy factory functions to avoid readonly type issues
-export const CacheStrategies = {
+const CacheStrategies = {
   // Critical data that changes rarely (navigation, footer, hero images)
   // PHASE 2: Using 12-hour TTL for maximum cache hit rate on static content
   STATIC: (): CacheOptions => ({
@@ -114,7 +114,7 @@ export const CacheStrategies = {
 // - cache-strategies.ts imports CacheKeys from cache-keys.ts
 // - cache-warmup-registry.ts imports CacheKeys from cache-keys.ts (not from cache-strategies!)
 // - No more circular dependency!
-export { CacheKeys, InvalidationPatterns } from "./cache-keys.js";
+export { CacheKeys } from "./cache-keys.js";
 
 // High-level cache operations with built-in strategies
 export const CacheOperations = {

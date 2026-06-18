@@ -34,7 +34,7 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Component() {
+export function Component() {
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedCharts, setExpandedCharts] = useState<Set<number>>(new Set());
   const headerRef = useRef<HTMLDivElement>(null);
@@ -120,7 +120,7 @@ export default function Component() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[150px]">Measurement</TableHead>
+              <TableHead className="w-custom-space-302">Measurement</TableHead>
               {sizes.map((size) => (
                 <TableHead key={size} className="text-center">
                   {size}

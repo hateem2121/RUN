@@ -3,7 +3,7 @@ interface CertificationBadgeProps {
   className?: string | undefined;
 }
 
-export const CertificationBadge = ({ text, className }: CertificationBadgeProps) => (
+const CertificationBadge = ({ text, className }: CertificationBadgeProps) => (
   <div
     className={`border border-border bg-background px-2 py-0.5 font-bold text-foreground text-micro ${className}`}
   >

@@ -31,7 +31,7 @@ interface RateLimitConfig {
   warningThreshold?: number | undefined; // FORENSIC: Warn at X% of limit (default: 80)
 }
 
-export class RateLimiter {
+class RateLimiter {
   private store: Map<string, RateLimitEntry> = new Map();
   private config: Required<RateLimitConfig>;
   private cleanupInterval: NodeJS.Timeout;

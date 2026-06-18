@@ -119,7 +119,7 @@ import type {
 } from "../lib/db/repositories/product-repository.js";
 
 // User Repository
-export interface IUserRepository {
+interface IUserRepository {
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
@@ -129,7 +129,7 @@ export interface IUserRepository {
 }
 
 // Category Repository
-export interface ICategoryRepository {
+interface ICategoryRepository {
   getCategories(limit?: number, offset?: number): Promise<Category[]>;
   getCategoriesCount(): Promise<number>;
   getCategory(id: number): Promise<Category | undefined>;
@@ -144,7 +144,7 @@ export interface ICategoryRepository {
 }
 
 // Product Attribute Repositories
-export interface IFiberRepository {
+interface IFiberRepository {
   getFibers(): Promise<Fiber[]>;
   getFiber(id: number): Promise<Fiber | undefined>;
   createFiber(fiber: InsertFiber): Promise<Fiber>;
@@ -155,7 +155,7 @@ export interface IFiberRepository {
   permanentlyDeleteFiber(id: number): Promise<boolean>;
 }
 
-export interface IFabricRepository {
+interface IFabricRepository {
   getFabrics(): Promise<Fabric[]>;
   getFabric(id: number): Promise<Fabric | undefined>;
   createFabric(fabric: InsertFabric): Promise<Fabric>;
@@ -166,7 +166,7 @@ export interface IFabricRepository {
   permanentlyDeleteFabric(id: number): Promise<boolean>;
 }
 
-export interface ICertificateRepository {
+interface ICertificateRepository {
   getCertificates(): Promise<Certificate[]>;
   getCertificate(id: number): Promise<Certificate | undefined>;
   createCertificate(certificate: InsertCertificate): Promise<Certificate>;
@@ -180,7 +180,7 @@ export interface ICertificateRepository {
   permanentlyDeleteCertificate(id: number): Promise<boolean>;
 }
 
-export interface ISizeChartRepository {
+interface ISizeChartRepository {
   getSizeCharts(): Promise<SizeChart[]>;
   getSizeChart(id: number): Promise<SizeChart | undefined>;
   createSizeChart(sizeChart: InsertSizeChart): Promise<SizeChart>;
@@ -191,7 +191,7 @@ export interface ISizeChartRepository {
   permanentlyDeleteSizeChart(id: number): Promise<boolean>;
 }
 
-export interface IAccessoryRepository {
+interface IAccessoryRepository {
   getAccessories(
     limit?: number,
     offset?: number,
@@ -211,7 +211,7 @@ export interface IAccessoryRepository {
 }
 
 // Media Repository
-export interface IMediaRepository {
+interface IMediaRepository {
   getFolders(): Promise<Folder[]>;
   getFolder(id: number): Promise<Folder | undefined>;
   createFolder(folder: InsertFolder): Promise<Folder>;
@@ -271,7 +271,7 @@ export interface IMediaRepository {
 }
 
 // Product Repository
-export interface IProductRepository {
+interface IProductRepository {
   getProducts(limit?: number, offset?: number): Promise<ProductSummary[]>;
   getProductsCursor(limit?: number, cursor?: number): Promise<ProductSummary[]>;
   getHomepageFeaturedProducts(limit?: number): Promise<ProductSummary[]>;
@@ -319,7 +319,7 @@ export interface IProductRepository {
 }
 
 // Navigation Repository
-export interface INavigationRepository {
+interface INavigationRepository {
   getNavigationItems(): Promise<NavigationItem[]>;
   getNavigationItem(id: number): Promise<NavigationItem | undefined>;
   createNavigationItem(navigationItem: InsertNavigationItem): Promise<NavigationItem>;
@@ -339,7 +339,7 @@ export interface INavigationRepository {
 }
 
 // Contact Repository
-export interface IContactRepository {
+interface IContactRepository {
   getContactPageConfiguration(): Promise<ContactPageConfiguration | undefined>;
   createContactPageConfiguration(
     config: InsertContactPageConfiguration,
@@ -351,7 +351,7 @@ export interface IContactRepository {
 }
 
 // Inquiry Repository
-export interface IInquiryRepository {
+interface IInquiryRepository {
   createInquiry(inquiry: InsertInquiry): Promise<Inquiry>;
   getInquiryById(id: number): Promise<Inquiry | undefined>;
   listInquiries(filters: {
@@ -377,7 +377,7 @@ export interface IInquiryRepository {
 }
 
 // Content Repositories (Homepage, About, Sustainability, Technology, Footer)
-export interface IContentRepository {
+interface IContentRepository {
   // Homepage
   getHomepageHero(): Promise<HomepageHero | undefined>;
   updateHomepageHero(hero: Partial<InsertHomepageHero>): Promise<HomepageHero>;
@@ -473,7 +473,7 @@ export interface IContentRepository {
   getAboutBatch(): Promise<AboutBatchResponse>;
 }
 
-export interface ISustainabilityRepository {
+interface ISustainabilityRepository {
   getSustainabilityHero(): Promise<SustainabilityHero | undefined>;
   updateSustainabilityHero(hero: Partial<InsertSustainabilityHero>): Promise<SustainabilityHero>;
   getSustainabilityMetrics(): Promise<SustainabilityMetric[]>;
@@ -522,7 +522,7 @@ export interface ISustainabilityRepository {
   updateSustainabilityCallToAction(cta: unknown): Promise<unknown>;
 }
 
-export interface IManufacturingRepository {
+interface IManufacturingRepository {
   getManufacturingHero(): Promise<ManufacturingHero | undefined>;
   updateManufacturingHero(hero: Partial<InsertManufacturingHero>): Promise<ManufacturingHero>;
   getManufacturingProcesses(includeInactive?: boolean): Promise<ManufacturingProcess[]>;
@@ -567,7 +567,7 @@ export interface IManufacturingRepository {
   reorderManufacturingCaseStudies(orderedIds: number[]): Promise<void>;
 }
 
-export interface ITechnologyRepository {
+interface ITechnologyRepository {
   getTechnologyHero(): Promise<TechnologyHero | undefined>;
   updateTechnologyHero(hero: Partial<InsertTechnologyHero>): Promise<TechnologyHero>;
   getTechnologyInnovations(includeInactive?: boolean): Promise<TechnologyInnovation[]>;
@@ -618,7 +618,7 @@ export interface ITechnologyRepository {
 }
 
 // Webhook Repository
-export interface IWebhookRepository {
+interface IWebhookRepository {
   getWebhookSubscriptions(): Promise<WebhookSubscription[]>;
   getWebhookSubscription(id: number): Promise<WebhookSubscription | undefined>;
   createWebhookSubscription(subscription: InsertWebhookSubscription): Promise<WebhookSubscription>;
@@ -631,7 +631,7 @@ export interface IWebhookRepository {
 }
 
 // System, Metrics & Audit
-export interface ISystemRepository {
+interface ISystemRepository {
   getAnimationErrors(): Promise<AnimationError[]>;
   getAnimationError(id: number): Promise<AnimationError | undefined>;
   createAnimationError(error: InsertAnimationError): Promise<AnimationError>;
@@ -693,7 +693,7 @@ export interface IBlogRepository {
   deleteBlogCategory(id: number): Promise<boolean>;
 }
 
-export interface IServicesRepository {
+interface IServicesRepository {
   getServices(includeInactive?: boolean): Promise<Service[]>;
   getService(id: number): Promise<Service | undefined>;
   createService(service: InsertService): Promise<Service>;
@@ -702,7 +702,7 @@ export interface IServicesRepository {
   reorderServices?(orderedIds: number[]): Promise<void>;
 }
 
-export interface ILegalRepository {
+interface ILegalRepository {
   getLegalPolicies(includeInactive?: boolean): Promise<LegalPolicy[]>;
   getLegalPolicyBySlug(slug: string, includeInactive?: boolean): Promise<LegalPolicy | undefined>;
   getLegalPolicy(id: number): Promise<LegalPolicy | undefined>;

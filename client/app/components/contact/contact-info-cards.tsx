@@ -91,7 +91,7 @@ export function ContactInfoCards({ contactConfig }: ContactInfoCardsProps) {
             <MapPin className="h-6 w-6 text-primary" aria-hidden="true" />
           </div>
           <Typography.H3 className="mb-2 font-bold text-lg">Our Location</Typography.H3>
-          <Typography.P className="mb-4 max-w-[200px] text-muted-foreground text-sm">
+          <Typography.P className="mb-4 max-w-custom-space-131 text-muted-foreground text-sm">
             {contactConfig?.locationLine1 || "123 Innovation Drive"}
             <br />
             {contactConfig?.locationLine2 || "Tech Valley, CA 94043"}

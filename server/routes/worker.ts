@@ -7,6 +7,7 @@ import {
 import express from "express";
 import { validateRequest } from "zod-express-middleware";
 import { generateResponsiveVariants, isImageFile, processImage } from "../image-processor.js";
+import { env } from "../lib/env.js";
 import { emailService } from "../lib/integrations/email-service.js";
 import { getGLTFProcessor, isGLTFFile } from "../lib/integrations/gltf-processor.js";
 import { logger } from "../lib/monitoring/logger.js";
@@ -23,7 +24,7 @@ const verifyWorkerAuth = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const isProduction = process.env.NODE_ENV === "production";
+  const isProduction = env.NODE_ENV === "production";
   if (isProduction) {
     const isAuthorized = await verifyCloudTaskToken(req);
     if (!isAuthorized) {

@@ -190,7 +190,7 @@ function StatCard({ label, value, unit, iconName, index }: StatCardProps) {
       className={cn(
         "stat-card flex flex-col items-center justify-center gap-1.5 rounded-2xl p-6 text-center backdrop-blur-xl",
         "transition-all duration-300 hover:scale-105 hover:border-sustainability-primary/30 hover:bg-white/5",
-        "min-w-[140px] max-w-[220px] flex-1",
+        "min-w-custom-space-303 max-w-custom-space-304 flex-1",
         bobClass,
         mtOffset,
         isAccented
@@ -286,7 +286,7 @@ type LoaderData = {
   fetchedMediaAssets: MediaAsset[];
 };
 
-export default function Component({ loaderData }: { loaderData: LoaderData }) {
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   const { batchData, backgroundMedia, fetchedMediaAssets } = loaderData;
 
   return (
@@ -483,7 +483,7 @@ function SustainabilityInner({
       />
 
       {/* ─── Hero Section ─── */}
-      <header className="relative flex min-h-[90vh] items-center justify-center overflow-hidden bg-sustainability-bg text-sustainability-head px-6 py-20 lg:px-10">
+      <header className="relative flex min-h-custom-space-305 items-center justify-center overflow-hidden bg-sustainability-bg text-sustainability-head px-6 py-20 lg:px-10">
         <div
           className="absolute inset-0 z-0 opacity-40 will-change-transform"
           data-scroll
@@ -505,7 +505,7 @@ function SustainabilityInner({
             </div>
           )}
           {/* Leaf-vein organic texture overlay */}
-          <div className="absolute inset-0 pointer-events-none leaf-vein-bg opacity-30 z-[1]" />
+          <div className="absolute inset-0 pointer-events-none leaf-vein-bg opacity-30 z-custom-misc-479" />
         </div>
 
         {/* Hero Content */}
@@ -553,7 +553,7 @@ function SustainabilityInner({
           <div className="hero-btns flex flex-wrap items-center justify-center gap-4 mb-16">
             <Button
               size="lg"
-              className="h-14 min-w-[180px] rounded-full bg-sustainability-primary px-8 text-base font-bold text-black shadow-[0_0_20px_rgba(0,199,123,0.3)] transition hover:scale-105 hover:bg-white border-0"
+              className="h-14 min-w-custom-space-306 rounded-full bg-sustainability-primary px-8 text-base font-bold text-black shadow-custom-misc-480 transition hover:scale-105 hover:bg-white border-0"
               asChild
             >
               <Link to="#impact">
@@ -564,7 +564,7 @@ function SustainabilityInner({
             <Button
               size="lg"
               variant="outline"
-              className="h-14 min-w-[180px] rounded-full border-sustainability-border bg-sustainability-card px-8 text-base text-sustainability-head backdrop-blur-md hover:bg-sustainability-card/10"
+              className="h-14 min-w-custom-space-307 rounded-full border-sustainability-border bg-sustainability-card px-8 text-base text-sustainability-head backdrop-blur-md hover:bg-sustainability-card/10"
               asChild
             >
               <Link to="/contact">
@@ -593,7 +593,7 @@ function SustainabilityInner({
         </div>
 
         {/* Animated gradient line */}
-        <div className="absolute bottom-0 left-0 w-full h-[2px] animated-gradient-border" />
+        <div className="absolute bottom-0 left-0 w-full h-custom-space-308 animated-gradient-border" />
       </header>
 
       <main>
@@ -788,7 +788,7 @@ function SustainabilityInner({
               <div className="flex flex-col gap-4 sm:flex-row">
                 <Button
                   size="lg"
-                  className="h-14 min-w-[200px] rounded-full bg-sustainability-primary px-8 text-lg font-bold text-sustainability-bg shadow-[0_0_20px_color-mix(in_srgb,_var(--color-sustainability-primary)_40%,_transparent)] transition hover:scale-105 hover:bg-white border-0"
+                  className="h-14 min-w-custom-space-309 rounded-full bg-sustainability-primary px-8 text-lg font-bold text-sustainability-bg shadow-custom-misc-481 transition hover:scale-105 hover:bg-white border-0"
                   asChild
                 >
                   <Link to={callToActionButtonLink}>

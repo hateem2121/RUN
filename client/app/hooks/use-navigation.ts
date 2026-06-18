@@ -7,7 +7,7 @@ interface NavigationItemWithMedia extends NavigationItem {
   mediaIcon?: MediaAsset;
 }
 
-export function useNavigationItems() {
+function useNavigationItems() {
   const { data: navigationItems = [], isLoading: navigationLoading } = useQuery<NavigationItem[]>({
     queryKey: ["/api/navigation-items"],
   });

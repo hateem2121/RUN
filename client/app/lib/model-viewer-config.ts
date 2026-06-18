@@ -27,14 +27,14 @@ export interface ModelViewerConfig {
   animationCrossfadeDuration?: number;
 }
 
-export interface ModelViewerErrorConfig {
+interface ModelViewerErrorConfig {
   maxRetries: number;
   retryDelayBase: number; // milliseconds
   enableDiagnostics: boolean;
   enableFetchInterception: boolean;
 }
 
-export interface ModelViewerPerformanceConfig {
+interface ModelViewerPerformanceConfig {
   enableLazyLoading: boolean;
   intersectionThreshold: number;
   intersectionRootMargin: string;
@@ -48,7 +48,7 @@ export interface ModelViewerPerformanceConfig {
  * These are the production-optimized defaults that provide the best
  * compatibility with @google/model-viewer while ensuring embedded texture support.
  */
-export const DEFAULT_MODEL_VIEWER_CONFIG: ModelViewerConfig = {
+const DEFAULT_MODEL_VIEWER_CONFIG: ModelViewerConfig = {
   // Core settings optimized for embedded textures
   autoRotate: true,
   cameraControls: true,
@@ -74,7 +74,7 @@ export const DEFAULT_MODEL_VIEWER_CONFIG: ModelViewerConfig = {
  *
  * Production-safe error handling with development diagnostics.
  */
-export const DEFAULT_ERROR_CONFIG: ModelViewerErrorConfig = {
+const DEFAULT_ERROR_CONFIG: ModelViewerErrorConfig = {
   maxRetries: 3,
   retryDelayBase: 1000, // 1 second
   enableDiagnostics: import.meta.env.DEV,
@@ -86,7 +86,7 @@ export const DEFAULT_ERROR_CONFIG: ModelViewerErrorConfig = {
  *
  * Optimized for production performance while maintaining quality.
  */
-export const DEFAULT_PERFORMANCE_CONFIG: ModelViewerPerformanceConfig = {
+const DEFAULT_PERFORMANCE_CONFIG: ModelViewerPerformanceConfig = {
   enableLazyLoading: true,
   intersectionThreshold: 0.1,
   intersectionRootMargin: "50px",

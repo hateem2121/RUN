@@ -11,6 +11,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Clock, FlaskConical, Layout, Plus, Save, Search, Settings2, X } from "lucide-react";
 import type React from "react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -32,7 +33,6 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 import { SortableResearchItem } from "./SortableResearchItem";
@@ -89,7 +89,6 @@ interface TechnologyResearchManagementProps {
 export function TechnologyResearchManagement({
   isLoading: externalLoading,
 }: TechnologyResearchManagementProps = {}) {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Sensors for drag and drop
@@ -147,10 +146,7 @@ export function TechnologyResearchManagement({
       setShowResearchDialog(false);
       setEditingResearch(null);
       resetForm();
-      toast({
-        title: "Success",
-        description: "Research item created successfully",
-      });
+      toast.success("Success", { description: "Research item created successfully" });
     },
   });
 
@@ -164,10 +160,7 @@ export function TechnologyResearchManagement({
       queryClient.invalidateQueries({ queryKey: ["/api/technology-research"] });
       setShowResearchDialog(false);
       setEditingResearch(null);
-      toast({
-        title: "Success",
-        description: "Research item updated successfully",
-      });
+      toast.success("Success", { description: "Research item updated successfully" });
     },
   });
 
@@ -175,10 +168,7 @@ export function TechnologyResearchManagement({
     mutationFn: (id: number) => apiRequest(`/api/technology-research/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/technology-research"] });
-      toast({
-        title: "Success",
-        description: "Research item deleted successfully",
-      });
+      toast.success("Success", { description: "Research item deleted successfully" });
     },
   });
 
@@ -297,12 +287,12 @@ export function TechnologyResearchManagement({
       <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between font-display">
         <div className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#00D4FF]/10 text-[#00D4FF] shadow-[0_0_20px_rgba(0,212,255,0.15)]">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-custom-color-162/10 text-custom-color-163 shadow-custom-misc-127">
               <FlaskConical className="h-6 w-6" />
             </div>
             <div>
               <h2 className="text-3xl font-black tracking-tight text-white uppercase sm:text-4xl">
-                Research <span className="text-[#00D4FF]">&</span> Development
+                Research <span className="text-custom-color-164">&</span> Development
               </h2>
               <p className="text-sm font-medium tracking-wide text-admin-foreground/40">
                 Manage core scientific initiatives and material innovation streams.
@@ -313,12 +303,12 @@ export function TechnologyResearchManagement({
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <div className="relative group">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-foreground/20 transition-colors group-focus-within:text-[#00D4FF]" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-foreground/20 transition-colors group-focus-within:text-custom-color-165" />
             <Input
               placeholder="Filter by title or focus area..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full border-white/[0.08] bg-white/[0.03] pl-10 text-xs font-medium tracking-wider text-white transition-all focus:border-[#00D4FF]/50 focus:ring-[#00D4FF]/20 sm:w-80"
+              className="w-full border-white/[0.08] bg-white/[0.03] pl-10 text-xs font-medium tracking-wider text-white transition-all focus:border-custom-color-166/50 focus:ring-custom-color-167/20 sm:w-80"
             />
           </div>
           <Button
@@ -327,13 +317,13 @@ export function TechnologyResearchManagement({
               resetForm();
               setShowResearchDialog(true);
             }}
-            className="group relative overflow-hidden bg-[#00D4FF] px-6 py-6 font-black text-[#0A0A0A] hover:bg-[#00D4FF]/90 transition-all active:scale-95"
+            className="group relative overflow-hidden bg-custom-color-168 px-6 py-6 font-black text-custom-color-169 hover:bg-custom-color-170/90 transition-all active:scale-95"
           >
             <div className="relative z-10 flex items-center gap-2 uppercase tracking-widest">
               <Plus className="h-5 w-5" />
               Initialize Research
             </div>
-            <div className="absolute inset-0 z-0 bg-gradient-to-r from-[#00D4FF] via-white/20 to-[#00D4FF] opacity-0 transition-opacity group-hover:opacity-10" />
+            <div className="absolute inset-0 z-0 bg-gradient-to-r from-custom-color-171 via-white/20 to-custom-color-172 opacity-0 transition-opacity group-hover:opacity-10" />
           </Button>
         </div>
       </div>
@@ -341,7 +331,7 @@ export function TechnologyResearchManagement({
       {/* Main Content Grid */}
       <div className="space-y-6">
         <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
-          <h3 className="text-sm font-black tracking-[0.2em] text-[#00D4FF] uppercase">
+          <h3 className="text-sm font-black tracking-custom-misc-128 text-custom-color-173 uppercase">
             Active Research Streams
           </h3>
           <span className="text-xxs font-mono font-bold text-admin-foreground/40 uppercase tracking-widest">
@@ -352,8 +342,8 @@ export function TechnologyResearchManagement({
         {loading ? (
           <div className="flex h-64 items-center justify-center rounded-2xl border border-white/[0.05] bg-white/[0.02] backdrop-blur-xl">
             <div className="flex flex-col items-center gap-4">
-              <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#00D4FF] border-t-transparent" />
-              <p className="text-xxs font-black uppercase tracking-widest text-[#00D4FF]">
+              <div className="h-10 w-10 animate-spin rounded-full border-2 border-custom-color-174 border-t-transparent" />
+              <p className="text-xxs font-black uppercase tracking-widest text-custom-color-175">
                 Syncing Ecosystem Data...
               </p>
             </div>
@@ -395,30 +385,30 @@ export function TechnologyResearchManagement({
 
       {/* Footer Ecosystem Stats (from Screen #22) */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 font-display pt-8 border-t border-white/[0.08]">
-        <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:border-[#00D4FF]/30 backdrop-blur-xl">
-          <div className="absolute left-0 top-0 h-full w-1.5 bg-[#00D4FF]/20 group-hover:bg-[#00D4FF] transition-all" />
+        <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:border-custom-color-176/30 backdrop-blur-xl">
+          <div className="absolute left-0 top-0 h-full w-1.5 bg-custom-color-177/20 group-hover:bg-custom-color-178 transition-all" />
           <p className="text-xxs font-black uppercase tracking-widest text-admin-foreground/40 mb-1">
             R&D Budget Allocation
           </p>
           <div className="text-3xl font-black text-white">64.2%</div>
           <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.05]">
-            <div className="h-full w-[64.2%] rounded-full bg-gradient-to-r from-[#00D4FF] to-[#00D4FF]/50 shadow-[0_0_15px_#00D4FF]" />
+            <div className="h-full w-custom-space-124 rounded-full bg-gradient-to-r from-custom-color-179 to-custom-color-180/50 shadow-custom-misc-129" />
           </div>
         </div>
 
-        <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:border-[#00D4FF]/30 backdrop-blur-xl">
-          <div className="absolute left-0 top-0 h-full w-1.5 bg-[#00D4FF]/20 group-hover:bg-[#00D4FF] transition-all" />
+        <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:border-custom-color-181/30 backdrop-blur-xl">
+          <div className="absolute left-0 top-0 h-full w-1.5 bg-custom-color-182/20 group-hover:bg-custom-color-183 transition-all" />
           <p className="text-xxs font-black uppercase tracking-widest text-admin-foreground/40 mb-1">
             Active Researchers
           </p>
           <div className="text-3xl font-black text-white">24</div>
-          <p className="mt-2 text-xxs font-black uppercase tracking-widest text-[#00D4FF]">
+          <p className="mt-2 text-xxs font-black uppercase tracking-widest text-custom-color-184">
             +3 since last cycle
           </p>
         </div>
 
-        <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:border-[#00D4FF]/30 backdrop-blur-xl">
-          <div className="absolute left-0 top-0 h-full w-1.5 bg-[#00D4FF]/20 group-hover:bg-[#00D4FF] transition-all" />
+        <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:border-custom-color-185/30 backdrop-blur-xl">
+          <div className="absolute left-0 top-0 h-full w-1.5 bg-custom-color-186/20 group-hover:bg-custom-color-187 transition-all" />
           <p className="text-xxs font-black uppercase tracking-widest text-admin-foreground/40 mb-1">
             Pending IP/Patents
           </p>
@@ -434,17 +424,17 @@ export function TechnologyResearchManagement({
         <DialogContent
           contentType="form"
           preferredSize="4xl"
-          className="overflow-hidden bg-surface-black border-[#00D4FF]/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+          className="overflow-hidden bg-surface-black border-custom-color-188/20 shadow-custom-misc-130"
         >
           <DialogHeader className="border-b border-white/[0.08] bg-white/[0.02] px-8 py-6">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#00D4FF]/10 text-[#00D4FF]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-custom-color-189/10 text-custom-color-190">
                 {editingResearch ? <Settings2 className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
               </div>
               <div>
                 <DialogTitle className="text-xl font-black tracking-tight text-white uppercase font-display">
                   {editingResearch ? "Reconfigure" : "Initialize"}{" "}
-                  <span className="text-[#00D4FF]">Research</span>
+                  <span className="text-custom-color-191">Research</span>
                 </DialogTitle>
                 <DialogDescription className="text-xxs uppercase font-bold tracking-widest text-admin-foreground/40">
                   Document and track high-impact scientific initiatives.
@@ -460,8 +450,8 @@ export function TechnologyResearchManagement({
             <DialogBody className="custom-scrollbar space-y-8 px-8 py-8">
               {/* Primary Configuration */}
               <div className="space-y-6">
-                <div className="flex items-center gap-2 border-l-2 border-[#00D4FF] pl-4">
-                  <h4 className="text-xxs font-black uppercase tracking-[0.2em] text-[#00D4FF]">
+                <div className="flex items-center gap-2 border-l-2 border-custom-color-192 pl-4">
+                  <h4 className="text-xxs font-black uppercase tracking-custom-misc-131 text-custom-color-193">
                     Primary Stream
                   </h4>
                 </div>
@@ -474,7 +464,7 @@ export function TechnologyResearchManagement({
                     <Input
                       value={researchForm.title}
                       onChange={(e) => setResearchForm({ ...researchForm, title: e.target.value })}
-                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-custom-color-194/30"
                       placeholder="e.g., Biomechanical Mesh Optimization phase II"
                       required
                     />
@@ -488,7 +478,7 @@ export function TechnologyResearchManagement({
                       onChange={(e) =>
                         setResearchForm({ ...researchForm, researchArea: e.target.value })
                       }
-                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-custom-color-195/30"
                       placeholder="e.g., Sustainable Polymers, Ergonomics"
                     />
                   </div>
@@ -527,7 +517,7 @@ export function TechnologyResearchManagement({
                     onChange={(e) =>
                       setResearchForm({ ...researchForm, description: e.target.value })
                     }
-                    className="min-h-[100px] border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                    className="min-h-custom-space-125 border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-custom-color-196/30"
                     placeholder="Provide a comprehensive technical summary of the research goals and methodology..."
                   />
                 </div>
@@ -537,8 +527,8 @@ export function TechnologyResearchManagement({
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 {/* Objectives Section */}
                 <div className="space-y-6">
-                  <div className="flex items-center gap-2 border-l-2 border-[#00D4FF] pl-4">
-                    <h4 className="text-xxs font-black uppercase tracking-[0.2em] text-[#00D4FF]">
+                  <div className="flex items-center gap-2 border-l-2 border-custom-color-197 pl-4">
+                    <h4 className="text-xxs font-black uppercase tracking-custom-misc-132 text-custom-color-198">
                       Key Objectives
                     </h4>
                   </div>
@@ -559,7 +549,7 @@ export function TechnologyResearchManagement({
                       <Button
                         type="button"
                         onClick={handleAddObjective}
-                        className="bg-white/[0.05] hover:bg-white/[0.1] text-[#00D4FF]"
+                        className="bg-white/[0.05] hover:bg-white/[0.1] text-custom-color-199"
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
@@ -596,7 +586,7 @@ export function TechnologyResearchManagement({
                 {/* Outcomes Section */}
                 <div className="space-y-6">
                   <div className="flex items-center gap-2 border-l-2 border-emerald-500 pl-4">
-                    <h4 className="text-xxs font-black uppercase tracking-[0.2em] text-emerald-500">
+                    <h4 className="text-xxs font-black uppercase tracking-custom-misc-133 text-emerald-500">
                       Targeted Outcomes
                     </h4>
                   </div>
@@ -671,7 +661,7 @@ export function TechnologyResearchManagement({
                   <span
                     className={cn(
                       "text-xxs font-black tracking-widest uppercase transition-colors",
-                      researchForm.isActive ? "text-[#00D4FF]" : "text-admin-foreground/20",
+                      researchForm.isActive ? "text-custom-color-200" : "text-admin-foreground/20",
                     )}
                   >
                     {researchForm.isActive ? "Indexed" : "Hidden"}
@@ -681,7 +671,7 @@ export function TechnologyResearchManagement({
                     onCheckedChange={(checked) =>
                       setResearchForm({ ...researchForm, isActive: checked })
                     }
-                    className="data-[state=checked]:bg-[#00D4FF]"
+                    className="data-custom-misc-134:bg-custom-color-201"
                   />
                 </div>
               </div>
@@ -699,7 +689,7 @@ export function TechnologyResearchManagement({
               <Button
                 type="submit"
                 disabled={createResearchMutation.isPending || updateResearchMutation.isPending}
-                className="bg-[#00D4FF] px-8 font-black text-[#0A0A0A] hover:bg-[#00D4FF]/90 hover:shadow-[0_0_20px_rgba(0,212,255,0.3)] transition-all"
+                className="bg-custom-color-202 px-8 font-black text-custom-color-203 hover:bg-custom-color-204/90 hover:shadow-custom-misc-135 transition-all"
               >
                 {createResearchMutation.isPending || updateResearchMutation.isPending ? (
                   <div className="flex items-center gap-2">

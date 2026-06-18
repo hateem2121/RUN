@@ -10,3 +10,7 @@ resources:
 commonLabels:
   app: run-remix
   managed-by: argocd
+
+images:
+  - name: gcr.io/PROJECT_ID/run-remix
+    newTag: v4.0.3

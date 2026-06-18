@@ -19,14 +19,14 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 
-export interface IconOption {
+interface IconOption {
   name: string;
   component: LucideIcon;
   label: string;
 }
 
 // Comprehensive icon library for sustainability content
-export const SUSTAINABILITY_ICONS: IconOption[] = [
+const SUSTAINABILITY_ICONS: IconOption[] = [
   { name: "Leaf", component: Leaf, label: "Leaf (Default)" },
   { name: "Droplets", component: Droplets, label: "Water/Droplets" },
   { name: "Wind", component: Wind, label: "Wind/Air" },
@@ -143,7 +143,7 @@ export function IconPicker({
 }
 
 // Utility function to get icon component by name
-export function getIconComponent(iconName: string | null | undefined): LucideIcon {
+function getIconComponent(iconName: string | null | undefined): LucideIcon {
   const icon = SUSTAINABILITY_ICONS.find((i) => i.name === iconName);
   return icon?.component || Leaf;
 }

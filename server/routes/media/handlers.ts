@@ -1,6 +1,6 @@
 import type { ImageVariants } from "@run-remix/shared";
 import type { Request, Response } from "express";
-import type { z } from "zod";
+import { z } from "zod";
 import { BadRequestError } from "../../lib/errors.js";
 import { safeSerialize, shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { mediaService } from "../../services/media.service.js";
@@ -67,7 +67,9 @@ export async function getMediaAssetById(req: Request<{ id: string | number }>, r
   const result = await mediaService.getAssetById(id);
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -78,7 +80,9 @@ export async function getMediaCount(req: Request, res: Response) {
   const result = await mediaService.getMediaCount({ type, folderId });
   return result.match(
     (data) => res.json(createSuccessResponse({ count: data })),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -95,7 +99,9 @@ export async function searchMediaAssets(
 
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -110,7 +116,9 @@ export async function updateMediaAsset(req: Request<{ id: string | number }>, re
   const result = await mediaService.updateAsset(id, data);
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -120,7 +128,9 @@ export async function deleteMediaAsset(req: Request<{ id: string | number }>, re
   const result = await mediaService.deleteAsset(id);
   return result.match(
     () => res.json(createSuccessResponse({ deleted: true })),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -140,7 +150,9 @@ export async function initializeUpload(req: Request, res: Response) {
 
   return result.match(
     (data) => res.status(201).json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -156,7 +168,9 @@ export async function uploadChunk(req: Request, res: Response) {
 
   return result.match(
     (data) => res.status(201).json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -166,26 +180,49 @@ export async function finalizeUpload(req: Request, res: Response) {
   const result = await mediaService.finalizeUpload(uploadId);
   return result.match(
     (data) => res.status(201).json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
 export async function uploadSingleFile(req: Request, res: Response) {
   if (!req.file) throw new BadRequestError("No file provided");
 
-  const result = await mediaService.uploadSingleFile(req.file, req.body);
+  const singleUploadSchema = z
+    .object({
+      altText: z.string().optional(),
+      tags: z.union([z.string(), z.array(z.string())]).optional(),
+      folderId: z.coerce.number().optional(),
+    })
+    .catchall(z.any());
+
+  const parsedBody = singleUploadSchema.parse(req.body);
+
+  const result = await mediaService.uploadSingleFile(req.file, parsedBody);
   return result.match(
     (data) => res.status(201).json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
 export async function uploadBase64(req: Request, res: Response) {
-  const { filename, base64Data } = req.body;
-  const result = await mediaService.uploadBase64(base64Data, filename);
+  const base64Schema = z
+    .object({
+      filename: z.string(),
+      base64Data: z.string(),
+    })
+    .catchall(z.any());
+
+  const { filename, base64Data, ...metadata } = base64Schema.parse(req.body);
+  const result = await mediaService.uploadBase64(base64Data, filename, metadata);
   return result.match(
     (data) => res.status(201).json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -193,7 +230,9 @@ export async function uploadGltfPackage(_req: Request, res: Response) {
   const result = await mediaService.uploadGltfPackage();
   return result.match(
     (data) => res.status(201).json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -206,7 +245,9 @@ export async function uploadChunkRaw(req: Request, res: Response) {
   );
   return result.match(
     (data) => res.status(201).json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -225,7 +266,9 @@ export async function getMediaContent(req: Request<{ id: string }>, res: Respons
       res.set("Cache-Control", "public, max-age=300");
       return res.redirect(302, data);
     },
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -239,7 +282,9 @@ export async function getThumbnail(req: Request<{ id: string }>, res: Response) 
       res.set("Cache-Control", "public, max-age=300");
       return res.redirect(302, data);
     },
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -253,7 +298,9 @@ export async function getMediaGeometry(req: Request<{ id: string }>, res: Respon
   const result = await mediaService.getMediaGeometry(Number(id));
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -262,7 +309,9 @@ export async function getMediaRaw(req: Request<{ id: string }>, res: Response) {
   const result = await mediaService.getMediaRaw(Number(id));
   return result.match(
     (data) => res.redirect(302, data),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -271,7 +320,9 @@ export async function getMediaProxy(req: Request<{ id: string }>, res: Response)
   const result = await mediaService.getMediaProxy(Number(id));
   return result.match(
     (data) => res.redirect(302, data),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -280,7 +331,9 @@ export async function getThumbnailProxy(req: Request<{ id: string }>, res: Respo
   const result = await mediaService.getThumbnailProxy(Number(id));
   return result.match(
     (data) => res.redirect(302, data),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -294,16 +347,25 @@ export async function batchOperations(req: Request, res: Response) {
     const result = await mediaService.batchCreateAssets(files);
     return result.match(
       (data) => res.status(201).json(createSuccessResponse(data)),
-      (error) => { throw error; },
+      (error) => {
+        throw error;
+      },
     );
   }
 
-  const { operation, ids } = req.body;
+  const batchSchema = z.object({
+    operation: z.enum(["delete"]),
+    ids: z.array(z.string()),
+  });
+
+  const { operation, ids } = batchSchema.parse(req.body);
   if (operation === "delete" && ids) {
     const result = await mediaService.batchDeleteAssets(ids);
     return result.match(
       (data) => res.json(createSuccessResponse(data)),
-      (error) => { throw error; },
+      (error) => {
+        throw error;
+      },
     );
   }
 
@@ -318,7 +380,9 @@ export async function batchGetContent(req: Request, res: Response) {
   const result = await mediaService.getMediaAssetsByIds(idList);
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -330,7 +394,9 @@ export async function getAnalytics(_req: Request, res: Response) {
   const result = await mediaService.getAnalytics();
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -338,7 +404,9 @@ export async function getUploadMetrics(_req: Request, res: Response) {
   const result = mediaService.getUploadMetrics();
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -346,7 +414,9 @@ export async function getCacheStats(_req: Request, res: Response) {
   const result = await mediaService.getCacheStats();
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -354,7 +424,9 @@ export async function getPerformanceDashboard(_req: Request, res: Response) {
   const result = await mediaService.getPerformanceDashboard();
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -362,7 +434,9 @@ export async function getPerformanceMetrics(_req: Request, res: Response) {
   const result = await mediaService.getPerformanceMetrics();
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -370,7 +444,9 @@ export async function getSystemStatus(_req: Request, res: Response) {
   const result = await mediaService.getSystemStatus();
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -378,7 +454,9 @@ export async function getHealthScan(_req: Request, res: Response) {
   const result = await mediaService.getHealthScan();
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -387,7 +465,9 @@ export async function getUploadProgress(req: Request, res: Response) {
   const result = mediaService.getUploadProgress(uploadId as string);
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -401,7 +481,9 @@ export async function cancelUpload(req: Request, res: Response) {
   const result = mediaService.cancelUpload(uploadId as string);
   return result.match(
     () => res.json(createSuccessResponse({ deleted: true })),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -414,7 +496,9 @@ export async function clearMediaCache(req: Request<{ id: string }>, res: Respons
   const result = await mediaService.clearCache(Number(id));
   return result.match(
     () => res.json(createSuccessResponse({ cleared: true })),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -422,7 +506,9 @@ export async function testObjectStorageConnectivity(_req: Request, res: Response
   const result = await mediaService.testObjectStorageConnectivity();
   return result.match(
     () => res.json(createSuccessResponse({ connectivity: "OK" })),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -430,7 +516,9 @@ export async function repairDatabaseIntegrity(_req: Request, res: Response) {
   const result = await mediaService.repairDatabaseIntegrity();
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 
@@ -438,7 +526,9 @@ export async function repairMimeTypes(_req: Request, res: Response) {
   const result = await mediaService.repairMimeTypes();
   return result.match(
     (data) => res.json(createSuccessResponse(data)),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 }
 

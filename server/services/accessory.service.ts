@@ -9,7 +9,7 @@ import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-break
  * Service for managing Accessory domain data
  * Enforces Result-based patterns and circuit breaker protection
  */
-export class AccessoryService {
+class AccessoryService {
   /**
    * Retrieves paginated accessories
    */

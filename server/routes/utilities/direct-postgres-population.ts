@@ -1,3 +1,4 @@
+import { env } from "../../lib/env.js";
 // Direct PostgreSQL Population - Bypass storage issues
 // Creates all 47 business items directly in PostgreSQL
 
@@ -9,7 +10,7 @@ import { populationService } from "../../services/population.service.js";
 export function registerDirectPostgresPopulationRoutes(app: Express): void {
   app.post("/api/direct-postgres/populate-all", authService.requireAdmin, async (_req, res) => {
     // Defense-in-depth: Handlers MUST NOT run in production
-    if (process.env.NODE_ENV === "production") {
+    if (env.NODE_ENV === "production") {
       return res.status(403).json({ error: "Operation not allowed in production" });
     }
 

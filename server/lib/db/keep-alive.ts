@@ -7,7 +7,7 @@
 import { sql as rawSql } from "../../db.js";
 import { logger } from "../monitoring/logger.js";
 
-export class DatabaseKeepAlive {
+class DatabaseKeepAlive {
   private static instance: DatabaseKeepAlive;
   private intervalId: NodeJS.Timeout | null = null;
   private readonly PING_INTERVAL_MS = 4 * 60 * 1000; // 4 minutes (before 5-min auto-suspend)

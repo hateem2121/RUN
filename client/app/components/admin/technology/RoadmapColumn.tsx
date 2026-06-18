@@ -21,7 +21,7 @@ export function RoadmapColumn({ id, title, color, items, onEdit, onDelete }: Roa
   });
 
   return (
-    <div className="flex flex-col gap-4 min-w-[280px]">
+    <div className="flex flex-col gap-4 min-w-custom-space-104">
       <div className="flex items-center gap-2 px-2">
         <div className={cn("size-2 rounded-full", color.replace("text-", "bg-"))} title={title} />
         <h3 className={cn("text-xs font-black uppercase tracking-widest", color)}>{title}</h3>
@@ -32,7 +32,7 @@ export function RoadmapColumn({ id, title, color, items, onEdit, onDelete }: Roa
 
       <div
         ref={setNodeRef}
-        className="flex flex-1 flex-col gap-3 p-2 rounded-2xl bg-white/[0.02] border border-white/[0.05] min-h-[500px]"
+        className="flex flex-1 flex-col gap-3 p-2 rounded-2xl bg-white/[0.02] border border-white/[0.05] min-h-custom-space-105"
       >
         <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
           {items.map((item) => (

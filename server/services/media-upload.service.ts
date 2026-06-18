@@ -24,7 +24,7 @@ import { webhookService } from "./webhook-service.js";
 /**
  * Upload session management for chunk tracking
  */
-export interface UploadSession {
+interface UploadSession {
   uploadId: string;
   filename: string;
   originalName: string;
@@ -42,7 +42,7 @@ export interface UploadSession {
  * Enforces Result-based patterns and circuit breaker protection.
  * Centralizes assembly, GLTF processing, and image optimization.
  */
-export class MediaUploadService {
+class MediaUploadService {
   private sessions = new Map<string, UploadSession>();
   private activeOperations = new Set<string>();
 

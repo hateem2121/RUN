@@ -30,7 +30,7 @@ interface LoadingState {
   startTime: number;
 }
 
-export interface UnifiedModelViewerProps {
+interface UnifiedModelViewerProps {
   asset: MediaAsset;
   className?: string | undefined;
   config?: ModelViewerConfig;

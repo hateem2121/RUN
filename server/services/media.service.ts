@@ -10,7 +10,7 @@ import { mediaUploadService } from "./media-upload.service.js";
  * Refactored to use explicit methods instead of bound property initializers
  * to avoid initialization order issues and circular dependencies.
  */
-export class MediaService {
+class MediaService {
   // Query methods
   getAssets = (...args: Parameters<typeof mediaQueryService.getAssets>) =>
     mediaQueryService.getAssets(...args);

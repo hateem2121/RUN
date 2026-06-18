@@ -6,12 +6,11 @@ import type {
   InsertHomepageSlogan,
 } from "@shared/index";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { apiRequest } from "@/lib/api";
 
 export function useAdminHomepageMutations() {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   const invalidateHomepageQueries = () => {
     queryClient.invalidateQueries({ queryKey: ["homepage-batch"] });
@@ -28,10 +27,10 @@ export function useAdminHomepageMutations() {
     },
     onSuccess: () => {
       invalidateHomepageQueries();
-      toast({ title: "Success", description: "Homepage Hero updated successfully" });
+      toast.success("Success", { description: "Homepage Hero updated successfully" });
     },
     onError: (error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -45,10 +44,10 @@ export function useAdminHomepageMutations() {
     },
     onSuccess: () => {
       invalidateHomepageQueries();
-      toast({ title: "Success", description: "Slogan created successfully" });
+      toast.success("Success", { description: "Slogan created successfully" });
     },
     onError: (error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -61,10 +60,10 @@ export function useAdminHomepageMutations() {
     },
     onSuccess: () => {
       invalidateHomepageQueries();
-      toast({ title: "Success", description: "Slogan updated successfully" });
+      toast.success("Success", { description: "Slogan updated successfully" });
     },
     onError: (error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -76,10 +75,10 @@ export function useAdminHomepageMutations() {
     },
     onSuccess: () => {
       invalidateHomepageQueries();
-      toast({ title: "Success", description: "Slogan deleted successfully" });
+      toast.success("Success", { description: "Slogan deleted successfully" });
     },
     onError: (error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -95,7 +94,7 @@ export function useAdminHomepageMutations() {
       // No toast for reordering to avoid spam
     },
     onError: (error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -109,10 +108,10 @@ export function useAdminHomepageMutations() {
     },
     onSuccess: () => {
       invalidateHomepageQueries();
-      toast({ title: "Success", description: "Process card created successfully" });
+      toast.success("Success", { description: "Process card created successfully" });
     },
     onError: (error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -125,10 +124,10 @@ export function useAdminHomepageMutations() {
     },
     onSuccess: () => {
       invalidateHomepageQueries();
-      toast({ title: "Success", description: "Process card updated successfully" });
+      toast.success("Success", { description: "Process card updated successfully" });
     },
     onError: (error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -140,10 +139,10 @@ export function useAdminHomepageMutations() {
     },
     onSuccess: () => {
       invalidateHomepageQueries();
-      toast({ title: "Success", description: "Process card deleted successfully" });
+      toast.success("Success", { description: "Process card deleted successfully" });
     },
     onError: (error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -159,7 +158,7 @@ export function useAdminHomepageMutations() {
       // No toast for reordering
     },
     onError: (error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -173,10 +172,10 @@ export function useAdminHomepageMutations() {
     },
     onSuccess: () => {
       invalidateHomepageQueries();
-      toast({ title: "Success", description: "Section updated successfully" });
+      toast.success("Success", { description: "Section updated successfully" });
     },
     onError: (error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -193,10 +192,10 @@ export function useAdminHomepageMutations() {
     },
     onSuccess: () => {
       invalidateHomepageQueries();
-      toast({ title: "Success", description: "Featured settings updated successfully" });
+      toast.success("Success", { description: "Featured settings updated successfully" });
     },
     onError: (error) => {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast.error("Error", { description: error.message });
     },
   });
 

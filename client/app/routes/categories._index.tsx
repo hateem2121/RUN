@@ -91,7 +91,7 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Component() {
+export function Component() {
   const loaderData = useLoaderData<typeof loader>();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -273,7 +273,7 @@ export default function Component() {
     <HydrationBoundary state={loaderData?.dehydratedState}>
       <div ref={containerRef} className="bg-card min-h-screen pt-12 pb-6 md:pt-20 md:pb-12">
         {/* Hero Section */}
-        <div className="container px-4 md:px-8 mt-0 mb-0 pt-6 pb-6 md:pt-[50px] md:pb-[50px]">
+        <div className="container px-4 md:px-8 mt-0 mb-0 pt-6 pb-6 md:pt-custom-space-289 md:pb-custom-space-290">
           {/* Breadcrumbs Integration */}
           <div className="mb-8 flex justify-center opacity-0 hero-reveal">
             <nav className="flex items-center space-x-2 text-luxury-gray-400 text-xs uppercase tracking-widest">

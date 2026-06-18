@@ -109,7 +109,7 @@ export const uploadMetrics = {
 
 // ─── Upload Queue Manager ──────────────────────────────────────────────────────
 
-export class UploadQueueManager {
+class UploadQueueManager {
   private activeUploads = new Set<string>();
   private maxConcurrent = 2;
   private pendingQueue: UploadQueueItem[] = [];

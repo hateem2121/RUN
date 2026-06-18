@@ -31,10 +31,10 @@ export function SEOPreview({ title, description, slug, ogImage, type }: SEOPrevi
               <span className="text-xs truncate">{displayUrl}</span>
             </div>
           </div>
-          <h3 className="text-[#1a0dab] dark:text-[#8ab4f8] text-xl font-normal hover:underline cursor-pointer">
+          <h3 className="text-custom-color-1 dark:text-custom-color-2 text-xl font-normal hover:underline cursor-pointer">
             {displayTitle}
           </h3>
-          <p className="text-[#4d5156] dark:text-[#bdc1c6] text-sm line-clamp-2">
+          <p className="text-custom-color-3 dark:text-custom-color-4 text-sm line-clamp-2">
             {displayDescription}
           </p>
         </CardContent>
@@ -44,7 +44,7 @@ export function SEOPreview({ title, description, slug, ogImage, type }: SEOPrevi
 
   return (
     <Card className="overflow-hidden bg-white/[0.03] border-white/10 shadow-sm max-w-md">
-      <div className="aspect-[1.91/1] bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center relative overflow-hidden">
+      <div className="aspect-custom-misc-14 bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center relative overflow-hidden">
         {ogImage ? (
           <img src={ogImage} alt="OG Preview" className="w-full h-full object-cover" />
         ) : (
@@ -57,7 +57,7 @@ export function SEOPreview({ title, description, slug, ogImage, type }: SEOPrevi
         )}
       </div>
       <CardContent className="p-3 border-t border-zinc-200 dark:border-zinc-800">
-        <div className="text-[11px] text-zinc-500 dark:text-zinc-500 uppercase font-semibold tracking-wider mb-1">
+        <div className="text-custom-space-6 text-zinc-500 dark:text-zinc-500 uppercase font-semibold tracking-wider mb-1">
           WEAR-RUN.COM
         </div>
         <h4 className="text-zinc-900 dark:text-zinc-100 font-bold leading-tight mb-1 line-clamp-2">

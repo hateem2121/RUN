@@ -1,5 +1,6 @@
 import { type Response, Router } from "express";
 import passport from "passport";
+import { env } from "../lib/env.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { authRateLimiter } from "../middleware/rateLimiter.js";
 import { authService } from "../services/auth-service.js";
@@ -17,11 +18,7 @@ router.get(
 );
 
 // Mock Login Route (Development & Test Only)
-if (
-  process.env.NODE_ENV === "development" ||
-  process.env.VITEST ||
-  process.env.ALLOW_MOCK_LOGIN === "true"
-) {
+if (env.NODE_ENV === "development" || env.VITEST || env.ENABLE_MOCK_ADMIN === "true") {
   router.get("/mock-login", async (req, res) => {
     const mockUser: SessionUser = {
       id: "mock-admin-id",

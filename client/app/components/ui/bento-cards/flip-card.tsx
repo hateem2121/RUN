@@ -108,17 +108,17 @@ export const FlipCard = memo(function FlipCard({
                   <div className="rounded-2xl border border-glass bg-white/5 p-4">
                     <div className="flex items-center justify-between gap-3">
                       <div className="space-y-1.5">
-                        <h3 className="font-semibold text-lg text-white leading-snug tracking-tighter drop-shadow-lg transition-all duration-500 ease-out-expo group-hover:translate-y-[-4px]">
+                        <h3 className="font-semibold text-lg text-white leading-snug tracking-tighter drop-shadow-lg transition-all duration-500 ease-out-expo group-hover:translate-y-custom-space-261">
                           {cardTitle}
                         </h3>
-                        <p className="line-clamp-2 text-sm text-white/80 tracking-tight drop-shadow-md transition-all delay-50 duration-500 ease-out-expo group-hover:translate-y-[-4px]">
+                        <p className="line-clamp-2 text-sm text-white/80 tracking-tight drop-shadow-md transition-all delay-50 duration-500 ease-out-expo group-hover:translate-y-custom-space-262">
                           {cardSubtitle}
                         </p>
                       </div>
                       <div className="group/icon relative">
                         <div
                           className={cn(
-                            "absolute inset-[-8px] rounded-lg transition-opacity duration-300",
+                            "absolute inset-custom-space-263 rounded-lg transition-opacity duration-300",
                             "bg-linear-to-br from-orange-500/20 via-orange-500/10 to-transparent",
                           )}
                         />
@@ -146,10 +146,10 @@ export const FlipCard = memo(function FlipCard({
               >
                 <div className="min-h-0 flex-1 space-y-4">
                   <div className="space-y-2">
-                    <h3 className="font-semibold text-lg text-zinc-900 leading-tight tracking-tight transition-all duration-500 ease-out-expo group-hover:translate-y-[-2px] dark:text-white">
+                    <h3 className="font-semibold text-lg text-zinc-900 leading-tight tracking-tight transition-all duration-500 ease-out-expo group-hover:translate-y-custom-space-264 dark:text-white">
                       {cardTitle}
                     </h3>
-                    <p className="text-sm text-zinc-600 leading-relaxed tracking-tight transition-all duration-500 ease-out-expo group-hover:translate-y-[-2px] dark:text-zinc-400">
+                    <p className="text-sm text-zinc-600 leading-relaxed tracking-tight transition-all duration-500 ease-out-expo group-hover:translate-y-custom-space-265 dark:text-zinc-400">
                       {cardDescription}
                     </p>
                   </div>
@@ -185,7 +185,7 @@ export const FlipCard = memo(function FlipCard({
                       "dark:from-luxury-charcoal dark:via-luxury-charcoal dark:to-surface-black",
                       "hover:from-0% hover:from-primary/10 hover:via-100% hover:via-primary/5 hover:to-100% hover:to-transparent",
                       "dark:hover:from-0% dark:hover:from-primary/20 dark:hover:via-100% dark:hover:via-primary/10 dark:hover:to-100% dark:hover:to-transparent",
-                      "hover:scale-[1.02] hover:cursor-pointer w-full text-left",
+                      "hover:scale-custom-misc-365 hover:cursor-pointer w-full text-left",
                     )}
                     onClick={() => link && window.open(link, "_blank")}
                   >
@@ -195,7 +195,7 @@ export const FlipCard = memo(function FlipCard({
                     <div className="group/icon relative">
                       <div
                         className={cn(
-                          "absolute inset-[-4px] rounded-lg transition-all duration-300",
+                          "absolute inset-custom-space-266 rounded-lg transition-all duration-300",
                           "bg-linear-to-br from-orange-500/20 via-orange-500/10 to-transparent",
                           "scale-90 opacity-0 group-hover/start:scale-100 group-hover/start:opacity-100",
                         )}

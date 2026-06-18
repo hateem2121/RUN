@@ -1,7 +1,7 @@
 import type { Accessory, Certificate, Fabric, Fiber, SizeChart } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 
-export type ResourceType = "certificate" | "accessory" | "sizechart" | "fabric" | "fiber" | "all";
+type ResourceType = "certificate" | "accessory" | "sizechart" | "fabric" | "fiber" | "all";
 
 interface BatchResponse {
   certificates?: Certificate[];

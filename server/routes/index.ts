@@ -1,3 +1,4 @@
+import { env } from "../lib/env.js";
 /**
  * MASTER ROUTER - Route Orchestration & Documentation
  *
@@ -42,7 +43,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ============================================================================
   // DEV TOOLS (Development only)
   // ============================================================================
-  if (process.env.NODE_ENV !== "production") {
+  if (env.NODE_ENV !== "production") {
     const { default: devRouter } = await import("./dev.js");
     app.use("/api/dev", devRouter);
   }
@@ -71,7 +72,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const apiRouter = Router();
 
   // Debug logging — development only to avoid production log noise
-  if (process.env.NODE_ENV !== "production") {
+  if (env.NODE_ENV !== "production") {
     apiRouter.use((req, _res, next) => {
       logger.info(`[Router Debug] API Router hit: ${req.method} ${req.url}`);
       next();
@@ -119,7 +120,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api/docs", docsRouter);
 
   // Debug (Development only, gated internally)
-  if (process.env.NODE_ENV !== "production") {
+  if (env.NODE_ENV !== "production") {
     app.use("/api/debug", debugRouter);
   }
 
@@ -129,7 +130,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerMetricsRoutes(app);
 
   // DEV-ONLY: KV Diagnostics & Data Population (NEVER in production)
-  if (process.env.NODE_ENV !== "production") {
+  if (env.NODE_ENV !== "production") {
     app.use("/api/kv-direct", diagnosticLimiter.middleware());
     app.use("/api/kv-diagnostics", diagnosticLimiter.middleware());
     registerKVDiagnosticsRoutes(app);

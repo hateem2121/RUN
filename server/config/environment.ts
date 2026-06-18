@@ -10,10 +10,10 @@ import { validateEnv } from "../../shared/schemas/env.schema.js";
 
 // Validated environment configuration
 // (Early validation in index.ts/server.ts will populate process.env)
-export const env = validateEnv(process.env);
+const env = validateEnv(process.env);
 
 // Environment utilities
-export const isDevelopment = env.NODE_ENV === "development";
+const isDevelopment = env.NODE_ENV === "development";
 export const isProduction = env.NODE_ENV === "production";
 export const isTest = env.NODE_ENV === "test";
 
@@ -50,7 +50,7 @@ const corsOrigins: string[] = (() => {
 })();
 
 // Server configuration with secure CORS
-export const server = {
+const server = {
   port: env.PORT,
   corsOrigin: corsOrigins,
   corsCredentials: env.CORS_ALLOW_CREDENTIALS,
@@ -58,7 +58,7 @@ export const server = {
 } as const;
 
 // Logging configuration
-export const logging = {
+const logging = {
   level: env.LOG_LEVEL,
   enableDebug: env.ENABLE_DEBUG_LOGS || isDevelopment,
   enablePerformanceMonitoring: env.ENABLE_PERFORMANCE_MONITORING,
@@ -69,7 +69,7 @@ export const logging = {
 } as const;
 
 // Security configuration
-export const security = {
+const security = {
   adminApiKey: env.ADMIN_API_KEY,
   enterpriseApiKey: env.ENTERPRISE_API_KEY,
   migrationApiKey: env.MIGRATION_API_KEY,
@@ -86,13 +86,13 @@ export const cloud = {
 } as const;
 
 // Development configuration
-export const development = {
+const development = {
   isDev: env.DEV || isDevelopment,
   packageVersion: env.npm_package_version || "1.0.0",
 } as const;
 
 // Feature flags
-export const features = {
+const features = {
   cacheWarming: env.ENABLE_CACHE_WARMING,
   debugLogs: env.ENABLE_DEBUG_LOGS || isDevelopment,
   performanceMonitoring: env.ENABLE_PERFORMANCE_MONITORING,

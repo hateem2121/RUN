@@ -6,7 +6,7 @@ import { isRedisEnabled, redis } from "./upstash-client.js";
 
 const tracer = trace.getTracer("cache-events");
 
-export interface CacheInvalidationEvent {
+interface CacheInvalidationEvent {
   pattern: string;
   timestamp: number;
   reason: "delete" | "update" | "create";
@@ -47,7 +47,7 @@ export async function emitCacheInvalidation(
       if (isRedisEnabled) {
         const key = `cache:invalidation:latest:${pattern}`;
         // Store latest event with TTL
-        await redis.set(key, JSON.stringify(event), { ex: EVENT_TTL_SECONDS });
+        await redis.set(key, JSON.stringify(event), "EX", EVENT_TTL_SECONDS);
         span.setAttribute("cache.distributed", true);
       } else {
         // Local fallback

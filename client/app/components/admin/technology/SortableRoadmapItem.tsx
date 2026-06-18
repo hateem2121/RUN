@@ -39,7 +39,7 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
       className={cn(
         "group relative overflow-hidden rounded-2xl border transition-all duration-300",
         isDragging
-          ? "z-50 border-[#00D4FF] bg-white/[0.08] shadow-[0_0_30px_rgba(0,212,255,0.2)]"
+          ? "z-50 border-custom-color-74 bg-white/[0.08] shadow-custom-misc-95"
           : "border-white/[0.08] bg-white/[0.03] hover:border-white/[0.15] hover:bg-white/[0.06] hover:shadow-2xl",
       )}
     >
@@ -47,7 +47,7 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
       <div
         className={cn(
           "absolute top-0 left-0 h-full w-1",
-          item.isActive ? "bg-[#00D4FF]" : "bg-[#68869A]/30",
+          item.isActive ? "bg-custom-color-75" : "bg-custom-color-76/30",
         )}
       />
 
@@ -57,7 +57,7 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
           type="button"
           {...attributes}
           {...listeners}
-          className="mr-2 flex cursor-grab items-center justify-center self-stretch text-admin-foreground/20 transition-colors hover:text-[#00D4FF]/40 active:cursor-grabbing"
+          className="mr-2 flex cursor-grab items-center justify-center self-stretch text-admin-foreground/20 transition-colors hover:text-custom-color-77/40 active:cursor-grabbing"
           title="Drag to reorder"
           aria-label="Drag to reorder"
         >
@@ -66,7 +66,7 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
 
         <div className="flex flex-1 flex-col gap-6 sm:flex-row sm:items-center">
           {/* Milestone Icon */}
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/[0.05] text-[#00D4FF] ring-1 ring-white/10 transition-transform group-hover:scale-110">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/[0.05] text-custom-color-78 ring-1 ring-white/10 transition-transform group-hover:scale-110">
             {item.isActive ? (
               <Zap className="h-6 w-6" />
             ) : (
@@ -79,7 +79,7 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
               <h3 className="text-lg font-bold tracking-tight text-white">{item.title}</h3>
               <Badge
                 variant="outline"
-                className="border-[#00D4FF]/20 bg-[#00D4FF]/5 text-[#00D4FF] text-xxs uppercase tracking-widest"
+                className="border-custom-color-79/20 bg-custom-color-80/5 text-custom-color-81 text-xxs uppercase tracking-widest"
               >
                 {item.timeline}
               </Badge>
@@ -105,8 +105,10 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
                     key={idx}
                     className="flex items-center gap-1.5 rounded-full bg-white/[0.03] px-2.5 py-1 ring-1 ring-white/5"
                   >
-                    <Target className="h-3 w-3 text-[#00D4FF]/60" />
-                    <span className="text-admin-foreground/50 text-[11px] font-medium">{imp}</span>
+                    <Target className="h-3 w-3 text-custom-color-82/60" />
+                    <span className="text-admin-foreground/50 text-custom-space-106 font-medium">
+                      {imp}
+                    </span>
                   </div>
                 ))}
                 {item.impact.length > 3 && (
@@ -123,7 +125,7 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 bg-white/[0.03] text-admin-foreground/40 transition-all hover:bg-[#00D4FF]/10 hover:text-[#00D4FF] active:scale-95"
+              className="h-9 w-9 bg-white/[0.03] text-admin-foreground/40 transition-all hover:bg-custom-color-83/10 hover:text-custom-color-84 active:scale-95"
               onClick={() => onEdit(item)}
               title="Edit Milestone"
               aria-label="Edit Milestone"
@@ -141,7 +143,7 @@ export function SortableRoadmapItem({ item, onEdit, onDelete }: SortableRoadmapI
               <Trash2 className="h-4 w-4" />
             </Button>
             <div className="ml-2 h-8 w-px bg-white/10" />
-            <div className="flex h-9 items-center px-2 text-[#00D4FF]">
+            <div className="flex h-9 items-center px-2 text-custom-color-85">
               <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </div>
           </div>

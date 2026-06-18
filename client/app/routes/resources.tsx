@@ -72,7 +72,7 @@ const resourceCategories = [
   },
 ];
 
-export default function Component() {
+export function Component() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const headerRef = useRef<HTMLDivElement>(null);

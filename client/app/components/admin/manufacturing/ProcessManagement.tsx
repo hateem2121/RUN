@@ -59,7 +59,7 @@ type ProcessFormData = Omit<
   step: number;
 };
 
-export interface ProcessManagementProps {
+interface ProcessManagementProps {
   mediaAssets?: MediaAsset[];
 }
 
@@ -397,7 +397,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
           </Button>
         </div>
 
-        <div className="min-h-[400px]">
+        <div className="min-h-custom-space-44">
           {processesLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="flex space-x-2">
@@ -476,7 +476,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
               </div>
             </div>
 
-            <form action={formAction} className="flex-1 overflow-y-auto max-h-[70vh]">
+            <form action={formAction} className="flex-1 overflow-y-auto max-h-custom-space-45">
               <div className="p-8 space-y-8">
                 <div className={cn("grid gap-10", showPreview ? "lg:grid-cols-2" : "grid-cols-1")}>
                   <div className="space-y-8">
@@ -499,7 +499,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                               name: e.target.value,
                             })
                           }
-                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 placeholder:text-white/20"
+                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-23/50 placeholder:text-white/20"
                           placeholder="e.g., Fabric Cutting"
                           required
                         />
@@ -522,7 +522,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                               step: parseInt(e.target.value, 10) || 0,
                             })
                           }
-                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50"
+                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-24/50"
                           required
                         />
                       </div>
@@ -546,7 +546,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                               category: e.target.value,
                             })
                           }
-                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 placeholder:text-white/20"
+                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-25/50 placeholder:text-white/20"
                           placeholder="e.g., Pre-production"
                         />
                       </div>
@@ -563,7 +563,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                             setProcessForm({ ...processForm, iconName: value })
                           }
                         >
-                          <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-[50px] focus:ring-[#D4A853]/50">
+                          <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-custom-space-46 focus:ring-custom-color-26/50">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent className="bg-surface-black border-white/10 text-white">
@@ -603,7 +603,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                                 efficiency: Number.parseInt(e.target.value, 10) || 0,
                               })
                             }
-                            className="bg-white/5 border-white/10 text-white rounded-xl py-6 pr-12 focus:ring-[#D4A853]/50"
+                            className="bg-white/5 border-white/10 text-white rounded-xl py-6 pr-12 focus:ring-custom-color-27/50"
                           />
                           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-admin-muted font-bold text-xs">
                             %
@@ -627,7 +627,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                               duration: e.target.value,
                             })
                           }
-                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 placeholder:text-white/20"
+                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-28/50 placeholder:text-white/20"
                           placeholder="e.g., 2-3 days"
                         />
                       </div>
@@ -650,7 +650,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                             description: e.target.value,
                           })
                         }
-                        className="bg-white/5 border-white/10 text-white rounded-xl min-h-[120px] focus:ring-[#D4A853]/50 placeholder:text-white/20 resize-none"
+                        className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-47 focus:ring-custom-color-29/50 placeholder:text-white/20 resize-none"
                         placeholder="Describe this manufacturing process..."
                       />
                     </div>
@@ -663,7 +663,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                         onCheckedChange={(checked) =>
                           setProcessForm({ ...processForm, isActive: checked })
                         }
-                        className="data-[state=checked]:bg-brand-manufacturing"
+                        className="data-custom-misc-52:bg-brand-manufacturing"
                       />
                       <Label
                         htmlFor="process-active"
@@ -720,7 +720,7 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                           type="button"
                           onClick={() => setShowProcessImagePicker(true)}
                           data-testid="select-process-media"
-                          className="flex items-center justify-center gap-2 h-[66px] rounded-xl border-2 border-dashed border-white/5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/10 transition-all group"
+                          className="flex items-center justify-center gap-2 h-custom-space-48 rounded-xl border-2 border-dashed border-white/5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/10 transition-all group"
                         >
                           <Plus className="size-4 text-admin-muted group-hover:text-brand-manufacturing transition-colors" />
                           <span className="text-xxs font-bold text-admin-muted uppercase tracking-widest group-hover:text-white transition-colors">

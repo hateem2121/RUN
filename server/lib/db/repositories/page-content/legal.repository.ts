@@ -14,7 +14,7 @@ import { StorageSingleton } from "../../../storage-singleton.js";
 const unifiedCache = UnifiedCache.getInstance();
 const LEGAL_CACHE_TTL = 3600; // 1 hour (in seconds)
 
-export class LegalRepository {
+class LegalRepository {
   async getLegalPolicies(includeInactive = false): Promise<LegalPolicy[]> {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getLegalPolicies(includeInactive);

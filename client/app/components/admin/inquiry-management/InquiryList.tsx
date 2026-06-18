@@ -14,7 +14,7 @@ interface InquiryListProps {
 export function InquiryList({ inquiries, onSelect, selectedId }: InquiryListProps) {
   if (inquiries.length === 0) {
     return (
-      <div className="flex h-[400px] flex-col items-center justify-center text-center p-8">
+      <div className="flex h-custom-space-33 flex-col items-center justify-center text-center p-8">
         <Mail className="h-12 w-12 text-admin-muted/30 mb-4" />
         <Typography.H4>No inquiries found</Typography.H4>
         <Typography.P className="text-admin-muted">
@@ -32,7 +32,7 @@ export function InquiryList({ inquiries, onSelect, selectedId }: InquiryListProp
         <div className="col-span-1 text-center">Status</div>
         <div className="col-span-1 text-right">Received</div>
       </div>
-      <div className="max-h-[600px] overflow-y-auto custom-scrollbar">
+      <div className="max-h-custom-space-34 overflow-y-auto custom-scrollbar">
         {inquiries.map((inquiry) => (
           <button
             aria-label="Action button"

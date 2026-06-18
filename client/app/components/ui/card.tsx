@@ -80,7 +80,7 @@ const GlassCardDecorations = React.memo(({ showShimmer = true }: { showShimmer?:
     {/* Gradient overlay for depth */}
     <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10" />
     {/* Inner glow */}
-    <div className="card-border-overlay rounded-[calc(var(--radius,0.75rem)-1px)]" />
+    <div className="card-border-overlay rounded-custom-misc-367" />
     {/* Hover shimmer effect */}
     {showShimmer && (
       <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
@@ -98,6 +98,5 @@ export {
   CardTitle,
   CardDescription,
   CardContent,
-  cardVariants,
   GlassCardDecorations,
 };

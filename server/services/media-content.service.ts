@@ -10,7 +10,7 @@ import { appStorageService } from "../lib/storage/app-service.js";
  * Service for serving media content and thumbnails via signed URLs.
  * Enforces Result-based patterns and circuit breaker protection.
  */
-export class MediaContentService {
+class MediaContentService {
   /**
    * Generates a signed URL for a media asset's primary content or specific variant.
    * Automatically handles responsive variants and fallbacks.

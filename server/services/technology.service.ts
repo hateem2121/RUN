@@ -15,18 +15,28 @@ import type {
   TechnologyResearch,
   TechnologyRoadmap,
 } from "../../shared/index.js";
+import {
+  insertTechnologyCtaSchema,
+  insertTechnologyEquipmentSchema,
+  insertTechnologyGradientSettingsSchema,
+  insertTechnologyHeroSchema,
+  insertTechnologyInnovationSchema,
+  insertTechnologyResearchSchema,
+  insertTechnologyRoadmapSchema,
+} from "../../shared/index.js";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { mediaRepository, technologyRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
+import { sanitizeHtml } from "../lib/sanitize-html.js";
 import { extractMediaIds } from "../lib/utilities/media-utils.js";
 
 /**
  * Service for managing Technology domain content
  * Enforces Result-based patterns and circuit breaker protection
  */
-export class TechnologyService {
+class TechnologyService {
   /**
    * Invalidates all technology related cache entries
    */
@@ -62,7 +72,14 @@ export class TechnologyService {
     try {
       const updated = await withCircuit(
         "update-technology-hero",
-        () => technologyRepository.updateTechnologyHero(data),
+        () =>
+          technologyRepository.updateTechnologyHero(
+            (() => {
+              const parsed = insertTechnologyHeroSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -98,7 +115,14 @@ export class TechnologyService {
     try {
       const created = await withCircuit(
         "create-technology-cta",
-        () => technologyRepository.createTechnologyCta(data),
+        () =>
+          technologyRepository.createTechnologyCta(
+            (() => {
+              const parsed = insertTechnologyCtaSchema.parse(data);
+              if (parsed.content) parsed.content = sanitizeHtml(parsed.content);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -114,7 +138,14 @@ export class TechnologyService {
     try {
       const updated = await withCircuit(
         "update-technology-cta",
-        () => technologyRepository.updateTechnologyCta(data),
+        () =>
+          technologyRepository.updateTechnologyCta(
+            (() => {
+              const parsed = insertTechnologyCtaSchema.partial().parse(data);
+              if (parsed.content) parsed.content = sanitizeHtml(parsed.content);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -186,7 +217,14 @@ export class TechnologyService {
     try {
       const created = await withCircuit(
         "create-technology-equipment",
-        () => technologyRepository.createTechnologyEquipment(data),
+        () =>
+          technologyRepository.createTechnologyEquipment(
+            (() => {
+              const parsed = insertTechnologyEquipmentSchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -205,7 +243,15 @@ export class TechnologyService {
     try {
       const updated = await withCircuit(
         `update-technology-equipment-${id}`,
-        () => technologyRepository.updateTechnologyEquipment(id, data),
+        () =>
+          technologyRepository.updateTechnologyEquipment(
+            id,
+            (() => {
+              const parsed = insertTechnologyEquipmentSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -293,7 +339,14 @@ export class TechnologyService {
     try {
       const created = await withCircuit(
         "create-technology-innovation",
-        () => technologyRepository.createTechnologyInnovation(data),
+        () =>
+          technologyRepository.createTechnologyInnovation(
+            (() => {
+              const parsed = insertTechnologyInnovationSchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -312,7 +365,15 @@ export class TechnologyService {
     try {
       const updated = await withCircuit(
         `update-technology-innovation-${id}`,
-        () => technologyRepository.updateTechnologyInnovation(id, data),
+        () =>
+          technologyRepository.updateTechnologyInnovation(
+            id,
+            (() => {
+              const parsed = insertTechnologyInnovationSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -400,7 +461,14 @@ export class TechnologyService {
     try {
       const created = await withCircuit(
         "create-technology-research",
-        () => technologyRepository.createTechnologyResearch(data),
+        () =>
+          technologyRepository.createTechnologyResearch(
+            (() => {
+              const parsed = insertTechnologyResearchSchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -419,7 +487,15 @@ export class TechnologyService {
     try {
       const updated = await withCircuit(
         `update-technology-research-${id}`,
-        () => technologyRepository.updateTechnologyResearch(id, data),
+        () =>
+          technologyRepository.updateTechnologyResearch(
+            id,
+            (() => {
+              const parsed = insertTechnologyResearchSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -507,7 +583,14 @@ export class TechnologyService {
     try {
       const created = await withCircuit(
         "create-technology-roadmap",
-        () => technologyRepository.createTechnologyRoadmap(data),
+        () =>
+          technologyRepository.createTechnologyRoadmap(
+            (() => {
+              const parsed = insertTechnologyRoadmapSchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -526,7 +609,15 @@ export class TechnologyService {
     try {
       const updated = await withCircuit(
         `update-technology-roadmap-${id}`,
-        () => technologyRepository.updateTechnologyRoadmap(id, data),
+        () =>
+          technologyRepository.updateTechnologyRoadmap(
+            id,
+            (() => {
+              const parsed = insertTechnologyRoadmapSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -596,7 +687,13 @@ export class TechnologyService {
     try {
       const updated = await withCircuit(
         "update-technology-gradient",
-        () => technologyRepository.updateTechnologyGradientSettings(data),
+        () =>
+          technologyRepository.updateTechnologyGradientSettings(
+            (() => {
+              const parsed = insertTechnologyGradientSettingsSchema.partial().parse(data);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
       await this.invalidateCache();

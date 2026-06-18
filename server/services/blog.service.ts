@@ -1,3 +1,4 @@
+import DOMPurify from "isomorphic-dompurify";
 import { err, ok, type Result } from "neverthrow";
 import {
   type BlogCategory,
@@ -13,7 +14,7 @@ import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 import { removeUndefined } from "../lib/utilities/core-utils.js";
 
-export class BlogService {
+class BlogService {
   /**
    * List blog categories.
    */
@@ -130,6 +131,9 @@ export class BlogService {
 
       const payload = { ...(data as Record<string, unknown>), authorId };
       const validatedData = insertBlogPostSchema.parse(payload);
+      if (validatedData.content) {
+        validatedData.content = DOMPurify.sanitize(validatedData.content);
+      }
       const post = await withCircuit(
         "create-blog-post",
         () => blogRepository.createBlogPost(validatedData),
@@ -184,6 +188,9 @@ export class BlogService {
   async updateBlogPost(id: number, data: unknown): Promise<Result<BlogPost, AppError>> {
     try {
       const validatedData = insertBlogPostSchema.partial().parse(data);
+      if (validatedData.content) {
+        validatedData.content = DOMPurify.sanitize(validatedData.content);
+      }
       const post = await withCircuit(
         "update-blog-post",
         () => blogRepository.updateBlogPost(id, removeUndefined(validatedData)),

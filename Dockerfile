@@ -58,7 +58,6 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
   CMD node scripts/healthcheck.js || exit 1
 
 # P5: Run as non-root user for security
-RUN addgroup -g 1000 -S node && adduser -u 1000 -S node -G node
 USER node
 
 # Start the server

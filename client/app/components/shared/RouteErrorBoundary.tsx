@@ -24,7 +24,7 @@ export function RouteErrorBoundary() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[50vh] p-6 text-center animate-in fade-in duration-500">
+    <div className="flex flex-col items-center justify-center min-h-custom-space-202 p-6 text-center animate-in fade-in duration-500">
       <div className="p-4 rounded-full bg-destructive/10 text-destructive mb-6 shadow-sm border border-destructive/20">
         <AlertCircle size={40} />
       </div>

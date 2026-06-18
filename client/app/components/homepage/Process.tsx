@@ -135,7 +135,7 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
 
         {/* Decorative Drawing SVG - Desktop Only */}
         <div
-          className="pointer-events-none absolute top-1/2 left-0 z-base hidden h-[300px] w-full -translate-y-1/2 opacity-30 md:block"
+          className="pointer-events-none absolute top-1/2 left-0 z-base hidden h-custom-space-146 w-full -translate-y-1/2 opacity-30 md:block"
           aria-hidden="true"
         >
           <svg className="h-full w-full" viewBox="0 0 1000 200" preserveAspectRatio="none">
@@ -181,14 +181,14 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
                   <div className="absolute inset-0 bg-surface/20 transition-all duration-500 group-hover:bg-transparent" />
 
                   {/* Big Number Overlay */}
-                  <span className="absolute top-0 left-0 p-4 font-bold text-[15vw] text-foreground leading-none opacity-50 mix-blend-overlay md:text-[8vw]">
+                  <span className="absolute top-0 left-0 p-4 font-bold text-custom-space-147 text-foreground leading-none opacity-50 mix-blend-overlay md:text-custom-space-148">
                     {step.id}
                   </span>
                 </div>
 
                 {/* Content Side */}
                 <div className="relative flex flex-col justify-center">
-                  <h2 className="mb-4 font-bold text-[10vw] uppercase leading-[0.9] md:mb-8 md:text-[4vw]">
+                  <h2 className="mb-4 font-bold text-custom-space-149 uppercase leading-custom-misc-155 md:mb-8 md:text-custom-space-150">
                     {step.title}
                   </h2>
                   <p className="mb-8 max-w-md font-light text-base text-muted-foreground leading-relaxed md:text-xl">

@@ -1,10 +1,15 @@
 import { err, ok, type Result } from "neverthrow";
-import type { InsertLegalPolicy, LegalPolicy } from "../../shared/index.js";
+import {
+  type InsertLegalPolicy,
+  insertLegalPolicySchema,
+  type LegalPolicy,
+} from "../../shared/index.js";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { legalRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
+import { sanitizeHtml } from "../lib/sanitize-html.js";
 
 const DEFAULT_POLICIES: Record<string, LegalPolicy> = {
   "privacy-policy": {
@@ -29,7 +34,7 @@ const DEFAULT_POLICIES: Record<string, LegalPolicy> = {
   },
 };
 
-export class LegalService {
+class LegalService {
   private async invalidateCache(): Promise<void> {
     try {
       await CacheOperations.invalidateLegal?.();
@@ -118,9 +123,12 @@ export class LegalService {
 
   async createLegalPolicy(data: InsertLegalPolicy): Promise<Result<LegalPolicy, AppError>> {
     try {
+      const parsed = insertLegalPolicySchema.parse(data);
+      if (parsed.content) parsed.content = sanitizeHtml(parsed.content);
+
       const created = await withCircuit(
         "create-legal-policy",
-        () => legalRepository.createLegalPolicy(data),
+        () => legalRepository.createLegalPolicy(parsed),
         DB_CIRCUIT_OPTIONS,
       );
       await this.invalidateCache();
@@ -136,9 +144,12 @@ export class LegalService {
     data: Partial<InsertLegalPolicy>,
   ): Promise<Result<LegalPolicy, AppError>> {
     try {
+      const parsed = insertLegalPolicySchema.partial().parse(data);
+      if (parsed.content) parsed.content = sanitizeHtml(parsed.content);
+
       const updated = await withCircuit(
         `update-legal-policy-${id}`,
-        () => legalRepository.updateLegalPolicy(id, data),
+        () => legalRepository.updateLegalPolicy(id, parsed as Partial<InsertLegalPolicy>),
         DB_CIRCUIT_OPTIONS,
       );
       if (!updated) {

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-export type TileLayerType = "roadmap" | "satellite";
+type TileLayerType = "roadmap" | "satellite";
 
 interface MapConfig {
   center: [number, number];

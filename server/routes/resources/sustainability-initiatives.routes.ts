@@ -192,11 +192,8 @@ router.patch(
   authService.requireAdmin,
   validateRequest({ body: reorderSchema }),
   async (req, res) => {
-    interface InitiativeSortItem {
-      id: number;
-      position: number;
-    }
-    const orderedIds = (req.body.initiatives as InitiativeSortItem[])
+    const parsedBody = reorderSchema.parse(req.body);
+    const orderedIds = parsedBody.initiatives
       .sort((a, b) => a.position - b.position)
       .map((item) => item.id);
 

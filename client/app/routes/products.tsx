@@ -76,7 +76,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   const search = url.searchParams.get("search") || "";
   const categoryId = url.searchParams.get("category");
 
-  const port = process.env.PORT || "5002";
+  const port = import.meta.env.PORT || "5002" || "5002";
   const base = `http://localhost:${port}`;
   const cookie = request.headers.get("cookie") ?? "";
   const fetchHeaders = { cookie };
@@ -133,7 +133,7 @@ function ProductsLoader() {
   );
 }
 
-export default function Component() {
+export function Component() {
   // Direct Server Data (No client-side fetch required for initial load)
   const {
     categories: serverCategories,

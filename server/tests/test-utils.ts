@@ -12,7 +12,7 @@ import { MemoryStorage } from "./memory-storage.js";
  * Test middleware to inject a user into the request based on a header
  * Use 'X-Test-User' header with a JSON string of the user object
  */
-export const testAuthMiddleware: express.RequestHandler = (req, _res, next) => {
+const testAuthMiddleware: express.RequestHandler = (req, _res, next) => {
   const testUserHeader = req.headers["x-test-user"];
   if (testUserHeader && typeof testUserHeader === "string") {
     try {
@@ -204,7 +204,7 @@ export function withAuthenticatedUser(user: SessionUser) {
 /**
  * Utility to create a test user in the database
  */
-export async function createTestUser(userData: Partial<UpsertUser> = {}): Promise<User> {
+async function createTestUser(userData: Partial<UpsertUser> = {}): Promise<User> {
   const storage = getStorage();
   const defaultUser: UpsertUser = {
     id: `test-user-${Math.random().toString(36).substring(7)}`,

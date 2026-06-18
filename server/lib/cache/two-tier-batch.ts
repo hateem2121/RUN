@@ -45,7 +45,7 @@ interface BenchmarkResult {
   improvement: number | null; // % improvement from old (DB) to new (cache)
 }
 
-export class TwoTierBatchCache {
+class TwoTierBatchCache {
   private static instance: TwoTierBatchCache;
   private metrics: CacheMetrics;
 

@@ -34,6 +34,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { IconSelector } from "@/components/admin/IconSelector";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,7 +48,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 interface StatisticItemProps {
@@ -138,7 +138,6 @@ function SortableStatisticItem({ statistic, onEdit, onDelete }: StatisticItemPro
 }
 
 export function AboutStatisticsTab() {
-  const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingStatistic, setEditingStatistic] = useState<AboutStatistic | null>(null);
   const [formData, setFormData] = useState({
@@ -173,18 +172,11 @@ export function AboutStatisticsTab() {
         queryKey: [ABOUT_API.STATISTICS],
       });
       getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
-      toast({
-        title: "Success",
-        description: "Statistic created successfully",
-      });
+      toast.success("Success", { description: "Statistic created successfully" });
       handleCloseDialog();
     },
     onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to create statistic",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: "Failed to create statistic" });
     },
   });
 
@@ -201,18 +193,11 @@ export function AboutStatisticsTab() {
         queryKey: [ABOUT_API.STATISTICS],
       });
       getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
-      toast({
-        title: "Success",
-        description: "Statistic updated successfully",
-      });
+      toast.success("Success", { description: "Statistic updated successfully" });
       handleCloseDialog();
     },
     onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update statistic",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: "Failed to update statistic" });
     },
   });
 
@@ -229,17 +214,10 @@ export function AboutStatisticsTab() {
         queryKey: [ABOUT_API.STATISTICS],
       });
       getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
-      toast({
-        title: "Success",
-        description: "Statistic deleted successfully",
-      });
+      toast.success("Success", { description: "Statistic deleted successfully" });
     },
     onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to delete statistic",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: "Failed to delete statistic" });
     },
   });
 

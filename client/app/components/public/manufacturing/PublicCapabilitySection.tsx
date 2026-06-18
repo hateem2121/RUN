@@ -128,13 +128,13 @@ export function PublicCapabilitySection({
           <span className="text-manufacturing-accent font-mono text-xs uppercase tracking-widest border border-manufacturing-accent/30 px-3 py-1 rounded-none font-bold">
             Core Competencies
           </span>
-          <h2 className="text-5xl font-neue-stance font-bold text-white uppercase mt-6 italic tracking-tighter skew-x-[-2deg]">
+          <h2 className="text-5xl font-neue-stance font-bold text-white uppercase mt-6 italic tracking-tighter skew-x-custom-misc-211">
             Capabilities
           </h2>
         </div>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 grid-rows-none lg:grid-rows-2 gap-6 min-h-[800px] lg:min-h-[600px]">
+        <div className="grid grid-cols-2 lg:grid-cols-4 grid-rows-none lg:grid-rows-2 gap-6 min-h-custom-space-194 lg:min-h-custom-space-195">
           {displayCapabilities.map((cap, idx) => {
             const Icon = iconMap[cap.icon || ""] || Factory;
             const isLarge = idx === 0;
@@ -184,7 +184,7 @@ export function PublicCapabilitySection({
 
                   {isVertical && (
                     <div className="h-24 w-full bg-manufacturing-bg/50 rounded-sm mt-4 relative overflow-hidden border border-manufacturing-accent/10">
-                      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--color-manufacturing-accent)_0%,_transparent_70%)]"></div>
+                      <div className="absolute inset-0 opacity-10 bg-custom-misc-212"></div>
                       <div className="absolute top-1/2 left-1/4 w-1.5 h-1.5 bg-manufacturing-accent rotate-45 animate-pulse"></div>
                       <div
                         className="absolute top-1/3 left-1/2 w-1.5 h-1.5 bg-manufacturing-accent rotate-45 animate-pulse"

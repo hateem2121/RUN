@@ -31,7 +31,7 @@ const unifiedCache = UnifiedCache.getInstance();
 // Cache TTL for homepage content - marketing content changes infrequently
 const HOMEPAGE_CACHE_TTL = 3600; // 1 hour (in seconds)
 
-export class HomepageRepository {
+class HomepageRepository {
   async getHomepageHero(): Promise<HomepageHero | undefined> {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getHomepageHero();

@@ -45,7 +45,7 @@ const getSectionColor = (sectionType: string): string => {
   return colors[sectionType] ?? "var(--color-primary)";
 };
 
-export function Card({
+function Card({
   i,
   total,
   title,

@@ -236,7 +236,7 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
                     onCheckedChange={(checked) =>
                       setEditingSlogan({ ...editingSlogan, isActive: checked })
                     }
-                    className="data-[state=checked]:bg-blue-500"
+                    className="data-custom-misc-41:bg-blue-500"
                   />
                   <div className="grid gap-1.5 leading-none">
                     <Label

@@ -3,13 +3,10 @@
  * All TypeScript interfaces, Zod schemas, and type definitions for media routes
  */
 
-import type { InsertMediaAsset, MediaAsset } from "@run-remix/shared";
-import { baseQueryParamsSchema } from "@run-remix/shared";
+import type { baseQueryParamsSchema, MediaAsset } from "@run-remix/shared";
 import type { z } from "zod";
 
 // Re-export shared types
-export type { MediaAsset, InsertMediaAsset };
-export { baseQueryParamsSchema };
 export type MediaQueryParams = z.infer<typeof baseQueryParamsSchema>;
 
 // ============================================================================
@@ -33,7 +30,7 @@ export interface UploadMetrics {
 }
 
 // Upload result interface
-export interface UploadResult {
+interface UploadResult {
   success: boolean;
   asset?: MediaAsset;
   error?: string | undefined;

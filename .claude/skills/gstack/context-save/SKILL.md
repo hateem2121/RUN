@@ -7,7 +7,7 @@ description: |
   so any future session can pick up without losing a beat.
   Use when asked to "save progress", "save state", "context save", or
   "save my work". Pair with /context-restore to resume later.
-  Formerly /checkpoint — renamed because Claude Code treats /checkpoint as a
+  Formerly /context-save — renamed because Claude Code treats /context-save as a
   native rewind alias in current environments, which was shadowing this skill.
   (gstack)
 allowed-tools:
@@ -480,7 +480,7 @@ eval "$(~/.claude/skills/gstack/bin/gstack-slug 2>/dev/null)"
 _PROJ="${GSTACK_HOME:-$HOME/.gstack}/projects/${SLUG:-unknown}"
 if [ -d "$_PROJ" ]; then
   echo "--- RECENT ARTIFACTS ---"
-  find "$_PROJ/ceo-plans" "$_PROJ/checkpoints" -type f -name "*.md" 2>/dev/null | xargs ls -t 2>/dev/null | head -3
+  find "$_PROJ/ceo-plans" "$_PROJ/context-saves" -type f -name "*.md" 2>/dev/null | xargs ls -t 2>/dev/null | head -3
   [ -f "$_PROJ/${_BRANCH}-reviews.jsonl" ] && echo "REVIEWS: $(wc -l < "$_PROJ/${_BRANCH}-reviews.jsonl" | tr -d ' ') entries"
   [ -f "$_PROJ/timeline.jsonl" ] && tail -5 "$_PROJ/timeline.jsonl"
   if [ -f "$_PROJ/timeline.jsonl" ]; then
@@ -489,7 +489,7 @@ if [ -d "$_PROJ" ]; then
     _RECENT_SKILLS=$(grep "\"branch\":\"${_BRANCH}\"" "$_PROJ/timeline.jsonl" 2>/dev/null | grep '"event":"completed"' | tail -3 | grep -o '"skill":"[^"]*"' | sed 's/"skill":"//;s/"//' | tr '\n' ',')
     [ -n "$_RECENT_SKILLS" ] && echo "RECENT_PATTERN: $_RECENT_SKILLS"
   fi
-  _LATEST_CP=$(find "$_PROJ/checkpoints" -name "*.md" -type f 2>/dev/null | xargs ls -t 2>/dev/null | head -1)
+  _LATEST_CP=$(find "$_PROJ/context-saves" -name "*.md" -type f 2>/dev/null | xargs ls -t 2>/dev/null | head -1)
   [ -n "$_LATEST_CP" ] && echo "LATEST_CHECKPOINT: $_LATEST_CP"
   echo "--- END ARTIFACTS ---"
 fi
@@ -797,7 +797,7 @@ allowlist: only `a-z 0-9 - .` survive.
 ```bash
 eval "$(~/.claude/skills/gstack/bin/gstack-slug 2>/dev/null)" && mkdir -p ~/.gstack/projects/$SLUG
 eval "$(~/.claude/skills/gstack/bin/gstack-paths)"
-CHECKPOINT_DIR="$GSTACK_STATE_ROOT/projects/$SLUG/checkpoints"
+CHECKPOINT_DIR="$GSTACK_STATE_ROOT/projects/$SLUG/context-saves"
 mkdir -p "$CHECKPOINT_DIR"
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 # Bash-side title sanitize. Pass the raw title as $1 when running this block.
@@ -884,7 +884,7 @@ Restore later with /context-restore.
 ```bash
 eval "$(~/.claude/skills/gstack/bin/gstack-slug 2>/dev/null)" && mkdir -p ~/.gstack/projects/$SLUG
 eval "$(~/.claude/skills/gstack/bin/gstack-paths)"
-CHECKPOINT_DIR="$GSTACK_STATE_ROOT/projects/$SLUG/checkpoints"
+CHECKPOINT_DIR="$GSTACK_STATE_ROOT/projects/$SLUG/context-saves"
 if [ -d "$CHECKPOINT_DIR" ]; then
   echo "CHECKPOINT_DIR=$CHECKPOINT_DIR"
   # Use find + sort instead of ls -1t: filename YYYYMMDD-HHMMSS prefix is the
@@ -947,5 +947,5 @@ If there are no saved contexts, tell the user: "No saved contexts yet. Run
 - **Infer, don't interrogate.** Use git state and conversation context to fill in
   the file. Only use AskUserQuestion if the title genuinely cannot be inferred.
 - **This is a gstack skill, not a Claude Code built-in.** When the user types
-  `/context-save`, invoke this skill via the Skill tool. The old `/checkpoint`
+  `/context-save`, invoke this skill via the Skill tool. The old `/context-save`
   name collided with Claude Code's native `/rewind` alias — the rename fixed that.

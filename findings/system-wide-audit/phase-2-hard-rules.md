@@ -1,0 +1,47 @@
+# Phase 2: Hard Rules Audit (H01–H35)
+
+## Overview
+This phase involved an automated `grep`-based scan across the monorepo to detect violations of the Hard Rules defined in `CLAUDE.md`, `AGENTS.md`, and `GEMINI.md`.
+
+## Summary of Findings
+
+| Rule | Description | Violation Count |
+|------|-------------|-----------------|
+| H01 | Port Law (5002 only) | 3 |
+| H02 | No forwardRef | 0 |
+| H03 | Named Exports in components/, Default in routes/ | 28 |
+| H04 | Form Actions Not onSubmit | 22 |
+| H05 | No Tailwind Config File | 0 |
+| H06 | @utility Not @layer utilities | 0 |
+| H07 | No Arbitrary Tailwind Values in Project Code | 403 |
+| H08 | No framer-motion | 1 |
+| H09 | No lenis | 1 |
+| H10 / H20 | No Direct three / @react-three/* Imports | 0 |
+| H11 | sonner Only for Toasts | 150 |
+| H12 | No try/catch in Express Route Handlers | 4 |
+| H13 | No next(err) in Route Handlers | 0 |
+| H14 | Zod v4 API — .nullish() Only | 0 |
+| H15 | Types from @run-remix/shared Only | 141 |
+| H16 | Zod Schemas in shared/ Only | 128 |
+| H17 | No bullmq / Job Queue Libraries | 57 |
+| H18 | ioredis Only — No @upstash/redis / connect-redis | 23 |
+| H19 | No @sentry/node | 11 |
+| H21 | Feature Branch Enforcement | 0 |
+| H22 | No mcp__claude-in-chrome__* Tool References | 24 |
+| H24 | Biome Only — No ESLint / Prettier Configs | 0 |
+| H25 | Playwright A11Y Selectors Only | 149 |
+| H26 | Accessible Labels on Interactive Elements | 176 |
+| H27 | verify:tech-integrity in CI | 1 |
+| H28 | Vite 8 Config Only — No esbuild / Rollup Patterns | 2 |
+| H29 | No baseUrl in tsconfig | 0 |
+| H30 | lucide-react Primary Icon Library | 2 |
+| H31 | neverthrow Result Types — No Raw throw in Services | 2 |
+| H32 | opossum Circuit Breakers on External Calls | 18 |
+| H33 | No New Individual Admin Route Files | 0 |
+| H34 | Dev Scripts Run from Root Only | 1 |
+| H35 | No /checkpoint References | 1358 |
+
+## Observations
+- The highest volume of violations is related to H35 (`/checkpoint` references) and H07 (Arbitrary Tailwind Values).
+- A significant number of architectural rule violations (H15, H16) indicate that schemas and types are not being exclusively imported from `@run-remix/shared`.
+- Some accessibility (H26) and testing (H25) rules show widespread non-compliance.

@@ -31,7 +31,7 @@ import {
  * Maps string icon names (e.g., from CMS/Database) to Lucide icon components.
  * Returns a fallback icon (Globe) if no match is found.
  */
-export const iconMap: Record<string, LucideIcon> = {
+const iconMap: Record<string, LucideIcon> = {
   // Services
   pentool: PenTool,
   "pen-tool": PenTool,

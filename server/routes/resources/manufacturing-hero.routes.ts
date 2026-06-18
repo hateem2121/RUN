@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { env } from "../../lib/env.js";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
@@ -15,7 +16,7 @@ const router = Router();
 
 // GET /api/manufacturing-hero
 router.get("/manufacturing-hero", async (_req, res) => {
-  if (process.env.NODE_ENV === "production") {
+  if (env.NODE_ENV === "production") {
     res.setHeader("Cache-Control", "public, max-age=1800, s-maxage=1800");
   } else {
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");

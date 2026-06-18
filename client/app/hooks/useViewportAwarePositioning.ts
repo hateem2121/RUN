@@ -43,7 +43,7 @@ interface ModalBounds {
  * Enhanced viewport-aware positioning hook for modal dialogs
  * Optimizes positioning calculations and handles cross-device scenarios
  */
-export function useViewportAwarePositioning() {
+function useViewportAwarePositioning() {
   const [viewport, setViewport] = useState<ViewportDimensions>({
     width: 1024,
     height: 768,

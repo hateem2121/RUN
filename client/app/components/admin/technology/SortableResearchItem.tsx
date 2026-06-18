@@ -42,14 +42,14 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
 
   const statusConfig = {
     Ongoing: {
-      color: "bg-[#00D4FF]",
+      color: "bg-custom-color-61",
       label: "Active Research",
-      badge: "bg-[#00D4FF]/10 text-[#00D4FF] border-[#00D4FF]/20",
+      badge: "bg-custom-color-62/10 text-custom-color-63 border-custom-color-64/20",
     },
     "In Progress": {
-      color: "bg-[#00D4FF]",
+      color: "bg-custom-color-65",
       label: "In Progress",
-      badge: "bg-[#00D4FF]/10 text-[#00D4FF] border-[#00D4FF]/20",
+      badge: "bg-custom-color-66/10 text-custom-color-67 border-custom-color-68/20",
     },
     Completed: {
       color: "bg-emerald-500",
@@ -76,14 +76,14 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
     <div
       ref={setNodeRef}
       style={style}
-      className="group relative flex items-center gap-6 overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:bg-white/[0.06] hover:border-[#00D4FF]/30 backdrop-blur-xl"
+      className="group relative flex items-center gap-6 overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 transition-all hover:bg-white/[0.06] hover:border-custom-color-69/30 backdrop-blur-xl"
     >
       {/* Status Accent Bar */}
       <div
         className={cn(
-          "h-16 w-1.5 shrink-0 rounded-full transition-all group-hover:shadow-[0_0_15px_rgba(0,212,255,0.4)]",
+          "h-16 w-1.5 shrink-0 rounded-full transition-all group-hover:shadow-custom-misc-93",
           statusConfig.color,
-          statusConfig.color.includes("00D4FF") && "group-hover:shadow-[#00D4FF]",
+          statusConfig.color.includes("00D4FF") && "group-hover:shadow-custom-color-70",
         )}
       />
 
@@ -101,7 +101,7 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
         </div>
 
         {research.researchArea && (
-          <p className="mb-2 text-xxs font-bold uppercase tracking-[0.15em] text-[#00D4FF]/70">
+          <p className="mb-2 text-xxs font-bold uppercase tracking-custom-misc-94 text-custom-color-71/70">
             Focus: {research.researchArea}
           </p>
         )}
@@ -128,7 +128,7 @@ export function SortableResearchItem({ research, onEdit, onDelete }: SortableRes
         <button
           type="button"
           onClick={() => onEdit(research)}
-          className="flex h-10 w-10 items-center justify-center rounded-lg text-admin-foreground/40 transition-all hover:bg-[#00D4FF]/10 hover:text-[#00D4FF]"
+          className="flex h-10 w-10 items-center justify-center rounded-lg text-admin-foreground/40 transition-all hover:bg-custom-color-72/10 hover:text-custom-color-73"
           title="Edit item"
           aria-label="Edit item"
         >

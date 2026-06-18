@@ -37,6 +37,8 @@ export const routeManifest: Record<string, string> = {
   "/admin/sustainability": "app/routes/admin.$module.tsx",
   "/admin/manufacturing": "app/routes/admin.$module.tsx",
   "/admin/technology": "app/routes/admin.$module.tsx",
+  "/admin/services": "app/routes/admin.$module.tsx",
+  "/admin/blog": "app/routes/admin.$module.tsx",
   "/admin/storage-optimization": "app/routes/admin.$module.tsx",
   "/admin/test-runner": "app/routes/admin.$module.tsx",
   "/admin/inquiries": "app/routes/admin.$module.tsx",

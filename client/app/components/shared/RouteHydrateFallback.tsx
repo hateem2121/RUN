@@ -5,7 +5,7 @@ import { Typography } from "@/components/ui/typography";
  */
 export function RouteHydrateFallback() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] p-6 text-center animate-in fade-in duration-700">
+    <div className="flex flex-col items-center justify-center min-h-custom-space-203 p-6 text-center animate-in fade-in duration-700">
       <div className="relative mb-8">
         {/* RUN Branded Loader */}
         <div className="h-16 w-16 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
@@ -15,7 +15,7 @@ export function RouteHydrateFallback() {
       </div>
 
       <Typography.H3 className="mb-2 tracking-tighter opacity-80">LOADING EXPERIENCE</Typography.H3>
-      <Typography.P className="text-muted-foreground text-xs uppercase tracking-[0.2em]">
+      <Typography.P className="text-muted-foreground text-xs uppercase tracking-custom-misc-238">
         Synchronizing assets...
       </Typography.P>
     </div>

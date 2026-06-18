@@ -23,13 +23,13 @@ import {
   Wind,
 } from "lucide-react";
 import { memo, useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAdminSustainabilityData } from "@/hooks/use-admin-sustainability-data";
 import { useAdminSustainabilityMutations } from "@/hooks/use-admin-sustainability-mutations";
-import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { CallToActionTabContent } from "./CallToActionTabContent";
 import { CertificationsTabContent } from "./CertificationsTabContent";
@@ -269,8 +269,8 @@ const SortableGoalItem = memo(function SortableGoalItem({
                 className={cn(
                   "h-full transition-all duration-1000",
                   progressPercentage >= 100
-                    ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
-                    : "bg-emerald-500/70 shadow-[0_0_8px_rgba(16,185,129,0.3)]",
+                    ? "bg-emerald-500 shadow-custom-misc-87"
+                    : "bg-emerald-500/70 shadow-custom-misc-88",
                 )}
                 style={{ width: `${Math.min(progressPercentage, 100)}%` }}
               />
@@ -308,8 +308,6 @@ const SortableGoalItem = memo(function SortableGoalItem({
 });
 
 export function UnifiedSustainabilityManagement() {
-  const { toast } = useToast();
-
   const getTabFromUrl = useCallback(() => {
     const searchParams = new URLSearchParams(window.location.search);
     return searchParams.get("tab") || "hero";
@@ -458,8 +456,7 @@ export function UnifiedSustainabilityManagement() {
     updateMutation.mutate(cleanedData, {
       onSuccess: () => {
         setHasUnsavedChanges(false);
-        toast({
-          title: "Configuration saved",
+        toast.success("Configuration saved", {
           description: "Sustainability settings have been successfully updated.",
         });
       },
@@ -600,7 +597,7 @@ export function UnifiedSustainabilityManagement() {
               <TabsTrigger
                 key={tab.id}
                 value={tab.id}
-                className="flex-1 py-3 text-xxs uppercase font-bold tracking-widest data-[state=active]:bg-emerald-600 data-[state=active]:text-white transition-all rounded-xl"
+                className="flex-1 py-3 text-xxs uppercase font-bold tracking-widest data-custom-misc-89:bg-emerald-600 data-custom-misc-90:text-white transition-all rounded-xl"
               >
                 {tab.label}
               </TabsTrigger>

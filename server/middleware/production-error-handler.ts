@@ -228,7 +228,7 @@ function logError(error: unknown, details: ErrorDetails) {
 }
 
 // Generate user-friendly error responses
-export function generateErrorResponse(error: unknown, details: ErrorDetails): ProblemDetails {
+function generateErrorResponse(error: unknown, details: ErrorDetails): ProblemDetails {
   // Get request ID from correlation context
   const requestId = correlationContext.getStore() || details.id;
   const isProd = config.app.environment === "production";

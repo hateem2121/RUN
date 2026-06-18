@@ -4,7 +4,7 @@ import { Outlet } from "react-router";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
-export default function Component() {
+export function Component() {
   const links = [
     {
       label: "Getting Started",

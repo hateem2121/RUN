@@ -40,9 +40,9 @@ export class PostgresCacheProvider {
   /**
    * Set value in Postgres cache
    */
-  async set(key: string, value: string, options: { ex: number }): Promise<void> {
+  async set(key: string, value: string, _exToken: "EX", ttlSeconds: number): Promise<void> {
     try {
-      const expiry = new Date(Date.now() + options.ex * 1000);
+      const expiry = new Date(Date.now() + ttlSeconds * 1000);
       const jsonValue = value.startsWith("gz:") ? value : JSON.parse(value);
 
       await db
@@ -115,17 +115,20 @@ export class PostgresCacheProvider {
    */
   async scan(
     _cursor: string,
-    options: { match: string; count: number },
+    _matchToken: "MATCH",
+    pattern: string,
+    _countToken: "COUNT",
+    count: number,
   ): Promise<[string, string[]]> {
     try {
       // Convert Redis-style glob (*) to SQL LIKE (%)
-      const sqlPattern = options.match.replace(/\*/g, "%");
+      const sqlPattern = pattern.replace(/\*/g, "%");
 
       const results = await db
         .select({ key: cacheEntries.key })
         .from(cacheEntries)
         .where(sql`key LIKE ${sqlPattern}`)
-        .limit(options.count);
+        .limit(count);
 
       return ["0", results.map((r: { key: string }) => r.key)];
     } catch (err) {

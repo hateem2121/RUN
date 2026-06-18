@@ -8,7 +8,7 @@
 import { Storage } from "@google-cloud/storage";
 import { logger, serializeError } from "../monitoring/logger.js";
 
-export class AppStorageService {
+class AppStorageService {
   private storage: Storage;
   private bucketName: string;
 

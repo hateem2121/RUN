@@ -1,3 +1,4 @@
+import { trace } from "@opentelemetry/api";
 import { err, ok, type Result } from "neverthrow";
 import type {
   InsertProduct,
@@ -6,17 +7,21 @@ import type {
   ProductDetailWithContext,
   ProductSummary,
 } from "../../shared/index.js";
+import { insertProductSchema } from "../../shared/index.js";
 import { retryDbOperation } from "../lib/db/db-retry.js";
 import { productRepository } from "../lib/db/repositories/index.js";
 import { type AppError, DatabaseError, NotFoundError } from "../lib/errors.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
+import { sanitizeHtml } from "../lib/sanitize-html.js";
 
 /**
  * PRODUCT SERVICE
  * Handles business logic for product catalog operations.
  * Enforces Thin Controller pattern and Result-based error handling.
  */
-export class ProductService {
+const tracer = trace.getTracer("run-remix-services");
+
+class ProductService {
   /**
    * Lists products with pagination and filtering.
    */
@@ -142,21 +147,28 @@ export class ProductService {
    * Fetches a single product by ID.
    */
   async getProductById(id: number): Promise<Result<ProductDetail, AppError>> {
-    try {
-      const product = await withCircuit(
-        `get-product-${id}`,
-        () => retryDbOperation(() => productRepository.getProduct(id)),
-        DB_CIRCUIT_OPTIONS,
-      );
+    return tracer.startActiveSpan(`ProductService.getProductById`, async (span) => {
+      try {
+        const product = await withCircuit(
+          `get-product-${id}`,
+          () => retryDbOperation(() => productRepository.getProduct(id)),
+          DB_CIRCUIT_OPTIONS,
+        );
 
-      if (!product) {
-        return err(new NotFoundError(`Product with ID ${id}`));
+        if (!product) {
+          span.recordException(new Error(`Product with ID ${id} not found`));
+          span.end();
+          return err(new NotFoundError(`Product with ID ${id}`));
+        }
+
+        span.end();
+        return ok(product);
+      } catch (error) {
+        span.recordException(error as Error);
+        span.end();
+        return err(new DatabaseError(`Failed to fetch product ${id}`, { cause: error }));
       }
-
-      return ok(product);
-    } catch (error) {
-      return err(new DatabaseError(`Failed to fetch product ${id}`, { cause: error }));
-    }
+    });
   }
 
   /**
@@ -210,7 +222,16 @@ export class ProductService {
     try {
       const product = await withCircuit(
         "create-product",
-        () => retryDbOperation(() => productRepository.createProduct(data)),
+        () =>
+          retryDbOperation(() =>
+            productRepository.createProduct(
+              (() => {
+                const parsed = insertProductSchema.parse(data);
+                if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+                return parsed as typeof data;
+              })(),
+            ),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
       return ok(product);
@@ -229,7 +250,17 @@ export class ProductService {
     try {
       const product = await withCircuit(
         `update-product-${id}`,
-        () => retryDbOperation(() => productRepository.updateProduct(id, data)),
+        () =>
+          retryDbOperation(() =>
+            productRepository.updateProduct(
+              id,
+              (() => {
+                const parsed = insertProductSchema.partial().parse(data);
+                if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+                return parsed as typeof data;
+              })(),
+            ),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 

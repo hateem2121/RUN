@@ -28,7 +28,7 @@ export function LivePreviewGrid({ children, className }: LivePreviewGridProps) {
         Using @container queries for widget-based responsiveness instead of viewport queries.
         Grid now responds to its container width, not the viewport.
       */}
-      <div className="grid auto-rows-[minmax(200px,auto)] @lg:grid-cols-3 @md:grid-cols-2 grid-cols-1 gap-4">
+      <div className="grid auto-rows-custom-misc-51 @lg:grid-cols-3 @md:grid-cols-2 grid-cols-1 gap-4">
         {children}
       </div>
     </div>

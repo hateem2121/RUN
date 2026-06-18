@@ -36,11 +36,11 @@ export interface TransformedProduct {
   media: Array<{ id: number; type: "image" | "video"; url?: string }>;
 }
 
-export type MinimalCategory = Pick<Category, "id" | "name" | "slug"> & {
+type MinimalCategory = Pick<Category, "id" | "name" | "slug"> & {
   parentId?: number | null | undefined;
 };
 
-export interface TransformContext {
+interface TransformContext {
   categories: MinimalCategory[];
   fabrics: Fabric[];
   certificates: Certificate[];
@@ -51,10 +51,7 @@ export interface TransformContext {
 /**
  * Transform database product to component format
  */
-export function transformProduct(
-  product: ProductSummary,
-  context: TransformContext,
-): TransformedProduct {
+function transformProduct(product: ProductSummary, context: TransformContext): TransformedProduct {
   // Find category
   const category = context.categories.find((c) => c.id === product.categoryId);
   const categoryName = category?.name || "Uncategorized";
@@ -337,7 +334,7 @@ export function buildProductUrl(product: Product, categories: MinimalCategory[])
  * Build product media items array with proper priority ordering
  * Priority: Primary Image > Other Images > Primary Video > Other Videos > 3D Model
  */
-export function buildProductMediaItems(product: ProductSummary | Product): ProductMediaItem[] {
+function buildProductMediaItems(product: ProductSummary | Product): ProductMediaItem[] {
   const mediaItems: ProductMediaItem[] = [];
 
   // 1. Add primary image first (highest priority)

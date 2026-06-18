@@ -22,6 +22,11 @@ const emptyBodySchema = z
   })
   .strict();
 
+const cleanupTriggerSchema = z.object({
+  autoClean: z.boolean().optional(),
+  timeout: z.number().optional(),
+});
+
 const retryJobSchema = z.object({
   queue: z.enum(["email", "cache"]),
   id: z.string(),
@@ -108,16 +113,22 @@ router.post(
  * POST /api/admin/system/cleanup/trigger
  * Trigger storage cleanup
  */
-router.post("/cleanup/trigger", authService.requireAdmin, criticalTier, async (req, res) => {
-  const { autoClean, timeout } = req.body;
-  const auditContext = getAuditContext(req);
-  const result = await adminService.triggerCleanup(auditContext, autoClean === true, timeout);
+router.post(
+  "/cleanup/trigger",
+  authService.requireAdmin,
+  criticalTier,
+  validateRequest({ body: cleanupTriggerSchema }),
+  async (req, res) => {
+    const { autoClean, timeout } = req.body;
+    const auditContext = getAuditContext(req);
+    const result = await adminService.triggerCleanup(auditContext, autoClean === true, timeout);
 
-  return result.match(
-    (data) => res.json({ success: true, report: data }),
-    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
-  );
-});
+    return result.match(
+      (data) => res.json({ success: true, report: data }),
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+    );
+  },
+);
 
 /**
  * GET /api/admin/system/audit-config

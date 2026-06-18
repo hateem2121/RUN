@@ -14,7 +14,7 @@ const sizeClasses: Record<IconSize, string> = {
  * Consolidated icon mapper for metrics, initiatives, and goals
  */
 export function getSustainabilityIcon(iconName: string | null, size: IconSize = "md"): JSX.Element {
-  const className = `${sizeClasses[size]} text-[color:var(--s-primary)]`;
+  const className = `${sizeClasses[size]} text-custom-misc-471`;
 
   switch (iconName) {
     case "Droplets":

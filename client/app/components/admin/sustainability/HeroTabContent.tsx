@@ -86,7 +86,7 @@ export function HeroTabContent({
                     subheadline: e.target.value,
                   })
                 }
-                className="bg-white/5 border-white/10 text-white rounded-xl min-h-[120px] focus:ring-emerald-500/50 placeholder:text-white/20 resize-none"
+                className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-84 focus:ring-emerald-500/50 placeholder:text-white/20 resize-none"
                 placeholder="Articulate the sustaining vision behind the mission..."
                 rows={4}
               />
@@ -173,7 +173,7 @@ export function HeroTabContent({
                   Mobile Viewport Simulation
                 </span>
               </div>
-              <div className="aspect-[9/16] max-w-[300px] mx-auto rounded-huge border-[8px] border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5">
+              <div className="aspect-custom-misc-80 max-w-custom-space-85 mx-auto rounded-huge border-custom-space-86 border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5">
                 <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 z-10" />
                 <div className="absolute inset-0 z-0 bg-emerald-900/20 animate-pulse" />
                 <div className="absolute bottom-10 left-6 right-6 z-20 space-y-4">

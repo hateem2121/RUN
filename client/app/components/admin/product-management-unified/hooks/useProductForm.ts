@@ -15,18 +15,12 @@ function debounce<TArgs extends unknown[]>(
 }
 
 // Section keys matching the 6 form sections
-export type SectionKey =
-  | "basic"
-  | "categorization"
-  | "media"
-  | "specifications"
-  | "advanced"
-  | "seo";
+type SectionKey = "basic" | "categorization" | "media" | "specifications" | "advanced" | "seo";
 
 // Full state interface — aligned with existing modal field names
 // Uses the same field names and types as the old shared/hooks version
 // to maintain backward compatibility with all section components
-export interface ProductFormState {
+interface ProductFormState {
   // Basic Information
   name: string;
   sku: string;

@@ -90,11 +90,11 @@ function RoadmapItem({
       <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-white/10 -translate-x-1/2 group-last:bottom-auto group-last:h-full" />
 
       {/* Left-side visually (Year for even, Content for odd) */}
-      <div className={cn("md:w-[45%] md:text-right", !isEven && "md:order-last")}>
+      <div className={cn("md:w-custom-space-228 md:text-right", !isEven && "md:order-last")}>
         <span
           className={cn(
             "text-5xl font-bold font-neue-stance",
-            isDone ? "text-[color:var(--s-primary)] opacity-40" : "text-white opacity-20",
+            isDone ? "text-custom-misc-287 opacity-40" : "text-white opacity-20",
           )}
         >
           {goal.targetYear || `${2025 + index * 3}`}
@@ -102,18 +102,18 @@ function RoadmapItem({
       </div>
 
       {/* Timeline Node - center */}
-      <div className="absolute left-[-9px] md:left-1/2 md:-translate-x-1/2 z-10 mt-2 md:mt-0">
+      <div className="absolute left-custom-space-229 md:left-1/2 md:-translate-x-1/2 z-10 mt-2 md:mt-0">
         {isDone ? (
-          <div className="w-4 h-4 rounded-full bg-[color:var(--s-primary)] shadow-[0_0_15px_rgba(0,199,123,0.6)]" />
+          <div className="w-4 h-4 rounded-full bg-custom-misc-288 shadow-custom-misc-289" />
         ) : isInProgress ? (
-          <div className="w-4 h-4 rounded-full border-2 border-[color:var(--s-primary)] bg-[color:var(--s-bg-card)]" />
+          <div className="w-4 h-4 rounded-full border-2 border-custom-misc-290 bg-custom-misc-291" />
         ) : (
-          <div className="w-4 h-4 rounded-full border-2 border-gray-600 bg-[color:var(--s-bg-card)]" />
+          <div className="w-4 h-4 rounded-full border-2 border-gray-600 bg-custom-misc-292" />
         )}
       </div>
 
       {/* Right-side visually (Content for even, Year for odd) */}
-      <div className={cn("pl-8 md:pl-0 md:w-[45%]", !isEven && "md:text-right")}>
+      <div className={cn("pl-8 md:pl-0 md:w-custom-space-230", !isEven && "md:text-right")}>
         <h3 className="text-xl font-bold text-white mb-2">{goal.title}</h3>
         {goal.description && <p className="text-sm mb-3 text-white/60">{goal.description}</p>}
 
@@ -127,11 +127,7 @@ function RoadmapItem({
             ref={barRef}
             className={cn(
               "h-full rounded-full w-0",
-              isDone
-                ? "bg-[color:var(--s-primary)]"
-                : isInProgress
-                  ? "bg-[color:var(--s-primary)]"
-                  : "bg-gray-600",
+              isDone ? "bg-custom-misc-293" : isInProgress ? "bg-custom-misc-294" : "bg-gray-600",
             )}
           />
         </div>
@@ -139,11 +135,7 @@ function RoadmapItem({
         <span
           className={cn(
             "text-xs mt-1 block font-mono",
-            isDone
-              ? "text-[color:var(--s-primary)]"
-              : isInProgress
-                ? "text-white/60"
-                : "text-gray-500",
+            isDone ? "text-custom-misc-295" : isInProgress ? "text-white/60" : "text-gray-500",
           )}
         >
           {isDone ? (
@@ -178,10 +170,10 @@ export function GoalsSection({
   return (
     <section
       ref={containerRef}
-      className="relative py-24 px-6 lg:px-10 overflow-hidden bg-[color:var(--s-bg)] text-white border-t border-[color:var(--s-border-card)]"
+      className="relative py-24 px-6 lg:px-10 overflow-hidden bg-custom-misc-296 text-white border-t border-custom-misc-297"
     >
       {/* Right-side fade accent */}
-      <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[color:var(--s-primary)]/8 to-transparent pointer-events-none" />
+      <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-custom-misc-298/8 to-transparent pointer-events-none" />
 
       <div className="container mx-auto max-w-4xl relative z-10">
         <h2 className="mb-4 text-center text-3xl md:text-4xl font-bold font-neue-stance text-white">

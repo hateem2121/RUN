@@ -2,6 +2,7 @@ import type { Product } from "@shared/index";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Archive, CheckSquare, Download, Edit3, Square, Star, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { DeleteConfirmationDialog } from "@/components/admin/shared";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
 
 interface ProductBulkOperationsProps {
   products: Product[];
@@ -32,7 +32,6 @@ export function ProductBulkOperations({
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [confirmAction, setConfirmAction] = useState<string>("");
 
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Inline helper to eliminate duplicate cache invalidation logic
@@ -104,8 +103,7 @@ export function ProductBulkOperations({
     onSuccess: (_results, variables) => {
       invalidateProductCaches();
 
-      toast({
-        title: "Success",
+      toast.success("Success", {
         description: `Bulk ${variables.action} completed for ${variables.productIds.length} products`,
       });
       onSelectionChange([]);
@@ -115,11 +113,7 @@ export function ProductBulkOperations({
     onError: (error: Error | unknown, variables) => {
       const errorMessage =
         error instanceof Error ? error.message : `Failed to perform bulk ${variables.action}`;
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      toast.error("Error", { description: errorMessage });
     },
     onSettled: () => {
       setIsLoading(false);
@@ -212,8 +206,7 @@ export function ProductBulkOperations({
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    toast({
-      title: "Export Complete",
+    toast.success("Export Complete", {
       description: `Exported ${selectedProducts.length} products`,
     });
   };

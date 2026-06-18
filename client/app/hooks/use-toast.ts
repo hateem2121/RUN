@@ -13,7 +13,7 @@ import { toast as sonnerToast } from "sonner";
  * - Consistent styling via sonner
  */
 
-export interface ToastProps {
+interface ToastProps {
   id?: string | number;
   title?: React.ReactNode;
   description?: React.ReactNode;

@@ -73,7 +73,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   };
 }
 
-export default function Component({ loaderData }: { loaderData: LoaderData }) {
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   const { homepageData } = loaderData;
   const [preloaderFinished, setPreloaderFinished] = useState(false);
   const isMobile = useIsMobile();

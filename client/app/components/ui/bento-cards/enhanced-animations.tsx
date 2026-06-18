@@ -113,7 +113,7 @@ export function AnimatedCardWrapper({
   return (
     <div
       ref={ref}
-      className={`${className}${enableHover ? " hover:scale-[1.02] hover:-translate-y-0.5" : ""} transition-transform duration-200 ease-out active:scale-[0.98]`}
+      className={`${className}${enableHover ? " hover:scale-custom-misc-361 hover:-translate-y-0.5" : ""} transition-transform duration-200 ease-out active:scale-custom-misc-362`}
       style={{ willChange: "transform, opacity" }}
     >
       {children}
@@ -122,13 +122,7 @@ export function AnimatedCardWrapper({
 }
 
 // Smooth loading state animation
-export const LoadingSpinner = ({
-  size = 24,
-  className = "",
-}: {
-  size?: number;
-  className?: string;
-}) => {
+export const LoadingSpinner = ({ size = 24, className = "" }: { size?: number; className?: string }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useGSAP(

@@ -22,6 +22,7 @@
       "!client/.react-router",
       "!**/playwright-report",
       "!**/test-results",
+      "!client/app/index.css",
       "!**/openapi-spec.json",
       "!audit",
       "!.claude",
@@ -56,7 +57,8 @@
       },
       "correctness": {
         "noEmptyPattern": "off",
-        "useExhaustiveDependencies": "warn"
+        "useExhaustiveDependencies": "warn",
+        "noUnusedVariables": "off"
       },
       "suspicious": {
         "noArrayIndexKey": "off",

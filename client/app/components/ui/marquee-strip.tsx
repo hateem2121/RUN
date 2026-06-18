@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { marqueeAnimation } from "@/lib/gsap-animations";
 import { cn } from "@/lib/utils";
 
-export interface MarqueeStripProps {
+interface MarqueeStripProps {
   text: string;
   speed?: number;
   accentColor?: string;

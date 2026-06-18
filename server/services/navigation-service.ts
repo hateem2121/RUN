@@ -60,7 +60,7 @@ export const NavigationService = {
             ),
           );
 
-          if (result.isErr()) throw result.error;
+          if (result.isErr()) return Promise.reject(result.error);
           return normalizeItems(result.value);
         },
         {

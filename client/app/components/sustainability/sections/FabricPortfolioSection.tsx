@@ -25,9 +25,7 @@ function SustainabilityScore({ score }: { score: number }) {
           key={i}
           className={cn(
             "h-3.5 w-3.5 transition-colors",
-            i <= score
-              ? "text-[color:var(--s-primary)] fill-[color:var(--s-primary)]"
-              : "text-white/20",
+            i <= score ? "text-custom-misc-255 fill-custom-misc-256" : "text-white/20",
           )}
         />
       ))}
@@ -56,10 +54,10 @@ function FabricCard({
       : undefined);
 
   return (
-    <div className="fabric-card group snap-center shrink-0 w-[340px] h-[480px] perspective-1000">
+    <div className="fabric-card group snap-center shrink-0 w-custom-space-221 h-custom-space-222 perspective-1000">
       <div className="relative w-full h-full cursor-pointer card-inner">
         {/* ── Card Front ── */}
-        <div className="card-front rounded-[2rem] overflow-hidden shadow-xl border border-[color:var(--s-border-card)] bg-[color:var(--s-bg-card)]">
+        <div className="card-front rounded-custom-space-223 overflow-hidden shadow-xl border border-custom-misc-257 bg-custom-misc-258">
           <div className="absolute inset-0">
             {imageUrl ? (
               <img
@@ -69,8 +67,8 @@ function FabricCard({
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-[color:var(--s-primary)]/10 to-[color:var(--s-primary)]/5 flex items-center justify-center">
-                <Leaf className="h-16 w-16 text-[color:var(--s-primary)]/30" />
+              <div className="w-full h-full bg-gradient-to-br from-custom-misc-259/10 to-custom-misc-260/5 flex items-center justify-center">
+                <Leaf className="h-16 w-16 text-custom-misc-261/30" />
               </div>
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
@@ -79,27 +77,27 @@ function FabricCard({
           {/* Badge */}
           {fabric.fabricType && (
             <div className="absolute top-4 right-4 z-10">
-              <span className="bg-[color:var(--s-primary)]/90 text-black text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm shadow-lg">
+              <span className="bg-custom-misc-262/90 text-black text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm shadow-lg">
                 {fabric.fabricType.toUpperCase()}
               </span>
             </div>
           )}
 
           {/* Bottom content */}
-          <div className="absolute bottom-0 left-0 w-full p-8 backdrop-blur-[2px]">
+          <div className="absolute bottom-0 left-0 w-full p-8 backdrop-blur-custom-space-224">
             <div className="flex flex-col gap-1 mb-4">
               <h3 className="text-3xl font-bold text-white leading-tight drop-shadow-lg">
                 {fabric.name}
               </h3>
               {fabric.properties?.composition && (
-                <p className="text-[color:var(--s-primary)] font-medium text-sm tracking-wide opacity-90 drop-shadow-md">
+                <p className="text-custom-misc-263 font-medium text-sm tracking-wide opacity-90 drop-shadow-md">
                   {fabric.properties.composition}
                 </p>
               )}
             </div>
             <div className="flex items-center justify-between border-t border-white/20 pt-4">
               <SustainabilityScore score={sustainabilityScore} />
-              <span className="text-[10px] uppercase tracking-widest text-gray-300 flex items-center gap-1">
+              <span className="text-custom-space-225 uppercase tracking-widest text-gray-300 flex items-center gap-1">
                 Flip for Specs
                 <RotateCw className="h-3 w-3 text-gray-400" />
               </span>
@@ -108,51 +106,49 @@ function FabricCard({
         </div>
 
         {/* ── Card Back (Technical specs) ── */}
-        <div className="card-back rounded-[2rem] p-8 flex flex-col justify-between border border-[color:var(--s-primary)]/50 bg-[color:var(--s-bg-card)] shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+        <div className="card-back rounded-custom-space-226 p-8 flex flex-col justify-between border border-custom-misc-264/50 bg-custom-misc-265 shadow-custom-misc-266">
           <div>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-white">Technical Specs</h3>
-              <Leaf className="h-5 w-5 text-[color:var(--s-primary)]" />
+              <Leaf className="h-5 w-5 text-custom-misc-267" />
             </div>
 
             <div className="space-y-4">
               {fabric.fabricType && (
                 <div className="flex justify-between border-b border-white/10 pb-2">
-                  <span className="text-sm text-[color:var(--s-text-muted)]">Type</span>
-                  <span className="text-sm text-[color:var(--s-text-head)] font-mono">
+                  <span className="text-sm text-custom-misc-268">Type</span>
+                  <span className="text-sm text-custom-misc-269 font-mono">
                     {fabric.fabricType}
                   </span>
                 </div>
               )}
               {fabric.weight && (
                 <div className="flex justify-between border-b border-white/10 pb-2">
-                  <span className="text-sm text-[color:var(--s-text-muted)]">Weight</span>
-                  <span className="text-sm text-[color:var(--s-text-head)] font-mono">
-                    {fabric.weight}
-                  </span>
+                  <span className="text-sm text-custom-misc-270">Weight</span>
+                  <span className="text-sm text-custom-misc-271 font-mono">{fabric.weight}</span>
                 </div>
               )}
               {fabric.certifications &&
                 Array.isArray(fabric.certifications) &&
                 fabric.certifications.length > 0 && (
                   <div className="flex justify-between border-b border-white/10 pb-2">
-                    <span className="text-sm text-[color:var(--s-text-muted)]">Certification</span>
-                    <span className="text-sm text-[color:var(--s-primary)] font-mono">
+                    <span className="text-sm text-custom-misc-272">Certification</span>
+                    <span className="text-sm text-custom-misc-273 font-mono">
                       {(fabric.certifications as string[]).slice(0, 2).join(", ")}
                     </span>
                   </div>
                 )}
               {fabric.keyApplications && fabric.keyApplications.length > 0 && (
                 <div className="flex justify-between border-b border-white/10 pb-2">
-                  <span className="text-sm text-[color:var(--s-text-muted)]">Applications</span>
-                  <span className="text-sm text-[color:var(--s-text-head)] font-mono text-right max-w-[140px]">
+                  <span className="text-sm text-custom-misc-274">Applications</span>
+                  <span className="text-sm text-custom-misc-275 font-mono text-right max-w-custom-space-227">
                     {(fabric.keyApplications as string[]).slice(0, 2).join(", ")}
                   </span>
                 </div>
               )}
               {fabric.description && (
-                <div className="p-4 bg-white/5 rounded-xl border border-[color:var(--s-border-card)] mt-4">
-                  <p className="text-xs text-[color:var(--s-text-muted)] italic leading-relaxed line-clamp-3">
+                <div className="p-4 bg-white/5 rounded-xl border border-custom-misc-276 mt-4">
+                  <p className="text-xs text-custom-misc-277 italic leading-relaxed line-clamp-3">
                     "{fabric.description}"
                   </p>
                 </div>
@@ -162,7 +158,7 @@ function FabricCard({
           <button
             aria-label="Action button"
             type="button"
-            className="w-full py-3 rounded-xl bg-[color:var(--s-primary)] text-black font-bold text-sm hover:bg-white transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-xl bg-custom-misc-278 text-black font-bold text-sm hover:bg-white transition-colors flex items-center justify-center gap-2"
           >
             Request Swatch <span className="material-symbols-outlined text-lg">arrow_forward</span>
           </button>
@@ -192,8 +188,8 @@ function FilterBtn({
       className={cn(
         "px-5 py-2 text-sm font-medium transition-all duration-300",
         isActive
-          ? "bg-[color:var(--s-primary)] text-black font-bold shadow-[0_0_15px_rgba(0,199,123,0.3)] border-transparent"
-          : "bg-[color:var(--s-bg-card)] text-[color:var(--s-text-muted)] hover:bg-[color:var(--s-bg-card-hover)] hover:text-[color:var(--s-text-head)] border border-[color:var(--s-border-card)]",
+          ? "bg-custom-misc-279 text-black font-bold shadow-custom-misc-280 border-transparent"
+          : "bg-custom-misc-281 text-custom-misc-282 hover:bg-custom-misc-283 hover:text-custom-misc-284 border border-custom-misc-285",
       )}
       style={{ borderRadius: isAlt ? "0.5rem 2rem 0.5rem 2rem" : "2rem 0.5rem 2rem 0.5rem" }}
     >
@@ -264,9 +260,7 @@ export function FabricPortfolioSection({
   if (sustainableFabrics.length === 0) {
     return (
       <div className="py-8 text-center">
-        <p className="text-[color:var(--s-text-muted)]">
-          Sustainable fabric portfolio coming soon...
-        </p>
+        <p className="text-custom-misc-286">Sustainable fabric portfolio coming soon...</p>
       </div>
     );
   }

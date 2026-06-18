@@ -10,7 +10,7 @@ import { populationService } from "../../services/population.service.js";
 export function registerAPIBasedPopulationRoutes(app: Express): void {
   app.post("/api/api-based/populate-all", authService.requireAdmin, async (_req, res) => {
     // Defense-in-depth: Handlers MUST NOT run in production
-    if (process.env.NODE_ENV === "production") {
+    if (env.NODE_ENV === "production") {
       return res.status(403).json({ error: "Operation not allowed in production" });
     }
 

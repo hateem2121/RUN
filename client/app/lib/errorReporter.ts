@@ -92,7 +92,7 @@ export async function reportClientError(error: ClientError): Promise<void> {
 /**
  * Process queued errors - call this on page load and when coming back online
  */
-export async function processErrorQueue(): Promise<void> {
+async function processErrorQueue(): Promise<void> {
   const queue = getErrorQueue();
 
   if (queue.length === 0) {

@@ -60,7 +60,7 @@ export function AdminPageHeader({
             aria-label="Action button"
             type="button"
             onClick={onAction}
-            className="flex items-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition-all hover:bg-blue-600 hover:shadow-blue-500/40 active:scale-[0.98]"
+            className="flex items-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition-all hover:bg-blue-600 hover:shadow-blue-500/40 active:scale-custom-misc-66"
           >
             <ActionIcon className="h-4 w-4" />
             {actionLabel}

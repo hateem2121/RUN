@@ -122,7 +122,7 @@ export const ExpandableCard = memo(function ExpandableCard({
           className={cn(
             "relative h-full w-full cursor-pointer overflow-hidden rounded-2xl text-left",
             "border border-luxury-light",
-            "shadow-luxury-lg transition-all duration-300 hover:shadow-luxury-xl hover:scale-[1.02]",
+            "shadow-luxury-lg transition-all duration-300 hover:shadow-luxury-xl hover:scale-custom-misc-363",
             "flex flex-col",
             "contain-layout",
           )}
@@ -138,7 +138,7 @@ export const ExpandableCard = memo(function ExpandableCard({
           {mediaUrl && !hasError && (
             <div
               ref={bgImageRef}
-              className="absolute inset-0 transition-transform duration-700 hover:scale-[1.15]"
+              className="absolute inset-0 transition-transform duration-700 hover:scale-custom-misc-364"
             >
               {isMediaLoading && (
                 <div className="center-flex absolute inset-0 bg-linear-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">

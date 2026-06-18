@@ -14,7 +14,7 @@ const ScrollArea = ({
     className={cn("relative overflow-hidden", className)}
     {...props}
   >
-    <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">
+    <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-custom-misc-422">
       {children}
     </ScrollAreaPrimitive.Viewport>
     <ScrollBar />
@@ -45,4 +45,4 @@ const ScrollBar = ({
 );
 ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName;
 
-export { ScrollArea, ScrollBar };
+export { ScrollArea };

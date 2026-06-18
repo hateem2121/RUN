@@ -105,7 +105,7 @@ export function CertificationsTabContent({
                     </div>
                     {isSelected && (
                       <div className="size-6 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/40 animate-in zoom-in duration-300">
-                        <Check className="h-3.5 w-3.5 stroke-[3]" />
+                        <Check className="h-3.5 w-3.5 stroke-custom-misc-75" />
                       </div>
                     )}
                   </div>
@@ -125,7 +125,7 @@ export function CertificationsTabContent({
                           ? new Date(certificate.issueDate).getFullYear()
                           : "N/A"}
                       </span>
-                      <span className="size-1 rounded-full bg-[#68869A]/30" />
+                      <span className="size-1 rounded-full bg-custom-color-52/30" />
                       <span className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                         Valid until{" "}
                         {certificate.expiryDate
@@ -150,7 +150,7 @@ export function CertificationsTabContent({
               <Award className="h-8 w-8 text-admin-muted/40" />
             </div>
             <h3 className="text-white font-bold mb-1">No Compliance Records Found</h3>
-            <p className="text-admin-muted text-sm max-w-[280px]">
+            <p className="text-admin-muted text-sm max-w-custom-space-70">
               Validation certificates must be initialised in the central Registry first.
             </p>
           </div>

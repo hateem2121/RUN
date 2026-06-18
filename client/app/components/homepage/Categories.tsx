@@ -24,15 +24,16 @@ const CategoryMarqueeItem: React.FC<{
       className={cn(
         "group relative px-8 py-4 transition-all duration-500 ease-out md:px-16",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-lime/50 rounded-xl",
-        isBlurred ? "opacity-20 blur-[2px]" : "blur-0 opacity-100",
+        isBlurred ? "opacity-20 blur-custom-space-132" : "blur-0 opacity-100",
       )}
       onMouseEnter={() => onMouseEnter(uniqueIndex, cat.image)}
       onMouseLeave={onMouseLeave}
       onFocus={() => onMouseEnter(uniqueIndex, cat.image)}
       onBlur={onMouseLeave}
     >
-      <h2 className="stroke-text text-[10vw] font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-foreground group-focus:text-foreground md:text-[10vw]">
-        {cat.name} <span className="text-brand-lime inline-block align-top text-[2vw]">●</span>
+      <h2 className="stroke-text text-custom-space-133 font-bold tracking-tighter text-transparent uppercase transition-colors duration-300 group-hover:text-foreground group-focus:text-foreground md:text-custom-space-134">
+        {cat.name}{" "}
+        <span className="text-brand-lime inline-block align-top text-custom-space-135">●</span>
       </h2>
     </li>
   );

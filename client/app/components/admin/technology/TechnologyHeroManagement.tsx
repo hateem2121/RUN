@@ -11,6 +11,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,7 +19,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 
@@ -55,7 +55,6 @@ interface TechnologyHeroManagementProps {
 export function TechnologyHeroManagement({
   isLoading: externalLoading,
 }: TechnologyHeroManagementProps) {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // State
@@ -90,8 +89,7 @@ export function TechnologyHeroManagement({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/technology-hero"] });
       setHasChanges(false);
-      toast({
-        title: "Configuration Synchronized",
+      toast.success("Configuration Synchronized", {
         description: "Technology hero protocols have been updated across the ecosystem.",
       });
     },
@@ -238,7 +236,7 @@ export function TechnologyHeroManagement({
                   id="description"
                   value={heroData.description}
                   onChange={(e) => handleInputChange({ description: e.target.value })}
-                  className="bg-white/5 border-white/10 text-white rounded-xl min-h-[120px] focus:ring-cyan-500/50 placeholder:text-white/20 resize-none"
+                  className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-113 focus:ring-cyan-500/50 placeholder:text-white/20 resize-none"
                   placeholder="Detail the technological impact and mission parameters..."
                   rows={4}
                 />
@@ -356,7 +354,7 @@ export function TechnologyHeroManagement({
                   <div
                     className={cn(
                       "size-2 rounded-full",
-                      heroData.isActive ? "bg-cyan-500 animate-pulse" : "bg-[#68869A]",
+                      heroData.isActive ? "bg-cyan-500 animate-pulse" : "bg-custom-color-160",
                     )}
                   />
                   <Label
@@ -370,7 +368,7 @@ export function TechnologyHeroManagement({
                   id="isActive"
                   checked={heroData.isActive}
                   onCheckedChange={(checked) => handleInputChange({ isActive: checked })}
-                  className="data-[state=checked]:bg-cyan-600"
+                  className="data-custom-misc-121:bg-cyan-600"
                 />
               </div>
             </div>
@@ -383,7 +381,7 @@ export function TechnologyHeroManagement({
                     Mobile Viewport Simulation
                   </span>
                 </div>
-                <div className="aspect-[9/16] max-w-[300px] mx-auto rounded-huge border-[8px] border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5">
+                <div className="aspect-custom-misc-122 max-w-custom-space-114 mx-auto rounded-huge border-custom-space-115 border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5">
                   <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 z-10" />
                   <div className="absolute inset-0 z-0 bg-cyan-900/20 animate-pulse" />
                   {selectedBackgroundMedia?.type === "image" && (

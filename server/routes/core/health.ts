@@ -1,5 +1,6 @@
 import os from "node:os";
 import { type Request, type Response, Router } from "express";
+import { env } from "../../lib/env.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { jobMetricsService } from "../../services/job-metrics.service.js";
 import { systemService } from "../../services/system.service.js";
@@ -50,8 +51,8 @@ router.get("/ready", async (_req: Request, res: Response) => {
 });
 
 router.get("/deep", async (_req: Request, res: Response) => {
-  const memoryLimit = process.env.HEALTH_CHECK_MEMORY_LIMIT
-    ? Number.parseInt(process.env.HEALTH_CHECK_MEMORY_LIMIT, 10)
+  const memoryLimit = env.HEALTH_CHECK_MEMORY_LIMIT
+    ? env.HEALTH_CHECK_MEMORY_LIMIT
     : 512 * 1024 * 1024; // 512MB default
 
   const health: { status: string; timestamp: string; services: HealthServices } = {

@@ -251,7 +251,7 @@ export function BlogManagement() {
                       key={post.id}
                       className="group hover:bg-white/[0.03] transition-colors"
                     >
-                      <TableCell className="font-medium max-w-[300px] truncate">
+                      <TableCell className="font-medium max-w-custom-space-7 truncate">
                         {post.title}
                       </TableCell>
                       <TableCell>
@@ -308,7 +308,7 @@ export function BlogManagement() {
       </Card>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-custom-space-8 overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingPost ? "Edit Blog Post" : "Create New Blog Post"}</DialogTitle>
           </DialogHeader>

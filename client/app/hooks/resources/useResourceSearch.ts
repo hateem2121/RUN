@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { getPropertiesArray } from "@/lib/fiber-utils";
 
-export interface SearchResult {
+interface SearchResult {
   id: number | string;
   type: "certificate" | "accessory" | "sizechart" | "fabric" | "fiber";
   title: string;

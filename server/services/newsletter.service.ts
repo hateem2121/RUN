@@ -7,7 +7,7 @@ import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-break
 /**
  * Service for managing newsletter subscriptions
  */
-export class NewsletterService {
+class NewsletterService {
   /**
    * Subscribes an email to the newsletter
    */

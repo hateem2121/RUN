@@ -2,13 +2,13 @@ import type { ManufacturingHero, MediaAsset } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { Image as ImageIcon, Layout, Play, Save } from "lucide-react";
 import { useActionState, useEffect, useOptimistic, useState } from "react";
+import { toast } from "sonner";
 import { MediaPickerModal } from "@/components/admin/shared/MediaPickerModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { useToast } from "@/hooks/use-toast";
 import { createMediaQueryKey } from "@/lib/media-query-keys";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
@@ -33,7 +33,6 @@ interface HeroManagementProps {
 }
 
 export function HeroManagement({ mediaAssets }: HeroManagementProps) {
-  const { toast } = useToast();
   const [heroData, setHeroData] = useState<HeroFormData>({
     headline: "",
     subheadline: "",
@@ -149,15 +148,11 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
           };
           setHeroData(updatedData);
           getQueryClient().invalidateQueries({ queryKey: ["/api/manufacturing-hero"] });
-          toast({ title: "Success", description: "Hero section updated successfully" });
+          toast.success("Success", { description: "Hero section updated successfully" });
         }
         return { success: true };
       } catch (_error) {
-        toast({
-          title: "Error",
-          description: "Failed to update hero section",
-          variant: "destructive",
-        });
+        toast.error("Error", { description: "Failed to update hero section" });
         return { success: false };
       }
     },
@@ -221,7 +216,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                   name="isActive"
                   checked={optimisticHero.isActive}
                   onCheckedChange={(checked) => setHeroData({ ...heroData, isActive: checked })}
-                  className="data-[state=checked]:bg-brand-manufacturing"
+                  className="data-custom-misc-49:bg-brand-manufacturing"
                 />
                 <Label
                   htmlFor="hero-active"
@@ -245,7 +240,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                   name="headline"
                   value={optimisticHero.headline}
                   onChange={(e) => setHeroData({ ...heroData, headline: e.target.value })}
-                  className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                  className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-15/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                   placeholder="e.g., Leading the Way in Precision Sportswear"
                 />
               </div>
@@ -261,7 +256,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                   name="subheadline"
                   value={optimisticHero.subheadline}
                   onChange={(e) => setHeroData({ ...heroData, subheadline: e.target.value })}
-                  className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                  className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-16/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                   placeholder="Enter subheadline"
                 />
               </div>
@@ -280,7 +275,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                   name="ctaText"
                   value={optimisticHero.ctaText}
                   onChange={(e) => setHeroData({ ...heroData, ctaText: e.target.value })}
-                  className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                  className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-17/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                   placeholder="e.g., Explore Our Facilities"
                 />
               </div>
@@ -296,7 +291,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                   name="ctaLink"
                   value={optimisticHero.ctaLink}
                   onChange={(e) => setHeroData({ ...heroData, ctaLink: e.target.value })}
-                  className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                  className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-18/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                   placeholder="e.g., /contact"
                 />
               </div>
@@ -323,7 +318,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                     name="bottomCtaTitle"
                     value={optimisticHero.bottomCtaTitle}
                     onChange={(e) => setHeroData({ ...heroData, bottomCtaTitle: e.target.value })}
-                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-19/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                     placeholder="e.g., Experience Precision Manufacturing"
                   />
                 </div>
@@ -341,7 +336,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                     onChange={(e) =>
                       setHeroData({ ...heroData, bottomCtaDescription: e.target.value })
                     }
-                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-20/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                     placeholder="Enter conversion description"
                   />
                 </div>
@@ -357,7 +352,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                     name="bottomCtaText"
                     value={optimisticHero.bottomCtaText}
                     onChange={(e) => setHeroData({ ...heroData, bottomCtaText: e.target.value })}
-                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-21/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                     placeholder="e.g., Start Your Project"
                   />
                 </div>
@@ -373,7 +368,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                     name="bottomCtaLink"
                     value={optimisticHero.bottomCtaLink}
                     onChange={(e) => setHeroData({ ...heroData, bottomCtaLink: e.target.value })}
-                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-22/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                     placeholder="e.g., /contact"
                   />
                 </div>
@@ -481,7 +476,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
               <Button
                 type="submit"
                 disabled={isPending}
-                className="bg-primary hover:bg-primary/90 text-white px-10 py-7 rounded-xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98] group"
+                className="bg-primary hover:bg-primary/90 text-white px-10 py-7 rounded-xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-custom-misc-50 group"
               >
                 {isPending ? (
                   "Applying Changes..."

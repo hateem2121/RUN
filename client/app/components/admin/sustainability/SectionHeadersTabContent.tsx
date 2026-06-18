@@ -59,7 +59,7 @@ export function SectionHeadersTabContent({
               <div className="size-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <TrendingUp className="size-4" />
               </div>
-              <h3 className="text-xxs font-bold text-white uppercase tracking-[0.2em]">
+              <h3 className="text-xxs font-bold text-white uppercase tracking-custom-misc-83">
                 Impact Metrics Section
               </h3>
             </div>
@@ -92,7 +92,7 @@ export function SectionHeadersTabContent({
                   value={localForm.metricsDescription || ""}
                   onChange={(e) => onLocalUpdate({ metricsDescription: e.target.value })}
                   rows={3}
-                  className="bg-white/5 border-white/10 text-white rounded-xl focus:ring-emerald-500/50 resize-none min-h-[100px]"
+                  className="bg-white/5 border-white/10 text-white rounded-xl focus:ring-emerald-500/50 resize-none min-h-custom-space-95"
                   placeholder="Elaborate on your impact measurement methodology..."
                 />
               </div>
@@ -105,7 +105,7 @@ export function SectionHeadersTabContent({
               <div className="size-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <Leaf className="size-4" />
               </div>
-              <h3 className="text-xxs font-bold text-white uppercase tracking-[0.2em]">
+              <h3 className="text-xxs font-bold text-white uppercase tracking-custom-misc-84">
                 Active Initiatives Section
               </h3>
             </div>
@@ -138,7 +138,7 @@ export function SectionHeadersTabContent({
                   value={localForm.initiativesDescription || ""}
                   onChange={(e) => onLocalUpdate({ initiativesDescription: e.target.value })}
                   rows={3}
-                  className="bg-white/5 border-white/10 text-white rounded-xl focus:ring-emerald-500/50 resize-none min-h-[100px]"
+                  className="bg-white/5 border-white/10 text-white rounded-xl focus:ring-emerald-500/50 resize-none min-h-custom-space-96"
                   placeholder="Explain the strategy behind your active sustainability programs..."
                 />
               </div>
@@ -151,7 +151,7 @@ export function SectionHeadersTabContent({
               <div className="size-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <Award className="size-4" />
               </div>
-              <h3 className="text-xxs font-bold text-white uppercase tracking-[0.2em]">
+              <h3 className="text-xxs font-bold text-white uppercase tracking-custom-misc-85">
                 Compliance Section
               </h3>
             </div>
@@ -184,7 +184,7 @@ export function SectionHeadersTabContent({
                   value={localForm.certificationsDescription || ""}
                   onChange={(e) => onLocalUpdate({ certificationsDescription: e.target.value })}
                   rows={2}
-                  className="bg-white/5 border-white/10 text-white rounded-xl focus:ring-emerald-500/50 resize-none min-h-[80px]"
+                  className="bg-white/5 border-white/10 text-white rounded-xl focus:ring-emerald-500/50 resize-none min-h-custom-space-97"
                   placeholder="Detail the significance of your global certifications..."
                 />
               </div>
@@ -200,7 +200,7 @@ export function SectionHeadersTabContent({
                   value={localForm.certificationsFooterNote || ""}
                   onChange={(e) => onLocalUpdate({ certificationsFooterNote: e.target.value })}
                   rows={2}
-                  className="bg-white/5 border-white/10 text-admin-muted rounded-xl focus:ring-emerald-500/50 resize-none min-h-[80px] text-xs"
+                  className="bg-white/5 border-white/10 text-admin-muted rounded-xl focus:ring-emerald-500/50 resize-none min-h-custom-space-98 text-xs"
                   placeholder="Additional context on validity or auditing bodies..."
                 />
               </div>
@@ -213,7 +213,7 @@ export function SectionHeadersTabContent({
               <div className="size-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <Target className="size-4" />
               </div>
-              <h3 className="text-xxs font-bold text-white uppercase tracking-[0.2em]">
+              <h3 className="text-xxs font-bold text-white uppercase tracking-custom-misc-86">
                 Mission Goals Section
               </h3>
             </div>
@@ -246,7 +246,7 @@ export function SectionHeadersTabContent({
                   value={localForm.goalsDescription || ""}
                   onChange={(e) => onLocalUpdate({ goalsDescription: e.target.value })}
                   rows={3}
-                  className="bg-white/5 border-white/10 text-white rounded-xl focus:ring-emerald-500/50 resize-none min-h-[100px]"
+                  className="bg-white/5 border-white/10 text-white rounded-xl focus:ring-emerald-500/50 resize-none min-h-custom-space-99"
                   placeholder="Detail your roadmap for long-term sustainability..."
                 />
               </div>

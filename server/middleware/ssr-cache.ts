@@ -292,6 +292,4 @@ export async function invalidateHtmlCache(pattern?: string): Promise<void> {
   await unifiedCache.invalidate(`ssr:.*${pattern}.*`);
   logger.info(`[SSR-Cache] HTML cache invalidated matching pattern: "${pattern}"`);
 }
-
 // Export path utilities for testing
-export { isPublicCacheablePath, PUBLIC_CACHEABLE_PATHS, PRIVATE_PATHS };

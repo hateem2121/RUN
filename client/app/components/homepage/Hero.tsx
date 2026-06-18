@@ -135,7 +135,7 @@ export const Hero: React.FC = () => {
             {heroLines.map((line: string, i: number) => (
               <span
                 key={i}
-                className="hero-line block my-0 md:-my-2 overflow-visible py-2 will-change-transform text-foreground font-bold tracking-tighter leading-[0.9] md:leading-[0.85] text-[13vw] sm:text-[10vw] md:text-[8vw] lg:text-[7vw] xl:text-[6vw]"
+                className="hero-line block my-0 md:-my-2 overflow-visible py-2 will-change-transform text-foreground font-bold tracking-tighter leading-custom-misc-151 md:leading-custom-misc-152 text-custom-space-138 sm:text-custom-space-139 md:text-custom-space-140 lg:text-custom-space-141 xl:text-custom-space-142"
               >
                 {line}
               </span>
@@ -167,7 +167,7 @@ export const Hero: React.FC = () => {
         className="z-sticky pointer-events-auto absolute right-8 bottom-8 hidden md:block"
         aria-hidden="true"
       >
-        <div className="relative h-24 w-24 animate-[spin_10s_linear_infinite]">
+        <div className="relative h-24 w-24 animate-custom-misc-153">
           <svg viewBox="0 0 100 100" className="h-full w-full fill-black dark:fill-white">
             <title>Scroll Down</title>
             <path

@@ -22,6 +22,7 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -29,11 +30,9 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 
 export function FooterManagement() {
-  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("general");
 
   const { data: footerConfig, isLoading } = useQuery<
@@ -125,14 +124,10 @@ export function FooterManagement() {
       }),
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/footer"] });
-      toast({ title: "Footer configuration updated successfully" });
+      toast.success("Footer configuration updated successfully");
     },
     onError: (error: Error) => {
-      toast({
-        title: "Failed to update footer",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast.error("Failed to update footer", { description: error.message });
     },
   });
 
@@ -156,7 +151,7 @@ export function FooterManagement() {
         <Button
           onClick={handleSubmit(onSubmit)}
           disabled={updateMutation.isPending}
-          className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-[0_0_20px_rgba(37,99,235,0.2)] font-bold uppercase tracking-widest text-xxs h-11 px-6 transition-all active:scale-95 border-0"
+          className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-custom-misc-20 font-bold uppercase tracking-widest text-xxs h-11 px-6 transition-all active:scale-95 border-0"
         >
           <Save className="mr-2 h-4 w-4" />
           {updateMutation.isPending ? "Saving..." : "Save Changes"}
@@ -167,25 +162,25 @@ export function FooterManagement() {
         <TabsList className="grid w-full max-w-2xl grid-cols-4 bg-white/5 border border-white/10 rounded-xl p-1">
           <TabsTrigger
             value="general"
-            className="rounded-lg data-[state=active]:bg-white/10 data-[state=active]:text-white data-[state=active]:shadow-xl transition-all h-9"
+            className="rounded-lg data-custom-misc-21:bg-white/10 data-custom-misc-22:text-white data-custom-misc-23:shadow-xl transition-all h-9"
           >
             <Settings2 className="h-4 w-4 mr-2" /> General
           </TabsTrigger>
           <TabsTrigger
             value="navigation"
-            className="rounded-lg data-[state=active]:bg-white/10 data-[state=active]:text-white data-[state=active]:shadow-xl transition-all h-9"
+            className="rounded-lg data-custom-misc-24:bg-white/10 data-custom-misc-25:text-white data-custom-misc-26:shadow-xl transition-all h-9"
           >
             <Link className="h-4 w-4 mr-2" /> Links
           </TabsTrigger>
           <TabsTrigger
             value="social"
-            className="rounded-lg data-[state=active]:bg-white/10 data-[state=active]:text-white data-[state=active]:shadow-xl transition-all h-9"
+            className="rounded-lg data-custom-misc-27:bg-white/10 data-custom-misc-28:text-white data-custom-misc-29:shadow-xl transition-all h-9"
           >
             <Share2 className="h-4 w-4 mr-2" /> Social
           </TabsTrigger>
           <TabsTrigger
             value="branding"
-            className="rounded-lg data-[state=active]:bg-white/10 data-[state=active]:text-white data-[state=active]:shadow-xl transition-all h-9"
+            className="rounded-lg data-custom-misc-30:bg-white/10 data-custom-misc-31:text-white data-custom-misc-32:shadow-xl transition-all h-9"
           >
             <Type className="h-4 w-4 mr-2" /> Branding
           </TabsTrigger>
@@ -250,7 +245,7 @@ export function FooterManagement() {
                     <MapPin className="absolute top-3 left-3 h-5 w-5 text-admin-muted" />
                     <Textarea
                       id="companyAddress"
-                      className="min-h-[100px] pl-10 pt-3 bg-white/5 border-white/10 text-white rounded-xl focus:ring-blue-500/50"
+                      className="min-h-custom-space-19 pl-10 pt-3 bg-white/5 border-white/10 text-white rounded-xl focus:ring-blue-500/50"
                       {...register("companyAddress")}
                     />
                   </div>
@@ -286,7 +281,7 @@ export function FooterManagement() {
                         id="contactFormEnabled"
                         checked={field.value}
                         onCheckedChange={field.onChange}
-                        className="data-[state=checked]:bg-blue-600"
+                        className="data-custom-misc-33:bg-blue-600"
                       />
                     )}
                   />

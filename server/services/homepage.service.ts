@@ -13,17 +13,25 @@ import type {
   InsertLogoAnimationSettings,
   LogoAnimationSettings,
 } from "../../shared/index.js";
+import {
+  insertHomepageFeaturedProductsSettingsSchema,
+  insertHomepageHeroSchema,
+  insertHomepageProcessCardSchema,
+  insertHomepageSectionSchema,
+  insertHomepageSloganSchema,
+} from "../../shared/index.js";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { homepageRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
+import { sanitizeHtml } from "../lib/sanitize-html.js";
 
 /**
  * Service for managing Homepage domain content
  * Enforces Result-based patterns and circuit breaker protection
  */
-export class HomepageService {
+class HomepageService {
   /**
    * Invalidates all homepage related cache entries
    */
@@ -59,7 +67,13 @@ export class HomepageService {
     try {
       const updated = await withCircuit(
         "update-homepage-hero",
-        () => homepageRepository.updateHomepageHero(data),
+        () =>
+          homepageRepository.updateHomepageHero(
+            (() => {
+              const parsed = insertHomepageHeroSchema.partial().parse(data);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -109,7 +123,14 @@ export class HomepageService {
     try {
       const created = await withCircuit(
         "create-homepage-slogan",
-        () => homepageRepository.createHomepageSlogan(data),
+        () =>
+          homepageRepository.createHomepageSlogan(
+            (() => {
+              const parsed = insertHomepageSloganSchema.parse(data);
+              if (parsed.text) parsed.text = sanitizeHtml(parsed.text);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -128,7 +149,15 @@ export class HomepageService {
     try {
       const updated = await withCircuit(
         `update-homepage-slogan-${id}`,
-        () => homepageRepository.updateHomepageSlogan(id, data),
+        () =>
+          homepageRepository.updateHomepageSlogan(
+            id,
+            (() => {
+              const parsed = insertHomepageSloganSchema.partial().parse(data);
+              if (parsed.text) parsed.text = sanitizeHtml(parsed.text);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -216,7 +245,14 @@ export class HomepageService {
     try {
       const created = await withCircuit(
         "create-homepage-process-card",
-        () => homepageRepository.createHomepageProcessCard(data),
+        () =>
+          homepageRepository.createHomepageProcessCard(
+            (() => {
+              const parsed = insertHomepageProcessCardSchema.parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -235,7 +271,15 @@ export class HomepageService {
     try {
       const updated = await withCircuit(
         `update-homepage-process-card-${id}`,
-        () => homepageRepository.updateHomepageProcessCard(id, data),
+        () =>
+          homepageRepository.updateHomepageProcessCard(
+            id,
+            (() => {
+              const parsed = insertHomepageProcessCardSchema.partial().parse(data);
+              if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -343,7 +387,15 @@ export class HomepageService {
     try {
       const updated = await withCircuit(
         `update-homepage-section-${name}`,
-        () => homepageRepository.updateHomepageSection(name, data),
+        () =>
+          homepageRepository.updateHomepageSection(
+            name,
+            (() => {
+              const parsed = insertHomepageSectionSchema.partial().parse(data);
+              if (parsed.content) parsed.content = sanitizeHtml(parsed.content);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 
@@ -401,7 +453,13 @@ export class HomepageService {
     try {
       const updated = await withCircuit(
         "update-homepage-featured-products-settings",
-        () => homepageRepository.updateHomepageFeaturedProductsSettings(data),
+        () =>
+          homepageRepository.updateHomepageFeaturedProductsSettings(
+            (() => {
+              const parsed = insertHomepageFeaturedProductsSettingsSchema.partial().parse(data);
+              return parsed as typeof data;
+            })(),
+          ),
         DB_CIRCUIT_OPTIONS,
       );
 

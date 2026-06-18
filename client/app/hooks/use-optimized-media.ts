@@ -123,10 +123,7 @@ function generateSrcSet(variants: MediaVariant[]): string {
 }
 
 // Progressive image loading hook
-export function useProgressiveImageLoading(
-  mediaId: number,
-  options: MediaOptimizationOptions = {},
-) {
+export function useProgressiveImageLoading(mediaId: number, options: MediaOptimizationOptions = {}) {
   const [currentSrc, setCurrentSrc] = useState<string>("");
   const [isLoaded, setIsLoaded] = useState(false);
   const { urls, loading } = useOptimizedMedia(mediaId, options);

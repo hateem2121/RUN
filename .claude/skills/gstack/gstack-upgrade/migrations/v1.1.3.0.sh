@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
-# Migration: v1.1.3.0 — Remove stale /checkpoint skill installs
+# Migration: v1.1.3.0 — Remove stale /context-save skill installs
 #
-# Claude Code ships /checkpoint as a native alias for /rewind, which was
+# Claude Code ships /context-save as a native alias for /rewind, which was
 # shadowing the gstack checkpoint skill. The skill has been split into
 # /context-save + /context-restore. This migration removes the old on-disk
-# install so Claude Code's native /checkpoint is no longer shadowed.
+# install so Claude Code's native /context-save is no longer shadowed.
 #
 # Ownership guard: the script only removes the install IF it owns it —
 # i.e., the directory or its SKILL.md is a symlink resolving inside
-# ~/.claude/skills/gstack/. A user's own /checkpoint skill (regular file,
+# ~/.claude/skills/gstack/. A user's own /context-save skill (regular file,
 # or symlink pointing elsewhere) is preserved.
 #
 # Three supported install shapes to handle:
-#   1. ~/.claude/skills/checkpoint is a directory symlink into gstack.
-#   2. ~/.claude/skills/checkpoint is a regular directory whose ONLY file
+#   1. ~/.claude/skills/context-save is a directory symlink into gstack.
+#   2. ~/.claude/skills/context-save is a regular directory whose ONLY file
 #      is a SKILL.md symlink into gstack (gstack's prefix-install shape).
 #   3. Anything else → leave alone, print notice.
 #
@@ -30,8 +30,8 @@ if [ -z "${HOME:-}" ]; then
 fi
 
 SKILLS_DIR="${HOME}/.claude/skills"
-OLD_TOPLEVEL="${SKILLS_DIR}/checkpoint"
-OLD_NAMESPACED="${SKILLS_DIR}/gstack/checkpoint"
+OLD_TOPLEVEL="${SKILLS_DIR}/context-save"
+OLD_NAMESPACED="${SKILLS_DIR}/gstack/context-save"
 GSTACK_ROOT_REAL=""
 
 # Helper: canonical-path a target (symlink-safe). Prints the resolved path, or
@@ -69,13 +69,13 @@ path_inside() {
 
 removed_any=0
 
-# --- Shape 1: top-level ~/.claude/skills/checkpoint
+# --- Shape 1: top-level ~/.claude/skills/context-save
 if [ -L "$OLD_TOPLEVEL" ]; then
   # Directory symlink (or file symlink). Canonicalize and check ownership.
   target_real=$(resolve_real "$OLD_TOPLEVEL")
   if [ -n "$GSTACK_ROOT_REAL" ] && path_inside "$target_real" "$GSTACK_ROOT_REAL"; then
     rm -- "$OLD_TOPLEVEL"
-    echo "  [v1.1.3.0] Removed stale /checkpoint symlink (was shadowing Claude Code's /rewind alias)."
+    echo "  [v1.1.3.0] Removed stale /context-save symlink (was shadowing Claude Code's /rewind alias)."
     removed_any=1
   else
     echo "  [v1.1.3.0] Leaving $OLD_TOPLEVEL alone — symlink target is outside gstack (or unresolvable)."
@@ -92,7 +92,7 @@ elif [ -d "$OLD_TOPLEVEL" ]; then
       # Strip macOS sidecars first (not user content), then remove the dir.
       find "$OLD_TOPLEVEL" -maxdepth 1 \( -name '.DS_Store' -o -name '._*' \) -type f -delete 2>/dev/null || true
       rm -r -- "$OLD_TOPLEVEL"
-      echo "  [v1.1.3.0] Removed stale /checkpoint install directory (gstack prefix-mode)."
+      echo "  [v1.1.3.0] Removed stale /context-save install directory (gstack prefix-mode)."
       removed_any=1
     else
       echo "  [v1.1.3.0] Leaving $OLD_TOPLEVEL alone — SKILL.md symlink target is outside gstack."
@@ -103,7 +103,7 @@ elif [ -d "$OLD_TOPLEVEL" ]; then
 fi
 # Missing → no-op (idempotency).
 
-# --- Shape 2: ~/.claude/skills/gstack/checkpoint/
+# --- Shape 2: ~/.claude/skills/gstack/context-save/
 # Ownership guard applies here too: only remove if this path resolves inside the
 # gstack skills root. If a user replaced the directory with a symlink pointing
 # elsewhere (e.g., at their own fork), respect it.
@@ -111,7 +111,7 @@ if [ -L "$OLD_NAMESPACED" ]; then
   target_real=$(resolve_real "$OLD_NAMESPACED")
   if [ -n "$GSTACK_ROOT_REAL" ] && path_inside "$target_real" "$GSTACK_ROOT_REAL"; then
     rm -- "$OLD_NAMESPACED"
-    echo "  [v1.1.3.0] Removed stale ~/.claude/skills/gstack/checkpoint symlink."
+    echo "  [v1.1.3.0] Removed stale ~/.claude/skills/gstack/context-save symlink."
     removed_any=1
   else
     echo "  [v1.1.3.0] Leaving $OLD_NAMESPACED alone — symlink target is outside gstack."
@@ -123,7 +123,7 @@ elif [ -d "$OLD_NAMESPACED" ]; then
   target_real=$(resolve_real "$OLD_NAMESPACED")
   if [ -n "$GSTACK_ROOT_REAL" ] && path_inside "$target_real" "$GSTACK_ROOT_REAL"; then
     rm -rf -- "$OLD_NAMESPACED"
-    echo "  [v1.1.3.0] Removed stale ~/.claude/skills/gstack/checkpoint/ (replaced by context-save + context-restore)."
+    echo "  [v1.1.3.0] Removed stale ~/.claude/skills/gstack/context-save/ (replaced by context-save + context-restore)."
     removed_any=1
   else
     echo "  [v1.1.3.0] Leaving $OLD_NAMESPACED alone — resolves outside gstack."
@@ -131,7 +131,7 @@ elif [ -d "$OLD_NAMESPACED" ]; then
 fi
 
 if [ "$removed_any" = "1" ]; then
-  echo "  [v1.1.3.0] /checkpoint is now Claude Code's native /rewind alias. Use /context-save to save state and /context-restore to resume."
+  echo "  [v1.1.3.0] /context-save is now Claude Code's native /rewind alias. Use /context-save to save state and /context-restore to resume."
 fi
 
 exit 0

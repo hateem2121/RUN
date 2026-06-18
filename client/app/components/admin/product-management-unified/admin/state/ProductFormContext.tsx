@@ -1,7 +1,7 @@
 import type { Product } from "@shared/index";
 import type React from "react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { useProductForm } from "../../hooks/useProductForm";
 import { useProductMutations } from "../hooks/useProductMutations";
 import { useProductQueries } from "../hooks/useProductQueries";
@@ -54,7 +54,6 @@ export function ProductFormProvider({
   children,
 }: ProductFormProviderProps) {
   const isEditing = !!product;
-  const { toast } = useToast();
 
   // 1. Form State Management
   const {
@@ -196,10 +195,8 @@ export function ProductFormProvider({
 
       const isValid = validateForm(formData);
       if (!isValid) {
-        toast({
-          title: "Validation Error",
+        toast.error("Validation Error", {
           description: "Please fix the form errors before submitting",
-          variant: "destructive",
         });
         return;
       }
@@ -231,10 +228,8 @@ export function ProductFormProvider({
           isValid: false,
           errorCount: prev.errorCount + 1,
         }));
-        toast({
-          title: "Validation Error",
+        toast.error("Validation Error", {
           description: "This slug is already taken. Use a unique identifier.",
-          variant: "destructive",
         });
         return;
       }
@@ -324,7 +319,6 @@ export function ProductFormProvider({
       createProductMutation,
       updateProductMutation,
       validateForm,
-      toast,
     ],
   );
 

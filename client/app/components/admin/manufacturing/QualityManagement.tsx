@@ -474,7 +474,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
           </Button>
         </div>
 
-        <div className="min-h-[400px]">
+        <div className="min-h-custom-space-49">
           {qualityLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="flex space-x-2">
@@ -553,7 +553,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
               </div>
             </div>
 
-            <form action={formAction} className="flex-1 overflow-y-auto max-h-[70vh]">
+            <form action={formAction} className="flex-1 overflow-y-auto max-h-custom-space-50">
               <div className="p-8 space-y-8">
                 <div className={cn("grid gap-10", showPreview ? "lg:grid-cols-2" : "grid-cols-1")}>
                   <div className="space-y-8">
@@ -591,7 +591,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                           value={qualityForm.icon || "CheckCircle2"}
                           onValueChange={(value) => setQualityForm({ ...qualityForm, icon: value })}
                         >
-                          <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-[50px] focus:ring-emerald-500/50">
+                          <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-custom-space-51 focus:ring-emerald-500/50">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent className="bg-surface-black border-white/10 text-white">
@@ -671,7 +671,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                             description: e.target.value,
                           })
                         }
-                        className="bg-white/5 border-white/10 text-white rounded-xl min-h-[120px] focus:ring-emerald-500/50 placeholder:text-white/20 resize-none"
+                        className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-52 focus:ring-emerald-500/50 placeholder:text-white/20 resize-none"
                         placeholder="Specify explicit quality benchmarks..."
                       />
                     </div>
@@ -684,7 +684,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                         onCheckedChange={(checked) =>
                           setQualityForm({ ...qualityForm, isActive: checked })
                         }
-                        className="data-[state=checked]:bg-emerald-500"
+                        className="data-custom-misc-53:bg-emerald-500"
                       />
                       <Label
                         htmlFor="quality-active"

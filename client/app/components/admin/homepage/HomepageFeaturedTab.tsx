@@ -96,7 +96,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
                   id="isEnabled"
                   checked={formData.isEnabled ?? true}
                   onCheckedChange={(checked) => handleChange("isEnabled", checked)}
-                  className="data-[state=checked]:bg-blue-500"
+                  className="data-custom-misc-34:bg-blue-500"
                 />
                 <div className="grid gap-1.5 leading-none">
                   <Label
@@ -194,7 +194,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
                       id="autoSelect"
                       checked={formData.autoSelect ?? true}
                       onCheckedChange={(checked) => handleChange("autoSelect", checked)}
-                      className="data-[state=checked]:bg-blue-500"
+                      className="data-custom-misc-35:bg-blue-500"
                     />
                     <div className="grid gap-1.5 leading-none">
                       <Label

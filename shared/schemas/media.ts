@@ -211,13 +211,13 @@ export const FolderCreateSchema = z.object({
 
 export const FolderUpdateSchema = z.object({
   name: z.string().min(1).max(255).optional(),
-  parentId: z.coerce.number().optional().nullable(),
+  parentId: z.coerce.number().nullish(),
 });
 
 export const MediaUpdateSchema = insertMediaAssetSchema
   .partial()
   .extend({
-    folderId: z.coerce.number().optional().nullable(),
+    folderId: z.coerce.number().nullish(),
   })
   .omit({
     id: true,

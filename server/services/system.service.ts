@@ -9,7 +9,7 @@ import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-break
  * Service for system-level operations (Audit logs, Settings)
  * Enforces Result-based patterns and circuit breaker protection
  */
-export class SystemService {
+class SystemService {
   /**
    * Retrieves recent audit logs
    */

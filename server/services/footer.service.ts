@@ -12,7 +12,7 @@ import { type AppError, InternalError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 
-export class FooterService {
+class FooterService {
   /**
    * Retrieves the footer configuration with populated certificates and media.
    */

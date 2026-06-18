@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { env } from "../lib/env.js";
 import { InternalError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { authService } from "../services/auth-service.js";
@@ -7,7 +8,7 @@ const devRouter = Router();
 
 // Dev Login Route
 devRouter.get("/login", async (req, res) => {
-  if (process.env.NODE_ENV === "production") {
+  if (env.NODE_ENV === "production") {
     return res.status(404).send("Not found");
   }
 

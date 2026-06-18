@@ -18,7 +18,10 @@
     "GHSA-jggg-4jg4-v7c6",
     "GHSA-jxxr-4gwj-5jf2",
     "GHSA-q8mj-m7cp-5q26",
-    "GHSA-8x6r-g9mw-2r78"
+    "GHSA-8x6r-g9mw-2r78",
+    "GHSA-gv7w-rqvm-qjhr",
+    "GHSA-3p4h-7m6x-2hcm",
+    "GHSA-72gw-mp4g-v24j"
   ],
   "retry-count": 3
 }

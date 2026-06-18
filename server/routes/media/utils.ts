@@ -133,7 +133,7 @@ export function slugifyFilename(filename: string): string {
  *   - Never exposed to CDN
  */
 
-export type AssetVisibility = "public" | "private";
+type AssetVisibility = "public" | "private";
 
 /**
  * Generates CDN-optimized storage path with public/private partitioning
@@ -312,7 +312,7 @@ export const MediaUrlResolver = {
 // VALIDATION UTILITIES
 // ============================================================================
 
-export const enhancedValidation = {
+const enhancedValidation = {
   validateFilename: (filename: string) => {
     if (!filename || filename.length < 1 || filename.length > 255) {
       return false;

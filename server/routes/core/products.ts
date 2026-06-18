@@ -255,7 +255,9 @@ router.get("/products", async (req, res): Promise<undefined | Response> => {
 
   return result.match(
     (data) => res.json(data),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 });
 
@@ -271,20 +273,20 @@ router.get("/products/by-path", async (req, res): Promise<undefined | Response> 
 
   const result = await productService.getProductByPath(path);
 
-  if (result.isErr()) {
-    if (result.error.name === "NotFoundError") {
-      logger.info(`[URL Validation] ❌ Product not found for path "${path}"`);
-      res.set("Cache-Control", "public, max-age=600");
-      throw result.error;
-    }
-    throw result.error;
-  }
-
-  logger.info(
-    `[URL Validation] ✅ Product found for path "${path}" → ${result.value.product?.name}`,
+  return result.match(
+    (value) => {
+      logger.info(`[URL Validation] ✅ Product found for path "${path}" → ${value.product?.name}`);
+      res.set("Cache-Control", "public, max-age=3600");
+      return res.json(value);
+    },
+    (error) => {
+      if (error.name === "NotFoundError") {
+        logger.info(`[URL Validation] ❌ Product not found for path "${path}"`);
+        res.set("Cache-Control", "public, max-age=600");
+      }
+      throw error;
+    },
   );
-  res.set("Cache-Control", "public, max-age=3600");
-  return res.json(result.value);
 });
 
 // GET /api/products/:id/3d-model - Get 3D model metadata lazily
@@ -298,7 +300,9 @@ router.get("/products/:id/3d-model", async (req, res): Promise<undefined | Respo
       res.set("Cache-Control", "public, max-age=900");
       return res.json(data);
     },
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 });
 
@@ -316,7 +320,9 @@ router.get("/products/:id", async (req, res): Promise<undefined | Response> => {
   const result = await productService.getProductById(id);
   return result.match(
     (data) => res.json(data),
-    (error) => { throw error; },
+    (error) => {
+      throw error;
+    },
   );
 });
 
@@ -332,10 +338,15 @@ router.post(
   }),
   async (req, res): Promise<void> => {
     const result = await productService.createProduct(removeUndefined(req.body));
-    if (result.isErr()) throw result.error;
-
-    webhookService.trigger("product.created", result.value);
-    res.status(201).json(result.value);
+    return result.match(
+      (product) => {
+        webhookService.trigger("product.created", product);
+        res.status(201).json(product);
+      },
+      (error) => {
+        throw error;
+      },
+    );
   },
 );
 
@@ -345,10 +356,15 @@ const updateProductHandler = async (req: Request, res: Response): Promise<undefi
   if (id === null) return;
 
   const result = await productService.updateProduct(id, removeUndefined(req.body));
-  if (result.isErr()) throw result.error;
-
-  webhookService.trigger("product.updated", result.value);
-  return res.json(result.value);
+  return result.match(
+    (product) => {
+      webhookService.trigger("product.updated", product);
+      return res.json(product);
+    },
+    (error) => {
+      throw error;
+    },
+  );
 };
 
 // PUT /api/products/:id - Update product
@@ -377,10 +393,15 @@ router.delete("/products/:id", requireRole("admin"), async (req, res): Promise<v
   if (id === null) return;
 
   const result = await productService.deleteProduct(id);
-  if (result.isErr()) throw result.error;
-
-  webhookService.trigger("product.deleted", { id });
-  res.status(204).send();
+  return result.match(
+    () => {
+      webhookService.trigger("product.deleted", { id });
+      res.status(204).send();
+    },
+    (error) => {
+      throw error;
+    },
+  );
 });
 
 export default router;

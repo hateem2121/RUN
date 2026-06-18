@@ -28,7 +28,7 @@ export function RoadmapCard({ item, onEdit, onDelete }: RoadmapCardProps) {
       className={cn(
         "group relative overflow-hidden rounded-xl border transition-all duration-300 backdrop-blur-md",
         isDragging
-          ? "z-50 border-[#00D4FF] bg-white/[0.08] shadow-[0_0_30px_rgba(0,212,255,0.2)] scale-[1.02]"
+          ? "z-50 border-custom-color-53 bg-white/[0.08] shadow-custom-misc-91 scale-custom-misc-92"
           : "border-white/[0.08] bg-white/[0.03] hover:border-white/[0.15] hover:bg-white/[0.06]",
       )}
     >
@@ -37,7 +37,7 @@ export function RoadmapCard({ item, onEdit, onDelete }: RoadmapCardProps) {
           <div
             {...attributes}
             {...listeners}
-            className="mt-0.5 cursor-grab text-admin-foreground/20 transition-colors hover:text-[#00D4FF]/40 active:cursor-grabbing"
+            className="mt-0.5 cursor-grab text-admin-foreground/20 transition-colors hover:text-custom-color-54/40 active:cursor-grabbing"
             title="Drag to reorder"
           >
             <GripVertical className="h-4 w-4" />
@@ -52,7 +52,7 @@ export function RoadmapCard({ item, onEdit, onDelete }: RoadmapCardProps) {
               aria-label="Action button"
               type="button"
               onClick={() => onEdit(item)}
-              className="text-admin-foreground/40 hover:text-[#00D4FF]"
+              className="text-admin-foreground/40 hover:text-custom-color-55"
               title="Edit Milestone"
             >
               <Edit2 className="h-3.5 w-3.5" />
@@ -72,7 +72,7 @@ export function RoadmapCard({ item, onEdit, onDelete }: RoadmapCardProps) {
         <div className="flex flex-wrap items-center gap-2">
           <Badge
             variant="outline"
-            className="border-[#00D4FF]/20 bg-[#00D4FF]/5 text-[#00D4FF] text-[9px] uppercase tracking-wider h-5"
+            className="border-custom-color-56/20 bg-custom-color-57/5 text-custom-color-58 text-custom-space-100 uppercase tracking-wider h-5"
           >
             {item.timeline}
           </Badge>
@@ -80,7 +80,7 @@ export function RoadmapCard({ item, onEdit, onDelete }: RoadmapCardProps) {
             <Badge
               variant="outline"
               className={cn(
-                "text-[9px] uppercase tracking-wider h-5",
+                "text-custom-space-101 uppercase tracking-wider h-5",
                 item.priority === "high"
                   ? "bg-red-500/10 text-red-400 border-red-500/20"
                   : item.priority === "medium"
@@ -93,18 +93,18 @@ export function RoadmapCard({ item, onEdit, onDelete }: RoadmapCardProps) {
           )}
         </div>
 
-        <p className="line-clamp-2 text-admin-foreground/40 text-[11px] leading-relaxed italic">
+        <p className="line-clamp-2 text-admin-foreground/40 text-custom-space-102 leading-relaxed italic">
           {item.description}
         </p>
 
         <div className="flex items-center justify-between pt-1 border-t border-white/5">
           <div className="flex -space-x-1.5 overflow-hidden">
             <div className="size-5 rounded-full border border-surface-black bg-white/5 flex items-center justify-center">
-              <Zap className="size-2.5 text-[#00D4FF]/60" />
+              <Zap className="size-2.5 text-custom-color-59/60" />
             </div>
           </div>
 
-          <span className="text-[9px] font-bold text-white/20 uppercase tracking-tighter">
+          <span className="text-custom-space-103 font-bold text-white/20 uppercase tracking-tighter">
             ID: {item.id}
           </span>
         </div>

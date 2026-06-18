@@ -10,7 +10,7 @@ export interface StaggeredMenuItem {
   link: string;
 }
 
-export interface StaggeredMenuProps {
+interface StaggeredMenuProps {
   position?: "left" | "right";
   colors?: string[];
   items?: StaggeredMenuItem[];
@@ -421,7 +421,7 @@ export const StaggeredMenu = ({
         <aside
           id="staggered-menu-panel"
           ref={panelRef}
-          className="staggered-menu-panel pointer-events-auto absolute top-0 right-0 z-(--z-index-modal) flex h-full w-full flex-col overflow-y-auto bg-(--color-background)/95 px-6 pb-(--pb) pt-(--pt) shadow-2xl backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-[80vw] md:w-96"
+          className="staggered-menu-panel pointer-events-auto absolute top-0 right-0 z-(--z-index-modal) flex h-full w-full flex-col overflow-y-auto bg-(--color-background)/95 px-6 pb-(--pb) pt-(--pt) shadow-2xl backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-custom-space-167 md:w-96"
           style={
             {
               "--pb": "max(2rem, env(safe-area-inset-bottom))",
@@ -444,7 +444,7 @@ export const StaggeredMenu = ({
                     key={it.label + idx}
                   >
                     <Link
-                      className="sm-panel-item relative inline-block cursor-pointer rounded-lg pr-[1.5rem] font-bold text-[clamp(1.5rem,7vw,3rem)] text-foreground uppercase leading-[1.05] tracking-tighter no-underline outline-none transition-all duration-200 ease-out hover:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring active:scale-95"
+                      className="sm-panel-item relative inline-block cursor-pointer rounded-lg pr-custom-space-168 font-bold text-custom-misc-159 text-foreground uppercase leading-custom-misc-160 tracking-tighter no-underline outline-none transition-all duration-200 ease-out hover:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring active:scale-95"
                       to={it.link}
                       aria-label={it.ariaLabel}
                       data-index={idx + 1}
@@ -473,7 +473,7 @@ export const StaggeredMenu = ({
                   className="sm-panel-itemWrap relative overflow-hidden leading-none"
                   aria-hidden="true"
                 >
-                  <span className="sm-panel-item relative inline-block cursor-pointer pr-[1.2em] font-bold text-4xl text-muted-foreground uppercase leading-tight tracking-tight no-underline transition-all duration-200 ease-out sm:text-5xl">
+                  <span className="sm-panel-item relative inline-block cursor-pointer pr-custom-misc-161 font-bold text-4xl text-muted-foreground uppercase leading-tight tracking-tight no-underline transition-all duration-200 ease-out sm:text-5xl">
                     <span className="sm-panel-itemLabel inline-block will-change-transform [transform-origin:50%_100%]">
                       No items
                     </span>

@@ -404,6 +404,4 @@ export const CategoryDisplay = memo(function CategoryDisplay(props: CategoryDisp
       return <CategoryTableRow {...props} />;
   }
 });
-
 // Export individual components for specific use cases
-export { CategoryTableRow, CategoryGridCard, CategoryTreeItem };

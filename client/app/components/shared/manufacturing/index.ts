@@ -2,7 +2,7 @@
 // Provides consistent components for both public and admin manufacturing interfaces
 
 // Re-export optimized query hook
-export { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
+
 export * from "./CapabilityCard";
 export * from "./CardDecorator";
 export * from "./ManufacturingAnimations";

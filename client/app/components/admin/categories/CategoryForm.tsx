@@ -1,6 +1,6 @@
 import type { Category, InsertCategory, MediaAsset } from "@shared/index";
 import { FileText, Search, Star } from "lucide-react";
-import { useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -237,7 +237,6 @@ export function CategoryForm({
 
   const handleSubmit = useCallback(
     (_formDataAction: globalThis.FormData) => {
-
       // Basic validation
       if (!formData.name.trim() || !formData.slug.trim()) {
         return;

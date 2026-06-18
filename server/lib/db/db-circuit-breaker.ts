@@ -8,13 +8,13 @@ import { logger } from "../monitoring/logger.js";
  */
 
 // Circuit breaker states
-export const CircuitState = {
+const CircuitState = {
   CLOSED: "CLOSED", // Normal operation
   OPEN: "OPEN", // Blocking requests
   HALF_OPEN: "HALF_OPEN", // Testing if database recovered
 } as const;
 
-export type CircuitState = (typeof CircuitState)[keyof typeof CircuitState];
+type CircuitState = (typeof CircuitState)[keyof typeof CircuitState];
 
 interface CircuitBreakerMetrics {
   queries: {
@@ -31,7 +31,7 @@ interface CircuitBreakerMetrics {
   };
 }
 
-export class DatabaseCircuitBreaker {
+class DatabaseCircuitBreaker {
   private readonly MAX_RETRIES = 3;
   private readonly INITIAL_RETRY_DELAY = 1000; // 1 second
 

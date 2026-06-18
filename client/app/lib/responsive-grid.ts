@@ -44,7 +44,7 @@ export function getGridTemplateColumns(breakpoint: "mobile" | "tablet" | "deskto
 /**
  * Dynamic height system with content-aware constraints
  */
-export const RESPONSIVE_HEIGHTS = {
+const RESPONSIVE_HEIGHTS = {
   mobile: { min: "250px", max: "400px", ratio: "4:3" },
   tablet: { min: "300px", max: "450px", ratio: "3:2" },
   desktop: { min: "320px", max: "500px", ratio: "16:10" },

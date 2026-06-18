@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-export default function Component() {
+export function Component() {
   const collections = [
     {
       id: 1,
@@ -36,7 +36,7 @@ export default function Component() {
           <p className="text-brand-lime font-mono text-xs tracking-widest uppercase mb-2">
             RUN CATALOGUE
           </p>
-          <h1 className="text-[10vw] leading-[0.9] font-bold uppercase md:text-[5vw] tracking-tighter">
+          <h1 className="text-custom-space-291 leading-custom-misc-476 font-bold uppercase md:text-custom-space-292 tracking-tighter">
             SEASONAL COLLECTIONS
           </h1>
         </div>

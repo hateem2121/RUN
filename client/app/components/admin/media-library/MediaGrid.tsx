@@ -10,7 +10,7 @@ import { MediaGridToolbar } from "./components/MediaGridToolbar";
 import { useMediaGridQuery } from "./hooks/useMediaGridQuery";
 import { useMediaLibrary } from "./MediaLibraryContextEnhanced";
 
-export interface MediaGridProps {
+interface MediaGridProps {
   selectionMode?: boolean;
   isStandalone?: boolean;
   onAssetSelect?: (assetId: number, asset?: MediaAsset) => void;

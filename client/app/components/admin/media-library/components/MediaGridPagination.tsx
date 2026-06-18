@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { useMediaLibrary } from "../MediaLibraryContextEnhanced";
 
-export interface MediaGridPaginationProps {
+interface MediaGridPaginationProps {
   totalPages: number;
   totalAssets: number;
   displayCount: number;

@@ -47,10 +47,10 @@ import {
   Wrench,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { DeleteConfirmationDialog } from "@/components/admin/shared";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
-
 import {
   Dialog,
   DialogBody,
@@ -64,7 +64,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 
@@ -122,7 +121,7 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
     <div
       ref={setNodeRef}
       style={style}
-      className="group relative flex flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.03] transition-all hover:border-[#00D4FF]/40 hover:shadow-[0_10px_30px_-10px_rgba(0,212,255,0.2)] backdrop-blur-xl"
+      className="group relative flex flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.03] transition-all hover:border-custom-color-108/40 hover:shadow-custom-misc-106 backdrop-blur-xl"
     >
       {/* Drag Handle & Actions */}
       <div className="absolute right-3 top-3 z-10 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
@@ -139,7 +138,7 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
         <button
           type="button"
           onClick={() => onEdit(equipment)}
-          className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-black/80 text-white backdrop-blur-md transition-colors hover:bg-[#00D4FF] hover:text-[#0A0A0A]"
+          className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-black/80 text-white backdrop-blur-md transition-colors hover:bg-custom-color-109 hover:text-custom-color-110"
           title="Edit Equipment"
           aria-label="Edit Equipment"
         >
@@ -164,7 +163,7 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
 
       {/* Image Section */}
       <div className="relative h-44 shrink-0 overflow-hidden">
-        <div className="absolute inset-0 z-[1] bg-gradient-to-t from-[#0A0A0A] to-transparent opacity-60" />
+        <div className="absolute inset-0 z-custom-misc-107 bg-gradient-to-t from-custom-color-111 to-transparent opacity-60" />
         {equipmentImage ? (
           <img
             src={equipmentImage.url}
@@ -178,8 +177,8 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
         )}
 
         {/* Category Badge */}
-        <div className="absolute bottom-3 left-3 z-[2]">
-          <span className="rounded border border-[#00D4FF]/30 bg-[#00D4FF]/20 px-2 py-0.5 text-xxs font-bold tracking-wider text-[#00D4FF] uppercase backdrop-blur-md">
+        <div className="absolute bottom-3 left-3 z-custom-misc-108">
+          <span className="rounded border border-custom-color-112/30 bg-custom-color-113/20 px-2 py-0.5 text-xxs font-bold tracking-wider text-custom-color-114 uppercase backdrop-blur-md">
             {equipment.category || "General"}
           </span>
         </div>
@@ -211,25 +210,25 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
         {/* Specs Grid */}
         <div className="mt-auto grid grid-cols-2 gap-x-4 gap-y-2 border-t border-white/[0.05] pt-4">
           <div className="flex items-center gap-2">
-            <Settings2 className="h-3 w-3 text-[#00D4FF]/60" />
+            <Settings2 className="h-3 w-3 text-custom-color-115/60" />
             <span className="truncate text-xxs text-admin-foreground/40 uppercase tracking-wider">
               {equipment.manufacturer || "OEM"}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Box className="h-3 w-3 text-[#00D4FF]/60" />
+            <Box className="h-3 w-3 text-custom-color-116/60" />
             <span className="truncate text-xxs text-admin-foreground/40 uppercase tracking-wider">
               QTY: {equipment.quantity || 1}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Activity className="h-3 w-3 text-[#00D4FF]/60" />
+            <Activity className="h-3 w-3 text-custom-color-117/60" />
             <span className="truncate text-xxs text-admin-foreground/40 uppercase tracking-wider">
               {equipment.capacity || "STNDRD"}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Calendar className="h-3 w-3 text-[#00D4FF]/60" />
+            <Calendar className="h-3 w-3 text-custom-color-118/60" />
             <span className="truncate text-xxs text-admin-foreground/40 uppercase tracking-wider">
               {equipment.maintenanceSchedule || "MNTNCE"}
             </span>
@@ -240,15 +239,13 @@ function SortableEquipmentItem({ equipment, onEdit, onDelete }: SortableEquipmen
   );
 }
 
-export interface TechnologyEquipmentManagementProps {
+interface TechnologyEquipmentManagementProps {
   isLoading?: boolean;
 }
 
 export function TechnologyEquipmentManagement({
   isLoading = false,
 }: TechnologyEquipmentManagementProps = {}) {
-  const { toast } = useToast();
-
   // Form state management
   const [editingEquipment, setEditingEquipment] = useState<TechnologyEquipment | null>(null);
   const [showEquipmentDialog, setShowEquipmentDialog] = useState(false);
@@ -320,10 +317,7 @@ export function TechnologyEquipmentManagement({
         installationDate: null,
         isActive: true,
       });
-      toast({
-        title: "Success",
-        description: "Equipment created successfully",
-      });
+      toast.success("Success", { description: "Equipment created successfully" });
     },
   });
 
@@ -339,10 +333,7 @@ export function TechnologyEquipmentManagement({
       });
       setShowEquipmentDialog(false);
       setEditingEquipment(null);
-      toast({
-        title: "Success",
-        description: "Equipment updated successfully",
-      });
+      toast.success("Success", { description: "Equipment updated successfully" });
     },
   });
 
@@ -352,10 +343,7 @@ export function TechnologyEquipmentManagement({
       getQueryClient().invalidateQueries({
         queryKey: ["/api/technology-equipment"],
       });
-      toast({
-        title: "Success",
-        description: "Equipment deleted successfully",
-      });
+      toast.success("Success", { description: "Equipment deleted successfully" });
     },
   });
 
@@ -425,9 +413,9 @@ export function TechnologyEquipmentManagement({
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div className="flex max-w-2xl flex-col gap-2">
           <div className="flex items-center gap-2">
-            <Wrench className="h-5 w-5 text-[#00D4FF]" />
+            <Wrench className="h-5 w-5 text-custom-color-119" />
             <h2 className="text-2xl font-black uppercase tracking-tight text-white">
-              Technology <span className="text-[#00D4FF]">Equipment</span>
+              Technology <span className="text-custom-color-120">Equipment</span>
             </h2>
           </div>
           <p className="text-sm leading-relaxed text-admin-foreground/60">
@@ -441,7 +429,7 @@ export function TechnologyEquipmentManagement({
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-foreground/40" />
             <Input
               placeholder="Filter assets..."
-              className="h-10 border-white/[0.08] bg-white/[0.03] pl-9 text-xs focus-visible:ring-[#00D4FF]/30"
+              className="h-10 border-white/[0.08] bg-white/[0.03] pl-9 text-xs focus-visible:ring-custom-color-121/30"
             />
           </div>
           <Button
@@ -464,7 +452,7 @@ export function TechnologyEquipmentManagement({
               });
               setShowEquipmentDialog(true);
             }}
-            className="h-10 bg-[#00D4FF] px-6 font-bold text-[#0A0A0A] transition-all hover:bg-[#00D4FF]/90 hover:shadow-[0_0_20px_rgba(0,212,255,0.3)]"
+            className="h-10 bg-custom-color-122 px-6 font-bold text-custom-color-123 transition-all hover:bg-custom-color-124/90 hover:shadow-custom-misc-109"
           >
             <Plus className="mr-2 h-4 w-4" />
             NEW EQUIPMENT
@@ -473,22 +461,22 @@ export function TechnologyEquipmentManagement({
       </div>
 
       {/* Equipment Grid Section */}
-      <div className="min-h-[400px]">
+      <div className="min-h-custom-space-110">
         {equipmentLoading || isLoading ? (
           <div className="flex h-64 flex-col items-center justify-center gap-4">
-            <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#00D4FF] border-t-transparent" />
-            <span className="text-xs font-medium uppercase tracking-widest text-[#00D4FF]">
+            <div className="h-10 w-10 animate-spin rounded-full border-2 border-custom-color-125 border-t-transparent" />
+            <span className="text-xs font-medium uppercase tracking-widest text-custom-color-126">
               Calibrating Systems...
             </span>
           </div>
         ) : equipment.length === 0 ? (
           <div className="flex h-80 flex-col items-center justify-center gap-6 rounded-2xl border border-dashed border-white/[0.1] bg-white/[0.02]">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#00D4FF]/10">
-              <Monitor className="h-8 w-8 text-[#00D4FF]/40" />
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-custom-color-127/10">
+              <Monitor className="h-8 w-8 text-custom-color-128/40" />
             </div>
             <div className="text-center">
               <h3 className="text-lg font-bold text-white">No Assets Detected</h3>
-              <p className="max-w-[300px] text-xs leading-relaxed text-admin-foreground/40">
+              <p className="max-w-custom-space-111 text-xs leading-relaxed text-admin-foreground/40">
                 Your manufacturing grid is currently offline. Add equipment to begin tracking
                 performance.
               </p>
@@ -526,16 +514,16 @@ export function TechnologyEquipmentManagement({
       {/* Footer Ecosystem Stats - Bento Style */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-xl transition-all hover:bg-white/[0.05]">
-          <p className="mb-1 text-xxs font-bold tracking-[0.2em] text-admin-foreground/40 uppercase">
+          <p className="mb-1 text-xxs font-bold tracking-custom-misc-110 text-admin-foreground/40 uppercase">
             Total Assets
           </p>
           <div className="flex items-end gap-2">
             <span className="text-3xl font-black text-white">{equipment.length}</span>
-            <span className="mb-1 text-xxs font-medium text-[#00D4FF]">SYSTEMS</span>
+            <span className="mb-1 text-xxs font-medium text-custom-color-129">SYSTEMS</span>
           </div>
         </div>
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-xl transition-all hover:bg-white/[0.05]">
-          <p className="mb-1 text-xxs font-bold tracking-[0.2em] text-admin-foreground/40 uppercase">
+          <p className="mb-1 text-xxs font-bold tracking-custom-misc-111 text-admin-foreground/40 uppercase">
             Ecosystem Health
           </p>
           <div className="flex items-end gap-2">
@@ -544,23 +532,23 @@ export function TechnologyEquipmentManagement({
           </div>
         </div>
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-xl transition-all hover:bg-white/[0.05]">
-          <p className="mb-1 text-xxs font-bold tracking-[0.2em] text-admin-foreground/40 uppercase">
+          <p className="mb-1 text-xxs font-bold tracking-custom-misc-112 text-admin-foreground/40 uppercase">
             Active Units
           </p>
           <div className="flex items-end gap-2">
             <span className="text-3xl font-black text-white">
               {equipment.filter((e) => e.isActive).length}
             </span>
-            <span className="mb-1 text-xxs font-medium text-[#00D4FF]">ONLINE</span>
+            <span className="mb-1 text-xxs font-medium text-custom-color-130">ONLINE</span>
           </div>
         </div>
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-xl transition-all hover:bg-white/[0.05]">
-          <p className="mb-1 text-xxs font-bold tracking-[0.2em] text-admin-foreground/40 uppercase">
+          <p className="mb-1 text-xxs font-bold tracking-custom-misc-113 text-admin-foreground/40 uppercase">
             System Uptime
           </p>
           <div className="flex items-end gap-2">
-            <span className="text-3xl font-black text-[#00D4FF]">99.9%</span>
-            <span className="mb-1 text-xxs font-medium text-[#00D4FF]">VERIFIED</span>
+            <span className="text-3xl font-black text-custom-color-131">99.9%</span>
+            <span className="mb-1 text-xxs font-medium text-custom-color-132">VERIFIED</span>
           </div>
         </div>
       </div>
@@ -570,11 +558,11 @@ export function TechnologyEquipmentManagement({
         <DialogContent
           contentType="form"
           preferredSize="4xl"
-          className="overflow-hidden bg-surface-black border-[#00D4FF]/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+          className="overflow-hidden bg-surface-black border-custom-color-133/20 shadow-custom-misc-114"
         >
           <DialogHeader className="border-b border-white/[0.08] bg-white/[0.02] px-8 py-6">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#00D4FF]/10 text-[#00D4FF]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-custom-color-134/10 text-custom-color-135">
                 {editingEquipment ? (
                   <Settings2 className="h-5 w-5" />
                 ) : (
@@ -584,7 +572,7 @@ export function TechnologyEquipmentManagement({
               <div>
                 <DialogTitle className="text-xl font-black tracking-tight text-white uppercase">
                   {editingEquipment ? "Configure" : "Initialize"}{" "}
-                  <span className="text-[#00D4FF]">Asset</span>
+                  <span className="text-custom-color-136">Asset</span>
                 </DialogTitle>
                 <DialogDescription className="text-xs text-admin-foreground/40">
                   Update high-precision equipment specifications for the digital ecosystem.
@@ -600,8 +588,8 @@ export function TechnologyEquipmentManagement({
             <DialogBody className="custom-scrollbar space-y-8 px-8 py-8">
               {/* Primary Configuration */}
               <div className="space-y-6">
-                <div className="flex items-center gap-2 border-l-2 border-[#00D4FF] pl-4">
-                  <h4 className="text-xxs font-black uppercase tracking-[0.2em] text-[#00D4FF]">
+                <div className="flex items-center gap-2 border-l-2 border-custom-color-137 pl-4">
+                  <h4 className="text-xxs font-black uppercase tracking-custom-misc-115 text-custom-color-138">
                     Primary Configuration
                   </h4>
                 </div>
@@ -614,7 +602,7 @@ export function TechnologyEquipmentManagement({
                     <Input
                       value={equipmentForm.name}
                       onChange={(e) => setEquipmentForm({ ...equipmentForm, name: e.target.value })}
-                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-custom-color-139/30"
                       placeholder="e.g., Automated Cutting System v4"
                       required
                     />
@@ -628,7 +616,7 @@ export function TechnologyEquipmentManagement({
                       onChange={(e) =>
                         setEquipmentForm({ ...equipmentForm, category: e.target.value })
                       }
-                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-custom-color-140/30"
                       placeholder="e.g., Hardware, Software, Instrumentation"
                     />
                   </div>
@@ -643,7 +631,7 @@ export function TechnologyEquipmentManagement({
                     onChange={(e) =>
                       setEquipmentForm({ ...equipmentForm, description: e.target.value })
                     }
-                    className="min-h-[100px] border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                    className="min-h-custom-space-112 border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-custom-color-141/30"
                     placeholder="Provide detailed technical summary of this equipment..."
                   />
                 </div>
@@ -651,8 +639,8 @@ export function TechnologyEquipmentManagement({
 
               {/* Technical Specifications */}
               <div className="space-y-6">
-                <div className="flex items-center gap-2 border-l-2 border-[#00D4FF] pl-4">
-                  <h4 className="text-xxs font-black uppercase tracking-[0.2em] text-[#00D4FF]">
+                <div className="flex items-center gap-2 border-l-2 border-custom-color-142 pl-4">
+                  <h4 className="text-xxs font-black uppercase tracking-custom-misc-116 text-custom-color-143">
                     Technical Specs
                   </h4>
                 </div>
@@ -667,7 +655,7 @@ export function TechnologyEquipmentManagement({
                       onChange={(e) =>
                         setEquipmentForm({ ...equipmentForm, manufacturer: e.target.value })
                       }
-                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-custom-color-144/30"
                       placeholder="e.g., Brother, Optitex"
                     />
                   </div>
@@ -680,7 +668,7 @@ export function TechnologyEquipmentManagement({
                       onChange={(e) =>
                         setEquipmentForm({ ...equipmentForm, model: e.target.value })
                       }
-                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-custom-color-145/30"
                       placeholder="e.g., Industrial v7.2"
                     />
                   </div>
@@ -697,7 +685,7 @@ export function TechnologyEquipmentManagement({
                           quantity: parseInt(e.target.value, 10) || 1,
                         })
                       }
-                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-custom-color-146/30"
                     />
                   </div>
                   <div className="space-y-2">
@@ -709,7 +697,7 @@ export function TechnologyEquipmentManagement({
                       onChange={(e) =>
                         setEquipmentForm({ ...equipmentForm, capacity: e.target.value })
                       }
-                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-custom-color-147/30"
                       placeholder="e.g., 500 units/day"
                     />
                   </div>
@@ -718,8 +706,8 @@ export function TechnologyEquipmentManagement({
 
               {/* Maintenance & Certification */}
               <div className="space-y-6">
-                <div className="flex items-center gap-2 border-l-2 border-[#00D4FF] pl-4">
-                  <h4 className="text-xxs font-black uppercase tracking-[0.2em] text-[#00D4FF]">
+                <div className="flex items-center gap-2 border-l-2 border-custom-color-148 pl-4">
+                  <h4 className="text-xxs font-black uppercase tracking-custom-misc-117 text-custom-color-149">
                     Lifecycle Management
                   </h4>
                 </div>
@@ -734,7 +722,7 @@ export function TechnologyEquipmentManagement({
                       onChange={(e) =>
                         setEquipmentForm({ ...equipmentForm, maintenanceSchedule: e.target.value })
                       }
-                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-custom-color-150/30"
                       placeholder="e.g., Bi-weekly, Monthly"
                     />
                   </div>
@@ -755,14 +743,14 @@ export function TechnologyEquipmentManagement({
                           installationDate: e.target.value ? new Date(e.target.value) : null,
                         })
                       }
-                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-[#00D4FF]/30"
+                      className="border-white/[0.08] bg-white/[0.03] text-sm focus-visible:ring-custom-color-151/30"
                     />
                   </div>
                 </div>
 
                 {/* Media Handling */}
                 <div className="space-y-4 rounded-xl border border-white/[0.05] bg-white/[0.02] p-6">
-                  <Label className="text-xxs font-black uppercase tracking-[0.2em] text-[#00D4FF]">
+                  <Label className="text-xxs font-black uppercase tracking-custom-misc-118 text-custom-color-152">
                     Visual Identification
                   </Label>
                   <div className="flex items-center gap-6">
@@ -796,7 +784,7 @@ export function TechnologyEquipmentManagement({
                         type="button"
                         variant="ghost"
                         onClick={() => setIsImagePickerOpen(true)}
-                        className="h-8 w-fit border border-white/[0.1] text-xxs font-bold tracking-widest text-[#00D4FF] hover:bg-[#00D4FF]/10"
+                        className="h-8 w-fit border border-white/[0.1] text-xxs font-bold tracking-widest text-custom-color-153 hover:bg-custom-color-154/10"
                       >
                         SELECT REFERENCE MEDIA
                       </Button>
@@ -816,7 +804,9 @@ export function TechnologyEquipmentManagement({
                     <span
                       className={cn(
                         "text-xxs font-black tracking-widest uppercase transition-colors",
-                        equipmentForm.isActive ? "text-[#00D4FF]" : "text-admin-foreground/20",
+                        equipmentForm.isActive
+                          ? "text-custom-color-155"
+                          : "text-admin-foreground/20",
                       )}
                     >
                       {equipmentForm.isActive ? "Online" : "Decommissioned"}
@@ -826,7 +816,7 @@ export function TechnologyEquipmentManagement({
                       onCheckedChange={(checked) =>
                         setEquipmentForm({ ...equipmentForm, isActive: checked })
                       }
-                      className="data-[state=checked]:bg-[#00D4FF]"
+                      className="data-custom-misc-119:bg-custom-color-156"
                     />
                   </div>
                 </div>
@@ -845,7 +835,7 @@ export function TechnologyEquipmentManagement({
               <Button
                 type="submit"
                 disabled={createEquipmentMutation.isPending || updateEquipmentMutation.isPending}
-                className="bg-[#00D4FF] px-8 font-black text-[#0A0A0A] hover:bg-[#00D4FF]/90 hover:shadow-[0_0_20px_rgba(0,212,255,0.3)]"
+                className="bg-custom-color-157 px-8 font-black text-custom-color-158 hover:bg-custom-color-159/90 hover:shadow-custom-misc-120"
               >
                 {createEquipmentMutation.isPending || updateEquipmentMutation.isPending ? (
                   <div className="flex items-center gap-2">

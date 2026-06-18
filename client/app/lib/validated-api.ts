@@ -2,7 +2,7 @@ import type { z } from "zod";
 import { apiRequest } from "./api";
 import { createSuccessEnvelopeSchema } from "./schemas/response-envelopes";
 
-export class ResponseValidationError extends Error {
+class ResponseValidationError extends Error {
   public validationError: z.ZodError;
 
   constructor(message: string, validationError: z.ZodError) {

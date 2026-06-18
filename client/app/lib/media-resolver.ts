@@ -16,13 +16,13 @@ const warnLog = (_message: string, ..._args: unknown[]) => {
   }
 };
 
-export interface MediaResolverOptions {
+interface MediaResolverOptions {
   fallbackAssetId?: number;
   enableLogging?: boolean;
 }
 
 // biome-ignore lint/complexity/noStaticOnlyClass: service pattern
-export class MediaResolver {
+class MediaResolver {
   private static assets: MediaAsset[] = [];
   private static _enableLogging = false;
   public static get enableLogging() {

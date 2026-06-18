@@ -20,7 +20,7 @@ interface SidebarContextProps {
 
 const SidebarContext = createContext<SidebarContextProps | undefined>(undefined);
 
-export const useSidebar = () => {
+const useSidebar = () => {
   const context = useContext(SidebarContext);
   if (!context) {
     throw new Error("useSidebar must be used within a SidebarProvider");
@@ -28,7 +28,7 @@ export const useSidebar = () => {
   return context;
 };
 
-export const SidebarProvider = ({
+const SidebarProvider = ({
   children,
   open: openProp,
   setOpen: setOpenProp,
@@ -82,7 +82,7 @@ export const SidebarBody = (props: React.ComponentProps<"div">) => {
   );
 };
 
-export const DesktopSidebar = ({ className, children, ...props }: React.ComponentProps<"div">) => {
+const DesktopSidebar = ({ className, children, ...props }: React.ComponentProps<"div">) => {
   const { open, setOpen, animate } = useSidebar();
   const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -118,7 +118,7 @@ export const DesktopSidebar = ({ className, children, ...props }: React.Componen
   );
 };
 
-export const MobileSidebar = ({ className, children, ...props }: React.ComponentProps<"div">) => {
+const MobileSidebar = ({ className, children, ...props }: React.ComponentProps<"div">) => {
   const { open, setOpen } = useSidebar();
   const [shouldRender, setShouldRender] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);

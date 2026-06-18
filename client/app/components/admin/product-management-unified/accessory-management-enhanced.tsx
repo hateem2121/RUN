@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +27,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { useCacheInvalidationListener } from "@/hooks/useCacheInvalidation";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
@@ -240,8 +240,6 @@ export function AccessoryManagementEnhanced() {
   const [isPreviewDialogOpen, setIsPreviewDialogOpen] = useState(false);
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
 
-  const { toast } = useToast();
-
   // EVENT-DRIVEN: Listen for backend cache invalidation events
   useCacheInvalidationListener("accessories");
 
@@ -318,18 +316,11 @@ export function AccessoryManagementEnhanced() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/accessories"] });
-      toast({
-        title: "Success",
-        description: "Accessory created successfully",
-      });
+      toast.success("Success", { description: "Accessory created successfully" });
       resetForm();
     },
     onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to create accessory",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -343,20 +334,13 @@ export function AccessoryManagementEnhanced() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/accessories"] });
-      toast({
-        title: "Success",
-        description: "Accessory updated successfully",
-      });
+      toast.success("Success", { description: "Accessory updated successfully" });
       setIsEditDialogOpen(false);
       setEditingAccessory(null);
       resetForm();
     },
     onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update accessory",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: error.message });
     },
   });
 
@@ -368,22 +352,14 @@ export function AccessoryManagementEnhanced() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/accessories"] });
-      toast({
-        title: "Success",
-        description: "Accessory deleted successfully",
-      });
+      toast.success("Success", { description: "Accessory deleted successfully" });
     },
     onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to delete accessory",
-        variant: "destructive",
-      });
+      toast.error("Error", { description: error.message });
     },
   });
 
   const handleSubmit = (_formDataAction: FormData) => {
-
     // Convert specifications array to object
     const specificationsObject = specifications.reduce(
       (acc, spec) => {

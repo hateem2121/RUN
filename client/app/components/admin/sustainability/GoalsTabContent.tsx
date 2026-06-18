@@ -413,7 +413,7 @@ export function GoalsTabContent({
                 <Target className="h-8 w-8 text-admin-muted/40" />
               </div>
               <h3 className="text-white font-bold mb-1">No Objectives Identified</h3>
-              <p className="text-admin-muted text-sm max-w-[280px]">
+              <p className="text-admin-muted text-sm max-w-custom-space-76">
                 Strategic goals have not been initialised in the ecosystem.
               </p>
             </div>
@@ -651,7 +651,7 @@ export function GoalsTabContent({
                 placeholder="Elaborate on the strategic importance and execution roadmap..."
                 rows={4}
                 className={cn(
-                  "bg-white/5 border-white/10 text-white rounded-xl min-h-[100px] focus:ring-emerald-500/50 placeholder:text-white/20 resize-none",
+                  "bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-77 focus:ring-emerald-500/50 placeholder:text-white/20 resize-none",
                   !goalValidation.description.isValid && "border-red-500/50 bg-red-500/5",
                 )}
               />
@@ -680,7 +680,7 @@ export function GoalsTabContent({
                 onCheckedChange={(checked) =>
                   setGoalForm((prev) => ({ ...prev, isActive: checked }))
                 }
-                className="data-[state=checked]:bg-emerald-600"
+                className="data-custom-misc-77:bg-emerald-600"
               />
             </div>
           </DialogBody>
@@ -742,7 +742,7 @@ export function GoalsTabContent({
           </DialogHeader>
 
           <div className="px-8 pb-8 flex justify-center">
-            <div className="aspect-[9/16] w-full max-w-[280px] rounded-huge border-[8px] border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5 p-6">
+            <div className="aspect-custom-misc-78 w-full max-w-custom-space-78 rounded-huge border-custom-space-79 border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5 p-6">
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-transparent to-black z-0" />
 
               <div className="relative z-10 space-y-6">
@@ -750,7 +750,7 @@ export function GoalsTabContent({
                   <div className="size-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                     <TargetIcon className="h-5 w-5" />
                   </div>
-                  <span className="text-[8px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20">
+                  <span className="text-custom-space-80 font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20">
                     Target: {goalForm.targetYear || "2030"}
                   </span>
                 </div>
@@ -768,7 +768,7 @@ export function GoalsTabContent({
                 <div className="pt-4 space-y-3">
                   <div className="flex justify-between items-end">
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-[8px] font-bold text-white/40 uppercase tracking-widest">
+                      <span className="text-custom-space-81 font-bold text-white/40 uppercase tracking-widest">
                         Current Status
                       </span>
                       <span className="text-xl font-bold text-white tracking-tight">
@@ -779,7 +779,7 @@ export function GoalsTabContent({
                       </span>
                     </div>
                     <div className="flex flex-col items-end gap-0.5">
-                      <span className="text-[8px] font-bold text-emerald-400 uppercase tracking-widest">
+                      <span className="text-custom-space-82 font-bold text-emerald-400 uppercase tracking-widest">
                         Objective
                       </span>
                       <span className="text-sm font-bold text-emerald-400">
@@ -788,7 +788,7 @@ export function GoalsTabContent({
                     </div>
                   </div>
                   <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-500 shadow-[0_0_10px_rgba(59,130,246,0.5)] w-[42%]" />
+                    <div className="h-full bg-emerald-500 shadow-custom-misc-79 w-custom-space-83" />
                   </div>
                 </div>
               </div>

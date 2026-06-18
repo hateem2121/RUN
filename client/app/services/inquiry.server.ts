@@ -12,7 +12,7 @@ import { z } from "zod";
  * Handles B2B Contact Form submissions.
  * Inserts directly into the database.
  */
-export async function submitContactInquiry(data: ContactSubmissionData) {
+async function submitContactInquiry(data: ContactSubmissionData) {
   // 1. Validation
   const validated = ContactSubmissionSchema.parse(data);
 
@@ -150,6 +150,4 @@ export async function submitInquiryAction(_request: Request | null, formData: Fo
     };
   }
 }
-
 // --- Legacy Alias (Deprecation Path) ---
-export { submitContactInquiry as submitInquiry };

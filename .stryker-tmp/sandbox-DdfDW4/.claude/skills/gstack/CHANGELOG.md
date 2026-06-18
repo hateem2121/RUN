@@ -1526,7 +1526,7 @@ Source: the `test/skill-e2e-opus-47.test.ts` eval, two cases, 8 assertions, ~$2.
 | `ALL_MODEL_NAMES` in `scripts/models.ts` | No `opus-4-7` taxonomy entry | Added; `claude-opus-4-7-*` routes to the new overlay |
 | `scripts/resolvers/utility.ts:372` trailer fallback | Hardcoded `Claude Opus 4.6` | Matches host config, Opus 4.7 default |
 | `generate-routing-injection.ts` policy | Old "ALWAYS invoke, do NOT answer directly" | Matches SKILL.md.tmpl "when in doubt, invoke" |
-| `generate-routing-injection.ts` skill names | Stale `/checkpoint` (renamed three releases ago) | `/context-save` + `/context-restore`, plus `/benchmark`, `/devex-review`, `/qa-only`, `/canary`, `/land-and-deploy`, `/setup-deploy`, `/open-gstack-browser`, `/setup-browser-cookies`, `/learn`, `/plan-tune`, `/health` |
+| `generate-routing-injection.ts` skill names | Stale `/context-save` (renamed three releases ago) | `/context-save` + `/context-restore`, plus `/benchmark`, `/devex-review`, `/qa-only`, `/canary`, `/land-and-deploy`, `/setup-deploy`, `/open-gstack-browser`, `/setup-browser-cookies`, `/learn`, `/plan-tune`, `/health` |
 | Voice example closing | "Want me to ship it?" (trains ship-bypass on a literal 4.7 interpreter) | "Want me to fix it?" (preserves review gates) |
 | `"Fix ALL failing tests"` nudge scope | Unbounded, could touch pre-existing unrelated failures | Bounded to "tests this branch introduced or is responsible for" |
 | `"Batch your questions"` nudge | Silently conflicted with skills that mandate one-at-a-time pacing | Explicit pacing exception; the skill wins |
@@ -1554,12 +1554,12 @@ Regenerating with `--model opus-4-7` now gives you a SKILL.md that carries the 4
 - New `model-overlays/opus-4-7.md` inheriting from `claude.md` via `{{INHERIT:claude}}`. Holds the four Opus-4.7-specific nudges: Fan out explicitly (with concrete `[Read(a), Read(b), Read(c)]` example), Effort-match the step, Batch your questions (with pacing exception), Literal interpretation awareness (with branch-scope boundary).
 - `opus-4-7` entry in `ALL_MODEL_NAMES` in `scripts/models.ts`. `resolveModel()` routes `claude-opus-4-7-*` to the new overlay, all other `claude-*` variants continue to route to `claude`.
 - `test/skill-e2e-opus-47.test.ts`: first E2E pinned to `claude-opus-4-7`. Two cases (fanout A/B, routing precision), 8 assertions, `periodic` tier. Gated on `EVALS=1`.
-- Regression tests in `test/gen-skill-docs.test.ts` for the new routing shape: asserts slash-prefixed skill references (`/office-hours` not `office-hours`), asserts `/context-save` + `/context-restore` present (guards the stale `/checkpoint` name regression), asserts "when in doubt, invoke" policy present (guards the hard `ALWAYS invoke` regression).
+- Regression tests in `test/gen-skill-docs.test.ts` for the new routing shape: asserts slash-prefixed skill references (`/office-hours` not `office-hours`), asserts `/context-save` + `/context-restore` present (guards the stale `/context-save` name regression), asserts "when in doubt, invoke" policy present (guards the hard `ALWAYS invoke` regression).
 
 #### Changed
 
 - `model-overlays/claude.md` trimmed back to model-agnostic nudges (Todo-list discipline, Think before heavy actions, Dedicated tools over Bash). Opus-4.7-specific content moved to `opus-4-7.md`.
-- `scripts/resolvers/preamble/generate-routing-injection.ts`: aligned with the new SKILL.md.tmpl policy ("when in doubt, invoke"), renamed stale `/checkpoint` references to `/context-save` + `/context-restore`, added 12 missing routes (full skill inventory now covered).
+- `scripts/resolvers/preamble/generate-routing-injection.ts`: aligned with the new SKILL.md.tmpl policy ("when in doubt, invoke"), renamed stale `/context-save` references to `/context-save` + `/context-restore`, added 12 missing routes (full skill inventory now covered).
 - `SKILL.md.tmpl` routing section: added the same 12 missing routes; added branch-scope boundary to "Fix ALL failing tests"; added explicit pacing exception to "Batch your questions" so skill workflows win on pacing.
 - `scripts/resolvers/preamble/generate-voice-directive.ts`: voice example closing changed from "Want me to ship it?" to "Want me to fix it?" (preserves review gates on a literal 4.7 interpreter).
 - `scripts/resolvers/utility.ts:372`: co-author trailer fallback `Claude Opus 4.6` → `Claude Opus 4.7` (the PR updated `hosts/claude.ts` but missed this fallback).
@@ -1825,7 +1825,7 @@ make-pdf shells out to `browse` for Chromium lifecycle. No second Playwright ins
 ## **Your design skills learn your taste.**
 ## **Your session state becomes files you can grep, not a black box.**
 
-v1.3 is about the things you do every day. `/design-shotgun` now remembers which fonts, colors, and layouts you approve across sessions, so the next round of variants leans toward your actual taste instead of resetting to Inter every time. `/design-consultation` has a "would a human designer be embarrassed by this?" self-gate in Phase 5 and a "what's the one thing someone will remember?" forcing question in Phase 1, AI-slop output gets discarded before it reaches you. `/context-save` and `/context-restore` write session state to plaintext markdown in `~/.gstack/projects/$SLUG/checkpoints/`, you can read and edit and move between machines. Flip on continuous checkpoint mode (`gstack-config set checkpoint_mode continuous`) and it also drops `WIP:` commits with structured `[gstack-context]` bodies into your git log. Claude Code already manages its own session state, this is a parallel track you control, in formats you own.
+v1.3 is about the things you do every day. `/design-shotgun` now remembers which fonts, colors, and layouts you approve across sessions, so the next round of variants leans toward your actual taste instead of resetting to Inter every time. `/design-consultation` has a "would a human designer be embarrassed by this?" self-gate in Phase 5 and a "what's the one thing someone will remember?" forcing question in Phase 1, AI-slop output gets discarded before it reaches you. `/context-save` and `/context-restore` write session state to plaintext markdown in `~/.gstack/projects/$SLUG/context-saves/`, you can read and edit and move between machines. Flip on continuous checkpoint mode (`gstack-config set checkpoint_mode continuous`) and it also drops `WIP:` commits with structured `[gstack-context]` bodies into your git log. Claude Code already manages its own session state, this is a parallel track you control, in formats you own.
 
 ### The numbers that matter
 
@@ -1840,7 +1840,7 @@ Setup: these come from the v1.3 feature surface. Reproducible via `grep "Generat
 | **`/context-restore` sources**                   | markdown files only          | **markdown + `[gstack-context]` from WIP commits** | **+1** |
 | **Models with behavioral overlays**              | 1 (Claude implicit)          | **5** (claude, gpt, gpt-5.4, gemini, o-series) | **+4** |
 
-The single most striking row: session state stops being a black box. Claude Code's built-in session management works fine on its own terms, but you can't `grep` it, you can't read it, you can't hand it to a different tool. `/context-save` writes markdown to `~/.gstack/projects/$SLUG/checkpoints/` you can open in any editor. Continuous mode (opt-in) also drops `WIP:` commits with structured `[gstack-context]` bodies into your git log, so `git log --grep "WIP:"` shows the whole thread. Either way, plain text you own, not a proprietary store.
+The single most striking row: session state stops being a black box. Claude Code's built-in session management works fine on its own terms, but you can't `grep` it, you can't read it, you can't hand it to a different tool. `/context-save` writes markdown to `~/.gstack/projects/$SLUG/context-saves/` you can open in any editor. Continuous mode (opt-in) also drops `WIP:` commits with structured `[gstack-context]` bodies into your git log, so `git log --grep "WIP:"` shows the whole thread. Either way, plain text you own, not a proprietary store.
 
 ### What this means for gstack users
 
@@ -1904,18 +1904,18 @@ If you're a solo builder or founder shipping a product one sprint at a time, `/d
 ## [1.1.3.0] - 2026-04-19
 
 ### Changed
-- **`/checkpoint` is now `/context-save` + `/context-restore`.** Claude Code treats `/checkpoint` as a native rewind alias in current environments, which was shadowing the gstack skill. Symptom: you'd type `/checkpoint`, the agent would describe it as a "built-in you need to type directly," and nothing would get saved. The fix is a clean rename and a split into two skills. One that saves, one that restores. Your old saved files still load via `/context-restore` (storage path unchanged).
+- **`/context-save` is now `/context-save` + `/context-restore`.** Claude Code treats `/context-save` as a native rewind alias in current environments, which was shadowing the gstack skill. Symptom: you'd type `/context-save`, the agent would describe it as a "built-in you need to type directly," and nothing would get saved. The fix is a clean rename and a split into two skills. One that saves, one that restores. Your old saved files still load via `/context-restore` (storage path unchanged).
   - `/context-save` saves your current working state (optional title: `/context-save wintermute`).
   - `/context-save list` lists saved contexts. Defaults to current branch; pass `--all` for every branch.
-  - `/context-restore` loads the most recent saved context across ALL branches by default. This fixes a second bug where the old `/checkpoint resume` flow was getting cross-contaminated with list-flow filtering and silently hiding your most recent save.
+  - `/context-restore` loads the most recent saved context across ALL branches by default. This fixes a second bug where the old `/context-save resume` flow was getting cross-contaminated with list-flow filtering and silently hiding your most recent save.
   - `/context-restore <title-fragment>` loads a specific saved context.
 - **Restore ordering is now deterministic.** "Most recent" means the `YYYYMMDD-HHMMSS` prefix in the filename, not filesystem mtime. mtime drifts during copies and rsync; filenames don't. Applied to both restore and list flows.
 
 ### Fixed
-- **Empty-set bug on macOS.** If you ran `/checkpoint resume` (now `/context-restore`) with zero saved files, `find ... | xargs ls -1t` would fall back to listing your current directory. Confusing output, no clean "no saved contexts yet" message. Replaced with `find | sort -r | head` so empty input stays empty.
+- **Empty-set bug on macOS.** If you ran `/context-save resume` (now `/context-restore`) with zero saved files, `find ... | xargs ls -1t` would fall back to listing your current directory. Confusing output, no clean "no saved contexts yet" message. Replaced with `find | sort -r | head` so empty input stays empty.
 
 ### For contributors
-- New `gstack-upgrade/migrations/v1.1.3.0.sh` removes the stale on-disk `/checkpoint` install so Claude Code's native `/rewind` alias is no longer shadowed. Ownership-guarded across three install shapes (directory symlink into gstack, directory with SKILL.md symlinked into gstack, anything else). User-owned `/checkpoint` skills preserved with a notice. Migration hardened after adversarial review: explicit `HOME` unset/empty guard, `realpath` with python3 fallback, `rm --` flag, macOS sidecar handling.
+- New `gstack-upgrade/migrations/v1.1.3.0.sh` removes the stale on-disk `/context-save` install so Claude Code's native `/rewind` alias is no longer shadowed. Ownership-guarded across three install shapes (directory symlink into gstack, directory with SKILL.md symlinked into gstack, anything else). User-owned `/context-save` skills preserved with a notice. Migration hardened after adversarial review: explicit `HOME` unset/empty guard, `realpath` with python3 fallback, `rm --` flag, macOS sidecar handling.
 - `test/migration-checkpoint-ownership.test.ts` ships 7 scenarios covering all 3 install shapes + idempotency + no-op-when-gstack-not-installed + SKILL.md-symlink-outside-gstack. Free tier, ~85ms.
 - Split `checkpoint-save-resume` E2E into `context-save-writes-file` and `context-restore-loads-latest`. The latter seeds two files with scrambled mtimes so the "filename-prefix, not mtime" guarantee is locked in.
 - `context-save` now sanitizes the title in bash (allowlist `[a-z0-9.-]`, cap 60 chars) instead of trusting LLM-side slugification, and appends a random suffix on same-second collisions to enforce the append-only contract.
@@ -2547,10 +2547,10 @@ Your AI sessions now remember what happened. Plans, reviews, checkpoints, and he
 - **Cross-session injection.** On session start, the preamble prints your last skill run on this branch and your latest checkpoint. You see "Last session: /review (success)" before typing anything.
 - **Predictive skill suggestion.** If your last 3 sessions on a branch follow a pattern (review, ship, review), gstack suggests what you probably want next.
 - **Welcome back message.** Sessions synthesize a one-paragraph briefing: branch name, last skill, checkpoint status, health score.
-- **`/checkpoint` skill.** Save and resume working state snapshots. Captures git state, decisions made, remaining work. Supports cross-branch listing for Conductor workspace handoff between agents.
+- **`/context-save` skill.** Save and resume working state snapshots. Captures git state, decisions made, remaining work. Supports cross-branch listing for Conductor workspace handoff between agents.
 - **`/health` skill.** Code quality scorekeeper. Wraps your project's tools (tsc, biome, knip, shellcheck, tests), computes a composite 0-10 score, tracks trends over time. When the score drops, it tells you exactly what changed and where to fix it.
 - **Timeline binaries.** `bin/gstack-timeline-log` and `bin/gstack-timeline-read` for append-only JSONL timeline storage.
-- **Routing rules.** /checkpoint and /health added to the skill routing injection.
+- **Routing rules.** /context-save and /health added to the skill routing injection.
 
 ## [0.14.6.0] - 2026-03-31. Recursive Self-Improvement
 
