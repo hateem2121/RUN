@@ -70,7 +70,7 @@ export default defineConfig((env) => {
         "@radix-ui/react-select",
         "@radix-ui/react-slider",
         "react-error-boundary",
-        "leaflet"
+        "leaflet",
       ],
     },
     resolve: {

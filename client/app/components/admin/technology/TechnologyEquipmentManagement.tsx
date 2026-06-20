@@ -361,8 +361,7 @@ export function TechnologyEquipmentManagement({
   });
 
   // Event handlers
-  const handleEquipmentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleEquipmentSubmit = (_formData: FormData) => {
     if (editingEquipment) {
       updateEquipmentMutation.mutate({
         id: editingEquipment.id,
@@ -582,7 +581,7 @@ export function TechnologyEquipmentManagement({
           </DialogHeader>
 
           <form
-            onSubmit={handleEquipmentSubmit}
+            action={handleEquipmentSubmit}
             className="flex min-h-0 flex-1 flex-col overflow-hidden"
           >
             <DialogBody className="custom-scrollbar space-y-8 px-8 py-8">

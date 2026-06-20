@@ -1,5 +1,5 @@
+import { reorderGoalsSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { z } from "zod";
 import { insertSustainabilityGoalSchema } from "../../../shared/index.js";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined, shouldBypassCache } from "../../lib/utilities/core-utils.js";
@@ -13,15 +13,6 @@ import { sustainabilityService } from "../../services/sustainability.service.js"
  * Refactored to "Thin Controller" pattern: delegates business logic to sustainabilityService.
  */
 const router = Router();
-
-const reorderSchema = z.object({
-  goals: z.array(
-    z.object({
-      id: z.number().int().positive(),
-      position: z.number().int().min(0),
-    }),
-  ),
-});
 
 router.get("/", async (req, res) => {
   const result = await sustainabilityService.getGoals(shouldBypassCache(req));
@@ -82,7 +73,7 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
 });
 
 router.patch("/reorder", authService.requireAdmin, async (req, res) => {
-  const validation = reorderSchema.safeParse(req.body);
+  const validation = reorderGoalsSchema.safeParse(req.body);
   if (!validation.success) {
     throw new ValidationError("Validation failed", {
       details: validation.error.issues,

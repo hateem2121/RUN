@@ -28,46 +28,44 @@ router.post("/vitals", writeRateLimiter, (req, res) => {
 
   // Process in background
   (async () => {
-    try {
-      const metric = WebVitalSchema.parse(req.body);
-      const userAgent = req.get("User-Agent");
-      const ip = req.ip;
+    const metric = WebVitalSchema.parse(req.body);
+    const userAgent = req.get("User-Agent");
+    const ip = req.ip;
 
-      // Log the metric for observability
-      logger.info(`[Client-Vitals] ${metric.name}: ${metric.value} (id: ${metric.id})`, {
-        metric_name: metric.name,
-        metric_value: metric.value,
-        metric_id: metric.id,
-        user_agent: userAgent,
-        ip: ip,
+    // Log the metric for observability
+    logger.info(`[Client-Vitals] ${metric.name}: ${metric.value} (id: ${metric.id})`, {
+      metric_name: metric.name,
+      metric_value: metric.value,
+      metric_id: metric.id,
+      user_agent: userAgent,
+      ip: ip,
+    });
+
+    if (isRedisEnabled) {
+      // PC-602: Persist to Redis
+      const listKey = `vitals:${metric.name}`;
+      const payload = JSON.stringify({
+        ...metric,
+        timestamp: Date.now(),
+        userAgent,
+        ip,
       });
 
-      if (isRedisEnabled) {
-        // PC-602: Persist to Redis
-        const listKey = `vitals:${metric.name}`;
-        const payload = JSON.stringify({
-          ...metric,
-          timestamp: Date.now(),
-          userAgent,
-          ip,
-        });
+      const timeout = new Promise<void>((_, reject) =>
+        setTimeout(() => reject(new Error("Redis write timeout")), 300),
+      );
 
-        const timeout = new Promise<void>((_, reject) =>
-          setTimeout(() => reject(new Error("Redis write timeout")), 300),
-        );
-
-        await Promise.race([
-          (async () => {
-            await redis.lpush(listKey, payload);
-            await redis.ltrim(listKey, 0, 999);
-          })(),
-          timeout,
-        ]);
-      }
-    } catch (err) {
-      logger.error("[Analytics] Failed to process vitals in background:", err);
+      await Promise.race([
+        (async () => {
+          await redis.lpush(listKey, payload);
+          await redis.ltrim(listKey, 0, 999);
+        })(),
+        timeout,
+      ]);
     }
-  })();
+  })().catch((err) => {
+    logger.error("[Analytics] Failed to process vitals in background:", err);
+  });
 });
 
 /**

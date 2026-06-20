@@ -33,14 +33,32 @@ const COMPRESSION_THRESHOLD = 1024;
 const tracer = trace.getTracer("unified-cache", "1.0.0");
 
 class DummyCacheProvider {
-  async get(_key: string) { return null; }
-  async set(_key: string, _value: string, _exToken?: "EX", _ttlSeconds?: number) { return "OK"; }
-  async del(..._keys: string[]) { return 0; }
-  async keys(_pattern: string) { return []; }
-  async expire(_key: string, _ttl: number) { return 1; }
+  async get(_key: string) {
+    return null;
+  }
+  async set(_key: string, _value: string, _exToken?: "EX", _ttlSeconds?: number) {
+    return "OK";
+  }
+  async del(..._keys: string[]) {
+    return 0;
+  }
+  async keys(_pattern: string) {
+    return [];
+  }
+  async expire(_key: string, _ttl: number) {
+    return 1;
+  }
   async deletePattern(_pattern: string) {}
   async flushdb() {}
-  async scan(_cursor: string | number, _matchToken?: "MATCH", _pattern?: string, _countToken?: "COUNT", _count?: number) { return ["0", []] as [string, string[]]; }
+  async scan(
+    _cursor: string | number,
+    _matchToken?: "MATCH",
+    _pattern?: string,
+    _countToken?: "COUNT",
+    _count?: number,
+  ) {
+    return ["0", []] as [string, string[]];
+  }
 }
 const dummyCache = new DummyCacheProvider();
 

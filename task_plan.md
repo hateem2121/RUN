@@ -6,12 +6,12 @@
 - [x] Verify Tech Integrity and ship Phase 1
 
 ## Phase 2 (P1/P2) — Architecture, Quality, Performance
-- [ ] Issue 2.1 — React 19 Form Actions (H04)
-- [ ] Issue 2.2 — Express 5 try/catch Regression (H12/H13)
-- [ ] Issue 2.3 — Centralize Excess Zod Schemas (D04 regression)
-- [ ] Issue 2.4 — Biome & TypeScript Errors
-- [ ] Issue 2.5 — Bundle Code Splitting
-- [ ] Verify Tech Integrity and ship Phase 2
+- [x] Issue 2.1 — React 19 Form Actions (H04)
+- [x] Issue 2.2 — Express 5 try/catch Regression (H12/H13)
+- [x] Issue 2.3 — Centralize Excess Zod Schemas (D04 regression)
+- [x] Issue 2.4 — Biome & TypeScript Errors
+- [x] Issue 2.5 — Bundle Code Splitting
+- [x] Verify Tech Integrity and ship Phase 2
 
 ## Session: 2026-06-20 (Health Score Audit)
 **Goal:** Scan monorepo for Health Score.

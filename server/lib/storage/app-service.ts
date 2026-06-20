@@ -7,7 +7,7 @@
 
 import { Storage } from "@google-cloud/storage";
 import { logger, serializeError } from "../monitoring/logger.js";
-import { withCircuit, EXTERNAL_API_CIRCUIT_OPTIONS } from "../resilience/circuit-breaker.js";
+import { EXTERNAL_API_CIRCUIT_OPTIONS, withCircuit } from "../resilience/circuit-breaker.js";
 
 class AppStorageService {
   private storage: Storage;

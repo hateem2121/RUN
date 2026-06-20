@@ -339,7 +339,9 @@ function useDeviceCapabilities() {
 }
 
 // Performance-aware component wrapper with generic prop preservation
-export function withPerformanceOptimization<P extends Record<string, unknown> = Record<string, unknown>>(
+export function withPerformanceOptimization<
+  P extends Record<string, unknown> = Record<string, unknown>,
+>(
   Component: React.ComponentType<P>,
   options: {
     lazyThreshold?: number;

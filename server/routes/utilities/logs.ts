@@ -28,37 +28,35 @@ router.post("/error", writeRateLimiter, (req, res) => {
 
   // Process in the background to avoid blocking request thread
   (async () => {
-    try {
-      const metric = ClientErrorSchema.parse(req.body);
+    const metric = ClientErrorSchema.parse(req.body);
 
-      const metadata = {
-        url: metric.url,
-        userAgent: metric.userAgent,
-        componentStack: metric.componentStack,
-        context: metric.context,
-        timestamp: metric.timestamp || new Date().toISOString(),
-        isRetry: metric.isRetry,
-        retryCount: metric.retryCount,
-      };
+    const metadata = {
+      url: metric.url,
+      userAgent: metric.userAgent,
+      componentStack: metric.componentStack,
+      context: metric.context,
+      timestamp: metric.timestamp || new Date().toISOString(),
+      isRetry: metric.isRetry,
+      retryCount: metric.retryCount,
+    };
 
-      const logMsg = `[Client-Error] ${metric.message}`;
+    const logMsg = `[Client-Error] ${metric.message}`;
 
-      if (metric.level === "error") {
-        const errObj = new Error(metric.message);
-        if (metric.stack) {
-          errObj.stack = metric.stack;
-        }
-        logger.error(logMsg, metadata, errObj);
-      } else if (metric.level === "warn") {
-        logger.warn(logMsg, metadata);
-      } else {
-        logger.info(logMsg, metadata);
+    if (metric.level === "error") {
+      const errObj = new Error(metric.message);
+      if (metric.stack) {
+        errObj.stack = metric.stack;
       }
-    } catch (err) {
-      // Don't leak back to client since we already returned 202
-      logger.error("[LogsService] Failed to parse and log client error", err as Error);
+      logger.error(logMsg, metadata, errObj);
+    } else if (metric.level === "warn") {
+      logger.warn(logMsg, metadata);
+    } else {
+      logger.info(logMsg, metadata);
     }
-  })();
+  })().catch((err) => {
+    // Don't leak back to client since we already returned 202
+    logger.error("[LogsService] Failed to parse and log client error", err as Error);
+  });
 });
 
 export default router;

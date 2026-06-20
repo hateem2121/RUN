@@ -35,8 +35,7 @@ export function InquiryCRMLogs({ inquiry }: InquiryCRMLogsProps) {
     },
   });
 
-  const handleAddLog = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAddLog = (_formData: FormData) => {
     if (!note.trim()) return;
     addLogMutation.mutate({ action, note });
   };
@@ -62,7 +61,7 @@ export function InquiryCRMLogs({ inquiry }: InquiryCRMLogsProps) {
 
       {isAdding && (
         <form
-          onSubmit={handleAddLog}
+          action={handleAddLog}
           className="p-4 rounded-xl bg-white/[0.03] border border-white/10 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300"
         >
           <div className="grid grid-cols-2 gap-3">

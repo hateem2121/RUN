@@ -1,5 +1,6 @@
+import { reorderMetricsSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { z } from "zod";
+import type { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
 import type { InsertSustainabilityMetric } from "../../../shared/index.js";
 import { insertSustainabilityMetricSchema } from "../../../shared/index.js";
@@ -14,15 +15,6 @@ import { sustainabilityService } from "../../services/sustainability.service.js"
  * Refactored to "Thin Controller" pattern: delegates business logic to sustainabilityService.
  */
 const router = Router();
-
-const reorderSchema = z.object({
-  metrics: z.array(
-    z.object({
-      id: z.number().int().positive(),
-      position: z.number().int().min(0),
-    }),
-  ),
-});
 
 /**
  * @openapi
@@ -195,9 +187,9 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
 router.patch(
   "/reorder",
   authService.requireAdmin,
-  validateRequest({ body: reorderSchema }),
+  validateRequest({ body: reorderMetricsSchema }),
   async (req, res) => {
-    const validatedData = req.body as z.infer<typeof reorderSchema>;
+    const validatedData = req.body as z.infer<typeof reorderMetricsSchema>;
     const orderedIds = validatedData.metrics
       .sort((a, b) => a.position - b.position)
       .map((item) => item.id);

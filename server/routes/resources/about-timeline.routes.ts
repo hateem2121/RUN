@@ -1,5 +1,6 @@
+import { reorderEntriesSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { z } from "zod";
+import type { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
 import type { InsertAboutTimelineEntry } from "../../../shared/index.js";
 import { insertAboutTimelineEntrySchema } from "../../../shared/index.js";
@@ -130,16 +131,6 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
   return res.status(204).send();
 });
 
-// Reorder validation schema
-const reorderSchema = z.object({
-  entries: z.array(
-    z.object({
-      id: z.number().int().positive(),
-      sortOrder: z.number().int().min(0),
-    }),
-  ),
-});
-
 /**
  * PATCH /api/v1/about-timeline/reorder
  * Reorder timeline entries
@@ -147,9 +138,9 @@ const reorderSchema = z.object({
 router.patch(
   "/reorder",
   authService.requireAdmin,
-  validateRequest({ body: reorderSchema }),
+  validateRequest({ body: reorderEntriesSchema }),
   async (req, res) => {
-    const validatedData = req.body as z.infer<typeof reorderSchema>;
+    const validatedData = req.body as z.infer<typeof reorderEntriesSchema>;
     // Extract ordered IDs
     const orderedIds = validatedData.entries.map((e) => e.id);
 

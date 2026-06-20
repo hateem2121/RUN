@@ -122,7 +122,13 @@ export function AnimatedCardWrapper({
 }
 
 // Smooth loading state animation
-export const LoadingSpinner = ({ size = 24, className = "" }: { size?: number; className?: string }) => {
+export const LoadingSpinner = ({
+  size = 24,
+  className = "",
+}: {
+  size?: number;
+  className?: string;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useGSAP(

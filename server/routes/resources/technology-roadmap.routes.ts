@@ -1,5 +1,5 @@
+import { reorderRoadmapSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { z } from "zod";
 import { insertTechnologyRoadmapSchema } from "../../../shared/index.js";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined, shouldBypassCache } from "../../lib/utilities/core-utils.js";
@@ -13,15 +13,6 @@ import { technologyService } from "../../services/technology.service.js";
  * Refactored to "Thin Controller" pattern: delegates business logic to technologyService.
  */
 const router = Router();
-
-const reorderSchema = z.object({
-  roadmap: z.array(
-    z.object({
-      id: z.number().int().positive(),
-      position: z.number().int().min(0),
-    }),
-  ),
-});
 
 router.get("/", async (req, res) => {
   const result = await technologyService.getRoadmap(shouldBypassCache(req));
@@ -82,7 +73,7 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
 });
 
 router.patch("/reorder", authService.requireAdmin, async (req, res) => {
-  const validation = reorderSchema.safeParse(req.body);
+  const validation = reorderRoadmapSchema.safeParse(req.body);
   if (!validation.success) {
     throw new ValidationError("Validation failed", {
       details: validation.error.issues,

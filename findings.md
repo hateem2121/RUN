@@ -76,6 +76,25 @@ The final integrity script `npm run verify:tech-integrity` passed execution with
 
 ## Audit Findings
 
+## [2026-06-20] Phase 2 Remediation (P1/P2 - Architecture, Quality, Performance)
+**Date:** 2026-06-20
+**Status:** 100% COMPLETE
+
+### Overview
+Addressed Phase 2 architectural debt and codebase quality regressions to pass the final `verify:tech-integrity` check.
+
+### Discoveries & Fixes
+- **Issue 2.1 (React 19 Forms):** Migrated 5 `onSubmit` event handlers in admin components to React 19 `action={fn}` server actions. Fixed unused `formData` variable definitions.
+- **Issue 2.2 (Express 5 try/catch):** Refactored redundant `try/catch` wrappers within route handlers (`worker.ts`) and utilized `.catch()` promise chaining to conform to thin controllers.
+- **Issue 2.3 (Zod Schemas Centralization):** Abstracted 8 local Drizzle/Zod schemas used for entity reordering into `@run-remix/shared/schemas/api/common.ts` (e.g., `reorderGoalsSchema`, `reorderEquipmentSchema`), eliminating DRY violations.
+- **Issue 2.4 (Biome & TS Errors):** Eliminated Biome's `noExplicitAny` warnings (e.g. casting rows to `Record<string, unknown>`) and unused imports via `npx biome check --write --unsafe`. Updated TS interfaces to eliminate implicit `any` in sort callbacks.
+- **Issue 2.5 (Bundle Code Splitting):** Verified `LazyUnifiedModelViewer` is lazily imported correctly, pushing the module into a separate 415 KB JS chunk. Fixed an ineffective dynamic/static import conflict in `admin.$module.tsx` by consuming `PlaceholderModule` directly.
+- **Verification:** `npm run verify:tech-integrity` passed with exit code 0. Zero typescript, lint, security, or build errors remaining.
+
+### Next Steps
+- Verify tech-integrity pass, then commit and ship `fix/p1-p2-cleanup-2026-06-20`.
+- All baseline audit items are fully resolved.
+
 ## [2026-06-20] Health Score Audit Baseline
 - Executed read-only system-wide health scan.
 - Tech integrity check flagged 8 errors in typecheck/biome.

@@ -1,5 +1,5 @@
+import { reorderEntriesSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { z } from "zod";
 import {
   type InsertAboutMapLocation,
   insertAboutMapLocationSchema,
@@ -140,22 +140,12 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
   return res.status(204).send();
 });
 
-// Reorder validation schema
-const reorderSchema = z.object({
-  entries: z.array(
-    z.object({
-      id: z.number().int().positive(),
-      sortOrder: z.number().int().min(0),
-    }),
-  ),
-});
-
 /**
  * PATCH /api/v1/about-locations/reorder
  * Reorder locations
  */
 router.patch("/reorder", authService.requireAdmin, async (req, res) => {
-  const validation = reorderSchema.safeParse(req.body);
+  const validation = reorderEntriesSchema.safeParse(req.body);
 
   if (!validation.success) {
     throw new ValidationError("Invalid reorder data", { issues: validation.error.issues });

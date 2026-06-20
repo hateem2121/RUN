@@ -9,7 +9,6 @@ import {
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Clock, FlaskConical, Layout, Plus, Save, Search, Settings2, X } from "lucide-react";
-import type React from "react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -206,8 +205,7 @@ export function TechnologyResearchManagement({
   };
 
   // Event Handlers
-  const handleResearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleResearchSubmit = (_formData: FormData) => {
     if (editingResearch) {
       updateResearchMutation.mutate({
         id: editingResearch.id,
@@ -444,7 +442,7 @@ export function TechnologyResearchManagement({
           </DialogHeader>
 
           <form
-            onSubmit={handleResearchSubmit}
+            action={handleResearchSubmit}
             className="flex min-h-0 flex-1 flex-col overflow-hidden font-display"
           >
             <DialogBody className="custom-scrollbar space-y-8 px-8 py-8">

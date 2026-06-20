@@ -1,4 +1,4 @@
-import { Redis } from "ioredis";
+import type { Redis } from "ioredis";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createRateLimiter, RateLimiter, UploadRateLimiter } from "../rateLimiter";
 
@@ -100,12 +100,15 @@ describe("RateLimiter Middleware", () => {
         incr: vi.fn().mockRejectedValue(new Error("Redis failed")),
       };
 
-      const limiter = new RateLimiter({
-        windowMs: 60000,
-        max: 2,
-        message: "Memory limit",
-        statusCode: 429,
-      }, mockRedis as unknown as Redis);
+      const limiter = new RateLimiter(
+        {
+          windowMs: 60000,
+          max: 2,
+          message: "Memory limit",
+          statusCode: 429,
+        },
+        mockRedis as unknown as Redis,
+      );
 
       const middleware = limiter.middleware();
 
@@ -114,7 +117,9 @@ describe("RateLimiter Middleware", () => {
       await middleware(req, res, next); // 3 (Should fail in memory)
 
       expect(next).toHaveBeenCalledTimes(3);
-      expect(next).toHaveBeenLastCalledWith(expect.objectContaining({ message: "Too many requests (fallback)" }));
+      expect(next).toHaveBeenLastCalledWith(
+        expect.objectContaining({ message: "Too many requests (fallback)" }),
+      );
       limiter.destroy();
     });
   });

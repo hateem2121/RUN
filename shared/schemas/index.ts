@@ -1,6 +1,7 @@
 // Export common utilities
 
 // Export API-specific contract schemas
+export * from "./api/common.js";
 export * from "./api/inquiry.js";
 export * from "./api/navigation.js";
 export * from "./blog.js";

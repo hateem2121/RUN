@@ -2,10 +2,10 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as queryClientModule from "@/lib/queryClient";
 import { HeroManagement } from "./HeroManagement";
-import { toast } from "sonner";
 
 // Mock ResizeObserver
 class MockResizeObserver {
@@ -40,16 +40,16 @@ vi.mock("react", async (importOriginal) => {
     useActionState: (action: any, initialState: any) => {
       const [state, setState] = actual.useState(initialState);
       const [isPending, setIsPending] = actual.useState(false);
-      
+
       const formAction = async (payload: any) => {
         setIsPending(true);
         const result = await action(state, payload);
         setState(result);
         setIsPending(false);
       };
-      
+
       return [state, formAction, isPending];
-    }
+    },
   };
 });
 
@@ -208,7 +208,7 @@ describe("HeroManagement", () => {
         "Success",
         expect.objectContaining({
           description: "Hero section updated successfully",
-        })
+        }),
       );
     });
   });
@@ -236,7 +236,7 @@ describe("HeroManagement", () => {
         "Error",
         expect.objectContaining({
           description: "Failed to update hero section",
-        })
+        }),
       );
     });
   });

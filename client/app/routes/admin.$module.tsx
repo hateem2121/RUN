@@ -106,8 +106,8 @@ const InquiryManagement = lazy(() =>
     default: m.InquiryManagement,
   })),
 );
-const InventoryManagement = lazy(() =>
-  import("@/components/admin/PlaceholderModule").then((m) => ({ default: m.PlaceholderModule })),
+const InventoryManagement = ({ moduleName }: { moduleName: string }) => (
+  <PlaceholderModule moduleName={moduleName} />
 );
 
 // Loading component
