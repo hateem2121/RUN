@@ -1,12 +1,15 @@
-import { Redis } from "@upstash/redis";
+import { Redis } from "ioredis";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createRateLimiter, RateLimiter, UploadRateLimiter } from "../rateLimiter";
 
-vi.mock("@upstash/redis", () => ({
-  Redis: {
-    fromEnv: vi.fn(),
-  },
-}));
+vi.mock("ioredis", () => {
+  const MockRedis = vi.fn(() => ({
+    incr: vi.fn(),
+    expire: vi.fn(),
+    ttl: vi.fn(),
+  }));
+  return { Redis: MockRedis };
+});
 
 vi.mock("../lib/monitoring/logger.js", () => ({
   logger: {
@@ -52,7 +55,6 @@ describe("RateLimiter Middleware", () => {
         incr: vi.fn().mockResolvedValue(1),
         expire: vi.fn().mockResolvedValue(1),
       };
-      vi.mocked(Redis.fromEnv).mockReturnValue(mockRedis as unknown as Redis);
 
       const limiter = new RateLimiter(
         {
@@ -75,7 +77,6 @@ describe("RateLimiter Middleware", () => {
         incr: vi.fn().mockResolvedValue(6),
         ttl: vi.fn().mockResolvedValue(30),
       };
-      vi.mocked(Redis.fromEnv).mockReturnValue(mockRedis as unknown as Redis);
 
       const limiter = new RateLimiter(
         {
@@ -94,26 +95,26 @@ describe("RateLimiter Middleware", () => {
   });
 
   describe("RateLimiter (Memory Fallback)", () => {
-    it("falls back to memory if Redis initialization fails", async () => {
-      vi.mocked(Redis.fromEnv).mockImplementation(() => {
-        throw new Error("Redis failed");
-      });
+    it("falls back to memory if Redis fails during request", async () => {
+      const mockRedis = {
+        incr: vi.fn().mockRejectedValue(new Error("Redis failed")),
+      };
 
       const limiter = new RateLimiter({
         windowMs: 60000,
         max: 2,
         message: "Memory limit",
         statusCode: 429,
-      });
+      }, mockRedis as unknown as Redis);
 
       const middleware = limiter.middleware();
 
-      await middleware(req, res, next); // 1
-      await middleware(req, res, next); // 2
-      await middleware(req, res, next); // 3 (Should fail)
+      await middleware(req, res, next); // 1 (Redis fails, falls back to memory, count=1)
+      await middleware(req, res, next); // 2 (Redis fails, memory count=2)
+      await middleware(req, res, next); // 3 (Should fail in memory)
 
       expect(next).toHaveBeenCalledTimes(3);
-      expect(next).toHaveBeenLastCalledWith(expect.objectContaining({ message: "Memory limit" }));
+      expect(next).toHaveBeenLastCalledWith(expect.objectContaining({ message: "Too many requests (fallback)" }));
       limiter.destroy();
     });
   });

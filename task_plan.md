@@ -1,4 +1,22 @@
-# Task Plan
+# RUN Remix - Task Plan
+
+## Phase 1 (P0) — Security & Test Infrastructure
+- [x] **CURRENT:** Issue 1.1 — CVE Remediation (`undici`, `nodemailer`)
+- [x] Issue 1.2 — Test Suite Execution (Redis boot crash)
+- [x] Verify Tech Integrity and ship Phase 1
+
+## Phase 2 (P1/P2) — Architecture, Quality, Performance
+- [ ] Issue 2.1 — React 19 Form Actions (H04)
+- [ ] Issue 2.2 — Express 5 try/catch Regression (H12/H13)
+- [ ] Issue 2.3 — Centralize Excess Zod Schemas (D04 regression)
+- [ ] Issue 2.4 — Biome & TypeScript Errors
+- [ ] Issue 2.5 — Bundle Code Splitting
+- [ ] Verify Tech Integrity and ship Phase 2
+
+## Session: 2026-06-20 (Health Score Audit)
+**Goal:** Scan monorepo for Health Score.
+**Outcome:** Read-only audit completed. Composite Score: 70/100 (C). Major regressions in architecture (H04, D04) and broken test environment (Redis).
+**Next Steps:** Review report at `findings/health-score/2026-06-20-report.md`. Plan remediation phase for CVEs and React 19 form migrations.
 
 ## Session: 2026-06-17 (System-Wide Forensic Audit)
 

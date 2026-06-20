@@ -32,10 +32,22 @@ const COMPRESSION_THRESHOLD = 1024;
 // OpenTelemetry tracer for cache operations
 const tracer = trace.getTracer("unified-cache", "1.0.0");
 
+class DummyCacheProvider {
+  async get(_key: string) { return null; }
+  async set(_key: string, _value: string, _exToken?: "EX", _ttlSeconds?: number) { return "OK"; }
+  async del(..._keys: string[]) { return 0; }
+  async keys(_pattern: string) { return []; }
+  async expire(_key: string, _ttl: number) { return 1; }
+  async deletePattern(_pattern: string) {}
+  async flushdb() {}
+  async scan(_cursor: string | number, _matchToken?: "MATCH", _pattern?: string, _countToken?: "COUNT", _count?: number) { return ["0", []] as [string, string[]]; }
+}
+const dummyCache = new DummyCacheProvider();
+
 export class UnifiedCache {
   private static instance: UnifiedCache | null = null;
   private memoryCache: LRUCache<string, object>;
-  private l2: Redis | PostgresCacheProvider;
+  private l2: Redis | PostgresCacheProvider | DummyCacheProvider;
 
   // Standard TTL presets
   public static readonly TTL_PRESETS = {
@@ -75,6 +87,9 @@ export class UnifiedCache {
     if (isRedisEnabled) {
       this.l2 = redis;
       logger.info("[Cache] ✅ Unified Hybrid Cache initialized (L1: Memory, L2: Redis)");
+    } else if (process.env.NODE_ENV === "test" || process.env.VITEST) {
+      this.l2 = dummyCache;
+      logger.info("[Cache] ✅ Unified Hybrid Cache initialized (L1: Memory, L2: None (Test env))");
     } else {
       this.l2 = postgresCache;
       logger.info("[Cache] ✅ Unified Hybrid Cache initialized (L1: Memory, L2: Postgres/Neon)");

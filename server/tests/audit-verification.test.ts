@@ -70,6 +70,7 @@ describe("Forensic Audit Verification", () => {
     it("should THROW in PRODUCTION if Redis is disabled", async () => {
       process.env.NODE_ENV = "production";
       process.env.SESSION_SECRET = "test-secret";
+      process.env.STRICT_REDIS_CHECK = "true";
 
       // Mock Redis disabled
       vi.doMock("../../server/lib/cache/upstash-client.js", () => ({

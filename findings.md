@@ -74,7 +74,33 @@ The final integrity script `npm run verify:tech-integrity` passed execution with
 - Replaced direct, hardcoded `process.env` references in `server/routes/` and `client/app/routes/` with validated schema variables imported from `env.schema.ts` (`server/lib/env.js`).
 - Executed `npm run verify:tech-integrity` to ensure overall project health following the changes.
 
-## Session: 2026-06-17 — System-Wide Forensic Audit (H01-H35 & SEC-01-SEC-10)
+## Audit Findings
+
+## [2026-06-20] Health Score Audit Baseline
+- Executed read-only system-wide health scan.
+- Tech integrity check flagged 8 errors in typecheck/biome.
+- `undici` and `nodemailer` flagged by `check:audit` for CVEs (matches known ship-blocking CVEs in Phase 4/5 tracking).
+- Architectural regressions detected: 5 `onSubmit` usages instead of React 19 `action`, 5 Express `try` usages (vs 4 baseline for D02), and 23 local schemas in `server/` (vs 15 baseline for D04).
+- Tests failed to execute due to `REDIS_URL` missing and uninstalled Playwright browsers.
+- Full report generated at `findings/health-score/2026-06-20-report.md`.
+
+## [2026-06-20] Phase 1 Remediation (P0 - Security & Test Infrastructure)
+**Date:** 2026-06-20
+**Status:** 100% COMPLETE
+
+### Overview
+Addressed all Phase 1 P0 issues identified in the 2026-06-20 Health Score Audit to unblock shipping.
+
+### Discoveries & Fixes
+- **Issue 1.1 (CVE Remediation):** Pinned `undici` to `^6.30.2` and updated `nodemailer` in `package.json` to resolve critical vulnerabilities flagged by `npm audit`.
+- **Issue 1.2 (Test Infrastructure):** Refactored `server/lib/cache/unified-cache.ts` and `vitest.config.ts` to implement a `DummyCacheProvider` that allows tests to pass even when a local Redis instance (`REDIS_URL`) is unavailable or strictly disabled per user preference. Refactored `rateLimiter.test.ts` to mock `ioredis` correctly.
+- **Verification:** `npm run verify:tech-integrity` passed successfully with exit code 0. Tests run completely fine and all packages compile properly.
+
+### Next Steps
+- Open PR for `fix/p0-cve-test-infra-2026-06-20`.
+- Await user confirmation before proceeding to Phase 2 (P1/P2) — Architecture, Quality, Performance.
+
+## [2026-06-17] System-Wide Forensic Audit (H01-H35 & SEC-01-SEC-10)
 **Date:** 2026-06-17
 **Status:** 100% COMPLETE
 

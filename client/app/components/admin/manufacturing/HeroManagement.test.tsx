@@ -1,10 +1,11 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as useToastModule from "@/hooks/use-toast";
 import * as queryClientModule from "@/lib/queryClient";
 import { HeroManagement } from "./HeroManagement";
+import { toast } from "sonner";
 
 // Mock ResizeObserver
 class MockResizeObserver {
@@ -25,13 +26,32 @@ vi.mock("@/lib/queryClient", () => ({
   },
 }));
 
-vi.mock("@/hooks/use-toast", () => ({
-  useToast: vi.fn(() => ({
-    toast: vi.fn(),
-    dismiss: vi.fn(),
-    toasts: [],
-  })),
+vi.mock("sonner", () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
 }));
+
+vi.mock("react", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("react")>();
+  return {
+    ...actual,
+    useActionState: (action: any, initialState: any) => {
+      const [state, setState] = actual.useState(initialState);
+      const [isPending, setIsPending] = actual.useState(false);
+      
+      const formAction = async (payload: any) => {
+        setIsPending(true);
+        const result = await action(state, payload);
+        setState(result);
+        setIsPending(false);
+      };
+      
+      return [state, formAction, isPending];
+    }
+  };
+});
 
 // Mock Lucide icons to avoid rendering issues
 vi.mock("lucide-react", () => ({
@@ -162,13 +182,6 @@ describe("HeroManagement", () => {
   });
 
   it("submits form data and shows success toast", async () => {
-    const mockToast = vi.fn();
-    vi.mocked(useToastModule.useToast).mockReturnValue({
-      toast: mockToast,
-      dismiss: vi.fn(),
-      toasts: [],
-    });
-
     // Mock successful PATCH
     vi.mocked(queryClientModule.apiRequest).mockImplementation(async (url, options) => {
       if (url === "/api/manufacturing-hero" && options?.method === "PATCH") {
@@ -188,26 +201,19 @@ describe("HeroManagement", () => {
 
     const saveButton = screen.getByText(/Save Hero Settings/i).closest("button");
     if (!saveButton) throw new Error("Save button not found");
-    fireEvent.click(saveButton);
+    await userEvent.setup().click(saveButton);
 
     await waitFor(() => {
-      expect(mockToast).toHaveBeenCalledWith(
+      expect(toast.success).toHaveBeenCalledWith(
+        "Success",
         expect.objectContaining({
-          title: "Success",
           description: "Hero section updated successfully",
-        }),
+        })
       );
     });
   });
 
   it("handles submission errors", async () => {
-    const mockToast = vi.fn();
-    vi.mocked(useToastModule.useToast).mockReturnValue({
-      toast: mockToast,
-      dismiss: vi.fn(),
-      toasts: [],
-    });
-
     vi.mocked(queryClientModule.apiRequest).mockImplementation(async (url, options) => {
       if (url === "/api/manufacturing-hero" && options?.method === "PATCH") {
         throw new Error("Failed");
@@ -223,15 +229,14 @@ describe("HeroManagement", () => {
 
     const saveButton = screen.getByText(/Save Hero Settings/i).closest("button");
     if (!saveButton) throw new Error("Save button not found");
-    fireEvent.click(saveButton);
+    await userEvent.setup().click(saveButton);
 
     await waitFor(() => {
-      expect(mockToast).toHaveBeenCalledWith(
+      expect(toast.error).toHaveBeenCalledWith(
+        "Error",
         expect.objectContaining({
-          title: "Error",
           description: "Failed to update hero section",
-          variant: "destructive",
-        }),
+        })
       );
     });
   });

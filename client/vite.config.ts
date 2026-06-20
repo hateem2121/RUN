@@ -62,6 +62,17 @@ export default defineConfig((env) => {
       }),
     ],
 
+    optimizeDeps: {
+      include: [
+        "react-helmet-async",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-select",
+        "@radix-ui/react-slider",
+        "react-error-boundary",
+        "leaflet"
+      ],
+    },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "app"),

@@ -112,7 +112,7 @@ function ExpandPanel({
   );
 }
 
-export function Component() {
+export default function Component() {
   const loaderData = useLoaderData<typeof loader>();
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedFabrics, setExpandedFabrics] = useState<Set<number>>(new Set());

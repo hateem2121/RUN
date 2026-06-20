@@ -73,7 +73,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   };
 }
 
-export function Component({ loaderData }: { loaderData: LoaderData }) {
+export default function Component({ loaderData }: { loaderData: LoaderData }) {
   const { homepageData } = loaderData;
   const [preloaderFinished, setPreloaderFinished] = useState(false);
   const isMobile = useIsMobile();
@@ -102,6 +102,8 @@ export function Component({ loaderData }: { loaderData: LoaderData }) {
         });
       }
 
+      let scrollTimeout: ReturnType<typeof setTimeout>;
+
       ScrollTrigger.create({
         onUpdate: (self) => {
           // self.getVelocity() returns pixels per second
@@ -112,13 +114,16 @@ export function Component({ loaderData }: { loaderData: LoaderData }) {
           xToHero.current?.(targetSkew);
           xToContent.current?.(targetSkew);
 
-          // Return to 0 when scrolling stops
-          if (Math.abs(velocity) < 1) {
+          // Return to 0 when scrolling stops (debounced)
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => {
             xToHero.current?.(0);
             xToContent.current?.(0);
-          }
+          }, 150);
         },
       });
+
+      return () => clearTimeout(scrollTimeout);
     },
     { dependencies: [isMobile], scope: heroRef },
   );

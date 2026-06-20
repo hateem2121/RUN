@@ -7,6 +7,7 @@
 
 import { Storage } from "@google-cloud/storage";
 import { logger, serializeError } from "../monitoring/logger.js";
+import { withCircuit, EXTERNAL_API_CIRCUIT_OPTIONS } from "../resilience/circuit-breaker.js";
 
 class AppStorageService {
   private storage: Storage;
@@ -51,7 +52,10 @@ class AppStorageService {
         });
 
         // Race between operation and timeout
-        const result = await Promise.race([operation(), timeoutPromise]);
+        const result = await Promise.race([
+          withCircuit(`gcs-${operationName}`, operation, EXTERNAL_API_CIRCUIT_OPTIONS),
+          timeoutPromise,
+        ]);
 
         const duration = Date.now() - startTime;
         if (attempt > 0) {
@@ -101,19 +105,21 @@ class AppStorageService {
   async getAssetMetadata(
     key: string,
   ): Promise<{ size: number; contentType?: string | undefined; updated?: string | undefined }> {
-    try {
-      const bucket = this.storage.bucket(this.bucketName);
-      const file = bucket.file(key);
-      const [metadata] = await file.getMetadata();
-      return {
-        size: metadata.size ? parseInt(String(metadata.size), 10) : 0,
-        contentType: metadata.contentType,
-        updated: metadata.updated,
-      };
-    } catch (error) {
-      logger.error(`❌ Failed to get metadata for ${key}:`, serializeError(error));
-      return { size: 0 };
-    }
+    return this.withTimeoutAndRetry(async () => {
+      try {
+        const bucket = this.storage.bucket(this.bucketName);
+        const file = bucket.file(key);
+        const [metadata] = await file.getMetadata();
+        return {
+          size: metadata.size ? parseInt(String(metadata.size), 10) : 0,
+          contentType: metadata.contentType,
+          updated: metadata.updated,
+        };
+      } catch (error) {
+        logger.error(`❌ Failed to get metadata for ${key}:`, serializeError(error));
+        return { size: 0 };
+      }
+    }, `getMetadata:${key}`);
   }
 
   /**
@@ -124,24 +130,26 @@ class AppStorageService {
     data: Buffer | Uint8Array | string,
     metadata?: { contentType?: string | undefined; isPublic?: boolean },
   ): Promise<string> {
-    try {
-      const bucket = this.storage.bucket(this.bucketName);
-      const file = bucket.file(key);
+    return this.withTimeoutAndRetry(async () => {
+      try {
+        const bucket = this.storage.bucket(this.bucketName);
+        const file = bucket.file(key);
 
-      const options = {
-        metadata: {
-          ...(metadata?.contentType ? { contentType: metadata.contentType } : {}),
-        },
-        resumable: false,
-      };
+        const options = {
+          metadata: {
+            ...(metadata?.contentType ? { contentType: metadata.contentType } : {}),
+          },
+          resumable: false,
+        };
 
-      await file.save(data as Buffer, options);
-      logger.info(`✅ Uploaded asset to GCS: ${key}`);
-      return `https://storage.googleapis.com/${this.bucketName}/${key}`;
-    } catch (error) {
-      logger.error(`❌ Upload failed for ${key}:`, serializeError(error));
-      throw new Error(`Failed to upload asset: ${(error as Error).message}`);
-    }
+        await file.save(data as Buffer, options);
+        logger.info(`✅ Uploaded asset to GCS: ${key}`);
+        return `https://storage.googleapis.com/${this.bucketName}/${key}`;
+      } catch (error) {
+        logger.error(`❌ Upload failed for ${key}:`, serializeError(error));
+        throw new Error(`Failed to upload asset: ${(error as Error).message}`);
+      }
+    }, `upload:${key}`);
   }
 
   /**
@@ -160,38 +168,45 @@ class AppStorageService {
    * Delete an asset from GCS
    */
   async deleteAsset(key: string): Promise<boolean> {
-    try {
-      const bucket = this.storage.bucket(this.bucketName);
-      const file = bucket.file(key);
+    return this.withTimeoutAndRetry(async () => {
+      try {
+        const bucket = this.storage.bucket(this.bucketName);
+        const file = bucket.file(key);
 
-      await file.delete();
-      logger.info(`✅ Deleted asset from GCS: ${key}`);
-      return true;
-    } catch (error: unknown) {
-      const err = error as { code?: number };
-      if (err.code === 404) {
+        await file.delete();
+        logger.info(`✅ Deleted asset from GCS: ${key}`);
         return true;
+      } catch (error: unknown) {
+        const err = error as { code?: number };
+        if (err.code === 404) {
+          return true;
+        }
+        logger.error(`❌ Delete failed for ${key}:`, serializeError(error));
+        return false;
       }
-      logger.error(`❌ Delete failed for ${key}:`, serializeError(error));
-      return false;
-    }
+    }, `delete:${key}`);
   }
 
   /**
    * List assets in GCS
    */
   async listAssets(prefix?: string): Promise<string[]> {
-    try {
-      const bucket = this.storage.bucket(this.bucketName);
-      const [files] = await bucket.getFiles(prefix ? { prefix } : undefined);
+    return this.withTimeoutAndRetry(
+      async () => {
+        try {
+          const bucket = this.storage.bucket(this.bucketName);
+          const [files] = await bucket.getFiles(prefix ? { prefix } : undefined);
 
-      const keys = files.map((file) => file.name);
-      logger.info(`✅ Listed ${keys.length} assets with prefix: ${prefix || "none"}`);
-      return keys;
-    } catch (error) {
-      logger.error(`❌ List failed for prefix ${prefix}:`, serializeError(error));
-      throw new Error(`Failed to list assets: ${(error as Error).message}`);
-    }
+          const keys = files.map((file) => file.name);
+          logger.info(`✅ Listed ${keys.length} assets with prefix: ${prefix || "none"}`);
+          return keys;
+        } catch (error) {
+          logger.error(`❌ List failed for prefix ${prefix}:`, serializeError(error));
+          throw new Error(`Failed to list assets: ${(error as Error).message}`);
+        }
+      },
+      `listAssets:${prefix || "none"}`,
+    );
   }
 
   /**
@@ -200,33 +215,40 @@ class AppStorageService {
   async listAssetsWithMetadata(
     prefix?: string,
   ): Promise<Array<{ name: string; size: number; updated?: string | undefined }>> {
-    try {
-      const bucket = this.storage.bucket(this.bucketName);
-      const [files] = await bucket.getFiles(prefix ? { prefix } : undefined);
+    return this.withTimeoutAndRetry(
+      async () => {
+        try {
+          const bucket = this.storage.bucket(this.bucketName);
+          const [files] = await bucket.getFiles(prefix ? { prefix } : undefined);
 
-      return files.map((file) => ({
-        name: file.name,
-        size: file.metadata.size ? parseInt(String(file.metadata.size), 10) : 0,
-        updated: file.metadata.updated,
-      }));
-    } catch (error) {
-      logger.error(`❌ List with metadata failed for prefix ${prefix}:`, serializeError(error));
-      return [];
-    }
+          return files.map((file) => ({
+            name: file.name,
+            size: file.metadata.size ? parseInt(String(file.metadata.size), 10) : 0,
+            updated: file.metadata.updated,
+          }));
+        } catch (error) {
+          logger.error(`❌ List with metadata failed for prefix ${prefix}:`, serializeError(error));
+          return [];
+        }
+      },
+      `listAssetsWithMetadata:${prefix || "none"}`,
+    );
   }
 
   /**
    * Check if asset exists in GCS
    */
   async assetExists(key: string): Promise<boolean> {
-    try {
-      const bucket = this.storage.bucket(this.bucketName);
-      const file = bucket.file(key);
-      const [exists] = await file.exists();
-      return exists;
-    } catch (_error) {
-      return false;
-    }
+    return this.withTimeoutAndRetry(async () => {
+      try {
+        const bucket = this.storage.bucket(this.bucketName);
+        const file = bucket.file(key);
+        const [exists] = await file.exists();
+        return exists;
+      } catch (_error) {
+        return false;
+      }
+    }, `assetExists:${key}`);
   }
 
   /**

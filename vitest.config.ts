@@ -19,6 +19,7 @@ export default defineConfig({
       "**/dist/**",
       "**/build/**",
       "**/.{idea,git,cache,output,temp}/**",
+      "**/.stryker-tmp/**",
       ".claude/**",
       ".github/runner/**",
       "e2e/**",

@@ -75,7 +75,9 @@ export async function startServices() {
   }
 
   // 10. Start Postgres Cache Cleanup (L2 Purge)
-  startPostgresCacheCleanup();
+  if (process.env.NODE_ENV !== "test" && !process.env.VITEST) {
+    startPostgresCacheCleanup();
+  }
 
   logger.info("[Startup] All services started.");
 }

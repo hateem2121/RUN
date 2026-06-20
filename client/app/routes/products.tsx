@@ -133,7 +133,7 @@ function ProductsLoader() {
   );
 }
 
-export function Component() {
+export default function Component() {
   // Direct Server Data (No client-side fetch required for initial load)
   const {
     categories: serverCategories,

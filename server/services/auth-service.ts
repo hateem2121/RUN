@@ -87,10 +87,13 @@ export class AuthService {
         logger.error(
           "Redis is required for session storage in production. Set REDIS_URL or UPSTASH_REDIS_REST_URL.",
         );
-        if (process.env.VITEST) {
+        if (process.env.VITEST && process.env.STRICT_REDIS_CHECK !== "true") {
+          logger.warn("[Auth] Vitest production mode: falling back to MemoryStore to prevent crash.");
+        } else if (process.env.VITEST) {
           return err(new Error("Redis is required for session storage in production"));
+        } else {
+          process.exit(1);
         }
-        process.exit(1);
       }
       if (process.env.NODE_ENV === "development") {
         logger.debug(

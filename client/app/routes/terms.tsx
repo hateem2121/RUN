@@ -32,7 +32,7 @@ interface LegalPolicyData {
   updatedAt: string;
 }
 
-export function Component({ loaderData }: Route.ComponentProps) {
+export default function Component({ loaderData }: Route.ComponentProps) {
   const { policy } = loaderData;
 
   return <TermsOfServicePageContent policy={policy} />;
