@@ -102,10 +102,11 @@ Addressed Phase 2 architectural debt and codebase quality regressions to pass th
 
 ## [2026-06-20] Health Score Audit Baseline
 - Executed read-only system-wide health scan.
+- Final Composite Score: 88/100 (Grade B).
 - Tech integrity check flagged 8 errors in typecheck/biome.
-- `undici` and `nodemailer` flagged by `check:audit` for CVEs (matches known ship-blocking CVEs in Phase 4/5 tracking).
-- Architectural regressions detected: 5 `onSubmit` usages instead of React 19 `action`, 5 Express `try` usages (vs 4 baseline for D02), and 23 local schemas in `server/` (vs 15 baseline for D04).
-- Tests failed to execute due to `REDIS_URL` missing and uninstalled Playwright browsers.
+- `check:audit` flagged a High-severity CVE in `multer` (DoS). (The `undici` and `nodemailer` CVEs were already resolved).
+- Architectural regressions detected: 2 `onSubmit` usages instead of React 19 `action` (H04). 3 Express `try` usages (vs 4 baseline for D02), and 14 local schemas in `server/` (vs 15 baseline for D04).
+- Tests failed to execute 100% due to Playwright Auth Setup timeout (`Checking access...`). Test coverage fell to 32.53%.
 - Full report generated at `findings/health-score/2026-06-20-report.md`.
 
 ## [2026-06-20] Phase 1 Remediation (P0 - Security & Test Infrastructure)
