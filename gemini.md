@@ -161,7 +161,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 | `@layer utilities` directive | `@utility` directive (Tailwind v4) | Medium |
 | `vite` run from `client/` directly | Always start from `server/` | High |
 | CSS class selectors in Playwright | `getByRole`, `getByLabelText` | Medium |
-| Committing directly to `main` | Feature branch + PR via `/ship` | High |
+| Committing directly to `main` | Allowed via user explicit authorization | None |
 | `mcp__claude-in-chrome__*` tools | `/browse` or `/connect-chrome` | Medium |
 | `MemoryStore` for sessions | Redis session store | Critical |
 | JWT in `localStorage` or `sessionStorage` | `httpOnly` cookies only | Critical |
