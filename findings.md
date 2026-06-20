@@ -5,6 +5,11 @@ This session focused on identifying and remediating systemic architectural viola
 
 ## Remediation Phases Executed
 
+### Phase 3: Documentation & Rules Synchronization
+1. **Version Bump**: Bumped the entire monorepo from `4.0.3`/`4.1.1` mixed state to `4.1.2` consistently.
+2. **Rule Unification**: Standardized `CONTRIBUTING.md`, `gemini.md`, and `CLAUDE.md` to clarify that `/ship` is the default workflow, but direct `main` commits are permitted with explicit user authorization.
+3. **Changelog**: Authored `4.1.2` release notes encompassing Phase 1 Security and Phase 2 Architecture fixes.
+
 ### Phase 1: Security & Infrastructure Stability
 1. **Server-Side Sanitization**: Introduced `isomorphic-dompurify` in `server/services/blog.service.ts` to ensure TipTap content is sanitized at the data layer before writing to the database, addressing a critical XSS vulnerability.
 2. **Kubernetes Version Pinning**: Updated `ops/k8s/deployment.yaml` to replace the unpinned `latest` Docker tag with the explicit `v3.0.0` version, securing deployments against upstream drift.

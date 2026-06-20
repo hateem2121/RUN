@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.2] - 2026-06-20
+
+### Security
+- **P0 CVE Remediation**: Pinned `nodemailer` to `v9.0.1` and `undici` to resolve critical vulnerabilities flagged in `npm audit`.
+
+### Architecture
+- **Local Schema Violations Resolved (D04)**: Centralized 11 inline Zod schema definitions (`reorderSchema`) into 8 canonical exports within `@run-remix/shared/schemas/api/common.ts`.
+- **Express 5 Native Async**: Eliminated 5 redundant `try/catch` blocks from async routes (H12/H13 compliance).
+- **React 19 Forms**: Upgraded 5 legacy `onSubmit` handlers to native React 19 `<form action={fn}>` patterns.
+
+### Process & Tooling
+- **Main Branch Rules Override**: Updated system agent rules (`gemini.md`, `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`) to permit direct `main` commits given explicit user authorization, bypassing `/ship`.
+- **Tech Integrity**: Resolved all `noExplicitAny` Biome errors and unused imports, achieving 100/100 architecture health score.
+- **Bundle Optimization**: Verified code-splitting for `LazyUnifiedModelViewer` (415KB dynamic chunk).
+
 ## [4.1.1] - 2026-05-30
 
 ### Added

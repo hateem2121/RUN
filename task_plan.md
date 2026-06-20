@@ -1,5 +1,13 @@
 # RUN Remix - Task Plan
 
+## Session: 2026-06-20 (Documentation & Version Synchronization)
+**Goal:** Synchronize monorepo versions to 4.1.2 and update rule configurations.
+**Outcome:**
+- [x] Bumped `package.json` workspaces to 4.1.2.
+- [x] Updated `README.md` and `CHANGELOG.md` with 4.1.2 release notes.
+- [x] Unified rules around main branch commits across `CONTRIBUTING.md`, `CLAUDE.md`, and `gemini.md`.
+**Next Steps:** Verify everything passes tech integrity, finalizing Phase 1 and Phase 2 implementations.
+
 ## Phase 1 (P0) — Security & Test Infrastructure
 - [x] **CURRENT:** Issue 1.1 — CVE Remediation (`undici`, `nodemailer`)
 - [x] Issue 1.2 — Test Suite Execution (Redis boot crash)

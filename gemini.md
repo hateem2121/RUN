@@ -1,7 +1,7 @@
 # Antigravity — Agent Rules
-**Project:** RUN APPAREL CMS v4.0.3 (`run-remix`)
+**Project:** RUN APPAREL CMS v4.1.2 (`run-remix`)
 **Agent:** Antigravity (Gemini)
-**Last updated:** May 2026
+**Last updated:** June 2026
 **Mirrors:** gstack latest + Claude Code constraints (exact parity)
 **Owner:** M. Hateem Jamshaid — RUN APPAREL (PVT) LTD, Sialkot, Pakistan
 

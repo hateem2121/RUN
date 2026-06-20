@@ -6,7 +6,7 @@ Welcome. This is the short-form guide for contributors. The complete reference i
 
 ## Workflow
 
-This is a **private monorepo**. Internal team pushes directly to `main`. External contributors open a PR from a fork.
+This is a **private monorepo**. The default workflow is feature branching + PR via `/ship` (or `/land-and-deploy`). Direct commits to `main` are restricted and require explicit user authorization. External contributors open a PR from a fork.
 
 Before every push:
 
