@@ -92,6 +92,8 @@ export const serverReady: Promise<void> = (async () => {
           index: false,
         }),
       );
+      // Fallback for uncompressed assets
+      app.use("/", express.static(staticPath, { index: false }));
       logger.info(`[Production] Serving compressed static assets from: ${staticPath}`);
     }
 

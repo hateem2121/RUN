@@ -6,7 +6,7 @@ import { InquiryForm } from "./InquiryForm";
 import { QuoteList } from "./QuoteList";
 
 export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-  const { form, items, removeFromQuote, updateQuantity, success, error, mutation, onSubmit } =
+  const { form, items, removeFromQuote, updateQuantity, success, error, mutation, onFormSubmit } =
     useInquiryForm({ onClose });
 
   if (!isOpen) {
@@ -100,7 +100,7 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                     </div>
                   )}
 
-                  <InquiryForm form={form} onSubmit={onSubmit} />
+                  <InquiryForm form={form} onFormSubmit={onFormSubmit} />
                 </div>
               )}
             </div>

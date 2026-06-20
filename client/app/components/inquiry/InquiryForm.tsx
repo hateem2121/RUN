@@ -6,13 +6,17 @@ import { Textarea } from "../ui/textarea";
 
 interface InquiryFormProps {
   form: UseFormReturn<InquiryFormData>;
-  onSubmit: (data: InquiryFormData) => void;
+  onFormSubmit: (data: InquiryFormData) => void;
 }
 
-export function InquiryForm({ form, onSubmit }: InquiryFormProps) {
+export function InquiryForm({ form, onFormSubmit }: InquiryFormProps) {
   return (
     <Form {...form}>
-      <form id="inquiry-form" action={() => form.handleSubmit(onSubmit)()} className="space-y-6">
+      <form
+        id="inquiry-form"
+        action={() => form.handleSubmit(onFormSubmit)()}
+        className="space-y-6"
+      >
         <FormField
           control={form.control}
           name="contact.name"

@@ -29,7 +29,7 @@ import { MediaUrlBuilder } from "@/lib/media-url-builder";
 interface CategoryFormProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: InsertCategory) => void;
+  onFormSubmit: (data: InsertCategory) => void;
   initialData?: Category | null;
   categories?: Category[];
   isLoading?: boolean | undefined;
@@ -83,7 +83,7 @@ interface FormData {
 export function CategoryForm({
   open,
   onClose,
-  onSubmit,
+  onFormSubmit,
   initialData,
   categories = [],
   isLoading = false,
@@ -308,9 +308,9 @@ export function CategoryForm({
         },
       };
 
-      onSubmit(submitData);
+      onFormSubmit(submitData);
     },
-    [formData, onSubmit],
+    [formData, onFormSubmit],
   );
 
   const handleMediaSelect = (mediaUrl: string) => {

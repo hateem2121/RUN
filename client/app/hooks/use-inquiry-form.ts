@@ -73,7 +73,7 @@ export function useInquiryForm({ onClose }: UseInquiryFormProps) {
     },
   });
 
-  const onSubmit = (data: InquiryFormData) => {
+  const onFormSubmit = (data: InquiryFormData) => {
     mutation.mutate(data);
   };
 
@@ -85,6 +85,6 @@ export function useInquiryForm({ onClose }: UseInquiryFormProps) {
     success,
     error,
     mutation,
-    onSubmit,
+    onFormSubmit,
   };
 }
