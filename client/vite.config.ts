@@ -9,7 +9,6 @@ import { reactRouter } from "@react-router/dev/vite";
 dns.setDefaultResultOrder("ipv4first"); // CRITICAL: Fix localhost 504 errors on Node 17+
 
 import ReactScan from "@react-scan/vite-plugin-react-scan";
-import { sentryVitePlugin } from "@sentry/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
@@ -20,7 +19,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Tigger restart
 export default defineConfig((env) => {
-  const { command: _command, mode, isSsrBuild } = env;
+  const { command: _command, isSsrBuild } = env;
   console.warn("[VITE-CONFIG-ARGS]", JSON.stringify(env));
   return {
     plugins: [
@@ -53,13 +52,6 @@ export default defineConfig((env) => {
       // DEBUG: Inspect Vite transformation pipeline (localhost:5173/__inspect)
       // DEBUG: Inspect Vite pipeline (Opt-in via VITE_INSPECT=true)
       process.env.VITE_INSPECT === "true" && Inspect(),
-      // Sentry Source Maps Upload (Requires SENTRY_AUTH_TOKEN)
-      sentryVitePlugin({
-        ...(process.env.SENTRY_ORG ? { org: process.env.SENTRY_ORG } : {}),
-        ...(process.env.SENTRY_PROJECT ? { project: process.env.SENTRY_PROJECT } : {}),
-        ...(process.env.SENTRY_AUTH_TOKEN ? { authToken: process.env.SENTRY_AUTH_TOKEN } : {}),
-        disable: mode !== "production", // Only upload in production
-      }),
     ],
 
     optimizeDeps: {
@@ -167,11 +159,6 @@ export default defineConfig((env) => {
                 // React Hook Form
                 if (id.includes("/react-hook-form/")) {
                   return "vendor-react-hook-form";
-                }
-
-                // Sentry
-                if (id.includes("/@sentry/")) {
-                  return "vendor-sentry";
                 }
 
                 // TipTap Rich Text Editor

@@ -297,20 +297,12 @@ export class UnifiedCache {
       logger.debug(`[UnifiedCache] Invalidated ${deletedCount} L1 keys for pattern ${pattern}`);
     }
 
-    // 2. Offload L2 (Redis/Postgres) invalidation to BullMQ for background processing in production
-    // This makes the initiating request MUCH faster by avoiding synchronous SCAN/DEL
-    // In development or when Redis is disabled, clear synchronously to avoid race conditions.
-    if (process.env.NODE_ENV === "production" && isRedisEnabled) {
-      import("../jobs/queues/cache-invalidation-queue.js").then(({ queueCacheInvalidation }) => {
-        queueCacheInvalidation(pattern).catch((err) =>
-          logger.warn(`[UnifiedCache] Failed to queue background invalidation for ${pattern}`, err),
-        );
-      });
-    } else {
-      await this.clearPattern(pattern).catch((err) => {
-        logger.warn(`[UnifiedCache] Failed to clear L2 synchronously for ${pattern}`, err);
-      });
-    }
+    // 2. Clear L2 Cache (Redis/Postgres) asynchronously
+    // BullMQ has been removed. We now perform this directly in the background
+    // without awaiting, to avoid blocking the HTTP request thread.
+    this.clearPattern(pattern).catch((err) => {
+      logger.warn(`[UnifiedCache] Failed to clear L2 asynchronously for ${pattern}`, err);
+    });
 
     // 3. Emit invalidation event for frontend polling
     import("./cache-events.js").then(({ emitCacheInvalidation }) => {

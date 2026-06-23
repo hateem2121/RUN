@@ -1,5 +1,5 @@
 # Antigravity — Agent Rules
-**Project:** RUN APPAREL CMS v4.1.2 (`run-remix`)
+**Project:** RUN APPAREL CMS v4.0.3 (`run-remix`)
 **Agent:** Antigravity (Gemini)
 **Last updated:** June 2026
 **Mirrors:** gstack latest + Claude Code constraints (exact parity)
@@ -100,19 +100,18 @@ Always verify versions against `package.json` — this table is a snapshot and m
 | Database | Neon Serverless PostgreSQL | — |
 | Schema validation | Zod | v4 |
 | Auth | Passport.js + Google OAuth2 + express-session + Redis | — |
-| Session store | Upstash Redis (`@upstash/redis`) | — |
+| Session store | RedisSessionStore (`ioredis`) | — |
 | L1 cache | `lru-cache` | — |
 | Error handling | `neverthrow` | — |
 | Circuit breaker | `opossum` | — |
-| Job queue | `bullmq` | — |
+| Background tasks | Google Cloud Tasks + HTTP workers | — |
 | Rich text editor | TipTap | ^3.20.1 |
 | Drag and drop | `dnd-kit` | — |
 | CSS framework | Tailwind CSS | v4 (Oxide engine) |
 | Animations | GSAP 3 + ScrollTrigger | — |
-| Scroll | `lenis` or `locomotive-scroll` (one only) | — |
+| Scroll | `locomotive-scroll` | 5.0.1 |
 | Linter / formatter | Biome | 2.3.10 |
 | Toasts | `sonner` | ^2.0.7 |
-| Error tracking | Sentry | ^10.32.0 |
 | Logging | Pino | — |
 | Tracing | OpenTelemetry (OTel) | — |
 | Metrics | `prom-client` | — |
@@ -135,6 +134,10 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 
 | ❌ Never use | ✅ Use instead | Severity |
 |-------------|---------------|----------|
+| `bullmq` (any import) | Google Cloud Tasks + `worker.ts` | Critical |
+| `@upstash/redis` | `ioredis` | Critical |
+| `connect-redis` | `RedisSessionStore` (custom) | Critical |
+| `@sentry/node` or `@sentry/react` | Removed completely | Critical |
 | `framer-motion` (any import) | `gsap` + ScrollTrigger | Critical |
 | `@react-three/fiber` | `LazyUnifiedModelViewer` only | Critical |
 | `drei` | `LazyUnifiedModelViewer` only | Critical |
@@ -152,7 +155,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 | Raw `throw` in `server/services/` | `neverthrow` `Result<T, E>` | High |
 | `.unwrap()` on neverthrow Results | `match()` or `mapErr()` | Critical |
 | Unprotected external API calls | Wrap with `opossum` circuit breaker | High |
-| Blocking async in request handlers | `bullmq` job queue | High |
+| Blocking async in request handlers | Google Cloud Tasks | High |
 | Custom toast implementation | `sonner ^2.0.7` only | High |
 | Zod v3 patterns (`.optional().nullable()`) | Zod v4 (`.nullish()`) | High |
 | Schemas defined in `client/` or `server/` | Import from `@run-remix/shared` | High |
@@ -167,7 +170,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 | JWT in `localStorage` or `sessionStorage` | `httpOnly` cookies only | Critical |
 | DB calls directly in route handlers | Service layer only | Critical |
 | Business logic in route handlers | `server/services/` only | Critical |
-| `lenis` AND `locomotive-scroll` together | One scroll library only | High |
+| `lenis` (any import) | `locomotive-scroll` 5.0.1 only | Critical |
 | `react-scan` in `dependencies` | `devDependencies` only | Medium |
 | Image tag `latest` in Kubernetes | Pinned image tag | Critical |
 | Secrets in `cloudbuild.yaml` or k8s YAML | GCP Secret Manager references | Critical |
@@ -364,7 +367,7 @@ function MyComponent() {
 
 ```
 L1: lru-cache (in-process, per-instance)
-  └── L2: @upstash/redis (distributed, shared across instances)
+  └── L2: RedisSessionStore using ioredis (distributed, shared across instances)
         └── Source: Neon PostgreSQL
 
 server/middleware/ssr-cache.ts handles:
@@ -382,7 +385,7 @@ GET /api/cache/invalidation-time — staleness window
 
 ```
 Authentication:
-  Passport.js + Google OAuth2 → express-session → Redis (Upstash)
+  Passport.js + Google OAuth2 → express-session → RedisSessionStore (ioredis)
   Session cookie: httpOnly: true, secure: true, sameSite: 'strict'
   Session rotation on login (session fixation protection)
   No JWT in localStorage — httpOnly cookies only
@@ -624,9 +627,6 @@ import { logger } from '@/lib/logger'
 logger.info({ requestId, userId }, 'Inquiry submitted')
 logger.error({ requestId, error }, 'Email job failed')
 
-// Sentry — error capture
-import * as Sentry from '@sentry/node'
-Sentry.captureException(error, { extra: { requestId } })
 
 // Never log PII: no emails, names, phone numbers in log entries
 // Never log secrets: no tokens, session IDs, passwords
@@ -748,6 +748,6 @@ Before ending any session, confirm:
 
 ---
 
-*Antigravity — built for RUN APPAREL (PVT) LTD · RUN Remix v4.0.3 · May 2026*
+*Antigravity — built for RUN APPAREL (PVT) LTD · RUN Remix v4.0.3 · June 2026*
 *Mirrors: gstack v1.20.0.0 + Claude Code constraints (exact parity)*
 *For: M. Hateem Jamshaid*

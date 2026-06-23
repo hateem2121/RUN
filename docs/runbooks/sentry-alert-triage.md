@@ -1,4 +1,5 @@
-# Sentry Alert Triage Runbook
+# [DEPRECATED] Sentry Alert Triage Runbook
+> **Note:** Sentry has been completely removed in v4.1.2. Please use GCP Error Reporting instead.
 
 ## Symptoms
 

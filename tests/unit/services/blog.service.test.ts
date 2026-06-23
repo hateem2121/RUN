@@ -1,7 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { blogService } from "../../../server/services/blog.service.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { blogRepository } from "../../../server/lib/db/repositories/index.js";
 import { InternalError, NotFoundError } from "../../../server/lib/errors.js";
+import { blogService } from "../../../server/services/blog.service.js";
 
 // Mock the repository
 vi.mock("../../../server/lib/db/repositories/index.js", () => ({
@@ -15,7 +15,7 @@ vi.mock("../../../server/lib/db/repositories/index.js", () => ({
 
 // Mock the circuit breaker to just run the function
 vi.mock("../../../server/lib/resilience/circuit-breaker.js", () => ({
-  withCircuit: vi.fn(async (name, fn) => {
+  withCircuit: vi.fn(async (_name, fn) => {
     return await fn();
   }),
   DB_CIRCUIT_OPTIONS: {},

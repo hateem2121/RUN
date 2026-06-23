@@ -1,5 +1,24 @@
 # RUN Remix - Task Plan
 
+## Session: 2026-06-23 (System-Wide Documentation Sync)
+**Goal:** Execute a comprehensive, system-wide documentation and context synchronization to ensure all READMEs, SOPs, reference files, and architecture docs accurately reflect the RUN Remix v4.0.3 codebase reality.
+**Outcome:**
+- [x] Updating READMEs to v4.0.3 and current tech stack.
+- [x] Updating SOPs, CODE_OF_CONDUCT.md, and CONTRIBUTING.md to reflect RUN APPAREL's premium B2B identity.
+- [x] Documented Google Cloud Tasks and opossum in architecture docs.
+**Next Steps:** Proceed to `/ship` phase for PR generation.
+
+## Session: 2026-06-23 (P0/P1 Tech Debt Remediation)
+**Goal:** Eradicate Critical (P0) and Major (P1) tech debt identified in the Antigravity audit, specifically removing forbidden packages, fixing animation dependency drift, and realigning worker schemas.
+**Outcome:**
+- [x] Uninstalled `bullmq`, `connect-redis`, `@sentry/node`, and `@sentry/react`.
+- [x] Refactored `auth-service.ts` to use `ioredis` directly instead of `connect-redis`.
+- [x] Installed `locomotive-scroll@5.0.1`, updated `gsap@3.15.0` and `@gsap/react@2.1.2`.
+- [x] Cleaned up Sentry configurations from frontend boundaries and `vite.config.ts`.
+- [x] Renamed `shared/schemas/jobs.ts` to `shared/schemas/worker-payloads.ts` and updated exports.
+- [x] Verified `npm run check` and `npm run build` after changes.
+**Next Steps:** Proceed with feature development now that the technical debt baseline is resolved.
+
 ## Session: 2026-06-20 (Phase 2 Closure & Ship Workflow)
 **Goal:** Run closing operations (`/cso`, `/qa`, `/review`, `/ship`, `/context-save`) to finalize Phase 2 remediation.
 **Outcome:**

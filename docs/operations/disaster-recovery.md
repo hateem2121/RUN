@@ -69,13 +69,13 @@ graph LR
     subgraph Primary Region
         A[Cloud Run - Asia] --> B[Neon DB - Asia]
         A --> C[Cloud Storage - Asia]
-        A --> D[Upstash Redis - Asia]
+        A --> D[Redis - Asia]
     end
     
     subgraph Backup Region
         E[Cloud Run - US] --> F[Neon DB - US]
         E --> G[Cloud Storage - US]
-        E --> H[Upstash Redis - US]
+        E --> H[Redis - US]
     end
     
     I[Cloud Load Balancer] --> A
@@ -89,7 +89,7 @@ graph LR
 | **Frontend** | Cloud Run | asia-southeast1 | us-central1 |
 | **Backend API** | Cloud Run | asia-southeast1 | us-central1 |
 | **Database** | Neon | AWS ap-southeast-1 | AWS us-east-1 |
-| **Cache** | Upstash Redis | ap-southeast-1 | us-east-1 |
+| **Cache** | Redis | ap-southeast-1 | us-east-1 |
 | **Media Storage** | Cloud Storage | asia-southeast1 | us-central1 |
 | **CDN** | Cloud CDN | Global | N/A |
 | **DNS** | Cloud DNS | Global | N/A |
@@ -325,10 +325,10 @@ curl -f https://api.wear-run.com/health || echo "Health check failed"
 
 ```bash
 # 1. Check Redis status
-upstash redis ping --url $REDIS_URL
+redis-cli -u $REDIS_URL ping
 
 # 2. If cache is corrupted, flush and rebuild
-upstash redis flushall --url $REDIS_URL
+redis-cli -u $REDIS_URL flushall
 
 # 3. Warm up cache with critical data
 curl -X POST https://api.wear-run.com/admin/cache/warm \
@@ -504,7 +504,7 @@ echo "✅ All validation checks passed!"
 |---------|----------|-----------------|
 | Neon Database | Neon | <support@neon.tech> |
 | Cloud Run | Google Cloud | Google Cloud Support |
-| Upstash Redis | Upstash | <support@upstash.com> |
+| Redis | Internal Team | <support@example.com> |
 | Cloud Storage | Google Cloud | Google Cloud Support |
 
 ### B. Useful Commands
@@ -517,7 +517,7 @@ gcloud run services list --platform=managed
 neon branches list --project-id $NEON_PROJECT_ID
 
 # Redis info
-upstash redis info --url $REDIS_URL
+redis-cli -u $REDIS_URL info
 
 # Storage bucket status
 gsutil ls -L -b gs://run-remix-media

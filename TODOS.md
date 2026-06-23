@@ -8,13 +8,13 @@
 
 ## Completed
 
-### P2: Invalidate `products:count:featured` cache on isFeatured toggle — **Completed: v4.0.3 (2026-05-26)**
+### P2: Invalidate `products:count:featured` cache on isFeatured toggle — **Completed: v4.0.3 (2026-06-23)**
 - Added invalidation patterns inside the `invalidateProductCount` repository method to proactively clear all category, tag, search, and featured count caches when product records are updated.
 
-### P3: E2E test for CustomDropdown Tab/Escape focus return — **Completed: v4.0.3 (2026-05-26)**
+### P3: E2E test for CustomDropdown Tab/Escape focus return — **Completed: v4.0.3 (2026-06-23)**
 - Attached native capture-phase keydown listeners to the dropdown trigger and option buttons to bypass React's root event delegation and Radix's FocusScope. Added Playwright E2E tests for Escape/Tab keyboard accessibility.
 
-### P2: Harden idempotency middleware for production — **Completed: v4.0.3 (2026-05-26)**
+### P2: Harden idempotency middleware for production — **Completed: v4.0.3 (2026-06-23)**
 - Hardened the idempotency cache layer by scheduling a periodic background runner in `server/boot/services.ts` that cleans up expired L2 cache entries every hour, resolving potential long-term memory growth in Postgres/Neon.
 
 ### P1: Database & Schema Layer Audit Remediation (DS-AUDIT) — **Completed: v4.1.1 (2026-05-30)**

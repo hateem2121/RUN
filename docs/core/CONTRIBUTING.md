@@ -1,6 +1,6 @@
 # Contributing to RUN Remix
 
-**Welcome to the RUN Remix codebase!** This document outlines the standards and workflows required to maintain the high quality and performance of the RUN APPAREL CMS.
+**Welcome to the RUN Remix codebase!** This document outlines the standards and workflows required to maintain the high quality and performance of the RUN APPAREL CMS. We are a 100% B2B, premium sustainable manufacturing entity. Every commit should reflect this professional identity.
 
 ---
 
@@ -51,7 +51,11 @@
 
 ---
 
-## 3. Workflow
+## 3. Workflow & B.L.A.S.T. Protocol
+
+Every task — no exceptions — follows the **B.L.A.S.T. Protocol** (Protocol 0):
+1. **Before starting** — update `task_plan.md` with the plan.
+2. **After finishing** — update `findings.md` with what was done, discovered, and any follow-ups.
 
 ### Git Conventions
 

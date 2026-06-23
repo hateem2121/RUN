@@ -1,4 +1,5 @@
-# ADR 0008: Upstash Redis over ElastiCache
+# ADR 0008: [SUPERSEDED] Upstash Redis over ElastiCache
+> **Note:** This ADR is superseded. Upstash has been removed in favor of `RedisSessionStore` with standard `ioredis` in v4.1.2.
 
 **Status**: Accepted  
 **Date**: 2026-01-13  

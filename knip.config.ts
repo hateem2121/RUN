@@ -1,19 +1,18 @@
 import type { KnipConfig } from "knip";
 
 const config: KnipConfig = {
-  entry: [
-    "client/app/routes.ts", // React Router entry
-    "server/index.ts", // Express entry
-    "client/app/root.tsx", // Root layout
-  ],
-  project: [
-    "client/app/**/*.{ts,tsx}",
-    "server/**/*.{ts,tsx}",
-    "shared/**/*.{ts,tsx}",
-    "utils/**/*.{ts,tsx}",
-  ],
-  ignore: ["**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}", "**/node_modules/**"],
-  ignoreDependencies: [],
+  workspaces: {
+    client: {
+      entry: ["app/routes.ts", "app/root.tsx", "app/entry.client.tsx", "app/entry.server.tsx"],
+    },
+    server: {
+      entry: ["index.ts"],
+    },
+    shared: {
+      entry: ["index.ts"],
+    },
+  },
+  ignore: ["**/*.test.{ts,tsx}"],
 };
 
 export default config;

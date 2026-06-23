@@ -12,6 +12,10 @@ identity and orientation.
 We pledge to act and interact in ways that contribute to an open, welcoming,
 diverse, inclusive, and healthy community.
 
+## Our Identity
+
+As representatives of RUN APPAREL (PVT) LTD, we operate as a 100% B2B, premium sustainable manufacturing organization. We expect our community and code to reflect this heritage: precision, sustainability, professional excellence, and uncompromising quality.
+
 ## Our Standards
 
 Examples of behavior that contributes to a positive environment for our

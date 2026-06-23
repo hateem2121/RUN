@@ -23,7 +23,7 @@ This document defines the architectural hard-deck for the RUN Apparel B2B Platfo
 
 - **Frontend**: React 19, Vite 8, Tailwind CSS v4.2, TypeScript 6
 - **Backend**: Express 5.2, Node.js v24.15+, Neon Postgres
-- **Data**: PostgreSQL (Neon), Drizzle ORM, Upstash Redis
+- **Data**: PostgreSQL (Neon), Drizzle ORM, Redis (ioredis)
 - **Testing**: Vitest, Playwright
 
 ---
@@ -132,7 +132,7 @@ graph TD
     Proxy -->|/api/*| Server[Express Server]
     Proxy -->|/admin/*| Server
     Server -->|Port 5432| DB[(Neon DB)]
-    Server -->|Redis| Cache[(Upstash)]
+    Server -->|Redis| Cache[(Redis)]
 ```
 
 **Route-Based Separation:**

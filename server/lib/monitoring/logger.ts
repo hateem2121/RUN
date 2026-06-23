@@ -168,8 +168,8 @@ class SmartLogger {
       // Simple guard
       // We'll leave Sentry hooks to the global error handler or OTel instrumentation
       // to avoid importing Sentry here which might cause circular deps or bundle bloat if shared.
-      // (Though previously it dynamically imported @sentry/node)
-      this.captureSentry(message, metadata, error);
+      // We'll leave Sentry hooks to the global error handler or OTel instrumentation
+      // to avoid importing Sentry here which might cause circular deps or bundle bloat if shared.
     }
 
     if (Object.keys(obj).length > 0) {
@@ -177,17 +177,6 @@ class SmartLogger {
     } else {
       this.logger.error(message);
     }
-  }
-
-  private captureSentry(message: string, metadata: unknown, error: Error) {
-    // Dynamic import to avoid strict dependency on boot
-    import("@sentry/node")
-      .then((Sentry) => {
-        Sentry.captureException(error, {
-          extra: { message, metadata },
-        });
-      })
-      .catch(() => {});
   }
 
   performance(

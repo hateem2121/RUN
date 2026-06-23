@@ -15,12 +15,12 @@ We needed a caching strategy that:
 
 ## Decision
 
-We implemented a **Two-Tier Cache** with L1 in-memory LRU and L2 Upstash Redis.
+We implemented a **Two-Tier Cache** with L1 in-memory LRU and L2 Redis.
 
 ## Architecture
 
 ```
-Request → L1 (LRU Memory) → L2 (Upstash Redis) → Database
+Request → L1 (LRU Memory) → L2 (Redis) → Database
               ↑                    ↑
          ~0.01ms               ~5-20ms
 ```
@@ -46,7 +46,7 @@ Request → L1 (LRU Memory) → L2 (Upstash Redis) → Database
 
 - `server/lib/cache/unified-cache.ts`: Main cache interface
 - `server/lib/cache/unified-memory-cache.ts`: L1 LRU implementation
-- `server/lib/cache/upstash-client.ts`: L2 Redis client
+- `server/lib/cache/redis-client.ts`: L2 Redis client
 
 ## Consequences
 

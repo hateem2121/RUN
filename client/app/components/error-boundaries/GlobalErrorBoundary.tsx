@@ -1,4 +1,3 @@
-import * as Sentry from "@sentry/react";
 import type React from "react";
 import { useEffect } from "react";
 import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
@@ -54,10 +53,6 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
 export function GlobalErrorBoundary({ children }: { children: React.ReactNode }) {
   const logError = (error: unknown, info: { componentStack?: string | null }) => {
     const err = error instanceof Error ? error : new Error(String(error));
-    Sentry.captureException(err, {
-      contexts: { react: { componentStack: info.componentStack || "unknown" } },
-      tags: { boundary: "global" },
-    });
 
     reportClientError({
       message: err.message,

@@ -24,7 +24,7 @@ Before opening an issue, search existing issues and check [`docs/TROUBLESHOOTING
 For production issues, follow the incident response runbook:
 [`docs/runbooks/incident-response.md`](./docs/runbooks/incident-response.md)
 
-**On-call contact:** Check the Sentry alert owner in the active incident.
+**On-call contact:** Check the active incident owner in GCP Error Reporting.
 
 ---
 

@@ -1216,39 +1216,9 @@ export class AdminService {
     }[] = [];
 
     try {
-      // Lazy load to avoid circular dependencies or initialization issues
-      const { emailQueue } = await import("../../lib/jobs/queues/email-queue.js");
-      const { cacheInvalidationQueue } = await import(
-        "../../lib/jobs/queues/cache-invalidation-queue.js"
-      );
-
-      if (emailQueue) {
-        const jobs = await emailQueue.getFailed();
-        failedJobs.push(
-          ...jobs.map((j) => ({
-            id: j.id,
-            queue: "email",
-            name: j.name,
-            data: j.data,
-            failedReason: j.failedReason,
-            timestamp: j.timestamp,
-          })),
-        );
-      }
-
-      if (cacheInvalidationQueue) {
-        const jobs = await cacheInvalidationQueue.getFailed();
-        failedJobs.push(
-          ...jobs.map((j) => ({
-            id: j.id,
-            queue: "cache",
-            name: j.name,
-            data: j.data,
-            failedReason: j.failedReason,
-            timestamp: j.timestamp,
-          })),
-        );
-      }
+      // Background jobs have been migrated to Google Cloud Tasks,
+      // which manages its own dead-letter queues and retry policies.
+      // Monitoring and retries are now performed via GCP Console.
 
       return ok(failedJobs);
     } catch (error) {
@@ -1261,24 +1231,9 @@ export class AdminService {
    */
   async retryJob(queueName: string, jobId: string): Promise<Result<boolean, AppError>> {
     try {
-      let queue = null;
-      if (queueName === "email") {
-        const { emailQueue } = await import("../../lib/jobs/queues/email-queue.js");
-        queue = emailQueue;
-      } else if (queueName === "cache") {
-        const { cacheInvalidationQueue } = await import(
-          "../../lib/jobs/queues/cache-invalidation-queue.js"
-        );
-        queue = cacheInvalidationQueue;
-      }
-
-      if (!queue) return err(new NotFoundError(`Queue ${queueName} not found or not initialized`));
-
-      const job = await queue.getJob(jobId);
-      if (!job) return err(new NotFoundError(`Job ${jobId} not found in queue ${queueName}`));
-
-      await job.retry();
-      return ok(true);
+      return err(
+        new NotFoundError(`Queue ${queueName} not found. Retries are managed via Cloud Tasks.`),
+      );
     } catch (error) {
       return err(new InternalError(`Failed to retry job ${jobId}`, { cause: error }));
     }

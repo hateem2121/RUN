@@ -3,7 +3,7 @@
 **Date:** February 15, 2026  
 **Auditor:** Antigravity AI Agent  
 **Scope:** Homepage + Product Pages (<http://localhost:5002>)  
-**Repository:** <https://github.com/hateem2121/RUN>
+**Repository:** `<repository-url>`
 
 ---
 
@@ -253,7 +253,7 @@ Console: Products failing validation with safeParseArray
 ```
 
 **Root Cause:**
-The frontend Zod schema in [`client/app/schemas/product.ts`](client/app/schemas/product.ts:100-140) expects fields that the API doesn't return:
+The frontend Zod schema in `client/app/schemas/product.ts` expects fields that the API doesn't return:
 
 1. **`shortDescription` Required but Missing:**
    - Schema: `shortDescription: z.string()` (required field)
@@ -1281,11 +1281,11 @@ Product validation failed for product 49: [
 
 **Root Cause Analysis:**
 
-1. **Schema-Frontend Mismatch:** The Zod schema in [`client/app/schemas/product.ts`](client/app/schemas/product.ts:107) expects:
+1. **Schema-Frontend Mismatch:** The Zod schema in `client/app/schemas/product.ts` expects:
    - `shortDescription: z.string().nullable()` - But products don't have this field
    - `fiberComposition: z.record(...)` - But API returns string, not record
 
-2. **Missing Field in Query:** The `summaryColumns` object in [`client/app/routes/products.tsx`](client/app/routes/products.tsx:90-117) does NOT include `shortDescription`, so even if the database has it, it's not being queried.
+2. **Missing Field in Query:** The `summaryColumns` object in `client/app/routes/products.tsx` does NOT include `shortDescription`, so even if the database has it, it's not being queried.
 
 3. **Type Mismatch:** The `fiberComposition` field is stored/returned as a string but the schema expects a record type.
 

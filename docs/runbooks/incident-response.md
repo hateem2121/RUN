@@ -39,11 +39,11 @@
 
 ### 1. High API Error Rate / 5xx Spikes
 
-**Trigger**: Sentry Alert > 5% Error Rate OR 500 status codes spike.
+**Trigger**: GCP Error Logs > 5% Error Rate OR 500 status codes spike.
 
 **Investigation**:
 
-1. Check **Sentry** for new issues. Is it a specific endpoint?
+1. Check **GCP Error Reporting** for new issues. Is it a specific endpoint?
 2. Check **Database Metrics** (`/admin/metrics` or logs):
     - Are connections maxed outs? (`currentConcurrentQueries` > `peakConcurrentQueries`)
     - Is latency high?
@@ -73,7 +73,7 @@
 
 ### 3. 3D Viewer Crashing (WebGL Context Lost)
 
-**Trigger**: Client-side feedback or Sentry "Context Lost" spikes.
+**Trigger**: Client-side feedback or GCP Error Reporting "Context Lost" spikes.
 
 **Investigation**:
 
@@ -98,6 +98,6 @@ If the incident is not resolved within the SLA:
 
 ## 🔗 Quick Links
 
-- [Sentry Dashboard](https://sentry.io)
+- [GCP Error Reporting](https://console.cloud.google.com/errors)
 - [Neon Console](https://console.neon.tech)
 - [Vercel Deployment](https://vercel.com)

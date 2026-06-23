@@ -1,6 +1,6 @@
 # Contributing to RUN Remix
 
-Welcome. This is the short-form guide for contributors. The complete reference is at [`docs/core/CONTRIBUTING.md`](./docs/core/CONTRIBUTING.md).
+Welcome. This is the short-form guide for contributors to RUN APPAREL (PVT) LTD. We maintain a 100% B2B, premium sustainable manufacturing identity. Our software must reflect the same flawless precision as our physical products. The complete reference is at [`docs/core/CONTRIBUTING.md`](./docs/core/CONTRIBUTING.md).
 
 ---
 

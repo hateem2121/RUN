@@ -1,4 +1,5 @@
 # ADR 0014: Observability Pipeline
+> **Note:** This ADR is partially superseded. Sentry has been completely removed in v4.1.2. We rely exclusively on GCP Error Reporting.
 
 **Status**: Accepted  
 **Date**: 2026-01-12  

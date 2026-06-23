@@ -1,7 +1,7 @@
 // Production-Grade Error Handling
 // PHASE 4: Production Readiness - Error Management
 import type { ProblemDetails } from "@run-remix/shared";
-import * as Sentry from "@sentry/node";
+
 import type { NextFunction, Request, Response } from "express";
 import { getConfig } from "../config/production.js";
 import {
@@ -182,19 +182,6 @@ function logError(error: unknown, details: ErrorDetails) {
     body: details.body,
     ...(error instanceof AppError && error.details ? error.details : {}),
   };
-
-  // EH-101: Explicit Sentry Capture for all non-404 operational errors and all system errors
-  if (!(error instanceof NotFoundError) && !process.env.SENTRY_DISABLE_AUTO_UPLOAD) {
-    Sentry.captureException(error instanceof Error ? error : new Error(String(error)), {
-      extra: meta,
-      tags: {
-        error_id: details.id,
-        error_type: details.type,
-        severity: details.severity,
-      },
-      level: details.severity === "critical" || details.severity === "high" ? "error" : "warning",
-    });
-  }
 
   // Always log critical and high severity errors
   if (details.severity === "critical" || details.severity === "high") {

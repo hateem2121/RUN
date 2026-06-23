@@ -1,6 +1,6 @@
 # RUN Remix — The Agentic Sportswear Factory
 
-**Version:** 4.1.2 | **Port:** 5002 (Exclusively) | **Engine:** gstack | **Last Updated:** June 2026
+**Version:** 4.0.3 | **Port:** 5002 (Exclusively) | **Engine:** gstack | **Last Updated:** June 2026
 
 [![Node 24+](https://img.shields.io/badge/Node-24%2B-339933?logo=node.js)](https://nodejs.org)
 [![React 19](https://img.shields.io/badge/React-19.2.4-61DAFB?logo=react)](https://react.dev)
@@ -31,7 +31,7 @@ cd RUN-REMIX
 # Provision the environment
 npm install
 cp .env.example .env
-# Fill in DATABASE_URL, Upstash, Google IDs, etc.
+# Fill in DATABASE_URL, Google IDs, etc.
 
 # Verify Tech Integrity
 npm run verify:tech-integrity
@@ -79,12 +79,16 @@ The factory is staffed by 23+ specialized agent roles:
 
 | Layer | Technology | Key Constraint |
 |-------|-----------|----------------|
-| **Frontend** | React 19.2.4 | NO `forwardRef`. Named exports only. |
+| **Frontend** | React Router v7, React 19.2.4, Vite 8 (Rolldown) | NO `forwardRef`. Named exports only. |
 | **Styling** | Tailwind CSS V4 | `@utility` layer only. NO arbitrary JSX values. |
-| **Backend** | Express 5.1.0 | Async-native handlers. NO `try/catch`. |
-| **3D** | `@google/model-viewer` | `LazyUnifiedModelViewer` required. |
-| **Database** | Neon Serverless | HTTP Driver only. |
-| **ORM** | Drizzle 0.45.1 | Parameterized queries. No raw SQL. |
+| **Animations** | GSAP 3.15.0, locomotive-scroll 5.0.1 | NO framer-motion or lenis. |
+| **Backend** | Express 5.1.0, Node 24 | Async-native handlers. NO `try/catch`. |
+| **Database** | Neon Serverless Postgres | HTTP Driver only. |
+| **ORM** | Drizzle 0.45.1, Zod v4 | Parameterized queries. No raw SQL. |
+| **Background** | Google Cloud Tasks | HTTP Workers via `verifyCloudTaskToken`. |
+| **External APIs** | `opossum` Circuit Breaker | Mandatory for all external requests. |
+| **Cache/Session** | ioredis 5.10.1 | NO connect-redis or @upstash/redis. |
+| **Observability** | OTel / Pino | NO Sentry. |
 | **Testing** | Vitest | 80%+ service coverage required. |
 | **Linting** | Biome 2.3.10 | NOT ESLint or Prettier. |
 

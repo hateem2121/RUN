@@ -15,7 +15,6 @@ import {
   emailService,
   type InquiryEmailData as InquiryEmailJobData,
 } from "../lib/integrations/email-service.js";
-import { emailQueue } from "../lib/jobs/queues/email-queue.js";
 import { logger } from "../lib/monitoring/logger.js";
 import {
   DB_CIRCUIT_OPTIONS,
@@ -199,16 +198,6 @@ export class InquiryService {
       submittedAt: inquiry.submittedAt,
       items: inquiry.items || undefined,
     };
-
-    if (emailQueue) {
-      try {
-        await emailQueue.add("send-inquiry-email", emailData);
-        logger.info(`[InquiryService] Added email job to BullMQ for inquiry #${inquiry.id}`);
-        return;
-      } catch (error) {
-        logger.error("[InquiryService] Failed to add to email queue, falling back:", error);
-      }
-    }
 
     if (process.env.NODE_ENV === "production" && GOOGLE_CLOUD_PROJECT) {
       try {

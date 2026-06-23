@@ -24,7 +24,7 @@ The platform is designed for horizontal scaling with the following consideration
         ┌─────────────────────┼─────────────────────┐
         ▼                     ▼                     ▼
 ┌───────────────┐     ┌───────────────┐     ┌───────────────┐
-│ Upstash Redis │     │ Neon Postgres │     │ Replit Object │
+│ Redis Cluster │     │ Neon Postgres │     │ Replit Object │
 │   (L2 Cache)  │     │  (Serverless) │     │    Storage    │
 └───────────────┘     └───────────────┘     └───────────────┘
 ```
@@ -81,7 +81,7 @@ Each instance maintains its own L1 LRU cache. On horizontal scaling:
 - **Write operations:** Invalidate L2 (Redis), L1 expires naturally
 - **Mitigation:** Short TTLs + SWR pattern ensure eventual consistency
 
-### L2 Cache (Upstash Redis)
+### L2 Cache (Redis)
 
 Shared across all instances:
 

@@ -13,7 +13,7 @@
 
 - Replaced `shrink-ray-current` with `compression` (Node 24 N-API compatibility).
 - Raised Vitest coverage threshold from 70% to 80%.
-- Reduced Sentry tracesSampleRate from 1.0 to 0.1 for production.
+- Reduced GCP Error Reporting tracesSampleRate from 1.0 to 0.1 for production.
 - Removed continue-on-error from CI workflows (strict mode).
 
 ### Fixed
@@ -70,7 +70,7 @@
 **Phase 4: Observability & DX (+6 points)**
 
 - **CI:** Added synthetic monitoring GitHub workflow
-- **Feat:** Created SLO alerting module with Sentry integration
+- **Feat:** Created SLO alerting module with GCP Error Reporting integration
 - **Docs:** Enhanced SLO documentation with runbooks
 - **CI:** Added Dependabot configuration for automated updates
 - **Docs:** Created maintenance runbook

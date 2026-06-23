@@ -31,8 +31,8 @@
 - Tailwind 4.3.0: @theme + @utility syntax, no arbitrary values
 - Zod 4.4.3: error: param only (not message:, required_error:)
 - Biome 2.4.10: noExplicitAny + noMisusedPromises active
-- GSAP only: zero framer-motion imports allowed (hard rule)
-- Single scroll library: never dual-instantiate lenis + locomotive-scroll
+- GSAP 3.15.0 only: zero framer-motion imports allowed (hard rule)
+- Scroll library: locomotive-scroll 5.0.1 only (lenis is strictly forbidden)
 - sonner ^2.0.7: no custom toast implementations
 - neverthrow Result types in service layer: no raw throw statements
 - Port: 5002 always — never 3000

@@ -27,17 +27,19 @@ C4Context
 
     System_Ext(google_auth, "Google OAuth", "Authentication Provider")
     System_Ext(neon_db, "Neon Postgres", "Primary Data Store (Serverless)")
-    System_Ext(upstash, "Upstash Redis", "L2 Cache & Session Store")
+    System_Ext(redis, "Redis", "L2 Cache & Session Store")
     System_Ext(gcs, "Google Cloud Storage", "Asset CDN")
-    System_Ext(sentry, "Sentry", "Error Tracking")
+    System_Ext(cloud_tasks, "Google Cloud Tasks", "Background Job Queue")
+    System_Ext(external_api, "External B2B APIs", "Logistics & ERP")
 
     Rel(user, frontend, "Uses", "HTTPS")
     Rel(frontend, backend, "API Requests", "JSON/REST")
     Rel(frontend, gcs, "Loads Assets", "HTTPS")
     Rel(backend, neon_db, "Reads/Writes", "HTTP/Postgres")
-    Rel(backend, upstash, "Cache/Session", "REST")
+    Rel(backend, redis, "Cache/Session", "TCP")
     Rel(backend, google_auth, "Authenticates", "OAuth 2.0")
-    Rel(backend, sentry, "Reports Errors", "HTTPS")
+    Rel(backend, cloud_tasks, "Enqueues & Receives Webhooks", "HTTPS")
+    Rel(backend, external_api, "Calls via Opossum Circuit Breaker", "HTTPS")
 ```
 
 ---
@@ -111,7 +113,7 @@ sequenceDiagram
     participant User
     participant Client as React Client (Vite)
     participant API as Express API
-    participant Cache as Redis (Upstash)
+    participant Cache as Redis (ioredis)
     participant DB as Neon Postgres
 
     User->>Client: Navigates to /categories/running
@@ -133,15 +135,16 @@ sequenceDiagram
     Client->>User: Renders Product Grid (Tailwind v4)
 ```
 
-### B. Admin Upload Flow
+### B. Admin Upload Flow (Background Tasks)
 
 1. **Admin** drops file in `MediaLibrary`.
 2. **Client** POSTs to `/api/media/upload`.
 3. **Server** validates file type/size (Multer).
-4. **Service** streams file to **GCP Storage**.
-5. **Service** creates record in **PostgreSQL** (`media_items` table).
-6. **Server** returns the new media object.
-7. **Client** React Query cache invalidates `['media']`, updating the UI instantly.
+4. **Server** streams file to **GCP Storage** and creates DB record.
+5. **Server** enqueues a background job via **Google Cloud Tasks**.
+6. **Cloud Tasks** calls the HTTP worker (`server/routes/worker.ts`), secured via `verifyCloudTaskToken`.
+7. Worker processes image optimization and updates the database.
+8. **Client** React Query cache invalidates `['media']`.
 
 ---
 

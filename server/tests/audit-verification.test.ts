@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock dependencies
-vi.mock("connect-redis", () => ({ RedisStore: vi.fn() }));
+
 vi.mock("@upstash/redis", () => ({ Redis: vi.fn() }));
 vi.mock("pg", () => ({ Client: vi.fn() }));
 vi.mock("../../server/lib/monitoring/logger.js", () => ({

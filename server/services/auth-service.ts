@@ -71,17 +71,61 @@ export class AuthService {
    */
   private async getSessionMiddleware(): Promise<Result<RequestHandler, Error>> {
     const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-    const { RedisStore } = await import("connect-redis");
     const { redis, isRedisEnabled } = await import("../lib/cache/upstash-client.js");
 
     let sessionStore: Store | undefined;
     if (isRedisEnabled) {
-      sessionStore = new RedisStore({
-        client: redis as Redis,
-        prefix: "sess:",
-        ttl: sessionTtl / 1000,
-      });
-      logger.info("[Auth] Redis Session Store initialized", { ttl: sessionTtl / 1000 });
+      class RedisSessionStore extends session.Store {
+        private client: Redis;
+        private prefix: string;
+        private ttlSeconds: number;
+
+        constructor(client: Redis, prefix = "sess:", ttlSeconds = 604800) {
+          super();
+          this.client = client;
+          this.prefix = prefix;
+          this.ttlSeconds = ttlSeconds;
+        }
+
+        get(
+          sid: string,
+          callback: (err: Error | null, session?: session.SessionData | null) => void,
+        ): void {
+          this.client
+            .get(this.prefix + sid)
+            .then((data) => {
+              if (!data) return callback(null, null);
+              try {
+                callback(null, JSON.parse(data));
+              } catch (err) {
+                callback(err as Error);
+              }
+            })
+            .catch((err) => callback(err as Error));
+        }
+
+        set(sid: string, sess: session.SessionData, callback?: (err?: Error | null) => void): void {
+          try {
+            const value = JSON.stringify(sess);
+            this.client
+              .set(this.prefix + sid, value, "EX", this.ttlSeconds)
+              .then(() => callback?.())
+              .catch((err) => callback?.(err));
+          } catch (err) {
+            if (callback) callback(err as Error);
+          }
+        }
+
+        destroy(sid: string, callback?: (err?: Error | null) => void): void {
+          this.client
+            .del(this.prefix + sid)
+            .then(() => callback?.())
+            .catch((err) => callback?.(err));
+        }
+      }
+
+      sessionStore = new RedisSessionStore(redis as Redis, "sess:", Math.floor(sessionTtl / 1000));
+      logger.info("[Auth] Custom Redis Session Store initialized", { ttl: sessionTtl / 1000 });
     } else {
       if (process.env.NODE_ENV === "production") {
         logger.error(

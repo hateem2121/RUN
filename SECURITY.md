@@ -68,7 +68,7 @@ The platform implements defence-in-depth:
 | Control | Implementation |
 |---------|---------------|
 | Authentication | Google OAuth 2.0, no email/password |
-| Sessions | Upstash Redis, 15-min rotation, HttpOnly + SameSite cookies |
+| Sessions | RedisSessionStore (ioredis), 15-min rotation, HttpOnly + SameSite cookies |
 | Rate Limiting | Redis-backed sliding-window rate limiter |
 | Circuit Breakers | `opossum` for DB and Redis operations |
 | Input Validation | Zod schemas on all external inputs |

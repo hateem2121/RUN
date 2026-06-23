@@ -8,7 +8,7 @@ Complete Phase 2 of the Testing Infrastructure Overhaul by increasing test cover
 
 ### ProductRepository Test Coverage (~20%)
 
-**File:** [`server/lib/db/repositories/__tests__/product-repository.test.ts`](server/lib/db/repositories/__tests__/product-repository.test.ts)
+**File:** `server/lib/db/repositories/__tests__/product-repository.test.ts`
 
 **Currently Tested Methods:**
 
@@ -40,7 +40,7 @@ Complete Phase 2 of the Testing Infrastructure Overhaul by increasing test cover
 
 ### AuthService Test Coverage (~62%)
 
-**File:** [`server/services/__tests__/auth-service.test.ts`](server/services/__tests__/auth-service.test.ts)
+**File:** `server/services/__tests__/auth-service.test.ts`
 
 **Currently Tested:**
 
