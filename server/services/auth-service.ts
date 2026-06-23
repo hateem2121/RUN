@@ -1,8 +1,7 @@
 import { createHash } from "node:crypto";
 import type { User } from "@run-remix/shared";
 import type { Express, RequestHandler } from "express";
-import session, { type Store } from "express-session";
-import type { Redis } from "ioredis";
+import session from "express-session";
 import { err, ok, type Result } from "neverthrow";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
@@ -71,87 +70,10 @@ export class AuthService {
    */
   private async getSessionMiddleware(): Promise<Result<RequestHandler, Error>> {
     const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-    const { redis, isRedisEnabled } = await import("../lib/cache/upstash-client.js");
-
-    let sessionStore: Store | undefined;
-    if (isRedisEnabled) {
-      class RedisSessionStore extends session.Store {
-        private client: Redis;
-        private prefix: string;
-        private ttlSeconds: number;
-
-        constructor(client: Redis, prefix = "sess:", ttlSeconds = 604800) {
-          super();
-          this.client = client;
-          this.prefix = prefix;
-          this.ttlSeconds = ttlSeconds;
-        }
-
-        get(
-          sid: string,
-          callback: (err: Error | null, session?: session.SessionData | null) => void,
-        ): void {
-          this.client
-            .get(this.prefix + sid)
-            .then((data) => {
-              if (!data) return callback(null, null);
-              try {
-                callback(null, JSON.parse(data));
-              } catch (err) {
-                callback(err as Error);
-              }
-            })
-            .catch((err) => callback(err as Error));
-        }
-
-        set(sid: string, sess: session.SessionData, callback?: (err?: Error | null) => void): void {
-          try {
-            const value = JSON.stringify(sess);
-            this.client
-              .set(this.prefix + sid, value, "EX", this.ttlSeconds)
-              .then(() => callback?.())
-              .catch((err) => callback?.(err));
-          } catch (err) {
-            if (callback) callback(err as Error);
-          }
-        }
-
-        destroy(sid: string, callback?: (err?: Error | null) => void): void {
-          this.client
-            .del(this.prefix + sid)
-            .then(() => callback?.())
-            .catch((err) => callback?.(err));
-        }
-      }
-
-      sessionStore = new RedisSessionStore(redis as Redis, "sess:", Math.floor(sessionTtl / 1000));
-      logger.info("[Auth] Custom Redis Session Store initialized", { ttl: sessionTtl / 1000 });
-    } else {
-      if (process.env.NODE_ENV === "production") {
-        logger.error(
-          "Redis is required for session storage in production. Set REDIS_URL or UPSTASH_REDIS_REST_URL.",
-        );
-        if (process.env.VITEST && process.env.STRICT_REDIS_CHECK !== "true") {
-          logger.warn(
-            "[Auth] Vitest production mode: falling back to MemoryStore to prevent crash.",
-          );
-        } else if (process.env.VITEST) {
-          return err(new Error("Redis is required for session storage in production"));
-        } else {
-          process.exit(1);
-        }
-      }
-      if (process.env.NODE_ENV === "development") {
-        logger.debug(
-          "[Auth] Redis not configured - using MemoryStore for local dev (expected, not a bug).",
-        );
-      } else {
-        logger.warn(
-          "[Auth] Redis not configured - falling back to MemoryStore (Development Only).",
-        );
-      }
-      sessionStore = undefined;
-    }
+    const { DrizzleSessionStore } = await import("../lib/db/session-store.js");
+    
+    const sessionStore = new DrizzleSessionStore();
+    logger.info("[Auth] DrizzleSessionStore initialized");
 
     const currentSecret = getSecret("SESSION_SECRET") || process.env.SESSION_SECRET;
 

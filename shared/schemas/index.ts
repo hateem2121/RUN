@@ -26,6 +26,7 @@ export * from "./newsletter.js";
 export * from "./product-validation.js";
 export * from "./products.js";
 export * from "./relations.js";
+export * from "./sessions.js";
 export * from "./system.js";
 // Export domains
 export * from "./users.js";

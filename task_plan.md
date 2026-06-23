@@ -1,5 +1,17 @@
 # RUN Remix - Task Plan
 
+## Session: 2026-06-23 (System Health Remediation)
+- [x] **CURRENT:** Remediation Sprint: Neon Auth & DrizzleSessionStore Migration
+**Goal:** Completely replace the custom `RedisSessionStore` and banned `MemoryStore` fallback with a Neon PostgreSQL-backed session store using Drizzle.
+**Outcome:**
+- [x] Blueprint & Schema created for `sessions` table in `@run-remix/shared`.
+- [x] Drizzle migration generated and pushed to Neon.
+- [x] `DrizzleSessionStore` implemented with strict `neverthrow` patterns.
+- [x] `auth-service.ts` refactored to remove Redis session dependencies.
+- [x] Verified live application, Neon rows, and `ioredis` isolation.
+- [x] Technical integrity verified via `npm run verify:tech-integrity`.
+**Next Steps:** Proceed to feature development.
+
 ## Session: 2026-06-23 (System-Wide Documentation Sync)
 **Goal:** Execute a comprehensive, system-wide documentation and context synchronization to ensure all READMEs, SOPs, reference files, and architecture docs accurately reflect the RUN Remix v4.0.3 codebase reality.
 **Outcome:**
@@ -9,7 +21,7 @@
 **Next Steps:** Proceed to `/ship` phase for PR generation.
 
 ## Session: 2026-06-23 (P0/P1 Tech Debt Remediation)
-- [ ] **CURRENT:** Admin Core Technical Debt Remediation
+- [x] **CURRENT:** Admin Core Technical Debt Remediation
 **Goal:** Eradicate Critical (P0) and Major (P1) tech debt identified in the Antigravity audit, specifically removing forbidden packages, fixing animation dependency drift, and realigning worker schemas.
 **Outcome:**
 - [x] Uninstalled `bullmq`, `connect-redis`, `@sentry/node`, and `@sentry/react`.

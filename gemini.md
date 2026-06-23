@@ -99,8 +99,8 @@ Always verify versions against `package.json` — this table is a snapshot and m
 | ORM | Drizzle ORM | latest |
 | Database | Neon Serverless PostgreSQL | — |
 | Schema validation | Zod | v4 |
-| Auth | Passport.js + Google OAuth2 + express-session + Redis | — |
-| Session store | RedisSessionStore (`ioredis`) | — |
+| Auth | Passport.js + Google OAuth2 + express-session + Neon | — |
+| Session store | DrizzleSessionStore (Neon PostgreSQL) | — |
 | L1 cache | `lru-cache` | — |
 | Error handling | `neverthrow` | — |
 | Circuit breaker | `opossum` | — |
@@ -166,7 +166,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 | CSS class selectors in Playwright | `getByRole`, `getByLabelText` | Medium |
 | Committing directly to `main` | Allowed via user explicit authorization | None |
 | `mcp__claude-in-chrome__*` tools | `/browse` or `/connect-chrome` | Medium |
-| `MemoryStore` for sessions | Redis session store | Critical |
+| `MemoryStore` or `RedisSessionStore` for sessions | `DrizzleSessionStore` (Neon) | Critical |
 | JWT in `localStorage` or `sessionStorage` | `httpOnly` cookies only | Critical |
 | DB calls directly in route handlers | Service layer only | Critical |
 | Business logic in route handlers | `server/services/` only | Critical |
@@ -374,8 +374,8 @@ function MyComponent() {
 
 ```
 L1: lru-cache (in-process, per-instance)
-  └── L2: RedisSessionStore using ioredis (distributed, shared across instances)
-        └── Source: Neon PostgreSQL
+  └── L2: Unified Cache using ioredis (distributed, shared across instances)
+        └── Source: Neon PostgreSQL (Sessions now strictly isolated to Neon directly)
 
 server/middleware/ssr-cache.ts handles:
   - Cache key generation (route-specific, vary-aware)
@@ -392,7 +392,7 @@ GET /api/cache/invalidation-time — staleness window
 
 ```
 Authentication:
-  Passport.js + Google OAuth2 → express-session → RedisSessionStore (ioredis)
+  Passport.js + Google OAuth2 → express-session → DrizzleSessionStore (Neon PostgreSQL)
   Session cookie: httpOnly: true, secure: true, sameSite: 'strict'
   Session rotation on login (session fixation protection)
   No JWT in localStorage — httpOnly cookies only

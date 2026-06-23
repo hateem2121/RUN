@@ -42,3 +42,7 @@
 - sonner ^2.0.7: no custom toast implementations
 - neverthrow Result types in service layer: no raw throw statements
 - Port: 5002 always — never 3000
+
+## Auth & Session Constraints (Enforced via Drizzle)
+- **Auth & Sessions:** All session storage MUST use `DrizzleSessionStore` backed by Neon PostgreSQL. The store implementation must return `neverthrow` ResultAsync objects. Raw throws and generic try-catch blocks are strictly prohibited.
+- **Redis Boundaries:** `ioredis` is strictly isolated to rate limiting (`rateLimiter.ts`), unified caching (`unified-cache.ts`), and background job coordination. It must NEVER be used for session persistence.
