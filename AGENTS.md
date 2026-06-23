@@ -1,14 +1,20 @@
-# RUN Remix — Site Investigation Rules
+# RUN Remix — Active Development Rules
 
 ## Environment
 - Server port: 5002 (never 3000)
 - Base URL: http://localhost:5002
-- Mode: Read-only investigation — never write to source files
+- Mode: Active Development — full read/write access to client/, server/, and shared/
 
 ## Scope
-- Do NOT create, edit, or delete files in client/, server/, or shared/
-- All output goes exclusively to findings/[page-name]/ directories
-- Run: git diff --name-only after completion to verify source is clean
+- Full implementation access across the monorepo.
+- Follow B.L.A.S.T. execution order for all tasks.
+- Always run `npm run verify:tech-integrity` before considering a feature complete.
+
+## Documentation & Markdown Constraints
+- **Identity:** All generated documentation, SOPs, and code comments must reflect RUN APPAREL (PVT) LTD's "100% B2B, premium sustainable manufacturing identity."
+- **Link Checking:** `npm run check:docs` runs rigorously in CI. To prevent pipeline failures:
+  - Do not hyperlink private repository URLs (use `<repository-url>` or plain text).
+  - Do not hyperlink local files with line-number fragments (e.g., `[file.ts](file.ts:10)`). Use inline code ticks instead.
 
 ## Browser Viewports
 - Mobile:  375px
