@@ -346,3 +346,7 @@ export const insertProductSchema = createInsertSchema(products, {
   relatedProductIds: z.array(z.number()).optional(),
   customizationOptions: z.array(z.string()).optional(),
 });
+
+export const hardDeleteSchema = z.object({
+  confirm: z.string().nullish(),
+});

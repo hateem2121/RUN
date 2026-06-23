@@ -101,6 +101,7 @@ The project uses **NPM Workspaces** to manage dependencies across packages.
 
 - **`schemas/`**: The **Single Source of Truth** for data shapes. Defines database tables (Drizzle) AND validation types (Zod). Shared by Client and Server.
 - **`package.json`**: Configured as specific ESM package (`type: "module"`).
+- **Import Boundaries**: Deep path imports (e.g., `@run-remix/shared/schemas/...`) are prohibited. All imports must route through the barrel export (`@shared/index` or `@run-remix/shared`) to prevent Vite 8 build crashes.
 
 ---
 

@@ -379,3 +379,24 @@ export const ResourcesBatchQuerySchema = z.object({
 export const CacheInvalidationQuerySchema = z.object({
   pattern: z.string().min(1),
 });
+
+export const auditConfigSchema = z.object({
+  enabled: z.boolean().nullish(),
+  trackedTables: z.array(z.string()).nullish(),
+});
+
+export const emptyBodySchema = z
+  .object({
+    timeout: z.number().nullish(),
+  })
+  .strict();
+
+export const cleanupTriggerSchema = z.object({
+  autoClean: z.boolean().nullish(),
+  timeout: z.number().nullish(),
+});
+
+export const retryJobSchema = z.object({
+  queue: z.enum(["email", "cache"]),
+  id: z.string(),
+});

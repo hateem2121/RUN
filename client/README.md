@@ -12,6 +12,8 @@ This directory contains the frontend application code for the RUN Apparel B2B Pl
 
 ## ⚠️ Important Note
 
+**UI/UX Accessibility Policies**: Native browser `confirm()` or `alert()` dialogs are strictly prohibited. Always use the accessible `@radix-ui/react-alert-dialog` based `<DeleteConfirmationDialog />` component for destructive actions.
+
 **Please refer to the [Root README](../README.md) for all documentation, including:**
 
 - [Installation & Setup](../README.md#installation--setup)

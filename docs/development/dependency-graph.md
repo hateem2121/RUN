@@ -389,7 +389,7 @@ graph TB
 graph TB
     subgraph Frontend
         F_REACT[React 19]
-        F_VITE[Vite 7]
+        F_VITE[Vite 8]
         F_TAILWIND[Tailwind CSS v4]
         F_ROUTER[React Router 7]
         F_QUERY[TanStack Query v5]

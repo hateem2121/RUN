@@ -1,3 +1,9 @@
+import {
+  auditConfigSchema,
+  cleanupTriggerSchema,
+  emptyBodySchema,
+  retryJobSchema,
+} from "@run-remix/shared";
 import { Router } from "express";
 import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
@@ -9,28 +15,6 @@ import { adminService } from "../../services/admin/index.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
-
-// Zod validation schemas
-const auditConfigSchema = z.object({
-  enabled: z.boolean().optional(),
-  trackedTables: z.array(z.string()).optional(),
-});
-
-const emptyBodySchema = z
-  .object({
-    timeout: z.number().optional(),
-  })
-  .strict();
-
-const cleanupTriggerSchema = z.object({
-  autoClean: z.boolean().optional(),
-  timeout: z.number().optional(),
-});
-
-const retryJobSchema = z.object({
-  queue: z.enum(["email", "cache"]),
-  id: z.string(),
-});
 
 /**
  * GET /api/admin/system/test
@@ -100,7 +84,7 @@ router.post(
   async (req, res) => {
     const { timeout } = req.body;
     const auditContext = getAuditContext(req);
-    const result = await adminService.fixCorruptedMedia(auditContext, timeout);
+    const result = await adminService.fixCorruptedMedia(auditContext, timeout ?? undefined);
 
     return result.match(
       (data) => res.json({ success: true, ...data, timestamp: Date.now() }),
@@ -121,7 +105,11 @@ router.post(
   async (req, res) => {
     const { autoClean, timeout } = req.body;
     const auditContext = getAuditContext(req);
-    const result = await adminService.triggerCleanup(auditContext, autoClean === true, timeout);
+    const result = await adminService.triggerCleanup(
+      auditContext,
+      autoClean === true,
+      timeout ?? undefined,
+    );
 
     return result.match(
       (data) => res.json({ success: true, report: data }),
@@ -163,7 +151,10 @@ router.post(
   validateRequest({ body: auditConfigSchema }),
   async (req, res) => {
     const auditContext = getAuditContext(req);
-    const result = await adminService.updateAuditConfig(auditContext, req.body);
+    const result = await adminService.updateAuditConfig(auditContext, {
+      enabled: req.body.enabled ?? undefined,
+      trackedTables: req.body.trackedTables ?? undefined,
+    });
 
     return result.match(
       () => res.json({ success: true, message: "Audit configuration updated" }),

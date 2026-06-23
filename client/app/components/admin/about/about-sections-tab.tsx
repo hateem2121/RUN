@@ -22,6 +22,7 @@ import { Edit, GripVertical, Image, Plus, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CustomDropdown } from "@/components/admin/CustomDropdown";
+import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -115,14 +116,20 @@ function SortableSectionItem({ section, onEdit, onDelete }: SectionItemProps) {
           >
             <Edit className="h-4 w-4" aria-hidden="true" />
           </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onDelete(section.id)}
-            aria-label={`Delete ${section.title || "section"}`}
-          >
-            <Trash2 className="h-4 w-4" aria-hidden="true" />
-          </Button>
+          <DeleteConfirmationDialog
+            title="Confirm Deletion"
+            description="Are you sure you want to delete this section? This action cannot be undone."
+            onConfirm={() => onDelete(section.id)}
+            trigger={
+              <Button
+                size="sm"
+                variant="ghost"
+                aria-label={`Delete ${section.title || "section"}`}
+              >
+                <Trash2 className="h-4 w-4" aria-hidden="true" />
+              </Button>
+            }
+          />
         </div>
       </div>
     </div>
@@ -312,9 +319,7 @@ export function AboutSectionsTab() {
   };
 
   const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this section?")) {
-      deleteMutation.mutate(id);
-    }
+    deleteMutation.mutate(id);
   };
 
   const handleSubmit = () => {

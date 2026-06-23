@@ -4,6 +4,7 @@ import { Edit, GripVertical, Image as ImageIcon, Layers, Plus, Trash2 } from "lu
 import { useEffect, useState } from "react";
 import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
+import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -63,9 +64,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
   };
 
   const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this process phase?")) {
-      deleteProcessCard.mutate(id);
-    }
+    deleteProcessCard.mutate(id);
   };
 
   const handleReorder = (newOrder: HomepageProcessCard[]) => {
@@ -165,15 +164,21 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 bg-red-500/20 backdrop-blur-md text-red-400 hover:text-red-300 hover:bg-red-500/40 border border-red-500/20"
-                          onClick={() => handleDelete(card.id)}
-                          aria-label={`Delete ${card.title}`}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <DeleteConfirmationDialog
+                          title="Confirm Deletion"
+                          description="Are you sure you want to delete this process phase? This action cannot be undone."
+                          onConfirm={() => handleDelete(card.id)}
+                          trigger={
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 bg-red-500/20 backdrop-blur-md text-red-400 hover:text-red-300 hover:bg-red-500/40 border border-red-500/20"
+                              aria-label={`Delete ${card.title}`}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          }
+                        />
                       </div>
 
                       <div className="aspect-custom-misc-38 relative bg-black/50 overflow-hidden flex items-center justify-center border-b border-white/5">

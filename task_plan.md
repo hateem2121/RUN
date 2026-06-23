@@ -9,6 +9,7 @@
 **Next Steps:** Proceed to `/ship` phase for PR generation.
 
 ## Session: 2026-06-23 (P0/P1 Tech Debt Remediation)
+- [ ] **CURRENT:** Admin Core Technical Debt Remediation
 **Goal:** Eradicate Critical (P0) and Major (P1) tech debt identified in the Antigravity audit, specifically removing forbidden packages, fixing animation dependency drift, and realigning worker schemas.
 **Outcome:**
 - [x] Uninstalled `bullmq`, `connect-redis`, `@sentry/node`, and `@sentry/react`.

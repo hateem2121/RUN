@@ -36,6 +36,7 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import { IconSelector } from "@/components/admin/IconSelector";
+import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -123,14 +124,20 @@ function SortableStatisticItem({ statistic, onEdit, onDelete }: StatisticItemPro
           >
             <Edit className="h-4 w-4" aria-hidden="true" />
           </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onDelete(statistic.id)}
-            aria-label={`Delete ${statistic.label}`}
-          >
-            <Trash2 className="h-4 w-4" aria-hidden="true" />
-          </Button>
+          <DeleteConfirmationDialog
+            title="Confirm Deletion"
+            description="Are you sure you want to delete this statistic? This action cannot be undone."
+            onConfirm={() => onDelete(statistic.id)}
+            trigger={
+              <Button
+                size="sm"
+                variant="ghost"
+                aria-label={`Delete ${statistic.label}`}
+              >
+                <Trash2 className="h-4 w-4" aria-hidden="true" />
+              </Button>
+            }
+          />
         </div>
       </div>
     </div>
@@ -272,9 +279,7 @@ export function AboutStatisticsTab() {
   };
 
   const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this statistic?")) {
-      deleteMutation.mutate(id);
-    }
+    deleteMutation.mutate(id);
   };
 
   const handleSubmit = () => {

@@ -177,6 +177,9 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 | `npm install` in CI pipeline | `npm ci` | High |
 | Non-root user missing in Dockerfile | `USER node` in runtime stage | High |
 
+### 5.1.1 Exceptions to `noExplicitAny`
+- **React Hook Form**: When strict type inference fails for `form.control` or `useFieldArray` combined with complex Zod schemas under React 19, you may bypass the constraint using `// biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict` combined with an explicit `as any` cast. This is the **only** permitted use case for `any`.
+
 ### 5.2 Forbidden by Architecture
 
 - **Never access the database directly from a route handler.** All DB access through `server/services/`.
@@ -208,6 +211,10 @@ run-remix/
 
 **Workspace boundaries are sacred.** Shared imports nothing from client or server.
 Client and server import types and schemas only from `@run-remix/shared`.
+
+**Strict Import Boundaries:**
+- **Never** import from deep sub-paths of the shared package (e.g., `@run-remix/shared/schemas/content/manufacturing`).
+- **Always** use the authorized barrel export `import { ... } from "@shared/index"` or `@run-remix/shared`. The `package.json`'s `exports` field strictly prohibits deep path resolution, which will crash the Vite build.
 
 ### 6.2 Express 5 Server Architecture
 

@@ -35,7 +35,7 @@ app.listen(PORT, () => {
 });
 ```
 
-### 3.2 Frontend (Vite 7)
+### 3.2 Frontend (Vite 8)
 
 The development server is configured to bind to 5002 and requires strict compliance.
 

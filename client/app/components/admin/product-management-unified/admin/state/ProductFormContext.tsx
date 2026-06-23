@@ -2,6 +2,7 @@ import type { Product } from "@shared/index";
 import type React from "react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import type { z } from "zod";
 import { useProductForm } from "../../hooks/useProductForm";
 import { useProductMutations } from "../hooks/useProductMutations";
 import { useProductQueries } from "../hooks/useProductQueries";
@@ -124,7 +125,9 @@ export function ProductFormProvider({
       const result = productValidationSchema.safeParse(testData);
 
       if (!result.success) {
-        const fieldError = result.error.issues.find((i) => i.path[0]?.toString() === field);
+        const fieldError = result.error.issues.find(
+          (i: z.ZodIssue) => i.path[0]?.toString() === field,
+        );
         if (fieldError) {
           setFormErrors((prev) => ({ ...prev, [field]: fieldError.message }));
         } else {

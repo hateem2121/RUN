@@ -23,6 +23,7 @@ export * from "./envelopes.js";
 export * from "./materials.js";
 export * from "./media.js";
 export * from "./newsletter.js";
+export * from "./product-validation.js";
 export * from "./products.js";
 export * from "./relations.js";
 export * from "./system.js";

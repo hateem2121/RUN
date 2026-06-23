@@ -14,7 +14,7 @@ This audit will conduct a comprehensive forensic-level investigation of the RUN 
 
 - **Project Location:** `/Users/hateemjamshaid/Documents/RUN-Remix`
 - **Architecture:** RUN Remix monorepo (client + server)
-- **Tech Stack:** React 19, Vite 7, Tailwind V4, Express 5, Node.js ≥24
+- **Tech Stack:** React 19, Vite 8, Tailwind V4, Express 5, Node.js ≥24
 - **Port:** 5002 (confirmed)
 
 **Frontend Homepage Files:**

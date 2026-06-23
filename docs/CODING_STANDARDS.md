@@ -217,10 +217,8 @@ import { useGLTF } from '@react-three/drei'; // NEVER IMPORT THIS
 
 ```css
 /* styles.css */
-@layer utilities {
-  .custom-gradient {
-    background: linear-gradient(to right, theme('colors.primary'), theme('colors.secondary'));
-  }
+@utility custom-gradient {
+  background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
 }
 ```
 
@@ -699,6 +697,36 @@ Violations of these rules will cause:
 
 - **Slow Query Logging**: Queries exceeding 100ms are automatically logged for audit.
 - **Tracing**: All database and cache operations must be instrumented with OpenTelemetry spans.
+
+---
+
+## RULE #17: UI/UX Accessibility (No Native Confirm)
+
+Native browser `confirm()` or `alert()` dialogs are strictly prohibited as they block the main thread and violate design system guidelines.
+
+**✅ CORRECT:**
+Always use the accessible `@radix-ui/react-alert-dialog` based `<DeleteConfirmationDialog />` component for destructive actions.
+
+**❌ FORBIDDEN:**
+```javascript
+if (confirm("Are you sure?")) { ... }
+```
+
+---
+
+## RULE #18: Shared Package Import Boundaries
+
+The `@run-remix/shared` package strictly locks down exports to the root (`.`). Deep imports bypass the module's public API and cause Vite build crashes.
+
+**✅ CORRECT:**
+```typescript
+import { insertManufacturingCapabilitySchema } from "@shared/index"; // or @run-remix/shared
+```
+
+**❌ FORBIDDEN:**
+```typescript
+import { insertManufacturingCapabilitySchema } from "@run-remix/shared/schemas/content/manufacturing";
+```
 
 ---
 

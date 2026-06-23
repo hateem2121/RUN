@@ -1,5 +1,3 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { BlogCategory, BlogPost, InsertBlogPost } from "@shared/index";
 import { insertBlogPostSchema } from "@shared/index";
@@ -12,9 +10,12 @@ import {
   IconShare,
   IconTrash,
 } from "@tabler/icons-react";
-import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ResultAsync } from "neverthrow"; // Requested to use neverthrow
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -51,50 +52,140 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { apiRequest } from "@/lib/api";
 import { RichTextEditor } from "../shared/RichTextEditor";
 import { SEOPreview } from "./SEOPreview";
 import "@/styles/editor.css";
 
+// API services returning neverthrow Results for the client
+const blogClientService = {
+  getPosts: (searchTerm: string) => {
+    const queryParams = new URLSearchParams({
+      limit: "50",
+      offset: "0",
+      ...(searchTerm && { search: searchTerm }),
+    });
+    return ResultAsync.fromPromise(
+      apiRequest<{ posts: BlogPost[] }>(`/api/admin/blog/posts?${queryParams}`),
+      (error) => error as Error,
+    );
+  },
+  getCategories: () => {
+    return ResultAsync.fromPromise(
+      apiRequest<BlogCategory[]>("/api/admin/blog/categories"),
+      (error) => error as Error,
+    );
+  },
+  createPost: (values: InsertBlogPost) => {
+    return ResultAsync.fromPromise(
+      apiRequest<BlogPost>("/api/admin/blog/posts", {
+        method: "POST",
+        body: JSON.stringify(values),
+      }),
+      (error) => error as Error,
+    );
+  },
+  updatePost: (id: number, values: InsertBlogPost) => {
+    return ResultAsync.fromPromise(
+      apiRequest<BlogPost>(`/api/admin/blog/posts/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(values),
+      }),
+      (error) => error as Error,
+    );
+  },
+  deletePost: (id: number) => {
+    return ResultAsync.fromPromise(
+      apiRequest<{ success: boolean }>(`/api/admin/blog/posts/${id}`, {
+        method: "DELETE",
+      }),
+      (error) => error as Error,
+    );
+  },
+};
+
 export function BlogManagement() {
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [categories, setCategories] = useState<BlogCategory[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
 
-  const fetchPosts = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const queryParams = new URLSearchParams({
-        limit: "50",
-        offset: "0",
-        ...(searchTerm && { search: searchTerm }),
-      });
+  // Queries
+  const { data: postsData, isLoading: isLoadingPosts } = useQuery({
+    queryKey: ["/api/admin/blog/posts", searchTerm],
+    queryFn: async () => {
+      const result = await blogClientService.getPosts(searchTerm);
+      if (result.isErr()) throw result.error;
+      return result.value.posts || [];
+    },
+  });
 
-      const response = await fetch(`/api/admin/blog/posts?${queryParams}`);
-      if (!response.ok) throw new Error("Failed to fetch posts");
+  const { data: categories = [] } = useQuery({
+    queryKey: ["/api/admin/blog/categories"],
+    queryFn: async () => {
+      const result = await blogClientService.getCategories();
+      if (result.isErr()) throw result.error;
+      return result.value || [];
+    },
+  });
 
-      const data = await response.json();
-      setPosts(data.posts || []);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-      toast.error("Failed to load blog posts");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [searchTerm]);
+  const posts = postsData || [];
+  const isLoading = isLoadingPosts;
 
-  const fetchCategories = useCallback(async () => {
-    try {
-      const response = await fetch("/api/admin/blog/categories");
-      if (!response.ok) throw new Error("Failed to fetch categories");
-      const data = await response.json();
-      setCategories(data || []);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  }, []);
+  // Mutations
+  const createMutation = useMutation({
+    mutationFn: async (values: InsertBlogPost) => {
+      const result = await blogClientService.createPost(values);
+      if (result.isErr()) throw result.error;
+      return result.value;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/blog/posts"] });
+      toast.success("Blog post created successfully");
+      setIsModalOpen(false);
+      setEditingPost(null);
+      form.reset();
+    },
+    onError: (error) => {
+      console.error("Error saving post:", error);
+      toast.error("Failed to save post");
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, values }: { id: number; values: InsertBlogPost }) => {
+      const result = await blogClientService.updatePost(id, values);
+      if (result.isErr()) throw result.error;
+      return result.value;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/blog/posts"] });
+      toast.success("Blog post updated successfully");
+      setIsModalOpen(false);
+      setEditingPost(null);
+      form.reset();
+    },
+    onError: (error) => {
+      console.error("Error saving post:", error);
+      toast.error("Failed to save post");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const result = await blogClientService.deletePost(id);
+      if (result.isErr()) throw result.error;
+      return result.value;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/blog/posts"] });
+      toast.success("Blog post deleted successfully");
+    },
+    onError: (error) => {
+      console.error("Error deleting post:", error);
+      toast.error("Failed to delete post");
+    },
+  });
 
   const form = useForm({
     resolver: zodResolver(insertBlogPostSchema),
@@ -114,33 +205,11 @@ export function BlogManagement() {
     },
   });
 
-  useEffect(() => {
-    fetchPosts();
-    fetchCategories();
-  }, [fetchCategories, fetchPosts]);
-
   const onSubmit = async (values: InsertBlogPost) => {
-    try {
-      const url = editingPost ? `/api/admin/blog/posts/${editingPost.id}` : "/api/admin/blog/posts";
-
-      const method = editingPost ? "PATCH" : "POST";
-
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) throw new Error("Failed to save post");
-
-      toast.success(`Blog post ${editingPost ? "updated" : "created"} successfully`);
-      setIsModalOpen(false);
-      setEditingPost(null);
-      form.reset();
-      fetchPosts();
-    } catch (error) {
-      console.error("Error saving post:", error);
-      toast.error("Failed to save post");
+    if (editingPost) {
+      updateMutation.mutate({ id: editingPost.id, values });
+    } else {
+      createMutation.mutate(values);
     }
   };
 
@@ -164,21 +233,7 @@ export function BlogManagement() {
   };
 
   const handleDeletePost = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this post?")) return;
-
-    try {
-      const response = await fetch(`/api/admin/blog/posts/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) throw new Error("Failed to delete post");
-
-      toast.success("Blog post deleted successfully");
-      fetchPosts();
-    } catch (error) {
-      console.error("Error deleting post:", error);
-      toast.error("Failed to delete post");
-    }
+    deleteMutation.mutate(id);
   };
 
   return (
@@ -282,14 +337,20 @@ export function BlogManagement() {
                           >
                             <IconEdit size={14} />
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                            onClick={() => handleDeletePost(post.id)}
-                          >
-                            <IconTrash size={14} />
-                          </Button>
+                          <DeleteConfirmationDialog
+                            title="Confirm Deletion"
+                            description="Are you sure you want to delete this post? This action cannot be undone."
+                            onConfirm={() => handleDeletePost(post.id)}
+                            trigger={
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                              >
+                                <IconTrash size={14} />
+                              </Button>
+                            }
+                          />
                         </div>
                       </TableCell>
                     </TableRow>
@@ -314,7 +375,7 @@ export function BlogManagement() {
           </DialogHeader>
 
           <Form {...form}>
-            <form action={() => form.handleSubmit(onSubmit)()} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <Tabs defaultValue="content" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="content">Content</TabsTrigger>

@@ -2,6 +2,7 @@ import type { HomepageSlogan, InsertHomepageSlogan } from "@shared/index";
 import { Edit, GripVertical, MessageSquareText, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { GlassCard } from "@/components/admin/shared/GlassCard";
+import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -52,9 +53,7 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
   };
 
   const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this slogan?")) {
-      deleteSlogan.mutate(id);
-    }
+    deleteSlogan.mutate(id);
   };
 
   const handleReorder = (newOrder: HomepageSlogan[]) => {
@@ -135,15 +134,21 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
                         >
                           <Edit className="h-4 w-4 mr-2" /> Edit
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(slogan.id)}
-                          aria-label={`Delete slogan: ${slogan.text}`}
-                          className="h-9 px-3 text-red-400 hover:text-red-300 hover:bg-red-500/20"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <DeleteConfirmationDialog
+                          title="Confirm Deletion"
+                          description="Are you sure you want to delete this slogan? This action cannot be undone."
+                          onConfirm={() => handleDelete(slogan.id)}
+                          trigger={
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              aria-label={`Delete slogan: ${slogan.text}`}
+                              className="h-9 px-3 text-red-400 hover:text-red-300 hover:bg-red-500/20"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          }
+                        />
                       </div>
                     </div>
                   </SortableItem>

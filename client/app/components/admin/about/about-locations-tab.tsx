@@ -5,6 +5,7 @@ import { Building2, Download, Edit, MapPin, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CustomDropdown } from "@/components/admin/CustomDropdown";
+import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -114,9 +115,7 @@ export function AboutLocationsTab() {
   };
 
   const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this location?")) {
-      deleteMutation.mutate(id);
-    }
+    deleteMutation.mutate(id);
   };
 
   const handleSubmit = () => {
@@ -250,14 +249,20 @@ export function AboutLocationsTab() {
                           >
                             <Edit className="h-4 w-4" aria-hidden="true" />
                           </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleDelete(location.id)}
-                            aria-label={`Delete ${location.name}`}
-                          >
-                            <Trash2 className="h-4 w-4" aria-hidden="true" />
-                          </Button>
+                          <DeleteConfirmationDialog
+                            title="Confirm Deletion"
+                            description="Are you sure you want to delete this location? This action cannot be undone."
+                            onConfirm={() => handleDelete(location.id)}
+                            trigger={
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                aria-label={`Delete ${location.name}`}
+                              >
+                                <Trash2 className="h-4 w-4" aria-hidden="true" />
+                              </Button>
+                            }
+                          />
                         </div>
                       </div>
                     </div>
@@ -298,14 +303,20 @@ export function AboutLocationsTab() {
                           >
                             <Edit className="h-4 w-4" aria-hidden="true" />
                           </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleDelete(location.id)}
-                            aria-label={`Delete ${location.name}`}
-                          >
-                            <Trash2 className="h-4 w-4" aria-hidden="true" />
-                          </Button>
+                          <DeleteConfirmationDialog
+                            title="Confirm Deletion"
+                            description="Are you sure you want to delete this location? This action cannot be undone."
+                            onConfirm={() => handleDelete(location.id)}
+                            trigger={
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                aria-label={`Delete ${location.name}`}
+                              >
+                                <Trash2 className="h-4 w-4" aria-hidden="true" />
+                              </Button>
+                            }
+                          />
                         </div>
                       </div>
                     </div>

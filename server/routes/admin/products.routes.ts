@@ -1,5 +1,6 @@
 import {
   adminProductsQuerySchema,
+  hardDeleteSchema,
   type InsertProduct,
   insertProductSchema,
 } from "@run-remix/shared";
@@ -13,10 +14,6 @@ import { authService } from "../../services/auth-service.js";
 
 const router = Router();
 type ProductsQuery = z.infer<typeof adminProductsQuerySchema>;
-
-const hardDeleteSchema = z.object({
-  confirm: z.string().optional(),
-});
 
 /**
  * GET /api/admin/products/initial-data

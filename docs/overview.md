@@ -82,7 +82,7 @@ npm ci
 │   │   │       ├── upload/       # upload-utilities.ts, UploadItem.tsx
 │   │   │       └── components/   # MediaGridItem, MediaGridPagination, MediaGridToolbar, MediaBulkOperations
 │   │   └── lib/                  # Tokens & Utils
-│   └── vite.config.ts            # Vite 7 Config
+│   └── vite.config.ts            # Vite 8 Config
 │
 ├── server/ (@run-remix/server)   # Express 5 API
 │   ├── boot/                     # App Startup

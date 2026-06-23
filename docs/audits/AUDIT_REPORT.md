@@ -82,7 +82,7 @@ Zero violations found. `client/app/` never imports from `server/` paths. All sha
 
 ```
 /
-├── client/          # @run-remix/client (React 19 + Vite 7)
+├── client/          # @run-remix/client (React 19 + Vite 8)
 ├── server/          # @run-remix/server (Express 5)
 ├── shared/          # @run-remix/shared (Zod schemas + Drizzle types)
 ├── utils/           # Stand-alone utilities (NOT in workspaces)
@@ -502,7 +502,7 @@ No `if (process.env.NODE_ENV === 'development')` gates that are always-true or a
 `CLAUDE.md` exists at the project root and contains:
 - Full project identity and tech stack table
 - The 8-step Agentic Sprint workflow
-- Non-negotiable tech stack constraints (React 19, Vite 7, Tailwind v4, Express 5, TypeScript strict, Drizzle/Neon, Vitest, Biome)
+- Non-negotiable tech stack constraints (React 19, Vite 8, Tailwind v4, Express 5, TypeScript strict, Drizzle/Neon, Vitest, Biome)
 - Complete gstack skill routing table with descriptions
 - Protocol 0 (mandatory session start/end steps)
 - Project structure map

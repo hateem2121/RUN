@@ -53,7 +53,7 @@ The homepage score of **52/100** falls into the **"Poor - Significant problems, 
 
 ```mermaid
 graph TB
-    subgraph Frontend [Frontend - React 19 + Vite 7]
+    subgraph Frontend [Frontend - React 19 + Vite 8]
         V[Visitor Pages]
         A[Admin Console]
     end

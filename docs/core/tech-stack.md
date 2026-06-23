@@ -83,6 +83,14 @@ export const CustomInput = forwardRef((props, ref) => {
 });
 ```
 
+### 4.1 React Hook Form Strict Typing
+When strict type inference fails for `form.control` or `useFieldArray` combined with complex Zod schemas under React 19, bypass the constraint using:
+```tsx
+// biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+const control = form.control as any;
+```
+This is the **only** permitted use case for `any`.
+
 ---
 
 ## 5. Data Layer Architecture

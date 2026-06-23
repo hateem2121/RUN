@@ -15,7 +15,9 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { zodResolver } from "@hookform/resolvers/zod";
 import type { ManufacturingCapability, MediaAsset } from "@shared/index";
+import { insertManufacturingCapabilitySchema } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import {
   Award,
@@ -36,6 +38,8 @@ import {
   X,
 } from "lucide-react";
 import { useActionState, useOptimistic, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import * as z from "zod";
 import { LivePreviewGrid } from "@/components/admin/manufacturing/LivePreviewGrid";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { MediaPickerModal } from "@/components/admin/shared/MediaPickerModal";
@@ -44,6 +48,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -59,20 +71,24 @@ import { useManufacturingMutations } from "@/hooks/useManufacturingMutations";
 import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
 import { cn } from "@/lib/utils";
 
+const capabilityFormSchema = insertManufacturingCapabilitySchema.extend({
+  specifications: z
+    .array(
+      z.object({
+        label: z.string().min(1, "Label is required"),
+        value: z.string().min(1, "Value is required"),
+      }),
+    )
+    .default([]),
+  equipment: z.array(z.string()).default([]),
+});
+
+type CapabilityFormValues = z.infer<typeof capabilityFormSchema>;
+
 interface Specification {
   label: string;
   value: string;
 }
-
-type CapabilityFormData = Omit<
-  ManufacturingCapability,
-  "id" | "createdAt" | "updatedAt" | "sortOrder" | "unit" | "specifications"
-> & {
-  specifications: Specification[];
-  equipment: string[];
-  imageId: number | null;
-  unit: string | null;
-};
 
 interface CapabilityManagementProps {
   mediaAssets?: MediaAsset[];
@@ -226,18 +242,33 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
   const [editingCapability, setEditingCapability] = useState<ManufacturingCapability | null>(null);
   const [showCapabilityDialog, setShowCapabilityDialog] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [capabilityForm, setCapabilityForm] = useState<CapabilityFormData>({
-    name: "",
-    title: "",
-    description: "",
-    specifications: [],
-    equipment: [],
-    icon: "Factory",
-    imageId: null,
-    isActive: true,
-    capacity: "",
-    category: "",
-    unit: null,
+  const form = useForm<CapabilityFormValues>({
+    // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+    resolver: zodResolver(capabilityFormSchema) as any,
+    defaultValues: {
+      name: "",
+      title: "",
+      description: "",
+      specifications: [],
+      equipment: [],
+      icon: "Factory",
+      imageId: null,
+      isActive: true,
+      capacity: "",
+      category: "",
+      unit: null,
+    },
+  });
+
+  const { append: appendSpec, remove: removeSpec } = useFieldArray({
+    control: form.control,
+    name: "specifications",
+  });
+
+  const { append: appendEquipment, remove: removeEquipment } = useFieldArray({
+    control: form.control,
+    // @ts-expect-error - string arrays in useFieldArray
+    name: "equipment",
   });
   const [showCapabilityImagePicker, setShowCapabilityImagePicker] = useState(false);
   const [newSpecForm, setNewSpecForm] = useState({ label: "", value: "" });
@@ -303,18 +334,15 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
   });
 
   const [_formState, formAction, isPending] = useActionState(
-    async (_prevState: { success: boolean } | null, formData: FormData) => {
+    async (_prevState: { success: boolean } | null) => {
+      // Validate with RHF before proceeding
+      const isValid = await form.trigger();
+      if (!isValid) return { success: false };
+
+      const values = form.getValues();
       const data = {
-        name: formData.get("title") as string,
-        title: formData.get("title") as string,
-        description: formData.get("description") as string,
-        capacity: formData.get("capacity") as string,
-        category: formData.get("category") as string,
-        icon: capabilityForm.icon,
-        imageId: capabilityForm.imageId,
-        isActive: formData.get("isActive") === "on",
-        specifications: capabilityForm.specifications,
-        equipment: capabilityForm.equipment,
+        ...values,
+        name: values.title || "Untitled Capability",
       };
 
       if (editingCapability) {
@@ -323,10 +351,11 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
           payload: {
             ...editingCapability,
             ...data,
+            id: editingCapability.id, // Ensure id is not overwritten by data
             specifications: data.specifications as unknown as Record<string, unknown>,
             unit: editingCapability.unit,
             createdAt: editingCapability.createdAt,
-          },
+          } as ManufacturingCapability,
         });
         await updateCapabilityMutation.mutateAsync({ id: editingCapability.id, data });
       } else {
@@ -349,27 +378,28 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
     { success: false },
   );
 
+  const imageId = form.watch("imageId");
   const { data: specificCapabilityImage } = useQuery({
-    queryKey: [`/api/media/${capabilityForm.imageId}`, capabilityForm.imageId],
+    queryKey: [`/api/media/${imageId}`, imageId],
     queryFn: async () => {
-      if (!capabilityForm.imageId) return null;
-      const response = await fetch(`/api/media/${capabilityForm.imageId}`);
+      if (!imageId) return null;
+      const response = await fetch(`/api/media/${imageId}`);
       if (!response.ok) return null;
       const result = await response.json();
       return result.success ? result.data : null;
     },
-    enabled: !!capabilityForm.imageId,
+    enabled: !!imageId,
     staleTime: 30 * 60 * 1000,
   });
 
   const selectedCapabilityImage = Array.isArray(mediaAssets)
-    ? mediaAssets.find((asset) => asset.id === capabilityForm.imageId)
+    ? mediaAssets.find((asset) => asset.id === imageId)
     : undefined;
 
   const finalSelectedCapabilityImage = selectedCapabilityImage || specificCapabilityImage;
 
   const resetCapabilityForm = () => {
-    setCapabilityForm({
+    form.reset({
       name: "",
       title: "",
       description: "",
@@ -387,7 +417,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
 
   const handleEditCapability = (capability: ManufacturingCapability) => {
     setEditingCapability(capability);
-    setCapabilityForm({
+    form.reset({
       name: capability.name,
       title: capability.title ?? "",
       description: capability.description ?? "",
@@ -422,32 +452,25 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
 
   const handleAddSpecification = () => {
     if (newSpecForm.label && newSpecForm.value) {
-      setCapabilityForm({
-        ...capabilityForm,
-        specifications: [...capabilityForm.specifications, newSpecForm],
-      });
+      appendSpec(newSpecForm);
       setNewSpecForm({ label: "", value: "" });
     }
   };
 
   const handleRemoveSpecification = (index: number) => {
-    const newSpecifications = capabilityForm.specifications.filter((_, i) => i !== index);
-    setCapabilityForm({ ...capabilityForm, specifications: newSpecifications });
+    removeSpec(index);
   };
 
   const handleAddEquipment = () => {
     if (newEquipment) {
-      setCapabilityForm({
-        ...capabilityForm,
-        equipment: [...capabilityForm.equipment, newEquipment],
-      });
+      // biome-ignore lint/suspicious/noExplicitAny: bypass string array inference conflict
+      appendEquipment(newEquipment as any);
       setNewEquipment("");
     }
   };
 
   const handleRemoveEquipment = (index: number) => {
-    const newEquipment = capabilityForm.equipment.filter((_, i) => i !== index);
-    setCapabilityForm({ ...capabilityForm, equipment: newEquipment });
+    removeEquipment(index);
   };
 
   const handleCapabilityImageSelect = (asset: {
@@ -456,18 +479,19 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
     filename: string;
     type: string;
   }) => {
-    setCapabilityForm({ ...capabilityForm, imageId: Number(asset.id) });
+    form.setValue("imageId", Number(asset.id), { shouldDirty: true });
     setShowCapabilityImagePicker(false);
   };
 
   const getPreviewCapability = (): ManufacturingCapability => {
+    const values = form.getValues();
     return {
       id: editingCapability?.id || 0,
       createdAt: editingCapability?.createdAt || new Date(),
       sortOrder: editingCapability?.sortOrder || 0,
-      ...capabilityForm,
-      specifications: capabilityForm.specifications as unknown as Record<string, unknown>,
-      name: capabilityForm.name || capabilityForm.title || "Untitled Capability",
+      ...values,
+      specifications: values.specifications as unknown as Record<string, unknown>,
+      name: values.name || values.title || "Untitled Capability",
     } as ManufacturingCapability;
   };
 
@@ -574,343 +598,350 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
               </div>
             </div>
 
-            <form action={formAction} className="flex-1 overflow-y-auto max-h-custom-space-37">
-              <div className="p-8 space-y-8">
-                <div className={cn("grid gap-10", showPreview ? "lg:grid-cols-2" : "grid-cols-1")}>
-                  <div className="space-y-8">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <Form {...form}>
+              <form action={formAction} className="flex-1 overflow-y-auto max-h-custom-space-37">
+                <div className="p-8 space-y-8">
+                  <div
+                    className={cn("grid gap-10", showPreview ? "lg:grid-cols-2" : "grid-cols-1")}
+                  >
+                    <div className="space-y-8">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <FormField
+                            // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+                            control={form.control as any}
+                            name="title"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
+                                  Title
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-7/50 placeholder:text-white/20"
+                                    placeholder="e.g., Advanced Fabric Bonding"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <FormField
+                            // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+                            control={form.control as any}
+                            name="icon"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
+                                  Visual Icon
+                                </FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-custom-space-38 focus:ring-custom-color-8/50">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent className="bg-surface-black border-white/10 text-white">
+                                    {Object.keys(capabilityIcons).map((icon) => (
+                                      <SelectItem
+                                        key={icon}
+                                        value={icon}
+                                        className="hover:bg-brand-manufacturing/10 focus:bg-brand-manufacturing/10"
+                                      >
+                                        {icon}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <FormField
+                            // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+                            control={form.control as any}
+                            name="capacity"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
+                                  Production Capacity
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    value={field.value || ""}
+                                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-9/50 placeholder:text-white/20"
+                                    placeholder="e.g., 100,000 units/year"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <FormField
+                            // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+                            control={form.control as any}
+                            name="category"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
+                                  Service Category
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    value={field.value || ""}
+                                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-10/50 placeholder:text-white/20"
+                                    placeholder="e.g., Technical Teamwear"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+
                       <div className="space-y-2">
-                        <Label
-                          htmlFor="capability-title"
-                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
-                        >
-                          Title
-                        </Label>
-                        <Input
-                          id="capability-title"
-                          name="title"
-                          value={capabilityForm.title || ""}
-                          onChange={(e) =>
-                            setCapabilityForm({
-                              ...capabilityForm,
-                              title: e.target.value,
-                              name: e.target.value,
-                            })
-                          }
-                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-7/50 placeholder:text-white/20"
-                          placeholder="e.g., Advanced Fabric Bonding"
-                          required
+                        <FormField
+                          // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+                          control={form.control as any}
+                          name="description"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
+                                Description
+                              </FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  {...field}
+                                  value={field.value || ""}
+                                  className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-39 focus:ring-custom-color-11/50 placeholder:text-white/20 resize-none"
+                                  placeholder="Detail this technical capability..."
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
                       </div>
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="capability-icon"
-                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
-                        >
-                          Visual Icon
-                        </Label>
-                        <Select
-                          value={capabilityForm.icon || "Factory"}
-                          onValueChange={(value) =>
-                            setCapabilityForm({
-                              ...capabilityForm,
-                              icon: value,
-                            })
-                          }
-                        >
-                          <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-custom-space-38 focus:ring-custom-color-8/50">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="bg-surface-black border-white/10 text-white">
-                            {Object.keys(capabilityIcons).map((icon) => (
-                              <SelectItem
-                                key={icon}
-                                value={icon}
-                                className="hover:bg-brand-manufacturing/10 focus:bg-brand-manufacturing/10"
-                              >
-                                {icon}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="capability-capacity"
-                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
-                        >
-                          Production Capacity
-                        </Label>
-                        <Input
-                          id="capability-capacity"
-                          name="capacity"
-                          value={capabilityForm.capacity || ""}
-                          onChange={(e) =>
-                            setCapabilityForm({
-                              ...capabilityForm,
-                              capacity: e.target.value,
-                            })
-                          }
-                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-9/50 placeholder:text-white/20"
-                          placeholder="e.g., 100,000 units/year"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="capability-category"
-                          className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
-                        >
-                          Service Category
-                        </Label>
-                        <Input
-                          id="capability-category"
-                          name="category"
-                          value={capabilityForm.category || ""}
-                          onChange={(e) =>
-                            setCapabilityForm({
-                              ...capabilityForm,
-                              category: e.target.value,
-                            })
-                          }
-                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-10/50 placeholder:text-white/20"
-                          placeholder="e.g., Technical Teamwear"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="capability-description"
-                        className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1"
-                      >
-                        Description
-                      </Label>
-                      <Textarea
-                        id="capability-description"
-                        name="description"
-                        value={capabilityForm.description || ""}
-                        onChange={(e) =>
-                          setCapabilityForm({
-                            ...capabilityForm,
-                            description: e.target.value,
-                          })
-                        }
-                        className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-39 focus:ring-custom-color-11/50 placeholder:text-white/20 resize-none"
-                        placeholder="Detail this technical capability..."
-                      />
-                    </div>
-
-                    <div className="flex items-center space-x-3 bg-white/5 border border-white/10 p-4 rounded-xl">
-                      <Switch
-                        id="capability-active"
+                      <FormField
+                        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+                        control={form.control as any}
                         name="isActive"
-                        checked={capabilityForm.isActive ?? true}
-                        onCheckedChange={(checked) =>
-                          setCapabilityForm({
-                            ...capabilityForm,
-                            isActive: checked,
-                          })
-                        }
-                        className="data-custom-misc-47:bg-brand-manufacturing"
+                        render={({ field }) => (
+                          <FormItem className="flex items-center space-x-3 bg-white/5 border border-white/10 p-4 rounded-xl">
+                            <FormControl>
+                              <Switch
+                                name={field.name}
+                                checked={field.value ?? true}
+                                onCheckedChange={field.onChange}
+                                className="data-custom-misc-47:bg-brand-manufacturing"
+                              />
+                            </FormControl>
+                            <FormLabel className="text-xs font-bold text-slate-300 uppercase tracking-wider cursor-pointer mt-0">
+                              Status: {field.value ? "Active" : "Inactive"}
+                            </FormLabel>
+                          </FormItem>
+                        )}
                       />
-                      <Label
-                        htmlFor="capability-active"
-                        className="text-xs font-bold text-slate-300 uppercase tracking-wider cursor-pointer"
-                      >
-                        Status: {capabilityForm.isActive ? "Active" : "Inactive"}
-                      </Label>
-                    </div>
 
-                    <div className="space-y-6 pt-6 border-t border-white/5">
-                      <div className="space-y-4">
-                        <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
-                          Technical Specifications
-                        </Label>
-                        <div className="grid gap-3">
-                          {capabilityForm.specifications.map((spec, index) => (
-                            <div
-                              key={index}
-                              className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10"
-                            >
-                              <div className="flex-1 flex gap-2 text-sm">
-                                <span className="font-bold text-brand-manufacturing">
-                                  {spec.label}:
-                                </span>
-                                <span className="text-white/70">{spec.value}</span>
+                      <div className="space-y-6 pt-6 border-t border-white/5">
+                        <div className="space-y-4">
+                          <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
+                            Technical Specifications
+                          </Label>
+                          <div className="grid gap-3">
+                            {(form.getValues("specifications") || []).map((spec, index) => (
+                              <div
+                                key={index}
+                                className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10"
+                              >
+                                <div className="flex-1 flex gap-2 text-sm">
+                                  <span className="font-bold text-brand-manufacturing">
+                                    {spec.label}:
+                                  </span>
+                                  <span className="text-white/70">{spec.value}</span>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveSpecification(index)}
+                                  className="text-red-500/70 hover:text-red-400 p-1"
+                                  aria-label="Remove Specification"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
                               </div>
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveSpecification(index)}
-                                className="text-red-500/70 hover:text-red-400 p-1"
-                                aria-label="Remove Specification"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
+                            ))}
+                          </div>
 
-                        <div className="flex flex-col sm:flex-row gap-3">
-                          <Input
-                            placeholder="Label (e.g., Grade)"
-                            value={newSpecForm.label}
-                            onChange={(e) =>
-                              setNewSpecForm({
-                                ...newSpecForm,
-                                label: e.target.value,
-                              })
-                            }
-                            className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-custom-color-12/50"
-                          />
-                          <Input
-                            placeholder="Value (e.g., ISO-9001)"
-                            value={newSpecForm.value}
-                            onChange={(e) =>
-                              setNewSpecForm({
-                                ...newSpecForm,
-                                value: e.target.value,
-                              })
-                            }
-                            className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-custom-color-13/50"
-                          />
-                          <Button
-                            type="button"
-                            onClick={handleAddSpecification}
-                            className="h-11 bg-white/10 hover:bg-white/20 text-white font-bold text-xxs uppercase tracking-widest px-6"
-                          >
-                            Add Spec
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="space-y-4 pt-6 border-t border-white/5">
-                        <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
-                          Asset Registry (Equipment)
-                        </Label>
-                        <div className="flex flex-wrap gap-2">
-                          {capabilityForm.equipment.map((item, index) => (
-                            <Badge
-                              key={index}
-                              className="bg-brand-manufacturing/10 text-brand-manufacturing border-brand-manufacturing/20 px-3 py-1 gap-2 rounded-lg"
-                            >
-                              {item}
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveEquipment(index)}
-                                className="hover:text-white border-0 bg-transparent p-0 size-auto ml-1.5"
-                                aria-label={`Remove ${item}`}
-                              >
-                                <X className="size-3" />
-                              </button>
-                            </Badge>
-                          ))}
-                        </div>
-
-                        <div className="flex gap-3">
-                          <Input
-                            placeholder="Add equipment (e.g., CNC Laser Cutter)"
-                            value={newEquipment}
-                            onChange={(e) => setNewEquipment(e.target.value)}
-                            className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-custom-color-14/50"
-                          />
-                          <Button
-                            type="button"
-                            onClick={handleAddEquipment}
-                            className="h-11 bg-white/10 hover:bg-white/20 text-white font-bold text-xxs uppercase tracking-widest px-6 whitespace-nowrap"
-                          >
-                            Add Asset
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="space-y-4 pt-6 border-t border-white/5">
-                        <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
-                          Hero Asset
-                        </Label>
-                        <div className="flex gap-3">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => setShowCapabilityImagePicker(true)}
-                            className="flex-1 bg-white/5 border-white/10 h-14 rounded-xl justify-start px-4 text-admin-muted hover:bg-white/10 hover:text-white transition-all border-0 shadow-none ring-offset-0 focus:ring-0"
-                          >
-                            <ImageIcon className="mr-3 h-5 w-5 text-brand-manufacturing" />
-                            <span className="truncate">
-                              {finalSelectedCapabilityImage
-                                ? finalSelectedCapabilityImage.filename
-                                : "Select Hero Image"}
-                            </span>
-                          </Button>
-                          {finalSelectedCapabilityImage && (
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              onClick={() =>
-                                setCapabilityForm({
-                                  ...capabilityForm,
-                                  imageId: null,
+                          <div className="flex flex-col sm:flex-row gap-3">
+                            <Input
+                              placeholder="Label (e.g., Grade)"
+                              value={newSpecForm.label}
+                              onChange={(e) =>
+                                setNewSpecForm({
+                                  ...newSpecForm,
+                                  label: e.target.value,
                                 })
                               }
-                              className="h-14 w-14 rounded-xl border border-white/10 hover:bg-red-500/10 hover:text-red-400 text-admin-muted"
+                              className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-custom-color-12/50"
+                            />
+                            <Input
+                              placeholder="Value (e.g., ISO-9001)"
+                              value={newSpecForm.value}
+                              onChange={(e) =>
+                                setNewSpecForm({
+                                  ...newSpecForm,
+                                  value: e.target.value,
+                                })
+                              }
+                              className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-custom-color-13/50"
+                            />
+                            <Button
+                              type="button"
+                              onClick={handleAddSpecification}
+                              className="h-11 bg-white/10 hover:bg-white/20 text-white font-bold text-xxs uppercase tracking-widest px-6"
                             >
-                              <Trash2 className="h-5 w-5" />
+                              Add Spec
                             </Button>
-                          )}
+                          </div>
+                        </div>
+
+                        <div className="space-y-4 pt-6 border-t border-white/5">
+                          <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
+                            Asset Registry (Equipment)
+                          </Label>
+                          <div className="flex flex-wrap gap-2">
+                            {(form.getValues("equipment") || []).map((item, index) => (
+                              <Badge
+                                key={index}
+                                className="bg-brand-manufacturing/10 text-brand-manufacturing border-brand-manufacturing/20 px-3 py-1 gap-2 rounded-lg"
+                              >
+                                {item}
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveEquipment(index)}
+                                  className="hover:text-white border-0 bg-transparent p-0 size-auto ml-1.5"
+                                  aria-label={`Remove ${item}`}
+                                >
+                                  <X className="size-3" />
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+
+                          <div className="flex gap-3">
+                            <Input
+                              placeholder="Add equipment (e.g., CNC Laser Cutter)"
+                              value={newEquipment}
+                              onChange={(e) => setNewEquipment(e.target.value)}
+                              className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-custom-color-14/50"
+                            />
+                            <Button
+                              type="button"
+                              onClick={handleAddEquipment}
+                              className="h-11 bg-white/10 hover:bg-white/20 text-white font-bold text-xxs uppercase tracking-widest px-6 whitespace-nowrap"
+                            >
+                              Add Asset
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="space-y-4 pt-6 border-t border-white/5">
+                          <Label className="text-xxs font-bold text-admin-muted uppercase tracking-widest pl-1">
+                            Hero Asset
+                          </Label>
+                          <div className="flex gap-3">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => setShowCapabilityImagePicker(true)}
+                              className="flex-1 bg-white/5 border-white/10 h-14 rounded-xl justify-start px-4 text-admin-muted hover:bg-white/10 hover:text-white transition-all border-0 shadow-none ring-offset-0 focus:ring-0"
+                            >
+                              <ImageIcon className="mr-3 h-5 w-5 text-brand-manufacturing" />
+                              <span className="truncate">
+                                {finalSelectedCapabilityImage
+                                  ? finalSelectedCapabilityImage.filename
+                                  : "Select Hero Image"}
+                              </span>
+                            </Button>
+                            {finalSelectedCapabilityImage && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                onClick={() =>
+                                  form.setValue("imageId", null, { shouldDirty: true })
+                                }
+                                className="h-14 w-14 rounded-xl border border-white/10 hover:bg-red-500/10 hover:text-red-400 text-admin-muted"
+                              >
+                                <Trash2 className="h-5 w-5" />
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
+
+                    {showPreview && (
+                      <div className="sticky top-0 h-fit space-y-4">
+                        <div className="flex items-center gap-2 mb-2 p-3 bg-brand-manufacturing/10 rounded-xl border border-brand-manufacturing/20">
+                          <LayoutTemplate className="h-4 w-4 text-brand-manufacturing" />
+                          <span className="text-xxs font-bold text-brand-manufacturing uppercase tracking-widest">
+                            Live Component Preview
+                          </span>
+                        </div>
+                        <div className="rounded-2xl border border-white/10 bg-black/40 p-1">
+                          <LivePreviewGrid>
+                            <CapabilityCard
+                              capability={getPreviewCapability()}
+                              index={0}
+                              mediaAssets={mediaAssets}
+                            />
+                          </LivePreviewGrid>
+                        </div>
+                        <p className="text-xxs font-medium text-admin-muted text-center italic">
+                          This card will represent this capability on the public Manufacturing page.
+                        </p>
+                      </div>
+                    )}
                   </div>
-
-                  {showPreview && (
-                    <div className="sticky top-0 h-fit space-y-4">
-                      <div className="flex items-center gap-2 mb-2 p-3 bg-brand-manufacturing/10 rounded-xl border border-brand-manufacturing/20">
-                        <LayoutTemplate className="h-4 w-4 text-brand-manufacturing" />
-                        <span className="text-xxs font-bold text-brand-manufacturing uppercase tracking-widest">
-                          Live Component Preview
-                        </span>
-                      </div>
-                      <div className="rounded-2xl border border-white/10 bg-black/40 p-1">
-                        <LivePreviewGrid>
-                          <CapabilityCard
-                            capability={getPreviewCapability()}
-                            index={0}
-                            mediaAssets={mediaAssets}
-                          />
-                        </LivePreviewGrid>
-                      </div>
-                      <p className="text-xxs font-medium text-admin-muted text-center italic">
-                        This card will represent this capability on the public Manufacturing page.
-                      </p>
-                    </div>
-                  )}
                 </div>
-              </div>
 
-              <div className="p-8 border-t border-white/5 bg-white/[0.02] flex justify-end gap-3">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => setShowCapabilityDialog(false)}
-                  className="text-admin-muted hover:bg-white/5"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={isPending}
-                  className="bg-primary hover:bg-primary/90 text-white rounded-xl px-8 py-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all outline-none ring-0 border-0"
-                >
-                  {isPending
-                    ? "Syncing..."
-                    : editingCapability
-                      ? "Update Capability"
-                      : "Create Capability"}
-                </Button>
-              </div>
-            </form>
+                <div className="p-8 border-t border-white/5 bg-white/[0.02] flex justify-end gap-3">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setShowCapabilityDialog(false)}
+                    className="text-admin-muted hover:bg-white/5"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={isPending}
+                    className="bg-primary hover:bg-primary/90 text-white rounded-xl px-8 py-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all outline-none ring-0 border-0"
+                  >
+                    {isPending
+                      ? "Syncing..."
+                      : editingCapability
+                        ? "Update Capability"
+                        : "Create Capability"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </DialogContent>
         </Dialog>
 
