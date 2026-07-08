@@ -46,3 +46,39 @@
 ## Auth & Session Constraints (Enforced via Drizzle)
 - **Auth & Sessions:** All session storage MUST use `DrizzleSessionStore` backed by Neon PostgreSQL. The store implementation must return `neverthrow` ResultAsync objects. Raw throws and generic try-catch blocks are strictly prohibited.
 - **Redis Boundaries:** `ioredis` is strictly isolated to rate limiting (`rateLimiter.ts`), unified caching (`unified-cache.ts`), and background job coordination. It must NEVER be used for session persistence.
+
+## Server File Location Conventions (Updated 2026-07-08)
+
+These rules were codified after the Phase 3/4 cleanup sprint:
+
+- **`server/db.ts`** — Primary Neon WebSocket DB connection pool. Lives at `server/db.ts` (conventional Express placement). Do NOT move it; it is imported by 14+ files via `"../db.js"` and `"../../db.js"`. Treat as a core infrastructure module.
+- **`server/lib/multer-optimized.ts`** — Multer upload middleware with magic-number validation. Canonical location: `server/lib/multer-optimized.ts`. Import via `"../../lib/multer-optimized.js"` from route files.
+- **`server/lib/image-processor.ts`** — Sharp-based image processing pipeline. Canonical location: `server/lib/image-processor.ts`. Import via `"../lib/image-processor.js"` from service/route files.
+- **`server/migrations/`** — Authoritative Drizzle-kit migration output directory. The root `migrations/` and `drizzle/` directories have been removed (their content was superseded). All new migrations generate into `server/migrations/` as configured in `server/drizzle.config.ts`.
+
+## Deprecated Directories (Removed 2026-07-08)
+
+The following directories were removed in the Phase 3/4 cleanup sprint and must NOT be recreated:
+
+- `src/` — Legacy pre-Remix React application. Permanently removed. All source code is in `client/`, `server/`, and `shared/`.
+- `scratch/` — Temporary script graveyard. Gitignored. Do not accumulate scripts here; use the proper `scripts/` workspace instead.
+- `findings/` — Session-specific investigation reports. Gitignored. Persistent findings belong in `docs/audits/` or `MASTER_AUDIT_REPORT.md`.
+- `tools/` — Contained a single orphaned CMS auditor script. Permanently removed.
+- `drizzle/` (root) — Removed. Use `server/migrations/` exclusively.
+- `migrations/` (root) — Removed. Use `server/migrations/` exclusively.
+- `server/lib/jobs/workers/` — Empty directory from the removed BullMQ integration. Do not recreate. Background jobs use Google Cloud Tasks with `server/routes/worker.ts`.
+- `server/lib/jobs/connection.ts` — BullMQ-era Redis connection file. Permanently removed. Never recreate.
+- `client/app/types/lenis.d.ts` — Type declaration for the forbidden `lenis` library. Permanently removed. Use `locomotive-scroll` 5.0.1 only.
+
+## GSAP Import Rule (Hardened 2026-07-08)
+
+All GSAP imports in component files MUST use the centralized registry:
+```ts
+// ✅ Correct — always
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+
+// ❌ Never — direct import bypasses plugin registration
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+```
+This rule applies to ALL files under `client/app/`. No exceptions.

@@ -80,6 +80,8 @@ legacy/worktrees/
 # Protocol 0 session files (not project documentation)
 task_plan.md
 findings.md
+findings/
+.agent/
 
 # Log output directories
 logs/
@@ -98,3 +100,17 @@ tests/e2e/**/*.png
 
 # Scratch directory for temporary scripts
 scratch/
+
+# Agent session artefacts (Phase 3 audit additions — 2026-07-08)
+.agents/
+.agent/
+.stryker-tmp/
+ORIGINAL_REQUEST.md
+knip.txt
+test-results.json
+test-e2e-output.log
+e2e-console-logs.txt
+full_test_output.txt
+test_output.txt
+server.log
+check.log

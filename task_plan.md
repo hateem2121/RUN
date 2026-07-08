@@ -1,5 +1,31 @@
 # RUN Remix - Task Plan
 
+## Session: 2026-07-08 (Phase 3 & 4 Cleanup Remediation Sprint)
+**Goal:** Execute Phase 3 (Cosmetic/Housekeeping) and Phase 4 (Assess & Decide) items from the comprehensive codebase audit. Clean up root-level clutter, legacy `src/` app, orphaned files, `scratch/` and `findings/` directories, relocate standalone server files to proper architectural locations, and consolidate migration directories. Branch: `chore/phase3-phase4-cleanup`.
+**Status:** ✅ Complete — committed on branch `chore/phase3-phase4-cleanup`
+- [x] Update `.gitignore` (added `.agents/`, `.agent/`, `.stryker-tmp/`, `ORIGINAL_REQUEST.md`, `knip.txt`, `test-results.json`, multiple log patterns, `findings/`)
+- [x] Investigate and consolidate `drizzle/` vs `server/migrations/` → deleted root `drizzle/` and `migrations/` (superseded)
+- [x] Investigate and relocate `server/multer-optimized.ts` → `server/lib/multer-optimized.ts`, updated 1 import
+- [x] Investigate and relocate `server/image-processor.ts` → `server/lib/image-processor.ts`, updated 2 imports
+- [x] `server/db.ts` → kept in place (documented in AGENTS.md, 14 active importers)
+- [x] Delete `src/` legacy app
+- [x] Clean `scratch/` directory (43 files deleted)
+- [x] Clean `findings/` directory (36 subdirs deleted, 3 .md reports archived to docs/audits/)
+- [x] `queryClient.ts` → confirmed ACTIVE (20+ importers), kept
+- [x] `performance-intersection-observer.ts` → confirmed ACTIVE (1 importer), kept
+- [x] `media-queue.ts` → confirmed ACTIVE (5 usages), kept
+- [x] Move/delete `Investigative prompts for website/` → moved to docs/investigative-prompts/
+- [x] Delete root-level junk files (14 files removed)
+- [x] Delete legacy job files: `server/lib/jobs/connection.ts`, `server/lib/jobs/workers/`
+- [x] Delete forbidden library artefacts: `client/app/types/lenis.d.ts`
+- [x] Delete orphaned scripts: 4 from scripts/, 2 one-off test files
+- [x] Fixed Biome import order violations (3 files after moves)
+- [x] Run `npm run verify:tech-integrity` — all 8 checks pass ✅
+- [x] Update `AGENTS.md` with server file locations, deprecated dirs, GSAP import rule
+- [x] Update `findings.md` with resolution status
+**Outcome:** ~200+ files removed, 2 files relocated, 3 import paths updated, zero TS/Biome errors, full integrity check passing.
+**Next Steps:** Merge `chore/phase3-phase4-cleanup` → `main` when ready.
+
 ## Session: 2026-06-23 (System Health Remediation)
 - [x] **CURRENT:** Remediation Sprint: Neon Auth & DrizzleSessionStore Migration
 **Goal:** Completely replace the custom `RedisSessionStore` and banned `MemoryStore` fallback with a Neon PostgreSQL-backed session store using Drizzle.

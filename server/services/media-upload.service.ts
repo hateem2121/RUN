@@ -1,9 +1,9 @@
 import path from "node:path";
 import { err, ok, type Result } from "neverthrow";
 import type { MediaAsset } from "../../shared/index.js";
-import { isImageFile } from "../image-processor.js";
 import { mediaRepository } from "../lib/db/repositories/index.js";
 import { type AppError, BadRequestError, InternalError, NotFoundError } from "../lib/errors.js";
+import { isImageFile } from "../lib/image-processor.js";
 import { getGLTFProcessor, isGLTFFile } from "../lib/integrations/gltf-processor.js";
 import { queueMediaProcessing } from "../lib/jobs/queues/media-queue.js";
 import { logger } from "../lib/monitoring/logger.js";
