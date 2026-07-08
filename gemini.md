@@ -183,6 +183,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 
 ### 5.1.2 Middleware Strictness
 - **neverthrow mandatory**: All Express middleware (`server/middleware/`) including rate limiters, CSRF validation, idempotency caching, and RBAC audit logs MUST strictly use `ResultAsync.fromPromise` and `Result.fromThrowable`. Raw `try/catch` blocks used as fail-safes or fallbacks are strictly prohibited and must be converted to `match()` handlers.
+- **useIterableCallbackReturn**: When mapping `neverthrow` Results (e.g. converting a db result to void), you must explicitly return `undefined` to satisfy Biome. `() => {}` is forbidden; use `.map(() => undefined)` instead.
 
 ### 5.2 Forbidden by Architecture
 
@@ -382,6 +383,7 @@ function MyComponent() {
 // Never use `opacity: 0` in `gsap.fromTo()` initial states for hero sections, as it artificially blocks Largest Contentful Paint (LCP).
 // Never initialise scroll libraries (lenis/locomotive-scroll) inside components
 // Scroll context (Locomotive Scroll v5.0.1) MUST exclusively be initialized once in `_public.tsx` layout — never in individual page components like `_index.tsx`.
+// When defining the Locomotive Scroll instance dynamically in `useEffect`, avoid `noExplicitAny` by typing it strictly: `let scroll: { destroy: () => void } | undefined;`
 ```
 
 ### 6.9 Cache Architecture
