@@ -7,7 +7,7 @@ import {
 import express from "express";
 import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
-import { generateResponsiveVariants, isImageFile, processImage } from "../image-processor.js";
+import { generateResponsiveVariants, isImageFile, processImage } from "../lib/image-processor.js";
 import { emailService } from "../lib/integrations/email-service.js";
 import { getGLTFProcessor, isGLTFFile } from "../lib/integrations/gltf-processor.js";
 import { logger } from "../lib/monitoring/logger.js";

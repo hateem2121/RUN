@@ -1,5 +1,21 @@
 # RUN Remix - Task Plan
 
+## Session: 2026-07-08 (Phase 3 & 4 Cleanup Remediation Sprint)
+**Goal:** Execute Phase 3 (Cosmetic/Housekeeping) and Phase 4 (Assess & Decide) items from the comprehensive codebase audit. Clean up root-level clutter, legacy `src/` app, orphaned files, `scratch/` and `findings/` directories, relocate standalone server files to proper architectural locations, and consolidate migration directories. Branch: `chore/phase3-phase4-cleanup`.
+**Status:** 🔄 In Progress
+- [ ] Update `.gitignore`
+- [ ] Investigate and consolidate `drizzle/` vs `server/migrations/`
+- [ ] Investigate and relocate `server/db.ts`, `server/multer-optimized.ts`, `server/image-processor.ts`
+- [ ] Delete `src/` legacy app
+- [ ] Clean `scratch/` directory
+- [ ] Clean `findings/` directory
+- [ ] Evaluate and delete unused `queryClient.ts`, `performance-intersection-observer.ts`, `media-queue.ts`
+- [ ] Move/delete `Investigative prompts for website/`
+- [ ] Delete root-level junk files
+- [ ] Run `npm run verify:tech-integrity` — all 8 checks pass
+- [ ] Update `findings.md` with resolution status
+**Next Steps:** Begin B.L.A.S.T. Blueprint phase.
+
 ## Session: 2026-06-23 (System Health Remediation)
 - [x] **CURRENT:** Remediation Sprint: Neon Auth & DrizzleSessionStore Migration
 **Goal:** Completely replace the custom `RedisSessionStore` and banned `MemoryStore` fallback with a Neon PostgreSQL-backed session store using Drizzle.

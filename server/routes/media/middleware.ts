@@ -4,14 +4,14 @@
  */
 
 import multer from "multer";
-import { UPLOAD_CONFIG } from "../../lib/utilities/upload-config.js";
-import { UploadRateLimiter } from "../../middleware/rateLimiter.js";
 import {
   MAX_CONCURRENT_UPLOADS,
   MAX_FILES,
   uploadOptimized as multerUploadOptimized,
   validateMagicNumbers,
-} from "../../multer-optimized.js";
+} from "../../lib/multer-optimized.js";
+import { UPLOAD_CONFIG } from "../../lib/utilities/upload-config.js";
+import { UploadRateLimiter } from "../../middleware/rateLimiter.js";
 
 // ============================================================================
 // UPLOAD MIDDLEWARE
