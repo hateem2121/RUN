@@ -773,4 +773,71 @@ Before ending any session, confirm:
 
 *Antigravity — built for RUN APPAREL (PVT) LTD · RUN Remix v4.0.3 · June 2026*
 *Mirrors: gstack v1.20.0.0 + Claude Code constraints (exact parity)*
+
+---
+
+## 10. Server File Location Conventions (Codified 2026-07-08)
+
+These conventions were locked in after the Phase 3/4 cleanup sprint. Do NOT deviate.
+
+- **`server/db.ts`** — Primary Neon WebSocket DB connection pool. Lives at `server/db.ts` (conventional Express placement). Do NOT move it; it is imported by 14+ files via `"../db.js"` and `"../../db.js"`. Treat as a core infrastructure module.
+- **`server/lib/multer-optimized.ts`** — Multer upload middleware with magic-number validation. Canonical location: `server/lib/multer-optimized.ts`. Import via `"../../lib/multer-optimized.js"` from route files.
+- **`server/lib/image-processor.ts`** — Sharp-based image processing pipeline. Canonical location: `server/lib/image-processor.ts`. Import via `"../lib/image-processor.js"` from service/route files.
+- **`server/migrations/`** — Authoritative Drizzle-kit migration output directory. The root `migrations/` and `drizzle/` directories have been removed (their content was superseded). All new migrations generate into `server/migrations/` as configured in `server/drizzle.config.ts`.
+
+## 11. Deprecated Directories (Removed 2026-07-08 — Do Not Recreate)
+
+The following directories were permanently removed in the Phase 3/4 cleanup sprint:
+
+| Directory / File | Reason |
+|------------------|--------|
+| `src/` | Legacy pre-Remix React application. Permanently removed. All source code is in `client/`, `server/`, and `shared/`. |
+| `scratch/` | Temporary script graveyard. Gitignored. Do not accumulate scripts here; use the proper `scripts/` workspace instead. |
+| `findings/` | Session-specific investigation reports. Gitignored. Persistent findings belong in `docs/audits/` or `MASTER_AUDIT_REPORT.md`. |
+| `tools/` | Contained a single orphaned CMS auditor script. Permanently removed. |
+| `drizzle/` (root) | Removed. Use `server/migrations/` exclusively. |
+| `migrations/` (root) | Removed. Use `server/migrations/` exclusively. |
+| `server/lib/jobs/workers/` | Empty directory from the removed BullMQ integration. Do not recreate. Background jobs use Google Cloud Tasks with `server/routes/worker.ts`. |
+| `server/lib/jobs/connection.ts` | BullMQ-era Redis connection file. Permanently removed. Never recreate. |
+| `client/app/types/lenis.d.ts` | Type declaration for the forbidden `lenis` library. Permanently removed. Use `locomotive-scroll` 5.0.1 only. |
+
+## 12. Biome Post-Move Fix Protocol (Codified 2026-07-08)
+
+When any import path is edited — especially after a file is relocated — Biome's `organizeImports` rule fires and causes `biome check` to fail with "imports not sorted" even though no lint rule was violated. This is a **silent failure** that only shows up during `verify:tech-integrity`.
+
+**Rule:** After editing any import path or moving any file, immediately run:
+
+```bash
+npx biome check --write <path/to/changed-file.ts>
+```
+
+**B.L.A.S.T. T (Trigger) Post-Move Checklist:**
+
+1. `npx biome check --write <changed-files>` — fixes organizeImports order violations
+2. `npx tsc -p <workspace>/tsconfig.json --noEmit` — confirms all paths resolve correctly
+3. Only then run the full `npm run verify:tech-integrity`
+
+Skipping step 1 will cause a Biome check failure in step 3 that is confusing to diagnose because the error message ("imports not sorted") does not indicate which file triggered it.
+
+## 13. Cleanup Safety Protocol — Verify Imports Before Deleting (Codified 2026-07-08)
+
+**`knip` "unused exports" ≠ unused file.** A file with zero externally-consumed exports can still be actively imported by many modules. During the Phase 3/4 sprint, three files flagged by `knip` as having "unused exports" turned out to have **20+, 1, and 5 active importers** respectively. Deleting them would have caused an immediate build failure.
+
+**Rule:** Before deleting or moving ANY file during a cleanup sprint, verify the importer count:
+
+```bash
+# Replace <filename> with the base name (no extension)
+grep -rn "from.*['\"].*<filename>['\"]" client/ server/ shared/ --include="*.ts" --include="*.tsx"
+```
+
+**Decision criteria:**
+
+| Importer count | Action |
+|----------------|--------|
+| 0 across all workspaces | Safe to delete |
+| 1+ importers | File is active — do NOT delete. Remove the `export` keyword only if the consuming file is within the same workspace. |
+| Ambiguous (dynamic import, `require()`) | Invoke Decision Gate — present options to the user |
+
+**Never trust audit reports alone.** Re-verify import counts at the time of deletion, not at the time of the audit. Code changes between audit and cleanup can invalidate findings.
+
 *For: M. Hateem Jamshaid*
