@@ -1,9 +1,8 @@
-import { useGSAP } from "@gsap/react";
 import type { ManufacturingHero, MediaAsset } from "@shared/index";
-import gsap from "gsap";
 import { useRef } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
 import { OptimizedImage } from "@/components/ui/optimized-image";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { countUpAnimation } from "@/lib/gsap-animations";
 import { cn, sanitizeContent } from "@/lib/utils";
 
@@ -61,7 +60,6 @@ export function PublicHeroSection({
 
       tl.from(wordElements, {
         y: 100,
-        opacity: 0,
         duration: 1,
         stagger: 0.1,
         ease: "power4.out",

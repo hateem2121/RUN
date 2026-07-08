@@ -5,6 +5,7 @@ import {
   mediaProcessingJobSchema,
 } from "@run-remix/shared";
 import express from "express";
+import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
 import { generateResponsiveVariants, isImageFile, processImage } from "../image-processor.js";
 import { emailService } from "../lib/integrations/email-service.js";
@@ -273,6 +274,87 @@ router.post(
       // Return 500 to trigger retry
       return res.status(500).json({
         error: "Processing failed",
+        message: error instanceof Error ? error.message : String(error),
+      });
+    }
+  },
+);
+
+/**
+ * Cache Invalidation Worker
+ * POST /api/worker/invalidate-cache
+ *
+ * Handles async cache invalidation tasks queued by CMS updates.
+ */
+router.post(
+  "/invalidate-cache",
+  verifyWorkerAuth,
+  validateRequest({
+    body: z.object({
+      target: z.enum([
+        "homepage",
+        "manufacturing",
+        "categories",
+        "about",
+        "sustainability",
+        "products",
+        "technology",
+        "contact",
+      ]),
+      id: z.number().optional(),
+    }),
+  }),
+  async (req, res) => {
+    const startTime = performance.now();
+    const { target, id } = req.body;
+
+    logger.info(`[Worker:Cache] Processing cache invalidation task for target: ${target}`);
+
+    try {
+      const { CacheOperations } = await import("../lib/cache/cache-strategies.js");
+
+      switch (target) {
+        case "homepage":
+          await CacheOperations.invalidateHomepage();
+          break;
+        case "manufacturing":
+          await CacheOperations.invalidateManufacturing();
+          break;
+        case "categories":
+          await CacheOperations.invalidateCategories(id);
+          break;
+        case "products":
+          await CacheOperations.invalidateProducts(id);
+          break;
+        case "about":
+          await CacheOperations.invalidateAbout();
+          break;
+        case "sustainability":
+          await CacheOperations.invalidateSustainability();
+          break;
+        case "technology":
+          await CacheOperations.invalidateTechnology();
+          break;
+        case "contact":
+          await CacheOperations.invalidateContact();
+          break;
+      }
+
+      const duration = performance.now() - startTime;
+      workerTaskDuration.observe(
+        { operation: "invalidate-cache", status: "success" },
+        duration / 1000,
+      );
+
+      logger.info(`[Worker:Cache] Cache invalidation completed for ${target}`);
+      return res.status(200).json({ success: true });
+    } catch (error) {
+      const duration = (performance.now() - startTime) / 1000;
+      workerTaskDuration.observe({ operation: "invalidate-cache", status: "error" }, duration);
+
+      logger.error(`[Worker:Cache] Cache invalidation failed for ${target}`, error as Error);
+      return res.status(500).json({
+        error: "Cache invalidation failed",
         message: error instanceof Error ? error.message : String(error),
       });
     }

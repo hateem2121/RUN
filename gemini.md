@@ -142,7 +142,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 | `@react-three/fiber` | `LazyUnifiedModelViewer` only | Critical |
 | `drei` | `LazyUnifiedModelViewer` only | Critical |
 | `useGLTF` | `LazyUnifiedModelViewer` only | Critical |
-| `tailwind.config.js` | `@theme` directive in `client/app/index.css` | Critical |
+| `tailwind.config.js` or `@theme` in `index.css` | `@theme` directive in `client/app/styles/theme.css` | Critical |
 | `PORT = process.env.PORT \|\| 3000` | `const PORT = 5002` (or validated env schema) | Critical |
 | Arbitrary Tailwind values (`p-[23px]`) | `@theme` design tokens only | High |
 | `baseUrl` in any `tsconfig.json` | `paths` only (TypeScript 6) | High |
@@ -179,6 +179,10 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 
 ### 5.1.1 Exceptions to `noExplicitAny`
 - **React Hook Form**: When strict type inference fails for `form.control` or `useFieldArray` combined with complex Zod schemas under React 19, you may bypass the constraint using `// biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict` combined with an explicit `as any` cast. This is the **only** permitted use case for `any`.
+- **Third-Party Interfaces**: When implementing third-party interfaces (like `express-session` Store) that dictate `any` in their types (e.g., `callback?: (err?: any) => void`), you must use `unknown` in your implementation parameters (e.g., `callback?: (err?: unknown) => void`). Do not use `as any` for type casting external properties (like dates); instead, cast to the specific expected union types (e.g., `as string | number | Date`). Note: When adapting third-party classes, you must still return `ResultAsync` objects internally to maintain safety, even if the parent interface defines the return type as `void`.
+
+### 5.1.2 Middleware Strictness
+- **neverthrow mandatory**: All Express middleware (`server/middleware/`) including rate limiters, CSRF validation, idempotency caching, and RBAC audit logs MUST strictly use `ResultAsync.fromPromise` and `Result.fromThrowable`. Raw `try/catch` blocks used as fail-safes or fallbacks are strictly prohibited and must be converted to `match()` handlers.
 
 ### 5.2 Forbidden by Architecture
 
@@ -234,7 +238,8 @@ a database call, or a data transformation — it is a violation. Move it to `ser
 client/app/routes/           # Route files — loader, action, component, ErrorBoundary
 client/app/components/       # Shared components
 client/app/components/ui/    # shadcn/ui generated components
-client/app/index.css         # Tailwind v4 @theme tokens + modular @import sub-files
+client/app/styles/theme.css  # Tailwind v4 @theme tokens
+client/app/index.css         # STRICTLY modular @import sub-files
 ```
 
 **Every route file that has a loader or action MUST export an `ErrorBoundary`.**
@@ -283,6 +288,7 @@ result.match(
 
 // NEVER .unwrap() in production — it throws
 // NEVER raw throw in service files
+// NEVER use raw try/catch blocks as fallbacks in middleware or services
 ```
 
 ### 6.6 Drizzle + Zod Schema Pattern (Mandatory)
@@ -312,23 +318,29 @@ export const selectProductSchema = createSelectSchema(products)
 ### 6.7 Tailwind v4 CSS Architecture (Mandatory)
 
 ```css
-/* client/app/index.css — modular @import files */
+/* client/app/index.css — STRICTLY IMPORTS ONLY */
 @import "tailwindcss";
-@import "./manufacturing-utilities.css";
-@import "./typography.css";
+@import "./styles/theme.css";
+@import "./styles/fonts.css";
+@import "./styles/overrides.css";
+@import "./styles/animations.css";
+@import "./styles/manufacturing-utilities.css";
 
+/* client/app/styles/theme.css */
 @theme {
   --color-primary: #1a1a1a;
   --font-sans: "YourFont", sans-serif;
   --spacing-section: 5rem;
 }
 
+/* client/app/styles/manufacturing-utilities.css */
 /* @utility directive — NOT @layer utilities */
 @utility section-padding {
   padding-block: var(--spacing-section);
 }
 
 /* NO tailwind.config.js — ever */
+/* NO @theme inside index.css */
 /* NO arbitrary values in JSX: p-[23px] — always tokenize */
 ```
 
@@ -366,8 +378,10 @@ function MyComponent() {
 
 // Never use framer-motion — it is completely removed from this project
 // Never use raw useEffect + gsap.to() — always useGSAP hook
+// Always import GSAP utilities from `@/lib/gsap`. Never import directly from `gsap` or `@gsap/react` in component files.
+// Never use `opacity: 0` in `gsap.fromTo()` initial states for hero sections, as it artificially blocks Largest Contentful Paint (LCP).
 // Never initialise scroll libraries (lenis/locomotive-scroll) inside components
-// Scroll context initialised once in _public.tsx layout — never in page components
+// Scroll context (Locomotive Scroll v5.0.1) MUST exclusively be initialized once in `_public.tsx` layout — never in individual page components like `_index.tsx`.
 ```
 
 ### 6.9 Cache Architecture

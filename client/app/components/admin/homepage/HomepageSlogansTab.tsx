@@ -1,8 +1,8 @@
 import type { HomepageSlogan, InsertHomepageSlogan } from "@shared/index";
 import { Edit, GripVertical, MessageSquareText, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
+import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

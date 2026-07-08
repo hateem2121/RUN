@@ -121,11 +121,7 @@ function SortableSectionItem({ section, onEdit, onDelete }: SectionItemProps) {
             description="Are you sure you want to delete this section? This action cannot be undone."
             onConfirm={() => onDelete(section.id)}
             trigger={
-              <Button
-                size="sm"
-                variant="ghost"
-                aria-label={`Delete ${section.title || "section"}`}
-              >
+              <Button size="sm" variant="ghost" aria-label={`Delete ${section.title || "section"}`}>
                 <Trash2 className="h-4 w-4" aria-hidden="true" />
               </Button>
             }

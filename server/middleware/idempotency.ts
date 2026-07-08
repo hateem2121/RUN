@@ -16,6 +16,7 @@
  */
 
 import type { NextFunction, Request, Response } from "express";
+import { ResultAsync } from "neverthrow";
 import { UnifiedCache, unifiedCache } from "../lib/cache/unified-cache.js";
 import { logger } from "../lib/monitoring/logger.js";
 
@@ -46,60 +47,66 @@ export async function idempotencyMiddleware(
 
   const cacheKey = `idempotency:${key}`;
 
-  try {
-    // Replay cached response
-    const cached = await unifiedCache.get<CachedEntry & { contentType?: string }>(cacheKey);
-    if (cached) {
-      res.setHeader("Idempotent-Replayed", "true");
-      if (cached.contentType) {
-        res.setHeader("Content-Type", cached.contentType);
+  ResultAsync.fromPromise(
+    unifiedCache.get<CachedEntry & { contentType?: string }>(cacheKey),
+    (error) => error as Error,
+  ).match(
+    (cached) => {
+      if (cached) {
+        res.setHeader("Idempotent-Replayed", "true");
+        if (cached.contentType) {
+          res.setHeader("Content-Type", cached.contentType);
+        }
+        res.status(cached.status).send(cached.body);
+        return;
       }
-      res.status(cached.status).send(cached.body);
-      return;
-    }
 
-    let cachedWritten = false;
-    const cacheResponse = (body: unknown) => {
-      if (cachedWritten) return;
-      if (res.statusCode < 500) {
-        cachedWritten = true;
-        const cacheBody = body instanceof Buffer ? body.toString("utf-8") : body;
+      let cachedWritten = false;
+      const cacheResponse = (body: unknown) => {
+        if (cachedWritten) return;
+        if (res.statusCode < 500) {
+          cachedWritten = true;
+          const cacheBody = body instanceof Buffer ? body.toString("utf-8") : body;
 
-        unifiedCache
-          .set(
-            cacheKey,
-            {
-              status: res.statusCode,
-              body: cacheBody,
-              contentType: res.get("Content-Type"),
-            },
-            UnifiedCache.TTL_PRESETS.STATIC,
-          )
-          .catch((err) => {
-            logger.warn(`[Idempotency] Failed to cache response for key ${key}:`, err);
-          });
-      }
-    };
+          ResultAsync.fromPromise(
+            unifiedCache.set(
+              cacheKey,
+              {
+                status: res.statusCode,
+                body: cacheBody,
+                contentType: res.get("Content-Type"),
+              },
+              UnifiedCache.TTL_PRESETS.STATIC,
+            ),
+            (err) => err as Error,
+          ).match(
+            () => {},
+            (err) => logger.warn(`[Idempotency] Failed to cache response for key ${key}:`, err),
+          );
+        }
+      };
 
-    const originalJson = res.json.bind(res) as typeof res.json;
-    res.json = (body: unknown) => {
-      cacheResponse(body);
-      return originalJson(body);
-    };
+      const originalJson = res.json.bind(res) as typeof res.json;
+      res.json = (body: unknown) => {
+        cacheResponse(body);
+        return originalJson(body);
+      };
 
-    const originalSend = res.send.bind(res) as typeof res.send;
-    res.send = (body: unknown) => {
-      cacheResponse(body);
-      return originalSend(body);
-    };
+      const originalSend = res.send.bind(res) as typeof res.send;
+      res.send = (body: unknown) => {
+        cacheResponse(body);
+        return originalSend(body);
+      };
 
-    next();
-  } catch (error) {
-    // Fail safe: if cache errors, proceed with normal execution
-    // but log the error
-    logger.error("[Idempotency] Cache error", {}, error as Error);
-    next();
-  }
+      next();
+    },
+    (error) => {
+      // Fail safe: if cache errors, proceed with normal execution
+      // but log the error
+      logger.error("[Idempotency] Cache error", {}, error);
+      next();
+    },
+  );
 }
 
 /** Exposed for testing only — clear all cached entries matching the prefix. */

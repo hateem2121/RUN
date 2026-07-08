@@ -2,9 +2,9 @@ import type { HomepageProcessCard, InsertHomepageProcessCard, MediaAsset } from 
 import { useQuery } from "@tanstack/react-query";
 import { Edit, GripVertical, Image as ImageIcon, Layers, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
-import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

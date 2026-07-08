@@ -129,11 +129,7 @@ function SortableStatisticItem({ statistic, onEdit, onDelete }: StatisticItemPro
             description="Are you sure you want to delete this statistic? This action cannot be undone."
             onConfirm={() => onDelete(statistic.id)}
             trigger={
-              <Button
-                size="sm"
-                variant="ghost"
-                aria-label={`Delete ${statistic.label}`}
-              >
+              <Button size="sm" variant="ghost" aria-label={`Delete ${statistic.label}`}>
                 <Trash2 className="h-4 w-4" aria-hidden="true" />
               </Button>
             }

@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { ResultAsync } from "neverthrow";
 import { logger } from "../lib/monitoring/logger.js";
 import { adminService as defaultAdminService } from "../services/admin/admin.service.js";
 import { AuthErrors, authService } from "../services/auth-service.js";
@@ -66,8 +67,8 @@ export function requireRole(...allowedRoles: string[]) {
 
     if (!hasRole) {
       // 3. SEC-F04: Audit Log - Access Denied
-      try {
-        await adminService.logAudit({
+      ResultAsync.fromPromise(
+        adminService.logAudit({
           action: "ACCESS_DENIED",
           tableName: "route",
           recordId: req.path,
@@ -78,10 +79,12 @@ export function requireRole(...allowedRoles: string[]) {
             requiredRoles: allowedRoles,
             userRole: user.isAdmin ? "admin" : "user",
           },
-        });
-      } catch (err) {
-        logger.error("[RBAC] Failed to log access denial:", err);
-      }
+        }),
+        (err) => err as Error,
+      ).match(
+        () => {},
+        (err) => logger.error("[RBAC] Failed to log access denial:", err),
+      );
 
       return res.status(AuthErrors.ADMIN_REQUIRED.status).json({
         error: AuthErrors.ADMIN_REQUIRED,

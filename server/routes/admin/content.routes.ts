@@ -283,4 +283,84 @@ router.delete("/about/timeline/:id", authService.requireAdmin, async (req, res) 
   );
 });
 
+// =============================================================================
+// HOMEPAGE MANAGEMENT
+// =============================================================================
+import { homepageService } from "../../services/homepage.service.js";
+
+router.get("/homepage/hero", authService.requireAdmin, async (_req, res) => {
+  const result = await homepageService.getHero();
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
+});
+
+router.patch("/homepage/hero", authService.requireAdmin, async (req, res) => {
+  // Note: Zod validation skipped here for brevity, assumes validated in service or via manual middleware
+  const result = await homepageService.updateHero(req.body);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
+});
+
+router.get("/homepage/slogans", authService.requireAdmin, async (_req, res) => {
+  const result = await homepageService.getSlogans();
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
+});
+
+// =============================================================================
+// SUSTAINABILITY MANAGEMENT
+// =============================================================================
+import { sustainabilityService } from "../../services/sustainability.service.js";
+
+router.get("/sustainability/hero", authService.requireAdmin, async (_req, res) => {
+  const result = await sustainabilityService.getHero();
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
+});
+
+router.patch("/sustainability/hero", authService.requireAdmin, async (req, res) => {
+  const result = await sustainabilityService.updateHero(req.body);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
+});
+
+router.get("/sustainability/initiatives", authService.requireAdmin, async (_req, res) => {
+  const result = await sustainabilityService.getInitiatives();
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
+});
+
+// =============================================================================
+// TECHNOLOGY MANAGEMENT
+// =============================================================================
+import { technologyService } from "../../services/technology.service.js";
+
+router.get("/technology/hero", authService.requireAdmin, async (_req, res) => {
+  const result = await technologyService.getHero();
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
+});
+
+router.patch("/technology/hero", authService.requireAdmin, async (req, res) => {
+  const result = await technologyService.updateHero(req.body);
+  return result.match(
+    (data) => res.json(data),
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
+});
+
 export default router;

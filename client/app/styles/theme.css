@@ -275,7 +275,8 @@
   --color-ring: var(--ring);
 
   /* Typography */
-  --font-sans: "Helvetica Neue", "Inter", system-ui, sans-serif;
+  --font-sans: "Futura BT", "Helvetica Neue", sans-serif;
+  --font-heading: "Neue Stance", "Inter", system-ui, sans-serif;
   --font-futura: "Futura BT", "Helvetica Neue", sans-serif;
   --font-helvetica: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: "JetBrains Mono", monospace;

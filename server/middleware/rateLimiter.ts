@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { Redis } from "ioredis";
+import { ResultAsync } from "neverthrow";
 import { RateLimitError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 
@@ -69,87 +70,85 @@ export class RateLimiter {
       const ip = clientIp || "unknown";
       const key = `ratelimit:${ip}`;
 
-      let current = 0;
-      let ttl = 0;
-
-      try {
+      const runLimiter = (): ResultAsync<{ current: number; ttl: number }, Error> => {
         if (this.redis) {
-          // Redis Fixed Window
-          const requests = await this.redis.incr(key);
-          if (requests === 1) {
-            await this.redis.expire(key, Math.ceil(this.config.windowMs / 1000));
-            ttl = Math.ceil(this.config.windowMs / 1000);
-          } else {
-            ttl = await this.redis.ttl(key);
-          }
-          current = requests;
+          return ResultAsync.fromPromise(
+            this.redis.incr(key).then(async (requests) => {
+              let ttl: number;
+              if (requests === 1) {
+                const ttlVal = Math.ceil(this.config.windowMs / 1000);
+                await this.redis!.expire(key, ttlVal);
+                ttl = ttlVal;
+              } else {
+                ttl = await this.redis!.ttl(key);
+              }
+              return { current: requests, ttl };
+            }),
+            (err) => (err instanceof Error ? err : new Error(String(err))),
+          );
         } else {
-          // In-Memory Fallback
-          const now = Date.now();
-          let entry = this.store.get(ip);
-
-          if (!entry || entry.resetTime < now) {
-            entry = {
-              count: 0,
-              resetTime: now + this.config.windowMs,
-            };
-            this.store.set(ip, entry);
-          }
-
-          entry.count++;
-          current = entry.count;
-          ttl = Math.ceil((entry.resetTime - now) / 1000);
-        }
-
-        // Set Headers
-        const remaining = Math.max(0, this.config.max - current);
-
-        res.setHeader("RateLimit-Limit", this.config.max.toString());
-        res.setHeader("RateLimit-Remaining", remaining.toString());
-        res.setHeader("RateLimit-Reset", ttl.toString());
-
-        if (current > this.config.max) {
-          return next(
-            new RateLimitError(this.config.message, {
-              retryAfter: ttl,
-              limit: this.config.max,
-              windowMs: this.config.windowMs,
+          return ResultAsync.fromSafePromise(
+            new Promise<{ current: number; ttl: number }>((resolve) => {
+              const now = Date.now();
+              let entry = this.store.get(ip);
+              if (!entry || entry.resetTime < now) {
+                entry = { count: 0, resetTime: now + this.config.windowMs };
+                this.store.set(ip, entry);
+              }
+              entry.count++;
+              resolve({
+                current: entry.count,
+                ttl: Math.ceil((entry.resetTime - now) / 1000),
+              });
             }),
           );
         }
+      };
 
-        next();
-      } catch (error: unknown) {
-        // Fallback to in-memory if Redis fails during the request
-        logger.error(
-          "[RateLimiter] Error in rate limiter, falling back to memory strict",
-          error instanceof Error ? error : new Error(String(error)),
-        );
+      runLimiter().match(
+        ({ current, ttl }) => {
+          const remaining = Math.max(0, this.config.max - current);
+          res.setHeader("RateLimit-Limit", this.config.max.toString());
+          res.setHeader("RateLimit-Remaining", remaining.toString());
+          res.setHeader("RateLimit-Reset", ttl.toString());
 
-        // Critical System Protection: Do NOT fail open if Redis dies, switch to local map
-        try {
-          const now = Date.now();
-          let entry = this.store.get(ip);
-          if (!entry || entry.resetTime < now) {
-            entry = { count: 0, resetTime: now + this.config.windowMs };
-            this.store.set(ip, entry);
-          }
-          entry.count++;
-          if (entry.count > this.config.max) {
+          if (current > this.config.max) {
             return next(
-              new RateLimitError("Too many requests (fallback)", {
-                retryAfter: 60, // Default 1 min fallback type
-                fallback: true,
+              new RateLimitError(this.config.message, {
+                retryAfter: ttl,
+                limit: this.config.max,
+                windowMs: this.config.windowMs,
               }),
             );
           }
           next();
-        } catch (innerError) {
-          // If even memory fails, allow request but log critical error
-          logger.error("[RateLimiter] Critical failure in fallback", innerError);
-          next();
-        }
-      }
+        },
+        (error) => {
+          logger.error("[RateLimiter] Error in rate limiter, falling back to memory strict", error);
+
+          ResultAsync.fromSafePromise(
+            new Promise<void>((resolve) => {
+              const now = Date.now();
+              let entry = this.store.get(ip);
+              if (!entry || entry.resetTime < now) {
+                entry = { count: 0, resetTime: now + this.config.windowMs };
+                this.store.set(ip, entry);
+              }
+              entry.count++;
+              if (entry.count > this.config.max) {
+                return next(
+                  new RateLimitError("Too many requests (fallback)", {
+                    retryAfter: 60,
+                    fallback: true,
+                  }),
+                );
+              }
+              next();
+              resolve();
+            }),
+          );
+        },
+      );
     };
   };
 

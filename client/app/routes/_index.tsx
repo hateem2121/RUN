@@ -1,7 +1,7 @@
-import { lazy, Suspense, useRef, useState } from "react";
+import { lazy, Suspense, useRef } from "react";
 import { isRouteErrorResponse, useRouteError } from "react-router";
 import { Hero } from "@/components/homepage/Hero";
-import { Preloader } from "@/components/homepage/Preloader";
+
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
@@ -75,7 +75,6 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export default function Component({ loaderData }: { loaderData: LoaderData }) {
   const { homepageData } = loaderData;
-  const [preloaderFinished, setPreloaderFinished] = useState(false);
   const isMobile = useIsMobile();
 
   // Stable refs for skewable sections to avoid ref callback churn
@@ -130,7 +129,6 @@ export default function Component({ loaderData }: { loaderData: LoaderData }) {
 
   return (
     <>
-      {!preloaderFinished && <Preloader onComplete={() => setPreloaderFinished(true)} />}
       <CustomCursor />
 
       <main id="main-content" className="w-full bg-background-alt">

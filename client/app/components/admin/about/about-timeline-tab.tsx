@@ -21,8 +21,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Edit, GripVertical, Image, Plus, Trash2 } from "lucide-react";
 import { useActionState, useOptimistic, useState } from "react";
 import { toast } from "sonner";
-import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
+import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -101,11 +101,7 @@ function SortableTimelineItem({ entry, onEdit, onDelete }: TimelineItemProps) {
             description="Are you sure you want to delete this timeline entry? This action cannot be undone."
             onConfirm={() => onDelete(entry.id)}
             trigger={
-              <Button
-                size="sm"
-                variant="ghost"
-                aria-label={`Delete ${entry.year} entry`}
-              >
+              <Button size="sm" variant="ghost" aria-label={`Delete ${entry.year} entry`}>
                 <Trash2 className="h-4 w-4" aria-hidden="true" />
               </Button>
             }
@@ -219,7 +215,6 @@ export function AboutTimelineTab() {
   );
 
   const handleDelete = async (id: number) => {
-
     setOptimisticEntries({ type: "delete", id });
     try {
       await apiRequest(`${ABOUT_API.TIMELINE}/${id}`, {

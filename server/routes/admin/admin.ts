@@ -5,7 +5,9 @@
 
 import { Router } from "express";
 import blogRouter from "./blog.routes.js";
+import categoriesRouter from "./categories.routes.js";
 import contentRouter from "./content.routes.js";
+import manufacturingRouter from "./manufacturing.routes.js";
 import productsRouter from "./products.routes.js";
 import systemRouter from "./system.routes.js";
 
@@ -21,6 +23,12 @@ router.use("/blog", blogRouter);
 
 // Product management: /api/admin/products
 router.use("/products", productsRouter);
+
+// Categories management: /api/admin/categories
+router.use("/categories", categoriesRouter);
+
+// Manufacturing management: /api/admin/manufacturing
+router.use("/manufacturing", manufacturingRouter);
 
 // Content management: /api/admin/content
 // Note: Some legacy frontend calls might expect /api/admin/certificates etc.

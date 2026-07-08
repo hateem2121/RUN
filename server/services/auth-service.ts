@@ -71,7 +71,7 @@ export class AuthService {
   private async getSessionMiddleware(): Promise<Result<RequestHandler, Error>> {
     const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
     const { DrizzleSessionStore } = await import("../lib/db/session-store.js");
-    
+
     const sessionStore = new DrizzleSessionStore();
     logger.info("[Auth] DrizzleSessionStore initialized");
 

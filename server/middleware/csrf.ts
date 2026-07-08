@@ -7,6 +7,7 @@
 
 import crypto from "node:crypto";
 import type { NextFunction, Request, Response } from "express";
+import { Result } from "neverthrow";
 import { logger } from "../lib/monitoring/logger.js";
 
 const CSRF_COOKIE_NAME = "csrf_token";
@@ -84,29 +85,34 @@ function validateCsrfToken(
     };
   }
 
-  try {
-    const cookieBuffer = Buffer.from(cookieToken);
-    const tokenBuffer = Buffer.from(providedToken);
+  const runValidation = Result.fromThrowable(
+    () => {
+      const cookieBuffer = Buffer.from(cookieToken);
+      const tokenBuffer = Buffer.from(providedToken);
 
-    if (
-      cookieBuffer.length !== tokenBuffer.length ||
-      !crypto.timingSafeEqual(cookieBuffer, tokenBuffer)
-    ) {
-      return {
-        status: 403,
-        error: "CSRF_TOKEN_INVALID",
-        message: "CSRF token validation failed",
-      };
-    }
-  } catch (_error) {
-    return {
+      if (
+        cookieBuffer.length !== tokenBuffer.length ||
+        !crypto.timingSafeEqual(cookieBuffer, tokenBuffer)
+      ) {
+        return {
+          status: 403,
+          error: "CSRF_TOKEN_INVALID",
+          message: "CSRF token validation failed",
+        };
+      }
+      return null;
+    },
+    (err) => err,
+  );
+
+  return runValidation().match(
+    (res) => res,
+    (_error) => ({
       status: 403,
       error: "CSRF_VALIDATION_ERROR",
       message: "An error occurred during CSRF validation",
-    };
-  }
-
-  return null;
+    }),
+  );
 }
 
 /**
