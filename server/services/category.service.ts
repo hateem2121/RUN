@@ -259,7 +259,7 @@ class CategoryService {
         const isCircular = (categoryId: number, parentId: number): boolean => {
           if (categoryId === parentId) return true;
           const parent = allCategories.find((c) => c.id === parentId);
-          if (!parent || !parent.parentId) return false;
+          if (!parent?.parentId) return false;
           return isCircular(categoryId, parent.parentId);
         };
 

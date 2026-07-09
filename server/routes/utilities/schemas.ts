@@ -4,4 +4,4 @@ import {
   MetricsErrorsQuerySchema,
 } from "@run-remix/shared";
 
-export { MetricsErrorsQuerySchema, MetricsAlertsQuerySchema, CacheInvalidationQuerySchema };
+export { CacheInvalidationQuerySchema, MetricsAlertsQuerySchema, MetricsErrorsQuerySchema };

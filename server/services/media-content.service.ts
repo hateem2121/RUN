@@ -27,7 +27,7 @@ class MediaContentService {
         DB_CIRCUIT_OPTIONS,
       );
 
-      if (!asset || !asset.storagePath) {
+      if (!asset?.storagePath) {
         return err(new NotFoundError(`Media asset ${id} not found`));
       }
 

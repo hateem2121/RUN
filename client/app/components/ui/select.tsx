@@ -149,4 +149,4 @@ const SelectSeparator = ({
 );
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
-export { Select, SelectValue, SelectTrigger, SelectContent, SelectItem };
+export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue };

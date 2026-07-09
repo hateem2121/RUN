@@ -2,7 +2,7 @@ import { PassThrough } from "node:stream";
 import { createReadableStreamFromReadable } from "@react-router/node";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
-import type { AppLoadContext, EntryContext } from "react-router";
+import type { EntryContext } from "react-router";
 import { ServerRouter } from "react-router";
 
 export const streamTimeout = 5000;
@@ -12,7 +12,7 @@ export default function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   routerContext: EntryContext,
-  _loadContext: AppLoadContext,
+  _loadContext: unknown,
 ) {
   return new Promise((resolve, reject) => {
     let shellRendered = false;
@@ -23,7 +23,10 @@ export default function handleRequest(
     const readyOption =
       (userAgent && isbot(userAgent)) || routerContext.isSpaMode ? "onAllReady" : "onShellReady";
 
-    const nonceVal = (_loadContext as { cspNonce?: string })?.cspNonce;
+    const nonceContext = (globalThis as any).__nonceContext;
+    const nonceVal = nonceContext
+      ? (_loadContext as any)?.get?.(nonceContext)
+      : (_loadContext as any)?.cspNonce;
     const options: Parameters<typeof renderToPipeableStream>[1] = {
       [readyOption]() {
         shellRendered = true;

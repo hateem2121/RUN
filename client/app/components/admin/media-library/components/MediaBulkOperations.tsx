@@ -37,7 +37,7 @@ export const MediaBulkOperations = React.memo(() => {
         { predicate: (query) => query.queryKey[0] === "/api/media" },
         (oldData: unknown) => {
           const dataRecord = oldData as Record<string, unknown>;
-          if (!dataRecord || !dataRecord.data || !Array.isArray(dataRecord.data)) {
+          if (!dataRecord?.data || !Array.isArray(dataRecord.data)) {
             return oldData;
           }
 

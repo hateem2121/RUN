@@ -1,6 +1,6 @@
 # RUN Remix Agent Role Directory
 
-In the **v4.0.0 RUN Remix** ecosystem, every Claude Code session is a collaboration between you (the human CEO) and a virtual engineering team.
+In the **v4.1.2 RUN Remix** ecosystem, every Claude Code session is a collaboration between you (the human CEO) and a virtual engineering team.
 
 ---
 
@@ -52,4 +52,4 @@ These roles are uniquely crafted for the **RUN Remix** ecosystem:
 
 ---
 
-*Version: 1.0.0 | RUN Remix v4.0.0 | Identity: The Team*
+*Version: 4.1.2 | RUN Remix v4.1.2 | Identity: The Team*

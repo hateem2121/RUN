@@ -22,13 +22,13 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   return { post };
 }
 
-export function meta({ data }: Route.MetaArgs) {
-  if (!data?.post) {
+export function meta({ loaderData }: Route.MetaArgs) {
+  if (!loaderData?.post) {
     return [{ title: "Blog Post | RUN APPAREL" }];
   }
   return [
-    { title: `${data.post.title} | RUN APPAREL` },
-    { name: "description", content: data.post.excerpt || data.post.title },
+    { title: `${loaderData.post.title} | RUN APPAREL` },
+    { name: "description", content: loaderData.post.excerpt || loaderData.post.title },
   ];
 }
 

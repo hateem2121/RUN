@@ -207,9 +207,7 @@ export const products = pgTable(
     index("products_description_trgm_idx").using("gin", sql`${table.description} gin_trgm_ops`),
 
     // PERFORMANCE FIX: Partial unique index for slug to support soft-delete reuse
-    uniqueIndex("products_slug_unique_idx")
-      .on(table.slug)
-      .where(sql`${table.deletedAt} IS NULL`),
+    uniqueIndex("products_slug_unique_idx").on(table.slug).where(sql`${table.deletedAt} IS NULL`),
   ],
 );
 

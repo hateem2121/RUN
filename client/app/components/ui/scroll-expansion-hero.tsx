@@ -136,7 +136,7 @@ const ScrollExpandMedia = ({
 
     const handleTouchMove = (e: Event) => {
       const touchEvent = e as unknown as TouchEvent;
-      if (!touchStartYRef.current || !touchEvent.touches || !touchEvent.touches[0]) {
+      if (!touchStartYRef.current || !touchEvent.touches?.[0]) {
         return;
       }
 

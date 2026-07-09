@@ -31,4 +31,4 @@ export interface Partner {
 }
 
 // Re-export common types from shared for convenience in existing components
-export type { ProductItem, CategoryItem, ProcessStep, HomepageFeaturedSettings };
+export type { CategoryItem, HomepageFeaturedSettings, ProcessStep, ProductItem };

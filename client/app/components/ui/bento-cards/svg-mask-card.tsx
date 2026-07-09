@@ -155,7 +155,7 @@ export const SvgMaskCard = memo(function SvgMaskCard({
     };
 
     loadSvgMask();
-  }, [maskSvgUrl]);
+  }, [maskSvgUrl, getDefaultSvgMask]);
 
   // PARALLEL CONTENT MEDIA PRELOADING for enhanced performance
   useEffect(() => {

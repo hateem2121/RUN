@@ -1,8 +1,8 @@
 # Agent Instructions
 
 **For:** AI Coding Agents (Antigravity, Claude Code, etc.)  
-**Version:** 3.0.0 (AntiGravity Protocol 0 Aligned)  
-**Last Updated:** February 2026
+**Version:** 4.1.2 (AntiGravity Protocol 0 Aligned)  
+**Last Updated:** July 2026
 
 ---
 

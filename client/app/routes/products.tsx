@@ -37,14 +37,14 @@ import {
 } from "@/schemas/product";
 import type { Route } from "./+types/products";
 
-export function meta({ data, location }: Route.MetaArgs) {
+export function meta({ loaderData, location }: Route.MetaArgs) {
   const searchParams = new URLSearchParams(location.search);
   const searchTerm = searchParams.get("search");
   const categoryId = searchParams.get("category");
 
   // Find category name if possible from loader data
-  const loaderData = data as { categories?: Array<{ id: number; name: string }> };
-  const categories = Array.isArray(loaderData?.categories) ? loaderData.categories : [];
+  const loaderDataCast = loaderData as { categories?: Array<{ id: number; name: string }> };
+  const categories = Array.isArray(loaderDataCast?.categories) ? loaderDataCast.categories : [];
   const category = categories.find(
     (c: { id: number; name: string }) => c.id.toString() === categoryId,
   );

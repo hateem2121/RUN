@@ -93,10 +93,10 @@ GlassCardDecorations.displayName = "GlassCardDecorations";
 
 export {
   Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardDescription,
   CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
   GlassCardDecorations,
 };

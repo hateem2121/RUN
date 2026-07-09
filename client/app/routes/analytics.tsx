@@ -186,7 +186,7 @@ export default function Component() {
                       <YAxis className="text-muted-foreground text-xs" />
                       <Tooltip
                         content={({ active, payload }) => {
-                          if (active && payload && payload.length) {
+                          if (active && payload?.length) {
                             return (
                               <div className="rounded-lg border bg-background p-2 shadow-xs">
                                 <div className="grid grid-cols-2 gap-2">

@@ -21,8 +21,8 @@ This document defines the architectural hard-deck for the RUN Apparel B2B Platfo
 
 **Key Technologies:**
 
-- **Frontend**: React 19, Vite 8, Tailwind CSS v4.2, TypeScript 6
-- **Backend**: Express 5.2, Node.js v24.15+, Neon Postgres
+- **Frontend**: React 19.2.4/19.2.7, Vite 8.0.10/8.1.3, Tailwind CSS v4.2.4/4.3.2, TypeScript 6.0.3
+- **Backend**: Express 5.2.1, Node.js v24.15+, Neon Postgres
 - **Data**: PostgreSQL (Neon), Drizzle ORM, Redis (ioredis)
 - **Testing**: Vitest, Playwright
 

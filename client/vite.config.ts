@@ -230,8 +230,18 @@ export default defineConfig((env) => {
         "react-fast-compare",
         "invariant",
         "shallowequal",
+        "isomorphic-dompurify",
       ],
-      noExternal: ["@run-remix/shared", "react-helmet-async", "recharts", "recharts-scale"],
+      noExternal: [
+        "@run-remix/shared",
+        "react-helmet-async",
+        "recharts",
+        "recharts-scale",
+      ],
+      resolve: {
+        conditions: ["module", "node"],
+        externalConditions: ["node"],
+      },
     },
     server: {
       // FORENSIC: Dev server optimizations for faster module loading

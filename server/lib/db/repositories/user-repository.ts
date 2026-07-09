@@ -154,7 +154,7 @@ export class UserRepository {
    * Safely attempt decryption, fallback to original if it doesn't look like encrypted text
    */
   private safeDecrypt(value: string): string {
-    if (!value || !value.includes(":")) return value;
+    if (!value?.includes(":")) return value;
     try {
       return decrypt(value);
     } catch {

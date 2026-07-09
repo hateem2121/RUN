@@ -1,7 +1,7 @@
 # Antigravity — Agent Rules
-**Project:** RUN APPAREL CMS v4.0.3 (`run-remix`)
+**Project:** RUN APPAREL CMS v4.1.2 (`run-remix`)
 **Agent:** Antigravity (Gemini)
-**Last updated:** June 2026
+**Last updated:** July 2026
 **Mirrors:** gstack latest + Claude Code constraints (exact parity)
 **Owner:** M. Hateem Jamshaid — RUN APPAREL (PVT) LTD, Sialkot, Pakistan
 
@@ -91,14 +91,14 @@ Always verify versions against `package.json` — this table is a snapshot and m
 |-------|-----------|---------|
 | Runtime | Node.js | v24.15.0 |
 | Monorepo | Turborepo + npm workspaces | latest |
-| Frontend framework | React | ^19.0.0 |
-| Router | React Router | v7 |
-| Build tool | Vite + Rolldown bundler | ^8.0.10 |
-| Language | TypeScript | ^6.0.3 |
-| Backend framework | Express | 5.x |
-| ORM | Drizzle ORM | latest |
+| Frontend framework | React | 19.2.4 (up to 19.2.7) |
+| Router | React Router | 7.16.0 (supports v8.0.x upgrade pathway) |
+| Build tool | Vite + Rolldown bundler | 8.0.10 (up to 8.1.3) |
+| Language | TypeScript | ^6.0.3 (Go compiler rewrite v7.0 RC ready) |
+| Backend framework | Express | 5.2.1 |
+| ORM | Drizzle ORM | 0.45.2 (v1.0.0 milestone aligned) |
 | Database | Neon Serverless PostgreSQL | — |
-| Schema validation | Zod | v4 |
+| Schema validation | Zod | 4.2.1 (supports 4.4.3) |
 | Auth | Passport.js + Google OAuth2 + express-session + Neon | — |
 | Session store | DrizzleSessionStore (Neon PostgreSQL) | — |
 | L1 cache | `lru-cache` | — |
@@ -107,10 +107,10 @@ Always verify versions against `package.json` — this table is a snapshot and m
 | Background tasks | Google Cloud Tasks + HTTP workers | — |
 | Rich text editor | TipTap | ^3.20.1 |
 | Drag and drop | `dnd-kit` | — |
-| CSS framework | Tailwind CSS | v4 (Oxide engine) |
+| CSS framework | Tailwind CSS | 4.2.4 (up to 4.3.2) |
 | Animations | GSAP 3 + ScrollTrigger | — |
 | Scroll | `locomotive-scroll` | 5.0.1 |
-| Linter / formatter | Biome | 2.3.10 |
+| Linter / formatter | Biome | 2.3.10 (up to 2.5.2) |
 | Toasts | `sonner` | ^2.0.7 |
 | Logging | Pino | — |
 | Tracing | OpenTelemetry (OTel) | — |
@@ -123,6 +123,7 @@ Always verify versions against `package.json` — this table is a snapshot and m
 | Orchestration | Kubernetes (GKE) | — |
 | Cloud | GCP | — |
 | Dev server port | 5002 | hardcoded — never 3000 |
+| gstack | CLI + Skills | v1.26.3.0 (upgraded) |
 
 ---
 
@@ -425,6 +426,10 @@ Dev endpoint firewall:
   mock-login, dev-login, debug, seeders, Swagger — all gated:
   if (process.env.NODE_ENV === 'production') return res.status(404).end()
 ```
+
+### 6.11 React Router v8 & Vite 8 Resolution Rules
+- **CSP Nonce Context**: Always resolve the React Router v8 `nonceContext` dynamically via `globalThis.__nonceContext` rather than importing it directly across client/server packages. The server's `ssr-handler.ts` must instantiate the key, register it on `globalThis`, set the nonce value on `RouterContextProvider`, and return it.
+- **isomorphic-dompurify / DOMPurify SSR**: Never load `isomorphic-dompurify` using the default browser config. It must be externalized in `client/vite.config.ts` via `ssr.external`, and Node.js-compatible export conditions must be enforced in `ssr.resolve`.
 
 ---
 
@@ -771,8 +776,8 @@ Before ending any session, confirm:
 
 ---
 
-*Antigravity — built for RUN APPAREL (PVT) LTD · RUN Remix v4.0.3 · June 2026*
-*Mirrors: gstack v1.20.0.0 + Claude Code constraints (exact parity)*
+*Antigravity — built for RUN APPAREL (PVT) LTD · RUN Remix v4.1.2 · July 2026*
+*Mirrors: gstack v1.26.3.0 + Claude Code constraints (exact parity)*
 
 ---
 

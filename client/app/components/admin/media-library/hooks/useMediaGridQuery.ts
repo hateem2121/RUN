@@ -84,7 +84,7 @@ export function useMediaGridQuery(): MediaGridQueryResult {
     refetchOnMount: false,
     select: (data) => {
       const dataRecord = data as Record<string, unknown>;
-      if (!dataRecord || !dataRecord.data || !Array.isArray(dataRecord.data)) {
+      if (!dataRecord?.data || !Array.isArray(dataRecord.data)) {
         return data;
       }
       const filteredAssets = dataRecord.data.filter((asset: unknown) => {

@@ -259,7 +259,7 @@ export function MediaLibraryContainerEnhanced({
       if (initialFilter !== "all" && state.selectedType !== initialFilter) {
         updateState("selectedType", initialFilter);
       }
-    }, [initialFilter, state.selectedType, updateState]);
+    }, [state.selectedType, updateState]);
 
     return null;
   };

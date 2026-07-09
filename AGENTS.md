@@ -33,15 +33,18 @@
 - Report synthesis, pattern analysis: @claude-opus-4-6
 
 ## Tech Stack Hard Rules (for TypeScript/Biome/animation checks)
-- React 19.2.6: no forwardRef, named exports, form action= not onSubmit
-- Tailwind 4.3.0: @theme + @utility syntax, no arbitrary values
-- Zod 4.4.3: error: param only (not message:, required_error:)
-- Biome 2.4.10: noExplicitAny + noMisusedPromises active
+- React 19.2.4 (compatible with latest 19.2.7): no forwardRef, named exports, form action= not onSubmit
+- Tailwind 4.2.4 (compatible with latest 4.3.2): @theme + @utility syntax, no arbitrary values
+- Zod 4.2.1 (supports up to 4.4.3): error: param only (not message:, required_error:)
+- Biome 2.3.10 (supports up to 2.5.2): noExplicitAny + noMisusedPromises active
 - GSAP 3.15.0 only: zero framer-motion imports allowed (hard rule)
 - Scroll library: locomotive-scroll 5.0.1 only (lenis is strictly forbidden)
 - sonner ^2.0.7: no custom toast implementations
 - neverthrow Result types in service layer: no raw throw statements
 - Port: 5002 always — never 3000
+- gstack: v1.26.3.0 (enforce gstack-upgrade protocol if version is lower)
+- React Router v8 CSP Nonce: Express server `getLoadContext` must return a `RouterContextProvider` instance. To avoid `rootDir` compiler errors and workspace boundary violations, do NOT import client context keys in server files. Instead, define the context key locally on the server, bind it to `globalThis.__nonceContext`, and retrieve it dynamically in the client's `entry.server.tsx`.
+- Vite SSR Resolution of Browser-Mapped Packages: For libraries like `isomorphic-dompurify` that define `"browser"` export conditions, ensure they are placed in Vite's `ssr.external` array, and set `ssr.resolve.conditions: ["module", "node"]` and `ssr.resolve.externalConditions: ["node"]` in `vite.config.ts`. This prevents Vite from evaluating browser bundles on the server during SSR.
 
 ## Auth & Session Constraints (Enforced via Drizzle)
 - **Auth & Sessions:** All session storage MUST use `DrizzleSessionStore` backed by Neon PostgreSQL. The store implementation must return `neverthrow` ResultAsync objects. Raw throws and generic try-catch blocks are strictly prohibited.

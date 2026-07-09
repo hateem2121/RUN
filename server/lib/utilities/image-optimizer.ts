@@ -10,7 +10,7 @@ import { logger } from "../monitoring/logger.js";
  * - Updates req.file.buffer and size
  */
 export const optimizeImageMiddleware: RequestHandler = async (req, _res, next) => {
-  if (!req.file || !req.file.buffer) {
+  if (!req.file?.buffer) {
     return next();
   }
 

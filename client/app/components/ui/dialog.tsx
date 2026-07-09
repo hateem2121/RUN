@@ -527,11 +527,11 @@ export function NestedDialog({
 
 export {
   Dialog,
+  DialogBody,
   DialogClose,
   DialogContent,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-  DialogTitle,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 };

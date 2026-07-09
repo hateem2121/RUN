@@ -3,8 +3,12 @@ import path from "node:path";
 
 import { createRequestHandler } from "@react-router/express";
 import type { Express, RequestHandler } from "express";
-import type { ServerBuild } from "react-router";
+import { createContext, RouterContextProvider, type ServerBuild } from "react-router";
 import { logger } from "../monitoring/logger.js";
+
+// Shared context key for CSP nonce
+const nonceContext = createContext<string>("");
+(globalThis as any).__nonceContext = nonceContext;
 
 // Resolve monorepo root based on process.cwd() to support both tsc (nested) and esbuild (flattened)
 // The server is typically started from the 'server' directory or the monorepo root.
@@ -53,9 +57,11 @@ export async function createSsrHandler(app: Express, server?: Server): Promise<R
     return createRequestHandler({
       build: () =>
         vite.ssrLoadModule("virtual:react-router/server-build") as unknown as Promise<ServerBuild>,
-      getLoadContext: (_req, res) => ({
-        cspNonce: res.locals.cspNonce,
-      }),
+      getLoadContext: (_req, res) => {
+        const context = new RouterContextProvider();
+        context.set(nonceContext, res.locals.cspNonce || "");
+        return context;
+      },
     });
   } else {
     // Production: Load the built server module
@@ -66,9 +72,11 @@ export async function createSsrHandler(app: Express, server?: Server): Promise<R
 
     return createRequestHandler({
       build: () => import(buildPath),
-      getLoadContext: (_req, res) => ({
-        cspNonce: res.locals.cspNonce,
-      }),
+      getLoadContext: (_req, res) => {
+        const context = new RouterContextProvider();
+        context.set(nonceContext, res.locals.cspNonce || "");
+        return context;
+      },
     });
   }
 }

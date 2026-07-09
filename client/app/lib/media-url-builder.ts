@@ -500,7 +500,7 @@ export class MediaUrlBuilder {
       if (url.startsWith("data:")) {
         // Validate data URLs
         const mimeMatch = url.match(/^data:([^;]+)/);
-        if (!mimeMatch || !mimeMatch[1]) {
+        if (!mimeMatch?.[1]) {
           return false;
         }
 

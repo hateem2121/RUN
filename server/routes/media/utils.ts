@@ -296,7 +296,7 @@ export function toBuffer(x: unknown): Buffer | null {
 
 export const MediaUrlResolver = {
   generateConsistentUrl: (asset: Partial<MediaAsset>) => {
-    if (!asset || !asset.url) {
+    if (!asset?.url) {
       return null;
     }
     try {

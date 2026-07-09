@@ -173,7 +173,7 @@ const MAX_FILES = 50; // Increased from 10 to 50 files per batch
 const MAX_CONCURRENT_UPLOADS = 5; // Process 5 files simultaneously for optimal performance
 
 // UPLOAD OPTIMIZATION: Export constants for use in upload management
-export { MAX_FILES, MAX_CONCURRENT_UPLOADS };
+export { MAX_CONCURRENT_UPLOADS, MAX_FILES };
 
 export const uploadOptimized = multer({
   storage: multer.memoryStorage(),

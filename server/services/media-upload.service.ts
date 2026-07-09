@@ -681,7 +681,7 @@ class MediaUploadService {
     try {
       // SECURITY [MD-101]: Parse and validate base64 data
       const matches = base64Data.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
-      if (!matches || matches.length !== 3) {
+      if (matches?.length !== 3) {
         return err(new BadRequestError("Invalid base64 data format"));
       }
 

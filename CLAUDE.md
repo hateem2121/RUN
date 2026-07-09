@@ -33,15 +33,15 @@ All work must follow this cycle:
 
 | Layer | Technology | Constraint |
 |-------|-----------|-----------|
-| Frontend | React **19.2.4** | Functional only. NO `forwardRef`. Named exports only. |
-| Build | Vite **7** | Port **5002** exclusively. |
-| Styling | Tailwind CSS **V4** | `@utility` syntax. NO arbitrary values in JSX. |
+| Frontend | React **19.2.4** (up to 19.2.7) | Functional only. NO `forwardRef`. Named exports only. |
+| Build | Vite **8** (up to 8.1.3) | Port **5002** exclusively. |
+| Styling | Tailwind CSS **V4** (v4.2.4/v4.3.2) | `@utility` syntax. NO arbitrary values in JSX. |
 | Language | TypeScript strict | NO `any` types. Explicit return types. |
-| Backend | Express **5.1.0** | Async-native. NO `try/catch` in route handlers. |
+| Backend | Express **5.2.1** | Async-native. NO `try/catch` in route handlers. |
 | 3D | `@google/model-viewer` | `LazyUnifiedModelViewer` ONLY. NO R3F. |
 | Database | Neon Serverless | `@neondatabase/serverless` HTTP driver. |
 | Testing | Vitest | 80%+ coverage on services. |
-| Linting | Biome | Run: `npm run check:apply` |
+| Linting | Biome **2.3.10** (up to 2.5.2) | Run: `npm run check:apply` |
 
 ---
 
@@ -101,7 +101,7 @@ Use the `/browse` skill from gstack for all web browsing. **Never use `mcp__clau
 
 ---
 
-*Last updated: 2026-04-14 | Identity: Agentic Software Factory v4.0.1*
+*Last updated: 2026-07-08 | Identity: Agentic Software Factory v4.1.2*
 
 ## Skill routing
 

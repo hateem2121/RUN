@@ -157,4 +157,4 @@ if (process.argv[1]?.includes("recovery-verification")) {
     });
 }
 
-export { verifyRecovery, waitForHealthy, verifyCircuitBreakerClosed, verifyLowErrorRate };
+export { verifyCircuitBreakerClosed, verifyLowErrorRate, verifyRecovery, waitForHealthy };

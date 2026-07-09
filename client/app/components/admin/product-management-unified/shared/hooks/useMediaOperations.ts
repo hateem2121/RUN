@@ -56,7 +56,7 @@ export function useMediaOperations(): MediaOperations {
 
   // Validate media asset
   const validateMediaAsset = useCallback((asset: MediaAsset): boolean => {
-    if (!asset || !asset.id) {
+    if (!asset?.id) {
       return false;
     }
     if (!asset.filename || asset.filename.trim() === "") {

@@ -43,7 +43,7 @@ const unifiedCache = UnifiedCache.getInstance();
 const miscRepo = new MiscRepository();
 
 // Re-export ProductSummary and ProductDetail for callers
-export type { ProductSummary, ProductDetail };
+export type { ProductDetail, ProductSummary };
 
 export interface ProductDetailWithContext {
   product: ProductDetail & { canonicalUrl: string | null };
@@ -1626,7 +1626,7 @@ export class ProductRepository {
           and(eq(products.id, productId), eq(products.isActive, true), isNull(products.deletedAt)),
         );
 
-      if (!product || !product.modelFileId) {
+      if (!product?.modelFileId) {
         return null;
       }
 

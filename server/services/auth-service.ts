@@ -389,7 +389,7 @@ export class AuthService {
         () => userRepository.getUserByEmail(email),
         DB_CIRCUIT_OPTIONS,
       );
-      if (!user || !user.lockoutUntil) return ok(false);
+      if (!user?.lockoutUntil) return ok(false);
 
       if (user.lockoutUntil > new Date()) {
         return ok(true);
