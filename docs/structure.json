@@ -1,36 +1,26 @@
 {
   "version": "2.0",
-  "basePath": "docs/",
+  "basePath": "./",
   "categories": {
-    "core": {
-      "path": "core/",
-      "files": {
-        "tech_stack": "tech-stack.md",
-        "standards": "../CODING_STANDARDS.md",
-        "workflow": "../DEVELOPMENT_WORKFLOW.md",
-        "agent_instructions": "../AGENT_INSTRUCTIONS.md"
-      }
+    "workspaces": {
+      "path": "",
+      "directories": ["client", "server", "shared"]
     },
-    "api": {
-      "path": "api/",
-      "files": {
-        "endpoints": "endpoints.md",
-        "error_spec": "API_ERROR_SPEC.md",
-        "schema": "schema-reference.md"
-      }
+    "testing": {
+      "path": "",
+      "directories": ["tests", "e2e"]
     },
-    "operations": {
-      "path": "operations/",
-      "files": {
-        "optimization": "local-development-optimization.md",
-        "troubleshooting": "../TROUBLESHOOTING.md"
-      }
+    "documentation": {
+      "path": "docs",
+      "directories": ["core", "api", "infrastructure", "adr", "audits"]
     },
-    "adr": {
-      "path": "adr/",
-      "files": {
-        "readme": "README.md"
-      }
+    "infrastructure": {
+      "path": "",
+      "directories": ["ops", "k8s", ".github"]
+    },
+    "tooling": {
+      "path": "",
+      "directories": ["scripts", ".claude"]
     }
   }
 }

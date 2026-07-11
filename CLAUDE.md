@@ -1,10 +1,15 @@
-# RUN Remix — The Agentic Sportswear Factory (v4.0.3)
+# RUN Remix — The Agentic Sportswear Factory (v4.1.2)
 
 > **PRIMARY SOURCE OF TRUTH (SSOT): `gemini.md`**
 >
 > **This file (CLAUDE.md) is a SUPPLEMENTARY layer for Claude Code sessions only.**
 > It defines Claude's identity, tone, and the 8-Step Agentic Sprint.
-> For all architectural rules, boundaries, and repository conventions, you MUST obey `gemini.md` first. `gemini.md` supersedes `CLAUDE.md` on any technical constraints.
+> For all architectural rules, tech-stack constraints, forbidden patterns,
+> repository structure, and deployment conventions, you MUST obey `gemini.md`.
+> `gemini.md` supersedes `CLAUDE.md` on every technical matter without exception.
+>
+> **Do NOT duplicate rules from `gemini.md` here.** If a rule lives in `gemini.md`,
+> reference it by section number — never restate it.
 
 ---
 
@@ -23,7 +28,7 @@ All work must follow this cycle:
 
 1. **Think**: `/office-hours`, `/brainstorming`
 2. **Plan**: `/plan-ceo-review`, `/plan-eng-review`, `/plan-design-review`
-3. **Build**: Execution via B.L.A.S.T. protocol
+3. **Build**: Execution via B.L.A.S.T. protocol (see `gemini.md` §3)
 4. **Review**: `/review`
 5. **Test**: Vitest, `/qa`, `/qa-only`
 6. **Ship**: `/ship`, `/land-and-deploy`
@@ -32,81 +37,7 @@ All work must follow this cycle:
 
 ---
 
-## 3. Non-Negotiable Tech Stack
-
-| Layer | Technology | Constraint |
-|-------|-----------|-----------|
-| Frontend | React **19.2.4** (up to 19.2.7) | Functional only. NO `forwardRef`. Named exports only. |
-| Build | Vite **8** (up to 8.1.3) | Port **5002** exclusively. |
-| Styling | Tailwind CSS **V4** (v4.2.4/v4.3.2) | `@utility` syntax. NO arbitrary values in JSX. |
-| Language | TypeScript strict | NO `any` types. Explicit return types. |
-| Backend | Express **5.2.1** | Async-native. NO `try/catch` in route handlers. |
-| 3D | `@google/model-viewer` | `LazyUnifiedModelViewer` ONLY. NO R3F. |
-| Database | Neon Serverless | `@neondatabase/serverless` HTTP driver. |
-| Testing | Vitest | 80%+ coverage on services. |
-| Linting | Biome **2.3.10** (up to 2.5.2) | Run: `npm run check:apply` |
-
----
-
-## 4. gstack Slash Commands
-
-Use the `/browse` skill from gstack for all web browsing. **Never use `mcp__claude-in-chrome__*` tools directly.**
-
-| Command | Role | Purpose |
-|---------|------|---------|
-| `/office-hours` | CEO / Founder | High-level strategy and product vision. |
-| `/plan-ceo-review` | CEO | Review feature plans for business alignment. |
-| `/plan-eng-review` | Eng Manager | Review architecture and technical feasibility. |
-| `/plan-design-review` | Design Lead | Review UI/UX for "The Wow" factor. |
-| `/review` | Senior Reviewer | Holistic code review and bug hunting. |
-| `/qa` | QA Lead | Automated browser testing on staging/dev. |
-| `/ship` | Release Eng | Final verification and PR creation. |
-| `/land-and-deploy` | Release Eng | Merge and trigger deployment. |
-| `/retro` | Team Lead | Sprint retrospective and findings log. |
-| `/browse` | Researcher | High-performance web research. |
-| `/investigate` | Forensics | Deep-dive into complex bugs or legacy code. |
-| `/context-save` | Team Lead | Save and resume working state checkpoints. |
-| `/health` | Eng Lead | Code quality dashboard — typecheck, lint, tests. |
-| `/devex-review` | DX Lead | Developer experience review — tooling, workflow, onboarding friction. |
-| `/plan-devex-review` | DX Lead | Review implementation plans for developer experience impact. |
-
----
-
-## 5. Protocol 0 (Mandatory)
-
-1. Start by updating `task_plan.md`
-2. End by updating `findings.md`
-3. Run `npm run verify:tech-integrity` before completion
-
----
-
-## 6. Project Structure
-
-```
-/
-├── client/                   # React 19 + Vite + Tailwind V4
-├── server/                   # Express 5 + Node 24
-├── shared/                   # Shared TypeScript types & constants
-├── docs/                     # Documentation Hub
-│   ├── core/
-│   │   ├── sops/            # L1 Architecture SOPs (READ FIRST)
-│   │   ├── ETHOS.md         # Factory Manifesto
-│   │   └── AGENTS.md        # Agent Role Directory
-│   └── adr/                  # Architecture Decision Records
-├── .agent/                   # Agentic Configuration
-│   ├── skills/               # 31+ Agent skills (gstack + custom)
-│   ├── rules/                # Project invariants
-│   └── workflows/            # Workflow guides
-├── gemini.md                 # Project Constitution (SSOT)
-├── task_plan.md              # Active task memory
-└── findings.md               # Active findings memory
-```
-
----
-
-*Last updated: 2026-07-08 | Identity: Agentic Software Factory v4.1.2*
-
-## Skill routing
+## 3. Skill Routing
 
 When the user's request matches an available skill, ALWAYS invoke it using the Skill
 tool as your FIRST action. Do NOT answer directly, do NOT use other tools first.
@@ -125,3 +56,32 @@ Key routing rules:
 - Architecture review → invoke plan-eng-review
 - Save progress, checkpoint, resume → invoke checkpoint
 - Code quality, health check → invoke health
+
+---
+
+## Cross-Reference to gemini.md
+
+| Concern | gemini.md Section |
+|---------|-------------------|
+| Protocol 0 (session bookends) | §1 |
+| Uncertainty Protocol | §2 |
+| B.L.A.S.T. execution order | §3 |
+| Tech stack & versions | §4 |
+| Forbidden patterns | §5 |
+| Architecture & monorepo rules | §6 |
+| Tech integrity checks | §7 |
+| gstack slash commands | §8 |
+| Routes & APIs | §9 |
+| TypeScript rules | §10 |
+| Admin & CMS rules | §11 |
+| Performance targets | §12 |
+| Accessibility rules | §13 |
+| Observability | §14 |
+| Security checklist | §15 |
+| CI/CD & deployment | §16 |
+| Scope discipline | §17 |
+| Branch & git rules | §18 |
+
+---
+
+*Last updated: 2026-07-11 | Identity: Agentic Software Factory v4.1.2*

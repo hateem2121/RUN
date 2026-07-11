@@ -57,9 +57,20 @@ const deleteChain = {
 };
 mockDbInstance.delete.mockReturnValue(deleteChain);
 
+vi.mock("../../../../server/lib/monitoring/logger.js", () => ({
+  logger: {
+    info: vi.fn(),
+    debug: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  },
+}));
+
 describe("ProductRepository", () => {
-  let ProductRepository: typeof import("../product-repository.js").ProductRepository;
-  let repository: InstanceType<typeof import("../product-repository.js").ProductRepository>;
+  let ProductRepository: typeof import("../../../../server/lib/db/repositories/product-repository.js").ProductRepository;
+  let repository: InstanceType<
+    typeof import("../../../../server/lib/db/repositories/product-repository.js").ProductRepository
+  >;
 
   beforeAll(async () => {
     // 1. Mock the DB before importing the repository
@@ -95,17 +106,9 @@ describe("ProductRepository", () => {
         logQuery: vi.fn(),
       },
     }));
-    vi.mock("../../../../server/lib/monitoring/logger", () => ({
-      logger: {
-        info: vi.fn(),
-        debug: vi.fn(),
-        warn: vi.fn(),
-        error: vi.fn(),
-      },
-    }));
 
     // 3. Dynamic import to ensure mocks are ready
-    const mod = await import("../product-repository.js");
+    const mod = await import("../../../../server/lib/db/repositories/product-repository.js");
     ProductRepository = mod.ProductRepository;
   });
 

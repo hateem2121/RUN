@@ -386,7 +386,7 @@ describe("MANUFACTURING API TESTS - CMS Integration", () => {
 
   beforeAll(async () => {
     app = express();
-    setupMiddleware(app);
+    await setupMiddleware(app);
     await registerRoutes(app);
     setupErrorHandling(app);
   });

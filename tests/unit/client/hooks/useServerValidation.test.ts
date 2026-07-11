@@ -1,8 +1,8 @@
 import { renderHook } from "@testing-library/react";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 import { describe, expect, it, vi } from "vitest";
-import { ApiError } from "../lib/api";
-import { useServerValidation } from "./useServerValidation";
+import { useServerValidation } from "@/hooks/useServerValidation";
+import { ApiError } from "@/lib/api";
 
 describe("useServerValidation hook", () => {
   it("should set form errors when ApiError has invalid-params", () => {

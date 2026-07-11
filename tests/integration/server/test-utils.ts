@@ -5,8 +5,8 @@ import { setupErrorHandling, setupMiddleware } from "../../../server/boot/middle
 import { adminCacheManager } from "../../../server/lib/cache/admin-cache.js";
 import { logger } from "../../../server/lib/monitoring/logger.js";
 import { getStorage, StorageSingleton } from "../../../server/lib/storage-singleton.js";
-import { MemoryStorage } from "../../../server/tests/memory-storage.js";
 import type { SessionUser } from "../../../server/types/session.js";
+import { MemoryStorage } from "./memory-storage.js";
 
 /**
  * Test middleware to inject a user into the request based on a header
@@ -132,7 +132,7 @@ export async function setupTestApp(storage?: MemoryStorage) {
   await setupMiddleware(app);
 
   // Inject services for RBAC Dependency Injection
-  const { AdminService } = await import("../services/admin/admin.service.js");
+  const { AdminService } = await import("../../../server/services/admin/admin.service.js");
   const adminService = new AdminService();
   app.set("adminService", adminService);
 
@@ -143,7 +143,7 @@ export async function setupTestApp(storage?: MemoryStorage) {
   // Note: setupRoutes usually includes SSR which we might want to skip or mock for integration tests
   // For API integration tests, we can just register the routers directly if needed,
   // but setupRoutes is more comprehensive.
-  const { setupRoutes } = await import("../boot/routes.js");
+  const { setupRoutes } = await import("../../../server/boot/routes.js");
   // We pass a mock httpServer if needed, but for supertest 'app' is enough
   await setupRoutes(app, {} as unknown as Server);
 

@@ -87,7 +87,12 @@ export type ProductFormFieldValue =
 /** @public */ export type MediaRemovalHandler = (mediaType: string, mediaId: number) => void;
 
 // Media field types for the picker
-/** @public */ export type MediaFieldType = "images" | "videos" | "primaryImage" | "primaryVideo" | "model";
+/** @public */ export type MediaFieldType =
+  | "images"
+  | "videos"
+  | "primaryImage"
+  | "primaryVideo"
+  | "model";
 
 // Media picker handler
 /** @public */ export type MediaSelectHandler = (mediaIds: number[]) => void;

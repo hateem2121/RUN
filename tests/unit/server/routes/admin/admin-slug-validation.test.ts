@@ -2,10 +2,10 @@ import express from "express";
 import { ok } from "neverthrow";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import adminRouter from "./admin.ts";
+import adminRouter from "../../../../../server/routes/admin/admin.ts";
 
 // Mock all dependencies admin.ts imports
-vi.mock("../../services/admin/index.js", () => ({
+vi.mock("../../../../../server/services/admin/index.js", () => ({
   adminService: {
     checkSlugAvailability: vi.fn(),
     getInitialProductsData: vi.fn(),
@@ -27,14 +27,14 @@ vi.mock("../../services/admin/index.js", () => ({
   },
 }));
 
-vi.mock("../../services/auth-service.js", () => ({
+vi.mock("../../../../../server/services/auth-service.js", () => ({
   authService: {
     requireAdmin: (_req: unknown, _res: unknown, next: () => void) => next(),
     requireRole: () => (_req: unknown, _res: unknown, next: () => void) => next(),
   },
 }));
 
-vi.mock("../../lib/storage-singleton.js", () => ({
+vi.mock("../../../../../server/lib/storage-singleton.js", () => ({
   getStorage: vi.fn(() => ({
     getMediaAssets: vi.fn().mockResolvedValue([]),
     createAuditLog: vi.fn(),
@@ -43,11 +43,11 @@ vi.mock("../../lib/storage-singleton.js", () => ({
   })),
 }));
 
-vi.mock("../../lib/resilience/request-timeout.js", () => ({
+vi.mock("../../../../../server/lib/resilience/request-timeout.js", () => ({
   withTimeout: (promise: Promise<unknown>) => promise,
 }));
 
-import { adminService } from "../../services/admin/index.js";
+import { adminService } from "../../../../../server/services/admin/index.js";
 
 const mockCheck = adminService.checkSlugAvailability as ReturnType<typeof vi.fn>;
 

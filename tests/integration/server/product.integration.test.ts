@@ -71,7 +71,7 @@ describe("Product Integration Tests", () => {
     vi.clearAllMocks();
 
     // Get storage mock instance
-    const { getStorage } = await import("../../lib/storage-singleton.js");
+    const { getStorage } = await import("../../../server/lib/storage-singleton.js");
     storage = getStorage();
 
     app = express();
@@ -83,7 +83,7 @@ describe("Product Integration Tests", () => {
       next();
     });
 
-    const { authService } = await import("../../services/auth-service.js");
+    const { authService } = await import("../../../server/services/auth-service.js");
     vi.spyOn(authService, "setup").mockResolvedValue(undefined);
 
     await setupMiddleware(app);

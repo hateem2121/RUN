@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import request from "supertest";
 import { beforeAll, describe, expect, it } from "vitest";
-import { setupTestApp } from "../../../server/tests/test-utils.js";
+import { setupTestApp } from "./test-utils.js";
 
 describe("API Integrity Audit", () => {
   let app: Express;

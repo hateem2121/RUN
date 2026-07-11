@@ -32,20 +32,16 @@ const config: KnipConfig = {
     "patch.js",
     "playwright-script.mjs",
     "server/scripts/benchmark-queries.ts",
-    "test-globals.js"
+    "test-globals.js",
   ],
   ignoreDependencies: [
     "react-leaflet",
     "ts-morph",
     "pino-pretty",
     "neverthrow",
-    "@vitejs/plugin-react"
+    "@vitejs/plugin-react",
   ],
-  ignoreBinaries: [
-    "tsx",
-    "pkill",
-    "lhci"
-  ],
+  ignoreBinaries: ["tsx", "pkill", "lhci"],
   ignoreExportsUsedInFile: true,
 };
 

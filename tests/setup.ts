@@ -38,6 +38,21 @@ Object.defineProperty(window, "WebGLRenderingContext", {
   writable: true,
   value: vi.fn(),
 });
+
+// Mock matchMedia for GSAP
+Object.defineProperty(window, "matchMedia", {
+  writable: true,
+  value: vi.fn().mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(), // Deprecated
+    removeListener: vi.fn(), // Deprecated
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+});
 // Set required environment variables for tests
 // P0 RESTORATION: Using Neon ephemeral test branch for deterministic integration tests
 process.env.DATABASE_URL =
@@ -50,6 +65,6 @@ process.env.ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || "test-encryption-key-
 process.env.NODE_ENV = "test";
 process.env.ENABLE_DEBUG_ROUTES = "true";
 process.env.DEBUG_ROUTE_TOKEN = "test-token-123";
-process.env.TEST_REAL_DB = "true"; // Enable real DB logic in server/db.ts
+process.env.TEST_REAL_DB = "false"; // Real DB password invalid, falling back to mock
 process.env.INITIAL_ADMIN_EMAIL = "admin@run-remix.test";
 process.env.BYPASS_RBAC_FOR_TESTING = "false";

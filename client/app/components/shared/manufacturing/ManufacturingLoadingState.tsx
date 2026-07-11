@@ -136,7 +136,11 @@ interface ManufacturingLoadingStateProps {
 /**
  * Compact loading skeleton for inline use
  */
-/** @public */ export function ManufacturingInlineLoader({ className = "" }: { className?: string }) {
+/** @public */ export function ManufacturingInlineLoader({
+  className = "",
+}: {
+  className?: string;
+}) {
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       <div>

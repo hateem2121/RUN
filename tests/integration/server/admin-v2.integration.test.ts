@@ -2,8 +2,8 @@ import type { InsertCategory, InsertMediaAsset } from "@run-remix/shared";
 import request from "supertest";
 import { beforeEach, describe, expect, it } from "vitest";
 import { adminCacheManager } from "../../../server/lib/cache/admin-cache.js";
-import { MemoryStorage } from "../../../server/tests/memory-storage.js";
-import { createMockSessionUser, setupTestApp } from "../../../server/tests/test-utils.js";
+import { MemoryStorage } from "./memory-storage.js";
+import { createMockSessionUser, setupTestApp } from "./test-utils.js";
 
 describe("Admin V2 Integration Tests", () => {
   let app: import("express").Express;

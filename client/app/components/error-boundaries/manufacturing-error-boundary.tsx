@@ -58,20 +58,22 @@ export class ManufacturingErrorBoundary extends Component<Props, State> {
 }
 
 // Loading skeleton component
-/** @public */ export const ManufacturingLoadingSkeleton = React.memo(function ManufacturingLoadingSkeleton() {
-  return (
-    <div className="animate-pulse">
-      <div className="bg-muted/20 mb-4 h-8 w-3/4 rounded-md"></div>
-      <div className="bg-muted/20 mb-2 h-4 w-full rounded-md"></div>
-      <div className="bg-muted/20 mb-4 h-4 w-2/3 rounded-md"></div>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="bg-muted/20 h-40 rounded-lg"></div>
-        ))}
+/** @public */ export const ManufacturingLoadingSkeleton = React.memo(
+  function ManufacturingLoadingSkeleton() {
+    return (
+      <div className="animate-pulse">
+        <div className="bg-muted/20 mb-4 h-8 w-3/4 rounded-md"></div>
+        <div className="bg-muted/20 mb-2 h-4 w-full rounded-md"></div>
+        <div className="bg-muted/20 mb-4 h-4 w-2/3 rounded-md"></div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="bg-muted/20 h-40 rounded-lg"></div>
+          ))}
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  },
+);
 
 // Missing asset placeholder
 /** @public */ export const AssetPlaceholder = React.memo(function AssetPlaceholder({

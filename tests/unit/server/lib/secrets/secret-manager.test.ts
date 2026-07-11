@@ -31,7 +31,7 @@ vi.mock("../../../../../server/lib/monitoring/logger.js", () => ({
 const originalEnv = { ...process.env };
 
 describe("SecretManager", () => {
-  let secretManager: typeof import("../secret-manager.ts");
+  let secretManager: typeof import("../../../../../server/lib/secrets/secret-manager.ts");
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -42,7 +42,7 @@ describe("SecretManager", () => {
     vi.resetModules();
 
     // Re-import the module fresh for each test
-    secretManager = await import("../secret-manager.ts");
+    secretManager = await import("../../../../../server/lib/secrets/secret-manager.ts");
   });
 
   afterEach(() => {

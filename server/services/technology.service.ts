@@ -707,21 +707,21 @@ class TechnologyService {
   /**
    * Transforms flat frontend gradient data to DB nested structure
    */
-  // biome-ignore lint/suspicious/noExplicitAny: Dynamic frontend structure
-  transformFrontendGradient(data: any): Partial<InsertTechnologyGradientSettings> {
+  transformFrontendGradient(
+    data: Record<string, unknown>,
+  ): Partial<InsertTechnologyGradientSettings> {
     return {
       gradientType: "linear",
-      colors: data.gradientColors,
-      direction: (data.angle ?? 0).toString(),
-      opacity: (data.spotlightOpacity ?? 1).toString(),
+      colors: data.gradientColors as string[],
+      direction: ((data.angle as number) ?? 0).toString(),
+      opacity: ((data.spotlightOpacity as number) ?? 1).toString(),
       settings: data,
-      isActive: data.isActive,
+      isActive: data.isActive as boolean,
     };
   }
 
   // Batch
-  // biome-ignore lint/suspicious/noExplicitAny: Dynamic batch data structure
-  async getBatch(): Promise<Result<Record<string, any>, AppError>> {
+  async getBatch(): Promise<Result<Record<string, unknown>, AppError>> {
     try {
       // Fetch all technology data in parallel using circuit breaker
       const [hero, innovations, equipment, research, roadmap, cta, gradientSettings] =

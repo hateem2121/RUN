@@ -785,7 +785,7 @@ Before ending any session, confirm:
 
 ---
 
-## 10. Server File Location Conventions (Codified 2026-07-08)
+## 22. Server File Location Conventions (Codified 2026-07-08)
 
 These conventions were locked in after the Phase 3/4 cleanup sprint. Do NOT deviate.
 
@@ -794,7 +794,7 @@ These conventions were locked in after the Phase 3/4 cleanup sprint. Do NOT devi
 - **`server/lib/image-processor.ts`** — Sharp-based image processing pipeline. Canonical location: `server/lib/image-processor.ts`. Import via `"../lib/image-processor.js"` from service/route files.
 - **`server/migrations/`** — Authoritative Drizzle-kit migration output directory. The root `migrations/` and `drizzle/` directories have been removed (their content was superseded). All new migrations generate into `server/migrations/` as configured in `server/drizzle.config.ts`.
 
-## 11. Deprecated Directories (Removed 2026-07-08 — Do Not Recreate)
+## 23. Deprecated Directories (Removed 2026-07-08 — Do Not Recreate)
 
 The following directories were permanently removed in the Phase 3/4 cleanup sprint:
 
@@ -811,7 +811,7 @@ The following directories were permanently removed in the Phase 3/4 cleanup spri
 | `client/app/types/lenis.d.ts` | Type declaration for the forbidden `lenis` library. Permanently removed. Use `locomotive-scroll` 5.0.1 only. |
 | `packages/sdk/` | Removed. Structure transitioned to a strict 3-workspace monorepo (`client/`, `server/`, `shared/`). |
 
-## 12. Biome Post-Move Fix Protocol (Codified 2026-07-08)
+## 24. Biome Post-Move Fix Protocol (Codified 2026-07-08)
 
 When any import path is edited — especially after a file is relocated — Biome's `organizeImports` rule fires and causes `biome check` to fail with "imports not sorted" even though no lint rule was violated. This is a **silent failure** that only shows up during `verify:tech-integrity`.
 
@@ -829,7 +829,7 @@ npx biome check --write <path/to/changed-file.ts>
 
 Skipping step 1 will cause a Biome check failure in step 3 that is confusing to diagnose because the error message ("imports not sorted") does not indicate which file triggered it.
 
-## 13. Cleanup Safety Protocol — Verify Imports Before Deleting (Codified 2026-07-08)
+## 25. Cleanup Safety Protocol — Verify Imports Before Deleting (Codified 2026-07-08)
 
 **`knip` "unused exports" ≠ unused file.** A file with zero externally-consumed exports can still be actively imported by many modules. During the Phase 3/4 sprint, three files flagged by `knip` as having "unused exports" turned out to have **20+, 1, and 5 active importers** respectively. Deleting them would have caused an immediate build failure.
 

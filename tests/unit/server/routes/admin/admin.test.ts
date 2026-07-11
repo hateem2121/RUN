@@ -2,7 +2,7 @@ import express from "express";
 import { ok } from "neverthrow";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import adminRouter from "./admin.ts";
+import adminRouter from "../../../../../server/routes/admin/admin.ts";
 
 // Use vi.hoisted to ensure the mock is available to the hoisted vi.mock call
 const { mockAdminService } = vi.hoisted(() => {
@@ -127,17 +127,17 @@ const { mockAdminService } = vi.hoisted(() => {
 });
 
 // Mock dependencies
-vi.mock("../../services/admin/index.js", () => ({
+vi.mock("../../../../../server/services/admin/index.js", () => ({
   adminService: mockAdminService,
 }));
 
-vi.mock("../../services/auth-service.js", () => ({
+vi.mock("../../../../../server/services/auth-service.js", () => ({
   authService: {
     requireAdmin: (_req: unknown, _res: unknown, next: () => void) => next(),
   },
 }));
 
-vi.mock("../../lib/storage-singleton.js", () => {
+vi.mock("../../../../../server/lib/storage-singleton.js", () => {
   const mockStorage = {
     getMediaAssets: vi.fn().mockResolvedValue([]),
     createAuditLog: vi.fn(),
@@ -157,7 +157,7 @@ vi.mock("../../lib/storage-singleton.js", () => {
   };
 });
 
-vi.mock("../../lib/resilience/request-timeout.js", () => ({
+vi.mock("../../../../../server/lib/resilience/request-timeout.js", () => ({
   withTimeout: (promise: Promise<unknown>) => promise,
 }));
 
@@ -165,6 +165,10 @@ vi.mock("../../lib/resilience/request-timeout.js", () => ({
 const app = express();
 app.use(express.json());
 app.use("/api/admin", adminRouter);
+app.use((err: any, _req: any, res: any, _next: any) => {
+  console.error("Test App Error:", err);
+  res.status(500).json({ error: err.message, stack: err.stack });
+});
 
 describe("Admin Routes Integration", () => {
   beforeEach(() => {

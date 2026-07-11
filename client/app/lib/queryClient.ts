@@ -81,7 +81,9 @@ import { ApiError, apiRequest } from "./api";
 // Re-export apiRequest for backward compatibility
 export { apiRequest };
 
-/** @public */ export const getQueryFn: <T>(options: { on401: "returnNull" | "throw" }) => QueryFunction<T> =
+/** @public */ export const getQueryFn: <T>(options: {
+  on401: "returnNull" | "throw";
+}) => QueryFunction<T> =
   <T>({ on401: unauthorizedBehavior }: { on401: "returnNull" | "throw" }) =>
   async ({ queryKey }) => {
     try {
@@ -465,7 +467,13 @@ export const getMediaSrc = async (assetId: number): Promise<string | null> => {
 
 // CHUNK 4: Optimized Query Settings for Different Data Types
 // Success criteria: Error states surface <10s, cache memory <120MB
-/** @public */ export type QueryDataType = "static" | "cms" | "products" | "media" | "live" | "dynamic";
+/** @public */ export type QueryDataType =
+  | "static"
+  | "cms"
+  | "products"
+  | "media"
+  | "live"
+  | "dynamic";
 
 export const getOptimizedQueryOptions = (dataType: QueryDataType) => {
   switch (dataType) {

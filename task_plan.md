@@ -1,5 +1,14 @@
 # RUN Remix - Task Plan
 
+## Session: 2026-07-11 (Unified Repo Audit)
+**Goal:** Produce one single, independently-verified report giving a transparent, reproducible health score plus an itemized map of organization, dead-code, best-practice/future-proofing, and documentation-accuracy issues.
+**Outcome:**
+- [x] Run `npm run verify:tech-integrity`
+- [x] Spawn 4 Sub-Agents for Fan-Out investigation
+- [x] Reconcile findings, compute Health Score, write `docs/audits/2026-07-11-unified-repo-audit.md`
+- [x] Protocol 0 bookends (`findings.md`, `task_plan.md` updates)
+**Next Steps:** Proceed to execute the Recommended Action Plan from the newly generated audit report (cleanup dead code, consolidate tests, fix Biome escapes, resolve failing test suites).
+
 ## Session: 2026-07-11 (Comprehensive Documentation Sync & SSOT Unification)
 **Goal:** Audit and update all repository documentation to accurately reflect recent structural cleanups, the Knip tech debt resolution strategy, and permanently resolve the constitution conflict by establishing `gemini.md` as the undisputed Single Source of Truth (SSOT).
 **Outcome:**
@@ -184,3 +193,31 @@
 **Next Steps:**
 - Plan is complete! All architecture, error-handling, security, and rendering bugs have been solved. Ready for shipment to main.
 - [x] Session concluded and deployed.
+
+## Session Goal (2026-07-11)
+Execute the repository cleanup, test suite repairs, strict typing enforcement, and documentation sync outlined in the July 2026 unified audit report to restore composite health to 100/100.
+
+**Outcome:**
+- Phase 2.5 (Test Suite Stabilization) and Phase 2.6 (Final Verification) are complete.
+- Vitest suites fixed for both client and server tests.
+- Tech integrity checks passed.
+- Repository cleanup completed.
+
+## Session Goal (2026-07-11 — Constitution Unification)
+Unify the repository's rule set by establishing `gemini.md` as the definitive SSOT and modifying `CLAUDE.md` to be a non-conflicting, Claude-native supplement.
+
+**Outcome:**
+- `CLAUDE.md` slimmed from 128 → 82 lines. Removed duplicated §3 (tech stack), §4 (gstack commands), §5 (Protocol 0), §6 (project structure). Kept Claude-native §1 (Identity), §2 (8-Step Sprint), §3 (Skill Routing). Added cross-reference table to `gemini.md` sections.
+- `docs/AGENT_INSTRUCTIONS.md` slimmed from 753 → 55 lines. Removed 700+ lines of port-5002 tutorial, response templates, anti-patterns, and debugging guides. Replaced with onboarding pointer + cross-reference table deferring all rules to `gemini.md`.
+- `gemini.md` confirmed unchanged — no unique rules existed in the other files that were missing from it.
+- `npm run verify:tech-integrity` passed all checks.
+
+## Session Goal (2026-07-11 — AGENTS.md Redundancy Cleanup)
+Strip `AGENTS.md` of all duplicated instructions that already exist in `gemini.md` to finalize the Single Source of Truth instructional architecture.
+
+**Outcome:**
+- `AGENTS.md` slimmed from 89 → 38 lines.
+- Kept 6 unique sections (Environment, Scope, Documentation & Markdown, Browser Viewports, Severity Scoring, Model Routing).
+- Removed 5 sections that duplicated `gemini.md` §4-§6/§22-§23 (Tech Stack Hard Rules, Auth & Session, Server File Conventions, Deprecated Directories, GSAP Import Rule).
+- Added explicit cross-reference to `gemini.md` for the removed content.
+- `npm run verify:tech-integrity` passed all checks.

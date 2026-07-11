@@ -23,7 +23,15 @@ We chose a **Monorepo with npm workspaces + Turborepo** over multiple repositori
 RUN-Remix/
 ├── client/   (@run-remix/client)
 ├── server/   (@run-remix/server)
-└── shared/   (@run-remix/shared)
+├── shared/   (@run-remix/shared)
+├── tests/    (Unit & Integration tests)
+├── e2e/      (End-to-End tests)
+├── docs/     (Documentation hub)
+├── ops/      (Operational scripts)
+├── scripts/  (Utility scripts)
+├── k8s/      (Kubernetes manifests)
+├── .github/  (CI/CD workflows)
+└── .claude/  (Agent skills and tools)
 ```
 
 ## Alternatives Considered

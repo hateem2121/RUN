@@ -193,8 +193,15 @@ function createWrapper() {
  * HERO MANAGEMENT COMPONENT TESTS
  */
 describe("HeroManagement Component", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
+    vi.mocked((await import("@tanstack/react-query")).useQuery).mockReturnValue({
+      data: null,
+      isPending: false,
+      isLoading: false,
+      isError: false,
+      refetch: vi.fn(),
+    } as any);
   });
 
   test("should render hero management form with all fields", async () => {
@@ -217,7 +224,7 @@ describe("HeroManagement Component", () => {
 
   test("should display loading state while fetching hero data", async () => {
     // Mock loading state
-    vi.mocked((await import("@tanstack/react-query")).useQuery).mockReturnValueOnce({
+    vi.mocked((await import("@tanstack/react-query")).useQuery).mockReturnValue({
       data: null,
       isPending: true,
       isLoading: true,

@@ -31,7 +31,9 @@ export function getResponsiveSpanClasses(cardType: keyof typeof DEFAULT_CARD_SPA
 /**
  * Generate responsive grid template columns
  */
-/** @public */ export function getGridTemplateColumns(breakpoint: "mobile" | "tablet" | "desktop"): string {
+/** @public */ export function getGridTemplateColumns(
+  breakpoint: "mobile" | "tablet" | "desktop",
+): string {
   const columns = {
     mobile: 1,
     tablet: 2,
@@ -72,7 +74,9 @@ const RESPONSIVE_HEIGHTS = {
 /**
  * Utility function to get responsive height styles
  */
-/** @public */ export function getResponsiveHeightStyles(breakpoint: "mobile" | "tablet" | "desktop"): string {
+/** @public */ export function getResponsiveHeightStyles(
+  breakpoint: "mobile" | "tablet" | "desktop",
+): string {
   const height = RESPONSIVE_HEIGHTS[breakpoint];
   return `min-height: ${height.min}; max-height: ${height.max}; height: auto;`;
 }

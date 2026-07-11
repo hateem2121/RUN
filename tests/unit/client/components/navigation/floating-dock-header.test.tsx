@@ -2,8 +2,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, it, vi } from "vitest";
+import { FloatingDockHeader } from "@/components/navigation/floating-dock-header";
 import { ThemeProvider } from "@/components/shared/theme-provider";
-import { FloatingDockHeader } from "./floating-dock-header";
 
 // Mock window.matchMedia
 Object.defineProperty(window, "matchMedia", {
@@ -25,7 +25,7 @@ vi.mock("@/components/ui/theme-toggle", () => ({
   ThemeToggle: () => <div data-testid="theme-toggle" />,
 }));
 
-vi.mock("./responsive-navigation", () => ({
+vi.mock("@/components/navigation/responsive-navigation", () => ({
   ResponsiveNavigation: () => <div data-testid="responsive-navigation" />,
 }));
 

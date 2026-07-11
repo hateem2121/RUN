@@ -54,7 +54,7 @@ describe("Admin Product Management Integration Tests", () => {
     vi.clearAllMocks();
     mockUser = null;
 
-    const { getStorage } = await import("../../lib/storage-singleton.js");
+    const { getStorage } = await import("../../../server/lib/storage-singleton.js");
     storage = getStorage();
 
     app = express();

@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Process & Tooling
 - **Main Branch Rules Override**: Updated system agent rules (`gemini.md`, `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`) to permit direct `main` commits given explicit user authorization, bypassing `/ship`.
-- **Tech Integrity**: Resolved all `noExplicitAny` Biome errors and unused imports, achieving 100/100 architecture health score.
 - **Bundle Optimization**: Verified code-splitting for `LazyUnifiedModelViewer` (415KB dynamic chunk).
 
 ## [4.1.1] - 2026-05-30

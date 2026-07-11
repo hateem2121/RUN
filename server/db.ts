@@ -58,7 +58,8 @@ let pool: Pool;
 if (isTestMode && !enableRealDb) {
   logger.info("[Database] Test mode - using Mock Pool");
   pool = {
-    connect: () => Promise.resolve({ release: () => {} }),
+    connect: () =>
+      Promise.resolve({ release: () => {}, query: () => Promise.resolve({ rows: [] }) }),
     query: () => Promise.resolve({ rows: [] }),
     end: () => Promise.resolve(),
     on: () => {},
@@ -108,7 +109,8 @@ if (
 ) {
   logger.warn("[Database] ⚠️ MOCK MODE ENABLED - Ops will return empty data ⚠️");
   pool = {
-    connect: () => Promise.resolve({ release: () => {} }),
+    connect: () =>
+      Promise.resolve({ release: () => {}, query: () => Promise.resolve({ rows: [] }) }),
     query: () => Promise.resolve({ rows: [] }),
     end: () => Promise.resolve(),
     on: () => {},

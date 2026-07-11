@@ -3,7 +3,7 @@ import { type LoginTicket, OAuth2Client } from "google-auth-library";
 import { logger } from "./monitoring/logger.js";
 
 // Initialize a single client to cache Google's public keys
-const oAuth2Client = new OAuth2Client();
+export const oAuth2Client = new OAuth2Client();
 
 /**
  * Extracts and verifies the OIDC token sent by Google Cloud Tasks.

@@ -4,8 +4,8 @@ import "@testing-library/jest-dom/vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { HeroManagement } from "@/components/admin/manufacturing/HeroManagement";
 import * as queryClientModule from "@/lib/queryClient";
-import { HeroManagement } from "./HeroManagement";
 
 // Mock ResizeObserver
 class MockResizeObserver {

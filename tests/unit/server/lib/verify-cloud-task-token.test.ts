@@ -1,22 +1,9 @@
 import type { Request } from "express";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
-import { verifyCloudTaskToken } from "../../../../server/lib/verify-cloud-task-token.js";
-
-// vi.hoisted() runs before mock factories AND before static imports, so this
-// shared vi.fn() is guaranteed to exist when the factory below executes.
-// Every `new OAuth2Client()` — including the module-level instance created at
-// import time in verify-cloud-task-token.ts — will reference the same function.
-const { mockVerifyIdTokenFn } = vi.hoisted(() => ({
-  mockVerifyIdTokenFn: vi.fn(),
-}));
-
-vi.mock("google-auth-library", () => ({
-  OAuth2Client: vi.fn().mockImplementation(
-    class {
-      verifyIdToken = mockVerifyIdTokenFn;
-    },
-  ),
-}));
+import {
+  oAuth2Client,
+  verifyCloudTaskToken,
+} from "../../../../server/lib/verify-cloud-task-token.js";
 
 describe("verifyCloudTaskToken", () => {
   let mockRequest: Partial<Request>;
@@ -24,15 +11,13 @@ describe("verifyCloudTaskToken", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockVerifyIdToken = vi.spyOn(oAuth2Client, "verifyIdToken") as unknown as Mock;
     process.env.CLOUD_TASKS_AUDIENCE = "https://run-remix-worker-url.com";
     process.env.CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL = "worker@run-project.iam.gserviceaccount.com";
 
     mockRequest = {
       header: vi.fn().mockReturnValue("Bearer valid-token-string"),
     };
-
-    // All instances (including the module-level one) share mockVerifyIdTokenFn
-    mockVerifyIdToken = mockVerifyIdTokenFn as unknown as Mock;
   });
 
   it("should fail if Authorization header is missing", async () => {

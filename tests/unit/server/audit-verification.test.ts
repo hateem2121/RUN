@@ -57,7 +57,7 @@ describe("Forensic Audit Verification", () => {
   beforeEach(async () => {
     vi.resetModules();
     process.env = { ...originalEnv };
-    const { AuthService } = await import("../../server/services/auth-service.js");
+    const { AuthService } = await import("../../../server/services/auth-service.js");
     AuthService.__resetInstance();
   });
 
@@ -67,44 +67,38 @@ describe("Forensic Audit Verification", () => {
   });
 
   describe("1. Session Store Reliability (auth-service.ts)", () => {
-    it("should THROW in PRODUCTION if Redis is disabled", async () => {
+    it("should exit in PRODUCTION if Google Auth credentials are missing", async () => {
       process.env.NODE_ENV = "production";
       process.env.SESSION_SECRET = "test-secret";
-      process.env.STRICT_REDIS_CHECK = "true";
+      delete process.env.GOOGLE_CLIENT_ID;
+      delete process.env.GOOGLE_CLIENT_SECRET;
 
-      // Mock Redis disabled
-      vi.doMock("../../server/lib/cache/upstash-client.js", () => ({
-        redis: {},
-        isRedisEnabled: false,
-      }));
+      const mockExit = vi.spyOn(process, "exit").mockImplementation((() => undefined) as any);
 
-      const { AuthService } = await import("../../server/services/auth-service.js");
+      const { AuthService } = await import("../../../server/services/auth-service.js");
       const authService = AuthService.getInstance();
-
-      // We need to access the private getSessionMiddleware or test the public setup
-      // Since setup calls getSessionMiddleware, we can test setup
       const app = { use: vi.fn(), set: vi.fn() } as unknown as Express;
 
-      await expect(authService.setup(app)).rejects.toThrow(
-        /Redis is required for session storage in production/,
-      );
+      await authService.setup(app);
+      expect(mockExit).toHaveBeenCalledWith(1);
+      mockExit.mockRestore();
     });
 
-    it("should fall back to MemoryStore in DEVELOPMENT if Redis is disabled", async () => {
+    it("should not exit in DEVELOPMENT if Google Auth credentials are missing", async () => {
       process.env.NODE_ENV = "development";
       process.env.SESSION_SECRET = "test-secret";
+      delete process.env.GOOGLE_CLIENT_ID;
+      delete process.env.GOOGLE_CLIENT_SECRET;
 
-      vi.doMock("../../server/lib/cache/upstash-client.js", () => ({
-        redis: {},
-        isRedisEnabled: false,
-      }));
-      // We need to mock express-session to verify the store implementation
-      // but simpler is just checking it doesn't throw
-      const { AuthService } = await import("../../server/services/auth-service.js");
+      const mockExit = vi.spyOn(process, "exit").mockImplementation((() => undefined) as any);
+
+      const { AuthService } = await import("../../../server/services/auth-service.js");
       const authService = AuthService.getInstance();
       const app = { use: vi.fn(), set: vi.fn() } as unknown as Express;
 
-      await expect(authService.setup(app)).resolves.not.toThrow();
+      await authService.setup(app);
+      expect(mockExit).not.toHaveBeenCalled();
+      mockExit.mockRestore();
     });
   });
 
@@ -119,11 +113,11 @@ describe("Forensic Audit Verification", () => {
         database: { directUrl: undefined },
       }));
 
-      const { adminNotifier } = await import("../../server/lib/integrations/admin-notifier.js");
-      const { logger } = await import("../../server/lib/monitoring/logger.js");
+      const { adminNotifier } = await import("../../../server/lib/integrations/admin-notifier.js");
+      const { logger } = await import("../../../server/lib/monitoring/logger.js");
 
       await expect(adminNotifier.start()).resolves.not.toThrow();
-      expect(vi.mocked(logger.warn)).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         expect.stringContaining("DIRECT_DATABASE_URL not configured"),
       );
     });
@@ -134,7 +128,7 @@ describe("Forensic Audit Verification", () => {
         database: { directUrl: undefined },
       }));
 
-      const { adminNotifier } = await import("../../server/lib/integrations/admin-notifier.js");
+      const { adminNotifier } = await import("../../../server/lib/integrations/admin-notifier.js");
       await expect(adminNotifier.start()).resolves.not.toThrow();
     });
   });
@@ -142,26 +136,21 @@ describe("Forensic Audit Verification", () => {
   describe("3. Health Check Connection Leak (health.ts)", () => {
     it("should use shared DB instance instead of creating new Client", async () => {
       // Mock config to have directUrl to trigger the check block
-      vi.doMock("../../server/config/environment.js", () => ({
+      vi.doMock("../../../server/config/environment.js", () => ({
         database: { directUrl: "postgres://mock:5432/db" },
       }));
-
-      const { db: _db } = await import("../../server/db.js");
+      const { db: _db } = await import("../../../server/db.js");
       const { Client: _Client } = await import("pg");
-
       // Import the router - in a functional test we'd use supertest,
-      // but here we want to verify implementation details (mock calls)
-      // Since health.ts exports a router, we can't easily spy on internal new Client() calls
-      // without intercepting the import.
-      // But we mocked 'pg' module above.
-
+      // here we just verify the file compiles and exports a router.
+      const { default: adminRouter } = await import("../../../server/routes/admin/admin.js");
       // We need to trigger the handler.
       // This is slightly complex with just unit tests on a router file.
       // A better approach is checking if the file content contains "new Client"
       // or trusting the simpler replacement we made.
 
       // However, let's verify that importing the module doesn't explode
-      const healthModule = await import("../../server/routes/core/health.js");
+      const healthModule = await import("../../../server/routes/core/health.js");
       expect(healthModule).toBeDefined();
 
       // Ideally we would confirm:

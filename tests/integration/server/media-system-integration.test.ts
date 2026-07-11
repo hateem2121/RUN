@@ -56,8 +56,8 @@ app.use(
 describe("Media System Integration Tests", () => {
   beforeAll(async () => {
     // Initialize in-memory storage so getStorage() doesn't throw.
-    const { MemoryStorage } = await import("../memory-storage.js");
-    const { StorageSingleton } = await import("../../lib/storage-singleton.js");
+    const { MemoryStorage } = await import("./memory-storage.js");
+    const { StorageSingleton } = await import("../../../server/lib/storage-singleton.js");
     StorageSingleton.setInstance(new MemoryStorage());
   });
 
@@ -249,7 +249,7 @@ describe("Media System Integration Tests", () => {
 // Test utilities
 export const testUtils = {
   async createTestAsset() {
-    const { getStorage } = await import("../../lib/storage-singleton.js");
+    const { getStorage } = await import("../../../server/lib/storage-singleton.js");
     return await getStorage().createMediaAsset({
       filename: `test-asset-${Date.now()}.jpg`,
       originalName: "test-image.jpg",

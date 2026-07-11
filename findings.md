@@ -1,5 +1,27 @@
 # RUN Remix — Findings Log
 
+## Session: 2026-07-11 (Unified Repo Audit)
+
+### Resolution Status
+
+Produced a single, independently-verified audit report (`docs/audits/2026-07-11-unified-repo-audit.md`) covering health score, organization, dead code, best practices, security, and documentation accuracy. The audit was conducted using a multi-agent fan-out/fan-in approach.
+
+### Work Performed
+
+| Item | Resolution |
+|------|-----------|
+| **Audit Report Generation** | Orchestrated 4 sub-agents to map the repository, analyze dead code/Knip configs, check tech stack currency, and verify claims/security invariants. Synthesized findings into `docs/audits/2026-07-11-unified-repo-audit.md`. |
+| **Health Score Computed** | Calculated a composite health score of 78/100. Discovered documentation drift, test fragmentation (orphan files), and failing test suites preventing coverage generation. |
+| **Protocol 0 Updates** | Updated `findings.md` and `task_plan.md` with the outcome of the audit. |
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| Git Diff | ✅ Verified only the new report file and the two bookend files were modified, strictly adhering to the read-only mandate. |
+
+---
+
 ## Session: 2026-07-11 (Comprehensive Documentation Sync & SSOT Unification)
 
 ### Resolution Status
@@ -136,3 +158,57 @@ All Phase 3 and Phase 4 items from the `codebase_audit_report_final.md` have bee
 ### Branch
 
 `chore/phase3-phase4-cleanup` — ready to merge to `main`.
+
+## 2026-07-11: Audit Resolution & Technical Cleanup
+
+- Fixed multiple failing test suites across the monorepo. 
+- Repaired dependency mock injection for Vitest 4 hoisting requirements in `product-repository.test.ts`.
+- Mocked browser globals like `matchMedia` in `tests/setup.ts` to satisfy GSAP requirements in jsdom environments.
+- Updated path resolutions across `tests/unit/client/hooks/useServerValidation.test.ts`, `tests/integration/server/test-utils.ts`, and `tests/unit/server/routes/admin/admin.test.ts` to utilize path aliases and proper relative module specifiers.
+- Removed obsolete test cases related to Redis session stores after the implementation of `DrizzleSessionStore` in `auth-service.ts`.
+- Verified system integrity with `npm run verify:tech-integrity` and `npm run check:build`.
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| TypeScript (server/client) | ✅ 0 errors |
+| npm security audit | ✅ Passed (allowlisted advisories only) |
+| Vitest unit & integration tests | ✅ All passing |
+| `npm run verify:tech-integrity` | ✅ All checks pass |
+
+## 2026-07-11: Constitution Unification
+
+### Changes
+- **`CLAUDE.md`**: Slimmed from 128 → 82 lines. Removed 4 sections that duplicated `gemini.md`: tech stack table (§3), gstack slash commands (§4), Protocol 0 summary (§5), project structure (§6). Retained 3 Claude-native sections: Identity, 8-Step Agentic Sprint, Skill Routing. Added a cross-reference table mapping agent concerns → `gemini.md` section numbers.
+- **`docs/AGENT_INSTRUCTIONS.md`**: Slimmed from 753 → 55 lines. The file was almost entirely a port-5002 tutorial with response templates, anti-patterns, and debugging guides — all redundant with `gemini.md` §4, `AGENTS.md`, and `npm run verify-port`. Replaced with a concise onboarding pointer + cross-reference table.
+- **`gemini.md`**: Confirmed unchanged. No unique architectural or structural rules were isolated in `CLAUDE.md` or `AGENT_INSTRUCTIONS.md` that needed migrating.
+
+### Observations
+- `CLAUDE.md` already had the correct SSOT deferral header (fixed in a prior session on 2026-07-11). The "supersedes all other instructions" conflict mentioned in the task brief had already been resolved.
+- `docs/AGENT_INSTRUCTIONS.md` referenced several files that don't exist: `docs/PORT_5002_ARCHITECTURE.md`, `RULES.md`, `WORKFLOW.md`, `TROUBLESHOOTING.md`. It also referenced `shared/constants/routeMapping.ts` which should be `shared/route-manifest.ts`. All removed in the rewrite.
+- `AGENTS.md` (repo root) also contains some `gemini.md` duplication (tech stack hard rules, deprecated directories, server file conventions) — noted for future cleanup but out of scope for this task.
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| `npm run verify:tech-integrity` | ✅ All checks pass |
+| `npm run verify-port` | ✅ Port 5002 compliant |
+| `gemini.md` unchanged | ✅ Confirmed via `git diff` |
+
+## 2026-07-11: AGENTS.md Redundancy Cleanup
+
+### Changes
+- **`AGENTS.md`**: Slimmed from 89 → 38 lines. Kept the 6 unique sections that don't exist in `gemini.md` (Environment, Scope, Documentation & Markdown, Browser Viewports, Severity Scoring, Model Routing). Removed the 5 sections that duplicated `gemini.md` §4-§6, §22-§23 (Tech Stack Hard Rules, Auth & Session Constraints, Server File Conventions, Deprecated Directories, GSAP Import Rule). Added an explicit cross-reference footer pointing to `gemini.md` for the removed architectural rules.
+
+### Observations
+- With this change, `gemini.md` is now the sole SSOT for all tech stack constraints, architectural boundaries, and repository conventions. `AGENTS.md` is strictly focused on active-development environment rules.
+- `CLAUDE.md` and `docs/AGENT_INSTRUCTIONS.md` were already unified in the previous session.
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| `npm run verify:tech-integrity` | ✅ All checks pass |
+| `AGENTS.md` cleaned up | ✅ Confirmed via `git diff` |

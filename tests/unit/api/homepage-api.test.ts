@@ -398,7 +398,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
 
   beforeAll(async () => {
     app = express();
-    setupMiddleware(app);
+    await setupMiddleware(app);
     await registerRoutes(app);
     setupErrorHandling(app);
   });

@@ -105,7 +105,7 @@ export class RateLimiter {
         }
       };
 
-      runLimiter().match(
+      await runLimiter().match(
         ({ current, ttl }) => {
           const remaining = Math.max(0, this.config.max - current);
           res.setHeader("RateLimit-Limit", this.config.max.toString());
@@ -123,10 +123,10 @@ export class RateLimiter {
           }
           next();
         },
-        (error) => {
+        async (error) => {
           logger.error("[RateLimiter] Error in rate limiter, falling back to memory strict", error);
 
-          ResultAsync.fromSafePromise(
+          await ResultAsync.fromSafePromise(
             new Promise<void>((resolve) => {
               const now = Date.now();
               let entry = this.store.get(ip);
@@ -136,14 +136,15 @@ export class RateLimiter {
               }
               entry.count++;
               if (entry.count > this.config.max) {
-                return next(
+                next(
                   new RateLimitError("Too many requests (fallback)", {
                     retryAfter: 60,
                     fallback: true,
                   }),
                 );
+              } else {
+                next();
               }
-              next();
               resolve();
             }),
           );
