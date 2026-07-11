@@ -14,8 +14,8 @@ const env = validateEnv(process.env);
 
 // Environment utilities
 const isDevelopment = env.NODE_ENV === "development";
-export const isProduction = env.NODE_ENV === "production";
-export const isTest = env.NODE_ENV === "test";
+/** @public */ export const isProduction = env.NODE_ENV === "production";
+/** @public */ export const isTest = env.NODE_ENV === "test";
 
 // Database configuration with secure SSL defaults
 export const database: {
@@ -79,7 +79,7 @@ const security = {
 } as const;
 
 // Cloud configuration
-export const cloud = {
+/** @public */ export const cloud = {
   project: env.GOOGLE_CLOUD_PROJECT,
   location: env.GOOGLE_CLOUD_LOCATION,
   bucket: env.GCS_BUCKET_NAME,
@@ -118,7 +118,7 @@ export const cdn = {
 } as const;
 
 // Configuration summary for startup logging
-export const getConfigSummary = () => ({
+/** @public */ export const getConfigSummary = () => ({
   environment: env.NODE_ENV,
   port: server.port,
   database: {
@@ -166,11 +166,11 @@ export const getConfigSummary = () => ({
 });
 
 // Export types for TypeScript support
-export type Environment = typeof env;
-export type DatabaseConfig = typeof database;
-export type ServerConfig = typeof server;
-export type LoggingConfig = typeof logging;
-export type SecurityConfig = typeof security;
-export type DevelopmentConfig = typeof development;
-export type FeaturesConfig = typeof features;
-export type CDNConfig = typeof cdn;
+/** @public */ export type Environment = typeof env;
+/** @public */ export type DatabaseConfig = typeof database;
+/** @public */ export type ServerConfig = typeof server;
+/** @public */ export type LoggingConfig = typeof logging;
+/** @public */ export type SecurityConfig = typeof security;
+/** @public */ export type DevelopmentConfig = typeof development;
+/** @public */ export type FeaturesConfig = typeof features;
+/** @public */ export type CDNConfig = typeof cdn;

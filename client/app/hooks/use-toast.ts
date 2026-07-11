@@ -48,7 +48,7 @@ export function toast({ title, description, variant, duration, action, ...props 
 /**
  * Hook for use within React components
  */
-export function useToast() {
+/** @public */ export function useToast() {
   return {
     toast,
     dismiss: (id?: string | number) => sonnerToast.dismiss(id),

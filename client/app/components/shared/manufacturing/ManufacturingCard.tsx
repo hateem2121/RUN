@@ -20,7 +20,7 @@ interface ManufacturingCardProps {
  * Standardized manufacturing card component used across public and admin interfaces
  * Provides consistent styling, animations, and behavior patterns
  */
-export function ManufacturingCard({
+/** @public */ export function ManufacturingCard({
   children,
   title,
   subtitle,

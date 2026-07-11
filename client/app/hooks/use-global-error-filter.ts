@@ -41,7 +41,7 @@ export const isExtensionNoise = (reason: unknown): boolean => {
  * Global error filtering hook
  * Prevents console noise for known non-critical errors (AbortError, Extensions)
  */
-export const useGlobalErrorFilter = () => {
+/** @public */ export const useGlobalErrorFilter = () => {
   useEffect(() => {
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
       const reason = event.reason;

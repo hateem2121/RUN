@@ -58,7 +58,7 @@ export class ManufacturingErrorBoundary extends Component<Props, State> {
 }
 
 // Loading skeleton component
-export const ManufacturingLoadingSkeleton = React.memo(function ManufacturingLoadingSkeleton() {
+/** @public */ export const ManufacturingLoadingSkeleton = React.memo(function ManufacturingLoadingSkeleton() {
   return (
     <div className="animate-pulse">
       <div className="bg-muted/20 mb-4 h-8 w-3/4 rounded-md"></div>
@@ -74,7 +74,7 @@ export const ManufacturingLoadingSkeleton = React.memo(function ManufacturingLoa
 });
 
 // Missing asset placeholder
-export const AssetPlaceholder = React.memo(function AssetPlaceholder({
+/** @public */ export const AssetPlaceholder = React.memo(function AssetPlaceholder({
   className = "",
 }: {
   className?: string | undefined;

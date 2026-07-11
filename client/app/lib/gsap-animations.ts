@@ -51,7 +51,7 @@ export const marqueeAnimation = (
 /**
  * Staggered reveal of multiple elements.
  */
-export const staggerReveal = (
+/** @public */ export const staggerReveal = (
   elements: HTMLElement[] | NodeListOf<HTMLElement>,
   stagger: number = 0.1,
   y: number = 50,
@@ -74,7 +74,7 @@ export const staggerReveal = (
 /**
  * Sets up horizontal scroll locking (pinning) for a section.
  */
-export const horizontalScrollLock = (
+/** @public */ export const horizontalScrollLock = (
   container: HTMLElement | null,
   sections: HTMLElement[] | NodeListOf<HTMLElement>,
 ) => {

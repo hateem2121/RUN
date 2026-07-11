@@ -224,12 +224,12 @@ export function serializeError(error: unknown): Record<string, unknown> {
 }
 
 // Production-safe debug helpers
-export const debugLog = (message: string, ...args: unknown[]) => {
+/** @public */ export const debugLog = (message: string, ...args: unknown[]) => {
   if (logging.enableDebug) {
     logger.debug(message, { args });
   }
 };
 
-export const productionLog = (_message: string, ..._args: unknown[]) => {
+/** @public */ export const productionLog = (_message: string, ..._args: unknown[]) => {
   // Legacy placeholder
 };

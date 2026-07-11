@@ -108,7 +108,7 @@ interface SmartBentoGridProps {
   className?: string | undefined;
 }
 
-export function SmartBentoGrid({ children, className }: SmartBentoGridProps) {
+/** @public */ export function SmartBentoGrid({ children, className }: SmartBentoGridProps) {
   return (
     <div className={cn("grid auto-rows-min grid-cols-2 gap-3 lg:grid-cols-4", className)}>
       {children}
@@ -134,7 +134,7 @@ interface NaturalMediaProps {
   cardSpan?: GridSpan;
 }
 
-export function NaturalMedia({ src, alt, className, cardSpan }: NaturalMediaProps) {
+/** @public */ export function NaturalMedia({ src, alt, className, cardSpan }: NaturalMediaProps) {
   if (!src) {
     return (
       <div

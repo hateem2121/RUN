@@ -28,7 +28,7 @@ interface ScrollContextValue {
 
 const ScrollContext = createContext<ScrollContextValue>({ scroll: null });
 
-export const useScroll = () => useContext(ScrollContext);
+/** @public */ export const useScroll = () => useContext(ScrollContext);
 
 /**
  * Provider to make the scroll instance accessible to child components.
@@ -61,7 +61,7 @@ export function ScrollProvider({
 /**
  * DEPRECATED: Use ScrollProvider and useScroll instead.
  */
-export function useSmoothScroll(_options: SmoothScrollOptions = {}): void {
+/** @public */ export function useSmoothScroll(_options: SmoothScrollOptions = {}): void {
   useEffect(() => {
     console.warn("useSmoothScroll is deprecated. Use ScrollProvider instead.");
   }, []);

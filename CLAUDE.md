@@ -1,7 +1,10 @@
 # RUN Remix — The Agentic Sportswear Factory (v4.0.3)
 
-> **This file is the authoritative context for every Claude Code session on this project.**
-> It supersedes any other instructions. When in doubt, refer here first.
+> **PRIMARY SOURCE OF TRUTH (SSOT): `gemini.md`**
+>
+> **This file (CLAUDE.md) is a SUPPLEMENTARY layer for Claude Code sessions only.**
+> It defines Claude's identity, tone, and the 8-Step Agentic Sprint.
+> For all architectural rules, boundaries, and repository conventions, you MUST obey `gemini.md` first. `gemini.md` supersedes `CLAUDE.md` on any technical constraints.
 
 ---
 

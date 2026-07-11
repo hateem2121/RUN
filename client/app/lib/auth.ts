@@ -71,6 +71,6 @@ export const login = (returnUrl?: string) => {
  * Log out the user by calling the server-side logout endpoint.
  * The server destroys the session and redirects to home.
  */
-export const logout = () => {
+/** @public */ export const logout = () => {
   window.location.href = "/api/logout";
 };

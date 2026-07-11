@@ -6,7 +6,7 @@ import { useRef } from "react";
 type Variants = Record<string, Record<string, unknown>>;
 
 // Enhanced animation variants for bento cards
-export const cardVariants = {
+/** @public */ export const cardVariants = {
   initial: {
     opacity: 0,
     y: 20,
@@ -42,7 +42,7 @@ export const cardVariants = {
   },
 } as unknown as Variants;
 
-export const staggerContainer = {
+/** @public */ export const staggerContainer = {
   animate: {
     transition: {
       staggerChildren: 0.1,
@@ -51,7 +51,7 @@ export const staggerContainer = {
   },
 };
 
-export const fadeInUp = {
+/** @public */ export const fadeInUp = {
   initial: {
     opacity: 0,
     y: 30,
@@ -66,7 +66,7 @@ export const fadeInUp = {
   },
 };
 
-export const scaleIn = {
+/** @public */ export const scaleIn = {
   initial: {
     scale: 0.8,
     opacity: 0,
@@ -122,7 +122,7 @@ export function AnimatedCardWrapper({
 }
 
 // Smooth loading state animation
-export const LoadingSpinner = ({
+/** @public */ export const LoadingSpinner = ({
   size = 24,
   className = "",
 }: {
@@ -153,7 +153,7 @@ export const LoadingSpinner = ({
 };
 
 // Smooth image loading animation
-export const ImageLoadAnimation = {
+/** @public */ export const ImageLoadAnimation = {
   initial: { opacity: 0, scale: 1.1 },
   animate: {
     opacity: 1,
@@ -166,7 +166,7 @@ export const ImageLoadAnimation = {
 };
 
 // Modal animation variants
-export const modalVariants = {
+/** @public */ export const modalVariants = {
   initial: {
     opacity: 0,
     scale: 0.9,
@@ -193,7 +193,7 @@ export const modalVariants = {
 };
 
 // Backdrop animation
-export const backdropVariants = {
+/** @public */ export const backdropVariants = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },
   exit: { opacity: 0 },

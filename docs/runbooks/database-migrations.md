@@ -21,7 +21,7 @@ cd server
 npm run db:generate
 ```
 
-This creates a new `.sql` file in `server/drizzle/`.
+This creates a new `.sql` file in `server/migrations/`.
 
 ### B. Applying to Local/Dev DB
 
@@ -82,4 +82,4 @@ If a migration fails catastrophically:
 
 ---
 
-**Policy Note:** Never manually edit SQL files in `server/drizzle/` unless performing a complex data migration that cannot be expressed in TypeScript.
+**Policy Note:** Never manually edit SQL files in `server/migrations/` unless performing a complex data migration that cannot be expressed in TypeScript.

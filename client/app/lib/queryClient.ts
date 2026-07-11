@@ -81,7 +81,7 @@ import { ApiError, apiRequest } from "./api";
 // Re-export apiRequest for backward compatibility
 export { apiRequest };
 
-export const getQueryFn: <T>(options: { on401: "returnNull" | "throw" }) => QueryFunction<T> =
+/** @public */ export const getQueryFn: <T>(options: { on401: "returnNull" | "throw" }) => QueryFunction<T> =
   <T>({ on401: unauthorizedBehavior }: { on401: "returnNull" | "throw" }) =>
   async ({ queryKey }) => {
     try {
@@ -135,7 +135,7 @@ const handleGlobalError = (error: Error) => {
   }
 };
 
-export const createQueryClient = () =>
+/** @public */ export const createQueryClient = () =>
   new QueryClient({
     queryCache: new QueryCache({
       onError: (error) => {
@@ -431,7 +431,7 @@ class MediaBatchScheduler {
 }
 
 // Export singleton batch scheduler
-export const mediaBatchScheduler = new MediaBatchScheduler();
+/** @public */ export const mediaBatchScheduler = new MediaBatchScheduler();
 
 // PHASE 1A: CENTRALIZED MEDIA RESOLVER - Eliminates N+1 cascade in UI
 interface MediaResolverResult {
@@ -442,7 +442,7 @@ interface MediaResolverResult {
 }
 
 // React hook for media resolution with proper state management
-export const useMediaResolver = (_assetId: number): MediaResolverResult => {
+/** @public */ export const useMediaResolver = (_assetId: number): MediaResolverResult => {
   // We need to import useState and useEffect to make this a proper React hook
   // For now, return a simple version that components can use directly
   return {
@@ -465,7 +465,7 @@ export const getMediaSrc = async (assetId: number): Promise<string | null> => {
 
 // CHUNK 4: Optimized Query Settings for Different Data Types
 // Success criteria: Error states surface <10s, cache memory <120MB
-export type QueryDataType = "static" | "cms" | "products" | "media" | "live" | "dynamic";
+/** @public */ export type QueryDataType = "static" | "cms" | "products" | "media" | "live" | "dynamic";
 
 export const getOptimizedQueryOptions = (dataType: QueryDataType) => {
   switch (dataType) {
@@ -540,7 +540,7 @@ interface CacheMetrics {
   exceedsThreshold: boolean;
 }
 
-export const getCacheMetrics = (): CacheMetrics => {
+/** @public */ export const getCacheMetrics = (): CacheMetrics => {
   const queries = getQueryClient().getQueryCache().getAll();
   const queryCount = queries.length;
 
@@ -578,7 +578,7 @@ export const getCacheMetrics = (): CacheMetrics => {
 };
 
 // CHUNK 4: Automatic cache cleanup when memory threshold exceeded
-export const cleanupCacheIfNeeded = () => {
+/** @public */ export const cleanupCacheIfNeeded = () => {
   const metrics = getCacheMetrics();
 
   if (metrics.exceedsThreshold) {
@@ -666,7 +666,7 @@ export const queryKeys = {
 // Runs every 2 minutes to prevent memory buildup
 let cacheCleanupInterval: ReturnType<typeof setInterval> | null = null;
 
-export const startAutomaticCacheCleanup = () => {
+/** @public */ export const startAutomaticCacheCleanup = () => {
   if (cacheCleanupInterval) {
     clearInterval(cacheCleanupInterval);
   }
@@ -683,7 +683,7 @@ export const startAutomaticCacheCleanup = () => {
   ); // Every 2 minutes
 };
 
-export const stopAutomaticCacheCleanup = () => {
+/** @public */ export const stopAutomaticCacheCleanup = () => {
   if (cacheCleanupInterval) {
     clearInterval(cacheCleanupInterval);
     cacheCleanupInterval = null;
@@ -691,7 +691,7 @@ export const stopAutomaticCacheCleanup = () => {
 };
 
 // Performance Optimization: Critical Data Prefetching - Week 2 Implementation
-export const prefetchCriticalHomepageData = async () => {
+/** @public */ export const prefetchCriticalHomepageData = async () => {
   const criticalQueries = [
     getQueryClient().prefetchQuery({
       queryKey: queryKeys.homepage.hero(),
@@ -712,7 +712,7 @@ export const prefetchCriticalHomepageData = async () => {
   } catch (_error) {}
 };
 
-export const prefetchSecondaryHomepageData = async () => {
+/** @public */ export const prefetchSecondaryHomepageData = async () => {
   // Prefetch less critical data after initial load
   const secondaryQueries = [
     getQueryClient().prefetchQuery({
@@ -757,7 +757,7 @@ const logCacheState = () => {
 };
 
 // PRIORITY 1 FIX: Force complete cache reset utility
-export const forceResetMediaCache = async () => {
+/** @public */ export const forceResetMediaCache = async () => {
   try {
     logCacheState();
 

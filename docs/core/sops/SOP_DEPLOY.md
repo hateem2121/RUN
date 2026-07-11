@@ -35,7 +35,7 @@ Confirm these workflows are green before promoting:
 npm run --workspace=@run-remix/server db:generate
 
 # Review generated migration SQL before applying
-cat drizzle/migrations/<latest>.sql
+cat server/migrations/<latest>.sql
 
 # Apply to staging branch first
 npm run --workspace=@run-remix/server db:push

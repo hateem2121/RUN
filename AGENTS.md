@@ -72,6 +72,7 @@ The following directories were removed in the Phase 3/4 cleanup sprint and must 
 - `server/lib/jobs/workers/` — Empty directory from the removed BullMQ integration. Do not recreate. Background jobs use Google Cloud Tasks with `server/routes/worker.ts`.
 - `server/lib/jobs/connection.ts` — BullMQ-era Redis connection file. Permanently removed. Never recreate.
 - `client/app/types/lenis.d.ts` — Type declaration for the forbidden `lenis` library. Permanently removed. Use `locomotive-scroll` 5.0.1 only.
+- `packages/sdk/` — Removed. Structure transitioned to a strict 3-workspace monorepo (`client/`, `server/`, `shared/`).
 
 ## GSAP Import Rule (Hardened 2026-07-08)
 

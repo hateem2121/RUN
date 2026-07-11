@@ -134,7 +134,7 @@ export async function queueMediaProcessing(
 /**
  * Queue multiple operations for a single media item
  */
-export async function queueMediaOperations(
+/** @public */ export async function queueMediaOperations(
   mediaId: string,
   operations: MediaOperation[],
 ): Promise<QueueResult[]> {
@@ -151,7 +151,7 @@ export async function queueMediaOperations(
 /**
  * Get queue statistics (for monitoring)
  */
-export async function getQueueStats(): Promise<{
+/** @public */ export async function getQueueStats(): Promise<{
   name: string;
   state: string;
   tasksCount?: number;

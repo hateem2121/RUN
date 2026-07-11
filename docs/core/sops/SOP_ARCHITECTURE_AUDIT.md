@@ -48,7 +48,7 @@
 
 ## Purpose
 
-Establish a repeatable, comprehensive process for auditing the RUN Remix codebase against its constitutional rules (`gemini.md` + `CLAUDE.md`). Ensures no architectural drift, dependency violations, or constitutional breaches accumulate over time.
+Establish a repeatable, comprehensive process for auditing the RUN Remix codebase against its constitutional rules (`gemini.md` as the SSOT, supplemented by `CLAUDE.md`). Ensures no architectural drift, dependency violations, or constitutional breaches accumulate over time.
 
 ---
 
@@ -64,7 +64,7 @@ Establish a repeatable, comprehensive process for auditing the RUN Remix codebas
 
 ### Pre-Task Protocol (Run First)
 
-- [ ] Read `gemini.md` and `CLAUDE.md` — re-internalize all constitutional rules
+- [ ] Read `gemini.md` (SSOT) and `CLAUDE.md` (Supplementary) — re-internalize all constitutional rules
 - [ ] Update `task_plan.md` — log audit as active task with date
 - [ ] Update `findings.md` — create new section `## Architecture Audit — [Month Year]`
 - [ ] `npm run verify-port` — PASS required. If FAIL: STOP, log as Critical, surface immediately

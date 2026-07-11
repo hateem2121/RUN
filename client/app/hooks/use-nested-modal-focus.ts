@@ -221,7 +221,7 @@ export function useNestedModalFocus({
  * Hook for managing focus stack in nested modal scenarios
  * Keeps track of modal hierarchy and ensures proper focus management
  */
-export function useNestedModalStack() {
+/** @public */ export function useNestedModalStack() {
   const [modalStack, setModalStack] = useState<number[]>([]);
 
   const pushModal = useCallback((level: number) => {

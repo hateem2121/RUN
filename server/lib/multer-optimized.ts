@@ -247,7 +247,7 @@ export const uploadOptimized = multer({
 }).array("file", MAX_FILES); // Enhanced to 50 files maximum with intelligent processing
 
 // Error handler for multer
-export const handleUploadError = (
+/** @public */ export const handleUploadError = (
   error: unknown,
   _req: Request,
   res: Response,

@@ -79,7 +79,7 @@ The factory is staffed by 23+ specialized agent roles:
 
 | Layer | Technology | Key Constraint |
 |-------|-----------|----------------|
-| **Frontend** | React Router v7, React 19.2.4, Vite 8 (Rolldown) | NO `forwardRef`. Named exports only. |
+| **Frontend** | React Router v8, React 19.2.4, Vite 8 (Rolldown) | NO `forwardRef`. Named exports only. |
 | **Styling** | Tailwind CSS V4 | `@utility` layer only. NO arbitrary JSX values. |
 | **Animations** | GSAP 3.15.0, locomotive-scroll 5.0.1 | NO framer-motion or lenis. |
 | **Backend** | Express 5.1.0, Node 24 | Async-native handlers. NO `try/catch`. |

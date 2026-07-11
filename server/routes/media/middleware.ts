@@ -37,13 +37,13 @@ export const regularUpload = multer({
 // ============================================================================
 
 // UploadRateLimiter instance for rate limiting uploads
-export const uploadRateLimiter = new UploadRateLimiter(100); // Max 100 requests per window
+/** @public */ export const uploadRateLimiter = new UploadRateLimiter(100); // Max 100 requests per window
 
 // ============================================================================
 // UPLOAD OPTIMIZATION CONSTANTS
 // ============================================================================
 
-export const UPLOAD_CONSTANTS = {
+/** @public */ export const UPLOAD_CONSTANTS = {
   MAX_FILES,
   MAX_CONCURRENT_UPLOADS,
   MEMORY_THRESHOLD: 16 * 1024 * 1024, // 16MB
@@ -83,13 +83,13 @@ class BackendUploadManager {
   }
 }
 
-export const backendUploadManager = new BackendUploadManager();
+/** @public */ export const backendUploadManager = new BackendUploadManager();
 
 // ============================================================================
 // UPLOAD METRICS TRACKER
 // ============================================================================
 
-export const uploadMetrics = {
+/** @public */ export const uploadMetrics = {
   totalUploads: 0,
   successfulUploads: 0,
   failedUploads: 0,

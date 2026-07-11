@@ -153,14 +153,14 @@ export function initErrorReporter(): void {
 /**
  * Get current queue size (for debugging/monitoring)
  */
-export function getErrorQueueSize(): number {
+/** @public */ export function getErrorQueueSize(): number {
   return getErrorQueue().length;
 }
 
 /**
  * Clear the error queue (for testing/debugging)
  */
-export function clearErrorQueue(): void {
+/** @public */ export function clearErrorQueue(): void {
   try {
     localStorage.removeItem(ERROR_QUEUE_KEY);
   } catch {

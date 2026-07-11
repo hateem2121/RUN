@@ -10,5 +10,5 @@ export interface MapLocation {
   isActive: boolean;
 }
 
-export type AnimationType = "client" | "facility";
-export type TileLayerType = "roadmap" | "satellite";
+/** @public */ export type AnimationType = "client" | "facility";
+/** @public */ export type TileLayerType = "roadmap" | "satellite";

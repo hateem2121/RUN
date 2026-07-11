@@ -12,7 +12,7 @@ const unifiedCache = UnifiedCache.getInstance();
 /**
  * TRANSACTION WRAPPER - Provides rollback-aware cache invalidation
  */
-export async function withTransaction<T>(
+/** @public */ export async function withTransaction<T>(
   operation: (tx: typeof db) => Promise<T>,
   cacheKeysToInvalidate: string[] = [],
   operationName?: string,
@@ -49,7 +49,7 @@ export async function withTransaction<T>(
 /**
  * CACHE UTILITIES - Common caching patterns
  */
-export const cacheUtils = {
+/** @public */ export const cacheUtils = {
   async get<T>(key: string, category?: "data"): Promise<T | null> {
     try {
       return await unifiedCache.get<T>(key, category);

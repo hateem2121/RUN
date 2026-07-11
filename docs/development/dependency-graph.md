@@ -534,7 +534,6 @@ import * as productService from '@/services/productService';
 ## References
 
 - [Architecture Documentation](../core/architecture.md) - System architecture
-- [SDK Workspace](../core/sdk-workspace.md) - Shared package details
 - [Developer Workflow](../guides/developer-workflow.md) - Development standards
 
 ---

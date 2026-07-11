@@ -479,7 +479,7 @@ interface NestedDialogProps {
   contentType?: "default" | "media-library" | "form" | "fullscreen";
 }
 
-export function NestedDialog({
+/** @public */ export function NestedDialog({
   open,
   onOpenChange,
   trigger,

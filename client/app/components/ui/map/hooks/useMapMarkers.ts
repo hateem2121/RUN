@@ -21,7 +21,7 @@ interface MarkerConfig {
   loading: boolean;
 }
 
-export function useMapMarkers(locations: MapLocation[]) {
+/** @public */ export function useMapMarkers(locations: MapLocation[]) {
   const [markerConfigs, setMarkerConfigs] = useState<MarkerConfig[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

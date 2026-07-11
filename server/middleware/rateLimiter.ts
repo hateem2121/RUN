@@ -160,7 +160,7 @@ export class RateLimiter {
 }
 
 // Requirement: Optimize to 1000 requests per 15 minutes
-export const apiRateLimiter = new RateLimiter({
+/** @public */ export const apiRateLimiter = new RateLimiter({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 1000,
   message: "Too many API requests, please try again later.",
@@ -281,7 +281,7 @@ export class UploadRateLimiter {
 }
 
 // Export singleton instance for backward compatibility
-export const uploadRateLimit = new UploadRateLimiter();
+/** @public */ export const uploadRateLimit = new UploadRateLimiter();
 
 /**
  * Authentication Rate Limiter

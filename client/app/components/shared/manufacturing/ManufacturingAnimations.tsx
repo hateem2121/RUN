@@ -2,7 +2,7 @@ import gsap from "gsap";
 import { useEffect, useRef } from "react";
 
 // Mechanical gear animation component
-export function MechanicalGears() {
+/** @public */ export function MechanicalGears() {
   const gear1Ref = useRef<SVGSVGElement>(null);
   const gear2Ref = useRef<SVGSVGElement>(null);
   const gear3Ref = useRef<SVGSVGElement>(null);
@@ -75,7 +75,7 @@ export function MechanicalGears() {
 }
 
 // Conveyor belt animation component
-export function ConveyorBelt() {
+/** @public */ export function ConveyorBelt() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {

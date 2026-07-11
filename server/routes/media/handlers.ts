@@ -536,7 +536,7 @@ export async function repairMimeTypes(_req: Request, res: Response) {
  * Legacy support for fetching all media assets
  * Note: Use getMediaAssets with pagination for production
  */
-export async function getAllMediaAssets() {
+/** @public */ export async function getAllMediaAssets() {
   const result = await mediaService.getAllAssets();
   return result;
 }

@@ -8,13 +8,13 @@ const DropdownMenu = DropdownMenuPrimitive.Root;
 
 const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 
-export const DropdownMenuGroup = DropdownMenuPrimitive.Group;
+/** @public */ export const DropdownMenuGroup = DropdownMenuPrimitive.Group;
 
-export const DropdownMenuPortal = DropdownMenuPrimitive.Portal;
+/** @public */ export const DropdownMenuPortal = DropdownMenuPrimitive.Portal;
 
-export const DropdownMenuSub = DropdownMenuPrimitive.Sub;
+/** @public */ export const DropdownMenuSub = DropdownMenuPrimitive.Sub;
 
-export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
+/** @public */ export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
 
 const DropdownMenuSubTrigger = ({
   className,

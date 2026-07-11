@@ -192,7 +192,7 @@ export function getCircuitMetrics(): CircuitMetrics[] {
 /**
  * Get specific circuit by name
  */
-export function getCircuit(name: string): CircuitBreaker | undefined {
+/** @public */ export function getCircuit(name: string): CircuitBreaker | undefined {
   return circuits.get(name);
 }
 

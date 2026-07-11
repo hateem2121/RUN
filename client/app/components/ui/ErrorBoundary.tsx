@@ -113,7 +113,7 @@ export class ErrorBoundary extends Component<Props, State> {
 }
 
 // Hook version for functional components
-export function useErrorBoundary() {
+/** @public */ export function useErrorBoundary() {
   const [error, setError] = React.useState<Error | null>(null);
 
   const resetError = React.useCallback(() => {
@@ -137,7 +137,7 @@ export function useErrorBoundary() {
 }
 
 // Simple error boundary wrapper component
-export function WithErrorBoundary({
+/** @public */ export function WithErrorBoundary({
   children,
   componentName,
   fallback,

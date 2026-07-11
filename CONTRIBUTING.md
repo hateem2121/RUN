@@ -73,7 +73,7 @@ chore(deps): update Drizzle ORM to 0.45.1
 
 ## Tech Stack Reference
 
-Full stack details: [`CLAUDE.md`](./CLAUDE.md) | [`gemini.md`](./gemini.md) | [`docs/core/tech-stack.md`](./docs/core/tech-stack.md)
+Full stack details: [`gemini.md` (SSOT)](./gemini.md) | [`CLAUDE.md`](./CLAUDE.md) | [`docs/core/tech-stack.md`](./docs/core/tech-stack.md)
 
 ---
 

@@ -75,7 +75,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
   },
 ];
 
-export const PARTNERS: Partner[] = [
+/** @public */ export const PARTNERS: Partner[] = [
   { name: "Global Sports Inc", tag: "Sportswear" },
   { name: "Urban Tech", tag: "Streetwear" },
   { name: "EcoMove", tag: "Sustainability" },

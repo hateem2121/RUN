@@ -2,7 +2,7 @@
 **Project:** RUN APPAREL CMS v4.1.2 (`run-remix`)
 **Agent:** Antigravity (Gemini)
 **Last updated:** July 2026
-**Mirrors:** gstack latest + Claude Code constraints (exact parity)
+**Status:** Ultimate Single Source of Truth (SSOT)
 **Owner:** M. Hateem Jamshaid — RUN APPAREL (PVT) LTD, Sialkot, Pakistan
 
 ---
@@ -92,7 +92,7 @@ Always verify versions against `package.json` — this table is a snapshot and m
 | Runtime | Node.js | v24.15.0 |
 | Monorepo | Turborepo + npm workspaces | latest |
 | Frontend framework | React | 19.2.4 (up to 19.2.7) |
-| Router | React Router | 7.16.0 (supports v8.0.x upgrade pathway) |
+| Router | React Router | ^8.0.0 |
 | Build tool | Vite + Rolldown bundler | 8.0.10 (up to 8.1.3) |
 | Language | TypeScript | ^6.0.3 (Go compiler rewrite v7.0 RC ready) |
 | Backend framework | Express | 5.2.1 |
@@ -186,6 +186,10 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 - **neverthrow mandatory**: All Express middleware (`server/middleware/`) including rate limiters, CSRF validation, idempotency caching, and RBAC audit logs MUST strictly use `ResultAsync.fromPromise` and `Result.fromThrowable`. Raw `try/catch` blocks used as fail-safes or fallbacks are strictly prohibited and must be converted to `match()` handlers.
 - **useIterableCallbackReturn**: When mapping `neverthrow` Results (e.g. converting a db result to void), you must explicitly return `undefined` to satisfy Biome. `() => {}` is forbidden; use `.map(() => undefined)` instead.
 
+### 5.1.3 Static Analysis & Knip Tech Debt
+- **Unused Exports**: When Knip flags unused exports (e.g., React Router v8 route components, loaders, actions, or shared types), **never** use regex-based AST destruction to remove the `export` keyword.
+- **Remediation Strategy**: Apply the `/** @public */` JSDoc tag above the export to explicitly tell Knip to ignore it without breaking TypeScript compilation or module resolution.
+
 ### 5.2 Forbidden by Architecture
 
 - **Never access the database directly from a route handler.** All DB access through `server/services/`.
@@ -207,7 +211,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 
 ```
 run-remix/
-├── client/          # React 19 / Vite 8 / React Router v7
+├── client/          # React 19 / Vite 8 / React Router v8
 ├── server/          # Express 5 / Drizzle ORM / Pino
 └── shared/          # @run-remix/shared — schemas, types, routes, constants
     ├── schemas/     # Drizzle tables + drizzle-zod generated Zod schemas
@@ -228,13 +232,13 @@ Client and server import types and schemas only from `@run-remix/shared`.
 server/routes/       # Thin controllers — ONLY: validate → call service → return
 server/services/     # All business logic — neverthrow Results, Pino logging
 server/middleware/   # Auth (isAuthenticated), CSRF (csrf.ts), SSR cache (ssr-cache.ts)
-server/db/           # Neon connection pool — imported only in services, never in routes
+server/db.ts         # Neon connection pool — imported only in services, never in routes
 ```
 
 **Thin controller rule:** If a route handler contains an `if` statement with domain logic,
 a database call, or a data transformation — it is a violation. Move it to `server/services/`.
 
-### 6.3 React Router v7 / Client Architecture
+### 6.3 React Router v8 / Client Architecture
 
 ```
 client/app/routes/           # Route files — loader, action, component, ErrorBoundary
@@ -552,7 +556,7 @@ Every public route with CMS content must have an `/admin/:module` counterpart.
     },
     "rootDirs": [
       ".",
-      "./.react-router/types"           // React Router v7 generated types
+      "./.react-router/types"           // React Router v8 generated types
     ]
   }
 }
@@ -777,7 +781,7 @@ Before ending any session, confirm:
 ---
 
 *Antigravity — built for RUN APPAREL (PVT) LTD · RUN Remix v4.1.2 · July 2026*
-*Mirrors: gstack v1.26.3.0 + Claude Code constraints (exact parity)*
+*Status: Ultimate Single Source of Truth (SSOT)*
 
 ---
 
@@ -805,6 +809,7 @@ The following directories were permanently removed in the Phase 3/4 cleanup spri
 | `server/lib/jobs/workers/` | Empty directory from the removed BullMQ integration. Do not recreate. Background jobs use Google Cloud Tasks with `server/routes/worker.ts`. |
 | `server/lib/jobs/connection.ts` | BullMQ-era Redis connection file. Permanently removed. Never recreate. |
 | `client/app/types/lenis.d.ts` | Type declaration for the forbidden `lenis` library. Permanently removed. Use `locomotive-scroll` 5.0.1 only. |
+| `packages/sdk/` | Removed. Structure transitioned to a strict 3-workspace monorepo (`client/`, `server/`, `shared/`). |
 
 ## 12. Biome Post-Move Fix Protocol (Codified 2026-07-08)
 
@@ -840,7 +845,7 @@ grep -rn "from.*['\"].*<filename>['\"]" client/ server/ shared/ --include="*.ts"
 | Importer count | Action |
 |----------------|--------|
 | 0 across all workspaces | Safe to delete |
-| 1+ importers | File is active — do NOT delete. Remove the `export` keyword only if the consuming file is within the same workspace. |
+| 1+ importers | File is active — do NOT delete. Never remove the `export` keyword (violates routing constraints); use `/** @public */` JSDoc instead. |
 | Ambiguous (dynamic import, `require()`) | Invoke Decision Gate — present options to the user |
 
 **Never trust audit reports alone.** Re-verify import counts at the time of deletion, not at the time of the audit. Code changes between audit and cleanup can invalidate findings.

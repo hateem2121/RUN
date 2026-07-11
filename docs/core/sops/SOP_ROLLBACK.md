@@ -55,7 +55,7 @@ neon branches create --name=rollback-$(date +%Y%m%d) \
 ### Option B: Drizzle Down Migration
 
 ```bash
-# If a down migration exists in drizzle/migrations/
+# If a down migration exists in server/migrations/
 npm run --workspace=@run-remix/server db:push -- --force-reset
 
 # WARNING: Only use if migration is reversible and no data has been written

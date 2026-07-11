@@ -178,7 +178,7 @@ export function getConfig(): ProductionConfig {
 }
 
 // Configuration Validation
-export function validateConfig(config: ProductionConfig): boolean {
+/** @public */ export function validateConfig(config: ProductionConfig): boolean {
   try {
     // Validate required configuration values
     if (!config.app.environment) {

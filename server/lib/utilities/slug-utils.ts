@@ -41,7 +41,7 @@ export function normalizeSlug(slug: string): string {
  * generateSlug("Heritage Leather Jacket") // "heritage-leather-jacket"
  * generateSlug("T-Shirt (Premium)") // "t-shirt-premium"
  */
-export function generateSlug(name: string): string {
+/** @public */ export function generateSlug(name: string): string {
   if (!name) {
     return "";
   }
@@ -61,7 +61,7 @@ export function generateSlug(name: string): string {
  * isValidSlug("Outer-Wear") // false (uppercase)
  * isValidSlug("outer_wear") // false (underscore)
  */
-export function isValidSlug(slug: string): boolean {
+/** @public */ export function isValidSlug(slug: string): boolean {
   if (!slug) {
     return false;
   }

@@ -149,7 +149,7 @@ export function useIntersectionObserver(
 }
 
 // Animation-aware intersection observer
-export function useAnimationIntersectionObserver(
+/** @public */ export function useAnimationIntersectionObserver(
   ref: RefObject<Element | null>,
   options: IntersectionOptions & {
     animationDelay?: number;
@@ -176,7 +176,7 @@ export function useAnimationIntersectionObserver(
 }
 
 // Performance-optimized image loading intersection observer
-export function useImageIntersectionObserver(
+/** @public */ export function useImageIntersectionObserver(
   ref: RefObject<HTMLImageElement | null>,
   options: IntersectionOptions & {
     preloadThreshold?: number;
@@ -203,7 +203,7 @@ export function useImageIntersectionObserver(
 }
 
 // Batch intersection observer for multiple elements
-export function useBatchIntersectionObserver<T extends Element>(
+/** @public */ export function useBatchIntersectionObserver<T extends Element>(
   refs: RefObject<T | null>[],
   options: IntersectionOptions = {},
 ): Map<RefObject<T | null>, IntersectionResult> {
@@ -260,7 +260,7 @@ export function useBatchIntersectionObserver<T extends Element>(
 }
 
 // Smart animation scheduler
-export function useSmartAnimationScheduler(
+/** @public */ export function useSmartAnimationScheduler(
   isVisible: boolean,
   animationConfig: {
     staggerDelay?: number;
@@ -339,7 +339,7 @@ function useDeviceCapabilities() {
 }
 
 // Performance-aware component wrapper with generic prop preservation
-export function withPerformanceOptimization<
+/** @public */ export function withPerformanceOptimization<
   P extends Record<string, unknown> = Record<string, unknown>,
 >(
   Component: React.ComponentType<P>,

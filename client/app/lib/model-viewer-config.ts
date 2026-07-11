@@ -122,7 +122,7 @@ export function getErrorConfig(
 /**
  * PHASE 2.2: Performance Configuration Inheritance
  */
-export function getPerformanceConfig(
+/** @public */ export function getPerformanceConfig(
   overrides?: Partial<ModelViewerPerformanceConfig>,
 ): ModelViewerPerformanceConfig {
   return {
@@ -177,7 +177,7 @@ export const MODEL_VIEWER_ENVIRONMENT = {
  *
  * Ensures configuration values are valid and compatible with @google/model-viewer.
  */
-export function validateModelViewerConfig(config: ModelViewerConfig): {
+/** @public */ export function validateModelViewerConfig(config: ModelViewerConfig): {
   isValid: boolean;
   errors: string[];
   warnings: string[];
@@ -237,7 +237,7 @@ export function validateModelViewerConfig(config: ModelViewerConfig): {
 /**
  * PHASE 2.2: Preset Configurations for Common Use Cases
  */
-export const MODEL_VIEWER_PRESETS = {
+/** @public */ export const MODEL_VIEWER_PRESETS = {
   // High-performance preset for large models
   highPerformance: getModelViewerConfig({
     loading: "lazy",

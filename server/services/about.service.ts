@@ -36,7 +36,7 @@ import { sanitizeHtml } from "../lib/sanitize-html.js";
  */
 const tracer = trace.getTracer("run-remix-services");
 
-export class AboutService {
+/** @public */ export class AboutService {
   /**
    * Invalidates all about page related cache entries
    */

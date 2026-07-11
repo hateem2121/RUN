@@ -93,6 +93,6 @@ export function setupGracefulShutdown(server: Server, forceExitTimeoutMs = 30000
  * Check if the server is currently shutting down.
  * Useful for health checks or request handlers.
  */
-export function isServerShuttingDown(): boolean {
+/** @public */ export function isServerShuttingDown(): boolean {
   return isShuttingDown;
 }

@@ -2,7 +2,7 @@
  * Utility functions for responsive grid system
  */
 
-export interface ResponsiveSpanConfig {
+/** @public */ export interface ResponsiveSpanConfig {
   mobile: number;
   tablet: number;
   desktop: number;
@@ -31,7 +31,7 @@ export function getResponsiveSpanClasses(cardType: keyof typeof DEFAULT_CARD_SPA
 /**
  * Generate responsive grid template columns
  */
-export function getGridTemplateColumns(breakpoint: "mobile" | "tablet" | "desktop"): string {
+/** @public */ export function getGridTemplateColumns(breakpoint: "mobile" | "tablet" | "desktop"): string {
   const columns = {
     mobile: 1,
     tablet: 2,
@@ -53,7 +53,7 @@ const RESPONSIVE_HEIGHTS = {
 /**
  * Card height constraints for consistent sizing
  */
-export const CARD_HEIGHT_CONSTRAINTS = {
+/** @public */ export const CARD_HEIGHT_CONSTRAINTS = {
   minHeight: "320px",
   maxHeight: "500px",
   height: "auto",
@@ -62,7 +62,7 @@ export const CARD_HEIGHT_CONSTRAINTS = {
 /**
  * Enhanced responsive breakpoints for consistency
  */
-export const BREAKPOINTS = {
+/** @public */ export const BREAKPOINTS = {
   mobile: "360px",
   tablet: "768px",
   desktop: "1024px",
@@ -72,7 +72,7 @@ export const BREAKPOINTS = {
 /**
  * Utility function to get responsive height styles
  */
-export function getResponsiveHeightStyles(breakpoint: "mobile" | "tablet" | "desktop"): string {
+/** @public */ export function getResponsiveHeightStyles(breakpoint: "mobile" | "tablet" | "desktop"): string {
   const height = RESPONSIVE_HEIGHTS[breakpoint];
   return `min-height: ${height.min}; max-height: ${height.max}; height: auto;`;
 }

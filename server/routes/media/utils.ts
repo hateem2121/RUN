@@ -198,7 +198,7 @@ export function generateOrganizedStoragePath(
  * @param assetId - Media asset database ID
  * @returns Thumbnail cache path (not currently used)
  */
-export function generateThumbnailCachePath(assetId: number): string {
+/** @public */ export function generateThumbnailCachePath(assetId: number): string {
   const now = new Date();
   const year = now.getUTCFullYear();
   const month = String(now.getUTCMonth() + 1).padStart(2, "0");
@@ -255,7 +255,7 @@ export const createSuccessResponse = <T>(data: T) => ({ success: true, data });
 // BUFFER UTILITIES
 // ============================================================================
 
-export function toBuffer(x: unknown): Buffer | null {
+/** @public */ export function toBuffer(x: unknown): Buffer | null {
   if (Buffer.isBuffer(x)) {
     return x;
   }
@@ -294,7 +294,7 @@ export function toBuffer(x: unknown): Buffer | null {
 // MEDIA URL RESOLVER
 // ============================================================================
 
-export const MediaUrlResolver = {
+/** @public */ export const MediaUrlResolver = {
   generateConsistentUrl: (asset: Partial<MediaAsset>) => {
     if (!asset?.url) {
       return null;
@@ -496,7 +496,7 @@ export async function getVideoMetadata(buffer: Buffer): Promise<{
 // FILE PROCESSING
 // ============================================================================
 
-export interface UploadOptions {
+/** @public */ export interface UploadOptions {
   tags?: string[];
   altText?: string | undefined;
   caption?: string | undefined;

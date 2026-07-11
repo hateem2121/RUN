@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 const Select = SelectPrimitive.Root;
 
-export const SelectGroup = SelectPrimitive.Group;
+/** @public */ export const SelectGroup = SelectPrimitive.Group;
 
 const SelectValue = SelectPrimitive.Value;
 

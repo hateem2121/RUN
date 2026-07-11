@@ -5,7 +5,7 @@
 **Synthesis Model**: `@claude-opus-4-6`
 **Environment**: `http://localhost:5002/resources`
 **Scope**: Read-only · Do NOT modify source files
-**Output**: `findings/rsrc/`
+**Output**: `docs/audits/rsrc/`
 **Issue ID Prefix**: `RSRC-`
 
 ---
@@ -32,7 +32,7 @@ Investigate `/resources` for all visual, CMS, API, performance, SEO, accessibili
 ---
 ## Pre-flight: Protocol 0
 
-Run once before beginning. Log all output to `findings/rsrc/protocol-0.txt`.
+Run once before beginning. Log all output to `docs/audits/rsrc/protocol-0.txt`.
 Continue regardless of failures — every failure is itself a finding.
 
 ```bash
@@ -150,7 +150,7 @@ curl http://localhost:5002/resources | grep -i "certif\|fabric\|fiber"
 ## Artifacts to Produce
 
 ```
-findings/rsrc/
+docs/audits/rsrc/
 ├── findings.md            ← Severity-scored report (P0/P1/P2/P3)
 ├── protocol-0.txt         ← verify:tech-integrity output
 ├── api-probe.json         ← Raw endpoint responses

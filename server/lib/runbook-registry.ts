@@ -64,21 +64,21 @@ export function getRunbookUrl(errorCode: string): string | undefined {
  * Get the runbook path (relative) for an error code
  * Useful for internal references
  */
-export function getRunbookPath(errorCode: string): string | undefined {
+/** @public */ export function getRunbookPath(errorCode: string): string | undefined {
   return RUNBOOK_PATHS[errorCode];
 }
 
 /**
  * Check if a runbook exists for an error code
  */
-export function hasRunbook(errorCode: string): boolean {
+/** @public */ export function hasRunbook(errorCode: string): boolean {
   return errorCode in RUNBOOK_PATHS;
 }
 
 /**
  * Get all registered error codes with runbooks
  */
-export function getRunbookErrorCodes(): string[] {
+/** @public */ export function getRunbookErrorCodes(): string[] {
   return Object.keys(RUNBOOK_PATHS);
 }
 

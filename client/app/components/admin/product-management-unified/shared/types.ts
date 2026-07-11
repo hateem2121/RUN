@@ -73,7 +73,7 @@ export type ProductFormFieldValue =
 // =============================================================================
 
 // Media grid component props
-export interface MediaGridBaseProps {
+/** @public */ export interface MediaGridBaseProps {
   mediaAssets: MediaAsset[];
   onOrderChange?: (reorderedAssets: MediaAsset[]) => void;
   className?: string;
@@ -84,16 +84,16 @@ export interface MediaGridBaseProps {
 }
 
 // Media removal handler type
-export type MediaRemovalHandler = (mediaType: string, mediaId: number) => void;
+/** @public */ export type MediaRemovalHandler = (mediaType: string, mediaId: number) => void;
 
 // Media field types for the picker
-export type MediaFieldType = "images" | "videos" | "primaryImage" | "primaryVideo" | "model";
+/** @public */ export type MediaFieldType = "images" | "videos" | "primaryImage" | "primaryVideo" | "model";
 
 // Media picker handler
-export type MediaSelectHandler = (mediaIds: number[]) => void;
+/** @public */ export type MediaSelectHandler = (mediaIds: number[]) => void;
 
 // Form data structure for media assets section
-export interface MediaAssetsFormData {
+/** @public */ export interface MediaAssetsFormData {
   primaryImageId: number | null;
   primaryVideoId: number | null;
   imageIds: number[];

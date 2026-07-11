@@ -9,7 +9,7 @@
 | Layer | Technology | Version | Notes |
 |-------|------------|---------|-------|
 | **Frontend** | React | 19 | Functional components only. No `forwardRef`. |
-| **Build** | Vite | 7 | Uses `@react-router/dev`. |
+| **Build** | Vite | 8 | Uses React Router v8. |
 | **Styling** | Tailwind CSS | 4 | Use `@utility` layer. No arbitrary values. |
 | **Backend** | Express | 5 | Async handlers supported natively. |
 | **Language** | TypeScript | 5+ | **Strict Mode**. `noImplicitAny`. |

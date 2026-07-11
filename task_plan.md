@@ -1,5 +1,13 @@
 # RUN Remix - Task Plan
 
+## Session: 2026-07-11 (Comprehensive Documentation Sync & SSOT Unification)
+**Goal:** Audit and update all repository documentation to accurately reflect recent structural cleanups, the Knip tech debt resolution strategy, and permanently resolve the constitution conflict by establishing `gemini.md` as the undisputed Single Source of Truth (SSOT).
+**Outcome:**
+- [x] Unified constitution by updating `CLAUDE.md` and `docs/AGENT_INSTRUCTIONS.md` to establish `gemini.md` as the SSOT.
+- [x] Cleaned up stale architectural references across `docs/` (`architecture.md`, `SOP_ROLLBACK.md`, `SOP_DEPLOY.md`, `database-migrations.md`, investigative prompts, and `sdk-workspace.md`).
+- [x] Added `/** @public */` JSDoc strategy for Knip tech debt to `gemini.md`.
+- [x] All pipeline checks passed (`npm run verify:tech-integrity`).
+
 ## Session: 2026-07-08 (Phase 3 & 4 Cleanup Remediation Sprint)
 **Goal:** Execute Phase 3 (Cosmetic/Housekeeping) and Phase 4 (Assess & Decide) items from the comprehensive codebase audit. Clean up root-level clutter, legacy `src/` app, orphaned files, `scratch/` and `findings/` directories, relocate standalone server files to proper architectural locations, and consolidate migration directories. Branch: `chore/phase3-phase4-cleanup`.
 **Status:** ✅ Complete — committed on branch `chore/phase3-phase4-cleanup`

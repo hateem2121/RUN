@@ -20,7 +20,7 @@ interface ManufacturingMediaDisplayProps {
  * Unified media display component for manufacturing assets
  * Handles images, videos, and provides consistent fallbacks
  */
-export function ManufacturingMediaDisplay({
+/** @public */ export function ManufacturingMediaDisplay({
   mediaAssets,
   mediaIds,
   mediaId,

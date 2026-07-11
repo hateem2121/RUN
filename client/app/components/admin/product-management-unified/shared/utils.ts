@@ -38,7 +38,7 @@ export function extractMediaIds(mediaAssets: MediaAsset[]): number[] {
 /**
  * Validate media file for security
  */
-export function validateMediaFile(file: File): Promise<{
+/** @public */ export function validateMediaFile(file: File): Promise<{
   valid: boolean;
   error?: string;
 }> {
@@ -83,7 +83,7 @@ export function validateMediaFile(file: File): Promise<{
 /**
  * Get media URL with proxy fallback
  */
-export function getMediaUrl(asset: MediaAsset): string | undefined {
+/** @public */ export function getMediaUrl(asset: MediaAsset): string | undefined {
   if (asset.url) {
     return asset.url;
   }

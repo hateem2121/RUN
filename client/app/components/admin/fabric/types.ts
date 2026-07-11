@@ -132,7 +132,7 @@ export const initialFormData: EnhancedFormData = {
 // Helper functions for generating test IDs
 export const getButtonTestId = (action: string, target: string) => `button-${action}-${target}`;
 export const getInputTestId = (fieldName: string) => `input-fabric-${fieldName}`;
-export const getSelectTestId = (fieldName: string) => `select-fabric-${fieldName}`;
+/** @public */ export const getSelectTestId = (fieldName: string) => `select-fabric-${fieldName}`;
 export const getRepeatedTestId = (type: string, name: string, index: number) =>
   `repeated-${type}-${name}-${index}`;
 

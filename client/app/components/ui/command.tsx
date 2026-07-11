@@ -25,7 +25,7 @@ const Command = ({
 );
 Command.displayName = CommandPrimitive.displayName;
 
-export const CommandDialog = ({ children, ...props }: DialogProps) => {
+/** @public */ export const CommandDialog = ({ children, ...props }: DialogProps) => {
   return (
     <Dialog {...props}>
       <DialogContent className="overflow-hidden p-0 shadow-lg">

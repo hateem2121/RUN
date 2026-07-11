@@ -12,7 +12,7 @@ interface PerformanceMetric {
   icon: React.ReactNode;
 }
 
-export function PerformanceSummary() {
+/** @public */ export function PerformanceSummary() {
   const metrics: PerformanceMetric[] = [
     {
       name: "Cache Hit Rate",

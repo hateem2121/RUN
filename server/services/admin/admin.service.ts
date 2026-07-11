@@ -56,7 +56,7 @@ export interface AuditContext {
   ipAddress: string | undefined;
 }
 
-export class AdminService {
+/** @public */ export class AdminService {
   private readonly systemRepo: typeof systemRepository;
   private readonly productRepo: typeof productRepository;
   private readonly mediaRepo: typeof mediaRepository;

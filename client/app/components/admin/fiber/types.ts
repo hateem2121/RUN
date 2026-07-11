@@ -62,5 +62,5 @@ export const getSustainabilityBadgeColor = (score: number) => {
 };
 
 // Helper for test IDs
-export const getFiberTestId = (prefix: string, identifier: string | number) =>
+/** @public */ export const getFiberTestId = (prefix: string, identifier: string | number) =>
   `${prefix}-fiber-${identifier}`;

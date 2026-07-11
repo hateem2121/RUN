@@ -105,7 +105,7 @@ export function requireRole(...allowedRoles: string[]) {
 /**
  * Verify if a user is the owner of a resource or an admin.
  */
-export function canManageResource(user: SessionUser, resourceOwnerId: string | undefined): boolean {
+/** @public */ export function canManageResource(user: SessionUser, resourceOwnerId: string | undefined): boolean {
   if (!resourceOwnerId) return false;
 
   // Admins can manage everything

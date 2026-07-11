@@ -50,7 +50,7 @@ async function submitContactInquiry(data: ContactSubmissionData) {
  * Handles Quote Requests (from InquiryDrawer).
  * Currently mocks the persistence (matching legacy API behavior).
  */
-export async function submitQuoteRequest(data: QuoteSubmissionData) {
+/** @public */ export async function submitQuoteRequest(data: QuoteSubmissionData) {
   // 1. Validation
   QuoteSubmissionSchema.parse(data);
 

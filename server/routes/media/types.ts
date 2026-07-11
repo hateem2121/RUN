@@ -7,20 +7,20 @@ import type { baseQueryParamsSchema, MediaAsset } from "@run-remix/shared";
 import type { z } from "zod";
 
 // Re-export shared types
-export type MediaQueryParams = z.infer<typeof baseQueryParamsSchema>;
+/** @public */ export type MediaQueryParams = z.infer<typeof baseQueryParamsSchema>;
 
 // ============================================================================
 // UPLOAD TYPES & INTERFACES
 // ============================================================================
 
 // Upload optimization constants
-export const UPLOAD_OPTIMIZATION = {
+/** @public */ export const UPLOAD_OPTIMIZATION = {
   MEMORY_THRESHOLD: 16 * 1024 * 1024, // 16MB
   MAX_BATCH_MEMORY: 100 * 1024 * 1024, // 100MB
 };
 
 // Upload metrics tracking
-export interface UploadMetrics {
+/** @public */ export interface UploadMetrics {
   totalUploads: number;
   successfulUploads: number;
   failedUploads: number;
@@ -38,7 +38,7 @@ interface UploadResult {
 }
 
 // Batch upload result
-export interface BatchUploadResult {
+/** @public */ export interface BatchUploadResult {
   success: boolean;
   results: UploadResult[];
   summary: {
@@ -52,14 +52,14 @@ export interface BatchUploadResult {
 // RESPONSE TYPES
 // ============================================================================
 
-export interface ApiResponse<T = unknown> {
+/** @public */ export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string | undefined;
   details?: Record<string, unknown>;
 }
 
-export interface PaginatedResponse<T = unknown> {
+/** @public */ export interface PaginatedResponse<T = unknown> {
   success: boolean;
   data: T[];
   meta: Record<string, unknown>;
@@ -91,7 +91,7 @@ export interface MediaMetadata {
   metadata?: Record<string, unknown>;
 }
 
-export interface UploadSession {
+/** @public */ export interface UploadSession {
   uploadId: string;
   filename: string;
   originalName: string;

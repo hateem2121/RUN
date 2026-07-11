@@ -16,7 +16,7 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Formats bytes into a human-readable string (e.g., "1.5 MB").
  */
-export function formatFileSize(bytes: number | undefined | null): string {
+/** @public */ export function formatFileSize(bytes: number | undefined | null): string {
   if (bytes === null || bytes === undefined || Number.isNaN(bytes) || bytes < 0) {
     return "0 Bytes";
   }
@@ -71,7 +71,7 @@ export function sanitizeContent(content: string | undefined | null): string {
 /**
  * Sanitizes an object by applying sanitizeContent to all string properties.
  */
-export function sanitizeObj<T extends Record<string, unknown>>(obj: T): T {
+/** @public */ export function sanitizeObj<T extends Record<string, unknown>>(obj: T): T {
   if (!obj) return obj;
   const sanitized = { ...obj };
   for (const key in sanitized) {

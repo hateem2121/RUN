@@ -149,7 +149,7 @@ function transformNullToUndefined<T>(obj: T): T {
   return obj;
 }
 
-export function prepareForValidation<T>(obj: T): T {
+/** @public */ export function prepareForValidation<T>(obj: T): T {
   return transformNullToUndefined(obj);
 }
 
@@ -200,11 +200,11 @@ export function validateAndSanitizeInput(input: unknown): unknown {
   return input;
 }
 
-export function sanitizeString(str: string): string {
+/** @public */ export function sanitizeString(str: string): string {
   return str.replace(/[<>]/g, "").trim();
 }
 
-export function validateFilename(filename: string): string {
+/** @public */ export function validateFilename(filename: string): string {
   if (!filename || typeof filename !== "string") {
     throw new Error("Invalid filename: must be a non-empty string");
   }
@@ -214,7 +214,7 @@ export function validateFilename(filename: string): string {
   return filename;
 }
 
-export function validateMediaId(id: unknown): number {
+/** @public */ export function validateMediaId(id: unknown): number {
   const numId = parseInt(String(id), 10);
   if (Number.isNaN(numId) || numId <= 0) {
     throw new Error("Invalid media ID: must be a positive integer");
@@ -222,7 +222,7 @@ export function validateMediaId(id: unknown): number {
   return numId;
 }
 
-export const setSecureCORSHeaders = (res: Response, origin?: string): void => {
+/** @public */ export const setSecureCORSHeaders = (res: Response, origin?: string): void => {
   const isDevelopment = process.env.NODE_ENV === "development";
 
   if (isDevelopment) {
@@ -266,7 +266,7 @@ export function shouldBypassCache(req: Request<any, any, any, any>): boolean {
 // ============================================================================
 
 // biome-ignore lint/complexity/noStaticOnlyClass: utility namespace
-export class MediaUrlBuilder {
+/** @public */ export class MediaUrlBuilder {
   static buildStorageKey(filename: string): string {
     return `media/${filename}`;
   }
@@ -302,7 +302,7 @@ export class MediaUrlBuilder {
 // PERFORMANCE UTILITIES
 // ============================================================================
 
-export const responseOptimizer = {
+/** @public */ export const responseOptimizer = {
   optimizedJsonResponse: async (res: Response, data: unknown, _cacheKey?: string) => {
     res.setHeader("Content-Type", "application/json");
     // Use safeSerialize to handle BigInts
@@ -350,7 +350,7 @@ export class UrlPathService {
 // ============================================================================
 
 // biome-ignore lint/complexity/noStaticOnlyClass: utility namespace
-export class RetryManager {
+/** @public */ export class RetryManager {
   static async retry<T>(
     operation: () => Promise<T>,
     maxRetries: number = 3,
@@ -374,7 +374,7 @@ export class RetryManager {
 // MIGRATION UTILITIES
 // ============================================================================
 
-export const migrationService = {
+/** @public */ export const migrationService = {
   migrateAllToPostgreSQL: async () => {
     logger.info("[Migration] Using Drizzle ORM migrations - enhanced migration service archived");
     return { status: "completed", message: "Using Drizzle ORM migrations" };
@@ -391,7 +391,7 @@ export const migrationService = {
 // ============================================================================
 
 // Enhanced MediaValidator for compatibility
-export const MediaValidator = {
+/** @public */ export const MediaValidator = {
   validateFilename: (filename: string): boolean => {
     if (!filename || typeof filename !== "string") {
       return false;

@@ -123,7 +123,7 @@ function generateSrcSet(variants: MediaVariant[]): string {
 }
 
 // Progressive image loading hook
-export function useProgressiveImageLoading(
+/** @public */ export function useProgressiveImageLoading(
   mediaId: number,
   options: MediaOptimizationOptions = {},
 ) {
@@ -157,7 +157,7 @@ export function useProgressiveImageLoading(
 }
 
 // Smart image preloading
-export function useImagePreloader(mediaIds: number[]) {
+/** @public */ export function useImagePreloader(mediaIds: number[]) {
   const [preloadedIds, setPreloadedIds] = useState<Set<number>>(new Set());
 
   useEffect(() => {
@@ -195,7 +195,7 @@ export function useImagePreloader(mediaIds: number[]) {
 }
 
 // Performance monitoring hook
-export function useMediaPerformanceMonitor() {
+/** @public */ export function useMediaPerformanceMonitor() {
   const [stats, setStats] = useState({
     totalRequests: 0,
     averageLoadTime: 0,

@@ -459,7 +459,7 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
 /**
  * PHASE 3.2: Higher-order component for easy error boundary wrapping
  */
-export function withModelViewerErrorBoundary<P extends object>(
+/** @public */ export function withModelViewerErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
   errorBoundaryProps?: Partial<Props>,
 ) {

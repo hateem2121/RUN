@@ -4,7 +4,7 @@ This directory contains the frontend application code for the RUN Apparel B2B Pl
 
 ## 🛠️ Frontend Tech Stack
 - **Framework**: React 19.2.4 (Strict Mode, NO `forwardRef`)
-- **Router**: React Router v7
+- **Router**: React Router v8
 - **Bundler**: Vite 8 (Rolldown)
 - **Styling**: Tailwind CSS v4 (`@theme` and `@utility` layer only)
 - **Animations**: GSAP 3.15.0 & locomotive-scroll 5.0.1 (NO `framer-motion` or `lenis`)

@@ -5,7 +5,7 @@ import type {
   ProductItem,
 } from "@shared/types/homepage";
 
-export const CursorVariant = {
+/** @public */ export const CursorVariant = {
   DEFAULT: "DEFAULT",
   TEXT: "TEXT",
   VIEW: "VIEW",
@@ -14,7 +14,7 @@ export const CursorVariant = {
 
 export type CursorVariant = (typeof CursorVariant)[keyof typeof CursorVariant];
 
-export interface NavItem {
+/** @public */ export interface NavItem {
   label: string;
   href: string;
 }

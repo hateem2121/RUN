@@ -75,7 +75,7 @@ export class ProductErrorBoundary extends Component<Props, State> {
 }
 
 // HOC for wrapping async operations
-export function withErrorBoundary<P extends object>(
+/** @public */ export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
   fallback?: ReactNode,
 ): React.ComponentType<P> {

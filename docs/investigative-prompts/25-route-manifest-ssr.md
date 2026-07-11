@@ -5,7 +5,7 @@
 **Synthesis Model**: `@claude-opus-4-6`
 **Environment**: `http://localhost:5002shared/route-manifest.ts`
 **Scope**: Read-only · Do NOT modify source files
-**Output**: `findings/ssrc/`
+**Output**: `docs/audits/ssrc/`
 **Issue ID Prefix**: `SSRC-`
 
 ---
@@ -105,7 +105,7 @@ For each of the 3+ confirmed mismatches:
 ## Artifacts to Produce
 
 ```
-findings/ssrc/
+docs/audits/ssrc/
 ├── findings.md            ← Severity-scored report (P0/P1/P2/P3)
 ├── protocol-0.txt         ← verify:tech-integrity output
 ├── api-probe.json         ← Raw endpoint responses

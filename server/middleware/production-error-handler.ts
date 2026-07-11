@@ -422,7 +422,7 @@ export function productionErrorHandler(
 }
 
 // 404 Handler
-export function notFoundHandler(req: Request, _res: Response, next: NextFunction) {
+/** @public */ export function notFoundHandler(req: Request, _res: Response, next: NextFunction) {
   // Instead of handling it here, pass a NotFoundError to the global handler
   // This ensures consistent logging and formatting
   next(new NotFoundError(req.path));

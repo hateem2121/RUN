@@ -121,7 +121,7 @@ export function injectSecretsToEnv(): void {
 /**
  * Check if secrets are available (for health checks)
  */
-export function hasRequiredSecrets(): boolean {
+/** @public */ export function hasRequiredSecrets(): boolean {
   const required = ["DATABASE_URL", "SESSION_SECRET"];
   return required.every((key) => getSecret(key as ManagedSecret));
 }

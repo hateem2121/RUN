@@ -5,7 +5,7 @@ import { decrypt } from "../../encryption.js";
 import { logger } from "../../monitoring/logger.js";
 import { StorageSingleton } from "../../storage-singleton.js";
 
-export class SystemRepository {
+/** @public */ export class SystemRepository {
   /**
    * Pings the database to verify connectivity
    */

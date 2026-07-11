@@ -77,7 +77,7 @@ export function validateManufacturingQualityPartial(data: unknown) {
 /**
  * Manufacturing Hero validation
  */
-export function validateManufacturingHero(data: unknown) {
+/** @public */ export function validateManufacturingHero(data: unknown) {
   return validate(insertManufacturingHeroSchema, data);
 }
 

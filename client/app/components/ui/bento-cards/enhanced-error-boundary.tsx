@@ -115,7 +115,7 @@ export class EnhancedBentoCardErrorBoundary extends Component<Props, State> {
 }
 
 // Simplified version for basic use cases
-export function SimpleErrorBoundary({
+/** @public */ export function SimpleErrorBoundary({
   children,
   message = "Something went wrong",
 }: {

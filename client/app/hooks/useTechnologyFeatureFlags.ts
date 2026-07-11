@@ -67,7 +67,7 @@ export function useTechnologyFeatureFlags(): TechnologyFeatureFlags {
 /**
  * Emergency rollback function for client-side safety
  */
-export async function emergencyTechnologyRollback(): Promise<boolean> {
+/** @public */ export async function emergencyTechnologyRollback(): Promise<boolean> {
   try {
     const response = await fetch("/api/feature-flags/emergency-rollback", {
       method: "POST",

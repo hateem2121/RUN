@@ -269,7 +269,7 @@ export function transformProducts(
 /**
  * Group products by category
  */
-export function groupProductsByCategory(
+/** @public */ export function groupProductsByCategory(
   products: TransformedProduct[],
 ): Record<string, TransformedProduct[]> {
   return products.reduce(
@@ -289,7 +289,7 @@ export function groupProductsByCategory(
  * Build hierarchical product URL from category path and product slug
  * Handles nested categories and prevents circular reference loops
  */
-export function buildProductUrl(product: Product, categories: MinimalCategory[]): string {
+/** @public */ export function buildProductUrl(product: Product, categories: MinimalCategory[]): string {
   // PRIORITY 1: Use canonical urlPath if available
   if (product.urlPath) {
     return product.urlPath;

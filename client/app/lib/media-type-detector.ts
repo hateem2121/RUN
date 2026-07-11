@@ -86,13 +86,13 @@ export function isModelUrl(url: string | null | undefined, mimeType?: string | n
 /**
  * Checks if a URL points to an image
  */
-export function isImageUrl(url: string | null | undefined): boolean {
+/** @public */ export function isImageUrl(url: string | null | undefined): boolean {
   return detectMediaTypeFromUrl(url) === "image";
 }
 
 /**
  * Checks if a URL points to a video
  */
-export function isVideoUrl(url: string | null | undefined): boolean {
+/** @public */ export function isVideoUrl(url: string | null | undefined): boolean {
   return detectMediaTypeFromUrl(url) === "video";
 }

@@ -32,7 +32,7 @@ import { useMediaPerformance } from "./MediaPerformanceMonitor";
 
 // PHASE 6 FIX: Consolidated features from MediaTabsViewer and LazyMediaGallery
 
-export interface EnhancedMediaAsset extends MediaAsset {
+/** @public */ export interface EnhancedMediaAsset extends MediaAsset {
   loadPriority?: "high" | "medium" | "low";
   preloadUrl?: string | undefined;
   cameraPositions?: ModelViewerPosition[];

@@ -16,7 +16,7 @@ interface ManufacturingLoadingStateProps {
  * Standardized loading states for manufacturing components
  * Provides consistent loading experiences across public and admin interfaces
  */
-export function ManufacturingLoadingState({
+/** @public */ export function ManufacturingLoadingState({
   variant = "skeleton",
   count = 3,
   message = "Loading manufacturing data...",
@@ -136,7 +136,7 @@ export function ManufacturingLoadingState({
 /**
  * Compact loading skeleton for inline use
  */
-export function ManufacturingInlineLoader({ className = "" }: { className?: string }) {
+/** @public */ export function ManufacturingInlineLoader({ className = "" }: { className?: string }) {
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       <div>
