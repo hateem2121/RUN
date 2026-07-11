@@ -1,5 +1,5 @@
+import { accessories, products } from "@run-remix/shared";
 import { and, desc, eq, isNull, sql } from "drizzle-orm";
-import { accessories, products } from "../../shared/index.js";
 import { db } from "../db.js";
 
 async function runBenchmark() {

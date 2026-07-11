@@ -1,4 +1,3 @@
-import { and, asc, count, desc, eq, getTableColumns, isNull, like, or, sql } from "drizzle-orm";
 import {
   type Accessory,
   accessories,
@@ -32,7 +31,8 @@ import {
   newsletterSubscribers,
   type SizeChart,
   sizeCharts,
-} from "../../../../shared/index.js";
+} from "@run-remix/shared";
+import { and, asc, count, desc, eq, getTableColumns, isNull, like, or, sql } from "drizzle-orm";
 import { type DbClient, db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../cache/cache-events.js";
 import { UnifiedCache } from "../../cache/unified-cache.js";

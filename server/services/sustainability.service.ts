@@ -1,4 +1,3 @@
-import { err, ok, type Result } from "neverthrow";
 import type {
   InsertSustainabilityGoal,
   InsertSustainabilityHero,
@@ -11,14 +10,15 @@ import type {
   SustainabilityMetric,
   SustainabilityMetricHistory,
   UnifiedSustainability,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
 import {
   insertSustainabilityGoalSchema,
   insertSustainabilityHeroSchema,
   insertSustainabilityInitiativeSchema,
   insertSustainabilityMetricSchema,
   insertUnifiedSustainabilitySchema,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
+import { err, ok, type Result } from "neverthrow";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { miscRepository, sustainabilityRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";

@@ -1,4 +1,3 @@
-import { err, ok, type Result } from "neverthrow";
 import type {
   InsertTechnologyCta,
   InsertTechnologyEquipment,
@@ -14,7 +13,7 @@ import type {
   TechnologyInnovation,
   TechnologyResearch,
   TechnologyRoadmap,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
 import {
   insertTechnologyCtaSchema,
   insertTechnologyEquipmentSchema,
@@ -23,7 +22,8 @@ import {
   insertTechnologyInnovationSchema,
   insertTechnologyResearchSchema,
   insertTechnologyRoadmapSchema,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
+import { err, ok, type Result } from "neverthrow";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { mediaRepository, technologyRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";

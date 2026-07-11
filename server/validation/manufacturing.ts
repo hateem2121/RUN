@@ -5,14 +5,14 @@
  * Provides consistent error formatting and reusable validation logic
  */
 
-import { type ZodSchema, z } from "zod";
 import {
   insertManufacturingCapabilitySchema,
   insertManufacturingCaseStudySchema,
   insertManufacturingHeroSchema,
   insertManufacturingProcessSchema,
   insertManufacturingQualitySchema,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
+import { type ZodSchema, z } from "zod";
 
 /**
  * Standard validation result type

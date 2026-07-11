@@ -173,9 +173,11 @@ export function PublicCapabilitySection({
                   </p>
 
                   {isLarge && (
+                    // biome-ignore lint/a11y/noAmbiguousAnchorText: Design dictates generic link text
                     <a
                       className="text-manufacturing-accent text-sm font-bold uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2 group/link cursor-pointer w-fit"
                       href="#contact"
+                      aria-label={`Learn more about ${cap.title}`}
                     >
                       Learn More{" "}
                       <ArrowRight className="size-4 transform transition-transform group-hover/link:translate-x-1" />

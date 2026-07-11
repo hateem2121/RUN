@@ -1,12 +1,12 @@
-import { eq, inArray } from "drizzle-orm";
-import { err, ok, type Result } from "neverthrow";
 import {
   certificates,
   type FooterConfiguration,
   footerConfiguration,
   insertFooterConfigurationSchema,
   mediaAssets,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
+import { eq, inArray } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import { db } from "../db.js";
 import { type AppError, InternalError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";

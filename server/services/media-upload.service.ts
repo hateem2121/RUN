@@ -1,6 +1,6 @@
 import path from "node:path";
+import type { MediaAsset } from "@run-remix/shared";
 import { err, ok, type Result } from "neverthrow";
-import type { MediaAsset } from "../../shared/index.js";
 import { mediaRepository } from "../lib/db/repositories/index.js";
 import { type AppError, BadRequestError, InternalError, NotFoundError } from "../lib/errors.js";
 import { isImageFile } from "../lib/image-processor.js";

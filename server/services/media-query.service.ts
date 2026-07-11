@@ -1,5 +1,5 @@
+import type { MediaAsset } from "@run-remix/shared";
 import { err, ok, type Result } from "neverthrow";
-import type { MediaAsset } from "../../shared/index.js";
 import { mediaRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";

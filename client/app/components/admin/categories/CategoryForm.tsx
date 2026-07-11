@@ -132,8 +132,11 @@ export function CategoryForm({
     },
   });
 
-  // Initialize form data
-  useEffect(() => {
+  // Derived state to replace useEffect for syncing initialData
+  const [prevInitialData, setPrevInitialData] = useState<Category | null | undefined>(undefined);
+
+  if (initialData !== prevInitialData) {
+    setPrevInitialData(initialData);
     if (initialData) {
       setFormData({
         name: initialData.name || "",
@@ -202,7 +205,7 @@ export function CategoryForm({
         },
       });
     }
-  }, [initialData]);
+  }
 
   // Auto-generate slug from name
   useEffect(() => {

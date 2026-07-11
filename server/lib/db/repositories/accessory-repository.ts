@@ -7,9 +7,9 @@
  * - Invalidation: Clear ALL keys matching `accessories:paginated:` prefix
  */
 
+import type { Accessory, InsertAccessory } from "@run-remix/shared";
+import { accessories } from "@run-remix/shared";
 import { and, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
-import type { Accessory, InsertAccessory } from "../../../../shared/index.js";
-import { accessories } from "../../../../shared/index.js";
 import { db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../cache/cache-events.js";
 import { UnifiedCache } from "../../cache/unified-cache.js";

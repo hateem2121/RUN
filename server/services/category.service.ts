@@ -1,5 +1,5 @@
+import { type Category, categoryReorderSchema, insertCategorySchema } from "@run-remix/shared";
 import { err, ok, type Result } from "neverthrow";
-import { type Category, categoryReorderSchema, insertCategorySchema } from "../../shared/index.js";
 import { db } from "../db.js";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { productRepository } from "../lib/db/repositories/index.js";

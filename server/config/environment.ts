@@ -6,7 +6,7 @@
  */
 
 import "dotenv/config";
-import { validateEnv } from "../../shared/schemas/env.schema.js";
+import { validateEnv } from "@run-remix/shared";
 
 // Validated environment configuration
 // (Early validation in index.ts/server.ts will populate process.env)

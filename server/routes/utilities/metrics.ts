@@ -8,7 +8,6 @@ import type { Express } from "express";
 import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
 import type { AlertConfig } from "../../config/alerts.js";
-import { getPoolMetrics } from "../../db.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { UnifiedCache } from "../../lib/cache/unified-cache.js";
 import { queryPerformanceMonitor } from "../../lib/db/query-performance.js";
@@ -243,7 +242,7 @@ export function registerMetricsRoutes(app: Express): void {
     const performanceStats = queryPerformanceMonitor.getPerformanceStats();
     const performanceReport = queryPerformanceMonitor.generatePerformanceReport();
     const healthy = queryPerformanceMonitor.isHealthy();
-    const poolMetrics = getPoolMetrics();
+    const poolMetrics = systemService.getPoolMetrics();
 
     res.json({
       timestamp: new Date().toISOString(),

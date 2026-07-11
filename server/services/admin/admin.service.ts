@@ -17,8 +17,6 @@ import type {
   Product,
   ProductDetail,
 } from "@run-remix/shared";
-import { count } from "drizzle-orm";
-import { err, ok, type Result } from "neverthrow";
 import {
   accessories,
   categories,
@@ -33,7 +31,9 @@ import {
   navigationItems,
   products,
   sizeCharts,
-} from "../../../shared/index.js";
+} from "@run-remix/shared";
+import { count } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import { db } from "../../db.js";
 import {
   mediaRepository,

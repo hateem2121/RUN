@@ -1,8 +1,5 @@
+import type { ContactPageConfiguration, InsertContactPageConfiguration } from "@run-remix/shared";
 import { err, ok, type Result } from "neverthrow";
-import type {
-  ContactPageConfiguration,
-  InsertContactPageConfiguration,
-} from "../../shared/index.js";
 import { miscRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";

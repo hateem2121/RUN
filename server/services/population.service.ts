@@ -1,5 +1,5 @@
+import { accessories, categories, certificates, fabrics, fibers } from "@run-remix/shared";
 import { err, ok, type Result } from "neverthrow";
-import { accessories, categories, certificates, fabrics, fibers } from "../../shared/index.js";
 import { type AppError, DatabaseError, InternalError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 

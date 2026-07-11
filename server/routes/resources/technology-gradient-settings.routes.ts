@@ -1,9 +1,9 @@
-import { Router } from "express";
-import { z } from "zod";
 import {
   insertTechnologyGradientSettingsSchema,
   technologyGradientFrontendSchema,
-} from "../../../shared/index.js";
+} from "@run-remix/shared";
+import { Router } from "express";
+import { z } from "zod";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined } from "../../lib/utilities/core-utils.js";

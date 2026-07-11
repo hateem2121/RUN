@@ -1,5 +1,6 @@
+import type { AuditLog, InsertAuditLog } from "@run-remix/shared";
 import { err, ok, type Result } from "neverthrow";
-import type { AuditLog, InsertAuditLog } from "../../shared/index.js";
+import { getPoolMetrics } from "../db.js";
 import { systemRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
@@ -94,6 +95,13 @@ class SystemService {
     } catch (error) {
       return err(new InternalError("Slow query simulation failed", { error }));
     }
+  }
+
+  /**
+   * Retrieves database connection pool metrics
+   */
+  getPoolMetrics() {
+    return getPoolMetrics();
   }
 }
 

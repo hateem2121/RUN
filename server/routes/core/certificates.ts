@@ -6,8 +6,8 @@ import { removeUndefined } from "../../lib/utilities/core-utils.js";
  * Handles all certificate CRUD operations and relationships
  */
 
+import { insertCertificateSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { insertCertificateSchema } from "../../../shared/index.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { miscRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";

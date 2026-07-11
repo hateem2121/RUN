@@ -22,7 +22,7 @@ We rely on **Neon Serverless PostgreSQL** for primary data storage.
 ## 2. Session & Cache Recovery (Upstash Redis)
 
 -   **Persistence**: Upstash Redis persists data to disk.
--   **Failure Scenario**: If Upstash fails, the application will degrade gracefully to **MemoryStore** (in-memory) for sessions, and the cache will bypass.
+-   **Failure Scenario**: If Redis fails, the application will degrade gracefully. Sessions are isolated directly to Neon PostgreSQL via DrizzleSessionStore, so sessions will not be lost. The cache will bypass.
 -   **Recovery**: Once Upstash is restored, the `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` will be automatically used again.
 
 ## 3. Media Assets (Google Cloud Storage)

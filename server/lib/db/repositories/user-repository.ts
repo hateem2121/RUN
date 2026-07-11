@@ -3,9 +3,9 @@
  * Handles user authentication and profile operations
  */
 
+import type { UpsertUser, User } from "@run-remix/shared";
+import { users } from "@run-remix/shared";
 import { eq } from "drizzle-orm";
-import type { UpsertUser, User } from "../../../../shared/index.js";
-import { users } from "../../../../shared/index.js";
 import { db } from "../../../db.js";
 import { decrypt, encrypt, getBlindIndex } from "../../encryption.js";
 import { logger } from "../../monitoring/logger.js";

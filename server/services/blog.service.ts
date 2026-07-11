@@ -1,12 +1,12 @@
-import DOMPurify from "isomorphic-dompurify";
-import { err, ok, type Result } from "neverthrow";
 import {
   type BlogCategory,
   type BlogPost,
   insertBlogCategorySchema,
   insertBlogPostSchema,
   users,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
+import DOMPurify from "isomorphic-dompurify";
+import { err, ok, type Result } from "neverthrow";
 import { db } from "../db.js";
 import { blogRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";

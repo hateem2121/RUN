@@ -1,7 +1,7 @@
 import type { HomepageHero, InsertHomepageHero, MediaAsset } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { Eye, EyeOff, Globe, Image as ImageIcon, Play, Save, Zap } from "lucide-react";
-import { useActionState, useEffect, useOptimistic, useState, useTransition } from "react";
+import { useActionState, useOptimistic, useState, useTransition } from "react";
 import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
 import { Button } from "@/components/ui/button";
@@ -59,7 +59,10 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
     queryKey: ["/api/media-assets"],
   });
 
-  useEffect(() => {
+  const [prevHero, setPrevHero] = useState<HomepageHero | undefined>(undefined);
+
+  if (hero !== prevHero) {
+    setPrevHero(hero);
     if (hero) {
       setFormData({
         title: hero.title || "",
@@ -72,7 +75,7 @@ export function HomepageHeroTab({ hero }: HomepageHeroTabProps) {
       });
       setIsDirty(false);
     }
-  }, [hero]);
+  }
 
   const handleChange = <K extends keyof InsertHomepageHero>(
     field: K,

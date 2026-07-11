@@ -1,9 +1,9 @@
-import { reorderEntriesSchema } from "@run-remix/shared";
-import { Router } from "express";
 import {
   type InsertAboutMapLocation,
   insertAboutMapLocationSchema,
-} from "../../../shared/index.js";
+  reorderEntriesSchema,
+} from "@run-remix/shared";
+import { Router } from "express";
 import { ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";

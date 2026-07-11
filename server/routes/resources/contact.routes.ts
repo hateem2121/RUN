@@ -1,10 +1,10 @@
-import express, { type Request } from "express";
-import { validateRequest } from "zod-express-middleware";
 import {
   type ContactPageConfiguration,
+  ContactSubmissionSchema,
   insertContactPageConfigurationSchema,
-} from "../../../shared/index.js";
-import { ContactSubmissionSchema } from "../../../shared/validation/contact.js";
+} from "@run-remix/shared";
+import express, { type Request } from "express";
+import { validateRequest } from "zod-express-middleware";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { logger } from "../../lib/monitoring/logger.js";

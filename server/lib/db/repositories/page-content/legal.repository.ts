@@ -1,9 +1,5 @@
+import { type InsertLegalPolicy, type LegalPolicy, legalPolicies } from "@run-remix/shared";
 import { eq } from "drizzle-orm";
-import {
-  type InsertLegalPolicy,
-  type LegalPolicy,
-  legalPolicies,
-} from "../../../../../shared/index.js";
 import { db } from "../../../../db.js";
 import { invalidateHtmlCache } from "../../../../middleware/ssr-cache.js";
 import { emitCacheInvalidation } from "../../../cache/cache-events.js";

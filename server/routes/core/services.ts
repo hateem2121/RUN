@@ -1,5 +1,5 @@
+import { insertServiceSchema, serviceReorderSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { insertServiceSchema, serviceReorderSchema } from "../../../shared/index.js";
 import { removeUndefined, validateIdParam } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
 import { servicesService } from "../../services/services.service.js";

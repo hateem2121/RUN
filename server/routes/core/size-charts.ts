@@ -6,8 +6,8 @@ import { removeUndefined } from "../../lib/utilities/core-utils.js";
  * Handles all size chart CRUD operations and relationships
  */
 
+import { insertSizeChartSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { insertSizeChartSchema } from "../../../shared/index.js";
 import { miscRepository } from "../../lib/db/repositories/index.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";

@@ -4,8 +4,8 @@
  * Handles all fabric CRUD operations and relationships
  */
 
+import { type fabrics, insertFabricSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { type fabrics, insertFabricSchema } from "../../../shared/index.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { retryDbOperation } from "../../lib/db/db-retry.js";
 import { miscRepository } from "../../lib/db/repositories/index.js";

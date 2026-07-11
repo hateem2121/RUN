@@ -1,7 +1,7 @@
 import type { HomepageProcessCard, InsertHomepageProcessCard, MediaAsset } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { Edit, GripVertical, Image as ImageIcon, Layers, Plus, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useOptimistic, useState, useTransition } from "react";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
@@ -34,18 +34,17 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
   const [editingCard, setEditingCard] = useState<HomepageProcessCard | null>(null);
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
   const [mediaPickerTarget, setMediaPickerTarget] = useState<"create" | "edit">("create");
+  const [, startTransition] = useTransition();
 
   const { data: mediaAssets = [] } = useQuery<MediaAsset[]>({
     queryKey: ["/api/media-assets"],
   });
 
-  // Local state for drag and drop
-  const [orderedCards, setOrderedCards] = useState<HomepageProcessCard[]>(cards);
-
-  // Sync local state with props when cards change
-  useEffect(() => {
-    setOrderedCards(cards);
-  }, [cards]);
+  // Optimistic state for drag and drop
+  const [optimisticCards, setOptimisticCards] = useOptimistic<
+    HomepageProcessCard[],
+    HomepageProcessCard[]
+  >(cards, (_state, newOrder) => newOrder);
 
   const [newCard, setNewCard] = useState<InsertHomepageProcessCard>({
     title: "",
@@ -68,7 +67,9 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
   };
 
   const handleReorder = (newOrder: HomepageProcessCard[]) => {
-    setOrderedCards(newOrder);
+    startTransition(() => {
+      setOptimisticCards(newOrder);
+    });
 
     const updates = newOrder.map((card, index) => ({
       id: card.id,
@@ -130,13 +131,13 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
           </div>
 
           <Sortable
-            value={orderedCards}
+            value={optimisticCards}
             onValueChange={handleReorder}
             getItemValue={(item) => item.id}
             orientation="mixed" // Grid layout
           >
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {orderedCards.map((card) => {
+              {optimisticCards.map((card) => {
                 const imageUrl = getMediaUrl(card.imageId);
                 return (
                   <SortableItem key={card.id} value={card.id} asChild>
@@ -225,7 +226,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                   </SortableItem>
                 );
               })}
-              {orderedCards.length === 0 && (
+              {optimisticCards.length === 0 && (
                 <div className="col-span-full py-16 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-white/[0.01]">
                   <Layers className="h-10 w-10 text-admin-muted mb-4 opacity-50" />
                   <p className="text-white font-medium mb-1">No Process Phases</p>

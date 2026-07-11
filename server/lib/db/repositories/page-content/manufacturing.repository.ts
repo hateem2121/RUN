@@ -1,4 +1,3 @@
-import { asc, eq, sql } from "drizzle-orm";
 import {
   type InsertManufacturingCapability,
   type InsertManufacturingCaseStudy,
@@ -15,7 +14,8 @@ import {
   manufacturingHero,
   manufacturingProcesses,
   manufacturingQualities,
-} from "../../../../../shared/index.js";
+} from "@run-remix/shared";
+import { asc, eq, sql } from "drizzle-orm";
 import { db } from "../../../../db.js";
 import { CacheKeys } from "../../../cache/cache-keys.js";
 import { CacheOperations } from "../../../cache/cache-strategies.js";

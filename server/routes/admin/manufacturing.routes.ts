@@ -1,6 +1,3 @@
-import { Router } from "express";
-import { z } from "zod";
-import { validateRequest } from "zod-express-middleware";
 import {
   type InsertManufacturingCapability,
   type InsertManufacturingCaseStudy,
@@ -12,7 +9,10 @@ import {
   insertManufacturingHeroSchema,
   insertManufacturingProcessSchema,
   insertManufacturingQualitySchema,
-} from "../../../shared/index.js";
+} from "@run-remix/shared";
+import { Router } from "express";
+import { z } from "zod";
+import { validateRequest } from "zod-express-middleware";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
 import { manufacturingService } from "../../services/manufacturing.service.js";

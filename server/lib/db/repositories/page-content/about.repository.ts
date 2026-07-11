@@ -1,4 +1,3 @@
-import { asc, eq, getTableColumns } from "drizzle-orm";
 import {
   type AboutBatchResponse,
   type AboutHero,
@@ -21,7 +20,8 @@ import {
   type InsertAboutTimelineEntry,
   type MediaAsset,
   mediaAssets,
-} from "../../../../../shared/index.js";
+} from "@run-remix/shared";
+import { asc, eq, getTableColumns } from "drizzle-orm";
 import { db } from "../../../../db.js";
 import { emitCacheInvalidation } from "../../../cache/cache-events.js";
 import { UnifiedCache } from "../../../cache/unified-cache.js";

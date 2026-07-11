@@ -1,4 +1,3 @@
-import { err, ok, type Result } from "neverthrow";
 import type {
   HomepageFeaturedProductsSettings,
   HomepageHero,
@@ -12,14 +11,15 @@ import type {
   InsertHomepageSlogan,
   InsertLogoAnimationSettings,
   LogoAnimationSettings,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
 import {
   insertHomepageFeaturedProductsSettingsSchema,
   insertHomepageHeroSchema,
   insertHomepageProcessCardSchema,
   insertHomepageSectionSchema,
   insertHomepageSloganSchema,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
+import { err, ok, type Result } from "neverthrow";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { homepageRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";

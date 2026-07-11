@@ -1,9 +1,8 @@
-import { reorderMetricsSchema } from "@run-remix/shared";
+import type { InsertSustainabilityMetric } from "@run-remix/shared";
+import { insertSustainabilityMetricSchema, reorderMetricsSchema } from "@run-remix/shared";
 import { Router } from "express";
 import type { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
-import type { InsertSustainabilityMetric } from "../../../shared/index.js";
-import { insertSustainabilityMetricSchema } from "../../../shared/index.js";
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
 import { sustainabilityService } from "../../services/sustainability.service.js";

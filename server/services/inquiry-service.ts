@@ -6,8 +6,8 @@
 
 import { BigQuery } from "@google-cloud/bigquery";
 import { CloudTasksClient } from "@google-cloud/tasks";
+import type { Inquiry, InsertInquiry } from "@run-remix/shared";
 import { err, ok, type Result } from "neverthrow";
-import type { Inquiry, InsertInquiry } from "../../shared/schemas/content/common.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
 import { miscRepository } from "../lib/db/repositories/index.js";
 import { type AppError, DatabaseError, NotFoundError, ValidationError } from "../lib/errors.js";

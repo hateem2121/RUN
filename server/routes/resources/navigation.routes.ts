@@ -1,9 +1,9 @@
-import { Router } from "express";
 import {
   insertNavigationGlassmorphismSettingsSchema,
   insertNavigationItemSchema,
   navigationReorderSchema,
-} from "../../../shared/index.js";
+} from "@run-remix/shared";
+import { Router } from "express";
 import { ValidationError } from "../../lib/errors.js";
 import { shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";

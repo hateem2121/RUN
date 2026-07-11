@@ -1,6 +1,6 @@
 import type { HomepageSlogan, InsertHomepageSlogan } from "@shared/index";
 import { Edit, GripVertical, MessageSquareText, Plus, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useOptimistic, useState, useTransition } from "react";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { Button } from "@/components/ui/button";
@@ -27,14 +27,13 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
   const { createSlogan, updateSlogan, deleteSlogan, reorderSlogans } = useAdminHomepageMutations();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingSlogan, setEditingSlogan] = useState<HomepageSlogan | null>(null);
+  const [, startTransition] = useTransition();
 
-  // Local state for drag and drop
-  const [orderedSlogans, setOrderedSlogans] = useState<HomepageSlogan[]>(slogans);
-
-  // Sync local state with props when slogans change (e.g. after fetch)
-  useEffect(() => {
-    setOrderedSlogans(slogans);
-  }, [slogans]);
+  // Optimistic state for drag and drop
+  const [optimisticSlogans, setOptimisticSlogans] = useOptimistic<
+    HomepageSlogan[],
+    HomepageSlogan[]
+  >(slogans, (_state, newOrder) => newOrder);
 
   // Create Form State
   const [newSlogan, setNewSlogan] = useState<InsertHomepageSlogan>({
@@ -57,7 +56,9 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
   };
 
   const handleReorder = (newOrder: HomepageSlogan[]) => {
-    setOrderedSlogans(newOrder); // Immediate UI update
+    startTransition(() => {
+      setOptimisticSlogans(newOrder); // Immediate UI update
+    });
 
     // Create updates array for API
     const updates = newOrder.map((slogan, index) => ({
@@ -94,12 +95,12 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
 
           <div className="space-y-4">
             <Sortable
-              value={orderedSlogans}
+              value={optimisticSlogans}
               onValueChange={handleReorder}
               getItemValue={(item) => item.id}
             >
               <div className="space-y-3">
-                {orderedSlogans.map((slogan) => (
+                {optimisticSlogans.map((slogan) => (
                   <SortableItem key={slogan.id} value={slogan.id} asChild>
                     <div className="group flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.02] p-4 hover:bg-white/[0.04] transition-colors">
                       <div className="flex items-center gap-4">
@@ -153,7 +154,7 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
                     </div>
                   </SortableItem>
                 ))}
-                {orderedSlogans.length === 0 && (
+                {optimisticSlogans.length === 0 && (
                   <div className="text-center py-12 rounded-2xl border border-dashed border-white/10">
                     <MessageSquareText className="h-8 w-8 text-admin-muted mx-auto mb-3 opacity-50" />
                     <p className="text-sm font-medium text-white mb-1">No sequences active</p>

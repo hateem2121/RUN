@@ -3,7 +3,7 @@ import type {
   InsertHomepageFeaturedProductsSettings,
 } from "@shared/index";
 import { Save, Settings2, Star } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { GlassCard } from "@/components/admin/shared/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +28,12 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
   const [formData, setFormData] = useState<Partial<InsertHomepageFeaturedProductsSettings>>({});
   const [isDirty, setIsDirty] = useState(false);
 
-  useEffect(() => {
+  const [prevSettings, setPrevSettings] = useState<HomepageFeaturedProductsSettings | undefined>(
+    undefined,
+  );
+
+  if (settings !== prevSettings) {
+    setPrevSettings(settings);
     if (settings) {
       setFormData({
         title: settings.title || "Featured Products",
@@ -39,7 +44,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
       });
       setIsDirty(false);
     }
-  }, [settings]);
+  }
 
   const handleChange = <K extends keyof InsertHomepageFeaturedProductsSettings>(
     field: K,

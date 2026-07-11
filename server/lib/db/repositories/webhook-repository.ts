@@ -3,14 +3,14 @@
  * Handles webhook subscriptions and delivery logs
  */
 
-import { eq, sql } from "drizzle-orm";
 import {
   type InsertWebhookDelivery,
   type InsertWebhookSubscription,
   type WebhookSubscription,
   webhookDeliveries,
   webhookSubscriptions,
-} from "../../../../shared/index.js";
+} from "@run-remix/shared";
+import { eq, sql } from "drizzle-orm";
 import { db } from "../../../db.js";
 import { StorageSingleton } from "../../storage-singleton.js";
 

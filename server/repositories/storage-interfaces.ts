@@ -110,7 +110,7 @@ import type {
   UpsertUser,
   User,
   WebhookSubscription,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
 import type { RepositoryCacheOptions } from "../lib/cache/cache-strategies.js";
 import type {
   ProductDetail,

@@ -1,4 +1,3 @@
-import { err, ok, type Result } from "neverthrow";
 import type {
   Certificate,
   Fabric,
@@ -7,7 +6,8 @@ import type {
   InsertFabric,
   InsertFiber,
   SizeChart,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
+import { err, ok, type Result } from "neverthrow";
 import { miscRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";

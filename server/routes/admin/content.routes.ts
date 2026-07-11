@@ -1,13 +1,13 @@
-import { Router } from "express";
-import { z } from "zod";
-import { validateRequest } from "zod-express-middleware";
 import {
   type InsertAboutTimelineEntry,
   type InsertCertificate,
   type InsertFiber,
   insertCertificateSchema,
   insertFiberSchema,
-} from "../../../shared/index.js";
+} from "@run-remix/shared";
+import { Router } from "express";
+import { z } from "zod";
+import { validateRequest } from "zod-express-middleware";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { getAuditContext } from "../../middleware/request-context.js";
 import { adminService } from "../../services/admin/index.js";

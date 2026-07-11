@@ -1,5 +1,5 @@
+import type { InsertService, Service } from "@run-remix/shared";
 import { err, ok, type Result } from "neverthrow";
-import type { InsertService, Service } from "../../shared/index.js";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { servicesRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";

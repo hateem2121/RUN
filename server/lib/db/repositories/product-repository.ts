@@ -3,8 +3,6 @@
  * Handles product and category operations with caching and performance monitoring
  */
 
-import { and, asc, desc, eq, inArray, isNull, lt, ne, sql } from "drizzle-orm"; // added lt
-
 import type {
   Accessory,
   Category,
@@ -18,7 +16,7 @@ import type {
   ProductDetail,
   ProductSummary,
   SizeChart,
-} from "../../../../shared/index.js";
+} from "@run-remix/shared";
 import {
   accessories,
   categories,
@@ -28,7 +26,8 @@ import {
   productRelations,
   products,
   sizeCharts,
-} from "../../../../shared/index.js";
+} from "@run-remix/shared";
+import { and, asc, desc, eq, inArray, isNull, lt, ne, sql } from "drizzle-orm"; // added lt
 import { type DbClient, db } from "../../../db.js";
 import { CacheKeys, InvalidationPatterns } from "../../cache/cache-keys.js";
 import type { RepositoryCacheOptions } from "../../cache/cache-strategies.js";

@@ -6,8 +6,8 @@ import { removeUndefined } from "../../lib/utilities/core-utils.js";
  * Handles all accessory CRUD operations with caching and pagination
  */
 
+import { insertAccessorySchema } from "@run-remix/shared";
 import { Router } from "express";
-import { insertAccessorySchema } from "../../../shared/index.js";
 import { accessoryRepository } from "../../lib/db/repositories/accessory-repository.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";

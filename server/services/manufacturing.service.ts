@@ -1,4 +1,3 @@
-import { err, ok, type Result } from "neverthrow";
 import type {
   InsertManufacturingCapability,
   InsertManufacturingCaseStudy,
@@ -10,14 +9,15 @@ import type {
   ManufacturingHero,
   ManufacturingProcess,
   ManufacturingQuality,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
 import {
   insertManufacturingCapabilitySchema,
   insertManufacturingCaseStudySchema,
   insertManufacturingHeroSchema,
   insertManufacturingProcessSchema,
   insertManufacturingQualitySchema,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
+import { err, ok, type Result } from "neverthrow";
 import { twoTierBatchCache } from "../lib/cache/two-tier-batch.js";
 import { manufacturingRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";

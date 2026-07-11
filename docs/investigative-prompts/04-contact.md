@@ -159,7 +159,7 @@ for i in $(seq 1 10); do curl -s -o /dev/null -w "%{http_code}\n" -X POST http:/
 - [ ] Success state: visible confirmation after submission
 - [ ] Error state: visible error if API fails
 - [ ] Rate limit (429): UI shows friendly message, not raw JSON error
-- [ ] Email sending: routed through `bullmq` worker (POST /api/worker/send-email), not inline
+- [ ] Email sending: routed through Google Cloud Tasks worker (POST /api/worker/send-email), not inline
 - [ ] Map embed (if present): renders, not broken iframe
 - [ ] Zod v4 validation in `contact.routes.ts`: `error:` param syntax only
 

@@ -7,8 +7,8 @@ import { removeUndefined } from "../../lib/utilities/core-utils.js";
  * Handles GET and PATCH operations for the team message section
  */
 
+import { insertAboutTeamMessageSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { insertAboutTeamMessageSchema } from "../../../shared/index.js";
 import { ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { aboutService } from "../../services/about.service.js";

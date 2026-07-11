@@ -1,5 +1,5 @@
+import { insertAboutHeroSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { insertAboutHeroSchema } from "../../../shared/index.js";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
 import { aboutService } from "../../services/about.service.js";

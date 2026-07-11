@@ -1,6 +1,5 @@
-import { reorderEquipmentSchema } from "@run-remix/shared";
+import { insertTechnologyEquipmentSchema, reorderEquipmentSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { insertTechnologyEquipmentSchema } from "../../../shared/index.js";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";

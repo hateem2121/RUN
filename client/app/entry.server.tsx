@@ -23,10 +23,9 @@ export default function handleRequest(
     const readyOption =
       (userAgent && isbot(userAgent)) || routerContext.isSpaMode ? "onAllReady" : "onShellReady";
 
-    const nonceContext = (globalThis as any).__nonceContext;
-    const nonceVal = nonceContext
-      ? (_loadContext as any)?.get?.(nonceContext)
-      : (_loadContext as any)?.cspNonce;
+    const nonceContext = (globalThis as unknown as { __nonceContext: unknown }).__nonceContext;
+    const loadCtx = _loadContext as { get?: (k: unknown) => string; cspNonce?: string } | undefined;
+    const nonceVal = nonceContext ? loadCtx?.get?.(nonceContext) : loadCtx?.cspNonce;
     const options: Parameters<typeof renderToPipeableStream>[1] = {
       [readyOption]() {
         shellRendered = true;

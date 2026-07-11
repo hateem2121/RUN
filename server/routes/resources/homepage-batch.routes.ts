@@ -11,8 +11,8 @@
  * Server-side two-tier batch cache (UnifiedCache) remains active for performance.
  */
 
+import type { HomepageProcessCard } from "@run-remix/shared";
 import { Router } from "express";
-import type { HomepageProcessCard } from "../../../shared/schemas/content/home.js";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { homepageRepository, productRepository } from "../../lib/db/repositories/index.js";

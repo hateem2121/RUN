@@ -83,8 +83,8 @@ Establish a repeatable, comprehensive process for auditing the RUN Remix codebas
 | 4 | Admin Parity | Every public route `/x` has `/admin/x` counterpart |
 | 5 | Port 5002 Law | No port other than 5002 anywhere in codebase, CI/CD, k8s, Docker |
 | 6 | DB Schema Integrity | Migration history in git, no schema drift (run `drizzle-kit generate --dry-run`), no client DB imports |
-| 7 | Auth/Session Security | Passport + Google OAuth2 only, connect-redis sessions, SESSION_SECRET from env, helmet headers, CORS not wildcard |
-| 8 | Caching | L1 lru-cache + L2 Upstash, stampede protection, connect-redis for sessions |
+| 7 | Auth/Session Security | Passport + Google OAuth2 only, DrizzleSessionStore (Neon) sessions, SESSION_SECRET from env, helmet headers, CORS not wildcard |
+| 8 | Caching | L1 lru-cache + L2 ioredis, stampede protection, DrizzleSessionStore (Neon) for sessions |
 | 9 | Observability | OTel first import in server.ts, Sentry DSN from env, Pino levels env-appropriate, no console.log in routes |
 | 10 | CI/CD | Build step order (test→build→push→deploy), Node 24 Dockerfile, k8s resource limits + probes, .dockerignore whitelist |
 | 11 | Test Coverage | 80%+ on services, integration tests present, Playwright E2E, @axe-core/playwright |

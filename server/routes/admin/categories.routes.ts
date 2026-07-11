@@ -1,7 +1,6 @@
+import { type InsertCategory, insertCategorySchema } from "@run-remix/shared";
 import { Router } from "express";
-
 import { validateRequest } from "zod-express-middleware";
-import { type InsertCategory, insertCategorySchema } from "../../../shared/index.js";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { getAuditContext } from "../../middleware/request-context.js";
 import { adminService } from "../../services/admin/index.js";

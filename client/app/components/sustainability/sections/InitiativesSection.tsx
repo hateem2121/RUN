@@ -113,9 +113,11 @@ function InitiativeRow({
           <p className="text-lg leading-relaxed text-custom-misc-305">{initiative.description}</p>
         )}
         {initiative.status && initiative.status !== "inactive" && (
+          // biome-ignore lint/a11y/noAmbiguousAnchorText: Design dictates generic link text
           <a
             href="/sustainability"
             className="group inline-flex items-center text-custom-misc-306 hover:text-custom-misc-307 transition-colors"
+            aria-label={`Learn more about ${initiative.title}`}
           >
             <span className="font-bold">Learn More</span>
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />

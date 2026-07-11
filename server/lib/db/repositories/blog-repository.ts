@@ -1,11 +1,6 @@
+import type { BlogCategory, BlogPost, InsertBlogCategory, InsertBlogPost } from "@run-remix/shared";
+import { blogCategories, blogPosts } from "@run-remix/shared";
 import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
-import type {
-  BlogCategory,
-  BlogPost,
-  InsertBlogCategory,
-  InsertBlogPost,
-} from "../../../../shared/index.js";
-import { blogCategories, blogPosts } from "../../../../shared/index.js";
 import { db } from "../../../db.js";
 import type { IBlogRepository } from "../../../repositories/storage-interfaces.js";
 import { StorageSingleton } from "../../storage-singleton.js";

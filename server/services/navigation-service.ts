@@ -1,9 +1,9 @@
-import { err, ok, type Result } from "neverthrow";
 import type {
   InsertNavigationItem,
   NavigationGlassmorphismSettings,
   NavigationItem,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
+import { err, ok, type Result } from "neverthrow";
 import { safeQuery } from "../db.js";
 import { CacheKeys, CacheOperations } from "../lib/cache/cache-strategies.js";
 import { twoTierBatchCache } from "../lib/cache/two-tier-batch.js";

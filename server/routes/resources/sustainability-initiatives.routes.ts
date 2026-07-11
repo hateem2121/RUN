@@ -1,7 +1,6 @@
-import { reorderInitiativesSchema } from "@run-remix/shared";
+import { insertSustainabilityInitiativeSchema, reorderInitiativesSchema } from "@run-remix/shared";
 import { Router } from "express";
 import { validateRequest } from "zod-express-middleware";
-import { insertSustainabilityInitiativeSchema } from "../../../shared/index.js";
 import { removeUndefined, shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
 import { sustainabilityService } from "../../services/sustainability.service.js";

@@ -296,15 +296,11 @@ export const createSuccessResponse = <T>(data: T) => ({ success: true, data });
 
 /** @public */ export const MediaUrlResolver = {
   generateConsistentUrl: (asset: Partial<MediaAsset>) => {
-    if (!asset?.url) {
-      return null;
+    if (!asset?.url || typeof asset.url !== "string") {
+      return asset?.url || null;
     }
-    try {
-      const cleanUrl = asset.url.replace(/\/+/g, "/").replace(/:\/([^/])/, "://$1");
-      return cleanUrl;
-    } catch {
-      return asset.url;
-    }
+    const cleanUrl = asset.url.replace(/\/+/g, "/").replace(/:\/([^/])/, "://$1");
+    return cleanUrl;
   },
 };
 

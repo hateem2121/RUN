@@ -1,6 +1,5 @@
-import { reorderEntriesSchema } from "@run-remix/shared";
+import { insertAboutStatisticSchema, reorderEntriesSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { insertAboutStatisticSchema } from "../../../shared/index.js";
 import { ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";

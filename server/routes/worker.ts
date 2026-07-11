@@ -5,6 +5,7 @@ import {
   mediaProcessingJobSchema,
 } from "@run-remix/shared";
 import express from "express";
+import { ResultAsync } from "neverthrow";
 import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
 import { generateResponsiveVariants, isImageFile, processImage } from "../lib/image-processor.js";
@@ -115,168 +116,187 @@ router.post(
       retryCount: payload.retryCount || 0,
     });
 
-    try {
-      // 1. Fetch asset metadata from database
-      const numericId = Number.parseInt(payload.mediaId, 10);
-      const assetResult = await mediaService.getAssetById(numericId);
+    const result = await ResultAsync.fromPromise(
+      (async () => {
+        // 1. Fetch asset metadata from database
+        const numericId = Number.parseInt(payload.mediaId, 10);
+        const assetResult = await mediaService.getAssetById(numericId);
 
-      if (assetResult.isErr()) {
-        logger.warn("[Worker:Media] Asset not found, skipping", { mediaId: payload.mediaId });
-        return res.status(200).json({ success: true, message: "Asset not found" });
-      }
-
-      const asset = assetResult.value;
-
-      // 2. Download original file buffer
-      const buffer = await appStorageService.downloadAsset(asset.storagePath);
-
-      // 3. Idempotency Check: Skip if already processed
-      const metadata = (asset.metadata as Record<string, unknown>) || {};
-
-      // 4. Process based on operation type
-      switch (payload.operation) {
-        case "optimize":
-          if (metadata.optimized) {
-            logger.info("[Worker:Media] Asset already optimized, skipping", {
-              mediaId: payload.mediaId,
-            });
-            break;
-          }
-
-          if (isImageFile(asset.mimeType)) {
-            logger.info("[Worker:Media] Optimizing image", { mediaId: payload.mediaId });
-
-            // Generate optimized variants (SSOT: image-processor)
-            const variants = await generateResponsiveVariants(buffer, asset.filename);
-
-            // Update asset metadata to indicate optimization complete
-            await mediaService.updateAsset(numericId, {
-              metadata: {
-                ...metadata,
-                optimized: true,
-                optimizedAt: new Date().toISOString(),
-              },
-              imageVariants: variants,
-            });
-          }
-          break;
-
-        case "metadata": {
-          if (metadata.metadataExtracted) {
-            logger.info("[Worker:Media] Metadata already extracted, skipping", {
-              mediaId: payload.mediaId,
-            });
-            break;
-          }
-
-          logger.info("[Worker:Media] Extracting metadata", { mediaId: payload.mediaId });
-
-          let metadataUpdate: Record<string, unknown> = {};
-
-          if (asset.mimeType.startsWith("video/")) {
-            const videoMeta = await getVideoMetadata(buffer);
-            metadataUpdate = { video: videoMeta };
-          } else if (isGLTFFile(asset.mimeType, asset.filename)) {
-            const processor = getGLTFProcessor();
-            const validation = await processor.validateForProductionUpload(buffer);
-            if (validation.valid) {
-              metadataUpdate = { gltf: { valid: true } }; // Or more detailed if needed
-            }
-          }
-
-          if (Object.keys(metadataUpdate).length > 0) {
-            await mediaService.updateAsset(numericId, {
-              metadata: {
-                ...metadata,
-                ...metadataUpdate,
-                metadataExtracted: true,
-              },
-            });
-          }
-          break;
+        if (assetResult.isErr()) {
+          logger.warn("[Worker:Media] Asset not found, skipping", { mediaId: payload.mediaId });
+          return {
+            handled: true,
+            status: 200,
+            data: { success: true, message: "Asset not found" },
+          };
         }
 
-        case "thumbnail":
-          if (asset.thumbnailUrl) {
-            logger.info("[Worker:Media] Thumbnail already exists, skipping", {
-              mediaId: payload.mediaId,
-            });
-            break;
-          }
-          // If it's an image, processImage generates a thumbnail automatically
-          if (isImageFile(asset.mimeType)) {
-            const thumbResult = await processImage(buffer, asset.filename);
+        const asset = assetResult.value;
 
-            if (thumbResult.thumbnailFilename) {
-              const thumbPath = generateOrganizedStoragePath(
-                "thumbnails",
-                thumbResult.thumbnailFilename,
-              );
+        // 2. Download original file buffer
+        const buffer = await appStorageService.downloadAsset(asset.storagePath);
+
+        // 3. Idempotency Check: Skip if already processed
+        const metadata = (asset.metadata as Record<string, unknown>) || {};
+
+        // 4. Process based on operation type
+        switch (payload.operation) {
+          case "optimize":
+            if (metadata.optimized) {
+              logger.info("[Worker:Media] Asset already optimized, skipping", {
+                mediaId: payload.mediaId,
+              });
+              break;
+            }
+
+            if (isImageFile(asset.mimeType)) {
+              logger.info("[Worker:Media] Optimizing image", { mediaId: payload.mediaId });
+
+              // Generate optimized variants (SSOT: image-processor)
+              const variants = await generateResponsiveVariants(buffer, asset.filename);
+
+              // Update asset metadata to indicate optimization complete
               await mediaService.updateAsset(numericId, {
-                thumbnailUrl: `/api/media/thumbnail/${numericId}`,
-                thumbnailFilename: thumbResult.thumbnailFilename,
-                thumbnailStoragePath: thumbPath,
+                metadata: {
+                  ...metadata,
+                  optimized: true,
+                  optimizedAt: new Date().toISOString(),
+                },
+                imageVariants: variants,
               });
             }
+            break;
+
+          case "metadata": {
+            if (metadata.metadataExtracted) {
+              logger.info("[Worker:Media] Metadata already extracted, skipping", {
+                mediaId: payload.mediaId,
+              });
+              break;
+            }
+
+            logger.info("[Worker:Media] Extracting metadata", { mediaId: payload.mediaId });
+
+            let metadataUpdate: Record<string, unknown> = {};
+
+            if (asset.mimeType.startsWith("video/")) {
+              const videoMeta = await getVideoMetadata(buffer);
+              metadataUpdate = { video: videoMeta };
+            } else if (isGLTFFile(asset.mimeType, asset.filename)) {
+              const processor = getGLTFProcessor();
+              const validation = await processor.validateForProductionUpload(buffer);
+              if (validation.valid) {
+                metadataUpdate = { gltf: { valid: true } }; // Or more detailed if needed
+              }
+            }
+
+            if (Object.keys(metadataUpdate).length > 0) {
+              await mediaService.updateAsset(numericId, {
+                metadata: {
+                  ...metadata,
+                  ...metadataUpdate,
+                  metadataExtracted: true,
+                },
+              });
+            }
+            break;
           }
-          break;
 
-        default:
-          logger.info("[Worker:Media] Operation not implemented", { operation: payload.operation });
-      }
+          case "thumbnail":
+            if (asset.thumbnailUrl) {
+              logger.info("[Worker:Media] Thumbnail already exists, skipping", {
+                mediaId: payload.mediaId,
+              });
+              break;
+            }
+            // If it's an image, processImage generates a thumbnail automatically
+            if (isImageFile(asset.mimeType)) {
+              const thumbResult = await processImage(buffer, asset.filename);
 
-      const duration = performance.now() - startTime;
-      workerTaskDuration.observe(
-        { operation: payload.operation, status: "success" },
-        duration / 1000,
-      );
+              if (thumbResult.thumbnailFilename) {
+                const thumbPath = generateOrganizedStoragePath(
+                  "thumbnails",
+                  thumbResult.thumbnailFilename,
+                );
+                await mediaService.updateAsset(numericId, {
+                  thumbnailUrl: `/api/media/thumbnail/${numericId}`,
+                  thumbnailFilename: thumbResult.thumbnailFilename,
+                  thumbnailStoragePath: thumbPath,
+                });
+              }
+            }
+            break;
 
-      // Final cleanup: remove isProcessing flag if all processing is likely done
-      // Note: In a real system, we'd check if ALL expected tasks for this asset are done.
-      // For now, we'll just clear it if this was an 'optimize' or 'metadata' task.
-      if (payload.operation === "optimize" || payload.operation === "metadata") {
-        const currentAssetResult = await mediaService.getAssetById(numericId);
-        if (currentAssetResult.isOk()) {
-          const currentMeta = (currentAssetResult.value.metadata as Record<string, unknown>) || {};
-          await mediaService.updateAsset(numericId, {
-            metadata: {
-              ...currentMeta,
-              isProcessing: false,
-              processedAt: new Date().toISOString(),
-            },
-          });
+          default:
+            logger.info("[Worker:Media] Operation not implemented", {
+              operation: payload.operation,
+            });
         }
-      }
 
-      logger.info("[Worker:Media] Task completed", {
-        mediaId: payload.mediaId,
-        operation: payload.operation,
-        durationMs: Math.round(duration),
-      });
+        // Final cleanup: remove isProcessing flag if all processing is likely done
+        if (payload.operation === "optimize" || payload.operation === "metadata") {
+          const currentAssetResult = await mediaService.getAssetById(numericId);
+          if (currentAssetResult.isOk()) {
+            const currentMeta =
+              (currentAssetResult.value.metadata as Record<string, unknown>) || {};
+            await mediaService.updateAsset(numericId, {
+              metadata: {
+                ...currentMeta,
+                isProcessing: false,
+                processedAt: new Date().toISOString(),
+              },
+            });
+          }
+        }
 
-      return res.status(200).json({
-        success: true,
-        durationMs: Math.round(duration),
-      });
-    } catch (error) {
-      const duration = (performance.now() - startTime) / 1000;
-      workerTaskDuration.observe({ operation: payload.operation, status: "error" }, duration);
+        return { handled: true, status: 200, data: { success: true } };
+      })(),
+      (error) => error as Error,
+    );
 
-      logger.error(
-        "[Worker:Media] Processing failed",
-        {
+    return result.match(
+      (handledResponse) => {
+        const duration = performance.now() - startTime;
+        workerTaskDuration.observe(
+          { operation: payload.operation, status: "success" },
+          duration / 1000,
+        );
+
+        logger.info("[Worker:Media] Task completed", {
           mediaId: payload.mediaId,
           operation: payload.operation,
-        },
-        error as Error,
-      );
+          durationMs: Math.round(duration),
+        });
 
-      // Return 500 to trigger retry
-      return res.status(500).json({
-        error: "Processing failed",
-        message: error instanceof Error ? error.message : String(error),
-      });
-    }
+        if (handledResponse?.handled) {
+          return res.status(handledResponse.status).json(handledResponse.data);
+        }
+
+        return res.status(200).json({
+          success: true,
+          durationMs: Math.round(duration),
+        });
+      },
+      (error) => {
+        const duration = (performance.now() - startTime) / 1000;
+        workerTaskDuration.observe({ operation: payload.operation, status: "error" }, duration);
+
+        logger.error(
+          "[Worker:Media] Processing failed",
+          {
+            mediaId: payload.mediaId,
+            operation: payload.operation,
+          },
+          error,
+        );
+
+        // Return 500 to trigger retry
+        return res.status(500).json({
+          error: "Processing failed",
+          message: error instanceof Error ? error.message : String(error),
+        });
+      },
+    );
   },
 );
 
@@ -310,54 +330,62 @@ router.post(
 
     logger.info(`[Worker:Cache] Processing cache invalidation task for target: ${target}`);
 
-    try {
-      const { CacheOperations } = await import("../lib/cache/cache-strategies.js");
+    const result = await ResultAsync.fromPromise(
+      (async () => {
+        const { CacheOperations } = await import("../lib/cache/cache-strategies.js");
 
-      switch (target) {
-        case "homepage":
-          await CacheOperations.invalidateHomepage();
-          break;
-        case "manufacturing":
-          await CacheOperations.invalidateManufacturing();
-          break;
-        case "categories":
-          await CacheOperations.invalidateCategories(id);
-          break;
-        case "products":
-          await CacheOperations.invalidateProducts(id);
-          break;
-        case "about":
-          await CacheOperations.invalidateAbout();
-          break;
-        case "sustainability":
-          await CacheOperations.invalidateSustainability();
-          break;
-        case "technology":
-          await CacheOperations.invalidateTechnology();
-          break;
-        case "contact":
-          await CacheOperations.invalidateContact();
-          break;
-      }
+        switch (target) {
+          case "homepage":
+            await CacheOperations.invalidateHomepage();
+            break;
+          case "manufacturing":
+            await CacheOperations.invalidateManufacturing();
+            break;
+          case "categories":
+            await CacheOperations.invalidateCategories(id);
+            break;
+          case "products":
+            await CacheOperations.invalidateProducts(id);
+            break;
+          case "about":
+            await CacheOperations.invalidateAbout();
+            break;
+          case "sustainability":
+            await CacheOperations.invalidateSustainability();
+            break;
+          case "technology":
+            await CacheOperations.invalidateTechnology();
+            break;
+          case "contact":
+            await CacheOperations.invalidateContact();
+            break;
+        }
+      })(),
+      (error) => error as Error,
+    );
 
-      const duration = performance.now() - startTime;
-      workerTaskDuration.observe(
-        { operation: "invalidate-cache", status: "success" },
-        duration / 1000,
-      );
+    return result.match(
+      () => {
+        const duration = performance.now() - startTime;
+        workerTaskDuration.observe(
+          { operation: "invalidate-cache", status: "success" },
+          duration / 1000,
+        );
 
-      logger.info(`[Worker:Cache] Cache invalidation completed for ${target}`);
-      return res.status(200).json({ success: true });
-    } catch (error) {
-      const duration = (performance.now() - startTime) / 1000;
-      workerTaskDuration.observe({ operation: "invalidate-cache", status: "error" }, duration);
+        logger.info(`[Worker:Cache] Cache invalidation completed for ${target}`);
+        return res.status(200).json({ success: true });
+      },
+      (error) => {
+        const duration = (performance.now() - startTime) / 1000;
+        workerTaskDuration.observe({ operation: "invalidate-cache", status: "error" }, duration);
 
-      logger.error(`[Worker:Cache] Cache invalidation failed for ${target}`, error as Error);
-      return res.status(500).json({
-        error: "Cache invalidation failed",
-        message: error instanceof Error ? error.message : String(error),
-      });
-    }
+        logger.error(`[Worker:Cache] Cache invalidation failed for ${target}`, error);
+        return res.status(500).json({
+          error: "Cache invalidation failed",
+          message: error instanceof Error ? error.message : String(error),
+        });
+      },
+    );
   },
 );
 

@@ -247,7 +247,7 @@ describe("Media System Integration Tests", () => {
 });
 
 // Test utilities
-export const testUtils = {
+const testUtils = {
   async createTestAsset() {
     const { getStorage } = await import("../../../server/lib/storage-singleton.js");
     return await getStorage().createMediaAsset({

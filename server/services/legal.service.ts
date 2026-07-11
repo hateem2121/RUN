@@ -1,9 +1,9 @@
-import { err, ok, type Result } from "neverthrow";
 import {
   type InsertLegalPolicy,
   insertLegalPolicySchema,
   type LegalPolicy,
-} from "../../shared/index.js";
+} from "@run-remix/shared";
+import { err, ok, type Result } from "neverthrow";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { legalRepository } from "../lib/db/repositories/index.js";
 import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";

@@ -1,4 +1,3 @@
-import { asc, eq, sql } from "drizzle-orm";
 import {
   type InsertTechnologyCta,
   type InsertTechnologyEquipment,
@@ -21,7 +20,8 @@ import {
   technologyInnovations,
   technologyResearch,
   technologyRoadmap,
-} from "../../../../../shared/index.js";
+} from "@run-remix/shared";
+import { asc, eq, sql } from "drizzle-orm";
 import { db } from "../../../../db.js";
 import { emitCacheInvalidation } from "../../../cache/cache-events.js";
 import { CacheOperations } from "../../../cache/cache-strategies.js";

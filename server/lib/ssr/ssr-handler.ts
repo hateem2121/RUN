@@ -8,7 +8,7 @@ import { logger } from "../monitoring/logger.js";
 
 // Shared context key for CSP nonce
 const nonceContext = createContext<string>("");
-(globalThis as any).__nonceContext = nonceContext;
+(globalThis as unknown as { __nonceContext: typeof nonceContext }).__nonceContext = nonceContext;
 
 // Resolve monorepo root based on process.cwd() to support both tsc (nested) and esbuild (flattened)
 // The server is typically started from the 'server' directory or the monorepo root.

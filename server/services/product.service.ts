@@ -1,13 +1,13 @@
 import { trace } from "@opentelemetry/api";
-import { err, ok, type Result } from "neverthrow";
 import type {
   InsertProduct,
   Product,
   ProductDetail,
   ProductDetailWithContext,
   ProductSummary,
-} from "../../shared/index.js";
-import { insertProductSchema } from "../../shared/index.js";
+} from "@run-remix/shared";
+import { insertProductSchema } from "@run-remix/shared";
+import { err, ok, type Result } from "neverthrow";
 import { retryDbOperation } from "../lib/db/db-retry.js";
 import { productRepository } from "../lib/db/repositories/index.js";
 import { type AppError, DatabaseError, NotFoundError } from "../lib/errors.js";

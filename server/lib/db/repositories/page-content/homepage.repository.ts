@@ -1,4 +1,3 @@
-import { asc, eq } from "drizzle-orm";
 import {
   type HomepageFeaturedProductsSettings,
   type HomepageHero,
@@ -18,7 +17,8 @@ import {
   type InsertLogoAnimationSettings,
   type LogoAnimationSettings,
   logoAnimationSettings,
-} from "../../../../../shared/index.js";
+} from "@run-remix/shared";
+import { asc, eq } from "drizzle-orm";
 import { db } from "../../../../db.js";
 import { invalidateHtmlCache } from "../../../../middleware/ssr-cache.js";
 import { emitCacheInvalidation } from "../../../cache/cache-events.js";

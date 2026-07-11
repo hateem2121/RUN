@@ -373,9 +373,8 @@ export function BlogManagement() {
           <DialogHeader>
             <DialogTitle>{editingPost ? "Edit Blog Post" : "Create New Blog Post"}</DialogTitle>
           </DialogHeader>
-
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form action={() => form.handleSubmit(onSubmit)()} className="space-y-4">
               <Tabs defaultValue="content" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="content">Content</TabsTrigger>

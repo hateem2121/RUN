@@ -1,9 +1,8 @@
-import { reorderEntriesSchema } from "@run-remix/shared";
+import type { InsertAboutTimelineEntry } from "@run-remix/shared";
+import { insertAboutTimelineEntrySchema, reorderEntriesSchema } from "@run-remix/shared";
 import { Router } from "express";
 import type { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
-import type { InsertAboutTimelineEntry } from "../../../shared/index.js";
-import { insertAboutTimelineEntrySchema } from "../../../shared/index.js";
 import { ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
@@ -24,12 +23,15 @@ router.get("/", async (_req, res) => {
     "Get timeline entries",
   );
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  logger.info(`[AboutTimeline] Retrieved ${result.value.length} entries`);
-  return res.json(result.value);
+  return result.match(
+    (entries) => {
+      logger.info(`[AboutTimeline] Retrieved ${entries.length} entries`);
+      return res.json(entries);
+    },
+    (error) => {
+      throw error;
+    },
+  );
 });
 
 /**
@@ -42,17 +44,18 @@ router.get("/:id", async (req, res) => {
 
   const result = await withTimeout(aboutService.getTimelineEntry(id), 10000, "Get timeline entry");
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  const entry = result.value;
-  if (!entry) {
-    throw new ValidationError(`Timeline entry ${id} not found`);
-  }
-
-  logger.info(`[AboutTimeline] Retrieved entry ${id}`);
-  return res.json(entry);
+  return result.match(
+    (entry) => {
+      if (!entry) {
+        throw new ValidationError(`Timeline entry ${id} not found`);
+      }
+      logger.info(`[AboutTimeline] Retrieved entry ${id}`);
+      return res.json(entry);
+    },
+    (error) => {
+      throw error;
+    },
+  );
 });
 
 /**
@@ -70,12 +73,15 @@ router.post(
       "Create timeline entry",
     );
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    logger.info(`[AboutTimeline] Created entry ${result.value.id}`);
-    return res.status(201).json(result.value);
+    return result.match(
+      (entry) => {
+        logger.info(`[AboutTimeline] Created entry ${entry.id}`);
+        return res.status(201).json(entry);
+      },
+      (error) => {
+        throw error;
+      },
+    );
   },
 );
 
@@ -100,12 +106,15 @@ router.patch(
       "Update timeline entry",
     );
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    logger.info(`[AboutTimeline] Updated entry ${id}`);
-    return res.json(result.value);
+    return result.match(
+      (updatedEntry) => {
+        logger.info(`[AboutTimeline] Updated entry ${id}`);
+        return res.json(updatedEntry);
+      },
+      (error) => {
+        throw error;
+      },
+    );
   },
 );
 
@@ -123,12 +132,15 @@ router.delete("/:id", authService.requireAdmin, async (req, res) => {
     "Delete timeline entry",
   );
 
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  logger.info(`[AboutTimeline] Deleted entry ${id}`);
-  return res.status(204).send();
+  return result.match(
+    () => {
+      logger.info(`[AboutTimeline] Deleted entry ${id}`);
+      return res.status(204).send();
+    },
+    (error) => {
+      throw error;
+    },
+  );
 });
 
 /**
@@ -150,12 +162,15 @@ router.patch(
       "Reorder timeline entries",
     );
 
-    if (result.isErr()) {
-      throw result.error;
-    }
-
-    logger.info(`[AboutTimeline] Reordered ${orderedIds.length} entries`);
-    return res.json({ success: true, updated: orderedIds.length });
+    return result.match(
+      () => {
+        logger.info(`[AboutTimeline] Reordered ${orderedIds.length} entries`);
+        return res.json({ success: true, updated: orderedIds.length });
+      },
+      (error) => {
+        throw error;
+      },
+    );
   },
 );
 

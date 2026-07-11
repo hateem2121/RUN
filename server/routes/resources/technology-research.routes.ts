@@ -1,6 +1,5 @@
-import { reorderResearchSchema } from "@run-remix/shared";
+import { insertTechnologyResearchSchema, reorderResearchSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { insertTechnologyResearchSchema } from "../../../shared/index.js";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined, shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";

@@ -1,5 +1,5 @@
+import { type InsertService, type Service, services } from "@run-remix/shared";
 import { asc, eq } from "drizzle-orm";
-import { type InsertService, type Service, services } from "../../../../../shared/index.js";
 import { db } from "../../../../db.js";
 import { invalidateHtmlCache } from "../../../../middleware/ssr-cache.js";
 import { emitCacheInvalidation } from "../../../cache/cache-events.js";
