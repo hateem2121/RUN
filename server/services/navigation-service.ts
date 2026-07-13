@@ -3,17 +3,17 @@ import type {
   NavigationGlassmorphismSettings,
   NavigationItem,
 } from "@run-remix/shared";
-import { err, ok, type Result } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { safeQuery } from "../db.js";
 import { CacheKeys, CacheOperations } from "../lib/cache/cache-strategies.js";
 import { twoTierBatchCache } from "../lib/cache/two-tier-batch.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
-import { miscRepository } from "../lib/db/repositories/index.js";
 import { AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 import { withTimeout } from "../lib/resilience/request-timeout.js";
 import { removeUndefined } from "../lib/utilities/core-utils.js";
+import { miscRepository } from "./repositories/index.js";
 
 const CACHE_TTL_NAVIGATION = 7200; // 2 hours
 const CACHE_TTL_STATIC = 10800; // 3 hours
@@ -48,55 +48,63 @@ export const NavigationService = {
     const startTime = performance.now();
     const cacheKey = CacheKeys.navigation.items();
 
-    try {
-      const { data, benchmark } = (await twoTierBatchCache.get(
-        cacheKey,
-        async () => {
-          const result = await safeQuery(
-            withCircuit(
-              "get-navigation-items",
-              () => withTimeout(miscRepository.getNavigationItems(), 5000, "Get navigation items"),
-              DB_CIRCUIT_OPTIONS,
-            ),
-          );
+    return ResultAsync.fromPromise(
+      (async (): Promise<{
+        data: NavigationItem[];
+        metadata: { cacheHit: string; responseTime: number; ttl: number };
+      }> => {
+        const { data, benchmark } = (await twoTierBatchCache.get(
+          cacheKey,
+          async () => {
+            const result = await safeQuery(
+              withCircuit(
+                "get-navigation-items",
+                () =>
+                  withTimeout(miscRepository.getNavigationItems(), 5000, "Get navigation items"),
+                DB_CIRCUIT_OPTIONS,
+              ),
+            );
 
-          if (result.isErr()) return Promise.reject(result.error);
-          return normalizeItems(result.value);
-        },
-        {
-          bypassCache,
-          swrConfig: {
-            ttl: CACHE_TTL_NAVIGATION * 1000,
-            staleWhileRevalidate: CACHE_TTL_NAVIGATION * 2 * 1000,
+            if (result.isErr()) return Promise.reject(result.error);
+            return normalizeItems(result.value);
           },
-        },
-      )) || { data: [], benchmark: { hit: "MISS" } };
+          {
+            bypassCache,
+            swrConfig: {
+              ttl: CACHE_TTL_NAVIGATION * 1000,
+              staleWhileRevalidate: CACHE_TTL_NAVIGATION * 2 * 1000,
+            },
+          },
+        )) || { data: [], benchmark: { hit: "MISS" } };
 
-      if (!data) {
-        return ok({
-          data: [],
+        if (!data) {
+          return {
+            data: [],
+            metadata: {
+              cacheHit: "MISS",
+              responseTime: performance.now() - startTime,
+              ttl: 0,
+            },
+          };
+        }
+
+        return {
+          data: data as NavigationItem[],
           metadata: {
-            cacheHit: "MISS",
+            cacheHit: benchmark.hit,
             responseTime: performance.now() - startTime,
-            ttl: 0,
+            ttl: CACHE_TTL_NAVIGATION,
           },
-        });
-      }
-
-      return ok({
-        data: data as NavigationItem[],
-        metadata: {
-          cacheHit: benchmark.hit,
-          responseTime: performance.now() - startTime,
-          ttl: CACHE_TTL_NAVIGATION,
-        },
-      });
-    } catch (error) {
-      if (error instanceof AppError) {
-        return err(error);
-      }
-      return err(new InternalError("Failed to fetch navigation items", { error }));
-    }
+        };
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        if (error instanceof AppError) {
+          return error;
+        }
+        return new InternalError("Failed to fetch navigation items", { error });
+      },
+    );
   },
 
   getItem: async (id: number): Promise<Result<NavigationItem, AppError>> => {

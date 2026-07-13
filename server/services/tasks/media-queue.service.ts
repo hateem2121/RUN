@@ -8,7 +8,7 @@
 
 import { CloudTasksClient, type protos } from "@google-cloud/tasks";
 import type { MediaOperation, MediaProcessingJobData } from "@run-remix/shared";
-import { logger } from "../../monitoring/logger.js";
+import { logger } from "../../lib/monitoring/logger.js";
 
 // Environment configuration
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT || process.env.GCP_PROJECT_ID;

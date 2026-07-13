@@ -1,4 +1,4 @@
-import type { IStorage } from "../repositories/storage-interfaces.js";
+import type { IStorage } from "../services/repositories/storage-interfaces.js";
 
 /**
  * Storage Singleton

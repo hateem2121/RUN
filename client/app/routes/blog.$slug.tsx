@@ -32,7 +32,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
   ];
 }
 
-export default function Component({ loaderData }: Route.ComponentProps) {
+export function Component({ loaderData }: Route.ComponentProps) {
   const { post } = loaderData;
 
   const dateStr = new Date(post.publishedAt || post.createdAt).toLocaleDateString("en-US", {

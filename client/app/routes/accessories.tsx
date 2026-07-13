@@ -60,7 +60,7 @@ export async function loader() {
   return { dehydratedState: dehydrate(queryClient) };
 }
 
-export default function Component() {
+export function Component() {
   const loaderData = useLoaderData<typeof loader>();
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedAccessories, setExpandedAccessories] = useState<Set<number>>(new Set());

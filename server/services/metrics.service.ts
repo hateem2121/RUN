@@ -1,7 +1,7 @@
-import { err, ok, type Result } from "neverthrow";
+import { type Result, ResultAsync } from "neverthrow";
 import { getPoolMetrics } from "../db.js";
 import { queryPerformanceMonitor } from "../lib/db/query-performance.js";
-import { type AppError, DatabaseError } from "../lib/errors.js";
+import { AppError, DatabaseError } from "../lib/errors.js";
 
 class MetricsService {
   private static instance: MetricsService;
@@ -18,17 +18,21 @@ class MetricsService {
   public async getDatabaseMetrics(): Promise<
     Result<{ averageResponseTime: number; currentConcurrentQueries: number }, AppError>
   > {
-    try {
-      const dbStats = queryPerformanceMonitor.getPerformanceStats();
-      const poolMetrics = getPoolMetrics();
+    return ResultAsync.fromPromise(
+      (async (): Promise<{ averageResponseTime: number; currentConcurrentQueries: number }> => {
+        const dbStats = queryPerformanceMonitor.getPerformanceStats();
+        const poolMetrics = getPoolMetrics();
 
-      return ok({
-        averageResponseTime: dbStats.averageResponseTime,
-        currentConcurrentQueries: poolMetrics.currentConcurrentQueries,
-      });
-    } catch (error) {
-      return err(new DatabaseError("Failed to get database metrics", { cause: error }));
-    }
+        return {
+          averageResponseTime: dbStats.averageResponseTime,
+          currentConcurrentQueries: poolMetrics.currentConcurrentQueries,
+        };
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError("Failed to get database metrics", { cause: error });
+      },
+    );
   }
 }
 

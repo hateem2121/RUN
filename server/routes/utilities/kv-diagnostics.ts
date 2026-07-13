@@ -2,15 +2,15 @@
 // Direct access to PostgreSQL data using actual available methods
 
 import type { Express } from "express";
+import { ValidationError } from "../../lib/errors.js";
+import { logger } from "../../lib/monitoring/logger.js";
 import {
   accessoryRepository,
   homepageRepository,
   mediaRepository,
   miscRepository,
   productRepository,
-} from "../../lib/db/repositories/index.js";
-import { ValidationError } from "../../lib/errors.js";
-import { logger } from "../../lib/monitoring/logger.js";
+} from "../../services/repositories/index.js";
 
 /**
  * REDACT SENSITIVE DATA

@@ -9,7 +9,7 @@
  */
 
 import { invalidateHtmlCache } from "../../middleware/ssr-cache.js";
-import type { IStorage } from "../../repositories/storage-interfaces.js";
+import type { IStorage } from "../../services/repositories/storage-interfaces.js";
 import { logger } from "../monitoring/logger.js";
 import { CacheKeys, InvalidationPatterns } from "./cache-keys.js";
 import { UnifiedCache } from "./unified-cache.js";

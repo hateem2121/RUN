@@ -3,7 +3,7 @@ import { Outlet } from "react-router";
 import { Footer } from "@/components/layout/Footer";
 import { QuoteOverlay } from "@/components/navigation/QuoteOverlay";
 
-export default function Component() {
+export function Component() {
   useEffect(() => {
     let scroll: { destroy: () => void } | undefined;
     import("locomotive-scroll").then((LocomotiveScroll) => {

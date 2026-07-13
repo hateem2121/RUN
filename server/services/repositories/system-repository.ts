@@ -1,9 +1,9 @@
 import { type AuditLog, auditLogs, type InsertAuditLog } from "@run-remix/shared";
 import { desc, sql } from "drizzle-orm";
-import { db } from "../../../db.js";
-import { decrypt } from "../../encryption.js";
-import { logger } from "../../monitoring/logger.js";
-import { StorageSingleton } from "../../storage-singleton.js";
+import { db } from "../../db.js";
+import { decrypt } from "../../lib/encryption.js";
+import { logger } from "../../lib/monitoring/logger.js";
+import { StorageSingleton } from "../../lib/storage-singleton.js";
 
 /** @public */ export class SystemRepository {
   /**
@@ -29,7 +29,8 @@ import { StorageSingleton } from "../../storage-singleton.js";
       return StorageSingleton.getInstance().getRecentAuditLogs(limit);
     }
     const logs = await db.select().from(auditLogs).orderBy(desc(auditLogs.createdAt)).limit(limit);
-    return logs.map((log) => this.decryptAuditLog(log));
+    // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+    return logs.map((log: any) => this.decryptAuditLog(log));
   }
 
   /**

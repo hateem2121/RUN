@@ -91,7 +91,7 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Component() {
+export function Component() {
   const loaderData = useLoaderData<typeof loader>();
   const containerRef = useRef<HTMLDivElement>(null);
 

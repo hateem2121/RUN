@@ -230,7 +230,7 @@ type LoaderData = {
   batchData: TechnologyBatchResponse | null;
 };
 
-export default function Component({ loaderData }: { loaderData: LoaderData }) {
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   const { batchData } = loaderData;
 
   return <TechnologyInner batchData={batchData} />;

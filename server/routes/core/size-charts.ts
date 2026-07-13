@@ -8,10 +8,10 @@ import { removeUndefined } from "../../lib/utilities/core-utils.js";
 
 import { insertSizeChartSchema } from "@run-remix/shared";
 import { Router } from "express";
-import { miscRepository } from "../../lib/db/repositories/index.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
+import { miscRepository } from "../../services/repositories/index.js";
 
 const router = Router();
 

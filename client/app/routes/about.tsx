@@ -43,7 +43,7 @@ export function meta({ data }: { data: LoaderData | undefined }) {
   ];
 }
 
-export default function Component({ loaderData }: { loaderData: LoaderData }) {
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   const { batchData } = loaderData;
 
   return <AboutPageContent batchData={batchData} />;

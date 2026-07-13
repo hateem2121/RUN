@@ -19,15 +19,15 @@ import type {
 } from "@run-remix/shared";
 import { folders, mediaAssets } from "@run-remix/shared";
 import { and, asc, desc, eq, ilike, inArray, isNull, or, sql } from "drizzle-orm";
-import { db } from "../../../db.js";
-import { emitCacheInvalidation } from "../../cache/cache-events.js";
-import { CacheKeys, InvalidationPatterns } from "../../cache/cache-keys.js";
-import { UnifiedCache } from "../../cache/unified-cache.js";
-import { CacheInvalidationError, MediaNotFoundError } from "../../errors/media-errors.js";
-import { logger } from "../../monitoring/logger.js";
-import { StorageSingleton } from "../../storage-singleton.js";
-import { dbCircuitBreaker } from "../db-circuit-breaker.js";
-import { queryPerformanceMonitor } from "../query-performance.js";
+import { db } from "../../db.js";
+import { emitCacheInvalidation } from "../../lib/cache/cache-events.js";
+import { CacheKeys, InvalidationPatterns } from "../../lib/cache/cache-keys.js";
+import { UnifiedCache } from "../../lib/cache/unified-cache.js";
+import { dbCircuitBreaker } from "../../lib/db/db-circuit-breaker.js";
+import { queryPerformanceMonitor } from "../../lib/db/query-performance.js";
+import { CacheInvalidationError, MediaNotFoundError } from "../../lib/errors/media-errors.js";
+import { logger } from "../../lib/monitoring/logger.js";
+import { StorageSingleton } from "../../lib/storage-singleton.js";
 
 const unifiedCache = UnifiedCache.getInstance();
 // PHASE 1 OPTIMIZATION: Use optimized media TTL from cache presets (6 hours)
@@ -215,7 +215,8 @@ export class MediaRepository {
     logger.debug(
       `[MediaRepo] getMediaAssets(${limit}, ${offset}) returned ${result.length} items. First 3 IDs: ${result
         .slice(0, 3)
-        .map((r) => r.id)
+        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+        .map((r: any) => r.id)
         .join(", ")}`,
     );
 

@@ -1,9 +1,10 @@
 import { accessories, products } from "@run-remix/shared";
 import { and, desc, eq, isNull, sql } from "drizzle-orm";
 import { db } from "../db.js";
+import { logger } from "../lib/monitoring/logger.js";
 
 async function runBenchmark() {
-  console.log("Starting Query Benchmarks...\n");
+  logger.info("Starting Query Benchmarks...\n");
 
   const queries = [
     {
@@ -31,7 +32,7 @@ async function runBenchmark() {
   ];
 
   for (const q of queries) {
-    console.log(`--- ${q.name} ---`);
+    logger.info(`--- ${q.name} ---`);
     try {
       const qBuilder = q.buildQuery();
       const rawSql = sql`EXPLAIN ANALYZE ${qBuilder}`;
@@ -39,19 +40,19 @@ async function runBenchmark() {
       const start = Date.now();
       const res = await db.execute(rawSql);
       const duration = Date.now() - start;
-      console.log(`Execution wrapper took ${duration}ms`);
+      logger.info(`Execution wrapper took ${duration}ms`);
 
       // Print EXPLAIN output
       for (const row of res.rows) {
-        console.log((row as Record<string, unknown>)["QUERY PLAN"]);
+        logger.info((row as Record<string, string>)["QUERY PLAN"] || "");
       }
     } catch (e) {
       console.error(`Failed: ${(e as Error).message}`);
     }
-    console.log("\n");
+    logger.info("\n");
   }
 
-  console.log("Benchmarking complete.");
+  logger.info("Benchmarking complete.");
   process.exit(0);
 }
 

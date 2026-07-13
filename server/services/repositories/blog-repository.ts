@@ -1,9 +1,9 @@
 import type { BlogCategory, BlogPost, InsertBlogCategory, InsertBlogPost } from "@run-remix/shared";
 import { blogCategories, blogPosts } from "@run-remix/shared";
 import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
-import { db } from "../../../db.js";
-import type { IBlogRepository } from "../../../repositories/storage-interfaces.js";
-import { StorageSingleton } from "../../storage-singleton.js";
+import { db } from "../../db.js";
+import { StorageSingleton } from "../../lib/storage-singleton.js";
+import type { IBlogRepository } from "./storage-interfaces.js";
 
 export class BlogRepository implements IBlogRepository {
   async getBlogPosts(

@@ -7,10 +7,9 @@
 import { BigQuery } from "@google-cloud/bigquery";
 import { CloudTasksClient } from "@google-cloud/tasks";
 import type { Inquiry, InsertInquiry } from "@run-remix/shared";
-import { err, ok, type Result } from "neverthrow";
+import { err, type Result, ResultAsync } from "neverthrow";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
-import { miscRepository } from "../lib/db/repositories/index.js";
-import { type AppError, DatabaseError, NotFoundError, ValidationError } from "../lib/errors.js";
+import { AppError, DatabaseError, NotFoundError, ValidationError } from "../lib/errors.js";
 import {
   emailService,
   type InquiryEmailData as InquiryEmailJobData,
@@ -22,6 +21,7 @@ import {
   withCircuit,
 } from "../lib/resilience/circuit-breaker.js";
 import { verifyRecaptcha } from "../lib/security/recaptcha-verify.js";
+import { miscRepository } from "./repositories/index.js";
 
 const CACHE_TTL_INQUIRIES = 300; // 5 minutes
 
@@ -111,44 +111,48 @@ export class InquiryService {
    * Centralizes all side-effects (Encryption, Webhooks, BigQuery, Cloud Tasks).
    */
   async createInquiry(data: InsertInquiry): Promise<Result<Inquiry, AppError>> {
-    try {
-      const inquiry = await withCircuit(
-        "create-inquiry",
-        () => miscRepository.createInquiry(data),
-        DB_CIRCUIT_OPTIONS,
-      );
-
-      // 1. Invalidate Relevant Caches
-      try {
-        await unifiedCache.delete("inquiries:stats");
-      } catch (error) {
-        logger.debug("[InquiryService] Cache invalidation failed:", error);
-      }
-
-      // 2. Trigger Webhook
-      try {
-        const { webhookService } = await import("./webhook-service.js");
-        webhookService.trigger("inquiry.created", inquiry);
-      } catch (error) {
-        logger.error("[InquiryService] Failed to trigger inquiry webhook:", error);
-      }
-
-      // 3. Stream to BigQuery (Fire and Forget)
-      if (process.env.NODE_ENV === "production" && GOOGLE_CLOUD_PROJECT) {
-        this.streamToBigQuery(inquiry).catch((err) =>
-          logger.error("[InquiryService] BigQuery streaming failed:", err),
+    return ResultAsync.fromPromise(
+      (async (): Promise<Inquiry> => {
+        const inquiry = await withCircuit(
+          "create-inquiry",
+          () => miscRepository.createInquiry(data),
+          DB_CIRCUIT_OPTIONS,
         );
-      }
 
-      // 4. Dispatch Email Automation
-      this.dispatchEmailAutomation(inquiry).catch((err) =>
-        logger.error("[InquiryService] Email automation failed:", err),
-      );
+        // 1. Invalidate Relevant Caches
+        try {
+          await unifiedCache.delete("inquiries:stats");
+        } catch (error) {
+          logger.debug("[InquiryService] Cache invalidation failed:", error);
+        }
 
-      return ok(inquiry);
-    } catch (error) {
-      return err(new DatabaseError("Failed to create inquiry", { cause: error }));
-    }
+        // 2. Trigger Webhook
+        try {
+          const { webhookService } = await import("./webhook-service.js");
+          webhookService.trigger("inquiry.created", inquiry);
+        } catch (error) {
+          logger.error("[InquiryService] Failed to trigger inquiry webhook:", error);
+        }
+
+        // 3. Stream to BigQuery (Fire and Forget)
+        if (process.env.NODE_ENV === "production" && GOOGLE_CLOUD_PROJECT) {
+          this.streamToBigQuery(inquiry).catch((err) =>
+            logger.error("[InquiryService] BigQuery streaming failed:", err),
+          );
+        }
+
+        // 4. Dispatch Email Automation
+        this.dispatchEmailAutomation(inquiry).catch((err) =>
+          logger.error("[InquiryService] Email automation failed:", err),
+        );
+
+        return inquiry;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError("Failed to create inquiry", { cause: error });
+      },
+    );
   }
 
   /**
@@ -268,32 +272,39 @@ export class InquiryService {
     const page = params.page || 1;
     const limit = params.limit || 20;
 
-    try {
-      const result = await withCircuit(
-        "list-inquiries",
-        () =>
-          miscRepository.listInquiries({
+    return ResultAsync.fromPromise(
+      (async (): Promise<{
+        data: Inquiry[];
+        pagination: { total: number; page: number; limit: number; totalPages: number };
+      }> => {
+        const result = await withCircuit(
+          "list-inquiries",
+          () =>
+            miscRepository.listInquiries({
+              page,
+              limit,
+              status: params.status,
+              source: params.source,
+              search: params.search,
+            }),
+          DB_CIRCUIT_OPTIONS,
+        );
+
+        return {
+          data: result.inquiries,
+          pagination: {
+            total: result.total,
             page,
             limit,
-            status: params.status,
-            source: params.source,
-            search: params.search,
-          }),
-        DB_CIRCUIT_OPTIONS,
-      );
-
-      return ok({
-        data: result.inquiries,
-        pagination: {
-          total: result.total,
-          page,
-          limit,
-          totalPages: Math.ceil(result.total / limit),
-        },
-      });
-    } catch (error) {
-      return err(new DatabaseError("Failed to list inquiries", { cause: error }));
-    }
+            totalPages: Math.ceil(result.total / limit),
+          },
+        };
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError("Failed to list inquiries", { cause: error });
+      },
+    );
   }
 
   /**
@@ -307,36 +318,44 @@ export class InquiryService {
   > {
     const cacheKey = "inquiries:stats";
 
-    try {
-      const cached = await unifiedCache.get<{
+    return ResultAsync.fromPromise(
+      (async (): Promise<{
         byStatus: Record<string, number>;
         bySource: Record<string, number>;
         recentCount: number;
-      }>(cacheKey);
+      }> => {
+        const cached = await unifiedCache.get<{
+          byStatus: Record<string, number>;
+          bySource: Record<string, number>;
+          recentCount: number;
+        }>(cacheKey);
 
-      if (cached) {
-        return ok(cached);
-      }
+        if (cached) {
+          return cached;
+        }
 
-      const stats = await withCircuit(
-        "get-inquiry-stats",
-        () => miscRepository.getInquiryStats(),
-        DB_CIRCUIT_OPTIONS,
-      );
-      const defaultStats = {
-        byStatus: { new: 0, read: 0, responded: 0, archived: 0 },
-        bySource: {},
-        recentCount: 0,
-      };
+        const stats = await withCircuit(
+          "get-inquiry-stats",
+          () => miscRepository.getInquiryStats(),
+          DB_CIRCUIT_OPTIONS,
+        );
+        const defaultStats = {
+          byStatus: { new: 0, read: 0, responded: 0, archived: 0 },
+          bySource: {},
+          recentCount: 0,
+        };
 
-      const finalStats = stats || defaultStats;
-      await unifiedCache.set(cacheKey, finalStats, CACHE_TTL_INQUIRIES * 1000);
+        const finalStats = stats || defaultStats;
+        await unifiedCache.set(cacheKey, finalStats, CACHE_TTL_INQUIRIES * 1000);
 
-      return ok(finalStats);
-    } catch (error) {
-      logger.error("[InquiryService] Failed to fetch stats:", error);
-      return err(new DatabaseError("Failed to fetch inquiry statistics", { cause: error }));
-    }
+        return finalStats;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[InquiryService] Failed to fetch stats:", error);
+        return new DatabaseError("Failed to fetch inquiry statistics", { cause: error });
+      },
+    );
   }
 
   /**
@@ -345,27 +364,31 @@ export class InquiryService {
   async getInquiryById(id: number): Promise<Result<Inquiry, AppError>> {
     const cacheKey = `inquiries:detail:${id}`;
 
-    try {
-      const cached = await unifiedCache.get<Inquiry>(cacheKey);
-      if (cached) {
-        return ok(cached);
-      }
+    return ResultAsync.fromPromise(
+      (async (): Promise<Inquiry> => {
+        const cached = await unifiedCache.get<Inquiry>(cacheKey);
+        if (cached) {
+          return cached;
+        }
 
-      const inquiry = await withCircuit(
-        "get-inquiry-by-id",
-        () => miscRepository.getInquiryById(id),
-        DB_CIRCUIT_OPTIONS,
-      );
-      if (!inquiry) {
-        return err(new NotFoundError(`Inquiry with ID ${id} not found`));
-      }
+        const inquiry = await withCircuit(
+          "get-inquiry-by-id",
+          () => miscRepository.getInquiryById(id),
+          DB_CIRCUIT_OPTIONS,
+        );
+        if (!inquiry) {
+          throw new NotFoundError(`Inquiry with ID ${id} not found`);
+        }
 
-      await unifiedCache.set(cacheKey, inquiry, CACHE_TTL_INQUIRIES * 1000);
-      return ok(inquiry);
-    } catch (error) {
-      if (error instanceof NotFoundError) return err(error);
-      return err(new DatabaseError("Failed to fetch inquiry", { cause: error }));
-    }
+        await unifiedCache.set(cacheKey, inquiry, CACHE_TTL_INQUIRIES * 1000);
+        return inquiry;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        if (error instanceof NotFoundError) return error;
+        return new DatabaseError("Failed to fetch inquiry", { cause: error });
+      },
+    );
   }
 
   /**
@@ -375,24 +398,28 @@ export class InquiryService {
     id: number,
     data: Partial<InsertInquiry>,
   ): Promise<Result<Inquiry, AppError>> {
-    try {
-      const updated = await withCircuit(
-        "update-inquiry",
-        () => miscRepository.updateInquiry(id, data),
-        DB_CIRCUIT_OPTIONS,
-      );
-      if (!updated) {
-        return err(new NotFoundError(`Inquiry with ID ${id} not found`));
-      }
+    return ResultAsync.fromPromise(
+      (async (): Promise<Inquiry> => {
+        const updated = await withCircuit(
+          "update-inquiry",
+          () => miscRepository.updateInquiry(id, data),
+          DB_CIRCUIT_OPTIONS,
+        );
+        if (!updated) {
+          throw new NotFoundError(`Inquiry with ID ${id} not found`);
+        }
 
-      await this.invalidateInquiryCaches(id);
-      logger.info(`[InquiryService] Inquiry #${id} updated`);
+        await this.invalidateInquiryCaches(id);
+        logger.info(`[InquiryService] Inquiry #${id} updated`);
 
-      return ok(updated);
-    } catch (error) {
-      if (error instanceof NotFoundError) return err(error);
-      return err(new DatabaseError("Failed to update inquiry", { cause: error }));
-    }
+        return updated;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        if (error instanceof NotFoundError) return error;
+        return new DatabaseError("Failed to update inquiry", { cause: error });
+      },
+    );
   }
 
   /**
@@ -402,48 +429,56 @@ export class InquiryService {
     id: number,
     log: { action: string; note: string; user?: string },
   ): Promise<Result<Inquiry, AppError>> {
-    try {
-      const updated = await withCircuit(
-        "add-crm-log",
-        () => miscRepository.addCrmLog(id, log),
-        DB_CIRCUIT_OPTIONS,
-      );
-      if (!updated) {
-        return err(new NotFoundError(`Inquiry with ID ${id} not found`));
-      }
+    return ResultAsync.fromPromise(
+      (async (): Promise<Inquiry> => {
+        const updated = await withCircuit(
+          "add-crm-log",
+          () => miscRepository.addCrmLog(id, log),
+          DB_CIRCUIT_OPTIONS,
+        );
+        if (!updated) {
+          throw new NotFoundError(`Inquiry with ID ${id} not found`);
+        }
 
-      await this.invalidateInquiryCaches(id);
-      logger.info(`[InquiryService] CRM log added to inquiry #${id}`);
+        await this.invalidateInquiryCaches(id);
+        logger.info(`[InquiryService] CRM log added to inquiry #${id}`);
 
-      return ok(updated);
-    } catch (error) {
-      if (error instanceof NotFoundError) return err(error);
-      return err(new DatabaseError("Failed to add CRM log", { cause: error }));
-    }
+        return updated;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        if (error instanceof NotFoundError) return error;
+        return new DatabaseError("Failed to add CRM log", { cause: error });
+      },
+    );
   }
 
   /**
    * Deletes an inquiry and invalidates relevant caches.
    */
   async deleteInquiry(id: number): Promise<Result<boolean, AppError>> {
-    try {
-      const success = await withCircuit(
-        "delete-inquiry",
-        () => miscRepository.deleteInquiry(id),
-        DB_CIRCUIT_OPTIONS,
-      );
-      if (!success) {
-        return err(new NotFoundError(`Inquiry with ID ${id} not found`));
-      }
+    return ResultAsync.fromPromise(
+      (async (): Promise<boolean> => {
+        const success = await withCircuit(
+          "delete-inquiry",
+          () => miscRepository.deleteInquiry(id),
+          DB_CIRCUIT_OPTIONS,
+        );
+        if (!success) {
+          throw new NotFoundError(`Inquiry with ID ${id} not found`);
+        }
 
-      await this.invalidateInquiryCaches(id);
-      logger.info(`[InquiryService] Inquiry #${id} deleted`);
+        await this.invalidateInquiryCaches(id);
+        logger.info(`[InquiryService] Inquiry #${id} deleted`);
 
-      return ok(true);
-    } catch (error) {
-      if (error instanceof NotFoundError) return err(error);
-      return err(new DatabaseError("Failed to delete inquiry", { cause: error }));
-    }
+        return true;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        if (error instanceof NotFoundError) return error;
+        return new DatabaseError("Failed to delete inquiry", { cause: error });
+      },
+    );
   }
 
   /**

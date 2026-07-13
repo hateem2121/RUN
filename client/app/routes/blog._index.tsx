@@ -29,7 +29,7 @@ interface BlogPost {
   createdAt: string;
 }
 
-export default function Component({ loaderData }: Route.ComponentProps) {
+export function Component({ loaderData }: Route.ComponentProps) {
   const { posts } = loaderData;
   const activePosts = posts || [];
 

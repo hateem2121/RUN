@@ -286,7 +286,7 @@ type LoaderData = {
   fetchedMediaAssets: MediaAsset[];
 };
 
-export default function Component({ loaderData }: { loaderData: LoaderData }) {
+export function Component({ loaderData }: { loaderData: LoaderData }) {
   const { batchData, backgroundMedia, fetchedMediaAssets } = loaderData;
 
   return (

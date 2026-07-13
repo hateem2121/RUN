@@ -189,6 +189,10 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 ### 5.1.3 Static Analysis & Knip Tech Debt
 - **Unused Exports**: When Knip flags unused exports (e.g., React Router v8 route components, loaders, actions, or shared types), **never** use regex-based AST destruction to remove the `export` keyword.
 - **Remediation Strategy**: Apply the `/** @public */` JSDoc tag above the export to explicitly tell Knip to ignore it without breaking TypeScript compilation or module resolution.
+- **Bulk Refactoring Restriction**: NEVER use generic regex or Python scripts to bulk-modify TypeScript syntax, destructured properties, or relative imports across multiple files. This inevitably leads to syntax corruption and incorrect path depths. Rely exclusively on careful `ts-morph` AST manipulation or precise line-by-line replacements.
+
+### 5.1.4 `neverthrow` Fallback Resilience
+- **Mandatory `.orElse()`**: When implementing fallback logic (e.g., returning default content when a database query fails), NEVER use `try/catch` inside `ResultAsync.fromPromise()`. You must chain `.orElse()` directly onto the `ResultAsync` execution to handle the failure case safely and maintain the `ResultAsync<T, E>` contract.
 
 ### 5.2 Forbidden by Architecture
 

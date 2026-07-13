@@ -2,14 +2,13 @@
 // Creates the 47 structured business items mentioned by user
 
 import type { Express } from "express";
+import { logger } from "../../lib/monitoring/logger.js";
+import { authService } from "../../services/auth-service.js";
 import {
   accessoryRepository,
   miscRepository,
   productRepository,
-} from "../../lib/db/repositories/index.js";
-import { logger } from "../../lib/monitoring/logger.js";
-
-import { authService } from "../../services/auth-service.js";
+} from "../../services/repositories/index.js";
 export function registerDataCreationRoutes(app: Express): void {
   // Create all missing business data as mentioned by user
   // prettier-ignore

@@ -6,10 +6,10 @@
 import type { UpsertUser, User } from "@run-remix/shared";
 import { users } from "@run-remix/shared";
 import { eq } from "drizzle-orm";
-import { db } from "../../../db.js";
-import { decrypt, encrypt, getBlindIndex } from "../../encryption.js";
-import { logger } from "../../monitoring/logger.js";
-import { StorageSingleton } from "../../storage-singleton.js";
+import { db } from "../../db.js";
+import { decrypt, encrypt, getBlindIndex } from "../../lib/encryption.js";
+import { logger } from "../../lib/monitoring/logger.js";
+import { StorageSingleton } from "../../lib/storage-singleton.js";
 
 export class UserRepository {
   /**
@@ -127,7 +127,8 @@ export class UserRepository {
       return StorageSingleton.getInstance().getAdminUsers();
     }
     const adminUsers = await db.select().from(users).where(eq(users.isAdmin, true));
-    return adminUsers.map((user) => this.decryptUser(user));
+    // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+    return adminUsers.map((user: any) => this.decryptUser(user));
   }
 
   /**

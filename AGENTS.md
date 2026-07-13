@@ -45,3 +45,6 @@
 > **Cross-reference:** Tech stack (§4), forbidden patterns (§5), architecture (§6),
 > server file conventions (§22), deprecated directories (§23), GSAP rules (§6.8),
 > auth & sessions (§6.10), CSP nonce & Vite SSR (§6.11) — all in `gemini.md`.
+
+## Communication Guardrails
+- **Artifact Transparency**: Never mention or present the internal `task.md` system artifact to the user. When discussing sprint goals, tracking, or checklists, refer EXCLUSIVELY to the `task_plan.md` file required by Protocol 0.

@@ -11,8 +11,8 @@ import {
   webhookSubscriptions,
 } from "@run-remix/shared";
 import { eq, sql } from "drizzle-orm";
-import { db } from "../../../db.js";
-import { StorageSingleton } from "../../storage-singleton.js";
+import { db } from "../../db.js";
+import { StorageSingleton } from "../../lib/storage-singleton.js";
 
 class WebhookRepository {
   async getWebhookSubscriptions(): Promise<WebhookSubscription[]> {

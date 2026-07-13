@@ -8,10 +8,10 @@ import { removeUndefined } from "../../lib/utilities/core-utils.js";
 
 import { insertAccessorySchema } from "@run-remix/shared";
 import { Router } from "express";
-import { accessoryRepository } from "../../lib/db/repositories/accessory-repository.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { authService } from "../../services/auth-service.js";
+import { accessoryRepository } from "../../services/repositories/accessory-repository.js";
 
 const router = Router();
 

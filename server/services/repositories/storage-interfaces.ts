@@ -111,12 +111,12 @@ import type {
   User,
   WebhookSubscription,
 } from "@run-remix/shared";
-import type { RepositoryCacheOptions } from "../lib/cache/cache-strategies.js";
+import type { RepositoryCacheOptions } from "../../lib/cache/cache-strategies.js";
 import type {
   ProductDetail,
   ProductDetailWithContext,
   ProductSummary,
-} from "../lib/db/repositories/product-repository.js";
+} from "./product-repository.js";
 
 // User Repository
 interface IUserRepository {
@@ -657,7 +657,7 @@ interface ISystemRepository {
   deleteStorageChangeLog(id: number): Promise<boolean>;
   getAuditLogsForRecord(tableName: string, recordId: string): Promise<AuditLog[]>;
   getRecentAuditLogs(limit?: number): Promise<AuditLog[]>;
-  createAuditLog(log: import("../../shared/index.js").InsertAuditLog): Promise<AuditLog>;
+  createAuditLog(log: import("@run-remix/shared").InsertAuditLog): Promise<AuditLog>;
   setAuditTrailEnabled(enabled: boolean): void;
   configureTrackedTables(tables: string[]): void;
   repairDatabaseIntegrity(): Promise<{ validated: number; repaired: number; removed: number }>;

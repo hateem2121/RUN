@@ -4,13 +4,15 @@ import type {
   WebhookPayloadMap,
   WebhookSubscription,
 } from "@shared/schemas/webhooks.js";
-import { webhookRepository } from "../lib/db/repositories/index.js";
+import { type Result, ResultAsync } from "neverthrow";
+import { AppError, InternalError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import {
   DB_CIRCUIT_OPTIONS,
   EXTERNAL_API_CIRCUIT_OPTIONS,
   withCircuit,
 } from "../lib/resilience/circuit-breaker.js";
+import { webhookRepository } from "./repositories/index.js";
 
 /**
  * WEBHOOK SERVICE
@@ -28,41 +30,45 @@ class WebhookService {
   async trigger<E extends WebhookEventName>(
     event: E,
     payload: WebhookPayloadMap[E],
-  ): Promise<void> {
-    try {
-      const subscriptions = await withCircuit(
-        "get-webhook-subscriptions",
-        () => webhookRepository.getWebhookSubscriptions(),
-        DB_CIRCUIT_OPTIONS,
-      );
+  ): Promise<Result<void, AppError>> {
+    return ResultAsync.fromPromise(
+      (async (): Promise<void> => {
+        const subscriptions = await withCircuit(
+          "get-webhook-subscriptions",
+          () => webhookRepository.getWebhookSubscriptions(),
+          DB_CIRCUIT_OPTIONS,
+        );
 
-      const activeSubs = subscriptions.filter(
-        (sub) => sub.isActive === true && (sub.events as unknown as string[]).includes(event),
-      );
+        const activeSubs = subscriptions.filter(
+          (sub) => sub.isActive === true && (sub.events as unknown as string[]).includes(event),
+        );
 
-      if (activeSubs.length === 0) {
-        logger.debug("[WebhookService] No active subscribers for event", { event });
-        return;
-      }
+        if (activeSubs.length === 0) {
+          logger.debug("[WebhookService] No active subscribers for event", { event });
+          return;
+        }
 
-      logger.info("[WebhookService] Triggering event", {
-        event,
-        subscriberCount: activeSubs.length,
-      });
-
-      // Fire and forget deliveries to avoid blocking the main thread
-      // In a production environment, this would be enqueued to a background worker
-      for (const sub of activeSubs) {
-        this.deliver(sub, event, payload).catch((err) => {
-          logger.error("[WebhookService] Background delivery failed", {
-            error: err,
-            subscriptionId: sub.id,
-          });
+        logger.info("[WebhookService] Triggering event", {
+          event,
+          subscriberCount: activeSubs.length,
         });
-      }
-    } catch (error) {
-      logger.error("[WebhookService] Failed to trigger event", { error, event });
-    }
+
+        // Fire and forget deliveries to avoid blocking the main thread
+        for (const sub of activeSubs) {
+          this.deliver(sub, event, payload).catch((err) => {
+            logger.error("[WebhookService] Background delivery failed", {
+              error: err,
+              subscriptionId: sub.id,
+            });
+          });
+        }
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[WebhookService] Failed to trigger event", { error, event });
+        return new InternalError("Failed to trigger event", { error });
+      },
+    );
   }
 
   /**
@@ -72,7 +78,7 @@ class WebhookService {
     sub: WebhookSubscription,
     event: string,
     payload: Record<string, unknown>,
-  ): Promise<void> {
+  ): Promise<Result<void, AppError>> {
     const deliveryId = crypto.randomUUID();
     const deliveryPayload = {
       id: deliveryId,
@@ -83,54 +89,60 @@ class WebhookService {
 
     const signature = this.generateSignature(deliveryPayload, sub.secret);
 
-    try {
-      // Use withCircuit for external API call
-      const response = await withCircuit(
-        `webhook-delivery-${sub.id}`,
-        async () => {
-          const res = await fetch(sub.url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Webhook-Signature": signature,
-              "X-Webhook-Event": event,
-              "X-Webhook-Delivery-ID": deliveryId,
-              "User-Agent": "Run-Remix-Webhooks/1.0",
-            },
-            body: JSON.stringify(deliveryPayload),
-            signal: AbortSignal.timeout(10000), // 10s timeout
-          });
-          return res;
-        },
-        EXTERNAL_API_CIRCUIT_OPTIONS,
-      );
+    return ResultAsync.fromPromise(
+      (async (): Promise<void> => {
+        // Use withCircuit for external API call
+        const response = await withCircuit(
+          `webhook-delivery-${sub.id}`,
+          async () => {
+            const res = await fetch(sub.url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Webhook-Signature": signature,
+                "X-Webhook-Event": event,
+                "X-Webhook-Delivery-ID": deliveryId,
+                "User-Agent": "Run-Remix-Webhooks/1.0",
+              },
+              body: JSON.stringify(deliveryPayload),
+              signal: AbortSignal.timeout(10000), // 10s timeout
+            });
+            return res;
+          },
+          EXTERNAL_API_CIRCUIT_OPTIONS,
+        );
 
-      const responseBody = await response.text().catch(() => "");
+        const responseBody = await response.text().catch(() => "");
 
-      // Log delivery attempt
-      await withCircuit(
-        "log-webhook-delivery",
-        () =>
-          webhookRepository.logWebhookDelivery({
-            subscriptionId: sub.id,
-            event,
-            payload: deliveryPayload,
-            responseStatus: response.status,
-            responseBody: responseBody.substring(0, 2000), // Truncate long bodies
-            deliveredAt: response.ok ? new Date() : null,
-            attemptCount: 1,
-          }),
-        DB_CIRCUIT_OPTIONS,
-      );
-
-      if (!response.ok) {
-        logger.warn("[WebhookService] Delivery failed", { url: sub.url, status: response.status });
-      }
-    } catch (error) {
-      logger.error("[WebhookService] Delivery failed", { error, url: sub.url });
-
-      try {
+        // Log delivery attempt
         await withCircuit(
+          "log-webhook-delivery",
+          () =>
+            webhookRepository.logWebhookDelivery({
+              subscriptionId: sub.id,
+              event,
+              payload: deliveryPayload,
+              responseStatus: response.status,
+              responseBody: responseBody.substring(0, 2000), // Truncate long bodies
+              deliveredAt: response.ok ? new Date() : null,
+              attemptCount: 1,
+            }),
+          DB_CIRCUIT_OPTIONS,
+        );
+
+        if (!response.ok) {
+          logger.warn("[WebhookService] Delivery failed", {
+            url: sub.url,
+            status: response.status,
+          });
+        }
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[WebhookService] Delivery failed", { error, url: sub.url });
+
+        // Fire-and-forget logging for failure so we don't block
+        withCircuit(
           "log-webhook-delivery-failure",
           () =>
             webhookRepository.logWebhookDelivery({
@@ -143,11 +155,13 @@ class WebhookService {
               attemptCount: 1,
             }),
           DB_CIRCUIT_OPTIONS,
-        );
-      } catch (logError) {
-        logger.error("[WebhookService] Failed to log delivery failure", { error: logError });
-      }
-    }
+        ).catch((logError) => {
+          logger.error("[WebhookService] Failed to log delivery failure", { error: logError });
+        });
+
+        return new InternalError("Delivery failed", { error });
+      },
+    );
   }
 
   /**

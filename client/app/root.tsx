@@ -173,7 +173,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
+export function App() {
   return <Outlet />;
 }
 

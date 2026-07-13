@@ -67,7 +67,6 @@ export function PublicHeroSection({
         .from(
           subheadlineRef.current,
           {
-            opacity: 0,
             y: 20,
             duration: 0.8,
             ease: "power3.out",
@@ -77,7 +76,6 @@ export function PublicHeroSection({
         .from(
           ctaRef.current,
           {
-            opacity: 0,
             y: 20,
             duration: 0.8,
             ease: "power3.out",

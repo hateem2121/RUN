@@ -19,12 +19,12 @@ import {
   logoAnimationSettings,
 } from "@run-remix/shared";
 import { asc, eq } from "drizzle-orm";
-import { db } from "../../../../db.js";
-import { invalidateHtmlCache } from "../../../../middleware/ssr-cache.js";
-import { emitCacheInvalidation } from "../../../cache/cache-events.js";
-import { UnifiedCache } from "../../../cache/unified-cache.js";
-import { logger } from "../../../monitoring/logger.js";
-import { StorageSingleton } from "../../../storage-singleton.js";
+import { db } from "../../../db.js";
+import { emitCacheInvalidation } from "../../../lib/cache/cache-events.js";
+import { UnifiedCache } from "../../../lib/cache/unified-cache.js";
+import { logger } from "../../../lib/monitoring/logger.js";
+import { StorageSingleton } from "../../../lib/storage-singleton.js";
+import { invalidateHtmlCache } from "../../../middleware/ssr-cache.js";
 
 const unifiedCache = UnifiedCache.getInstance();
 
@@ -189,7 +189,8 @@ class HomepageRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderHomepageSlogans(orderedIds);
     }
-    await db.transaction(async (tx) => {
+    // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+    await db.transaction(async (tx: any) => {
       for (let i = 0; i < orderedIds.length; i++) {
         const id = orderedIds[i] as number;
         await tx
@@ -289,7 +290,8 @@ class HomepageRepository {
   }
 
   async reorderHomepageProcessCards(orderedIds: number[]): Promise<void> {
-    await db.transaction(async (tx) => {
+    // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+    await db.transaction(async (tx: any) => {
       for (let i = 0; i < orderedIds.length; i++) {
         const id = orderedIds[i] as number;
         await tx

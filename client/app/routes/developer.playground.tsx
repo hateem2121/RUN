@@ -40,7 +40,7 @@ interface Endpoint {
   details: OpenApiEndpoint;
 }
 
-export default function Component() {
+export function Component() {
   const [spec, setSpec] = useState<OpenApiSpec | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

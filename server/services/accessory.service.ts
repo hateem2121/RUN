@@ -1,9 +1,9 @@
 import type { Accessory, InsertAccessory } from "@run-remix/shared";
-import { err, ok, type Result } from "neverthrow";
-import { accessoryRepository } from "../lib/db/repositories/index.js";
-import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
+import { type Result, ResultAsync } from "neverthrow";
+import { AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
+import { accessoryRepository } from "./repositories/index.js";
 
 /**
  * Service for managing Accessory domain data
@@ -18,56 +18,68 @@ class AccessoryService {
     offset = 0,
     filters?: { category?: string; search?: string },
   ): Promise<Result<{ accessories: Accessory[]; total: number }, AppError>> {
-    try {
-      const result = await withCircuit(
-        "get-accessories",
-        () => accessoryRepository.getAccessoriesWithCount(limit, offset, filters),
-        DB_CIRCUIT_OPTIONS,
-      );
-      return ok(result);
-    } catch (error) {
-      logger.error("[AccessoryService] Failed to fetch accessories", error as Error);
-      return err(new InternalError("Failed to fetch accessories", { error }));
-    }
+    return ResultAsync.fromPromise(
+      (async (): Promise<{ accessories: Accessory[]; total: number }> => {
+        const result = await withCircuit(
+          "get-accessories",
+          () => accessoryRepository.getAccessoriesWithCount(limit, offset, filters),
+          DB_CIRCUIT_OPTIONS,
+        );
+        return result;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[AccessoryService] Failed to fetch accessories", error as Error);
+        return new InternalError("Failed to fetch accessories", { error });
+      },
+    );
   }
 
   /**
    * Retrieves a single accessory by ID
    */
   async getAccessory(id: number): Promise<Result<Accessory, AppError>> {
-    try {
-      const accessory = await withCircuit(
-        `get-accessory-${id}`,
-        () => accessoryRepository.getAccessory(id),
-        DB_CIRCUIT_OPTIONS,
-      );
+    return ResultAsync.fromPromise(
+      (async (): Promise<Accessory> => {
+        const accessory = await withCircuit(
+          `get-accessory-${id}`,
+          () => accessoryRepository.getAccessory(id),
+          DB_CIRCUIT_OPTIONS,
+        );
 
-      if (!accessory) {
-        return err(new NotFoundError(`Accessory with ID ${id}`));
-      }
+        if (!accessory) {
+          throw new NotFoundError(`Accessory with ID ${id}`);
+        }
 
-      return ok(accessory);
-    } catch (error) {
-      logger.error("[AccessoryService] Failed to fetch accessory", { id }, error as Error);
-      return err(new InternalError(`Failed to fetch accessory ${id}`, { error }));
-    }
+        return accessory;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[AccessoryService] Failed to fetch accessory", { id }, error as Error);
+        return new InternalError(`Failed to fetch accessory ${id}`, { error });
+      },
+    );
   }
 
   /**
    * Creates a new accessory
    */
   async createAccessory(data: InsertAccessory): Promise<Result<Accessory, AppError>> {
-    try {
-      const created = await withCircuit(
-        "create-accessory",
-        () => accessoryRepository.createAccessory(data),
-        DB_CIRCUIT_OPTIONS,
-      );
-      return ok(created);
-    } catch (error) {
-      logger.error("[AccessoryService] Failed to create accessory", error as Error);
-      return err(new InternalError("Failed to create accessory", { error }));
-    }
+    return ResultAsync.fromPromise(
+      (async (): Promise<Accessory> => {
+        const created = await withCircuit(
+          "create-accessory",
+          () => accessoryRepository.createAccessory(data),
+          DB_CIRCUIT_OPTIONS,
+        );
+        return created;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[AccessoryService] Failed to create accessory", error as Error);
+        return new InternalError("Failed to create accessory", { error });
+      },
+    );
   }
 
   /**
@@ -77,66 +89,78 @@ class AccessoryService {
     id: number,
     data: Partial<InsertAccessory>,
   ): Promise<Result<Accessory, AppError>> {
-    try {
-      const updated = await withCircuit(
-        `update-accessory-${id}`,
-        () => accessoryRepository.updateAccessory(id, data),
-        DB_CIRCUIT_OPTIONS,
-      );
+    return ResultAsync.fromPromise(
+      (async (): Promise<Accessory> => {
+        const updated = await withCircuit(
+          `update-accessory-${id}`,
+          () => accessoryRepository.updateAccessory(id, data),
+          DB_CIRCUIT_OPTIONS,
+        );
 
-      if (!updated) {
-        return err(new NotFoundError(`Accessory with ID ${id}`));
-      }
+        if (!updated) {
+          throw new NotFoundError(`Accessory with ID ${id}`);
+        }
 
-      return ok(updated);
-    } catch (error) {
-      logger.error("[AccessoryService] Failed to update accessory", { id }, error as Error);
-      return err(new InternalError(`Failed to update accessory ${id}`, { error }));
-    }
+        return updated;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[AccessoryService] Failed to update accessory", { id }, error as Error);
+        return new InternalError(`Failed to update accessory ${id}`, { error });
+      },
+    );
   }
 
   /**
    * Deletes an accessory (soft delete)
    */
   async deleteAccessory(id: number): Promise<Result<boolean, AppError>> {
-    try {
-      const success = await withCircuit(
-        `delete-accessory-${id}`,
-        () => accessoryRepository.deleteAccessory(id),
-        DB_CIRCUIT_OPTIONS,
-      );
+    return ResultAsync.fromPromise(
+      (async (): Promise<boolean> => {
+        const success = await withCircuit(
+          `delete-accessory-${id}`,
+          () => accessoryRepository.deleteAccessory(id),
+          DB_CIRCUIT_OPTIONS,
+        );
 
-      if (!success) {
-        return err(new NotFoundError(`Accessory with ID ${id}`));
-      }
+        if (!success) {
+          throw new NotFoundError(`Accessory with ID ${id}`);
+        }
 
-      return ok(success);
-    } catch (error) {
-      logger.error("[AccessoryService] Failed to delete accessory", { id }, error as Error);
-      return err(new InternalError(`Failed to delete accessory ${id}`, { error }));
-    }
+        return success;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[AccessoryService] Failed to delete accessory", { id }, error as Error);
+        return new InternalError(`Failed to delete accessory ${id}`, { error });
+      },
+    );
   }
 
   /**
    * Restores a deleted accessory
    */
   async restoreAccessory(id: number): Promise<Result<boolean, AppError>> {
-    try {
-      const success = await withCircuit(
-        `restore-accessory-${id}`,
-        () => accessoryRepository.restoreAccessory(id),
-        DB_CIRCUIT_OPTIONS,
-      );
+    return ResultAsync.fromPromise(
+      (async (): Promise<boolean> => {
+        const success = await withCircuit(
+          `restore-accessory-${id}`,
+          () => accessoryRepository.restoreAccessory(id),
+          DB_CIRCUIT_OPTIONS,
+        );
 
-      if (!success) {
-        return err(new NotFoundError(`Accessory with ID ${id}`));
-      }
+        if (!success) {
+          throw new NotFoundError(`Accessory with ID ${id}`);
+        }
 
-      return ok(success);
-    } catch (error) {
-      logger.error("[AccessoryService] Failed to restore accessory", { id }, error as Error);
-      return err(new InternalError(`Failed to restore accessory ${id}`, { error }));
-    }
+        return success;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[AccessoryService] Failed to restore accessory", { id }, error as Error);
+        return new InternalError(`Failed to restore accessory ${id}`, { error });
+      },
+    );
   }
 }
 

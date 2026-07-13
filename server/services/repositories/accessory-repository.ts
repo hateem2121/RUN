@@ -10,13 +10,13 @@
 import type { Accessory, InsertAccessory } from "@run-remix/shared";
 import { accessories } from "@run-remix/shared";
 import { and, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
-import { db } from "../../../db.js";
-import { emitCacheInvalidation } from "../../cache/cache-events.js";
-import { UnifiedCache } from "../../cache/unified-cache.js";
-import { logger } from "../../monitoring/logger.js";
-import { StorageSingleton } from "../../storage-singleton.js";
-import { dbCircuitBreaker } from "../db-circuit-breaker.js";
-import { queryPerformanceMonitor } from "../query-performance.js";
+import { db } from "../../db.js";
+import { emitCacheInvalidation } from "../../lib/cache/cache-events.js";
+import { UnifiedCache } from "../../lib/cache/unified-cache.js";
+import { dbCircuitBreaker } from "../../lib/db/db-circuit-breaker.js";
+import { queryPerformanceMonitor } from "../../lib/db/query-performance.js";
+import { logger } from "../../lib/monitoring/logger.js";
+import { StorageSingleton } from "../../lib/storage-singleton.js";
 
 const unifiedCache = UnifiedCache.getInstance();
 const ACCESSORY_CACHE_TTL = 86400 * 1000; // 24 hours (accessories change infrequently)

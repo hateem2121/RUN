@@ -3,9 +3,9 @@
  * Common transaction and cache helpers for repository classes
  */
 
-import { db } from "../../../db.js";
-import { UnifiedCache } from "../../cache/unified-cache.js";
-import { logger } from "../../monitoring/logger.js";
+import { db } from "../../db.js";
+import { UnifiedCache } from "../../lib/cache/unified-cache.js";
+import { logger } from "../../lib/monitoring/logger.js";
 
 const unifiedCache = UnifiedCache.getInstance();
 
@@ -20,7 +20,8 @@ const unifiedCache = UnifiedCache.getInstance();
   const startTime = Date.now();
 
   try {
-    const result = await db.transaction(async (tx) => {
+    // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+    const result = await db.transaction(async (tx: any) => {
       return await operation(tx as unknown as typeof db);
     });
 

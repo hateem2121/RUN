@@ -3,13 +3,13 @@ import {
   insertLegalPolicySchema,
   type LegalPolicy,
 } from "@run-remix/shared";
-import { err, ok, type Result } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
-import { legalRepository } from "../lib/db/repositories/index.js";
-import { type AppError, InternalError, NotFoundError } from "../lib/errors.js";
+import { AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 import { sanitizeHtml } from "../lib/sanitize-html.js";
+import { legalRepository } from "./repositories/index.js";
 
 const DEFAULT_POLICIES: Record<string, LegalPolicy> = {
   "privacy-policy": {
@@ -44,141 +44,175 @@ class LegalService {
   }
 
   async getLegalPolicies(includeInactive = false): Promise<Result<LegalPolicy[], AppError>> {
-    try {
-      const list = await withCircuit(
-        "get-legal-policies",
-        () => legalRepository.getLegalPolicies(includeInactive),
-        DB_CIRCUIT_OPTIONS,
-      );
+    return ResultAsync.fromPromise(
+      (async (): Promise<LegalPolicy[]> => {
+        const list = await withCircuit(
+          "get-legal-policies",
+          () => legalRepository.getLegalPolicies(includeInactive),
+          DB_CIRCUIT_OPTIONS,
+        );
 
-      if (!list || list.length === 0) {
-        const fallbacks = Object.values(DEFAULT_POLICIES);
-        return ok(includeInactive ? fallbacks : fallbacks.filter((lp) => lp.isActive));
-      }
+        if (!list || list.length === 0) {
+          const fallbacks = Object.values(DEFAULT_POLICIES);
+          return includeInactive ? fallbacks : fallbacks.filter((lp) => lp.isActive);
+        }
 
-      return ok(list);
-    } catch (error) {
+        return list;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new InternalError("Failed to fetch legal policies", { error });
+      },
+    ).orElse((error) => {
       logger.error("[LegalService] Failed to fetch legal policies", error as Error);
       const fallbacks = Object.values(DEFAULT_POLICIES);
-      return ok(includeInactive ? fallbacks : fallbacks.filter((lp) => lp.isActive));
-    }
+      const filtered = includeInactive ? fallbacks : fallbacks.filter((lp) => lp.isActive);
+      if (filtered.length === 0) {
+        return err(error);
+      }
+      return ok(filtered);
+    });
   }
 
   async getLegalPolicyBySlug(
     slug: string,
     includeInactive = false,
   ): Promise<Result<LegalPolicy, AppError>> {
-    try {
-      const policy = await withCircuit(
-        `get-legal-policy-${slug}`,
-        () => legalRepository.getLegalPolicyBySlug(slug, includeInactive),
-        DB_CIRCUIT_OPTIONS,
-      );
+    return ResultAsync.fromPromise(
+      (async (): Promise<LegalPolicy> => {
+        const policy = await withCircuit(
+          `get-legal-policy-${slug}`,
+          () => legalRepository.getLegalPolicyBySlug(slug, includeInactive),
+          DB_CIRCUIT_OPTIONS,
+        );
 
-      if (!policy) {
-        const fallback = DEFAULT_POLICIES[slug];
-        if (!fallback) {
-          return err(new NotFoundError(`Legal policy with slug ${slug}`));
+        if (!policy) {
+          const fallback = DEFAULT_POLICIES[slug];
+          if (!fallback) {
+            throw new NotFoundError(`Legal policy with slug ${slug}`);
+          }
+          return fallback;
         }
-        return ok(fallback);
-      }
 
-      return ok(policy);
-    } catch (error) {
+        return policy;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new InternalError(`Failed to fetch legal policy ${slug}`, { error });
+      },
+    ).orElse((error) => {
       logger.error("[LegalService] Failed to fetch legal policy by slug", { slug }, error as Error);
       const fallback = DEFAULT_POLICIES[slug];
       if (!fallback) {
-        return err(new InternalError(`Failed to fetch legal policy ${slug}`, { error }));
+        return err(error);
       }
       return ok(fallback);
-    }
+    });
   }
 
   async getLegalPolicy(id: number): Promise<Result<LegalPolicy, AppError>> {
-    try {
-      const policy = await withCircuit(
-        `get-legal-policy-id-${id}`,
-        () => legalRepository.getLegalPolicy(id),
-        DB_CIRCUIT_OPTIONS,
-      );
+    return ResultAsync.fromPromise(
+      (async (): Promise<LegalPolicy> => {
+        const policy = await withCircuit(
+          `get-legal-policy-id-${id}`,
+          () => legalRepository.getLegalPolicy(id),
+          DB_CIRCUIT_OPTIONS,
+        );
 
-      if (!policy) {
-        const fallback = Object.values(DEFAULT_POLICIES).find((lp) => lp.id === id);
-        if (!fallback) {
-          return err(new NotFoundError(`Legal policy with ID ${id}`));
+        if (!policy) {
+          const fallback = Object.values(DEFAULT_POLICIES).find((lp) => lp.id === id);
+          if (!fallback) {
+            throw new NotFoundError(`Legal policy with ID ${id}`);
+          }
+          throw new NotFoundError(`Legal policy with ID ${id}`);
         }
-        return ok(fallback);
-      }
 
-      return ok(policy);
-    } catch (error) {
-      logger.error("[LegalService] Failed to fetch legal policy by ID", { id }, error as Error);
+        return policy;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new InternalError(`Failed to fetch legal policy ${id}`, { error });
+      },
+    ).orElse((error) => {
+      logger.error("[LegalService] Failed to fetch legal policy", { id }, error as Error);
       const fallback = Object.values(DEFAULT_POLICIES).find((lp) => lp.id === id);
       if (!fallback) {
-        return err(new InternalError(`Failed to fetch legal policy ${id}`, { error }));
+        return err(error);
       }
       return ok(fallback);
-    }
+    });
   }
 
   async createLegalPolicy(data: InsertLegalPolicy): Promise<Result<LegalPolicy, AppError>> {
-    try {
-      const parsed = insertLegalPolicySchema.parse(data);
-      if (parsed.content) parsed.content = sanitizeHtml(parsed.content);
+    return ResultAsync.fromPromise(
+      (async (): Promise<LegalPolicy> => {
+        const parsed = insertLegalPolicySchema.parse(data);
+        if (parsed.content) parsed.content = sanitizeHtml(parsed.content);
 
-      const created = await withCircuit(
-        "create-legal-policy",
-        () => legalRepository.createLegalPolicy(parsed),
-        DB_CIRCUIT_OPTIONS,
-      );
-      await this.invalidateCache();
-      return ok(created);
-    } catch (error) {
-      logger.error("[LegalService] Failed to create legal policy", error as Error);
-      return err(new InternalError("Failed to create legal policy", { error }));
-    }
+        const created = await withCircuit(
+          "create-legal-policy",
+          () => legalRepository.createLegalPolicy(parsed),
+          DB_CIRCUIT_OPTIONS,
+        );
+        await this.invalidateCache();
+        return created;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[LegalService] Failed to create legal policy", error as Error);
+        return new InternalError("Failed to create legal policy", { error });
+      },
+    );
   }
 
   async updateLegalPolicy(
     id: number,
     data: Partial<InsertLegalPolicy>,
   ): Promise<Result<LegalPolicy, AppError>> {
-    try {
-      const parsed = insertLegalPolicySchema.partial().parse(data);
-      if (parsed.content) parsed.content = sanitizeHtml(parsed.content);
+    return ResultAsync.fromPromise(
+      (async (): Promise<LegalPolicy> => {
+        const parsed = insertLegalPolicySchema.partial().parse(data);
+        if (parsed.content) parsed.content = sanitizeHtml(parsed.content);
 
-      const updated = await withCircuit(
-        `update-legal-policy-${id}`,
-        () => legalRepository.updateLegalPolicy(id, parsed as Partial<InsertLegalPolicy>),
-        DB_CIRCUIT_OPTIONS,
-      );
-      if (!updated) {
-        return err(new NotFoundError(`Legal policy with ID ${id}`));
-      }
-      await this.invalidateCache();
-      return ok(updated);
-    } catch (error) {
-      logger.error("[LegalService] Failed to update legal policy", { id }, error as Error);
-      return err(new InternalError(`Failed to update legal policy ${id}`, { error }));
-    }
+        const updated = await withCircuit(
+          `update-legal-policy-${id}`,
+          () => legalRepository.updateLegalPolicy(id, parsed as Partial<InsertLegalPolicy>),
+          DB_CIRCUIT_OPTIONS,
+        );
+        if (!updated) {
+          throw new NotFoundError(`Legal policy with ID ${id}`);
+        }
+        await this.invalidateCache();
+        return updated;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[LegalService] Failed to update legal policy", { id }, error as Error);
+        return new InternalError(`Failed to update legal policy ${id}`, { error });
+      },
+    );
   }
 
   async deleteLegalPolicy(id: number): Promise<Result<boolean, AppError>> {
-    try {
-      const deleted = await withCircuit(
-        `delete-legal-policy-${id}`,
-        () => legalRepository.deleteLegalPolicy(id),
-        DB_CIRCUIT_OPTIONS,
-      );
-      if (!deleted) {
-        return err(new NotFoundError(`Legal policy with ID ${id}`));
-      }
-      await this.invalidateCache();
-      return ok(deleted);
-    } catch (error) {
-      logger.error("[LegalService] Failed to delete legal policy", { id }, error as Error);
-      return err(new InternalError(`Failed to delete legal policy ${id}`, { error }));
-    }
+    return ResultAsync.fromPromise(
+      (async (): Promise<boolean> => {
+        const deleted = await withCircuit(
+          `delete-legal-policy-${id}`,
+          () => legalRepository.deleteLegalPolicy(id),
+          DB_CIRCUIT_OPTIONS,
+        );
+        if (!deleted) {
+          throw new NotFoundError(`Legal policy with ID ${id}`);
+        }
+        await this.invalidateCache();
+        return deleted;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[LegalService] Failed to delete legal policy", { id }, error as Error);
+        return new InternalError(`Failed to delete legal policy ${id}`, { error });
+      },
+    );
   }
 }
 

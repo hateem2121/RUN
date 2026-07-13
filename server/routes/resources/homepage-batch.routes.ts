@@ -15,9 +15,9 @@ import type { HomepageProcessCard } from "@run-remix/shared";
 import { Router } from "express";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
-import { homepageRepository, productRepository } from "../../lib/db/repositories/index.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { shouldBypassCache } from "../../lib/utilities/core-utils.js";
+import { homepageRepository, productRepository } from "../../services/repositories/index.js";
 
 const router = Router();
 

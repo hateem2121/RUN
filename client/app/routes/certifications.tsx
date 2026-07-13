@@ -23,7 +23,7 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Component() {
+export function Component() {
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedCerts, setExpandedCerts] = useState<Set<number>>(new Set());
   const headerRef = useRef<HTMLDivElement>(null);

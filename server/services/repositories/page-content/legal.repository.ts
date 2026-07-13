@@ -1,11 +1,11 @@
 import { type InsertLegalPolicy, type LegalPolicy, legalPolicies } from "@run-remix/shared";
 import { eq } from "drizzle-orm";
-import { db } from "../../../../db.js";
-import { invalidateHtmlCache } from "../../../../middleware/ssr-cache.js";
-import { emitCacheInvalidation } from "../../../cache/cache-events.js";
-import { UnifiedCache } from "../../../cache/unified-cache.js";
-import { logger } from "../../../monitoring/logger.js";
-import { StorageSingleton } from "../../../storage-singleton.js";
+import { db } from "../../../db.js";
+import { emitCacheInvalidation } from "../../../lib/cache/cache-events.js";
+import { UnifiedCache } from "../../../lib/cache/unified-cache.js";
+import { logger } from "../../../lib/monitoring/logger.js";
+import { StorageSingleton } from "../../../lib/storage-singleton.js";
+import { invalidateHtmlCache } from "../../../middleware/ssr-cache.js";
 
 const unifiedCache = UnifiedCache.getInstance();
 const LEGAL_CACHE_TTL = 3600; // 1 hour (in seconds)

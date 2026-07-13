@@ -105,7 +105,7 @@ const data = [
 
 import { ProtectedAdminRoute } from "@/components/auth/ProtectedAdminRoute";
 
-export default function Component() {
+export function Component() {
   const loaderData = useLoaderData<typeof loader>();
 
   const { data: analyticsData } = useQuery({
