@@ -138,6 +138,26 @@ export function validateMagicNumbers(req: Request, res: Response, next: NextFunc
       }
 
       const result = validateFileSignature(file.buffer, file.mimetype, file.originalname);
+
+      let typeLimit = FILE_SIZE_LIMITS.DEFAULT;
+      if (file.mimetype.startsWith("image/")) typeLimit = FILE_SIZE_LIMITS.IMAGE;
+      else if (file.mimetype.startsWith("video/")) typeLimit = FILE_SIZE_LIMITS.VIDEO;
+      else if (
+        file.mimetype.startsWith("model/") ||
+        file.originalname.endsWith(".glb") ||
+        file.originalname.endsWith(".gltf")
+      )
+        typeLimit = FILE_SIZE_LIMITS.MODEL;
+      else if (file.mimetype === "application/pdf") typeLimit = FILE_SIZE_LIMITS.DOCUMENT;
+
+      if (file.buffer.length > typeLimit) {
+        res.status(400).json({
+          message: `File rejected: Size exceeds ${typeLimit / 1024 / 1024}MB limit for this file type`,
+          filename: file.originalname,
+        });
+        return;
+      }
+
       if (!result.valid) {
         res.status(400).json({
           message: `File rejected: ${result.reason}`,
@@ -159,13 +179,13 @@ export function validateMagicNumbers(req: Request, res: Response, next: NextFunc
   }
 }
 
-// SECURITY HARDENED: Updated limits to 500MB per user request
+// SECURITY HARDENED: Per-type limits (approved headroom over 8-12MB issue)
 const FILE_SIZE_LIMITS = {
-  IMAGE: 500 * 1024 * 1024, // 500MB for images (no size restrictions)
-  VIDEO: 500 * 1024 * 1024, // 500MB for videos (no size restrictions)
-  MODEL: 500 * 1024 * 1024, // 500MB for 3D models (no size restrictions)
-  DOCUMENT: 500 * 1024 * 1024, // 500MB for PDFs (no size restrictions)
-  DEFAULT: 500 * 1024 * 1024, // 500MB default (no size restrictions)
+  IMAGE: 25 * 1024 * 1024, // 25MB
+  VIDEO: 100 * 1024 * 1024, // 100MB
+  MODEL: 200 * 1024 * 1024, // 200MB
+  DOCUMENT: 25 * 1024 * 1024, // 25MB
+  DEFAULT: 25 * 1024 * 1024, // 25MB
 };
 
 // UPLOAD OPTIMIZATION: Increased file limits with intelligent queue management
@@ -179,7 +199,7 @@ export const uploadOptimized = multer({
   storage: multer.memoryStorage(),
   limits: {
     // UPLOAD OPTIMIZATION: Enhanced limits for better performance
-    fileSize: FILE_SIZE_LIMITS.DEFAULT, // 500MB limit maintained
+    fileSize: FILE_SIZE_LIMITS.MODEL, // Set global multer limit to the max allowed (200MB)
     files: MAX_FILES, // Increased to 50 files maximum
     fieldNameSize: 200, // Increased for longer filenames
     fieldSize: 2 * 1024 * 1024, // Increased to 2MB for metadata

@@ -564,7 +564,6 @@ export interface AuditContext {
     audit: AuditContext,
     autoClean: boolean,
     timeoutMs = 60000,
-    // biome-ignore lint/suspicious/noExplicitAny: Dynamic cleanup report result
   ): Promise<Result<Record<string, unknown>, AppError>> {
     return ResultAsync.fromPromise(
       (async (): Promise<Record<string, unknown>> => {

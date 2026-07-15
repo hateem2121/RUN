@@ -1,5 +1,6 @@
 # RUN Remix — Active Development Rules
 
+> **Note:** See [`docs/core/AGENTS.md`](docs/core/AGENTS.md) for the agent-role directory.
 > **Source of Truth: `gemini.md`**
 >
 > This file contains active-development rules unique to this workspace.
@@ -48,3 +49,15 @@
 
 ## Communication Guardrails
 - **Artifact Transparency**: Never mention or present the internal `task.md` system artifact to the user. When discussing sprint goals, tracking, or checklists, refer EXCLUSIVELY to the `task_plan.md` file required by Protocol 0.
+
+## Test Generation Guardrails
+
+When creating or generating unit test files:
+
+1. **Verify source file existence before writing imports.** Never guess file names. Always `ls` or `find` the target directory first. This monorepo uses inconsistent naming conventions (e.g., `auth-service.ts` vs `blog.service.ts`, hyphens vs dots), so path inference is unreliable.
+
+2. **Verify export shape before importing.** Before writing `new Foo()`, `import { foo }`, or `import * as foo`, inspect the first ~10 lines of the source file (or grep for `export`) to confirm whether it exports a class, a singleton instance, or named functions.
+
+3. **Never use `fs.writeFileSync` to generate TypeScript test files.** Use the `write_to_file` tool directly for each file. When file content is built as a JavaScript string and written with `fs.writeFileSync`, template literal `\n` characters can be double-escaped into literal `\\n`, causing OXC/Vite parse errors.
+
+4. **Always run the new tests before marking task items complete.** Execute `npx vitest run <path>` on the newly created test files to confirm they parse and pass before checking off items in `task.md`.

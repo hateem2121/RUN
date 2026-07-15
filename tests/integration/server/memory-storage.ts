@@ -1,10 +1,10 @@
 import type { RepositoryCacheOptions } from "../../../server/lib/cache/cache-strategies.js";
+import type { IStorage } from "../../../server/repositories/storage-interfaces.js";
 import type {
   ProductDetail,
   ProductDetailWithContext,
   ProductSummary,
-} from "../../../server/lib/db/repositories/product-repository.js";
-import type { IStorage } from "../../../server/repositories/storage-interfaces.js";
+} from "../../../server/services/repositories/product-repository.js";
 import type {
   AboutBatchResponse,
   AboutHero,

@@ -94,6 +94,7 @@ FULL_SYSTEM_CONTEXT.json
 # E2E visual regression snapshots (regenerable)
 tests/e2e/**/*.png
 .gstack/
+.claude/skills/gstack/
 
 # Self-hosted GitHub Actions runner
 .github/runner/

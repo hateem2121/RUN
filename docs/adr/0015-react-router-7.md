@@ -4,6 +4,8 @@
 **Date**: 2026-01-07  
 **Decision Makers**: Architecture Team
 
+> **Update 2026-07-13**: Upgraded to React Router v8, decision unchanged.
+
 ## Context
 
 The project required a modern, capable routing solution that supports both Client-Side Routing (SPA) and Server-Side Rendering (SSR) capabilities. We evaluated React Router 6, TanStack Router, and Remix (v2). React Router 7 was released as the convergence of Remix and React Router, offering the best of both worlds:

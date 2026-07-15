@@ -13,8 +13,21 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["**/*.ts", "**/*.tsx", "**/*.css", "package.json", "tsconfig.json"],
-      "outputs": ["dist/**", "build/**", ".next/**"],
-      "passThroughEnv": ["SENTRY_AUTH_TOKEN", "SENTRY_ORG", "SENTRY_PROJECT"]
+      "outputs": ["dist/**", "build/**"],
+      "passThroughEnv": [
+        "NODE_ENV",
+        "PORT",
+        "DATABASE_URL",
+        "DATABASE_URL_UNPOOLED",
+        "UPSTASH_REDIS_REST_URL",
+        "UPSTASH_REDIS_REST_TOKEN",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
+        "SESSION_SECRET",
+        "ENABLE_MOCK_ADMIN",
+        "E2E_BASE_URL",
+        "TEST_REAL_DB"
+      ]
     },
     "test": {
       "dependsOn": ["build"],

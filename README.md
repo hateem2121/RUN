@@ -3,11 +3,11 @@
 **Version:** 4.0.3 | **Port:** 5002 (Exclusively) | **Engine:** gstack | **Last Updated:** June 2026
 
 [![Node 24+](https://img.shields.io/badge/Node-24%2B-339933?logo=node.js)](https://nodejs.org)
-[![React 19](https://img.shields.io/badge/React-19.2.4-61DAFB?logo=react)](https://react.dev)
+[![React 19](https://img.shields.io/badge/React-19.2.7-61DAFB?logo=react)](https://react.dev)
 [![TypeScript Strict](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript)](https://www.typescriptlang.org)
 [![Vite 8](https://img.shields.io/badge/Vite-8-646CFF?logo=vite)](https://vite.dev)
 [![Tailwind V4](https://img.shields.io/badge/Tailwind-V4-06B6D4?logo=tailwindcss)](https://tailwindcss.com)
-[![Express 5](https://img.shields.io/badge/Express-5.1.0-000000?logo=express)](https://expressjs.com)
+[![Express 5](https://img.shields.io/badge/Express-5.2.1-000000?logo=express)](https://expressjs.com)
 
 ---
 

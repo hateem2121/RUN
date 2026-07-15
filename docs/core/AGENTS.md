@@ -1,5 +1,6 @@
 # RUN Remix Agent Role Directory
 
+> **Note:** See [`AGENTS.md`](../../AGENTS.md) at the repository root for active development rules.
 In the **v4.1.2 RUN Remix** ecosystem, every Claude Code session is a collaboration between you (the human CEO) and a virtual engineering team.
 
 ---

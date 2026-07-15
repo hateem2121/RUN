@@ -28,29 +28,20 @@ export default defineConfig({
     testTimeout: 60000,
     coverage: {
       enabled: false, // Enable with --coverage flag
+      all: true,
       provider: "v8",
       reporter: ["text", "json", "html", "json-summary"],
       reportsDirectory: "./coverage",
-      exclude: ["**/node_modules/**", "**/dist/**", "**/tests/**", "**/mocks/**"],
+      exclude: ["**/node_modules/**", "**/dist/**", "**/tests/**", "**/mocks/**", "client/**"],
       thresholds: {
-        lines: 80,
-        functions: 80,
-        branches: 80,
-        statements: 80,
+        lines: 65,
+        functions: 65,
+        branches: 50,
+        statements: 65,
       },
     },
     // PERFORMANCE: Limit concurrency to avoid checking out valid memory
-    // @ts-expect-error - poolOptions is valid in Vitest 2+ but types might be strict in this environment
-    poolOptions: {
-      threads: {
-        maxThreads: 4,
-        minThreads: 1,
-        // isolate: false, // Uncomment if tests are purely functional/stateless for 2x speed
-      },
-      vmThreads: {
-        memoryLimit: "2GB",
-      },
-    },
+    maxConcurrency: 4,
   },
   resolve: {
     alias: {

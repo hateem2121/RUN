@@ -1,11 +1,11 @@
 import type { Express } from "express";
 import request from "supertest";
 import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
-import { mediaRepository, miscRepository } from "../../server/lib/db/repositories/index.js";
 import { registerRoutes } from "../../server/routes/index.js";
+import { mediaRepository, miscRepository } from "../../server/services/repositories/index.js";
 
 // Mock Repositories
-vi.mock("../../server/lib/db/repositories/index.js", () => ({
+vi.mock("../../server/services/repositories/index.js", () => ({
   mediaRepository: {
     getMediaAssets: vi.fn(),
     getMediaAssetsWithCount: vi.fn(),

@@ -1,3 +1,4 @@
+import { Result } from "neverthrow";
 import { Router } from "express";
 import { z } from "zod";
 import { isRedisEnabled, redis } from "../../lib/cache/upstash-client.js";
@@ -92,12 +93,19 @@ router.get("/vitals", authService.requireAdmin, async (_req, res) => {
 
     const rawEntries = await Promise.race([redis.lrange(listKey, 0, 99).catch(() => []), timeout]);
 
+    const safeParse = Result.fromThrowable(
+      (val: string) => JSON.parse(val),
+      () => new Error("parse failed")
+    );
+
     results[metric] = (rawEntries as unknown as (string | unknown)[]).map((entry) => {
-      try {
-        return typeof entry === "string" ? JSON.parse(entry) : entry;
-      } catch {
-        return entry;
+      if (typeof entry === "string") {
+        return safeParse(entry).match(
+          (parsed) => parsed,
+          () => entry
+        );
       }
+      return entry;
     });
   });
 

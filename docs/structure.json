@@ -4,7 +4,11 @@
   "categories": {
     "workspaces": {
       "path": "",
-      "directories": ["client", "server", "shared"]
+      "directories": ["client", "server", "shared", "scripts"]
+    },
+    "outputs": {
+      "path": "",
+      "directories": ["artifacts", "dist"]
     },
     "testing": {
       "path": "",

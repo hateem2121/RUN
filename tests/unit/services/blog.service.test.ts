@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { blogRepository } from "../../../server/lib/db/repositories/index.js";
 import { InternalError, NotFoundError } from "../../../server/lib/errors.js";
 import { blogService } from "../../../server/services/blog.service.js";
+import { blogRepository } from "../../../server/services/repositories/index.js";
 
 // Mock the repository
-vi.mock("../../../server/lib/db/repositories/index.js", () => ({
+vi.mock("../../../server/services/repositories/index.js", () => ({
   blogRepository: {
     getBlogCategories: vi.fn(),
     createBlogCategory: vi.fn(),

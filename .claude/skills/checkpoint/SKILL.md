@@ -1,1 +1,0 @@
-/Users/hateemjamshaid/Sites/RUN/.claude/worktrees/quirky-wiles/.claude/skills/gstack/checkpoint/SKILL.md

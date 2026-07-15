@@ -135,6 +135,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 
 | ❌ Never use | ✅ Use instead | Severity |
 |-------------|---------------|----------|
+| `test.poolOptions` (Vitest config) | Top-level `pool` or `maxConcurrency` | Medium |
 | `bullmq` (any import) | Google Cloud Tasks + `worker.ts` | Critical |
 | `@upstash/redis` | `ioredis` | Critical |
 | `connect-redis` | `RedisSessionStore` (custom) | Critical |
@@ -183,7 +184,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 - **Third-Party Interfaces**: When implementing third-party interfaces (like `express-session` Store) that dictate `any` in their types (e.g., `callback?: (err?: any) => void`), you must use `unknown` in your implementation parameters (e.g., `callback?: (err?: unknown) => void`). Do not use `as any` for type casting external properties (like dates); instead, cast to the specific expected union types (e.g., `as string | number | Date`). Note: When adapting third-party classes, you must still return `ResultAsync` objects internally to maintain safety, even if the parent interface defines the return type as `void`.
 
 ### 5.1.2 Middleware Strictness
-- **neverthrow mandatory**: All Express middleware (`server/middleware/`) including rate limiters, CSRF validation, idempotency caching, and RBAC audit logs MUST strictly use `ResultAsync.fromPromise` and `Result.fromThrowable`. Raw `try/catch` blocks used as fail-safes or fallbacks are strictly prohibited and must be converted to `match()` handlers.
+- **neverthrow mandatory**: All Express middleware (`server/middleware/`) including rate limiters, CSRF validation, idempotency caching, and RBAC audit logs MUST strictly use `ResultAsync.fromPromise` and `Result.fromThrowable`. Raw `try/catch` blocks used as fail-safes or fallbacks (even for synchronous operations like `JSON.parse` or input sanitization) are strictly prohibited and must be converted to `match()` handlers.
 - **useIterableCallbackReturn**: When mapping `neverthrow` Results (e.g. converting a db result to void), you must explicitly return `undefined` to satisfy Biome. `() => {}` is forbidden; use `.map(() => undefined)` instead.
 
 ### 5.1.3 Static Analysis & Knip Tech Debt
@@ -324,6 +325,8 @@ export const selectProductSchema = createSelectSchema(products)
 
 // NEVER define these manually in server/ or client/
 ```
+
+**Mocking Drizzle Queries**: When writing unit tests for services using Drizzle ORM, mock the entire query builder chain. Intermediate methods (`select`, `from`, `where`, `limit`, `leftJoin`) must return the mock instance (e.g., `vi.fn().mockReturnThis()`), while the terminal execution must resolve the data (e.g., `execute: vi.fn().mockResolvedValue([...])` or mocking `.then()`).
 
 ### 6.7 Tailwind v4 CSS Architecture (Mandatory)
 
@@ -835,23 +838,19 @@ The following directories were permanently removed in the Phase 3/4 cleanup spri
 | `client/app/types/lenis.d.ts` | Type declaration for the forbidden `lenis` library. Permanently removed. Use `locomotive-scroll` 5.0.1 only. |
 | `packages/sdk/` | Removed. Structure transitioned to a strict 3-workspace monorepo (`client/`, `server/`, `shared/`). |
 
-## 24. Biome Post-Move Fix Protocol (Codified 2026-07-08)
+## 24. Post-Refactor & Post-Move Integrity Protocol (Codified 2026-07-15)
 
-When any import path is edited — especially after a file is relocated — Biome's `organizeImports` rule fires and causes `biome check` to fail with "imports not sorted" even though no lint rule was violated. This is a **silent failure** that only shows up during `verify:tech-integrity`.
+When any logic is removed (e.g. replacing `try/catch` with `neverthrow`) or an import path is relocated, you MUST proactively scan for orphaned imports/parameters. `noUnusedLocals` is a hard error (TS6133) and will instantly break the CI/CD pipeline build phase.
+Additionally, Biome's `organizeImports` rule fires silently and causes `biome check` to fail with "imports not sorted".
 
-**Rule:** After editing any import path or moving any file, immediately run:
+**B.L.A.S.T. T (Trigger) Post-Refactor Checklist:**
 
-```bash
-npx biome check --write <path/to/changed-file.ts>
-```
+1. Purge all unused `Request`, `Response`, or legacy function imports from the file.
+2. `npx biome check --write <changed-files>` — fixes organizeImports order violations.
+3. `npx turbo typecheck` — use this instead of guessing workspace-specific scripts (like `check:types`) to quickly verify that no `TS6133` (unused variables) or type mismatches were introduced globally.
+4. Only then run the full `npm run verify:tech-integrity`.
 
-**B.L.A.S.T. T (Trigger) Post-Move Checklist:**
-
-1. `npx biome check --write <changed-files>` — fixes organizeImports order violations
-2. `npx tsc -p <workspace>/tsconfig.json --noEmit` — confirms all paths resolve correctly
-3. Only then run the full `npm run verify:tech-integrity`
-
-Skipping step 1 will cause a Biome check failure in step 3 that is confusing to diagnose because the error message ("imports not sorted") does not indicate which file triggered it.
+Skipping these steps will cause confusing pipeline failures during the strict esbuild step.
 
 ## 25. Cleanup Safety Protocol — Verify Imports Before Deleting (Codified 2026-07-08)
 
@@ -873,5 +872,10 @@ grep -rn "from.*['\"].*<filename>['\"]" client/ server/ shared/ --include="*.ts"
 | Ambiguous (dynamic import, `require()`) | Invoke Decision Gate — present options to the user |
 
 **Never trust audit reports alone.** Re-verify import counts at the time of deletion, not at the time of the audit. Code changes between audit and cleanup can invalidate findings.
+
+## 26. Mass Generation & Delegation (Codified 2026-07-15)
+
+**Rule (Swarm Pattern):** When tasked with generating, migrating, or updating a massive number of files (e.g., unit tests for an entire directory or bulk refactoring), **NEVER attempt to write them sequentially in a single turn.** 
+Always spawn parallel subagents (`invoke_subagent`), assigning a strictly scoped target (e.g., 1-2 files or a single component) to each. This bypasses context window truncation limits, prevents hallucinations, and avoids organic task degradation over long sessions.
 
 *For: M. Hateem Jamshaid*

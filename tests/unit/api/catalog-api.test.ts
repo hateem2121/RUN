@@ -69,7 +69,7 @@ vi.mock("../../../server/lib/cache/two-tier-batch.js", () => ({
 }));
 
 // Product & category fixture data (defined inside vi.mock factory — hoisting rules)
-vi.mock("../../../server/lib/db/repositories/index.js", () => {
+vi.mock("../../../server/services/repositories/index.js", () => {
   // ── Product fixture ──
   const mockProductSummary = {
     id: 49,
@@ -343,9 +343,9 @@ vi.mock("../../../server/lib/monitoring/query-performance.js", () => ({
 // App & route imports (after all mocks are defined)
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { productRepository } from "../../../server/lib/db/repositories/index.js";
 import categoryRoutes from "../../../server/routes/core/categories.js";
 import productRoutes from "../../../server/routes/core/products.js";
+import { productRepository } from "../../../server/services/repositories/index.js";
 
 // Re-declare fixture values (post-mock) for assertions
 const PRODUCT_ID = 49;

@@ -16,7 +16,6 @@ const config: KnipConfig = {
     "**/*.test.{ts,tsx}",
     "tests/**",
     "e2e/**",
-    ".claude/**",
     ".lintstagedrc.cjs",
     "client/app/components/admin/product-management-unified/shared/hooks/**",
     "client/app/components/admin/shared/**",
@@ -25,13 +24,7 @@ const config: KnipConfig = {
     "playwright-script.mjs",
     "server/scripts/benchmark-queries.ts",
   ],
-  ignoreDependencies: [
-    "react-leaflet",
-    "ts-morph",
-    "pino-pretty",
-    "neverthrow",
-    "@vitejs/plugin-react",
-  ],
+  ignoreDependencies: ["ts-morph", "pino-pretty", "neverthrow", "@vitejs/plugin-react"],
   ignoreBinaries: ["tsx", "pkill", "lhci"],
   ignoreExportsUsedInFile: true,
 };

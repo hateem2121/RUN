@@ -22,7 +22,7 @@ vi.mock("../../../server/db.js", () => ({
 
 // Import after mocking
 import { db } from "../../../server/db.js";
-import { UserRepository } from "../../../server/lib/db/repositories/user-repository.js";
+import { UserRepository } from "../../../server/services/repositories/user-repository.js";
 
 describe("UserRepository", () => {
   let userRepository: UserRepository;

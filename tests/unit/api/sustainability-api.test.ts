@@ -22,7 +22,7 @@ vi.mock("../../../server/lib/storage/app-service.js", () => ({
 }));
 
 // Mock Repositories
-vi.mock("../../../server/lib/db/repositories/index.js", async (importOriginal) => {
+vi.mock("../../../server/services/repositories/index.js", async (importOriginal) => {
   const actual = (await importOriginal()) as any;
 
   const mockHero = {

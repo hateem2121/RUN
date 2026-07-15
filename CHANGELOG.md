@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Architecture Health Score**: Achieved verified **100/100** score.
+- **Architecture Health Score**: Achieved verified **100/100** score *(Note: valid as of v4.1.0 release; score is subject to temporal decay as evaluated in later audits)*.
 - **Product Normalization**: `ProductRepository` refactored to sync `relatedProductIds` with the normalized `product_relations` table.
 - **Vitest Stabilization**: Resolved cross-workspace configuration issues via absolute path resolution in `vitest.config.ts`.
 - **Constitution Update**: `gemini.md` (v4.1.0) now includes System Health & Integrity invariants.

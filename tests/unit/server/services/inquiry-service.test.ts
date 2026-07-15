@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { unifiedCache } from "../../../../server/lib/cache/unified-cache.js";
-import { miscRepository } from "../../../../server/lib/db/repositories/index.js";
 import { emailService } from "../../../../server/lib/integrations/email-service.js";
 import { InquiryService } from "../../../../server/services/inquiry-service";
+import { miscRepository } from "../../../../server/services/repositories/index.js";
 
 // Mock dependencies
-vi.mock("../../../../server/lib/db/repositories/index.js", () => ({
+vi.mock("../../../../server/services/repositories/index.js", () => ({
   miscRepository: {
     createInquiry: vi.fn(),
     getInquiryById: vi.fn(),

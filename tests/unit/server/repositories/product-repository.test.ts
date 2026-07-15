@@ -28,7 +28,6 @@ const selectChain = {
   leftJoin: vi.fn().mockReturnThis(),
   prepare: vi.fn().mockReturnThis(),
   execute: vi.fn().mockResolvedValue([]),
-  // biome-ignore lint/suspicious/noThenProperty: Mocking a promise-like chain
   then: vi.fn().mockImplementation((res) => res([])),
 };
 mockDbInstance.select.mockReturnValue(selectChain);
@@ -36,7 +35,6 @@ mockDbInstance.select.mockReturnValue(selectChain);
 const insertChain = {
   values: vi.fn().mockReturnThis(),
   returning: vi.fn().mockReturnThis(),
-  // biome-ignore lint/suspicious/noThenProperty: Mocking a promise-like chain
   then: vi.fn().mockImplementation((res) => res([])),
 };
 mockDbInstance.insert.mockReturnValue(insertChain);
@@ -45,14 +43,12 @@ const updateChain = {
   set: vi.fn().mockReturnThis(),
   where: vi.fn().mockReturnThis(),
   returning: vi.fn().mockReturnThis(),
-  // biome-ignore lint/suspicious/noThenProperty: Mocking a promise-like chain
   then: vi.fn().mockImplementation((res) => res({ rowCount: 0 })),
 };
 mockDbInstance.update.mockReturnValue(updateChain);
 
 const deleteChain = {
   where: vi.fn().mockReturnThis(),
-  // biome-ignore lint/suspicious/noThenProperty: Mocking a promise-like chain
   then: vi.fn().mockImplementation((res) => res({ rowCount: 0 })),
 };
 mockDbInstance.delete.mockReturnValue(deleteChain);
@@ -67,9 +63,9 @@ vi.mock("../../../../server/lib/monitoring/logger.js", () => ({
 }));
 
 describe("ProductRepository", () => {
-  let ProductRepository: typeof import("../../../../server/lib/db/repositories/product-repository.js").ProductRepository;
+  let ProductRepository: typeof import("../../../../server/services/repositories/product-repository.js").ProductRepository;
   let repository: InstanceType<
-    typeof import("../../../../server/lib/db/repositories/product-repository.js").ProductRepository
+    typeof import("../../../../server/services/repositories/product-repository.js").ProductRepository
   >;
 
   beforeAll(async () => {
@@ -96,19 +92,19 @@ describe("ProductRepository", () => {
         })),
       },
     }));
-    vi.mock("../../../../server/lib/db/repositories/misc-repository", () => ({
+    vi.mock("../../../../server/services/repositories/misc-repository", () => ({
       MiscRepository: class {
         getFibers = vi.fn().mockResolvedValue([]);
       },
     }));
-    vi.mock("../../../../server/lib/db/repositories/query-performance", () => ({
+    vi.mock("../../../../server/services/repositories/query-performance", () => ({
       queryPerformanceMonitor: {
         logQuery: vi.fn(),
       },
     }));
 
     // 3. Dynamic import to ensure mocks are ready
-    const mod = await import("../../../../server/lib/db/repositories/product-repository.js");
+    const mod = await import("../../../../server/services/repositories/product-repository.js");
     ProductRepository = mod.ProductRepository;
   });
 

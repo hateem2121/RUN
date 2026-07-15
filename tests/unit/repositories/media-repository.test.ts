@@ -52,7 +52,7 @@ vi.mock("../../../server/lib/monitoring/logger.js", () => ({
 
 // Import after mocking
 import { db } from "../../../server/db.js";
-import { MediaRepository } from "../../../server/lib/db/repositories/media-repository.js";
+import { MediaRepository } from "../../../server/services/repositories/media-repository.js";
 
 describe("MediaRepository", () => {
   let mediaRepository: MediaRepository;

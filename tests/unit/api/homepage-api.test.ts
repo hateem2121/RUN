@@ -147,7 +147,7 @@ vi.mock("../../../server/lib/cache/two-tier-batch.js", () => ({
 // Mock pageContentRepository (used by homepage routes directly)
 // NOTE: all data is defined INSIDE the vi.mock factory to avoid the hoisting
 // "Cannot access before initialization" error — vi.mock is hoisted to the top.
-vi.mock("../../../server/lib/db/repositories/index.js", () => {
+vi.mock("../../../server/services/repositories/index.js", () => {
   const hero = {
     id: 1,
     title: "Next-Generation Sportswear Manufacturing",
@@ -416,7 +416,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
   // ────────────────────────────────────────────────────────────
   describe("GET /api/homepage-hero", () => {
     test("returns 200 with hero data shape", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageHero).mockResolvedValueOnce(mockHero);
 
       const res = await request(app).get("/api/homepage-hero");
@@ -429,7 +429,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
     });
 
     test("title is a non-empty string", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageHero).mockResolvedValueOnce(mockHero);
 
       const res = await request(app).get("/api/homepage-hero");
@@ -438,7 +438,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
     });
 
     test("returns no-cache headers to prevent stale reads after admin updates", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageHero).mockResolvedValueOnce(mockHero);
 
       const res = await request(app).get("/api/homepage-hero");
@@ -448,7 +448,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
     });
 
     test("handles missing hero gracefully (returns 404 or empty body, not 500)", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageHero).mockResolvedValueOnce(undefined);
 
       const res = await request(app).get("/api/homepage-hero");
@@ -462,7 +462,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
   // ────────────────────────────────────────────────────────────
   describe("GET /api/homepage-slogans", () => {
     test("returns 200 with array of slogans", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageSlogans).mockResolvedValueOnce(mockSlogans);
 
       const res = await request(app).get("/api/homepage-slogans");
@@ -472,7 +472,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
     });
 
     test("each slogan has text and isActive fields", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageSlogans).mockResolvedValueOnce(mockSlogans);
 
       const res = await request(app).get("/api/homepage-slogans");
@@ -484,7 +484,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
     });
 
     test("returns empty array when no slogans exist", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageSlogans).mockResolvedValueOnce([]);
 
       const res = await request(app).get("/api/homepage-slogans");
@@ -499,7 +499,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
   // ────────────────────────────────────────────────────────────
   describe("GET /api/homepage-sections", () => {
     test("returns 200 with sections array", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageSections).mockResolvedValueOnce(mockSections);
 
       const res = await request(app).get("/api/homepage-sections");
@@ -508,7 +508,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
     });
 
     test("each section has id, name, and mediaIds fields", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageSections).mockResolvedValueOnce(mockSections);
 
       const res = await request(app).get("/api/homepage-sections");
@@ -526,7 +526,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
   // ────────────────────────────────────────────────────────────
   describe("GET /api/homepage-batch", () => {
     test("returns 200 with aggregated batch shape", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageHero).mockResolvedValue(mockHero);
       vi.mocked(homepageRepository.getHomepageSlogans).mockResolvedValue(mockSlogans);
       vi.mocked(homepageRepository.getHomepageSections).mockResolvedValue(mockSections);
@@ -540,7 +540,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
     });
 
     test("batch response includes hero, slogans, sections, processCards keys", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageHero).mockResolvedValue(mockHero);
       vi.mocked(homepageRepository.getHomepageSlogans).mockResolvedValue(mockSlogans);
       vi.mocked(homepageRepository.getHomepageSections).mockResolvedValue(mockSections);
@@ -558,7 +558,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
     });
 
     test("each batch key wraps data in {result, timestamp} envelope", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageHero).mockResolvedValue(mockHero);
       vi.mocked(homepageRepository.getHomepageSlogans).mockResolvedValue(mockSlogans);
       vi.mocked(homepageRepository.getHomepageSections).mockResolvedValue(mockSections);
@@ -574,7 +574,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
     });
 
     test("hero result inside batch contains the title", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageHero).mockResolvedValue(mockHero);
       vi.mocked(homepageRepository.getHomepageSlogans).mockResolvedValue(mockSlogans);
       vi.mocked(homepageRepository.getHomepageSections).mockResolvedValue(mockSections);
@@ -589,7 +589,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
     });
 
     test("sets X-Cache-Hit header", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageHero).mockResolvedValue(mockHero);
       vi.mocked(homepageRepository.getHomepageSlogans).mockResolvedValue(mockSlogans);
       vi.mocked(homepageRepository.getHomepageSections).mockResolvedValue(mockSections);
@@ -608,7 +608,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
   // ────────────────────────────────────────────────────────────
   describe("GET /api/homepage-process-cards", () => {
     test("returns 200 with process cards wrapped in {result, timestamp}", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageProcessCards).mockResolvedValue(mockProcessCards);
 
       const res = await request(app).get("/api/homepage-process-cards");
@@ -618,7 +618,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
     });
 
     test("process cards have title, description, and step fields", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageProcessCards).mockResolvedValue(mockProcessCards);
 
       const res = await request(app).get("/api/homepage-process-cards");
@@ -677,7 +677,7 @@ describe("Homepage API — CMS Endpoint Coverage", () => {
   // ────────────────────────────────────────────────────────────
   describe("GET /api/homepage-featured-products-settings", () => {
     test("returns 200 with featured products settings", async () => {
-      const { homepageRepository } = await import("../../../server/lib/db/repositories/index.js");
+      const { homepageRepository } = await import("../../../server/services/repositories/index.js");
       vi.mocked(homepageRepository.getHomepageFeaturedProductsSettings).mockResolvedValue(
         mockFeaturedProductsSettings,
       );

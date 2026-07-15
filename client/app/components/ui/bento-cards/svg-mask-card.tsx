@@ -15,6 +15,11 @@ interface SvgMaskCardProps {
   link?: string | undefined;
 }
 
+// Default SVG mask to prevent undefined errors
+const getDefaultSvgMask = () => {
+  return "url('/assets/default-mask.svg')";
+};
+
 export const SvgMaskCard = memo(function SvgMaskCard({
   title,
   // description,
@@ -28,11 +33,6 @@ export const SvgMaskCard = memo(function SvgMaskCard({
   const [isLoadingMask, setIsLoadingMask] = useState(false);
   // const [isContentLoaded, setIsContentLoaded] = useState(false);
   const [contentType, setContentType] = useState<"image" | "video" | "unknown">("unknown");
-
-  // Default SVG mask to prevent undefined errors
-  const getDefaultSvgMask = () => {
-    return "url('/assets/default-mask.svg')";
-  };
 
   // Initialize svgMaskDataUri with default mask to prevent undefined errors
   const [svgMaskDataUri, setSvgMaskDataUri] = useState<string>(getDefaultSvgMask());
@@ -155,7 +155,7 @@ export const SvgMaskCard = memo(function SvgMaskCard({
     };
 
     loadSvgMask();
-  }, [maskSvgUrl, getDefaultSvgMask]);
+  }, [maskSvgUrl]);
 
   // PARALLEL CONTENT MEDIA PRELOADING for enhanced performance
   useEffect(() => {
