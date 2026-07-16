@@ -47,99 +47,188 @@
 }
 
 /* ── Hexagon Utilities ── */
-@layer components {
+.hex-grid {
+  display: flex;
+  flex-wrap: wrap;
+  width: 90%;
+  margin: 0 auto;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  list-style-type: none;
+  padding: 0;
+  justify-content: center;
+}
+
+.hex-grid__list {
+  display: contents; /* Ensure list doesn't disrupt grid flow */
+}
+
+.hex-grid__item {
+  flex: 0 1 33.333%; /* Default to 3 columns on larger screens */
+  max-width: 33.333%;
+  position: relative;
+  visibility: hidden;
+  outline: 1px solid transparent; /* fix for stitching edges in WebKit */
+}
+
+.hex-grid__item::after {
+  content: "";
+  display: block;
+  padding-bottom: 86.602%; /* (100 * sqrt(3) / 2) - accurate aspect ratio */
+}
+
+.hex-grid__content {
+  position: absolute;
+  width: 100%;
+  padding-bottom: 115.47%; /* (100 * 2 / sqrt(3)) */
+  overflow: hidden;
+  visibility: hidden;
+  outline: 1px solid transparent; /* fix for stitching edges in WebKit */
+  transform: rotate3d(0, 0, 1, -60deg) skewY(30deg);
+}
+
+.hex-grid__content * {
+  visibility: visible;
+}
+
+.hex-grid__content > div {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  color: #fff;
+  overflow: hidden;
+  transform: skewY(-30deg) rotate3d(0, 0, 1, 60deg);
+}
+
+/*** RESPONSIVE HEX GRID LOGIC ***/
+
+/* Default Desktop/Tablet Landscape (3 columns) */
+.hex-grid__item:nth-child(5n + 4) {
+  margin-left: 16.666%; /* Offset for staggering */
+}
+
+/* Tablet Portrait (2 columns) */
+@media (max-width: 1024px) {
   .hex-grid {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    padding-bottom: 20px;
+    padding-bottom: 5.5%; /* Adjust vertical spacing */
   }
-  .hex-container {
-    position: relative;
-    width: 190px;
-    height: 220px;
-    margin: 0 10px;
-    margin-bottom: -40px;
+  .hex-grid__item {
+    flex: 0 1 50%;
+    max-width: 50%;
   }
-  .hex-container:nth-child(even) {
-    margin-top: 110px;
+  .hex-grid__item:nth-child(5n + 4) {
+    margin-left: 0;
   }
-  @media (max-width: 768px) {
-    .hex-container:nth-child(even) {
-      margin-top: 0;
-    }
-    .hex-container {
-      margin-bottom: 20px;
-      width: 160px;
-      height: 185px;
-    }
+  .hex-grid__item:nth-child(3n + 3) {
+    margin-left: 25%;
   }
-  .hexagon {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    background: var(--color-sustainability-card);
-    border: 1px solid var(--color-sustainability-muted);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 10;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Mobile Portrait (1 column) */
+@media (max-width: 640px) {
+  .hex-grid {
+    padding-bottom: 11.2%;
   }
-  .hex-container:hover .hexagon {
-    transform: scale(1.05);
-    background: var(--color-sustainability-primary);
-    box-shadow: 0 0 25px color-mix(in srgb, var(--color-sustainability-primary) 80%, transparent);
-    z-index: 20;
-    color: var(--color-sustainability-head);
+  .hex-grid__item {
+    flex: 0 1 80%; /* Don't stretch full width */
+    max-width: 80%;
   }
-  .hex-details {
-    position: absolute;
-    left: 85%;
-    top: 50%;
-    transform: translateY(-50%) translateX(-20px);
-    width: 220px;
-    background: var(--color-sustainability-bg);
-    border: 1px solid var(--color-sustainability-primary);
-    border-radius: 12px;
-    padding: 16px;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    z-index: 30;
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
-    pointer-events: none;
-    color: var(--color-sustainability-body);
+  .hex-grid__item:nth-child(3n + 3),
+  .hex-grid__item:nth-child(5n + 4) {
+    margin-left: 0;
   }
-  .hex-container:hover .hex-details {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(-50%) translateX(10px);
+  /* On mobile, stack straight down or slight alternating stagger */
+  .hex-grid__item:nth-child(even) {
+    margin-left: 10%;
   }
-  .hex-border {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 11;
+}
+
+/* Material Nodes (Interactive Content inside Hex) */
+.material-node-interactive {
+  /* No custom clipping required; hex mask handles shape */
+  transition: all 0.5s ease-out;
+  cursor: pointer;
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.material-node-interactive::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.7));
+  z-index: 1;
+  transition: opacity 0.5s ease;
+}
+
+.material-node-interactive:hover::before {
+  opacity: 0.85; /* Darken slightly on hover for text contrast */
+}
+
+.material-node-interactive > * {
+  z-index: 2;
+}
+
+.material-node-interactive:hover .material-stats {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.material-node-interactive .material-stats {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Connective lines for structural overlay */
+.hex-connections {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hex-connections svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.hex-connections line,
+.hex-connections path {
+  stroke: var(--primary);
+  stroke-width: 1px;
+  stroke-dasharray: 4;
+  opacity: 0.3;
+  animation: dash 30s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 1000;
   }
-  .hex-border polygon {
-    fill: none;
-    stroke: var(--color-sustainability-muted);
-    stroke-width: 1;
-    transition: stroke 0.3s ease;
-  }
-  .hex-container:hover .hex-border polygon {
-    stroke: var(--color-sustainability-primary);
-    stroke-width: 2;
-  }
+}
+
+/* Hover glow effect targeting the parent wrapper */
+.group:hover .hex-grid__content > div {
+  transform: skewY(-30deg) rotate3d(0, 0, 1, 60deg) scale(1.05);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* GSAP Entry State for ScrollTrigger */
+.gsap-hex-item {
+  opacity: 0;
+  transform: translateY(60px) scale(0.9);
 }
 
 /* ── 3D Flip Card Utilities ── */

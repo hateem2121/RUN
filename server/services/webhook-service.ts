@@ -1,9 +1,5 @@
 import crypto from "node:crypto";
-import type {
-  WebhookEventName,
-  WebhookPayloadMap,
-  WebhookSubscription,
-} from "@shared/schemas/webhooks.js";
+import type { WebhookEventName, WebhookPayloadMap, WebhookSubscription } from "@shared/index.js";
 import { type Result, ResultAsync } from "neverthrow";
 import { AppError, InternalError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";

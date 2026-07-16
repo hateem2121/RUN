@@ -1,8 +1,9 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // We use dynamic imports in tests to cleanly re-evaluate module-level environment variables
 // and to properly inject doMock configurations per test run.
-type MediaQueueService = typeof import("../../../../../server/services/tasks/media-queue.service.js");
+type MediaQueueService =
+  typeof import("../../../../../server/services/tasks/media-queue.service.js");
 
 describe("media-queue.service", () => {
   let mockCreateTask: ReturnType<typeof vi.fn>;
@@ -18,7 +19,9 @@ describe("media-queue.service", () => {
     vi.resetModules();
     vi.clearAllMocks();
 
-    mockCreateTask = vi.fn().mockResolvedValue([{ name: "projects/test/locations/us/queues/media/tasks/123" }]);
+    mockCreateTask = vi
+      .fn()
+      .mockResolvedValue([{ name: "projects/test/locations/us/queues/media/tasks/123" }]);
     mockGetQueue = vi.fn().mockResolvedValue([{ name: "test-queue", state: "RUNNING" }]);
     mockQueuePath = vi.fn().mockReturnValue("mock-queue-path");
 
@@ -69,7 +72,7 @@ describe("media-queue.service", () => {
       expect(result.taskName).toMatch(/^dev-task-/);
       expect(mockLogger.info).toHaveBeenCalledWith(
         "[MediaQueue] Development mode - skipping Cloud Tasks queue",
-        expect.objectContaining({ mediaId: "123", operation: "optimize" })
+        expect.objectContaining({ mediaId: "123", operation: "optimize" }),
       );
     });
 
@@ -93,7 +96,7 @@ describe("media-queue.service", () => {
       expect(result.success).toBe(false);
       expect(result.error).toContain("missing project ID");
       expect(mockLogger.error).toHaveBeenCalledWith(
-        "[MediaQueue] Missing GOOGLE_CLOUD_PROJECT environment variable"
+        "[MediaQueue] Missing GOOGLE_CLOUD_PROJECT environment variable",
       );
     });
 
@@ -109,22 +112,27 @@ describe("media-queue.service", () => {
 
       const createTaskArg = mockCreateTask.mock.calls[0][0];
       expect(createTaskArg.parent).toBe("mock-queue-path");
-      expect(createTaskArg.task.httpRequest.url).toBe("https://test.run.app/api/worker/process-media");
+      expect(createTaskArg.task.httpRequest.url).toBe(
+        "https://test.run.app/api/worker/process-media",
+      );
       expect(createTaskArg.task.httpRequest.body).toBeDefined();
 
       const bodyDecoded = Buffer.from(createTaskArg.task.httpRequest.body, "base64").toString();
       expect(JSON.parse(bodyDecoded)).toEqual({ mediaId: "123", operation: "optimize" });
-      
+
       expect(mockLogger.info).toHaveBeenCalledWith(
         "[MediaQueue] Task queued successfully",
-        expect.objectContaining({ taskName: result.taskName })
+        expect.objectContaining({ taskName: result.taskName }),
       );
     });
 
     it("should successfully queue a task with delaySeconds", async () => {
       const service = await loadService();
 
-      const result = await service.queueMediaProcessing({ mediaId: "123", operation: "optimize" }, 60);
+      const result = await service.queueMediaProcessing(
+        { mediaId: "123", operation: "optimize" },
+        60,
+      );
 
       expect(result.success).toBe(true);
       expect(mockCreateTask).toHaveBeenCalledTimes(1);
@@ -144,7 +152,7 @@ describe("media-queue.service", () => {
       expect(result.error).toBe("GCP Error");
       expect(mockLogger.error).toHaveBeenCalledWith(
         "[MediaQueue] Failed to queue task",
-        expect.objectContaining({ error: "GCP Error" })
+        expect.objectContaining({ error: "GCP Error" }),
       );
     });
 
@@ -162,9 +170,9 @@ describe("media-queue.service", () => {
   describe("queueMediaOperations", () => {
     it("should queue multiple operations sequentially", async () => {
       const service = await loadService();
-      
+
       const results = await service.queueMediaOperations("123", ["optimize", "generate-thumbnail"]);
-      
+
       expect(results).toHaveLength(2);
       expect(results[0].success).toBe(true);
       expect(results[1].success).toBe(true);
@@ -193,7 +201,7 @@ describe("media-queue.service", () => {
       expect(stats?.state).toBe("RUNNING");
       expect(mockGetQueue).toHaveBeenCalledTimes(1);
     });
-    
+
     it("should fallback to QUEUE_NAME if queue.name is missing", async () => {
       mockGetQueue.mockResolvedValue([{}]);
       const service = await loadService();
@@ -214,7 +222,7 @@ describe("media-queue.service", () => {
       expect(stats).toBeNull();
       expect(mockLogger.warn).toHaveBeenCalledWith(
         "[MediaQueue] Failed to get queue stats",
-        expect.any(Object)
+        expect.any(Object),
       );
     });
   });

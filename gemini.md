@@ -150,7 +150,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 | `baseUrl` in any `tsconfig.json` | `paths` only (TypeScript 6) | High |
 | `forwardRef(...)` | Raw `ref` prop — React 19 | High |
 | Default exports for React components | Named exports: `export function Foo` | Medium |
-| `onSubmit` form handlers | `<form action={fn}>` — React 19 form actions | High |
+| `onSubmit` form handlers | `<form action={fn}>` — React 19 form actions. **Exception:** `react-hook-form` requires `action={() => form.handleSubmit(onSubmit)()}` closure wrappers — do NOT strip them | High |
 | `useEffect` for server state sync | `useOptimistic` + `useActionState` | High |
 | `try/catch` in Express 5 route handlers | Async handler — Express 5 catches automatically | High |
 | `next(err)` in route handlers | Return rejected promise; global error handler | High |
@@ -256,6 +256,10 @@ client/app/index.css         # STRICTLY modular @import sub-files
 **Every route file that has a loader or action MUST export an `ErrorBoundary`.**
 No exceptions — a route without an error boundary can white-screen the user.
 
+**Component Exports:**
+ALL file-based route files in `client/app/routes/` MUST use `export default function Component()` for the primary UI element.
+DO NOT use named `export function Component()` for leaf routes, as React Router will fail to mount the leaf node and return a null Outlet (empty page).
+
 ### 6.4 React 19 Patterns (Mandatory)
 
 ```tsx
@@ -264,6 +268,18 @@ No exceptions — a route without an error boundary can white-screen the user.
   <input name="field" />
   <button type="submit">Submit</button>
 </form>
+
+// react-hook-form compatibility — ALWAYS use closure wrapper
+// react-hook-form's handleSubmit returns (e?: BaseSyntheticEvent) => Promise<void>
+// which is incompatible with React 19's action=(formData: FormData) => void.
+// The closure bridges the two type signatures.
+<form action={() => form.handleSubmit(onSubmit)()}>
+  <input {...form.register("field")} />
+  <button type="submit">Submit</button>
+</form>
+
+// NEVER strip the closure wrapper from react-hook-form forms
+// NEVER pass form.handleSubmit(onSubmit) directly to action={}
 
 // Form state
 const [state, formAction, isPending] = useActionState(serverAction, initialState)
@@ -274,8 +290,13 @@ const [optimisticData, addOptimistic] = useOptimistic(data)
 // Ref — no forwardRef
 function Component({ ref, ...props }) { ... }  // raw ref prop
 
-// Named exports always
-export function MyComponent() { ... }          // not export default
+// Component exports
+export function MyComponent() { ... }          // Named exports for general components
+// export default function Component() { ... } // Default exports strictly reserved for leaf routes in app/routes/
+
+// CSP Nonce handling
+// In React 19, never pass an empty string to `nonce` as it causes hydration mismatches (the server emits `nonce=""` but the client drops the attribute). Always fallback to `undefined`.
+const nonce = loaderData?.cspNonce || undefined;
 ```
 
 ### 6.5 `neverthrow` Service Pattern (Mandatory)

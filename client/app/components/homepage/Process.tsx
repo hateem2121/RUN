@@ -1,10 +1,9 @@
-import { useGSAP } from "@gsap/react";
 import type { HomepageProcessCard } from "@shared/schemas/content/home";
-import gsap from "gsap";
 import { ArrowRight } from "lucide-react";
 import type React from "react";
 import { useRef } from "react";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { PROCESS_STEPS as FALLBACK_STEPS } from "./constants";
 
 interface ProcessProps {

@@ -213,7 +213,6 @@ export function FooterInquiryForm() {
 
         <Magnetic strength={0.4}>
           <button
-            aria-label="Action button"
             ref={btnRef}
             type="submit"
             disabled={isSubmitting || isSent}

@@ -77,7 +77,6 @@ export function IconPicker({
 
               return (
                 <button
-                  aria-label="Action button"
                   type="button"
                   key={icon.name}
                   onClick={() => setSelectedIcon(icon.name)}

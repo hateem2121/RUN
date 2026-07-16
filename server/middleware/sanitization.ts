@@ -9,25 +9,40 @@ import { logger } from "../lib/monitoring/logger.js";
  */
 
 const safeSanitize = Result.fromThrowable(
-  (data: any) => mongoSanitize.sanitize(data),
-  (error: unknown) => error instanceof Error ? error : new Error(String(error))
+  (data: unknown) => mongoSanitize.sanitize(data as Record<string, unknown> | unknown[]),
+  (error: unknown) => (error instanceof Error ? error : new Error(String(error))),
 );
 
 // Combined Middleware
 export function requestSanitization(req: Request, _res: Response, next: NextFunction): void {
   // 1. NoSQL Injection Prevention (Legacy Support)
   if (req.body) {
-    safeSanitize(req.body).map((sanitized) => { req.body = sanitized; }).mapErr((e) => {
-      logger.warn("[Sanitization] Failed to run NoSQL sanitizer on body", e);
-    });
+    safeSanitize(req.body)
+      .map((sanitized) => {
+        req.body = sanitized;
+        return undefined;
+      })
+      .mapErr((e) => {
+        logger.warn("[Sanitization] Failed to run NoSQL sanitizer on body", e);
+      });
   }
-  
+
   if (req.params) {
-    safeSanitize(req.params).map((sanitized) => { req.params = sanitized; }).mapErr(() => undefined);
+    safeSanitize(req.params)
+      .map((sanitized) => {
+        req.params = sanitized as typeof req.params;
+        return undefined;
+      })
+      .mapErr(() => undefined);
   }
-  
+
   if (req.query) {
-    safeSanitize(req.query).map((sanitized) => { req.query = sanitized; }).mapErr(() => undefined);
+    safeSanitize(req.query)
+      .map((sanitized) => {
+        req.query = sanitized as typeof req.query;
+        return undefined;
+      })
+      .mapErr(() => undefined);
   }
 
   // 2. Global XSS Prevention removed to support TipTap payloads.

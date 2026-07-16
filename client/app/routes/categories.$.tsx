@@ -568,7 +568,7 @@ import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
 
 export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
 
-export function ProductDetailRoute() {
+export default function ProductDetailRoute() {
   const loaderData = useLoaderData<typeof loader>();
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>

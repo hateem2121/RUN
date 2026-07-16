@@ -24,7 +24,6 @@ export function QuoteOverlay() {
     <>
       {/* Floating Action Button */}
       <button
-        aria-label="Action button"
         type="button"
         onClick={openDrawer}
         className="group center-flex fixed right-6 bottom-6 z-dock rounded-full bg-blue-600 p-4 text-white shadow-2xl transition-transform hover:scale-105 hover:bg-blue-700 active:scale-95"

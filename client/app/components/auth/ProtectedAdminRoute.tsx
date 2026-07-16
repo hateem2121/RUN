@@ -64,7 +64,6 @@ export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
             Logged in as: <span className="font-medium">{user?.email}</span>
           </p>
           <button
-            aria-label="Action button"
             type="button"
             onClick={() => {
               window.location.href = "/";

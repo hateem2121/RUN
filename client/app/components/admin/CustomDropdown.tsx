@@ -178,7 +178,6 @@ export function CustomDropdown({
       <div className="relative">
         {/* Dropdown Trigger */}
         <button
-          aria-label="Action button"
           ref={triggerRef}
           type="button"
           onClick={handleTriggerClick}
@@ -209,7 +208,6 @@ export function CustomDropdown({
           >
             {options.map((option, index) => (
               <button
-                aria-label="Action button"
                 key={option.value}
                 ref={(el) => {
                   optionRefs.current[index] = el;

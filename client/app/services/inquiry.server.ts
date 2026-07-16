@@ -3,7 +3,7 @@ import {
   ContactSubmissionSchema,
   type QuoteSubmissionData,
   QuoteSubmissionSchema,
-} from "@shared/validation/contact";
+} from "@shared/index";
 import { z } from "zod";
 
 // --- Actions ---

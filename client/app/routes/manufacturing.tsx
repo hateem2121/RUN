@@ -211,7 +211,7 @@ type LoaderData = {
   mediaAssets: MediaAsset[];
 };
 
-export function Component({ loaderData }: { loaderData: LoaderData }) {
+export default function Component({ loaderData }: { loaderData: LoaderData }) {
   return <ManufacturingInner loaderData={loaderData} />;
 }
 
@@ -221,7 +221,7 @@ interface ManufacturingInnerProps {
 
 function ManufacturingInner({ loaderData }: ManufacturingInnerProps) {
   const rootData = useRouteLoaderData<{ cspNonce?: string }>("root");
-  const nonce = rootData?.cspNonce;
+  const nonce = rootData?.cspNonce || undefined;
   const { hero, processes, capabilities, qualities, caseStudies, mediaAssets } = loaderData;
   const qualityItems = qualities;
 

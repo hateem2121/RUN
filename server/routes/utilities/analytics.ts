@@ -1,5 +1,5 @@
-import { Result } from "neverthrow";
 import { Router } from "express";
+import { Result } from "neverthrow";
 import { z } from "zod";
 import { isRedisEnabled, redis } from "../../lib/cache/upstash-client.js";
 import { logger } from "../../lib/monitoring/logger.js";
@@ -95,14 +95,14 @@ router.get("/vitals", authService.requireAdmin, async (_req, res) => {
 
     const safeParse = Result.fromThrowable(
       (val: string) => JSON.parse(val),
-      () => new Error("parse failed")
+      () => new Error("parse failed"),
     );
 
     results[metric] = (rawEntries as unknown as (string | unknown)[]).map((entry) => {
       if (typeof entry === "string") {
         return safeParse(entry).match(
           (parsed) => parsed,
-          () => entry
+          () => entry,
         );
       }
       return entry;

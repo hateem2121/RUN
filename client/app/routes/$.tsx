@@ -13,7 +13,7 @@ export function meta() {
   ];
 }
 
-export function NotFound() {
+export default function NotFound() {
   return (
     <div className="flex min-h-custom-space-281 flex-col items-center justify-center gap-6 text-center">
       <Typography.H1 className="text-9xl font-bold text-primary">404</Typography.H1>

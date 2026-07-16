@@ -1,9 +1,8 @@
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useHomepageData } from "@/hooks/use-homepage-data";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { HERO_TEXT as FALLBACK_HERO_TEXT } from "./constants";
 
 // Shader definitions moved outside component for performance

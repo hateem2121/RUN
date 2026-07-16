@@ -156,7 +156,6 @@ function FabricCard({
             </div>
           </div>
           <button
-            aria-label="Action button"
             type="button"
             className="w-full py-3 rounded-xl bg-custom-misc-278 text-black font-bold text-sm hover:bg-white transition-colors flex items-center justify-center gap-2"
           >
@@ -182,7 +181,6 @@ function FilterBtn({
 
   return (
     <button
-      aria-label="Action button"
       type="button"
       onClick={onClick}
       className={cn(

@@ -31,7 +31,7 @@ import { useRouteLoaderData } from "react-router";
 
 export const Footer: React.FC = () => {
   const rootData = useRouteLoaderData<{ cspNonce?: string }>("root");
-  const nonce = rootData?.cspNonce;
+  const nonce = rootData?.cspNonce || undefined;
 
   // Navigation Columns Fetching
   const { data: footerConfig, isLoading } = useQuery<
@@ -329,12 +329,12 @@ export const Footer: React.FC = () => {
         className="z-elevated relative w-full text-center overflow-hidden translate-y-custom-space-166"
         aria-hidden="true"
       >
-        <h1
+        <div
           ref={textRef}
           className="leading-none font-bold tracking-tighter opacity-muted-decoration mix-blend-normal select-none will-change-transform dark:opacity-20 whitespace-nowrap text-logotype"
         >
           RUN APPAREL
-        </h1>
+        </div>
       </div>
     </footer>
   );

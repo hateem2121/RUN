@@ -137,7 +137,6 @@ export const BasicInfoSection = memo(function BasicInfoSection({
                 placeholder="product-url-slug"
               />
               <button
-                aria-label="Action button"
                 type="button"
                 onClick={generateSlug}
                 className="rounded-md bg-muted px-3 py-2 text-foreground/80 text-sm transition-colors hover:bg-muted/20"

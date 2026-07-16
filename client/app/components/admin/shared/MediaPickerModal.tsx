@@ -240,7 +240,6 @@ export function MediaPickerModal({
           </div>
           <div className="flex items-center gap-3">
             <button
-              aria-label="Action button"
               type="button"
               onClick={onClose}
               className="px-5 py-2 rounded-lg border border-white/10 text-slate-300 text-sm font-medium hover:bg-white/5 transition-all"
@@ -248,7 +247,6 @@ export function MediaPickerModal({
               Cancel
             </button>
             <button
-              aria-label="Action button"
               type="button"
               disabled={!selectedAssetId}
               onClick={() => selectedAsset && onSelect(selectedAsset)}

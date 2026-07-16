@@ -80,7 +80,6 @@ export function CertificationsTabContent({
               const isSelected = selectedIds.includes(certificate.id!);
               return (
                 <button
-                  aria-label="Action button"
                   type="button"
                   key={certificate.id}
                   onClick={() => toggleCertificate(certificate.id!)}

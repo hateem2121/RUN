@@ -111,7 +111,6 @@ function SimpleMediaGrid({
             {/* Star Toggle */}
             {showStars && onStarToggle && (
               <button
-                aria-label="Action button"
                 type="button"
                 onClick={() => onStarToggle(asset.id, asset.type === "image" ? "image" : "video")}
                 className={`absolute top-2 left-2 rounded-full p-1 ${
@@ -126,7 +125,6 @@ function SimpleMediaGrid({
 
             {/* Remove Button */}
             <button
-              aria-label="Action button"
               type="button"
               onClick={() => handleRemoveAsset(asset.id)}
               className="absolute top-2 right-2 rounded-full bg-red-500 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
@@ -453,7 +451,6 @@ export const MediaAssetsSection = memo(function MediaAssetsSection({
                         />
                       </div>
                       <button
-                        aria-label="Action button"
                         type="button"
                         onClick={() => removeMedia("model", formData.modelFileId!)}
                         className="absolute top-2 right-2 rounded-full bg-red-500 p-1.5 text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100"

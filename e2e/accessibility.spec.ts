@@ -148,7 +148,8 @@ test.describe("Admin Pages", () => {
   test.skip("Admin dashboard should have no critical a11y violations", async ({ page }) => {
     await page.goto("/admin");
     await page.waitForLoadState("networkidle");
-
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForTimeout(500); // Allow GSAP animations to complete
     const accessibilityScanResults = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa"])
       .analyze();

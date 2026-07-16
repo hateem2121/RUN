@@ -64,7 +64,7 @@ export const useAuth = (): AuthState => {
  */
 export const login = (returnUrl?: string) => {
   const params = returnUrl ? `?returnUrl=${encodeURIComponent(returnUrl)}` : "";
-  window.location.href = `/api/login${params}`;
+  window.location.href = `/api/auth/login${params}`;
 };
 
 /**
@@ -72,5 +72,5 @@ export const login = (returnUrl?: string) => {
  * The server destroys the session and redirects to home.
  */
 /** @public */ export const logout = () => {
-  window.location.href = "/api/logout";
+  window.location.href = "/api/auth/logout";
 };

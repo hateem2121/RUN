@@ -26,6 +26,7 @@ export default function handleRequest(
     const nonceContext = (globalThis as unknown as { __nonceContext: unknown }).__nonceContext;
     const loadCtx = _loadContext as { get?: (k: unknown) => string; cspNonce?: string } | undefined;
     const nonceVal = nonceContext ? loadCtx?.get?.(nonceContext) : loadCtx?.cspNonce;
+
     const options: Parameters<typeof renderToPipeableStream>[1] = {
       [readyOption]() {
         shellRendered = true;

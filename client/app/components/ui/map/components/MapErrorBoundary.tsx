@@ -51,7 +51,6 @@ export class MapErrorBoundary extends Component<Props, State> {
                 </p>
               </div>
               <button
-                aria-label="Action button"
                 type="button"
                 onClick={() => window.location.reload()}
                 className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors"

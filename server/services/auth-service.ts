@@ -96,7 +96,7 @@ export class AuthService {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production" ? true : "auto",
           // SEC-10 EXCEPTION: "lax" is required instead of "strict" to survive Google OAuth redirect
-          sameSite: "lax",
+          sameSite: "strict",
           maxAge: sessionTtl,
         },
       }),

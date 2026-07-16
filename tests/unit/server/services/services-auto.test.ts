@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as aboutService from "../../../../server/services/about.service.js";
 import * as accessoryService from "../../../../server/services/accessory.service.js";
+import * as adminService from "../../../../server/services/admin/admin.service.js";
 import * as blogService from "../../../../server/services/blog.service.js";
 import * as categoryService from "../../../../server/services/category.service.js";
 import * as contactService from "../../../../server/services/contact.service.js";
@@ -22,11 +23,9 @@ import * as productService from "../../../../server/services/product.service.js"
 import * as servicesService from "../../../../server/services/services.service.js";
 import * as sustainabilityService from "../../../../server/services/sustainability.service.js";
 import * as systemService from "../../../../server/services/system.service.js";
+import * as queueService from "../../../../server/services/tasks/media-queue.service.js";
 import * as technologyService from "../../../../server/services/technology.service.js";
 import * as webhookService from "../../../../server/services/webhook-service.js";
-
-import * as adminService from "../../../../server/services/admin/admin.service.js";
-import * as queueService from "../../../../server/services/tasks/media-queue.service.js";
 
 // Mock dependencies globally
 vi.mock("../../../../server/db.js", () => {
@@ -134,9 +133,15 @@ describe("Services Auto", () => {
 
         // If it's a function (or object with methods)
         if (typeof exportedItem === "function") {
-          try { await exportedItem(1); } catch (e) {}
-          try { await exportedItem({ id: 1 }); } catch (e) {}
-          try { await exportedItem("string"); } catch (e) {}
+          try {
+            await exportedItem(1);
+          } catch (e) {}
+          try {
+            await exportedItem({ id: 1 });
+          } catch (e) {}
+          try {
+            await exportedItem("string");
+          } catch (e) {}
           callCount++;
         } else if (typeof exportedItem === "object" && exportedItem !== null) {
           const proto = Object.getPrototypeOf(exportedItem);
@@ -144,14 +149,22 @@ describe("Services Auto", () => {
             (m) => m !== "constructor" && typeof exportedItem[m] === "function",
           );
           for (const method of methods) {
-            try { await exportedItem[method](1); } catch (e) {}
-            try { await exportedItem[method]({ id: 1 }); } catch (e) {}
-            try { await exportedItem[method]("string"); } catch (e) {}
+            try {
+              await exportedItem[method](1);
+            } catch (e) {}
+            try {
+              await exportedItem[method]({ id: 1 });
+            } catch (e) {}
+            try {
+              await exportedItem[method]("string");
+            } catch (e) {}
             callCount++;
           }
           for (const prop of Object.keys(exportedItem)) {
             if (typeof exportedItem[prop] === "function") {
-              try { await exportedItem[prop](1); } catch (e) {}
+              try {
+                await exportedItem[prop](1);
+              } catch (e) {}
               callCount++;
             }
           }
@@ -165,13 +178,23 @@ describe("Services Auto", () => {
   it("should blanket test all exported functions with DB failures", async () => {
     // Import db to modify its mock implementation
     const { db } = await import("../../../../server/db.js");
-    
+
     // Force DB errors to cover neverthrow Result.fromThrowable blocks
-    (db.select as any).mockImplementation(() => { throw new Error("DB Connection Error") });
-    (db.insert as any).mockImplementation(() => { throw new Error("DB Insert Error") });
-    (db.update as any).mockImplementation(() => { throw new Error("DB Update Error") });
-    (db.delete as any).mockImplementation(() => { throw new Error("DB Delete Error") });
-    (db.transaction as any).mockImplementation(() => { throw new Error("DB Transaction Error") });
+    (db.select as any).mockImplementation(() => {
+      throw new Error("DB Connection Error");
+    });
+    (db.insert as any).mockImplementation(() => {
+      throw new Error("DB Insert Error");
+    });
+    (db.update as any).mockImplementation(() => {
+      throw new Error("DB Update Error");
+    });
+    (db.delete as any).mockImplementation(() => {
+      throw new Error("DB Delete Error");
+    });
+    (db.transaction as any).mockImplementation(() => {
+      throw new Error("DB Transaction Error");
+    });
 
     let callCount = 0;
 
@@ -181,8 +204,12 @@ describe("Services Auto", () => {
         const exportedItem = (serviceModule as any)[key];
 
         if (typeof exportedItem === "function") {
-          try { await exportedItem("fail-1"); } catch (e) {}
-          try { await exportedItem({ id: 999, triggerError: true }); } catch (e) {}
+          try {
+            await exportedItem("fail-1");
+          } catch (e) {}
+          try {
+            await exportedItem({ id: 999, triggerError: true });
+          } catch (e) {}
           callCount++;
         } else if (typeof exportedItem === "object" && exportedItem !== null) {
           const proto = Object.getPrototypeOf(exportedItem);
@@ -190,14 +217,18 @@ describe("Services Auto", () => {
             (m) => m !== "constructor" && typeof exportedItem[m] === "function",
           );
           for (const method of methods) {
-            try { await exportedItem[method]("fail-1"); } catch (e) {}
-            try { await exportedItem[method]({ id: 999, triggerError: true }); } catch (e) {}
+            try {
+              await exportedItem[method]("fail-1");
+            } catch (e) {}
+            try {
+              await exportedItem[method]({ id: 999, triggerError: true });
+            } catch (e) {}
             callCount++;
           }
         }
       }
     }
-    
+
     expect(callCount).toBeGreaterThan(0);
   });
 });

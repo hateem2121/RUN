@@ -8,7 +8,7 @@ interface GlowingShadowProps {
 
 export function GlowingShadow({ children }: GlowingShadowProps) {
   return (
-    <button aria-label="Action button" type="button" className="glow-container">
+    <button type="button" className="glow-container">
       <span className="glow" />
       <div className="glow-content">{children}</div>
     </button>

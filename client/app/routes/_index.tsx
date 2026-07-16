@@ -73,7 +73,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   };
 }
 
-export function Component({ loaderData }: { loaderData: LoaderData }) {
+export default function Component({ loaderData }: { loaderData: LoaderData }) {
   const { homepageData } = loaderData;
   const isMobile = useIsMobile();
 

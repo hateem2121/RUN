@@ -140,7 +140,6 @@ function OptimizedTechnologyHero({ media }: { media: MediaAsset }) {
                 {isIntersecting ? "INITIALIZING SUBSYSTEMS..." : "SCROLL TO ACTIVATE"}
               </Typography.P>
               <button
-                aria-label="Action button"
                 type="button"
                 onClick={() => setUserRequestedLoad(true)}
                 className="bg-custom-color-259 dark:bg-custom-color-260 hover:bg-custom-color-261 dark:hover:bg-white text-white dark:text-black rounded-sm px-6 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-md shadow-custom-color-262/20 dark:shadow-custom-color-263/20"
@@ -393,7 +392,6 @@ export function InteractiveExperienceSection({
                 <div className="flex flex-col gap-3 h-full overflow-y-auto pr-2">
                   {layers.map((layer) => (
                     <button
-                      aria-label="Action button"
                       key={layer.id}
                       type="button"
                       onClick={() => setActiveLayer(layer.id)}

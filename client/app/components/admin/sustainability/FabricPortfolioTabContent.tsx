@@ -191,7 +191,6 @@ export function FabricPortfolioTabContent({
                   <div className="p-2 space-y-1">
                     {filteredFabrics.map((fabric) => (
                       <button
-                        aria-label="Action button"
                         key={fabric.id}
                         type="button"
                         onClick={() =>

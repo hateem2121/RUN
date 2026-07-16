@@ -3,7 +3,6 @@ import { db } from "../../../../../server/db.js";
 import { emitCacheInvalidation } from "../../../../../server/lib/cache/cache-events.js";
 import { UnifiedCache } from "../../../../../server/lib/cache/unified-cache.js";
 import { dbCircuitBreaker } from "../../../../../server/lib/db/db-circuit-breaker.js";
-import { queryPerformanceMonitor } from "../../../../../server/lib/db/query-performance.js";
 import { logger } from "../../../../../server/lib/monitoring/logger.js";
 import { StorageSingleton } from "../../../../../server/lib/storage-singleton.js";
 import { accessoryRepository } from "../../../../../server/services/repositories/accessory-repository.js";
@@ -194,7 +193,11 @@ describe("AccessoryRepository", () => {
         const result = await accessoryRepository.getAccessory(1);
         expect(result).toEqual({ id: 1, name: "DB" });
         expect(db.select).toHaveBeenCalled();
-        expect(cacheInstance.set).toHaveBeenCalledWith("accessory:1", { id: 1, name: "DB" }, expect.any(Number));
+        expect(cacheInstance.set).toHaveBeenCalledWith(
+          "accessory:1",
+          { id: 1, name: "DB" },
+          expect.any(Number),
+        );
       });
 
       it("returns undefined if not found in db", async () => {
@@ -217,7 +220,10 @@ describe("AccessoryRepository", () => {
       it("fetches from db with filters and caches if not in cache", async () => {
         const chain = createMockDbChain([{ id: 1 }]);
         vi.mocked(db.select).mockReturnValue(chain);
-        const result = await accessoryRepository.getAccessories(10, 0, { category: "cat", search: "test" });
+        const result = await accessoryRepository.getAccessories(10, 0, {
+          category: "cat",
+          search: "test",
+        });
         expect(result).toEqual([{ id: 1 }]);
         expect(dbCircuitBreaker.execute).toHaveBeenCalled();
         expect(cacheInstance.set).toHaveBeenCalled();
@@ -226,10 +232,17 @@ describe("AccessoryRepository", () => {
       it("normalizes filters sorting keys and ignoring undefined", async () => {
         const chain = createMockDbChain([{ id: 1 }]);
         vi.mocked(db.select).mockReturnValue(chain);
-        const result = await accessoryRepository.getAccessories(10, 0, { search: "test", category: undefined });
+        const result = await accessoryRepository.getAccessories(10, 0, {
+          search: "test",
+          category: undefined,
+        });
         expect(result).toEqual([{ id: 1 }]);
         // Expect cache key to contain '{"search":"test"}'
-        expect(cacheInstance.set).toHaveBeenCalledWith(expect.stringContaining('{"search":"test"}'), [{ id: 1 }], expect.any(Number));
+        expect(cacheInstance.set).toHaveBeenCalledWith(
+          expect.stringContaining('{"search":"test"}'),
+          [{ id: 1 }],
+          expect.any(Number),
+        );
       });
     });
 
@@ -237,7 +250,10 @@ describe("AccessoryRepository", () => {
       it("fetches count from db with filters", async () => {
         const chain = createMockDbChain([{ count: "5" }]);
         vi.mocked(db.select).mockReturnValue(chain);
-        const result = await accessoryRepository.getAccessoriesCount({ category: "cat", search: "test" });
+        const result = await accessoryRepository.getAccessoriesCount({
+          category: "cat",
+          search: "test",
+        });
         expect(result).toBe(5);
         expect(db.select).toHaveBeenCalled();
       });
@@ -259,7 +275,7 @@ describe("AccessoryRepository", () => {
       });
 
       it("fetches both and caches if not in cache", async () => {
-        // we mock db.select to always return a chain that evaluates to an object 
+        // we mock db.select to always return a chain that evaluates to an object
         // with BOTH { id: 1, count: "1" } so that order doesn't matter
         const chain = createMockDbChain([{ id: 1, count: "1" }]);
         vi.mocked(db.select).mockReturnValue(chain);
@@ -285,12 +301,15 @@ describe("AccessoryRepository", () => {
         const chain = createMockDbChain([{ id: 1 }]);
         vi.mocked(db.insert).mockReturnValue(chain);
         vi.mocked(cacheInstance.clearPattern).mockRejectedValue(new Error("Cache fail"));
-        
+
         const result = await accessoryRepository.createAccessory({ name: "New" } as any);
         await new Promise(process.nextTick); // let background promise reject
-        
+
         expect(result).toEqual({ id: 1 });
-        expect(logger.debug).toHaveBeenCalledWith("Cache invalidation failed (non-critical):", expect.any(Error));
+        expect(logger.debug).toHaveBeenCalledWith(
+          "Cache invalidation failed (non-critical):",
+          expect.any(Error),
+        );
       });
     });
 
@@ -319,12 +338,15 @@ describe("AccessoryRepository", () => {
         const chain = createMockDbChain([{ id: 1 }]);
         vi.mocked(db.update).mockReturnValue(chain);
         vi.mocked(cacheInstance.clearPattern).mockRejectedValue(new Error("Cache fail"));
-        
+
         const result = await accessoryRepository.updateAccessory(1, { name: "Updated" });
         await new Promise(process.nextTick);
-        
+
         expect(result).toEqual({ id: 1 });
-        expect(logger.debug).toHaveBeenCalledWith("Cache invalidation failed (non-critical):", expect.any(Error));
+        expect(logger.debug).toHaveBeenCalledWith(
+          "Cache invalidation failed (non-critical):",
+          expect.any(Error),
+        );
       });
     });
 
@@ -347,7 +369,9 @@ describe("AccessoryRepository", () => {
 
       it("throws error if cache invalidation fails", async () => {
         vi.mocked(cacheInstance.clearPattern).mockRejectedValueOnce(new Error("Cache fail"));
-        await expect(accessoryRepository.deleteAccessory(1)).rejects.toThrow("Cache invalidation failed");
+        await expect(accessoryRepository.deleteAccessory(1)).rejects.toThrow(
+          "Cache invalidation failed",
+        );
         expect(db.update).not.toHaveBeenCalled();
       });
     });

@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { db } from "../../../../../../server/db.js";
-import { StorageSingleton } from "../../../../../../server/lib/storage-singleton.js";
-import { aboutRepository } from "../../../../../../server/services/repositories/page-content/about.repository.js";
 import { emitCacheInvalidation } from "../../../../../../server/lib/cache/cache-events.js";
 import { UnifiedCache } from "../../../../../../server/lib/cache/unified-cache.js";
 import { logger } from "../../../../../../server/lib/monitoring/logger.js";
+import { StorageSingleton } from "../../../../../../server/lib/storage-singleton.js";
 import { mediaRepository } from "../../../../../../server/services/repositories/media-repository.js";
+import { aboutRepository } from "../../../../../../server/services/repositories/page-content/about.repository.js";
 
 vi.mock("../../../../../../server/db.js", () => ({
   db: {
@@ -166,19 +166,25 @@ describe("AboutRepository", () => {
         expect(res).toEqual(mockReturn);
       });
     });
-    
+
     // Test update method throws if storage returns undefined
     it("updateAboutTimelineEntry throws if undefined returned", async () => {
       mockStorageInstance.updateAboutTimelineEntry.mockResolvedValue(undefined);
-      await expect(aboutRepository.updateAboutTimelineEntry(1, {})).rejects.toThrow("updateAboutTimelineEntry returned undefined for id 1");
+      await expect(aboutRepository.updateAboutTimelineEntry(1, {})).rejects.toThrow(
+        "updateAboutTimelineEntry returned undefined for id 1",
+      );
     });
     it("updateAboutMapLocation throws if undefined returned", async () => {
       mockStorageInstance.updateAboutMapLocation.mockResolvedValue(undefined);
-      await expect(aboutRepository.updateAboutMapLocation(1, {})).rejects.toThrow("updateAboutMapLocation returned undefined for id 1");
+      await expect(aboutRepository.updateAboutMapLocation(1, {})).rejects.toThrow(
+        "updateAboutMapLocation returned undefined for id 1",
+      );
     });
     it("updateAboutSection throws if undefined returned", async () => {
       mockStorageInstance.updateAboutSection.mockResolvedValue(undefined);
-      await expect(aboutRepository.updateAboutSection(1, {})).rejects.toThrow("updateAboutSection returned undefined for id 1");
+      await expect(aboutRepository.updateAboutSection(1, {})).rejects.toThrow(
+        "updateAboutSection returned undefined for id 1",
+      );
     });
   });
 
@@ -200,7 +206,12 @@ describe("AboutRepository", () => {
         vi.mocked(db.select).mockReturnValue(chain);
         const res = await aboutRepository.getAboutHero(false);
         expect(chain.where).toHaveBeenCalled(); // checks eq(isActive, true)
-        expect(mockCache.set).toHaveBeenCalledWith("about:hero", { id: 1, headline: "db" }, 1800, "data");
+        expect(mockCache.set).toHaveBeenCalledWith(
+          "about:hero",
+          { id: 1, headline: "db" },
+          1800,
+          "data",
+        );
         expect(res).toEqual({ id: 1, headline: "db" });
       });
 
@@ -209,7 +220,12 @@ describe("AboutRepository", () => {
         vi.mocked(db.select).mockReturnValue(chain);
         const res = await aboutRepository.getAboutHero(true);
         expect(chain.where).not.toHaveBeenCalled();
-        expect(mockCache.set).toHaveBeenCalledWith("about:hero:all", { id: 1, headline: "db" }, 1800, "data");
+        expect(mockCache.set).toHaveBeenCalledWith(
+          "about:hero:all",
+          { id: 1, headline: "db" },
+          1800,
+          "data",
+        );
         expect(res).toEqual({ id: 1, headline: "db" });
       });
 
@@ -242,7 +258,9 @@ describe("AboutRepository", () => {
         vi.mocked(db.select).mockReturnValue(selectChain);
         vi.mocked(db.insert).mockReturnValue(insertChain);
 
-        await expect(aboutRepository.updateAboutHero({ headline: "new" })).rejects.toThrow("Failed to create about hero");
+        await expect(aboutRepository.updateAboutHero({ headline: "new" })).rejects.toThrow(
+          "Failed to create about hero",
+        );
       });
 
       it("updates existing hero if one exists", async () => {
@@ -263,7 +281,9 @@ describe("AboutRepository", () => {
         vi.mocked(db.select).mockReturnValue(selectChain);
         vi.mocked(db.update).mockReturnValue(updateChain);
 
-        await expect(aboutRepository.updateAboutHero({ headline: "updated" })).rejects.toThrow("Failed to update about hero");
+        await expect(aboutRepository.updateAboutHero({ headline: "updated" })).rejects.toThrow(
+          "Failed to update about hero",
+        );
       });
     });
 
@@ -298,13 +318,18 @@ describe("AboutRepository", () => {
 
         const res = await aboutRepository.createAboutTimelineEntry({} as any);
         expect(res).toEqual({ id: 1 });
-        expect(logger.debug).toHaveBeenCalledWith("[Cache] Failed to emit invalidation event:", expect.any(Error));
+        expect(logger.debug).toHaveBeenCalledWith(
+          "[Cache] Failed to emit invalidation event:",
+          expect.any(Error),
+        );
       });
 
       it("updateAboutTimelineEntry throws if not found", async () => {
         const chain = createMockDbChain([]);
         vi.mocked(db.update).mockReturnValue(chain);
-        await expect(aboutRepository.updateAboutTimelineEntry(1, {})).rejects.toThrow("About timeline entry 1 not found");
+        await expect(aboutRepository.updateAboutTimelineEntry(1, {})).rejects.toThrow(
+          "About timeline entry 1 not found",
+        );
       });
 
       it("updateAboutTimelineEntry updates successfully", async () => {
@@ -322,7 +347,10 @@ describe("AboutRepository", () => {
 
         const res = await aboutRepository.deleteAboutTimelineEntry(1);
         expect(res).toBe(true);
-        expect(logger.debug).toHaveBeenCalledWith("[Cache] Failed to emit invalidation event:", expect.any(Error));
+        expect(logger.debug).toHaveBeenCalledWith(
+          "[Cache] Failed to emit invalidation event:",
+          expect.any(Error),
+        );
       });
 
       it("reorderAboutTimelineEntries iterates over IDs", async () => {
@@ -372,7 +400,9 @@ describe("AboutRepository", () => {
       it("updateAboutMapLocation throws if not found", async () => {
         const chain = createMockDbChain([]);
         vi.mocked(db.update).mockReturnValue(chain);
-        await expect(aboutRepository.updateAboutMapLocation(1, {})).rejects.toThrow("About map location 1 not found");
+        await expect(aboutRepository.updateAboutMapLocation(1, {})).rejects.toThrow(
+          "About map location 1 not found",
+        );
       });
 
       it("deleteAboutMapLocation", async () => {
@@ -429,7 +459,9 @@ describe("AboutRepository", () => {
       it("updateAboutSection throws if not found", async () => {
         const chain = createMockDbChain([]);
         vi.mocked(db.update).mockReturnValue(chain);
-        await expect(aboutRepository.updateAboutSection(1, {})).rejects.toThrow("About section 1 not found");
+        await expect(aboutRepository.updateAboutSection(1, {})).rejects.toThrow(
+          "About section 1 not found",
+        );
       });
 
       it("deleteAboutSection deletes and catches cache err", async () => {
@@ -516,7 +548,7 @@ describe("AboutRepository", () => {
       it("getAboutTeamMessage applies isActive correctly", async () => {
         const chain = createMockDbChain([{ id: 1 }]);
         vi.mocked(db.select).mockReturnValue(chain);
-        
+
         await aboutRepository.getAboutTeamMessage(false);
         expect(chain.where).toHaveBeenCalled();
 
@@ -552,7 +584,9 @@ describe("AboutRepository", () => {
         vi.mocked(db.select).mockReturnValue(selectChain);
         vi.mocked(db.insert).mockReturnValue(insertChain);
 
-        await expect(aboutRepository.updateAboutTeamMessage({})).rejects.toThrow("Failed to create about team message");
+        await expect(aboutRepository.updateAboutTeamMessage({})).rejects.toThrow(
+          "Failed to create about team message",
+        );
       });
 
       it("updateAboutTeamMessage throws if update fails", async () => {
@@ -561,7 +595,9 @@ describe("AboutRepository", () => {
         vi.mocked(db.select).mockReturnValue(selectChain);
         vi.mocked(db.update).mockReturnValue(updateChain);
 
-        await expect(aboutRepository.updateAboutTeamMessage({})).rejects.toThrow("Failed to update about team message");
+        await expect(aboutRepository.updateAboutTeamMessage({})).rejects.toThrow(
+          "Failed to update about team message",
+        );
       });
     });
 
@@ -578,17 +614,32 @@ describe("AboutRepository", () => {
         // We will mock db queries one by one since they are run in parallel,
         // it's easier to spy on the methods or just mock db.select generally.
         // Or we can mock the class methods.
-        vi.spyOn(aboutRepository, "getAboutHero").mockResolvedValue({ id: 1, imageId: 10, videoId: 11, backgroundMediaId: 12 } as any);
-        vi.spyOn(aboutRepository, "getAboutTimelineEntries").mockResolvedValue([{ id: 1, imageId: 13, imageUrl: "test" }] as any);
+        vi.spyOn(aboutRepository, "getAboutHero").mockResolvedValue({
+          id: 1,
+          imageId: 10,
+          videoId: 11,
+          backgroundMediaId: 12,
+        } as any);
+        vi.spyOn(aboutRepository, "getAboutTimelineEntries").mockResolvedValue([
+          { id: 1, imageId: 13, imageUrl: "test" },
+        ] as any);
         vi.spyOn(aboutRepository, "getAboutMapLocations").mockResolvedValue([{ id: 1 }] as any);
-        vi.spyOn(aboutRepository, "getAboutSections").mockResolvedValue([{ id: 1, imageId: 14, mediaIds: [15] }, { id: 2, mediaIds: "invalid" }] as any);
+        vi.spyOn(aboutRepository, "getAboutSections").mockResolvedValue([
+          { id: 1, imageId: 14, mediaIds: [15] },
+          { id: 2, mediaIds: "invalid" },
+        ] as any);
         vi.spyOn(aboutRepository, "getAboutStatistics").mockResolvedValue([{ id: 1 }] as any);
-        vi.spyOn(aboutRepository, "getAboutTeamMessage").mockResolvedValue({ id: 1, imageId: 16 } as any);
+        vi.spyOn(aboutRepository, "getAboutTeamMessage").mockResolvedValue({
+          id: 1,
+          imageId: 16,
+        } as any);
 
-        vi.mocked(mediaRepository.getMediaAssetsByIds).mockResolvedValue([{ id: 10, url: "media10" }] as any);
+        vi.mocked(mediaRepository.getMediaAssetsByIds).mockResolvedValue([
+          { id: 10, url: "media10" },
+        ] as any);
 
         const res = await aboutRepository.getAboutBatch();
-        
+
         expect(res.hero?.id).toBe(1);
         expect(res.timeline.length).toBe(1);
         expect(res.locations.length).toBe(1);
@@ -596,10 +647,18 @@ describe("AboutRepository", () => {
         expect(res.statistics.length).toBe(1);
         expect(res.teamMessage?.id).toBe(1);
         expect(res.mediaAssets).toEqual([{ id: 10, url: "media10" }]);
-        expect(mediaRepository.getMediaAssetsByIds).toHaveBeenCalledWith(["10", "11", "12", "13", "14", "15", "16"]);
+        expect(mediaRepository.getMediaAssetsByIds).toHaveBeenCalledWith([
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+        ]);
         expect(mockCache.set).toHaveBeenCalledWith("about:batch", res, 1800, "data");
       });
-      
+
       it("handles null return values for batch elements and no mediaIds", async () => {
         vi.mocked(mockCache.get).mockResolvedValue(null);
 

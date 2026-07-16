@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { db } from "../../../../../server/db.js";
+import { UnifiedCache } from "../../../../../server/lib/cache/unified-cache.js";
 import { StorageSingleton } from "../../../../../server/lib/storage-singleton.js";
 import { ProductRepository } from "../../../../../server/services/repositories/product-repository.js";
-import { UnifiedCache } from "../../../../../server/lib/cache/unified-cache.js";
 
 vi.mock("../../../../../server/db.js", () => {
   const chain: any = {
@@ -77,7 +77,7 @@ vi.mock("../../../../../server/lib/db/db-circuit-breaker.js", () => ({
 vi.mock("../../../../../server/lib/db/query-performance.js", () => ({
   queryPerformanceMonitor: {
     startQuery: vi.fn(() => ({
-      timePhase: vi.fn(async (name: string, fn: any) => await fn()),
+      timePhase: vi.fn(async (_name: string, fn: any) => await fn()),
       setCacheHit: vi.fn().mockReturnThis(),
       complete: vi.fn().mockReturnThis(),
     })),
@@ -161,7 +161,9 @@ describe("ProductRepository", () => {
       expect(mockStorageInstance.getProductsCursor).toHaveBeenCalledWith(10, 5);
 
       await repository.getProductsSummary(10, 0, { cacheStrategy: "bypass" });
-      expect(mockStorageInstance.getProductsSummary).toHaveBeenCalledWith(10, 0, { cacheStrategy: "bypass" });
+      expect(mockStorageInstance.getProductsSummary).toHaveBeenCalledWith(10, 0, {
+        cacheStrategy: "bypass",
+      });
 
       await repository.getHomepageFeaturedProducts(5);
       expect(mockStorageInstance.getHomepageFeaturedProducts).toHaveBeenCalledWith(5);
@@ -176,7 +178,9 @@ describe("ProductRepository", () => {
       expect(mockStorageInstance.getProductsByTagCount).toHaveBeenCalledWith("tag");
 
       await repository.searchProductsCount("test", { categoryId: 1 });
-      expect(mockStorageInstance.searchProductsCount).toHaveBeenCalledWith("test", { categoryId: 1 });
+      expect(mockStorageInstance.searchProductsCount).toHaveBeenCalledWith("test", {
+        categoryId: 1,
+      });
 
       await repository.getProduct(1);
       expect(mockStorageInstance.getProduct).toHaveBeenCalledWith(1);
@@ -206,7 +210,12 @@ describe("ProductRepository", () => {
       expect(mockStorageInstance.getFeaturedProductsCount).toHaveBeenCalled();
 
       await repository.searchProducts("query", { isActive: true }, 10, 0);
-      expect(mockStorageInstance.searchProducts).toHaveBeenCalledWith("query", { isActive: true }, 10, 0);
+      expect(mockStorageInstance.searchProducts).toHaveBeenCalledWith(
+        "query",
+        { isActive: true },
+        10,
+        0,
+      );
 
       await repository.createProduct({ name: "p" } as any);
       expect(mockStorageInstance.createProduct).toHaveBeenCalledWith({ name: "p" });
@@ -301,9 +310,11 @@ describe("ProductRepository", () => {
         mockUnifiedCache.get.mockResolvedValueOnce([{ id: 1 }]);
         let res = await repository.getProducts();
         expect(res).toEqual([{ id: 1 }]);
-        
+
         mockUnifiedCache.get.mockResolvedValueOnce(null);
-        vi.mocked(db.select).mockReturnValue(createMockDbChain([{ product: { id: 2 }, imageVariants: null }]));
+        vi.mocked(db.select).mockReturnValue(
+          createMockDbChain([{ product: { id: 2 }, imageVariants: null }]),
+        );
         res = await repository.getProducts();
         expect(res).toEqual([{ id: 2, imageUrl: undefined, imageVariants: null }]);
       });
@@ -312,11 +323,17 @@ describe("ProductRepository", () => {
         vi.mocked(db.select)
           .mockReturnValueOnce(createMockDbChain([{ count: 5 }])) // getProductCount
           .mockReturnValueOnce(createMockDbChain([{ id: 1 }])); // getProductsSummary items
-        
+
         const res = await repository.getProductsSummary(10, 0, { cacheStrategy: "bypass" });
         expect(res).toEqual({ products: [{ id: 1 }], totalCount: 5 });
-        expect(mockUnifiedCache.get).not.toHaveBeenCalledWith(expect.stringContaining("products:summary")); // cache read bypassed
-        expect(mockUnifiedCache.set).not.toHaveBeenCalledWith(expect.stringContaining("products:summary"), expect.any(Object), expect.any(Number)); // cache write bypassed
+        expect(mockUnifiedCache.get).not.toHaveBeenCalledWith(
+          expect.stringContaining("products:summary"),
+        ); // cache read bypassed
+        expect(mockUnifiedCache.set).not.toHaveBeenCalledWith(
+          expect.stringContaining("products:summary"),
+          expect.any(Object),
+          expect.any(Number),
+        ); // cache write bypassed
       });
 
       it("getProductsSummary handles normal cache hit", async () => {
@@ -327,7 +344,9 @@ describe("ProductRepository", () => {
 
       it("getHomepageFeaturedProducts handles cache miss", async () => {
         mockUnifiedCache.get.mockResolvedValueOnce(null);
-        vi.mocked(db.select).mockReturnValue(createMockDbChain([{ product: { id: 1, primaryImageId: 2 } }]));
+        vi.mocked(db.select).mockReturnValue(
+          createMockDbChain([{ product: { id: 1, primaryImageId: 2 } }]),
+        );
         const res = await repository.getHomepageFeaturedProducts();
         expect(res[0]).toHaveProperty("imageUrl", "/api/media/2/content");
       });
@@ -355,15 +374,15 @@ describe("ProductRepository", () => {
         expect(mockUnifiedCache.set).toHaveBeenCalledWith(
           "product:by-path:missing-path",
           expect.objectContaining({ __notFound: true }),
-          10 * 60 * 1000
+          10 * 60 * 1000,
         );
       });
 
       it("getProductByPath handles positive cache miss", async () => {
         mockUnifiedCache.get.mockResolvedValueOnce(null);
-        
+
         const mockProduct = { id: 1, categoryId: 2, urlPath: "found-path" };
-        
+
         // Mock multiple parallel queries returning empty except the main product query
         vi.mocked(db.select)
           .mockReturnValueOnce(createMockDbChain([mockProduct])) // product
@@ -379,7 +398,7 @@ describe("ProductRepository", () => {
         expect(mockUnifiedCache.set).toHaveBeenCalledWith(
           "product:by-path:found-path",
           res,
-          60 * 60 * 1000
+          60 * 60 * 1000,
         );
       });
 
@@ -391,7 +410,11 @@ describe("ProductRepository", () => {
 
       it("searchProducts formats and returns products", async () => {
         vi.mocked(db.select).mockReturnValue(createMockDbChain([{ id: 1, rank: 0.5 }]));
-        const res = await repository.searchProducts("test", { categoryId: 1, isActive: true, isFeatured: true });
+        const res = await repository.searchProducts("test", {
+          categoryId: 1,
+          isActive: true,
+          isFeatured: true,
+        });
         expect(Array.isArray(res)).toBe(true);
       });
 
@@ -418,7 +441,7 @@ describe("ProductRepository", () => {
         const res = await repository.getProductsByTag("tag");
         expect(Array.isArray(res)).toBe(true);
       });
-      
+
       it("getRelatedProducts fallback if category id missing", async () => {
         vi.mocked(db.select).mockReturnValue(createMockDbChain([{ categoryId: null }]));
         const res = await repository.getRelatedProducts(1);
@@ -437,7 +460,9 @@ describe("ProductRepository", () => {
     describe("Product Mutations", () => {
       it("createProduct throws on failure", async () => {
         vi.mocked(db.insert).mockReturnValue(createMockDbChain([], []));
-        await expect(repository.createProduct({ name: "fail" } as any)).rejects.toThrow("Failed to create product");
+        await expect(repository.createProduct({ name: "fail" } as any)).rejects.toThrow(
+          "Failed to create product",
+        );
       });
 
       it("createProduct works and sets relations", async () => {
@@ -493,7 +518,9 @@ describe("ProductRepository", () => {
 
       it("createCategory throws if no category returned", async () => {
         vi.mocked(db.insert).mockReturnValue(createMockDbChain([], []));
-        await expect(repository.createCategory({ name: "fail" } as any)).rejects.toThrow("Failed to create category");
+        await expect(repository.createCategory({ name: "fail" } as any)).rejects.toThrow(
+          "Failed to create category",
+        );
       });
 
       it("updateCategory invalidates cache", async () => {
@@ -514,7 +541,7 @@ describe("ProductRepository", () => {
         const res = await repository.getDeletedCategories();
         expect(res).toEqual([{ id: 1 }]);
       });
-      
+
       it("restoreCategory works", async () => {
         vi.mocked(db.update).mockReturnValue(createMockDbChain({ rowCount: 1 }));
         const res = await repository.restoreCategory(1);

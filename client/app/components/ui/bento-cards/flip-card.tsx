@@ -174,7 +174,6 @@ export const FlipCard = memo(function FlipCard({
 
                 <div className="mt-4 border-zinc-200 border-t pt-4 dark:border-zinc-800">
                   <button
-                    aria-label="Action button"
                     type="button"
                     className={cn(
                       "group/start relative",

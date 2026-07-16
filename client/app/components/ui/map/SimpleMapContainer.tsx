@@ -94,7 +94,12 @@ export function SimpleMapContainer({ locations, className = "" }: SimpleMapConta
           iconAnchor: [8, 8],
         });
 
-        const marker = L.marker([location.latitude, location.longitude], { icon })
+        const markerStr = `${location.type === "facility" ? "Facility" : "Client"}: ${location.name}`;
+        const marker = L.marker([location.latitude, location.longitude], {
+          icon,
+          title: markerStr,
+          alt: markerStr,
+        })
           .bindPopup(`
             <div style="padding: 8px;">
               <h3 style="font-weight: bold; color: ${color}; margin: 0 0 4px 0;">

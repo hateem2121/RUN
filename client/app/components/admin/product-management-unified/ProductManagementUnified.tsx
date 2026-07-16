@@ -67,7 +67,6 @@ export function ProductManagementUnified(_props: ProductManagementUnifiedProps) 
               Something went wrong loading the product management system.
             </p>
             <button
-              aria-label="Action button"
               type="button"
               onClick={() => {
                 // Force re-render by changing location

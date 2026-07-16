@@ -49,7 +49,6 @@ export function RoadmapCard({ item, onEdit, onDelete }: RoadmapCardProps) {
 
           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
-              aria-label="Action button"
               type="button"
               onClick={() => onEdit(item)}
               className="text-admin-foreground/40 hover:text-custom-color-55"
@@ -58,7 +57,6 @@ export function RoadmapCard({ item, onEdit, onDelete }: RoadmapCardProps) {
               <Edit2 className="h-3.5 w-3.5" />
             </button>
             <button
-              aria-label="Action button"
               type="button"
               onClick={() => onDelete(item.id)}
               className="text-admin-foreground/40 hover:text-red-400"

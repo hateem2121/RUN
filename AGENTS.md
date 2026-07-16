@@ -61,3 +61,6 @@ When creating or generating unit test files:
 3. **Never use `fs.writeFileSync` to generate TypeScript test files.** Use the `write_to_file` tool directly for each file. When file content is built as a JavaScript string and written with `fs.writeFileSync`, template literal `\n` characters can be double-escaped into literal `\\n`, causing OXC/Vite parse errors.
 
 4. **Always run the new tests before marking task items complete.** Execute `npx vitest run <path>` on the newly created test files to confirm they parse and pass before checking off items in `task.md`.
+
+### 6.11 React Router v8 & Vite 8 Resolution Rules (Addendum)
+- **CSP Nonce Hydration Mismatch**: In React 19, Chrome hides the `nonce` attribute on `<link>` tags for security, causing a fatal hydration mismatch if the Virtual DOM expects a value. When rendering React Router's `<Links />` component in the root layout or error boundaries, you **MUST** pass an empty string on the client (e.g., `<Links nonce="" />`) to bypass the mismatch and prevent React from crashing the client-side render tree.

@@ -82,7 +82,6 @@ export function HomepageManagement() {
           </div>
           <div className="flex items-center gap-3">
             <button
-              aria-label="Action button"
               type="button"
               title="Notifications"
               className="size-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-admin-muted hover:bg-white/10 hover:text-white transition-all"

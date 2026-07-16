@@ -13,7 +13,7 @@ export function meta({}: Route.MetaArgs) {
 
 export { AdminErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
 
-export function Component() {
+export default function AdminRoute() {
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   // Accessing index 2 because path starts with /admin/... e.g., ["", "admin", "products"]

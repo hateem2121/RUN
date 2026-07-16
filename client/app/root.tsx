@@ -53,7 +53,14 @@ import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
-  const { cspNonce } = context as unknown as { cspNonce: string };
+  let cspNonce: string | undefined;
+  if (context && typeof (context as { get?: (k: string) => unknown }).get === "function") {
+    const nonceContext = (globalThis as { __nonceContext?: string }).__nonceContext;
+    if (nonceContext) {
+      cspNonce =
+        (context as { get: (k: string) => string | undefined }).get(nonceContext) || undefined;
+    }
+  }
   const queryClient = new QueryClient();
 
   // Use protocol and host from request to build a dynamic base URL
@@ -96,7 +103,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const loaderData = useRouteLoaderData<typeof loader>("root");
-  const nonce = loaderData?.cspNonce;
+  const nonce = loaderData?.cspNonce || undefined;
 
   // Create a client for the root (singleton on client, new on server per request)
   // using useState allows us to keep the client stable across re-renders
@@ -135,7 +142,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
           }}
         />
         <Meta />
-        <Links />
+        {/* Pass empty string to Links to bypass React 19 hydration mismatch on Chrome */}
+        {/* Chrome hides the nonce on <link> tags, returning "", which crashes hydration if VDOM is different */}
+        <Links nonce="" />
         {/* Inject window.ENV for client-side configuration */}
         <script
           nonce={nonce}
@@ -173,7 +182,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function App() {
+export default function App() {
   return <Outlet />;
 }
 
@@ -213,9 +222,13 @@ export function ErrorBoundary() {
       <head>
         <title>{`${message} | RUN`}</title>
         <Meta />
-        <Links />
+        {/* Pass empty string to Links to bypass React 19 hydration mismatch on Chrome */}
+        <Links nonce="" />
       </head>
-      <body className="bg-background text-foreground antialiased">
+      <body
+        className="bg-background text-foreground transition-colors duration-300 antialiased"
+        suppressHydrationWarning
+      >
         <main
           id="main-content"
           className="flex min-h-screen flex-col items-center justify-center p-6 text-center"

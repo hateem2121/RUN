@@ -24,7 +24,7 @@ import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
 
 export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
 
-export function GuidePage() {
+export default function GuidePage() {
   const { slug } = useLoaderData<typeof loader>();
   const authRef = useRef<HTMLDivElement>(null);
   const webhooksRef = useRef<HTMLDivElement>(null);

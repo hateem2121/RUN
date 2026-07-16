@@ -486,7 +486,6 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
                         {selectedImage?.filename || "No image selected"}
                       </p>
                       <button
-                        aria-label="Action button"
                         type="button"
                         onClick={() => setShowCaseStudyImagePicker(true)}
                         className="text-xxs font-bold text-brand-manufacturing uppercase tracking-wider"

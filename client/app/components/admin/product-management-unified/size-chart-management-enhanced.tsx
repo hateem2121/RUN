@@ -690,7 +690,6 @@ export function SizeChartManagementEnhanced() {
                                   {key}: {value}
                                   {isCentimeterMeasurement(key) ? " cm" : ""}
                                   <button
-                                    aria-label="Action button"
                                     type="button"
                                     title="Remove measurement"
                                     onClick={() => removeMeasurement(size, key)}

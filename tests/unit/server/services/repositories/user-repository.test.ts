@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { UserRepository } from "../../../../../server/services/repositories/user-repository.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { db } from "../../../../../server/db.js";
-import { StorageSingleton } from "../../../../../server/lib/storage-singleton.js";
-import { encrypt, decrypt, getBlindIndex } from "../../../../../server/lib/encryption.js";
+import { encrypt, getBlindIndex } from "../../../../../server/lib/encryption.js";
 import { logger } from "../../../../../server/lib/monitoring/logger.js";
+import { StorageSingleton } from "../../../../../server/lib/storage-singleton.js";
+import { UserRepository } from "../../../../../server/services/repositories/user-repository.js";
 
 // Mock Data
 const mockRawUser = {
@@ -228,7 +228,7 @@ describe("UserRepository", () => {
     it("should throw error if db fails to return user", async () => {
       mockInsertReturning.mockResolvedValue([]);
       await expect(repository.upsertUser(upsertData)).rejects.toThrow(
-        "Failed to upsert user - no user returned from database"
+        "Failed to upsert user - no user returned from database",
       );
     });
   });

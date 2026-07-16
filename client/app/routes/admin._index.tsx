@@ -26,7 +26,7 @@ function ModuleLoader() {
   );
 }
 
-export function Component() {
+export default function AdminIndexRoute() {
   return (
     <InlineErrorBoundary fallback={<ProductsErrorFallback />}>
       <Suspense fallback={<ModuleLoader />}>

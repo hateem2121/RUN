@@ -89,7 +89,7 @@ type LoaderData = {
   servicesList: ServiceData[] | null;
 };
 
-export function Component({ loaderData }: { loaderData: LoaderData }) {
+export default function Component({ loaderData }: { loaderData: LoaderData }) {
   const { servicesList } = loaderData;
 
   return <ServicesPageContent servicesList={servicesList} />;

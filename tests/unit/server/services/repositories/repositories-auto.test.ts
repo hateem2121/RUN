@@ -91,8 +91,8 @@ describe("Auto-generated Repository Tests", () => {
     return Array(numArgs).fill({ id: 1, text: "dummy", title: "dummy", isActive: true });
   };
 
-  const reposToTest = Object.keys(allRepos).filter(key => 
-    typeof (allRepos as any)[key] === 'object' && (allRepos as any)[key] !== null
+  const reposToTest = Object.keys(allRepos).filter(
+    (key) => typeof (allRepos as any)[key] === "object" && (allRepos as any)[key] !== null,
   );
 
   for (const repoName of reposToTest) {
@@ -107,14 +107,18 @@ describe("Auto-generated Repository Tests", () => {
       for (const methodName of methodNames) {
         it(`should execute ${methodName} without crashing`, async () => {
           const args = getDummyArgs(repo[methodName]);
-          try { await repo[methodName](...args); } catch (e) {}
+          try {
+            await repo[methodName](...args);
+          } catch (e) {}
           expect(true).toBe(true);
         });
 
         it(`should execute ${methodName} without crashing when StorageSingleton is active`, async () => {
           vi.mocked(StorageSingleton.hasInstance).mockReturnValueOnce(true);
           const args = getDummyArgs(repo[methodName]);
-          try { await repo[methodName](...args); } catch (e) {}
+          try {
+            await repo[methodName](...args);
+          } catch (e) {}
           expect(true).toBe(true);
         });
       }
@@ -124,24 +128,37 @@ describe("Auto-generated Repository Tests", () => {
   describe("Database Failure Simulation", () => {
     it("should blanket test all exported repository functions with DB failures", async () => {
       const { db } = await import("../../../../../server/db.js");
-      
+
       // Force DB errors to cover fallback branches
-      (db.select as any).mockImplementation(() => { throw new Error("DB Connection Error") });
-      (db.insert as any).mockImplementation(() => { throw new Error("DB Insert Error") });
-      (db.update as any).mockImplementation(() => { throw new Error("DB Update Error") });
-      (db.delete as any).mockImplementation(() => { throw new Error("DB Delete Error") });
-      (db.execute as any).mockImplementation(() => { throw new Error("DB Execute Error") });
+      (db.select as any).mockImplementation(() => {
+        throw new Error("DB Connection Error");
+      });
+      (db.insert as any).mockImplementation(() => {
+        throw new Error("DB Insert Error");
+      });
+      (db.update as any).mockImplementation(() => {
+        throw new Error("DB Update Error");
+      });
+      (db.delete as any).mockImplementation(() => {
+        throw new Error("DB Delete Error");
+      });
+      (db.execute as any).mockImplementation(() => {
+        throw new Error("DB Execute Error");
+      });
 
       let callCount = 0;
       for (const repoName of reposToTest) {
         const repo = (allRepos as any)[repoName];
         const methodNames = Object.getOwnPropertyNames(Object.getPrototypeOf(repo)).filter(
-          (name) => name !== "constructor" && typeof repo[name] === "function" && !name.startsWith("_"),
+          (name) =>
+            name !== "constructor" && typeof repo[name] === "function" && !name.startsWith("_"),
         );
 
         for (const methodName of methodNames) {
           const args = getDummyArgs(repo[methodName]);
-          try { await repo[methodName](...args); } catch (e) {}
+          try {
+            await repo[methodName](...args);
+          } catch (e) {}
           callCount++;
         }
       }

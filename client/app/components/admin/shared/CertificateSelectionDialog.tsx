@@ -158,7 +158,6 @@ export function CertificateSelectionDialog({
 
                   return (
                     <button
-                      aria-label="Action button"
                       type="button"
                       key={cert.id}
                       onClick={() => handleToggleSelection(cert.id)}

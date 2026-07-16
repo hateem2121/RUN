@@ -716,7 +716,6 @@ export function ProcessManagement({ mediaAssets = [] }: ProcessManagementProps =
                         ))}
 
                         <button
-                          aria-label="Action button"
                           type="button"
                           onClick={() => setShowProcessImagePicker(true)}
                           data-testid="select-process-media"

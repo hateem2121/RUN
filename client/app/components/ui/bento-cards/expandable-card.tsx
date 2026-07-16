@@ -228,7 +228,6 @@ export const ExpandableCard = memo(function ExpandableCard({
 
               {/* Close Button */}
               <button
-                aria-label="Action button"
                 ref={closeButtonRef}
                 type="button"
                 className="absolute top-6 right-6 z-elevated rounded-full bg-white/10 p-3 transition-colors hover:scale-110 hover:bg-white/20"

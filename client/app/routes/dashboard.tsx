@@ -37,7 +37,7 @@ export function meta({}: Route.MetaArgs) {
 
 import { ProtectedAdminRoute } from "@/components/auth/ProtectedAdminRoute";
 
-export function Component() {
+export default function Component() {
   const statsRef = useRef<HTMLDivElement>(null);
 
   useGSAP(

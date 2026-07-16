@@ -140,7 +140,6 @@ export function TechnologyStackSection({
         <div className="inline-flex rounded-full bg-transparent border border-slate-200 dark:border-white/[0.08] p-1 dark:bg-white/[0.02]">
           {tabs.map((tab) => (
             <button
-              aria-label="Action button"
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}

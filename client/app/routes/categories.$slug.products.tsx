@@ -59,7 +59,7 @@ import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
 
 export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFallback };
 
-export function CategoryProductsPage() {
+export default function CategoryProductsPage() {
   const loaderData = useLoaderData<typeof loader>();
   const { slug } = useParams();
   const navigate = useNavigate();
