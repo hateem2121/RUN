@@ -48,11 +48,16 @@ export const NavigationService = {
     const startTime = performance.now();
     const cacheKey = CacheKeys.navigation.items();
 
-    return ResultAsync.fromPromise(
-      (async (): Promise<{
-        data: NavigationItem[];
-        metadata: { cacheHit: string; responseTime: number; ttl: number };
-      }> => {
+    return new ResultAsync(
+      (async (): Promise<
+        Result<
+          {
+            data: NavigationItem[];
+            metadata: { cacheHit: string; responseTime: number; ttl: number };
+          },
+          AppError
+        >
+      > => {
         const { data, benchmark } = (await twoTierBatchCache.get(
           cacheKey,
           async () => {
@@ -78,32 +83,31 @@ export const NavigationService = {
         )) || { data: [], benchmark: { hit: "MISS" } };
 
         if (!data) {
-          return {
+          return ok({
             data: [],
             metadata: {
               cacheHit: "MISS",
               responseTime: performance.now() - startTime,
               ttl: 0,
             },
-          };
+          });
         }
 
-        return {
+        return ok({
           data: data as NavigationItem[],
           metadata: {
             cacheHit: benchmark.hit,
             responseTime: performance.now() - startTime,
             ttl: CACHE_TTL_NAVIGATION,
           },
-        };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         if (error instanceof AppError) {
-          return error;
+          return err(error);
         }
-        return new InternalError("Failed to fetch navigation items", { error });
-      },
+        return err(new InternalError("Failed to fetch navigation items", { error }));
+      }),
     );
   },
 

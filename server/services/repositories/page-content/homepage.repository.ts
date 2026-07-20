@@ -19,6 +19,7 @@ import {
   logoAnimationSettings,
 } from "@run-remix/shared";
 import { asc, eq } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import { db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../../lib/cache/cache-events.js";
 import { UnifiedCache } from "../../../lib/cache/unified-cache.js";
@@ -73,9 +74,11 @@ class HomepageRepository {
     return hero;
   }
 
-  async updateHomepageHero(hero: Partial<InsertHomepageHero>): Promise<HomepageHero> {
+  async updateHomepageHero(
+    hero: Partial<InsertHomepageHero>,
+  ): Promise<Result<HomepageHero, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateHomepageHero(hero);
+      return ok(await StorageSingleton.getInstance().updateHomepageHero(hero));
     }
     const existing = await db
       .select()
@@ -92,7 +95,7 @@ class HomepageRepository {
         .insert(homepageHero)
         .values(hero as InsertHomepageHero)
         .returning();
-      if (!created) throw new Error("Failed to create homepage hero");
+      if (!created) return err(new Error("Failed to create homepage hero"));
       result = created;
       await emitCacheInvalidation("homepage:hero", "create");
     } else {
@@ -102,13 +105,13 @@ class HomepageRepository {
         .set({ ...hero, updatedAt: new Date() })
         .where(eq(homepageHero.id, heroId))
         .returning();
-      if (!updated) throw new Error("Failed to update homepage hero");
+      if (!updated) return err(new Error("Failed to update homepage hero"));
       result = updated;
       await emitCacheInvalidation("homepage:hero", "update");
       await invalidateHtmlCache("/");
     }
 
-    return result;
+    return ok(await result);
   }
 
   async getHomepageSlogans(): Promise<HomepageSlogan[]> {
@@ -141,26 +144,26 @@ class HomepageRepository {
     return slogan ?? undefined;
   }
 
-  async createHomepageSlogan(slogan: InsertHomepageSlogan): Promise<HomepageSlogan> {
+  async createHomepageSlogan(slogan: InsertHomepageSlogan): Promise<Result<HomepageSlogan, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createHomepageSlogan(slogan);
+      return ok(await StorageSingleton.getInstance().createHomepageSlogan(slogan));
     }
     await unifiedCache.del("homepage:slogans");
     const [created] = await db.insert(homepageSlogans).values(slogan).returning();
-    if (!created) throw new Error("Failed to create homepage slogan");
+    if (!created) return err(new Error("Failed to create homepage slogan"));
     await emitCacheInvalidation("homepage:slogans", "create");
     await invalidateHtmlCache("/");
-    return created;
+    return ok(await created);
   }
 
   async updateHomepageSlogan(
     id: number,
     slogan: Partial<InsertHomepageSlogan>,
-  ): Promise<HomepageSlogan> {
+  ): Promise<Result<HomepageSlogan, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateHomepageSlogan(id, slogan);
-      if (!result) throw new Error(`updateHomepageSlogan returned undefined for id ${id}`);
-      return result;
+      if (!result) return err(new Error(`updateHomepageSlogan returned undefined for id ${id}`));
+      return ok(await result);
     }
     await unifiedCache.del("homepage:slogans");
     const [updated] = await db
@@ -169,10 +172,10 @@ class HomepageRepository {
       .where(eq(homepageSlogans.id, id))
       .returning();
 
-    if (!updated) throw new Error(`Failed to update homepage slogan with id ${id}`);
+    if (!updated) return err(new Error(`Failed to update homepage slogan with id ${id}`));
     await emitCacheInvalidation("homepage:slogans", "update");
     await invalidateHtmlCache("/");
-    return updated;
+    return ok(await updated);
   }
 
   async deleteHomepageSlogan(id: number): Promise<boolean> {
@@ -254,22 +257,24 @@ class HomepageRepository {
     return card ?? undefined;
   }
 
-  async createHomepageProcessCard(card: InsertHomepageProcessCard): Promise<HomepageProcessCard> {
+  async createHomepageProcessCard(
+    card: InsertHomepageProcessCard,
+  ): Promise<Result<HomepageProcessCard, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createHomepageProcessCard(card);
+      return ok(await StorageSingleton.getInstance().createHomepageProcessCard(card));
     }
     await unifiedCache.del("homepage:process_cards:*");
     const [created] = await db.insert(homepageProcessCards).values(card).returning();
-    if (!created) throw new Error("Failed to create homepage process card");
+    if (!created) return err(new Error("Failed to create homepage process card"));
     await emitCacheInvalidation("homepage:process_cards", "create");
     await invalidateHtmlCache("/");
-    return created;
+    return ok(await created);
   }
 
   async updateHomepageProcessCard(
     id: number,
     card: Partial<InsertHomepageProcessCard>,
-  ): Promise<HomepageProcessCard> {
+  ): Promise<Result<HomepageProcessCard, Error>> {
     await unifiedCache.del("homepage:process_cards:*");
     const [updated] = await db
       .update(homepageProcessCards)
@@ -277,9 +282,9 @@ class HomepageRepository {
       .where(eq(homepageProcessCards.id, id))
       .returning();
 
-    if (!updated) throw new Error(`Failed to update homepage process card with id ${id}`);
+    if (!updated) return err(new Error(`Failed to update homepage process card with id ${id}`));
     await emitCacheInvalidation("homepage:process_cards", "update");
-    return updated;
+    return ok(await updated);
   }
 
   async deleteHomepageProcessCard(id: number): Promise<boolean> {
@@ -350,9 +355,9 @@ class HomepageRepository {
   async updateHomepageSection(
     name: string,
     section: Partial<InsertHomepageSection>,
-  ): Promise<HomepageSection> {
+  ): Promise<Result<HomepageSection, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateHomepageSection(name, section);
+      return ok(await StorageSingleton.getInstance().updateHomepageSection(name, section));
     }
     const [existing] = await db
       .select()
@@ -368,7 +373,7 @@ class HomepageRepository {
         .insert(homepageSections)
         .values({ ...section, name } as InsertHomepageSection)
         .returning();
-      if (!created) throw new Error(`Failed to create homepage section: ${name}`);
+      if (!created) return err(new Error(`Failed to create homepage section: ${name}`));
       result = created;
     } else {
       const [updated] = await db
@@ -376,13 +381,13 @@ class HomepageRepository {
         .set({ ...section, updatedAt: new Date() })
         .where(eq(homepageSections.name, name))
         .returning();
-      if (!updated) throw new Error(`Failed to update homepage section: ${name}`);
+      if (!updated) return err(new Error(`Failed to update homepage section: ${name}`));
       result = updated;
     }
 
     await emitCacheInvalidation("homepage:sections", "update");
     await invalidateHtmlCache("/");
-    return result;
+    return ok(await result);
   }
 
   async updateHomepageSectionById(
@@ -417,9 +422,9 @@ class HomepageRepository {
 
   async updateLogoAnimationSettings(
     settings: Partial<InsertLogoAnimationSettings>,
-  ): Promise<LogoAnimationSettings> {
+  ): Promise<Result<LogoAnimationSettings, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateLogoAnimationSettings(settings);
+      return ok(await StorageSingleton.getInstance().updateLogoAnimationSettings(settings));
     }
     const existing = await db.select().from(logoAnimationSettings).limit(1);
 
@@ -429,7 +434,7 @@ class HomepageRepository {
         .insert(logoAnimationSettings)
         .values(settings as InsertLogoAnimationSettings)
         .returning();
-      if (!created) throw new Error("Failed to create logo animation settings");
+      if (!created) return err(new Error("Failed to create logo animation settings"));
       result = created;
     } else {
       const settingsId = existing[0]!.id;
@@ -438,12 +443,12 @@ class HomepageRepository {
         .set(settings)
         .where(eq(logoAnimationSettings.id, settingsId))
         .returning();
-      if (!updated) throw new Error("Failed to update logo animation settings");
+      if (!updated) return err(new Error("Failed to update logo animation settings"));
       result = updated;
     }
 
     await emitCacheInvalidation("logo:animation", "update");
-    return result;
+    return ok(await result);
   }
 
   async getHomepageFeaturedProductsSettings(): Promise<HomepageFeaturedProductsSettings> {
@@ -473,9 +478,11 @@ class HomepageRepository {
 
   async updateHomepageFeaturedProductsSettings(
     settings: Partial<InsertHomepageFeaturedProductsSettings>,
-  ): Promise<HomepageFeaturedProductsSettings> {
+  ): Promise<Result<HomepageFeaturedProductsSettings, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateHomepageFeaturedProductsSettings(settings);
+      return ok(
+        await StorageSingleton.getInstance().updateHomepageFeaturedProductsSettings(settings),
+      );
     }
     await unifiedCache.del("homepage:featured_products_settings");
 
@@ -487,7 +494,7 @@ class HomepageRepository {
         .insert(homepageFeaturedProductsSettings)
         .values(settings as InsertHomepageFeaturedProductsSettings)
         .returning();
-      if (!created) throw new Error("Failed to create homepage featured products settings");
+      if (!created) return err(new Error("Failed to create homepage featured products settings"));
       result = created;
     } else {
       const [updated] = await db
@@ -495,12 +502,12 @@ class HomepageRepository {
         .set({ ...settings, updatedAt: new Date() })
         .where(eq(homepageFeaturedProductsSettings.id, existing[0]!.id))
         .returning();
-      if (!updated) throw new Error("Failed to update homepage featured products settings");
+      if (!updated) return err(new Error("Failed to update homepage featured products settings"));
       result = updated;
     }
 
     await emitCacheInvalidation("homepage:featured_products_settings", "update");
-    return result;
+    return ok(await result);
   }
 }
 

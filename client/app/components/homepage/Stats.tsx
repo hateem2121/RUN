@@ -117,7 +117,7 @@ export const Stats: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="relative flex min-h-screen w-full flex-col border-border border-t bg-background md:min-h-custom-space-151 md:flex-row"
+      className="relative flex min-h-screen w-full flex-col border-border border-t bg-background md:min-h-custom-space-151 md:flex-row content-auto"
       aria-labelledby="stats-heading"
     >
       {/* Sticky Background Image */}

@@ -1,5 +1,5 @@
 import type { MediaAsset } from "@run-remix/shared";
-import { type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
@@ -23,20 +23,19 @@ class MediaQueryService {
       folderId?: number | undefined;
     } = {},
   ): Promise<Result<{ assets: MediaAsset[]; total: number }, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<{ assets: MediaAsset[]; total: number }> => {
+    return new ResultAsync(
+      (async (): Promise<Result<{ assets: MediaAsset[]; total: number }, AppError>> => {
         const result = await withCircuit(
           "get-media-assets",
           () => mediaRepository.getMediaAssetsWithCount(limit, offset, filters),
           DB_CIRCUIT_OPTIONS,
         );
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[MediaQueryService] Failed to fetch media assets", error as Error);
-        return new InternalError("Failed to fetch media assets", { error });
-      },
+        return err(new InternalError("Failed to fetch media assets", { error }));
+      }),
     );
   }
 
@@ -44,8 +43,8 @@ class MediaQueryService {
    * Retrieves a single asset by ID
    */
   async getAssetById(id: number): Promise<Result<MediaAsset, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<MediaAsset> => {
+    return new ResultAsync(
+      (async (): Promise<Result<MediaAsset, AppError>> => {
         const asset = await withCircuit(
           `get-media-asset-${id}`,
           () => mediaRepository.getMediaAsset(id),
@@ -53,16 +52,15 @@ class MediaQueryService {
         );
 
         if (!asset) {
-          throw new NotFoundError(`Media asset ${id} not found`);
+          return err(new NotFoundError(`Media asset ${id} not found`));
         }
 
-        return asset;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(asset);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[MediaQueryService] Failed to fetch media asset", { id }, error as Error);
-        return new InternalError(`Failed to fetch media asset ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch media asset ${id}`, { error }));
+      }),
     );
   }
 
@@ -75,8 +73,8 @@ class MediaQueryService {
     let offset = 0;
     let hasMore = true;
 
-    return ResultAsync.fromPromise(
-      (async (): Promise<MediaAsset[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<MediaAsset[], AppError>> => {
         while (hasMore) {
           const batch = await withCircuit(
             "get-all-media-assets-batch",
@@ -92,13 +90,12 @@ class MediaQueryService {
             offset += pageSize;
           }
         }
-        return allAssets;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(allAssets);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[MediaQueryService] Failed to fetch all media assets", error as Error);
-        return new InternalError("Failed to fetch all media assets", { error });
-      },
+        return err(new InternalError("Failed to fetch all media assets", { error }));
+      }),
     );
   }
 
@@ -108,20 +105,19 @@ class MediaQueryService {
   async getMediaCount(
     filters: { type?: string | undefined; folderId?: number | undefined } = {},
   ): Promise<Result<number, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<number> => {
+    return new ResultAsync(
+      (async (): Promise<Result<number, AppError>> => {
         const count = await withCircuit(
           "get-media-count",
           () => mediaRepository.getMediaAssetsCount(filters),
           DB_CIRCUIT_OPTIONS,
         );
-        return count;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(count);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[MediaQueryService] Failed to fetch media count", error as Error);
-        return new InternalError("Failed to fetch media count", { error });
-      },
+        return err(new InternalError("Failed to fetch media count", { error }));
+      }),
     );
   }
 
@@ -129,8 +125,8 @@ class MediaQueryService {
    * Updates an existing media asset
    */
   async updateAsset(id: number, data: Partial<MediaAsset>): Promise<Result<MediaAsset, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<MediaAsset> => {
+    return new ResultAsync(
+      (async (): Promise<Result<MediaAsset, AppError>> => {
         const updated = await withCircuit(
           `update-media-asset-${id}`,
           () => mediaRepository.updateMediaAsset(id, data),
@@ -138,16 +134,15 @@ class MediaQueryService {
         );
 
         if (!updated) {
-          throw new NotFoundError(`Media asset ${id} not found`);
+          return err(new NotFoundError(`Media asset ${id} not found`));
         }
 
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(updated);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[MediaQueryService] Failed to update media asset", { id }, error as Error);
-        return new InternalError(`Failed to update media asset ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update media asset ${id}`, { error }));
+      }),
     );
   }
 
@@ -155,8 +150,8 @@ class MediaQueryService {
    * Deletes a media asset (soft delete)
    */
   async deleteAsset(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const success = await withCircuit(
           `delete-media-asset-${id}`,
           () => mediaRepository.deleteMediaAsset(id),
@@ -164,16 +159,16 @@ class MediaQueryService {
         );
 
         if (!success) {
-          throw new NotFoundError(`Media asset ${id} not found`);
+          return err(new NotFoundError(`Media asset ${id} not found`));
         }
 
-        return success;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (success.isErr()) return err(success.error as any);
+        return ok(success.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[MediaQueryService] Failed to delete media asset", { id }, error as Error);
-        return new InternalError(`Failed to delete media asset ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete media asset ${id}`, { error }));
+      }),
     );
   }
 
@@ -185,20 +180,19 @@ class MediaQueryService {
     limit = 20,
     filters: { type?: string | undefined; folderId?: number | undefined } = {},
   ): Promise<Result<MediaAsset[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<MediaAsset[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<MediaAsset[], AppError>> => {
         const assets = await withCircuit(
           "search-media-assets",
           () => mediaRepository.getMediaAssets(limit, 0, { ...filters, search: query }),
           DB_CIRCUIT_OPTIONS,
         );
-        return assets;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(assets);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[MediaQueryService] Search failed", { query }, error as Error);
-        return new InternalError("Search failed", { error });
-      },
+        return err(new InternalError("Search failed", { error }));
+      }),
     );
   }
 
@@ -206,20 +200,19 @@ class MediaQueryService {
    * Retrieves specific assets by their IDs
    */
   async getMediaAssetsByIds(ids: string[]): Promise<Result<MediaAsset[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<MediaAsset[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<MediaAsset[], AppError>> => {
         const assets = await withCircuit(
           "get-media-assets-by-ids",
           () => mediaRepository.getMediaAssetsByIds(ids),
           DB_CIRCUIT_OPTIONS,
         );
-        return assets;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(assets);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[MediaQueryService] Batch fetch failed", { ids }, error as Error);
-        return new InternalError("Batch fetch failed", { error });
-      },
+        return err(new InternalError("Batch fetch failed", { error }));
+      }),
     );
   }
 
@@ -229,10 +222,10 @@ class MediaQueryService {
   async getAnalytics(): Promise<
     Result<{ total: number; byType: Record<string, number> }, AppError>
   > {
-    return ResultAsync.fromPromise(
-      (async (): Promise<{ total: number; byType: Record<string, number> }> => {
+    return new ResultAsync(
+      (async (): Promise<Result<{ total: number; byType: Record<string, number> }, AppError>> => {
         const allAssetsResult = await this.getAllAssets();
-        if (allAssetsResult.isErr()) throw allAssetsResult.error;
+        if (allAssetsResult.isErr()) return err(allAssetsResult.error);
 
         const allAssets = allAssetsResult.value;
         const byType = allAssets.reduce(
@@ -243,12 +236,11 @@ class MediaQueryService {
           {} as Record<string, number>,
         );
 
-        return { total: allAssets.length, byType };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError("Analytics failed", { error });
-      },
+        return ok({ total: allAssets.length, byType });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("Analytics failed", { error }));
+      }),
     );
   }
 
@@ -257,15 +249,14 @@ class MediaQueryService {
    */
   async getCacheStats(): Promise<Result<Record<string, unknown>, AppError>> {
     const { unifiedCache } = await import("../lib/cache/unified-cache.js");
-    return ResultAsync.fromPromise(
-      (async (): Promise<Record<string, unknown>> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Record<string, unknown>, AppError>> => {
         const stats = await unifiedCache.getHealthStatus();
-        return stats;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError("Failed to fetch cache stats", { error });
-      },
+        return ok(stats);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("Failed to fetch cache stats", { error }));
+      }),
     );
   }
 
@@ -273,10 +264,10 @@ class MediaQueryService {
    * Performs a health scan of the media database
    */
   async getHealthScan(): Promise<Result<{ status: string; issues: unknown[] }, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<{ status: string; issues: unknown[] }> => {
+    return new ResultAsync(
+      (async (): Promise<Result<{ status: string; issues: unknown[] }, AppError>> => {
         const allAssetsResult = await this.getAllAssets();
-        if (allAssetsResult.isErr()) throw allAssetsResult.error;
+        if (allAssetsResult.isErr()) return err(allAssetsResult.error);
 
         const issues: unknown[] = [];
         const { appStorageService } = await import("../lib/storage/app-service.js");
@@ -293,15 +284,14 @@ class MediaQueryService {
           }
         }
 
-        return {
+        return ok({
           status: issues.length > 0 ? "needs_attention" : "healthy",
           issues,
-        };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError("Health scan failed", { error });
-      },
+        });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("Health scan failed", { error }));
+      }),
     );
   }
 
@@ -309,10 +299,10 @@ class MediaQueryService {
    * Repairs database integrity (maintenance)
    */
   async repairDatabaseIntegrity(): Promise<Result<{ repaired: number }, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<{ repaired: number }> => {
+    return new ResultAsync(
+      (async (): Promise<Result<{ repaired: number }, AppError>> => {
         const scanResult = await this.getHealthScan();
-        if (scanResult.isErr()) throw scanResult.error;
+        if (scanResult.isErr()) return err(scanResult.error);
 
         let repaired = 0;
         for (const issue of scanResult.value.issues as { id: number; issue: string }[]) {
@@ -322,12 +312,11 @@ class MediaQueryService {
             repaired++;
           }
         }
-        return { repaired };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError("Repair failed", { error });
-      },
+        return ok({ repaired });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("Repair failed", { error }));
+      }),
     );
   }
 
@@ -335,8 +324,8 @@ class MediaQueryService {
    * Repairs MIME types for consistency
    */
   async repairMimeTypes(): Promise<Result<{ repaired: number }, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<{ repaired: number }> => {
+    return new ResultAsync(
+      (async (): Promise<Result<{ repaired: number }, AppError>> => {
         const assets = await mediaRepository.getMediaAssets(1000, 0);
         let repaired = 0;
 
@@ -355,12 +344,11 @@ class MediaQueryService {
             }
           }
         }
-        return { repaired };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError("MIME repair failed", { error });
-      },
+        return ok({ repaired });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("MIME repair failed", { error }));
+      }),
     );
   }
 
@@ -369,21 +357,20 @@ class MediaQueryService {
    */
   async clearCache(id: number): Promise<Result<boolean, AppError>> {
     const { unifiedCache } = await import("../lib/cache/unified-cache.js");
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const assetResult = await this.getAssetById(id);
-        if (assetResult.isErr()) throw assetResult.error;
+        if (assetResult.isErr()) return err(assetResult.error);
 
         const asset = assetResult.value;
         if (asset.storagePath) {
           await unifiedCache.delete(`media:content:${asset.storagePath}`);
         }
-        return true;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError("Cache clear failed", { error });
-      },
+        return ok(true);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("Cache clear failed", { error }));
+      }),
     );
   }
 }

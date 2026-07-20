@@ -19,6 +19,15 @@ import { cn } from "@/lib/utils";
 import { reportCustomMetric } from "@/lib/web-vitals";
 import type { ModelViewerElement, ModelViewerErrorEvent } from "@/types/model-viewer";
 
+const LazyModelViewer = React.lazy(async () => {
+  await import("@google/model-viewer");
+  return {
+    default: React.forwardRef<HTMLElement, any>((props, ref) => {
+      return React.createElement("model-viewer", { ...props, ref });
+    }),
+  };
+});
+
 // Enhanced loading state for comprehensive tracking
 interface LoadingState {
   status: "idle" | "initializing" | "loading" | "loaded" | "error";
@@ -871,29 +880,32 @@ export function UnifiedModelViewer({
 
         {/* Model Viewer - Stable attributes to prevent Lit element update conflicts */}
         {/* Model Viewer - Stable attributes to prevent Lit element update conflicts */}
-        {isVisible &&
-          React.createElement("model-viewer", {
-            ref: modelViewerRef as unknown as React.Ref<HTMLElement>,
-            // src set programmatically in useEffect
-            alt: asset.originalName || "3D Model",
-            poster: asset.thumbnailUrl || undefined, // Use thumbnail as poster image
-            reveal: userActivated || finalConfig.loading === "auto" ? "auto" : "interaction",
-            "camera-controls": finalConfig.cameraControls,
-            "auto-rotate": isMobile ? false : finalConfig.autoRotate,
-            "background-color": finalConfig.backgroundColorHex,
-            exposure: isMobile ? Math.min(finalConfig.exposure || 1, 0.8) : finalConfig.exposure,
-            "shadow-intensity": isMobile ? 0.5 : finalConfig.shadowIntensity,
-            "interaction-policy": finalConfig.interactionPolicy,
-            "draco-decoder-path": "https://www.gstatic.com/draco/versioned/decoders/1.5.6/",
-            className: "w-full h-full aspect-square",
-            style: {
-              width: "100%",
-              height: "100%",
-              aspectRatio: "1 / 1",
-              backgroundColor: finalConfig.backgroundColorHex || "hsl(240 10% 4%)",
-            },
-            "data-testid": "model-viewer-element",
-          })}
+        {isVisible && (
+          <React.Suspense fallback={null}>
+            <LazyModelViewer
+              ref={modelViewerRef as unknown as React.Ref<HTMLElement>}
+              // src set programmatically in useEffect
+              alt={asset.originalName || "3D Model"}
+              poster={asset.thumbnailUrl || undefined} // Use thumbnail as poster image
+              reveal={userActivated || finalConfig.loading === "auto" ? "auto" : "interaction"}
+              camera-controls={finalConfig.cameraControls ? true : undefined}
+              auto-rotate={isMobile ? undefined : finalConfig.autoRotate ? true : undefined}
+              background-color={finalConfig.backgroundColorHex}
+              exposure={isMobile ? Math.min(finalConfig.exposure || 1, 0.8) : finalConfig.exposure}
+              shadow-intensity={isMobile ? 0.5 : finalConfig.shadowIntensity}
+              interaction-policy={finalConfig.interactionPolicy}
+              draco-decoder-path="https://www.gstatic.com/draco/versioned/decoders/1.5.6/"
+              className="w-full h-full aspect-square"
+              style={{
+                width: "100%",
+                height: "100%",
+                aspectRatio: "1 / 1",
+                backgroundColor: finalConfig.backgroundColorHex || "hsl(240 10% 4%)",
+              }}
+              data-testid="model-viewer-element"
+            />
+          </React.Suspense>
+        )}
 
         {/* Enhanced placeholder - poster image + "View 3D Model" button */}
         {!userActivated && isVisible && shouldLoadModel && (

@@ -1,5 +1,5 @@
 import { type Category, categoryReorderSchema, insertCategorySchema } from "@run-remix/shared";
-import { type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { db } from "../db.js";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { AppError, BadRequestError, InternalError, NotFoundError } from "../lib/errors.js";
@@ -28,13 +28,16 @@ class CategoryService {
       AppError
     >
   > {
-    return ResultAsync.fromPromise(
+    return new ResultAsync(
       (async (): Promise<
-        | Category[]
-        | {
-            data: Category[];
-            pagination: { page: number; limit: number; total: number; pages: number };
-          }
+        Result<
+          | Category[]
+          | {
+              data: Category[];
+              pagination: { page: number; limit: number; total: number; pages: number };
+            },
+          AppError
+        >
       > => {
         if (page || limit) {
           const pageNum = page || 1;
@@ -52,7 +55,7 @@ class CategoryService {
             DB_CIRCUIT_OPTIONS,
           );
 
-          return {
+          return ok({
             data: categories,
             pagination: {
               page: pageNum,
@@ -60,7 +63,7 @@ class CategoryService {
               total: totalCount,
               pages: Math.ceil(totalCount / pageSize),
             },
-          };
+          });
         }
 
         const categories = await withCircuit(
@@ -68,13 +71,12 @@ class CategoryService {
           () => productRepository.getCategories(),
           DB_CIRCUIT_OPTIONS,
         );
-        return categories;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(categories);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[CategoryService] Failed to list categories", undefined, error as Error);
-        return new InternalError("Failed to list categories", { error });
-      },
+        return err(new InternalError("Failed to list categories", { error }));
+      }),
     );
   }
 
@@ -82,8 +84,8 @@ class CategoryService {
    * Bulk reorder categories.
    */
   async reorderCategories(data: unknown): Promise<Result<{ updated: number }, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<{ updated: number }> => {
+    return new ResultAsync(
+      (async (): Promise<Result<{ updated: number }, AppError>> => {
         const validatedData = categoryReorderSchema.parse(data);
         const startTime = Date.now();
 
@@ -145,13 +147,12 @@ class CategoryService {
         );
         webhookService.trigger("category.reordered", { count: updated });
 
-        return { updated };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok({ updated });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[CategoryService] Failed to reorder categories", undefined, error as Error);
-        return new InternalError("Failed to reorder categories", { error });
-      },
+        return err(new InternalError("Failed to reorder categories", { error }));
+      }),
     );
   }
 
@@ -159,23 +160,22 @@ class CategoryService {
    * Get category by ID.
    */
   async getCategoryById(id: number): Promise<Result<Category, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Category> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Category, AppError>> => {
         const category = await withCircuit(
           "get-category-by-id",
           () => productRepository.getCategory(id),
           DB_CIRCUIT_OPTIONS,
         );
         if (!category) {
-          throw new NotFoundError(`Category with ID ${id}`);
+          return err(new NotFoundError(`Category with ID ${id}`));
         }
-        return category;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(category);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[CategoryService] Failed to fetch category", { id }, error as Error);
-        return new InternalError("Failed to fetch category", { id, error });
-      },
+        return err(new InternalError("Failed to fetch category", { id, error }));
+      }),
     );
   }
 
@@ -183,27 +183,26 @@ class CategoryService {
    * Get category by slug.
    */
   async getCategoryBySlug(slug: string): Promise<Result<Category, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Category> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Category, AppError>> => {
         const category = await withCircuit(
           "get-category-by-slug",
           () => productRepository.getCategoryBySlug(slug),
           DB_CIRCUIT_OPTIONS,
         );
         if (!category) {
-          throw new NotFoundError(`Category with slug ${slug}`);
+          return err(new NotFoundError(`Category with slug ${slug}`));
         }
-        return category;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(category);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error(
           "[CategoryService] Failed to fetch category by slug",
           { slug },
           error as Error,
         );
-        return new InternalError("Failed to fetch category by slug", { slug, error });
-      },
+        return err(new InternalError("Failed to fetch category by slug", { slug, error }));
+      }),
     );
   }
 
@@ -211,8 +210,8 @@ class CategoryService {
    * Create a new category with validation and sort order logic.
    */
   async createCategory(data: unknown): Promise<Result<Category, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Category> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Category, AppError>> => {
         const validatedData = insertCategorySchema.parse(data);
         if (validatedData.name)
           validatedData.name = validateAndSanitizeInput(validatedData.name) as string;
@@ -235,8 +234,10 @@ class CategoryService {
             (c) => c.featuredOnHomepage && c.gridPosition === cleanedData.gridPosition,
           );
           if (existingCategory) {
-            throw new BadRequestError(
-              `Grid position ${cleanedData.gridPosition} is already taken by category "${existingCategory.name}".`,
+            return err(
+              new BadRequestError(
+                `Grid position ${cleanedData.gridPosition} is already taken by category "${existingCategory.name}".`,
+              ),
             );
           }
         }
@@ -255,14 +256,14 @@ class CategoryService {
           () => productRepository.createCategory(cleanedData),
           DB_CIRCUIT_OPTIONS,
         );
-        return category;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (category.isErr()) return err(category.error as any);
+        return ok(category.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[CategoryService] Failed to create category", undefined, error as Error);
-        if (error instanceof AppError) return error;
-        return new InternalError("Failed to create category", { error });
-      },
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("Failed to create category", { error }));
+      }),
     );
   }
 
@@ -270,8 +271,8 @@ class CategoryService {
    * Update category with circular reference check.
    */
   async updateCategory(id: number, data: unknown): Promise<Result<Category, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Category> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Category, AppError>> => {
         const validatedData = insertCategorySchema.partial().parse(data);
         if (validatedData.description)
           validatedData.description = sanitizeHtml(validatedData.description);
@@ -293,7 +294,7 @@ class CategoryService {
           };
 
           if (isCircular(id, cleanedData.parentId as number)) {
-            throw new BadRequestError("Circular reference detected");
+            return err(new BadRequestError("Circular reference detected"));
           }
         }
 
@@ -303,7 +304,7 @@ class CategoryService {
           DB_CIRCUIT_OPTIONS,
         );
         if (!category) {
-          throw new NotFoundError(`Category with ID ${id}`);
+          return err(new NotFoundError(`Category with ID ${id}`));
         }
 
         CacheOperations.invalidateCategories(id).catch((cacheError) =>
@@ -311,14 +312,13 @@ class CategoryService {
         );
         webhookService.trigger("category.updated", category);
 
-        return category;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(category);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[CategoryService] Failed to update category", { id }, error as Error);
-        if (error instanceof AppError) return error;
-        return new InternalError("Failed to update category", { id, error });
-      },
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("Failed to update category", { id, error }));
+      }),
     );
   }
 
@@ -326,15 +326,15 @@ class CategoryService {
    * Delete category.
    */
   async deleteCategory(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           "delete-category",
           () => productRepository.deleteCategory(id),
           DB_CIRCUIT_OPTIONS,
         );
         if (!deleted) {
-          throw new NotFoundError(`Category with ID ${id}`);
+          return err(new NotFoundError(`Category with ID ${id}`));
         }
 
         CacheOperations.invalidateCategories(id).catch((cacheError) =>
@@ -342,13 +342,12 @@ class CategoryService {
         );
         webhookService.trigger("category.deleted", { id });
 
-        return true;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(true);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[CategoryService] Failed to delete category", { id }, error as Error);
-        return new InternalError("Failed to delete category", { id, error });
-      },
+        return err(new InternalError("Failed to delete category", { id, error }));
+      }),
     );
   }
 
@@ -356,15 +355,15 @@ class CategoryService {
    * Restore deleted category.
    */
   async restoreCategory(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const restored = await withCircuit(
           "restore-category",
           () => productRepository.restoreCategory(id),
           DB_CIRCUIT_OPTIONS,
         );
         if (!restored) {
-          throw new NotFoundError(`Category with ID ${id}`);
+          return err(new NotFoundError(`Category with ID ${id}`));
         }
 
         CacheOperations.invalidateCategories(id).catch((cacheError) =>
@@ -372,13 +371,12 @@ class CategoryService {
         );
         webhookService.trigger("category.restored", { id });
 
-        return true;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(true);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[CategoryService] Failed to restore category", { id }, error as Error);
-        return new InternalError("Failed to restore category", { id, error });
-      },
+        return err(new InternalError("Failed to restore category", { id, error }));
+      }),
     );
   }
 
@@ -386,15 +384,15 @@ class CategoryService {
    * Permanently delete category.
    */
   async hardDeleteCategory(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const hardDeleted = await withCircuit(
           "hard-delete-category",
           () => productRepository.permanentlyDeleteCategory(id),
           DB_CIRCUIT_OPTIONS,
         );
         if (!hardDeleted) {
-          throw new NotFoundError(`Category with ID ${id}`);
+          return err(new NotFoundError(`Category with ID ${id}`));
         }
 
         CacheOperations.invalidateCategories(id).catch((cacheError) =>
@@ -402,13 +400,12 @@ class CategoryService {
         );
         webhookService.trigger("category.deleted", { id, permanent: true });
 
-        return true;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(true);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[CategoryService] Failed to hard delete category", { id }, error as Error);
-        return new InternalError("Failed to hard delete category", { id, error });
-      },
+        return err(new InternalError("Failed to hard delete category", { id, error }));
+      }),
     );
   }
 }

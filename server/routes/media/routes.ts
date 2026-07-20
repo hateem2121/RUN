@@ -311,8 +311,28 @@ router.get(
   testObjectStorageConnectivity,
 );
 // prettier-ignore
-router.post("/debug/repair-database-integrity", authService.requireAdmin, repairDatabaseIntegrity);
-router.post("/repair/mime-types", authService.requireAdmin, repairMimeTypes);
+// P1-SEC-02: Debug endpoints must be gated by NODE_ENV (GEMINI.md §5.2)
+const debugGuard: RequestHandler = (_req, res, next) => {
+  if (env.NODE_ENV === "production") {
+    res.status(404).end();
+    return;
+  }
+  next();
+};
+router.post(
+  "/debug/repair-database-integrity",
+  (_req, res, next) => {
+    if (env.NODE_ENV === "production") {
+      res.status(404).end();
+      return;
+    }
+    next();
+  },
+  debugGuard,
+  authService.requireAdmin,
+  repairDatabaseIntegrity,
+);
+router.post("/repair/mime-types", debugGuard, authService.requireAdmin, repairMimeTypes);
 
 // Direct uploads (MUST be before parametric upload routes)
 import { optimizeImageMiddleware } from "../../lib/utilities/image-optimizer.js";

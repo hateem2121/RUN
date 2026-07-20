@@ -120,9 +120,18 @@ const DialogContent = ({
   });
 
   // Memoize the onClose callback with stable dependencies - NO direct state updates
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  React.useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
   const handleClose = React.useCallback(() => {
     // Use setTimeout to avoid state updates during render
-    setTimeout(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
       onOpenChangeRef.current?.(false);
     }, 0);
   }, []);

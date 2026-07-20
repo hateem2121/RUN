@@ -22,6 +22,15 @@ test.describe("Accessibility Audit", () => {
     test("Homepage should have no accessibility violations", async ({ page }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
+      await page.evaluate(async () => {
+        for (let i = 0; i < document.body.scrollHeight; i += 250) {
+          window.scrollTo(0, i);
+          await new Promise((r) => setTimeout(r, 20));
+        }
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+      await page.waitForTimeout(1000); // Allow GSAP animations to complete
+      await page.addStyleTag({ content: "* { content-visibility: visible !important; }" });
 
       const accessibilityScanResults = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag22aa"])
@@ -41,6 +50,9 @@ test.describe("Accessibility Audit", () => {
     test("Products page should have no accessibility violations", async ({ page }) => {
       await page.goto("/products");
       await page.waitForLoadState("networkidle");
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(1000); // Allow GSAP animations to complete
+      await page.addStyleTag({ content: "* { content-visibility: visible !important; }" });
 
       const accessibilityScanResults = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag22aa"])
@@ -52,6 +64,9 @@ test.describe("Accessibility Audit", () => {
     test("Contact page should have no accessibility violations", async ({ page }) => {
       await page.goto("/contact");
       await page.waitForLoadState("networkidle");
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(1000); // Allow GSAP animations to complete
+      await page.addStyleTag({ content: "* { content-visibility: visible !important; }" });
 
       const accessibilityScanResults = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag22aa"])
@@ -63,6 +78,15 @@ test.describe("Accessibility Audit", () => {
     test("About page should have no accessibility violations", async ({ page }) => {
       await page.goto("/about");
       await page.waitForLoadState("networkidle");
+      await page.evaluate(async () => {
+        for (let i = 0; i < document.body.scrollHeight; i += 250) {
+          window.scrollTo(0, i);
+          await new Promise((r) => setTimeout(r, 20));
+        }
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+      await page.waitForTimeout(1000); // Allow GSAP animations to complete
+      await page.addStyleTag({ content: "* { content-visibility: visible !important; }" });
 
       const accessibilityScanResults = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag22aa"])
@@ -109,6 +133,15 @@ test.describe("Accessibility Audit", () => {
     test("Text should have sufficient color contrast", async ({ page }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
+      await page.evaluate(async () => {
+        for (let i = 0; i < document.body.scrollHeight; i += 250) {
+          window.scrollTo(0, i);
+          await new Promise((r) => setTimeout(r, 20));
+        }
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+      await page.waitForTimeout(1000); // Allow GSAP animations to complete
+      await page.addStyleTag({ content: "* { content-visibility: visible !important; }" });
 
       const accessibilityScanResults = await new AxeBuilder({ page })
         .withTags(["wcag2aa"])

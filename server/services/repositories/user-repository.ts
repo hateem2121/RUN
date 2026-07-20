@@ -6,6 +6,7 @@
 import type { UpsertUser, User } from "@run-remix/shared";
 import { users } from "@run-remix/shared";
 import { eq } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import { db } from "../../db.js";
 import { decrypt, encrypt, getBlindIndex } from "../../lib/encryption.js";
 import { logger } from "../../lib/monitoring/logger.js";
@@ -44,10 +45,10 @@ export class UserRepository {
    * IMPORTANT: isAdmin flag is NOT updated on conflict
    * Admin promotion must be done manually via SQL to prevent privilege escalation
    */
-  async upsertUser(userData: UpsertUser): Promise<User> {
+  async upsertUser(userData: UpsertUser): Promise<Result<User, Error>> {
     // In test mode with memory storage, redirect to the storage instance
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().upsertUser(userData);
+      return ok(await StorageSingleton.getInstance().upsertUser(userData));
     }
     const encryptedData = {
       ...userData,
@@ -80,10 +81,10 @@ export class UserRepository {
       .returning();
 
     if (!user) {
-      throw new Error("Failed to upsert user - no user returned from database");
+      return err(new Error("Failed to upsert user - no user returned from database"));
     }
 
-    return this.decryptUser(user);
+    return ok(await this.decryptUser(user));
   }
 
   /**

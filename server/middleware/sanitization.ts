@@ -30,7 +30,11 @@ export function requestSanitization(req: Request, _res: Response, next: NextFunc
   if (req.params) {
     safeSanitize(req.params)
       .map((sanitized) => {
-        req.params = sanitized as typeof req.params;
+        Object.defineProperty(req, "params", {
+          value: sanitized,
+          writable: true,
+          configurable: true,
+        });
         return undefined;
       })
       .mapErr(() => undefined);
@@ -39,7 +43,11 @@ export function requestSanitization(req: Request, _res: Response, next: NextFunc
   if (req.query) {
     safeSanitize(req.query)
       .map((sanitized) => {
-        req.query = sanitized as typeof req.query;
+        Object.defineProperty(req, "query", {
+          value: sanitized,
+          writable: true,
+          configurable: true,
+        });
         return undefined;
       })
       .mapErr(() => undefined);

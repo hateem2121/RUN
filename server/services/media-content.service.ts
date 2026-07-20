@@ -1,5 +1,5 @@
 import type { ImageVariants } from "@run-remix/shared";
-import { ok, type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
@@ -20,8 +20,8 @@ class MediaContentService {
     ttl = 300,
     variant?: keyof ImageVariants,
   ): Promise<Result<string, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<string> => {
+    return new ResultAsync(
+      (async (): Promise<Result<string, AppError>> => {
         const asset = await withCircuit(
           `get-media-content-${id}`,
           () => mediaRepository.getMediaAsset(id),
@@ -29,7 +29,7 @@ class MediaContentService {
         );
 
         if (!asset?.storagePath) {
-          throw new NotFoundError(`Media asset ${id} not found`);
+          return err(new NotFoundError(`Media asset ${id} not found`));
         }
 
         let pathToServe = asset.storagePath;
@@ -51,17 +51,16 @@ class MediaContentService {
         }
 
         const signedUrl = await appStorageService.generateSignedUrl(pathToServe, ttl);
-        return signedUrl;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(signedUrl);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error(
           "[MediaContentService] Failed to generate signed URL",
           { id, variant },
           error as Error,
         );
-        return new InternalError("Failed to generate signed URL", { error });
-      },
+        return err(new InternalError("Failed to generate signed URL", { error }));
+      }),
     );
   }
 
@@ -70,8 +69,8 @@ class MediaContentService {
    * Implements fallback logic to original content if thumbnail is missing.
    */
   async getThumbnailUrl(id: number, ttl = 300): Promise<Result<string, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<string> => {
+    return new ResultAsync(
+      (async (): Promise<Result<string, AppError>> => {
         const asset = await withCircuit(
           `get-media-thumbnail-${id}`,
           () => mediaRepository.getMediaAsset(id),
@@ -79,7 +78,7 @@ class MediaContentService {
         );
 
         if (!asset) {
-          throw new NotFoundError(`Media asset ${id} not found`);
+          return err(new NotFoundError(`Media asset ${id} not found`));
         }
 
         let pathToServe: string | null = null;
@@ -99,21 +98,20 @@ class MediaContentService {
         }
 
         if (!pathToServe) {
-          throw new NotFoundError("Media source not found");
+          return err(new NotFoundError("Media source not found"));
         }
 
         const signedUrl = await appStorageService.generateSignedUrl(pathToServe, ttl);
-        return signedUrl;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(signedUrl);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error(
           "[MediaContentService] Failed to generate thumbnail URL",
           { id },
           error as Error,
         );
-        return new InternalError("Failed to generate thumbnail URL", { error });
-      },
+        return err(new InternalError("Failed to generate thumbnail URL", { error }));
+      }),
     );
   }
 
@@ -149,15 +147,14 @@ class MediaContentService {
    * Verifies connectivity to object storage
    */
   async testObjectStorageConnectivity(): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const bucket = appStorageService.getBucketName();
-        return !!bucket;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError("Storage connectivity test failed", { error });
-      },
+        return ok(!!bucket);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("Storage connectivity test failed", { error }));
+      }),
     );
   }
 
@@ -165,15 +162,15 @@ class MediaContentService {
    * Returns system performance dashboard data
    */
   async getPerformanceDashboard(): Promise<Result<Record<string, unknown>, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Record<string, unknown>> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Record<string, unknown>, AppError>> => {
         const stats = await withCircuit(
           "get-storage-stats",
           () => mediaRepository.getStorageStats(),
           DB_CIRCUIT_OPTIONS,
         );
 
-        return {
+        return ok({
           status: "operational",
           systemStatus: "operational",
           performance: "excellent",
@@ -182,13 +179,12 @@ class MediaContentService {
           totalStorageBytes: stats.totalSize,
           storageConnected: !!appStorageService.getBucketName(),
           timestamp: new Date().toISOString(),
-        };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[MediaContentService] Failed to fetch dashboard stats", error as Error);
-        return new InternalError("Failed to fetch dashboard stats", { error });
-      },
+        return err(new InternalError("Failed to fetch dashboard stats", { error }));
+      }),
     );
   }
 

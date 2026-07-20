@@ -184,3 +184,7 @@
 @utility text-logotype {
   font-size: 15.5vw;
 }
+
+.text-logotype::after {
+  content: attr(data-content);
+}

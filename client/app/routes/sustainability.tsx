@@ -369,9 +369,9 @@ function SustainabilityInner({
       });
 
       // Hero Elements Reveal
-      tl.from(".hero-esg", { opacity: 0, y: -15, duration: 0.8 }, 0.2)
-        .from(".hero-sub", { opacity: 0, y: 30, duration: 0.8 }, 0.6)
-        .from(".hero-btns", { opacity: 0, y: 30, duration: 0.8 }, 0.8);
+      tl.from(".hero-esg", { y: -15, duration: 0.8 }, 0.2)
+        .from(".hero-sub", { y: 30, duration: 0.8 }, 0.6)
+        .from(".hero-btns", { y: 30, duration: 0.8 }, 0.8);
 
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         tl.progress(1).kill();

@@ -13,8 +13,8 @@ interface PopulationResults {
 
 class PopulationService {
   async populateApiBased(port: string | number): Promise<Result<PopulationResults, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<PopulationResults> => {
+    return new ResultAsync(
+      (async (): Promise<Result<PopulationResults, AppError>> => {
         const results: PopulationResults = {
           categories: [],
           fabrics: [],
@@ -28,8 +28,8 @@ class PopulationService {
           endpoint: string,
           data?: unknown,
         ): Promise<Result<unknown, AppError>> => {
-          return ResultAsync.fromPromise(
-            (async (): Promise<PopulationResults> => {
+          return new ResultAsync(
+            (async (): Promise<Result<PopulationResults, AppError>> => {
               const response = await fetch(`http://localhost:${port}${endpoint}`, {
                 method,
                 headers: { "Content-Type": "application/json" },
@@ -37,16 +37,17 @@ class PopulationService {
               });
               if (!response.ok) {
                 const errorText = await response.text();
-                throw new InternalError(
-                  `API call failed: ${method} ${endpoint} - ${response.status} ${errorText}`,
+                return err(
+                  new InternalError(
+                    `API call failed: ${method} ${endpoint} - ${response.status} ${errorText}`,
+                  ),
                 );
               }
-              return (await response.json()) as PopulationResults;
-            })(),
-            (error) => {
-              if (error instanceof AppError) return error;
-              return new InternalError(`API call exception for ${endpoint}`, { error });
-            },
+              return ok((await response.json()) as PopulationResults);
+            })().catch((error) => {
+              if (error instanceof AppError) return err(error);
+              return err(new InternalError(`API call exception for ${endpoint}`, { error }));
+            }),
           );
         };
 
@@ -439,13 +440,12 @@ class PopulationService {
           }
         }
 
-        return results;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(results);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[PopulationService] API population failed", error as Error);
-        return new InternalError("API population failed", { error });
-      },
+        return err(new InternalError("API population failed", { error }));
+      }),
     );
   }
   async populateDirectPostgres(): Promise<Result<PopulationResults, AppError>> {

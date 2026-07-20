@@ -28,6 +28,7 @@ import {
   sizeCharts,
 } from "@run-remix/shared";
 import { and, asc, desc, eq, inArray, isNull, lt, ne, sql } from "drizzle-orm"; // added lt
+import { err, ok, type Result } from "neverthrow";
 import { type DbClient, db } from "../../db.js";
 import { CacheKeys, InvalidationPatterns } from "../../lib/cache/cache-keys.js";
 import type { RepositoryCacheOptions } from "../../lib/cache/cache-strategies.js";
@@ -1046,10 +1047,10 @@ export class ProductRepository {
       .offset(offset);
   }
 
-  async createProduct(product: InsertProduct, tx?: DbClient): Promise<Product> {
+  async createProduct(product: InsertProduct, tx?: DbClient): Promise<Result<Product, Error>> {
     // In test mode with memory storage, redirect to the storage instance
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createProduct(product);
+      return ok(await StorageSingleton.getInstance().createProduct(product));
     }
     return await dbCircuitBreaker.execute(
       async () => {
@@ -1061,7 +1062,7 @@ export class ProductRepository {
         const [created] = await dbInstance.insert(products).values(productData).returning();
 
         if (!created) {
-          throw new Error("Failed to create product");
+          return err(new Error("Failed to create product"));
         }
 
         // PHASE 4B: Normalize relationships
@@ -1080,7 +1081,7 @@ export class ProductRepository {
           await this.invalidateProductCount(); // PHASE 1 TASK 8: Invalidate count cache
         }
 
-        return created;
+        return ok(await created);
       },
       "createProduct",
       { isIdempotent: false },
@@ -1423,9 +1424,9 @@ export class ProductRepository {
     return count;
   }
 
-  async createCategory(category: InsertCategory, tx?: DbClient): Promise<Category> {
+  async createCategory(category: InsertCategory, tx?: DbClient): Promise<Result<Category, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createCategory(category);
+      return ok(await StorageSingleton.getInstance().createCategory(category));
     }
     return await dbCircuitBreaker.execute(
       async () => {
@@ -1436,9 +1437,9 @@ export class ProductRepository {
           if (!tx) {
             await this.invalidateCategoryCache();
           }
-          return result[0]!;
+          return ok(await result[0]!);
         }
-        throw new Error("Failed to create category");
+        return err(new Error("Failed to create category"));
       },
       "createCategory",
       { isIdempotent: false },

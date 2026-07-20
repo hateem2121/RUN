@@ -130,13 +130,18 @@ class MediaUploadService {
     const safeUploadId = path.basename(uploadId);
     const chunkKey = `${CHUNK_STORAGE_BASE}/${safeUploadId}/chunk-${chunkNumber}`;
 
-    return ResultAsync.fromPromise(
-      (async (): Promise<{
-        uploadId: string;
-        chunkNumber: number;
-        progress: number;
-        status: string;
-      }> => {
+    return new ResultAsync(
+      (async (): Promise<
+        Result<
+          {
+            uploadId: string;
+            chunkNumber: number;
+            progress: number;
+            status: string;
+          },
+          AppError
+        >
+      > => {
         await withCircuit(
           "upload-chunk",
           () =>
@@ -158,22 +163,21 @@ class MediaUploadService {
           `[MediaUploadService] Chunk ${chunkNumber}/${session.totalChunks} uploaded for ${uploadId} (${progress}%)`,
         );
 
-        return {
+        return ok({
           uploadId,
           chunkNumber,
           progress,
           status: isComplete ? "ready_for_finalization" : "uploading",
-        };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error(
           "[MediaUploadService] Chunk upload failed",
           { uploadId, chunkNumber },
           error as Error,
         );
-        return new InternalError("Failed to upload chunk to storage", { error });
-      },
+        return err(new InternalError("Failed to upload chunk to storage", { error }));
+      }),
     );
   }
 
@@ -194,8 +198,8 @@ class MediaUploadService {
       );
     }
 
-    return ResultAsync.fromPromise(
-      (async (): Promise<MediaAsset> => {
+    return new ResultAsync(
+      (async (): Promise<Result<MediaAsset, AppError>> => {
         logger.info(
           `[MediaUploadService] Finalizing upload ${uploadId}: assembling ${session.totalChunks} chunks`,
         );
@@ -235,7 +239,7 @@ class MediaUploadService {
           const batchResults = await Promise.all(batchPromises);
           for (const { index, chunk } of batchResults) {
             if (!chunk) {
-              throw new InternalError(`Chunk ${index} missing during assembly`);
+              return err(new InternalError(`Chunk ${index} missing during assembly`));
             }
             orderedChunks[index] = chunk;
             computedTotal += chunk.length;
@@ -243,8 +247,10 @@ class MediaUploadService {
         }
 
         if (computedTotal !== session.totalSize) {
-          throw new InternalError(
-            `Size mismatch: computed ${computedTotal} bytes, expected ${session.totalSize} bytes`,
+          return err(
+            new InternalError(
+              `Size mismatch: computed ${computedTotal} bytes, expected ${session.totalSize} bytes`,
+            ),
           );
         }
 
@@ -257,14 +263,14 @@ class MediaUploadService {
 
           const embedResult = await gltfProcessor.processForUpload(assembledFile);
           if (!embedResult.success) {
-            throw new InternalError(embedResult.error || "GLTF processing failed");
+            return err(new InternalError(embedResult.error || "GLTF processing failed"));
           }
 
           assembledFile = Buffer.from(embedResult.processedBuffer);
 
           const validation = await gltfProcessor.validateForProductionUpload(assembledFile);
           if (!validation.valid) {
-            throw new BadRequestError(validation.reason || "GLTF validation failed");
+            return err(new BadRequestError(validation.reason || "GLTF validation failed"));
           }
         }
 
@@ -306,7 +312,7 @@ class MediaUploadService {
         );
 
         if (!createdAsset) {
-          throw new InternalError("Database record creation failed");
+          return err(new InternalError("Database record creation failed"));
         }
 
         // [WJ-103] Offload media processing tasks (optimisation, thumbnails, etc.)
@@ -350,17 +356,16 @@ class MediaUploadService {
         logger.info(
           `[MediaUploadService] ✅ Successfully finalized upload ${uploadId} for asset ${finalAsset.id}`,
         );
-        return finalAsset;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(finalAsset);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error(
           "[MediaUploadService] Upload finalization failed",
           { uploadId },
           error as Error,
         );
-        return new InternalError("Failed to finalize media upload", { error });
-      },
+        return err(new InternalError("Failed to finalize media upload", { error }));
+      }),
     );
   }
 
@@ -450,8 +455,8 @@ class MediaUploadService {
     // biome-ignore lint/suspicious/noExplicitAny: Dynamic upload options
     options: Record<string, any> = {},
   ): Promise<Result<MediaAsset, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<MediaAsset> => {
+    return new ResultAsync(
+      (async (): Promise<Result<MediaAsset, AppError>> => {
         const storage = mediaRepository;
         let storageKey: string | null = null;
 
@@ -563,13 +568,12 @@ class MediaUploadService {
           unifiedCache.delete("search"),
         ]);
 
-        return finalAsset as MediaAsset;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(finalAsset as MediaAsset);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[MediaUploadService] Single upload failed", error as Error);
-        return new InternalError("Upload failed", { error });
-      },
+        return err(new InternalError("Upload failed", { error }));
+      }),
     );
   }
 
@@ -588,14 +592,19 @@ class MediaUploadService {
       AppError
     >
   > {
-    return ResultAsync.fromPromise(
-      (async (): Promise<{
-        deleted: number;
-        failed: number;
-        total: number;
-        rolledBack: number;
-        criticalFailures: number;
-      }> => {
+    return new ResultAsync(
+      (async (): Promise<
+        Result<
+          {
+            deleted: number;
+            failed: number;
+            total: number;
+            rolledBack: number;
+            criticalFailures: number;
+          },
+          AppError
+        >
+      > => {
         const numericIds = ids.map((id) => parseInt(id, 10));
         const assetsToDelete = await Promise.all(
           numericIds.map((id) => mediaRepository.getMediaAsset(id)),
@@ -657,18 +666,17 @@ class MediaUploadService {
           ]);
         }
 
-        return {
+        return ok({
           deleted: successCount,
           failed: ids.length - successCount - rollbackCount - criticalFailureCount,
           total: ids.length,
           rolledBack: rollbackCount,
           criticalFailures: criticalFailureCount,
-        };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError("Batch delete failed", { error });
-      },
+        });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("Batch delete failed", { error }));
+      }),
     );
   }
 
@@ -676,14 +684,14 @@ class MediaUploadService {
    * Performs batch creation from multiple files
    */
   async batchCreateAssets(files: Express.Multer.File[]): Promise<Result<MediaAsset[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<MediaAsset[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<MediaAsset[], AppError>> => {
         const results: MediaAsset[] = [];
 
         for (const file of files) {
           const result = await this.uploadSingleFile(file);
           if (result.isErr()) {
-            throw result.error;
+            return err(result.error);
           }
           results.push(result.value);
         }
@@ -696,12 +704,11 @@ class MediaUploadService {
           unifiedCache.delete("search"),
         ]);
 
-        return results;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError("Batch upload failed", { error });
-      },
+        return ok(results);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("Batch upload failed", { error }));
+      }),
     );
   }
 
@@ -713,12 +720,12 @@ class MediaUploadService {
     filename: string,
     metadata: Record<string, unknown> = {},
   ): Promise<Result<MediaAsset, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<MediaAsset> => {
+    return new ResultAsync(
+      (async (): Promise<Result<MediaAsset, AppError>> => {
         // SECURITY [MD-101]: Parse and validate base64 data
         const matches = base64Data.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
         if (matches?.length !== 3) {
-          throw new BadRequestError("Invalid base64 data format");
+          return err(new BadRequestError("Invalid base64 data format"));
         }
 
         const mimeType = matches[1]!;
@@ -727,7 +734,7 @@ class MediaUploadService {
         // Validate size (limit to 5MB for base64 to avoid memory pressure)
         const MAX_BASE64_SIZE = 5 * 1024 * 1024;
         if (buffer.length > MAX_BASE64_SIZE) {
-          throw new BadRequestError("Base64 upload limited to 5MB");
+          return err(new BadRequestError("Base64 upload limited to 5MB"));
         }
 
         // Validate MIME type
@@ -739,7 +746,7 @@ class MediaUploadService {
           "application/pdf",
         ];
         if (!allowedMimes.includes(mimeType)) {
-          throw new BadRequestError(`MIME type ${mimeType} not allowed for base64 upload`);
+          return err(new BadRequestError(`MIME type ${mimeType} not allowed for base64 upload`));
         }
 
         const slugifiedName = slugifyFilename(filename);
@@ -785,13 +792,12 @@ class MediaUploadService {
           },
         });
 
-        return asset;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(asset);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[MediaUploadService] Base64 upload failed", error as Error);
-        return new InternalError("Base64 upload failed", { error });
-      },
+        return err(new InternalError("Base64 upload failed", { error }));
+      }),
     );
   }
 

@@ -18,6 +18,7 @@ import {
   unifiedSustainability,
 } from "@run-remix/shared";
 import { asc, eq, sql } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import { db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../../lib/cache/cache-events.js";
 import { CacheOperations } from "../../../lib/cache/cache-strategies.js";
@@ -45,9 +46,9 @@ class SustainabilityRepository {
 
   async updateSustainabilityHero(
     data: Partial<InsertSustainabilityHero>,
-  ): Promise<SustainabilityHero> {
+  ): Promise<Result<SustainabilityHero, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateSustainabilityHero(data);
+      return ok(await StorageSingleton.getInstance().updateSustainabilityHero(data));
     }
     const existing = await this.getSustainabilityHero();
     await CacheOperations.invalidateSustainability();
@@ -59,20 +60,20 @@ class SustainabilityRepository {
         .where(eq(sustainabilityHero.id, existing.id))
         .returning();
 
-      if (!updated) throw new Error("Failed to update sustainability hero");
+      if (!updated) return err(new Error("Failed to update sustainability hero"));
       await emitCacheInvalidation("sustainability:hero", "update");
       await CacheOperations.invalidateSustainability();
-      return updated;
+      return ok(await updated);
     }
 
     const [created] = await db
       .insert(sustainabilityHero)
       .values(data as InsertSustainabilityHero)
       .returning();
-    if (!created) throw new Error("Failed to create sustainability hero");
+    if (!created) return err(new Error("Failed to create sustainability hero"));
     await emitCacheInvalidation("sustainability:hero", "create");
     await CacheOperations.invalidateSustainability();
-    return created;
+    return ok(await created);
   }
 
   async getSustainabilityGoals(includeInactive = false): Promise<SustainabilityGoal[]> {
@@ -100,9 +101,11 @@ class SustainabilityRepository {
     return goal;
   }
 
-  async createSustainabilityGoal(data: InsertSustainabilityGoal): Promise<SustainabilityGoal> {
+  async createSustainabilityGoal(
+    data: InsertSustainabilityGoal,
+  ): Promise<Result<SustainabilityGoal, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createSustainabilityGoal(data);
+      return ok(await StorageSingleton.getInstance().createSustainabilityGoal(data));
     }
     const maxOrderRes = await db
       .select({ max: sql<number>`MAX(${sustainabilityGoals.sortOrder})` })
@@ -115,23 +118,24 @@ class SustainabilityRepository {
       .returning();
 
     if (!created) {
-      throw new Error("Failed to create sustainability goal");
+      return err(new Error("Failed to create sustainability goal"));
     }
 
     await unifiedCache.del("sustainability:goals:*");
     await emitCacheInvalidation("sustainability:goals", "create");
     await CacheOperations.invalidateSustainability();
-    return created;
+    return ok(await created);
   }
 
   async updateSustainabilityGoal(
     id: number,
     data: Partial<InsertSustainabilityGoal>,
-  ): Promise<SustainabilityGoal> {
+  ): Promise<Result<SustainabilityGoal, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateSustainabilityGoal(id, data);
-      if (!result) throw new Error(`updateSustainabilityGoal returned undefined for id ${id}`);
-      return result;
+      if (!result)
+        return err(new Error(`updateSustainabilityGoal returned undefined for id ${id}`));
+      return ok(await result);
     }
     await unifiedCache.del("sustainability:goals:*");
     const [updated] = await db
@@ -140,10 +144,10 @@ class SustainabilityRepository {
       .where(eq(sustainabilityGoals.id, id))
       .returning();
 
-    if (!updated) throw new Error(`Failed to update sustainability goal with id ${id}`);
+    if (!updated) return err(new Error(`Failed to update sustainability goal with id ${id}`));
     await emitCacheInvalidation("sustainability:goal", "update");
     await CacheOperations.invalidateSustainability();
-    return updated;
+    return ok(await updated);
   }
 
   async deleteSustainabilityGoal(id: number): Promise<boolean> {
@@ -206,9 +210,9 @@ class SustainabilityRepository {
 
   async createSustainabilityMetric(
     data: InsertSustainabilityMetric,
-  ): Promise<SustainabilityMetric> {
+  ): Promise<Result<SustainabilityMetric, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createSustainabilityMetric(data);
+      return ok(await StorageSingleton.getInstance().createSustainabilityMetric(data));
     }
     const maxOrderRes = await db
       .select({ max: sql<number>`MAX(${sustainabilityMetrics.sortOrder})` })
@@ -230,23 +234,24 @@ class SustainabilityRepository {
     }
 
     if (!created) {
-      throw new Error("Failed to create sustainability metric");
+      return err(new Error("Failed to create sustainability metric"));
     }
 
     await unifiedCache.del("sustainability:metrics");
     await emitCacheInvalidation("sustainability:metrics", "create");
     await CacheOperations.invalidateSustainability();
-    return created;
+    return ok(await created);
   }
 
   async updateSustainabilityMetric(
     id: number,
     data: Partial<InsertSustainabilityMetric>,
-  ): Promise<SustainabilityMetric> {
+  ): Promise<Result<SustainabilityMetric, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateSustainabilityMetric(id, data);
-      if (!result) throw new Error(`updateSustainabilityMetric returned undefined for id ${id}`);
-      return result;
+      if (!result)
+        return err(new Error(`updateSustainabilityMetric returned undefined for id ${id}`));
+      return ok(await result);
     }
     const [updated] = await db
       .update(sustainabilityMetrics)
@@ -264,12 +269,12 @@ class SustainabilityRepository {
     }
 
     if (!updated) {
-      throw new Error(`Failed to update sustainability metric with id ${id}`);
+      return err(new Error(`Failed to update sustainability metric with id ${id}`));
     }
 
     await emitCacheInvalidation("sustainability:metrics", "update");
     await CacheOperations.invalidateSustainability();
-    return updated;
+    return ok(await updated);
   }
 
   async deleteSustainabilityMetric(id: number): Promise<boolean> {
@@ -334,9 +339,9 @@ class SustainabilityRepository {
 
   async createSustainabilityInitiative(
     data: InsertSustainabilityInitiative,
-  ): Promise<SustainabilityInitiative> {
+  ): Promise<Result<SustainabilityInitiative, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createSustainabilityInitiative(data);
+      return ok(await StorageSingleton.getInstance().createSustainabilityInitiative(data));
     }
     const maxOrderRes = await db
       .select({ max: sql<number>`MAX(${sustainabilityInitiatives.sortOrder})` })
@@ -349,23 +354,23 @@ class SustainabilityRepository {
       .returning();
 
     if (!created) {
-      throw new Error("Failed to create sustainability initiative");
+      return err(new Error("Failed to create sustainability initiative"));
     }
 
     await CacheOperations.invalidateSustainability();
     await emitCacheInvalidation("sustainability:initiatives", "create");
-    return created;
+    return ok(await created);
   }
 
   async updateSustainabilityInitiative(
     id: number,
     data: Partial<InsertSustainabilityInitiative>,
-  ): Promise<SustainabilityInitiative> {
+  ): Promise<Result<SustainabilityInitiative, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateSustainabilityInitiative(id, data);
       if (!result)
-        throw new Error(`updateSustainabilityInitiative returned undefined for id ${id}`);
-      return result;
+        return err(new Error(`updateSustainabilityInitiative returned undefined for id ${id}`));
+      return ok(await result);
     }
     const [updated] = await db
       .update(sustainabilityInitiatives)
@@ -374,12 +379,12 @@ class SustainabilityRepository {
       .returning();
 
     if (!updated) {
-      throw new Error(`Failed to update sustainability initiative with id ${id}`);
+      return err(new Error(`Failed to update sustainability initiative with id ${id}`));
     }
 
     await emitCacheInvalidation("sustainability:initiatives", "update");
     await CacheOperations.invalidateSustainability();
-    return updated;
+    return ok(await updated);
   }
 
   async deleteSustainabilityInitiative(id: number): Promise<boolean> {
@@ -428,9 +433,9 @@ class SustainabilityRepository {
 
   async updateUnifiedSustainability(
     data: Partial<InsertUnifiedSustainability>,
-  ): Promise<UnifiedSustainability> {
+  ): Promise<Result<UnifiedSustainability, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateUnifiedSustainability(data);
+      return ok(await StorageSingleton.getInstance().updateUnifiedSustainability(data));
     }
     const existing = await this.getUnifiedSustainability();
     await CacheOperations.invalidateSustainability();
@@ -442,20 +447,20 @@ class SustainabilityRepository {
         .where(eq(unifiedSustainability.id, existing.id))
         .returning();
 
-      if (!updated) throw new Error("Failed to update unified sustainability");
+      if (!updated) return err(new Error("Failed to update unified sustainability"));
       await emitCacheInvalidation("sustainability:unified", "update");
       await CacheOperations.invalidateSustainability();
-      return updated;
+      return ok(await updated);
     }
 
     const [created] = await db
       .insert(unifiedSustainability)
       .values(data as InsertUnifiedSustainability)
       .returning();
-    if (!created) throw new Error("Failed to create unified sustainability");
+    if (!created) return err(new Error("Failed to create unified sustainability"));
     await emitCacheInvalidation("sustainability:unified", "create");
     await CacheOperations.invalidateSustainability();
-    return created;
+    return ok(await created);
   }
 
   async migrateLegacySustainabilityData(): Promise<{ migrated: number }> {

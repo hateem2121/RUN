@@ -18,7 +18,7 @@ import {
   insertSustainabilityMetricSchema,
   insertUnifiedSustainabilitySchema,
 } from "@run-remix/shared";
-import { type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
@@ -44,8 +44,8 @@ class SustainabilityService {
 
   // Hero
   async getHero(): Promise<Result<SustainabilityHero, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityHero> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityHero, AppError>> => {
         const hero = await withCircuit(
           "get-sustainability-hero",
           () => sustainabilityRepository.getSustainabilityHero(),
@@ -53,24 +53,25 @@ class SustainabilityService {
         );
 
         if (!hero) {
-          throw new NotFoundError("Sustainability hero configuration");
+          return err(new NotFoundError("Sustainability hero configuration"));
         }
 
-        return hero;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(hero);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to fetch hero", error as Error);
-        return new InternalError("Failed to fetch sustainability hero configuration", { error });
-      },
+        return err(
+          new InternalError("Failed to fetch sustainability hero configuration", { error }),
+        );
+      }),
     );
   }
 
   async updateHero(
     data: Partial<InsertSustainabilityHero>,
   ): Promise<Result<SustainabilityHero, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityHero> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityHero, AppError>> => {
         const updated = await withCircuit(
           "update-sustainability-hero",
           () =>
@@ -85,38 +86,39 @@ class SustainabilityService {
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to update hero", error as Error);
-        return new InternalError("Failed to update sustainability hero configuration", { error });
-      },
+        return err(
+          new InternalError("Failed to update sustainability hero configuration", { error }),
+        );
+      }),
     );
   }
 
   // Goals
   async getGoals(includeInactive = false): Promise<Result<SustainabilityGoal[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityGoal[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityGoal[], AppError>> => {
         const goals = await withCircuit(
           "get-sustainability-goals",
           () => sustainabilityRepository.getSustainabilityGoals(includeInactive),
           DB_CIRCUIT_OPTIONS,
         );
-        return goals;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(goals);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to fetch goals", error as Error);
-        return new InternalError("Failed to fetch sustainability goals", { error });
-      },
+        return err(new InternalError("Failed to fetch sustainability goals", { error }));
+      }),
     );
   }
 
   async getGoal(id: number): Promise<Result<SustainabilityGoal, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityGoal> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityGoal, AppError>> => {
         const goal = await withCircuit(
           `get-sustainability-goal-${id}`,
           () => sustainabilityRepository.getSustainabilityGoal(id),
@@ -124,22 +126,21 @@ class SustainabilityService {
         );
 
         if (!goal) {
-          throw new NotFoundError(`Sustainability goal with ID ${id}`);
+          return err(new NotFoundError(`Sustainability goal with ID ${id}`));
         }
 
-        return goal;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(goal);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to fetch goal", { id }, error as Error);
-        return new InternalError(`Failed to fetch sustainability goal ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch sustainability goal ${id}`, { error }));
+      }),
     );
   }
 
   async createGoal(data: InsertSustainabilityGoal): Promise<Result<SustainabilityGoal, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityGoal> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityGoal, AppError>> => {
         const created = await withCircuit(
           "create-sustainability-goal",
           () =>
@@ -154,13 +155,13 @@ class SustainabilityService {
         );
 
         await this.invalidateCache();
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (created.isErr()) return err(created.error as any);
+        return ok(created.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to create goal", error as Error);
-        return new InternalError("Failed to create sustainability goal", { error });
-      },
+        return err(new InternalError("Failed to create sustainability goal", { error }));
+      }),
     );
   }
 
@@ -168,8 +169,8 @@ class SustainabilityService {
     id: number,
     data: Partial<InsertSustainabilityGoal>,
   ): Promise<Result<SustainabilityGoal, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityGoal> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityGoal, AppError>> => {
         const updated = await withCircuit(
           `update-sustainability-goal-${id}`,
           () =>
@@ -185,19 +186,19 @@ class SustainabilityService {
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to update goal", { id }, error as Error);
-        return new InternalError(`Failed to update sustainability goal ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update sustainability goal ${id}`, { error }));
+      }),
     );
   }
 
   async deleteGoal(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-sustainability-goal-${id}`,
           () => sustainabilityRepository.deleteSustainabilityGoal(id),
@@ -205,23 +206,22 @@ class SustainabilityService {
         );
 
         if (!deleted) {
-          throw new NotFoundError(`Sustainability goal with ID ${id}`);
+          return err(new NotFoundError(`Sustainability goal with ID ${id}`));
         }
 
         await this.invalidateCache();
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to delete goal", { id }, error as Error);
-        return new InternalError(`Failed to delete sustainability goal ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete sustainability goal ${id}`, { error }));
+      }),
     );
   }
 
   async reorderGoals(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-sustainability-goals",
           () => sustainabilityRepository.reorderSustainabilityGoals(orderedIds),
@@ -229,38 +229,36 @@ class SustainabilityService {
         );
 
         await this.invalidateCache();
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to reorder goals", error as Error);
-        return new InternalError("Failed to reorder sustainability goals", { error });
-      },
+        return err(new InternalError("Failed to reorder sustainability goals", { error }));
+      }),
     );
   }
 
   // Metrics
   async getMetrics(): Promise<Result<SustainabilityMetric[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityMetric[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityMetric[], AppError>> => {
         const metrics = await withCircuit(
           "get-sustainability-metrics",
           () => sustainabilityRepository.getSustainabilityMetrics(),
           DB_CIRCUIT_OPTIONS,
         );
-        return metrics;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(metrics);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to fetch metrics", error as Error);
-        return new InternalError("Failed to fetch sustainability metrics", { error });
-      },
+        return err(new InternalError("Failed to fetch sustainability metrics", { error }));
+      }),
     );
   }
 
   async getMetric(id: number): Promise<Result<SustainabilityMetric, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityMetric> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityMetric, AppError>> => {
         const metric = await withCircuit(
           `get-sustainability-metric-${id}`,
           () => sustainabilityRepository.getSustainabilityMetric(id),
@@ -268,24 +266,23 @@ class SustainabilityService {
         );
 
         if (!metric) {
-          throw new NotFoundError(`Sustainability metric with ID ${id}`);
+          return err(new NotFoundError(`Sustainability metric with ID ${id}`));
         }
 
-        return metric;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(metric);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to fetch metric", { id }, error as Error);
-        return new InternalError(`Failed to fetch sustainability metric ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch sustainability metric ${id}`, { error }));
+      }),
     );
   }
 
   async createMetric(
     data: InsertSustainabilityMetric,
   ): Promise<Result<SustainabilityMetric, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityMetric> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityMetric, AppError>> => {
         const created = await withCircuit(
           "create-sustainability-metric",
           () =>
@@ -300,13 +297,13 @@ class SustainabilityService {
         );
 
         await this.invalidateCache();
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (created.isErr()) return err(created.error as any);
+        return ok(created.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to create metric", error as Error);
-        return new InternalError("Failed to create sustainability metric", { error });
-      },
+        return err(new InternalError("Failed to create sustainability metric", { error }));
+      }),
     );
   }
 
@@ -314,8 +311,8 @@ class SustainabilityService {
     id: number,
     data: Partial<InsertSustainabilityMetric>,
   ): Promise<Result<SustainabilityMetric, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityMetric> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityMetric, AppError>> => {
         const updated = await withCircuit(
           `update-sustainability-metric-${id}`,
           () =>
@@ -331,19 +328,19 @@ class SustainabilityService {
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to update metric", { id }, error as Error);
-        return new InternalError(`Failed to update sustainability metric ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update sustainability metric ${id}`, { error }));
+      }),
     );
   }
 
   async deleteMetric(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-sustainability-metric-${id}`,
           () => sustainabilityRepository.deleteSustainabilityMetric(id),
@@ -351,23 +348,22 @@ class SustainabilityService {
         );
 
         if (!deleted) {
-          throw new NotFoundError(`Sustainability metric with ID ${id}`);
+          return err(new NotFoundError(`Sustainability metric with ID ${id}`));
         }
 
         await this.invalidateCache();
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to delete metric", { id }, error as Error);
-        return new InternalError(`Failed to delete sustainability metric ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete sustainability metric ${id}`, { error }));
+      }),
     );
   }
 
   async reorderMetrics(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-sustainability-metrics",
           () => sustainabilityRepository.reorderSustainabilityMetrics(orderedIds),
@@ -375,39 +371,39 @@ class SustainabilityService {
         );
 
         await this.invalidateCache();
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to reorder metrics", error as Error);
-        return new InternalError("Failed to reorder sustainability metrics", { error });
-      },
+        return err(new InternalError("Failed to reorder sustainability metrics", { error }));
+      }),
     );
   }
 
   async getMetricHistory(
     metricId: number,
   ): Promise<Result<SustainabilityMetricHistory[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityMetricHistory[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityMetricHistory[], AppError>> => {
         const history = await withCircuit(
           `get-sustainability-metric-history-${metricId}`,
           () => sustainabilityRepository.getSustainabilityMetricHistory(metricId),
           DB_CIRCUIT_OPTIONS,
         );
-        return history;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(history);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error(
           "[SustainabilityService] Failed to fetch metric history",
           { metricId },
           error as Error,
         );
-        return new InternalError(`Failed to fetch sustainability metric history for ${metricId}`, {
-          error,
-        });
-      },
+        return err(
+          new InternalError(`Failed to fetch sustainability metric history for ${metricId}`, {
+            error,
+          }),
+        );
+      }),
     );
   }
 
@@ -415,26 +411,25 @@ class SustainabilityService {
   async getInitiatives(
     includeInactive = false,
   ): Promise<Result<SustainabilityInitiative[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityInitiative[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityInitiative[], AppError>> => {
         const initiatives = await withCircuit(
           "get-sustainability-initiatives",
           () => sustainabilityRepository.getSustainabilityInitiatives(includeInactive),
           DB_CIRCUIT_OPTIONS,
         );
-        return initiatives;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(initiatives);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to fetch initiatives", error as Error);
-        return new InternalError("Failed to fetch sustainability initiatives", { error });
-      },
+        return err(new InternalError("Failed to fetch sustainability initiatives", { error }));
+      }),
     );
   }
 
   async getInitiative(id: number): Promise<Result<SustainabilityInitiative, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityInitiative> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityInitiative, AppError>> => {
         const initiative = await withCircuit(
           `get-sustainability-initiative-${id}`,
           () => sustainabilityRepository.getSustainabilityInitiative(id),
@@ -442,24 +437,23 @@ class SustainabilityService {
         );
 
         if (!initiative) {
-          throw new NotFoundError(`Sustainability initiative with ID ${id}`);
+          return err(new NotFoundError(`Sustainability initiative with ID ${id}`));
         }
 
-        return initiative;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(initiative);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to fetch initiative", { id }, error as Error);
-        return new InternalError(`Failed to fetch sustainability initiative ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch sustainability initiative ${id}`, { error }));
+      }),
     );
   }
 
   async createInitiative(
     data: InsertSustainabilityInitiative,
   ): Promise<Result<SustainabilityInitiative, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityInitiative> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityInitiative, AppError>> => {
         const created = await withCircuit(
           "create-sustainability-initiative",
           () =>
@@ -474,13 +468,13 @@ class SustainabilityService {
         );
 
         await this.invalidateCache();
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (created.isErr()) return err(created.error as any);
+        return ok(created.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to create initiative", error as Error);
-        return new InternalError("Failed to create sustainability initiative", { error });
-      },
+        return err(new InternalError("Failed to create sustainability initiative", { error }));
+      }),
     );
   }
 
@@ -488,8 +482,8 @@ class SustainabilityService {
     id: number,
     data: Partial<InsertSustainabilityInitiative>,
   ): Promise<Result<SustainabilityInitiative, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<SustainabilityInitiative> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SustainabilityInitiative, AppError>> => {
         const updated = await withCircuit(
           `update-sustainability-initiative-${id}`,
           () =>
@@ -505,19 +499,21 @@ class SustainabilityService {
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to update initiative", { id }, error as Error);
-        return new InternalError(`Failed to update sustainability initiative ${id}`, { error });
-      },
+        return err(
+          new InternalError(`Failed to update sustainability initiative ${id}`, { error }),
+        );
+      }),
     );
   }
 
   async deleteInitiative(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-sustainability-initiative-${id}`,
           () => sustainabilityRepository.deleteSustainabilityInitiative(id),
@@ -525,23 +521,24 @@ class SustainabilityService {
         );
 
         if (!deleted) {
-          throw new NotFoundError(`Sustainability initiative with ID ${id}`);
+          return err(new NotFoundError(`Sustainability initiative with ID ${id}`));
         }
 
         await this.invalidateCache();
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to delete initiative", { id }, error as Error);
-        return new InternalError(`Failed to delete sustainability initiative ${id}`, { error });
-      },
+        return err(
+          new InternalError(`Failed to delete sustainability initiative ${id}`, { error }),
+        );
+      }),
     );
   }
 
   async reorderInitiatives(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-sustainability-initiatives",
           () => sustainabilityRepository.reorderSustainabilityInitiatives(orderedIds),
@@ -549,20 +546,19 @@ class SustainabilityService {
         );
 
         await this.invalidateCache();
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to reorder initiatives", error as Error);
-        return new InternalError("Failed to reorder sustainability initiatives", { error });
-      },
+        return err(new InternalError("Failed to reorder sustainability initiatives", { error }));
+      }),
     );
   }
 
   // Unified Sustainability
   async getUnifiedConfig(): Promise<Result<UnifiedSustainability, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<UnifiedSustainability> => {
+    return new ResultAsync(
+      (async (): Promise<Result<UnifiedSustainability, AppError>> => {
         const unified = await withCircuit(
           "get-unified-sustainability",
           () => sustainabilityRepository.getUnifiedSustainability(),
@@ -570,27 +566,28 @@ class SustainabilityService {
         );
 
         if (!unified) {
-          throw new NotFoundError("Unified sustainability configuration");
+          return err(new NotFoundError("Unified sustainability configuration"));
         }
 
-        return unified;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(unified);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error(
           "[SustainabilityService] Failed to fetch unified sustainability",
           error as Error,
         );
-        return new InternalError("Failed to fetch unified sustainability configuration", { error });
-      },
+        return err(
+          new InternalError("Failed to fetch unified sustainability configuration", { error }),
+        );
+      }),
     );
   }
 
   async updateUnifiedConfig(
     data: Partial<InsertUnifiedSustainability>,
   ): Promise<Result<UnifiedSustainability, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<UnifiedSustainability> => {
+    return new ResultAsync(
+      (async (): Promise<Result<UnifiedSustainability, AppError>> => {
         const updated = await withCircuit(
           "update-unified-sustainability",
           () =>
@@ -604,25 +601,27 @@ class SustainabilityService {
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error(
           "[SustainabilityService] Failed to update unified sustainability",
           error as Error,
         );
-        return new InternalError("Failed to update unified sustainability configuration", {
-          error,
-        });
-      },
+        return err(
+          new InternalError("Failed to update unified sustainability configuration", {
+            error,
+          }),
+        );
+      }),
     );
   }
 
   // Batch
   async getBatch(): Promise<Result<Record<string, unknown>, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Record<string, unknown>> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Record<string, unknown>, AppError>> => {
         const [hero, metrics, initiatives, goals, certificates, fabrics] = await withCircuit(
           "get-sustainability-batch-db",
           () =>
@@ -637,7 +636,7 @@ class SustainabilityService {
           DB_CIRCUIT_OPTIONS,
         );
 
-        return {
+        return ok({
           hero: hero || null,
           metrics: (metrics || []).map((m: SustainabilityMetric) => ({
             ...m,
@@ -656,13 +655,12 @@ class SustainabilityService {
           _meta: {
             fetchedAt: new Date().toISOString(),
           },
-        };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[SustainabilityService] Failed to fetch batch", error as Error);
-        return new InternalError("Failed to fetch sustainability batch content", { error });
-      },
+        return err(new InternalError("Failed to fetch sustainability batch content", { error }));
+      }),
     );
   }
 }

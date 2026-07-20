@@ -6,7 +6,7 @@ import {
   users,
 } from "@run-remix/shared";
 import DOMPurify from "isomorphic-dompurify";
-import { type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { db } from "../db.js";
 import { AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
@@ -19,20 +19,19 @@ class BlogService {
    * List blog categories.
    */
   async getBlogCategories(): Promise<Result<BlogCategory[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<BlogCategory[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<BlogCategory[], AppError>> => {
         const categories = await withCircuit(
           "get-blog-categories",
           () => blogRepository.getBlogCategories(),
           DB_CIRCUIT_OPTIONS,
         );
-        return categories || [];
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(categories || []);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[BlogService] Failed to list blog categories", undefined, error as Error);
-        return new InternalError("Failed to list blog categories", { error });
-      },
+        return err(new InternalError("Failed to list blog categories", { error }));
+      }),
     );
   }
 
@@ -40,21 +39,20 @@ class BlogService {
    * Create a blog category.
    */
   async createBlogCategory(data: unknown): Promise<Result<BlogCategory, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<BlogCategory> => {
+    return new ResultAsync(
+      (async (): Promise<Result<BlogCategory, AppError>> => {
         const validatedData = insertBlogCategorySchema.parse(data);
         const category = await withCircuit(
           "create-blog-category",
           () => blogRepository.createBlogCategory(validatedData),
           DB_CIRCUIT_OPTIONS,
         );
-        return category;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(category);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[BlogService] Failed to create blog category", undefined, error as Error);
-        return new InternalError("Failed to create blog category", { error });
-      },
+        return err(new InternalError("Failed to create blog category", { error }));
+      }),
     );
   }
 
@@ -62,22 +60,21 @@ class BlogService {
    * Update a blog category.
    */
   async updateBlogCategory(id: number, data: unknown): Promise<Result<BlogCategory, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<BlogCategory> => {
+    return new ResultAsync(
+      (async (): Promise<Result<BlogCategory, AppError>> => {
         const validatedData = insertBlogCategorySchema.partial().parse(data);
         const category = await withCircuit(
           "update-blog-category",
           () => blogRepository.updateBlogCategory(id, removeUndefined(validatedData)),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!category) throw new NotFoundError(`Blog category with ID ${id}`);
-        return category;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!category) return err(new NotFoundError(`Blog category with ID ${id}`));
+        return ok(category);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[BlogService] Failed to update blog category", { id }, error as Error);
-        return new InternalError("Failed to update blog category", { id, error });
-      },
+        return err(new InternalError("Failed to update blog category", { id, error }));
+      }),
     );
   }
 
@@ -85,21 +82,20 @@ class BlogService {
    * Delete a blog category.
    */
   async deleteBlogCategory(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           "delete-blog-category",
           () => blogRepository.deleteBlogCategory(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!deleted) throw new NotFoundError(`Blog category with ID ${id}`);
-        return true;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!deleted) return err(new NotFoundError(`Blog category with ID ${id}`));
+        return ok(true);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[BlogService] Failed to delete blog category", { id }, error as Error);
-        return new InternalError("Failed to delete blog category", { id, error });
-      },
+        return err(new InternalError("Failed to delete blog category", { id, error }));
+      }),
     );
   }
 
@@ -117,20 +113,19 @@ class BlogService {
       includeDeleted?: boolean;
     },
   ): Promise<Result<{ posts: BlogPost[]; total: number }, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<{ posts: BlogPost[]; total: number }> => {
+    return new ResultAsync(
+      (async (): Promise<Result<{ posts: BlogPost[]; total: number }, AppError>> => {
         const result = await withCircuit(
           "get-blog-posts",
           () => blogRepository.getBlogPosts(limit, (page - 1) * limit, removeUndefined(filters)),
           DB_CIRCUIT_OPTIONS,
         );
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[BlogService] Failed to list blog posts", undefined, error as Error);
-        return new InternalError("Failed to list blog posts", { error });
-      },
+        return err(new InternalError("Failed to list blog posts", { error }));
+      }),
     );
   }
 
@@ -138,8 +133,8 @@ class BlogService {
    * Create a blog post with author logic.
    */
   async createBlogPost(data: unknown, userId?: string): Promise<Result<BlogPost, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<BlogPost> => {
+    return new ResultAsync(
+      (async (): Promise<Result<BlogPost, AppError>> => {
         let authorId = userId;
         if (!authorId) {
           const [firstUser] = await withCircuit(
@@ -160,13 +155,12 @@ class BlogService {
           () => blogRepository.createBlogPost(validatedData),
           DB_CIRCUIT_OPTIONS,
         );
-        return post;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(post);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[BlogService] Failed to create blog post", undefined, error as Error);
-        return new InternalError("Failed to create blog post", { error });
-      },
+        return err(new InternalError("Failed to create blog post", { error }));
+      }),
     );
   }
 
@@ -174,21 +168,20 @@ class BlogService {
    * Get blog post by ID.
    */
   async getBlogPostById(id: number): Promise<Result<BlogPost, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<BlogPost> => {
+    return new ResultAsync(
+      (async (): Promise<Result<BlogPost, AppError>> => {
         const post = await withCircuit(
           "get-blog-post-by-id",
           () => blogRepository.getBlogPost(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!post) throw new NotFoundError(`Blog post with ID ${id}`);
-        return post;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!post) return err(new NotFoundError(`Blog post with ID ${id}`));
+        return ok(post);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[BlogService] Failed to fetch blog post", { id }, error as Error);
-        return new InternalError("Failed to fetch blog post", { id, error });
-      },
+        return err(new InternalError("Failed to fetch blog post", { id, error }));
+      }),
     );
   }
 
@@ -196,21 +189,20 @@ class BlogService {
    * Get blog post by slug.
    */
   async getBlogPostBySlug(slug: string): Promise<Result<BlogPost, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<BlogPost> => {
+    return new ResultAsync(
+      (async (): Promise<Result<BlogPost, AppError>> => {
         const post = await withCircuit(
           "get-blog-post-by-slug",
           () => blogRepository.getBlogPostBySlug(slug),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!post) throw new NotFoundError(`Blog post with slug ${slug}`);
-        return post;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!post) return err(new NotFoundError(`Blog post with slug ${slug}`));
+        return ok(post);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[BlogService] Failed to fetch blog post by slug", { slug }, error as Error);
-        return new InternalError("Failed to fetch blog post by slug", { slug, error });
-      },
+        return err(new InternalError("Failed to fetch blog post by slug", { slug, error }));
+      }),
     );
   }
 
@@ -218,8 +210,8 @@ class BlogService {
    * Update a blog post.
    */
   async updateBlogPost(id: number, data: unknown): Promise<Result<BlogPost, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<BlogPost> => {
+    return new ResultAsync(
+      (async (): Promise<Result<BlogPost, AppError>> => {
         const validatedData = insertBlogPostSchema.partial().parse(data);
         if (validatedData.content) {
           validatedData.content = DOMPurify.sanitize(validatedData.content);
@@ -229,14 +221,13 @@ class BlogService {
           () => blogRepository.updateBlogPost(id, removeUndefined(validatedData)),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!post) throw new NotFoundError(`Blog post with ID ${id}`);
-        return post;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!post) return err(new NotFoundError(`Blog post with ID ${id}`));
+        return ok(post);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[BlogService] Failed to update blog post", { id }, error as Error);
-        return new InternalError("Failed to update blog post", { id, error });
-      },
+        return err(new InternalError("Failed to update blog post", { id, error }));
+      }),
     );
   }
 
@@ -244,21 +235,20 @@ class BlogService {
    * Delete a blog post.
    */
   async deleteBlogPost(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           "delete-blog-post",
           () => blogRepository.deleteBlogPost(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!deleted) throw new NotFoundError(`Blog post with ID ${id}`);
-        return true;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!deleted) return err(new NotFoundError(`Blog post with ID ${id}`));
+        return ok(true);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[BlogService] Failed to delete blog post", { id }, error as Error);
-        return new InternalError("Failed to delete blog post", { id, error });
-      },
+        return err(new InternalError("Failed to delete blog post", { id, error }));
+      }),
     );
   }
 
@@ -266,21 +256,20 @@ class BlogService {
    * Restore a blog post.
    */
   async restoreBlogPost(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const restored = await withCircuit(
           "restore-blog-post",
           () => blogRepository.restoreBlogPost(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!restored) throw new NotFoundError(`Blog post with ID ${id}`);
-        return true;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!restored) return err(new NotFoundError(`Blog post with ID ${id}`));
+        return ok(true);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[BlogService] Failed to restore blog post", { id }, error as Error);
-        return new InternalError("Failed to restore blog post", { id, error });
-      },
+        return err(new InternalError("Failed to restore blog post", { id, error }));
+      }),
     );
   }
 }

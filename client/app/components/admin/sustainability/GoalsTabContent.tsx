@@ -706,7 +706,7 @@ export function GoalsTabContent({
                 <Button
                   onClick={handleGoalSubmit}
                   disabled={createGoalMutation.isPending || updateGoalMutation.isPending}
-                  className="h-12 px-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase text-xxs tracking-widest shadow-lg shadow-emerald-500/20 active:scale-95 transition-all outline-none border-0"
+                  className="h-12 px-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase text-xxs tracking-widest shadow-lg shadow-emerald-500/20 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 border-0"
                 >
                   {createGoalMutation.isPending || updateGoalMutation.isPending ? (
                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white mr-2" />

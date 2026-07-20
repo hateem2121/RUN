@@ -183,12 +183,22 @@ function generateSrcSet(variants: MediaVariant[]): string {
       }
     };
 
+    let timeoutId: ReturnType<typeof setTimeout>;
+    let idleCallbackId: number;
+
     // Use requestIdleCallback for non-blocking preloading
     if ("requestIdleCallback" in window) {
-      requestIdleCallback(() => preloadImages());
+      idleCallbackId = requestIdleCallback(() => preloadImages());
     } else {
-      setTimeout(preloadImages, 100);
+      timeoutId = setTimeout(preloadImages, 100);
     }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (idleCallbackId && "cancelIdleCallback" in window) {
+        cancelIdleCallback(idleCallbackId);
+      }
+    };
   }, [mediaIds, preloadedIds]);
 
   return { preloadedIds };

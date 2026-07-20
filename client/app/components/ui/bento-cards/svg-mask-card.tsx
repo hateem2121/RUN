@@ -62,10 +62,16 @@ export const SvgMaskCard = memo(function SvgMaskCard({
 
   // ENHANCED DUAL MEDIA SYSTEM: Parallel loading with intelligent caching
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
     const loadSvgMask = async () => {
       if (!maskSvgUrl) {
-        setSvgMaskDataUri(getDefaultSvgMask());
-        setIsLoadingMask(false);
+        if (isMounted) {
+          setSvgMaskDataUri(getDefaultSvgMask());
+          setIsLoadingMask(false);
+        }
         return;
       }
 
@@ -81,22 +87,25 @@ export const SvgMaskCard = memo(function SvgMaskCard({
           const parsedCache = JSON.parse(cached);
           // Check if cache is still valid (1 hour TTL)
           if (Date.now() - parsedCache.timestamp < parsedCache.ttl) {
-            setSvgMaskDataUri(parsedCache.dataUri);
-            setIsLoadingMask(false);
+            if (isMounted) {
+              setSvgMaskDataUri(parsedCache.dataUri);
+              setIsLoadingMask(false);
+            }
             return;
           }
         } catch {
           // Fallback to raw cached value
-          setSvgMaskDataUri(cached);
-          setIsLoadingMask(false);
+          if (isMounted) {
+            setSvgMaskDataUri(cached);
+            setIsLoadingMask(false);
+          }
           return;
         }
       }
 
       try {
         // Fetch with timeout and enhanced error handling
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
         const response = await fetch(maskSvgUrl, {
           signal: controller.signal,
@@ -133,9 +142,12 @@ export const SvgMaskCard = memo(function SvgMaskCard({
         };
         sessionStorage.setItem(cacheKey, JSON.stringify(cacheData));
 
-        setSvgMaskDataUri(dataUri);
-        setIsLoadingMask(false);
+        if (isMounted) {
+          setSvgMaskDataUri(dataUri);
+          setIsLoadingMask(false);
+        }
       } catch (_error) {
+        if (!isMounted) return;
         // Fallback to default mask
         const defaultMask = getDefaultSvgMask();
         setSvgMaskDataUri(defaultMask);
@@ -155,6 +167,12 @@ export const SvgMaskCard = memo(function SvgMaskCard({
     };
 
     loadSvgMask();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [maskSvgUrl]);
 
   // PARALLEL CONTENT MEDIA PRELOADING for enhanced performance

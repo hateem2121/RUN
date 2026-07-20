@@ -484,7 +484,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                   <Button
                     onClick={handleSubmit}
                     disabled={!hasChanges || createMutation.isPending || updateMutation.isPending}
-                    className="h-11 bg-cyan-600 hover:bg-cyan-700 text-white px-8 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-cyan-500/20 active:scale-95 transition-all outline-none border-0"
+                    className="h-11 bg-cyan-600 hover:bg-cyan-700 text-white px-8 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-cyan-500/20 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 border-0"
                   >
                     {createMutation.isPending || updateMutation.isPending ? (
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white mr-2" />

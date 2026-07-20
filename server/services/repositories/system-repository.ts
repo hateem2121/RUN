@@ -1,5 +1,6 @@
 import { type AuditLog, auditLogs, type InsertAuditLog } from "@run-remix/shared";
 import { desc, sql } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import { db } from "../../db.js";
 import { decrypt } from "../../lib/encryption.js";
 import { logger } from "../../lib/monitoring/logger.js";
@@ -36,16 +37,16 @@ import { StorageSingleton } from "../../lib/storage-singleton.js";
   /**
    * Create a new audit log
    */
-  async createAuditLog(log: InsertAuditLog): Promise<AuditLog> {
+  async createAuditLog(log: InsertAuditLog): Promise<Result<AuditLog, Error>> {
     // In test mode with memory storage, redirect to the storage instance
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createAuditLog(log);
+      return ok(await StorageSingleton.getInstance().createAuditLog(log));
     }
     const [created] = await db.insert(auditLogs).values(log).returning();
     if (!created) {
-      throw new Error("Failed to create audit log");
+      return err(new Error("Failed to create audit log"));
     }
-    return created;
+    return ok(await created);
   }
 
   /**

@@ -6,7 +6,7 @@ import {
   mediaAssets,
 } from "@run-remix/shared";
 import { eq, inArray } from "drizzle-orm";
-import { type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { db } from "../db.js";
 import { AppError, InternalError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
@@ -30,17 +30,20 @@ class FooterService {
       AppError
     >
   > {
-    return ResultAsync.fromPromise(
+    return new ResultAsync(
       (async (): Promise<
-        FooterConfiguration & {
-          certifications: Array<{
-            id: number;
-            name: string;
-            imageUrl: string;
-            type: string | null;
-            issuingOrganization: string | null;
-          }>;
-        }
+        Result<
+          FooterConfiguration & {
+            certifications: Array<{
+              id: number;
+              name: string;
+              imageUrl: string;
+              type: string | null;
+              issuingOrganization: string | null;
+            }>;
+          },
+          AppError
+        >
       > => {
         // Query DB for footer config
         const [config] = await withCircuit(
@@ -146,16 +149,15 @@ class FooterService {
           );
         }
 
-        return {
+        return ok({
           ...baseResponse,
           certifications,
-        } as FooterConfiguration & { certifications: typeof certifications };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        } as FooterConfiguration & { certifications: typeof certifications });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[FooterService] Failed to fetch footer config", undefined, error as Error);
-        return new InternalError("Failed to fetch footer configuration", { error });
-      },
+        return err(new InternalError("Failed to fetch footer configuration", { error }));
+      }),
     );
   }
 
@@ -163,8 +165,8 @@ class FooterService {
    * Updates the footer configuration.
    */
   async updateFooterConfig(data: unknown): Promise<Result<FooterConfiguration, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<FooterConfiguration> => {
+    return new ResultAsync(
+      (async (): Promise<Result<FooterConfiguration, AppError>> => {
         // 1. Validate payload
         const updateSchema = insertFooterConfigurationSchema.partial();
         const validatedData = updateSchema.parse(data);
@@ -250,16 +252,15 @@ class FooterService {
         }
 
         if (!updated) {
-          throw new InternalError("Failed to update footer configuration");
+          return err(new InternalError("Failed to update footer configuration"));
         }
 
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(updated);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[FooterService] Failed to update footer config", undefined, error as Error);
-        return new InternalError("Failed to update footer configuration", { error });
-      },
+        return err(new InternalError("Failed to update footer configuration", { error }));
+      }),
     );
   }
 }

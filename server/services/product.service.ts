@@ -7,7 +7,7 @@ import type {
   ProductSummary,
 } from "@run-remix/shared";
 import { insertProductSchema } from "@run-remix/shared";
-import { type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { retryDbOperation } from "../lib/db/db-retry.js";
 import { AppError, DatabaseError, NotFoundError } from "../lib/errors.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
@@ -52,17 +52,22 @@ class ProductService {
     const limit = Math.min(params.limit || 20, 100);
     const offset = (page - 1) * limit;
 
-    return ResultAsync.fromPromise(
-      (async (): Promise<{
-        data: ProductSummary[];
-        pagination: {
-          page: number;
-          limit: number;
-          total: number;
-          pages: number;
-          hasMore: boolean;
-        };
-      }> => {
+    return new ResultAsync(
+      (async (): Promise<
+        Result<
+          {
+            data: ProductSummary[];
+            pagination: {
+              page: number;
+              limit: number;
+              total: number;
+              pages: number;
+              hasMore: boolean;
+            };
+          },
+          AppError
+        >
+      > => {
         let products: ProductSummary[] = [];
         let totalCount = 0;
 
@@ -142,7 +147,7 @@ class ProductService {
 
         const totalPages = Math.ceil(totalCount / limit);
 
-        return {
+        return ok({
           data: products,
           pagination: {
             page,
@@ -151,12 +156,11 @@ class ProductService {
             pages: totalPages,
             hasMore: page < totalPages,
           },
-        };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new DatabaseError("Failed to list products", { cause: error });
-      },
+        });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new DatabaseError("Failed to list products", { cause: error }));
+      }),
     );
   }
 
@@ -165,8 +169,8 @@ class ProductService {
    */
   async getProductById(id: number): Promise<Result<ProductDetail, AppError>> {
     return tracer.startActiveSpan(`ProductService.getProductById`, async (span) => {
-      return ResultAsync.fromPromise(
-        (async (): Promise<ProductDetail> => {
+      return new ResultAsync(
+        (async (): Promise<Result<ProductDetail, AppError>> => {
           const product = await withCircuit(
             `get-product-${id}`,
             () => retryDbOperation(() => productRepository.getProduct(id)),
@@ -176,18 +180,17 @@ class ProductService {
           if (!product) {
             span.recordException(new Error(`Product with ID ${id} not found`));
             span.end();
-            throw new NotFoundError(`Product with ID ${id}`);
+            return err(new NotFoundError(`Product with ID ${id}`));
           }
 
           span.end();
-          return product;
-        })(),
-        (error) => {
-          if (error instanceof AppError) return error;
+          return ok(product);
+        })().catch((error) => {
+          if (error instanceof AppError) return err(error);
           span.recordException(error as Error);
           span.end();
-          return new DatabaseError(`Failed to fetch product ${id}`, { cause: error });
-        },
+          return err(new DatabaseError(`Failed to fetch product ${id}`, { cause: error }));
+        }),
       );
     });
   }
@@ -196,8 +199,8 @@ class ProductService {
    * Resolves a product by its URL path.
    */
   async getProductByPath(path: string): Promise<Result<ProductDetailWithContext, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ProductDetailWithContext> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ProductDetailWithContext, AppError>> => {
         const productContext = await withCircuit(
           `get-product-by-path-${path}`,
           () => retryDbOperation(() => productRepository.getProductByPath(path)),
@@ -205,15 +208,14 @@ class ProductService {
         );
 
         if (!productContext) {
-          throw new NotFoundError(`Product at path ${path}`);
+          return err(new NotFoundError(`Product at path ${path}`));
         }
 
-        return productContext;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new DatabaseError(`Failed to fetch product by path: ${path}`, { cause: error });
-      },
+        return ok(productContext);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new DatabaseError(`Failed to fetch product by path: ${path}`, { cause: error }));
+      }),
     );
   }
 
@@ -221,8 +223,8 @@ class ProductService {
    * Fetches 3D model metadata for a product.
    */
   async get3DModelMetadata(id: number): Promise<Result<Record<string, unknown>, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Record<string, unknown>> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Record<string, unknown>, AppError>> => {
         const metadata = await withCircuit(
           `get-product-3d-model-${id}`,
           () => retryDbOperation(() => productRepository.get3DModelMetadata(id)),
@@ -230,17 +232,18 @@ class ProductService {
         );
 
         if (!metadata) {
-          throw new NotFoundError(`3D model for product ${id}`);
+          return err(new NotFoundError(`3D model for product ${id}`));
         }
 
-        return metadata;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new DatabaseError(`Failed to fetch 3D model metadata for product ${id}`, {
-          cause: error,
-        });
-      },
+        return ok(metadata);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(
+          new DatabaseError(`Failed to fetch 3D model metadata for product ${id}`, {
+            cause: error,
+          }),
+        );
+      }),
     );
   }
 
@@ -248,8 +251,8 @@ class ProductService {
    * Creates a new product.
    */
   async createProduct(data: InsertProduct): Promise<Result<Product, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Product> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Product, AppError>> => {
         const product = await withCircuit(
           "create-product",
           () =>
@@ -264,12 +267,12 @@ class ProductService {
             ),
           DB_CIRCUIT_OPTIONS,
         );
-        return product;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new DatabaseError("Failed to create product", { cause: error });
-      },
+        if (product.isErr()) return err(product.error as any);
+        return ok(product.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new DatabaseError("Failed to create product", { cause: error }));
+      }),
     );
   }
 
@@ -280,8 +283,8 @@ class ProductService {
     id: number,
     data: Partial<InsertProduct>,
   ): Promise<Result<Product, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Product> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Product, AppError>> => {
         const product = await withCircuit(
           `update-product-${id}`,
           () =>
@@ -299,15 +302,14 @@ class ProductService {
         );
 
         if (!product) {
-          throw new NotFoundError(`Product with ID ${id}`);
+          return err(new NotFoundError(`Product with ID ${id}`));
         }
 
-        return product;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new DatabaseError(`Failed to update product ${id}`, { cause: error });
-      },
+        return ok(product);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new DatabaseError(`Failed to update product ${id}`, { cause: error }));
+      }),
     );
   }
 
@@ -315,8 +317,8 @@ class ProductService {
    * Deletes a product.
    */
   async deleteProduct(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const success = await withCircuit(
           `delete-product-${id}`,
           () => retryDbOperation(() => productRepository.deleteProduct(id)),
@@ -324,15 +326,14 @@ class ProductService {
         );
 
         if (!success) {
-          throw new NotFoundError(`Product with ID ${id}`);
+          return err(new NotFoundError(`Product with ID ${id}`));
         }
 
-        return true;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new DatabaseError(`Failed to delete product ${id}`, { cause: error });
-      },
+        return ok(true);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new DatabaseError(`Failed to delete product ${id}`, { cause: error }));
+      }),
     );
   }
 }

@@ -33,6 +33,7 @@ import {
   sizeCharts,
 } from "@run-remix/shared";
 import { and, asc, count, desc, eq, getTableColumns, isNull, like, or, sql } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import { type DbClient, db } from "../../db.js";
 import { emitCacheInvalidation } from "../../lib/cache/cache-events.js";
 import { UnifiedCache } from "../../lib/cache/unified-cache.js";
@@ -1331,10 +1332,10 @@ export class MiscRepository {
     label: string;
     href: string;
     external?: boolean;
-  }): Promise<FooterConfiguration> {
+  }): Promise<Result<FooterConfiguration, Error>> {
     const config = await this.getFooterConfiguration();
     if (!config) {
-      throw new Error("Footer configuration not found");
+      return err(new Error("Footer configuration not found"));
     }
 
     const nav = config.navigationColumns || [];
@@ -1345,9 +1346,11 @@ export class MiscRepository {
       nav[0].links.push(link);
     }
 
-    return await this.updateFooterConfiguration({
-      navigationColumns: nav,
-    });
+    return ok(
+      await this.updateFooterConfiguration({
+        navigationColumns: nav,
+      }),
+    );
   }
 
   async updateFooterConfiguration(

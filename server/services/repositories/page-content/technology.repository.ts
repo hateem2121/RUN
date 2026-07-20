@@ -22,11 +22,11 @@ import {
   technologyRoadmap,
 } from "@run-remix/shared";
 import { asc, eq, sql } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import { db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../../lib/cache/cache-events.js";
 import { CacheOperations } from "../../../lib/cache/cache-strategies.js";
 import { UnifiedCache } from "../../../lib/cache/unified-cache.js";
-
 import { StorageSingleton } from "../../../lib/storage-singleton.js";
 
 const unifiedCache = UnifiedCache.getInstance();
@@ -48,9 +48,11 @@ class TechnologyRepository {
     return hero ?? undefined;
   }
 
-  async updateTechnologyHero(data: Partial<InsertTechnologyHero>): Promise<TechnologyHero> {
+  async updateTechnologyHero(
+    data: Partial<InsertTechnologyHero>,
+  ): Promise<Result<TechnologyHero, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateTechnologyHero(data);
+      return ok(await StorageSingleton.getInstance().updateTechnologyHero(data));
     }
     const existing = await this.getTechnologyHero();
     await CacheOperations.invalidateTechnology();
@@ -61,17 +63,17 @@ class TechnologyRepository {
         .set({ ...data, updatedAt: new Date() })
         .where(eq(technologyHero.id, existing.id))
         .returning();
-      if (!updated) throw new Error("Failed to update technology hero");
+      if (!updated) return err(new Error("Failed to update technology hero"));
       await emitCacheInvalidation("technology:hero", "update");
-      return updated;
+      return ok(await updated);
     } else {
       const [created] = await db
         .insert(technologyHero)
         .values(data as unknown as InsertTechnologyHero)
         .returning();
-      if (!created) throw new Error("Failed to create technology hero");
+      if (!created) return err(new Error("Failed to create technology hero"));
       await emitCacheInvalidation("technology:hero", "create");
-      return created;
+      return ok(await created);
     }
   }
 
@@ -90,21 +92,23 @@ class TechnologyRepository {
     return cta ?? undefined;
   }
 
-  async createTechnologyCta(data: InsertTechnologyCta): Promise<TechnologyCta> {
+  async createTechnologyCta(data: InsertTechnologyCta): Promise<Result<TechnologyCta, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createTechnologyCta(data);
+      return ok(await StorageSingleton.getInstance().createTechnologyCta(data));
     }
     const [created] = await db.insert(technologyCta).values(data).returning();
-    if (!created) throw new Error("Failed to create technology cta");
+    if (!created) return err(new Error("Failed to create technology cta"));
     await CacheOperations.invalidateTechnology();
 
     await emitCacheInvalidation("technology:cta", "create");
-    return created;
+    return ok(await created);
   }
 
-  async updateTechnologyCta(data: Partial<InsertTechnologyCta>): Promise<TechnologyCta> {
+  async updateTechnologyCta(
+    data: Partial<InsertTechnologyCta>,
+  ): Promise<Result<TechnologyCta, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateTechnologyCta(data);
+      return ok(await StorageSingleton.getInstance().updateTechnologyCta(data));
     }
     const existing = await this.getTechnologyCta();
     await CacheOperations.invalidateTechnology();
@@ -115,18 +119,18 @@ class TechnologyRepository {
         .set({ ...data, updatedAt: new Date() })
         .where(eq(technologyCta.id, existing.id))
         .returning();
-      if (!updated) throw new Error("Failed to update technology cta");
+      if (!updated) return err(new Error("Failed to update technology cta"));
       await emitCacheInvalidation("technology:cta", "update");
-      return updated;
+      return ok(await updated);
     }
 
     const [created] = await db
       .insert(technologyCta)
       .values(data as InsertTechnologyCta)
       .returning();
-    if (!created) throw new Error("Failed to create technology cta");
+    if (!created) return err(new Error("Failed to create technology cta"));
     await emitCacheInvalidation("technology:cta", "create");
-    return created;
+    return ok(await created);
   }
 
   async deleteTechnologyCta(id: number): Promise<boolean> {
@@ -170,9 +174,11 @@ class TechnologyRepository {
     return item ?? undefined;
   }
 
-  async createTechnologyEquipment(data: InsertTechnologyEquipment): Promise<TechnologyEquipment> {
+  async createTechnologyEquipment(
+    data: InsertTechnologyEquipment,
+  ): Promise<Result<TechnologyEquipment, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createTechnologyEquipment(data);
+      return ok(await StorageSingleton.getInstance().createTechnologyEquipment(data));
     }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${technologyEquipment.sortOrder})` })
@@ -184,21 +190,22 @@ class TechnologyRepository {
       .values({ ...data, sortOrder: newOrder })
       .returning();
 
-    if (!created) throw new Error("Failed to create technology equipment");
+    if (!created) return err(new Error("Failed to create technology equipment"));
     await CacheOperations.invalidateTechnology();
 
     await emitCacheInvalidation("technology:equipment", "create");
-    return created;
+    return ok(await created);
   }
 
   async updateTechnologyEquipment(
     id: number,
     data: Partial<InsertTechnologyEquipment>,
-  ): Promise<TechnologyEquipment> {
+  ): Promise<Result<TechnologyEquipment, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateTechnologyEquipment(id, data);
-      if (!result) throw new Error(`updateTechnologyEquipment returned undefined for id ${id}`);
-      return result;
+      if (!result)
+        return err(new Error(`updateTechnologyEquipment returned undefined for id ${id}`));
+      return ok(await result);
     }
     await CacheOperations.invalidateTechnology();
 
@@ -208,9 +215,9 @@ class TechnologyRepository {
       .where(eq(technologyEquipment.id, id))
       .returning();
 
-    if (!updated) throw new Error(`Failed to update technology equipment with id ${id}`);
+    if (!updated) return err(new Error(`Failed to update technology equipment with id ${id}`));
     await emitCacheInvalidation("technology:equipment", "update");
-    return updated;
+    return ok(await updated);
   }
 
   async deleteTechnologyEquipment(id: number): Promise<boolean> {
@@ -269,9 +276,9 @@ class TechnologyRepository {
 
   async createTechnologyInnovation(
     data: InsertTechnologyInnovation,
-  ): Promise<TechnologyInnovation> {
+  ): Promise<Result<TechnologyInnovation, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createTechnologyInnovation(data);
+      return ok(await StorageSingleton.getInstance().createTechnologyInnovation(data));
     }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${technologyInnovations.sortOrder})` })
@@ -283,21 +290,22 @@ class TechnologyRepository {
       .values({ ...data, sortOrder: newOrder })
       .returning();
 
-    if (!created) throw new Error("Failed to create technology innovation");
+    if (!created) return err(new Error("Failed to create technology innovation"));
     await CacheOperations.invalidateTechnology();
 
     await emitCacheInvalidation("technology:innovations", "create");
-    return created;
+    return ok(await created);
   }
 
   async updateTechnologyInnovation(
     id: number,
     data: Partial<InsertTechnologyInnovation>,
-  ): Promise<TechnologyInnovation> {
+  ): Promise<Result<TechnologyInnovation, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateTechnologyInnovation(id, data);
-      if (!result) throw new Error(`updateTechnologyInnovation returned undefined for id ${id}`);
-      return result;
+      if (!result)
+        return err(new Error(`updateTechnologyInnovation returned undefined for id ${id}`));
+      return ok(await result);
     }
     await CacheOperations.invalidateTechnology();
 
@@ -307,9 +315,9 @@ class TechnologyRepository {
       .where(eq(technologyInnovations.id, id))
       .returning();
 
-    if (!updated) throw new Error(`Failed to update technology innovation with id ${id}`);
+    if (!updated) return err(new Error(`Failed to update technology innovation with id ${id}`));
     await emitCacheInvalidation("technology:innovations", "update");
-    return updated;
+    return ok(await updated);
   }
 
   async deleteTechnologyInnovation(id: number): Promise<boolean> {
@@ -366,9 +374,11 @@ class TechnologyRepository {
     return item ?? undefined;
   }
 
-  async createTechnologyResearch(data: InsertTechnologyResearch): Promise<TechnologyResearch> {
+  async createTechnologyResearch(
+    data: InsertTechnologyResearch,
+  ): Promise<Result<TechnologyResearch, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createTechnologyResearch(data);
+      return ok(await StorageSingleton.getInstance().createTechnologyResearch(data));
     }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${technologyResearch.sortOrder})` })
@@ -380,21 +390,22 @@ class TechnologyRepository {
       .values({ ...data, sortOrder: newOrder })
       .returning();
 
-    if (!created) throw new Error("Failed to create technology research item");
+    if (!created) return err(new Error("Failed to create technology research item"));
     await CacheOperations.invalidateTechnology();
 
     await emitCacheInvalidation("technology:research", "create");
-    return created;
+    return ok(await created);
   }
 
   async updateTechnologyResearch(
     id: number,
     data: Partial<InsertTechnologyResearch>,
-  ): Promise<TechnologyResearch> {
+  ): Promise<Result<TechnologyResearch, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateTechnologyResearch(id, data);
-      if (!result) throw new Error(`updateTechnologyResearch returned undefined for id ${id}`);
-      return result;
+      if (!result)
+        return err(new Error(`updateTechnologyResearch returned undefined for id ${id}`));
+      return ok(await result);
     }
     await CacheOperations.invalidateTechnology();
 
@@ -404,9 +415,9 @@ class TechnologyRepository {
       .where(eq(technologyResearch.id, id))
       .returning();
 
-    if (!updated) throw new Error(`Failed to update technology research with id ${id}`);
+    if (!updated) return err(new Error(`Failed to update technology research with id ${id}`));
     await emitCacheInvalidation("technology:research", "update");
-    return updated;
+    return ok(await updated);
   }
 
   async deleteTechnologyResearch(id: number): Promise<boolean> {
@@ -463,9 +474,11 @@ class TechnologyRepository {
     return item ?? undefined;
   }
 
-  async createTechnologyRoadmap(data: InsertTechnologyRoadmap): Promise<TechnologyRoadmap> {
+  async createTechnologyRoadmap(
+    data: InsertTechnologyRoadmap,
+  ): Promise<Result<TechnologyRoadmap, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createTechnologyRoadmap(data);
+      return ok(await StorageSingleton.getInstance().createTechnologyRoadmap(data));
     }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${technologyRoadmap.sortOrder})` })
@@ -477,21 +490,21 @@ class TechnologyRepository {
       .values({ ...data, sortOrder: newOrder })
       .returning();
 
-    if (!created) throw new Error("Failed to create technology roadmap item");
+    if (!created) return err(new Error("Failed to create technology roadmap item"));
     await CacheOperations.invalidateTechnology();
 
     await emitCacheInvalidation("technology:roadmap", "create");
-    return created;
+    return ok(await created);
   }
 
   async updateTechnologyRoadmap(
     id: number,
     data: Partial<InsertTechnologyRoadmap>,
-  ): Promise<TechnologyRoadmap> {
+  ): Promise<Result<TechnologyRoadmap, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateTechnologyRoadmap(id, data);
-      if (!result) throw new Error(`updateTechnologyRoadmap returned undefined for id ${id}`);
-      return result;
+      if (!result) return err(new Error(`updateTechnologyRoadmap returned undefined for id ${id}`));
+      return ok(await result);
     }
     await CacheOperations.invalidateTechnology();
 
@@ -501,9 +514,9 @@ class TechnologyRepository {
       .where(eq(technologyRoadmap.id, id))
       .returning();
 
-    if (!updated) throw new Error(`Failed to update technology roadmap with id ${id}`);
+    if (!updated) return err(new Error(`Failed to update technology roadmap with id ${id}`));
     await emitCacheInvalidation("technology:roadmap", "update");
-    return updated;
+    return ok(await updated);
   }
 
   async deleteTechnologyRoadmap(id: number): Promise<boolean> {
@@ -552,9 +565,9 @@ class TechnologyRepository {
 
   async updateTechnologyGradientSettings(
     data: Partial<InsertTechnologyGradientSettings>,
-  ): Promise<TechnologyGradientSettings> {
+  ): Promise<Result<TechnologyGradientSettings, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateTechnologyGradientSettings(data);
+      return ok(await StorageSingleton.getInstance().updateTechnologyGradientSettings(data));
     }
     const existing = await this.getTechnologyGradientSettings();
     await CacheOperations.invalidateTechnology();
@@ -565,17 +578,17 @@ class TechnologyRepository {
         .set(data)
         .where(eq(technologyGradientSettings.id, existing.id))
         .returning();
-      if (!updated) throw new Error("Failed to update technology gradient settings");
+      if (!updated) return err(new Error("Failed to update technology gradient settings"));
       await emitCacheInvalidation("technology:gradient", "update");
-      return updated;
+      return ok(await updated);
     } else {
       const [created] = await db
         .insert(technologyGradientSettings)
         .values(data as unknown as InsertTechnologyGradientSettings)
         .returning();
-      if (!created) throw new Error("Failed to create technology gradient settings");
+      if (!created) return err(new Error("Failed to create technology gradient settings"));
       await emitCacheInvalidation("technology:gradient", "create");
-      return created;
+      return ok(await created);
     }
   }
 }

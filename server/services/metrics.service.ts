@@ -1,4 +1,4 @@
-import { type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { getPoolMetrics } from "../db.js";
 import { queryPerformanceMonitor } from "../lib/db/query-performance.js";
 import { AppError, DatabaseError } from "../lib/errors.js";
@@ -18,20 +18,21 @@ class MetricsService {
   public async getDatabaseMetrics(): Promise<
     Result<{ averageResponseTime: number; currentConcurrentQueries: number }, AppError>
   > {
-    return ResultAsync.fromPromise(
-      (async (): Promise<{ averageResponseTime: number; currentConcurrentQueries: number }> => {
+    return new ResultAsync(
+      (async (): Promise<
+        Result<{ averageResponseTime: number; currentConcurrentQueries: number }, AppError>
+      > => {
         const dbStats = queryPerformanceMonitor.getPerformanceStats();
         const poolMetrics = getPoolMetrics();
 
-        return {
+        return ok({
           averageResponseTime: dbStats.averageResponseTime,
           currentConcurrentQueries: poolMetrics.currentConcurrentQueries,
-        };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new DatabaseError("Failed to get database metrics", { cause: error });
-      },
+        });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new DatabaseError("Failed to get database metrics", { cause: error }));
+      }),
     );
   }
 }

@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight, LayoutGrid, Play } from "lucide-react";
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +31,16 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
   const [isNavigating, setIsNavigating] = useState(false);
 
+  const navTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const loadTimeoutsRef = useRef<Map<number, NodeJS.Timeout>>(new Map());
+
+  useEffect(() => {
+    return () => {
+      if (navTimeoutRef.current) clearTimeout(navTimeoutRef.current);
+      loadTimeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
+    };
+  }, []);
+
   const hasVideo = !!primaryVideo;
   const totalItems = (hasVideo ? 1 : 0) + images.length;
   const showVideo = hasVideo && currentImageIndex === 0;
@@ -38,6 +48,11 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
   const getMediaUrl = (mediaId: number) => {
     return getOptimizedUrl?.(mediaId) || MediaUrlBuilder.buildUrlSafe(mediaId);
+  };
+
+  const setNavTimeout = () => {
+    if (navTimeoutRef.current) clearTimeout(navTimeoutRef.current);
+    navTimeoutRef.current = setTimeout(() => setIsNavigating(false), 200);
   };
 
   const goToNext = (e: React.MouseEvent) => {
@@ -49,7 +64,7 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
     setCurrentImageIndex((prev) => (prev + 1) % totalItems);
     setIsNavigating(true);
-    setTimeout(() => setIsNavigating(false), 200);
+    setNavTimeout();
   };
 
   const goToPrevious = (e: React.MouseEvent) => {
@@ -61,7 +76,7 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
     setCurrentImageIndex((prev) => (prev - 1 + totalItems) % totalItems);
     setIsNavigating(true);
-    setTimeout(() => setIsNavigating(false), 200);
+    setNavTimeout();
   };
 
   const goToIndex = (index: number, e: React.MouseEvent) => {
@@ -73,28 +88,44 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
     setCurrentImageIndex(index);
     setIsNavigating(true);
-    setTimeout(() => setIsNavigating(false), 200);
+    setNavTimeout();
   };
 
   const handleImageLoad = (imageId: number) => {
     setLoadedImages((prev) => new Set([...prev, imageId]));
+    const timeout = loadTimeoutsRef.current.get(imageId);
+    if (timeout) {
+      clearTimeout(timeout);
+      loadTimeoutsRef.current.delete(imageId);
+    }
   };
 
   const handleImageError = (imageId: number) => {
     console.warn(`[ImageCarousel] Failed to load image ${imageId} for ${productName}`);
     setFailedImages((prev) => new Set([...prev, imageId]));
+    const timeout = loadTimeoutsRef.current.get(imageId);
+    if (timeout) {
+      clearTimeout(timeout);
+      loadTimeoutsRef.current.delete(imageId);
+    }
   };
 
   const handleImageLoadStart = (imageId: number) => {
+    const existing = loadTimeoutsRef.current.get(imageId);
+    if (existing) clearTimeout(existing);
+
     // Safety timeout: If image doesn't load in 10s, consider it failed to prevent infinite spinner
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setLoadedImages((prev) => {
         if (!prev.has(imageId)) {
           setFailedImages((f) => new Set([...f, imageId]));
         }
         return prev;
       });
+      loadTimeoutsRef.current.delete(imageId);
     }, 10000);
+
+    loadTimeoutsRef.current.set(imageId, timeoutId);
   };
 
   if (totalItems === 0) {

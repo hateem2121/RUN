@@ -279,12 +279,12 @@ function TechnologyInner({ batchData }: { batchData: TechnologyBatchResponse | n
       // Hero Animations
       const tl = gsap.timeline({ defaults: { ease: "power3.out", duration: 1.2 } });
 
-      tl.from(".hero-badge", { y: 20, opacity: 0, delay: 0.2 })
-        .from(".hero-title span", { y: 60, opacity: 0, stagger: 0.2 }, "-=0.8")
-        .from(".hero-accent", { scaleX: 0, transformOrigin: "left", opacity: 0 }, "-=0.6")
-        .from(".hero-desc", { y: 20, opacity: 0 }, "-=0.8")
-        .from(".hero-cta", { y: 20, opacity: 0 }, "-=0.8")
-        .from(".hero-hud", { opacity: 0, stagger: 0.2 }, "-=1");
+      tl.from(".hero-badge", { y: 20, delay: 0.2 })
+        .from(".hero-title span", { y: 60, stagger: 0.2 }, "-=0.8")
+        .from(".hero-accent", { scaleX: 0, transformOrigin: "left" }, "-=0.6")
+        .from(".hero-desc", { y: 20 }, "-=0.8")
+        .from(".hero-cta", { y: 20 }, "-=0.8")
+        .from(".hero-hud", { stagger: 0.2 }, "-=1");
 
       // Scroll Reveals
       const sections = [".tech-dashboard", ".tech-stack", ".tech-roadmap", ".tech-cta"];

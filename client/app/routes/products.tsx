@@ -541,7 +541,7 @@ export default function Component() {
                     className="flex flex-col items-center justify-center gap-3 py-12"
                   >
                     <Loader2 className="h-8 w-8 animate-spin text-primary/50" />
-                    <Typography.P className="text-xs font-medium uppercase tracking-widest text-muted-foreground/60">
+                    <Typography.P className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
                       Loading more products
                     </Typography.P>
                   </div>

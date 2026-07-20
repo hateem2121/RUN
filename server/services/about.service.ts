@@ -22,7 +22,7 @@ import {
   insertAboutTeamMessageSchema,
   insertAboutTimelineEntrySchema,
 } from "@run-remix/shared";
-import { type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
@@ -51,8 +51,8 @@ const tracer = trace.getTracer("run-remix-services");
   // Hero
   async getHero(includeInactive = false): Promise<Result<AboutHero, AppError>> {
     return tracer.startActiveSpan("AboutService.getHero", async (span) => {
-      return ResultAsync.fromPromise(
-        (async (): Promise<AboutHero> => {
+      return new ResultAsync(
+        (async (): Promise<Result<AboutHero, AppError>> => {
           const hero = await withCircuit(
             "get-about-hero",
             () => aboutRepository.getAboutHero(includeInactive),
@@ -62,26 +62,25 @@ const tracer = trace.getTracer("run-remix-services");
           if (!hero) {
             span.recordException(new Error("About hero configuration not found"));
             span.end();
-            throw new NotFoundError("About hero configuration");
+            return err(new NotFoundError("About hero configuration"));
           }
 
           span.end();
-          return hero;
-        })(),
-        (error) => {
-          if (error instanceof AppError) return error;
+          return ok(hero);
+        })().catch((error) => {
+          if (error instanceof AppError) return err(error);
           logger.error("[AboutService] Failed to fetch hero", error as Error);
           span.recordException(error as Error);
           span.end();
-          return new InternalError("Failed to fetch about hero configuration", { error });
-        },
+          return err(new InternalError("Failed to fetch about hero configuration", { error }));
+        }),
       );
     });
   }
 
   async updateHero(data: Partial<InsertAboutHero>): Promise<Result<AboutHero, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutHero> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutHero, AppError>> => {
         const updated = await withCircuit(
           "update-about-hero",
           () =>
@@ -96,13 +95,13 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to update hero", error as Error);
-        return new InternalError("Failed to update about hero configuration", { error });
-      },
+        return err(new InternalError("Failed to update about hero configuration", { error }));
+      }),
     );
   }
 
@@ -110,26 +109,25 @@ const tracer = trace.getTracer("run-remix-services");
   async getTimelineEntries(
     includeInactive = false,
   ): Promise<Result<AboutTimelineEntry[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutTimelineEntry[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutTimelineEntry[], AppError>> => {
         const entries = await withCircuit(
           "get-about-timeline",
           () => aboutRepository.getAboutTimelineEntries(includeInactive),
           DB_CIRCUIT_OPTIONS,
         );
-        return entries;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(entries);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to fetch timeline entries", error as Error);
-        return new InternalError("Failed to fetch about timeline entries", { error });
-      },
+        return err(new InternalError("Failed to fetch about timeline entries", { error }));
+      }),
     );
   }
 
   async getTimelineEntry(id: number): Promise<Result<AboutTimelineEntry, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutTimelineEntry> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutTimelineEntry, AppError>> => {
         const entry = await withCircuit(
           `get-about-timeline-${id}`,
           () => aboutRepository.getAboutTimelineEntry(id),
@@ -137,24 +135,23 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         if (!entry) {
-          throw new NotFoundError(`About timeline entry with ID ${id}`);
+          return err(new NotFoundError(`About timeline entry with ID ${id}`));
         }
 
-        return entry;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(entry);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to fetch timeline entry", { id }, error as Error);
-        return new InternalError(`Failed to fetch about timeline entry ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch about timeline entry ${id}`, { error }));
+      }),
     );
   }
 
   async createTimelineEntry(
     data: InsertAboutTimelineEntry,
   ): Promise<Result<AboutTimelineEntry, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutTimelineEntry> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutTimelineEntry, AppError>> => {
         const created = await withCircuit(
           "create-about-timeline",
           () =>
@@ -169,13 +166,12 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(created);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to create timeline entry", error as Error);
-        return new InternalError("Failed to create about timeline entry", { error });
-      },
+        return err(new InternalError("Failed to create about timeline entry", { error }));
+      }),
     );
   }
 
@@ -183,8 +179,8 @@ const tracer = trace.getTracer("run-remix-services");
     id: number,
     data: Partial<InsertAboutTimelineEntry>,
   ): Promise<Result<AboutTimelineEntry, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutTimelineEntry> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutTimelineEntry, AppError>> => {
         const updated = await withCircuit(
           `update-about-timeline-${id}`,
           () =>
@@ -200,19 +196,19 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to update timeline entry", { id }, error as Error);
-        return new InternalError(`Failed to update about timeline entry ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update about timeline entry ${id}`, { error }));
+      }),
     );
   }
 
   async deleteTimelineEntry(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-about-timeline-${id}`,
           () => aboutRepository.deleteAboutTimelineEntry(id),
@@ -220,23 +216,22 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         if (!deleted) {
-          throw new NotFoundError(`About timeline entry with ID ${id}`);
+          return err(new NotFoundError(`About timeline entry with ID ${id}`));
         }
 
         await this.invalidateCache();
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to delete timeline entry", { id }, error as Error);
-        return new InternalError(`Failed to delete about timeline entry ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete about timeline entry ${id}`, { error }));
+      }),
     );
   }
 
   async reorderTimelineEntries(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-about-timeline",
           () => aboutRepository.reorderAboutTimelineEntries(orderedIds),
@@ -244,38 +239,36 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to reorder timeline entries", error as Error);
-        return new InternalError("Failed to reorder about timeline entries", { error });
-      },
+        return err(new InternalError("Failed to reorder about timeline entries", { error }));
+      }),
     );
   }
 
   // Map Locations
   async getMapLocations(includeInactive = false): Promise<Result<AboutMapLocation[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutMapLocation[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutMapLocation[], AppError>> => {
         const locations = await withCircuit(
           "get-about-locations",
           () => aboutRepository.getAboutMapLocations(includeInactive),
           DB_CIRCUIT_OPTIONS,
         );
-        return locations;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(locations);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to fetch map locations", error as Error);
-        return new InternalError("Failed to fetch about map locations", { error });
-      },
+        return err(new InternalError("Failed to fetch about map locations", { error }));
+      }),
     );
   }
 
   async getMapLocation(id: number): Promise<Result<AboutMapLocation, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutMapLocation> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutMapLocation, AppError>> => {
         const location = await withCircuit(
           `get-about-location-${id}`,
           () => aboutRepository.getAboutMapLocation(id),
@@ -283,24 +276,23 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         if (!location) {
-          throw new NotFoundError(`About map location with ID ${id}`);
+          return err(new NotFoundError(`About map location with ID ${id}`));
         }
 
-        return location;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(location);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to fetch map location", { id }, error as Error);
-        return new InternalError(`Failed to fetch about map location ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch about map location ${id}`, { error }));
+      }),
     );
   }
 
   async createMapLocation(
     data: InsertAboutMapLocation,
   ): Promise<Result<AboutMapLocation, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutMapLocation> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutMapLocation, AppError>> => {
         const created = await withCircuit(
           "create-about-location",
           () =>
@@ -315,13 +307,12 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(created);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to create map location", error as Error);
-        return new InternalError("Failed to create about map location", { error });
-      },
+        return err(new InternalError("Failed to create about map location", { error }));
+      }),
     );
   }
 
@@ -329,8 +320,8 @@ const tracer = trace.getTracer("run-remix-services");
     id: number,
     data: Partial<InsertAboutMapLocation>,
   ): Promise<Result<AboutMapLocation, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutMapLocation> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutMapLocation, AppError>> => {
         const updated = await withCircuit(
           `update-about-location-${id}`,
           () =>
@@ -346,19 +337,19 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to update map location", { id }, error as Error);
-        return new InternalError(`Failed to update about map location ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update about map location ${id}`, { error }));
+      }),
     );
   }
 
   async deleteMapLocation(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-about-location-${id}`,
           () => aboutRepository.deleteAboutMapLocation(id),
@@ -366,23 +357,22 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         if (!deleted) {
-          throw new NotFoundError(`About map location with ID ${id}`);
+          return err(new NotFoundError(`About map location with ID ${id}`));
         }
 
         await this.invalidateCache();
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to delete map location", { id }, error as Error);
-        return new InternalError(`Failed to delete about map location ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete about map location ${id}`, { error }));
+      }),
     );
   }
 
   async reorderLocations(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-about-locations",
           () => aboutRepository.reorderAboutMapLocations(orderedIds),
@@ -390,38 +380,36 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to reorder locations", error as Error);
-        return new InternalError("Failed to reorder about map locations", { error });
-      },
+        return err(new InternalError("Failed to reorder about map locations", { error }));
+      }),
     );
   }
 
   // Sections
   async getSections(includeInactive = false): Promise<Result<AboutSection[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutSection[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutSection[], AppError>> => {
         const sections = await withCircuit(
           "get-about-sections",
           () => aboutRepository.getAboutSections(includeInactive),
           DB_CIRCUIT_OPTIONS,
         );
-        return sections;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(sections);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to fetch sections", error as Error);
-        return new InternalError("Failed to fetch about sections", { error });
-      },
+        return err(new InternalError("Failed to fetch about sections", { error }));
+      }),
     );
   }
 
   async getSection(id: number): Promise<Result<AboutSection, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutSection> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutSection, AppError>> => {
         const section = await withCircuit(
           `get-about-section-${id}`,
           () => aboutRepository.getAboutSection(id),
@@ -429,22 +417,21 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         if (!section) {
-          throw new NotFoundError(`About section with ID ${id}`);
+          return err(new NotFoundError(`About section with ID ${id}`));
         }
 
-        return section;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(section);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to fetch section", { id }, error as Error);
-        return new InternalError(`Failed to fetch about section ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch about section ${id}`, { error }));
+      }),
     );
   }
 
   async createSection(data: InsertAboutSection): Promise<Result<AboutSection, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutSection> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutSection, AppError>> => {
         const created = await withCircuit(
           "create-about-section",
           () =>
@@ -459,13 +446,12 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(created);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to create section", error as Error);
-        return new InternalError("Failed to create about section", { error });
-      },
+        return err(new InternalError("Failed to create about section", { error }));
+      }),
     );
   }
 
@@ -473,8 +459,8 @@ const tracer = trace.getTracer("run-remix-services");
     id: number,
     data: Partial<InsertAboutSection>,
   ): Promise<Result<AboutSection, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutSection> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutSection, AppError>> => {
         const updated = await withCircuit(
           `update-about-section-${id}`,
           () =>
@@ -490,19 +476,19 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to update section", { id }, error as Error);
-        return new InternalError(`Failed to update about section ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update about section ${id}`, { error }));
+      }),
     );
   }
 
   async deleteSection(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-about-section-${id}`,
           () => aboutRepository.deleteAboutSection(id),
@@ -510,23 +496,22 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         if (!deleted) {
-          throw new NotFoundError(`About section with ID ${id}`);
+          return err(new NotFoundError(`About section with ID ${id}`));
         }
 
         await this.invalidateCache();
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to delete section", { id }, error as Error);
-        return new InternalError(`Failed to delete about section ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete about section ${id}`, { error }));
+      }),
     );
   }
 
   async reorderSections(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-about-sections",
           () => aboutRepository.reorderAboutSections(orderedIds),
@@ -534,38 +519,36 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to reorder sections", error as Error);
-        return new InternalError("Failed to reorder about sections", { error });
-      },
+        return err(new InternalError("Failed to reorder about sections", { error }));
+      }),
     );
   }
 
   // Statistics
   async getStatistics(includeInactive = false): Promise<Result<AboutStatistic[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutStatistic[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutStatistic[], AppError>> => {
         const stats = await withCircuit(
           "get-about-statistics",
           () => aboutRepository.getAboutStatistics(includeInactive),
           DB_CIRCUIT_OPTIONS,
         );
-        return stats;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(stats);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to fetch statistics", error as Error);
-        return new InternalError("Failed to fetch about statistics", { error });
-      },
+        return err(new InternalError("Failed to fetch about statistics", { error }));
+      }),
     );
   }
 
   async getStatistic(id: number): Promise<Result<AboutStatistic, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutStatistic> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutStatistic, AppError>> => {
         const stat = await withCircuit(
           `get-about-statistic-${id}`,
           () => aboutRepository.getAboutStatistic(id),
@@ -573,22 +556,21 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         if (!stat) {
-          throw new NotFoundError(`About statistic with ID ${id}`);
+          return err(new NotFoundError(`About statistic with ID ${id}`));
         }
 
-        return stat;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(stat);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to fetch statistic", { id }, error as Error);
-        return new InternalError(`Failed to fetch about statistic ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch about statistic ${id}`, { error }));
+      }),
     );
   }
 
   async createStatistic(data: InsertAboutStatistic): Promise<Result<AboutStatistic, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutStatistic> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutStatistic, AppError>> => {
         const created = await withCircuit(
           "create-about-statistic",
           () =>
@@ -603,13 +585,12 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(created);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to create statistic", error as Error);
-        return new InternalError("Failed to create about statistic", { error });
-      },
+        return err(new InternalError("Failed to create about statistic", { error }));
+      }),
     );
   }
 
@@ -617,8 +598,8 @@ const tracer = trace.getTracer("run-remix-services");
     id: number,
     data: Partial<InsertAboutStatistic>,
   ): Promise<Result<AboutStatistic, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutStatistic> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutStatistic, AppError>> => {
         const updated = await withCircuit(
           `update-about-statistic-${id}`,
           () =>
@@ -634,23 +615,22 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         if (!updated) {
-          throw new NotFoundError(`About statistic with ID ${id}`);
+          return err(new NotFoundError(`About statistic with ID ${id}`));
         }
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(updated);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to update statistic", { id }, error as Error);
-        return new InternalError(`Failed to update about statistic ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update about statistic ${id}`, { error }));
+      }),
     );
   }
 
   async deleteStatistic(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-about-statistic-${id}`,
           () => aboutRepository.deleteAboutStatistic(id),
@@ -658,23 +638,22 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         if (!deleted) {
-          throw new NotFoundError(`About statistic with ID ${id}`);
+          return err(new NotFoundError(`About statistic with ID ${id}`));
         }
 
         await this.invalidateCache();
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to delete statistic", { id }, error as Error);
-        return new InternalError(`Failed to delete about statistic ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete about statistic ${id}`, { error }));
+      }),
     );
   }
 
   async reorderStatistics(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-about-statistics",
           () => aboutRepository.reorderAboutStatistics(orderedIds),
@@ -682,20 +661,19 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to reorder statistics", error as Error);
-        return new InternalError("Failed to reorder about statistics", { error });
-      },
+        return err(new InternalError("Failed to reorder about statistics", { error }));
+      }),
     );
   }
 
   // Team Messages
   async getTeamMessage(includeInactive = false): Promise<Result<AboutTeamMessage, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutTeamMessage> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutTeamMessage, AppError>> => {
         const message = await withCircuit(
           "get-about-team-message",
           () => aboutRepository.getAboutTeamMessage(includeInactive),
@@ -703,24 +681,23 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         if (!message) {
-          throw new NotFoundError("About team message");
+          return err(new NotFoundError("About team message"));
         }
 
-        return message;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(message);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to fetch team message", error as Error);
-        return new InternalError("Failed to fetch about team message", { error });
-      },
+        return err(new InternalError("Failed to fetch about team message", { error }));
+      }),
     );
   }
 
   async updateTeamMessage(
     data: Partial<InsertAboutTeamMessage>,
   ): Promise<Result<AboutTeamMessage, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutTeamMessage> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutTeamMessage, AppError>> => {
         const updated = await withCircuit(
           "update-about-team-message",
           () =>
@@ -735,32 +712,31 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to update team message", error as Error);
-        return new InternalError("Failed to update about team message", { error });
-      },
+        return err(new InternalError("Failed to update about team message", { error }));
+      }),
     );
   }
 
   // Batch
   async getAllAboutData(): Promise<Result<AboutBatchResponse, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutBatchResponse> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutBatchResponse, AppError>> => {
         const batch = await withCircuit(
           "get-about-batch",
           () => aboutRepository.getAboutBatch(),
           DB_CIRCUIT_OPTIONS,
         );
-        return batch;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(batch);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AboutService] Failed to fetch about batch", error as Error);
-        return new InternalError("Failed to fetch about page batch content", { error });
-      },
+        return err(new InternalError("Failed to fetch about page batch content", { error }));
+      }),
     );
   }
 

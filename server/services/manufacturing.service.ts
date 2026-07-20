@@ -17,7 +17,7 @@ import {
   insertManufacturingProcessSchema,
   insertManufacturingQualitySchema,
 } from "@run-remix/shared";
-import { type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { twoTierBatchCache } from "../lib/cache/two-tier-batch.js";
 import { AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
@@ -34,8 +34,8 @@ class ManufacturingService {
    * Retrieves all manufacturing processes with tiered caching
    */
   async getProcesses(bypassCache = false): Promise<Result<ManufacturingProcess[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingProcess[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingProcess[], AppError>> => {
         const { data: processes } = await twoTierBatchCache.get(
           "manufacturing:processes",
           () =>
@@ -53,13 +53,12 @@ class ManufacturingService {
           },
         );
 
-        return processes;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(processes);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to fetch processes", error as Error);
-        return new InternalError("Failed to fetch manufacturing processes", { error });
-      },
+        return err(new InternalError("Failed to fetch manufacturing processes", { error }));
+      }),
     );
   }
 
@@ -67,8 +66,8 @@ class ManufacturingService {
    * Retrieves a single manufacturing process by ID
    */
   async getProcess(id: number): Promise<Result<ManufacturingProcess, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingProcess> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingProcess, AppError>> => {
         const process = await withCircuit(
           `get-manufacturing-process-${id}`,
           () => manufacturingRepository.getManufacturingProcess(id),
@@ -76,16 +75,15 @@ class ManufacturingService {
         );
 
         if (!process) {
-          throw new NotFoundError(`Manufacturing process with ID ${id}`);
+          return err(new NotFoundError(`Manufacturing process with ID ${id}`));
         }
 
-        return process;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(process);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to fetch process", { id }, error as Error);
-        return new InternalError(`Failed to fetch manufacturing process ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch manufacturing process ${id}`, { error }));
+      }),
     );
   }
 
@@ -95,8 +93,8 @@ class ManufacturingService {
   async createProcess(
     data: InsertManufacturingProcess,
   ): Promise<Result<ManufacturingProcess, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingProcess> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingProcess, AppError>> => {
         const created = await withCircuit(
           "create-manufacturing-process",
           () =>
@@ -110,13 +108,13 @@ class ManufacturingService {
           DB_CIRCUIT_OPTIONS,
         );
 
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (created.isErr()) return err(created.error as any);
+        return ok(created.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to create process", error as Error);
-        return new InternalError("Failed to create manufacturing process", { error });
-      },
+        return err(new InternalError("Failed to create manufacturing process", { error }));
+      }),
     );
   }
 
@@ -127,8 +125,8 @@ class ManufacturingService {
     id: number,
     data: Partial<InsertManufacturingProcess>,
   ): Promise<Result<ManufacturingProcess, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingProcess> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingProcess, AppError>> => {
         const updated = await withCircuit(
           `update-manufacturing-process-${id}`,
           () =>
@@ -143,13 +141,13 @@ class ManufacturingService {
           DB_CIRCUIT_OPTIONS,
         );
 
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to update process", { id }, error as Error);
-        return new InternalError(`Failed to update manufacturing process ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update manufacturing process ${id}`, { error }));
+      }),
     );
   }
 
@@ -157,8 +155,8 @@ class ManufacturingService {
    * Deletes a manufacturing process
    */
   async deleteProcess(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-manufacturing-process-${id}`,
           () => manufacturingRepository.deleteManufacturingProcess(id),
@@ -166,16 +164,15 @@ class ManufacturingService {
         );
 
         if (!deleted) {
-          throw new NotFoundError(`Manufacturing process with ID ${id}`);
+          return err(new NotFoundError(`Manufacturing process with ID ${id}`));
         }
 
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to delete process", { id }, error as Error);
-        return new InternalError(`Failed to delete manufacturing process ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete manufacturing process ${id}`, { error }));
+      }),
     );
   }
 
@@ -183,21 +180,20 @@ class ManufacturingService {
    * Reorders manufacturing processes
    */
   async reorderProcesses(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-manufacturing-processes",
           () => manufacturingRepository.reorderManufacturingProcesses(orderedIds),
           DB_CIRCUIT_OPTIONS,
         );
 
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to reorder processes", error as Error);
-        return new InternalError("Failed to reorder manufacturing processes", { error });
-      },
+        return err(new InternalError("Failed to reorder manufacturing processes", { error }));
+      }),
     );
   }
 
@@ -205,47 +201,45 @@ class ManufacturingService {
   async getCapabilities(
     includeInactive = false,
   ): Promise<Result<ManufacturingCapability[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingCapability[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingCapability[], AppError>> => {
         const capabilities = await withCircuit(
           "get-manufacturing-capabilities",
           () => manufacturingRepository.getManufacturingCapabilities(includeInactive),
           DB_CIRCUIT_OPTIONS,
         );
-        return capabilities;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(capabilities);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to fetch capabilities", error as Error);
-        return new InternalError("Failed to fetch manufacturing capabilities", { error });
-      },
+        return err(new InternalError("Failed to fetch manufacturing capabilities", { error }));
+      }),
     );
   }
 
   async getCapability(id: number): Promise<Result<ManufacturingCapability, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingCapability> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingCapability, AppError>> => {
         const capability = await withCircuit(
           `get-manufacturing-capability-${id}`,
           () => manufacturingRepository.getManufacturingCapability(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!capability) throw new NotFoundError(`Manufacturing capability with ID ${id}`);
-        return capability;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!capability) return err(new NotFoundError(`Manufacturing capability with ID ${id}`));
+        return ok(capability);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to fetch capability", { id }, error as Error);
-        return new InternalError(`Failed to fetch manufacturing capability ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch manufacturing capability ${id}`, { error }));
+      }),
     );
   }
 
   async createCapability(
     data: InsertManufacturingCapability,
   ): Promise<Result<ManufacturingCapability, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingCapability> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingCapability, AppError>> => {
         const created = await withCircuit(
           "create-manufacturing-capability",
           () =>
@@ -258,13 +252,13 @@ class ManufacturingService {
             ),
           DB_CIRCUIT_OPTIONS,
         );
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (created.isErr()) return err(created.error as any);
+        return ok(created.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to create capability", error as Error);
-        return new InternalError("Failed to create manufacturing capability", { error });
-      },
+        return err(new InternalError("Failed to create manufacturing capability", { error }));
+      }),
     );
   }
 
@@ -272,8 +266,8 @@ class ManufacturingService {
     id: number,
     data: Partial<InsertManufacturingCapability>,
   ): Promise<Result<ManufacturingCapability, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingCapability> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingCapability, AppError>> => {
         const updated = await withCircuit(
           `update-manufacturing-capability-${id}`,
           () =>
@@ -287,50 +281,48 @@ class ManufacturingService {
             ),
           DB_CIRCUIT_OPTIONS,
         );
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to update capability", { id }, error as Error);
-        return new InternalError(`Failed to update manufacturing capability ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update manufacturing capability ${id}`, { error }));
+      }),
     );
   }
 
   async deleteCapability(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-manufacturing-capability-${id}`,
           () => manufacturingRepository.deleteManufacturingCapability(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!deleted) throw new NotFoundError(`Manufacturing capability with ID ${id}`);
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!deleted) return err(new NotFoundError(`Manufacturing capability with ID ${id}`));
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to delete capability", { id }, error as Error);
-        return new InternalError(`Failed to delete manufacturing capability ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete manufacturing capability ${id}`, { error }));
+      }),
     );
   }
 
   async reorderCapabilities(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-manufacturing-capabilities",
           () => manufacturingRepository.reorderManufacturingCapabilities(orderedIds),
           DB_CIRCUIT_OPTIONS,
         );
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to reorder capabilities", error as Error);
-        return new InternalError("Failed to reorder manufacturing capabilities", { error });
-      },
+        return err(new InternalError("Failed to reorder manufacturing capabilities", { error }));
+      }),
     );
   }
 
@@ -338,28 +330,27 @@ class ManufacturingService {
   async getCaseStudies(
     includeInactive = false,
   ): Promise<Result<ManufacturingCaseStudy[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingCaseStudy[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingCaseStudy[], AppError>> => {
         const studies = await withCircuit(
           "get-manufacturing-case-studies",
           () => manufacturingRepository.getManufacturingCaseStudies(includeInactive),
           DB_CIRCUIT_OPTIONS,
         );
-        return studies;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(studies);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to fetch case studies", error as Error);
-        return new InternalError("Failed to fetch manufacturing case studies", { error });
-      },
+        return err(new InternalError("Failed to fetch manufacturing case studies", { error }));
+      }),
     );
   }
 
   async createCaseStudy(
     data: InsertManufacturingCaseStudy,
   ): Promise<Result<ManufacturingCaseStudy, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingCaseStudy> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingCaseStudy, AppError>> => {
         const created = await withCircuit(
           "create-manufacturing-case-study",
           () =>
@@ -372,13 +363,13 @@ class ManufacturingService {
             ),
           DB_CIRCUIT_OPTIONS,
         );
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (created.isErr()) return err(created.error as any);
+        return ok(created.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to create case study", error as Error);
-        return new InternalError("Failed to create manufacturing case study", { error });
-      },
+        return err(new InternalError("Failed to create manufacturing case study", { error }));
+      }),
     );
   }
 
@@ -386,8 +377,8 @@ class ManufacturingService {
     id: number,
     data: Partial<InsertManufacturingCaseStudy>,
   ): Promise<Result<ManufacturingCaseStudy, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingCaseStudy> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingCaseStudy, AppError>> => {
         const updated = await withCircuit(
           `update-manufacturing-case-study-${id}`,
           () =>
@@ -401,97 +392,95 @@ class ManufacturingService {
             ),
           DB_CIRCUIT_OPTIONS,
         );
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to update case study", { id }, error as Error);
-        return new InternalError(`Failed to update manufacturing case study ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update manufacturing case study ${id}`, { error }));
+      }),
     );
   }
 
   async deleteCaseStudy(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-manufacturing-case-study-${id}`,
           () => manufacturingRepository.deleteManufacturingCaseStudy(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!deleted) throw new NotFoundError(`Manufacturing case study with ID ${id}`);
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!deleted) return err(new NotFoundError(`Manufacturing case study with ID ${id}`));
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to delete case study", { id }, error as Error);
-        return new InternalError(`Failed to delete manufacturing case study ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete manufacturing case study ${id}`, { error }));
+      }),
     );
   }
 
   async getCaseStudy(id: number): Promise<Result<ManufacturingCaseStudy, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingCaseStudy> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingCaseStudy, AppError>> => {
         const study = await withCircuit(
           `get-manufacturing-case-study-${id}`,
           () => manufacturingRepository.getManufacturingCaseStudy(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!study) throw new NotFoundError(`Manufacturing case study with ID ${id}`);
-        return study;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!study) return err(new NotFoundError(`Manufacturing case study with ID ${id}`));
+        return ok(study);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to fetch case study", { id }, error as Error);
-        return new InternalError(`Failed to fetch manufacturing case study ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch manufacturing case study ${id}`, { error }));
+      }),
     );
   }
 
   async reorderCaseStudies(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-manufacturing-case-studies",
           () => manufacturingRepository.reorderManufacturingCaseStudies(orderedIds),
           DB_CIRCUIT_OPTIONS,
         );
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to reorder case studies", error as Error);
-        return new InternalError("Failed to reorder manufacturing case studies", { error });
-      },
+        return err(new InternalError("Failed to reorder manufacturing case studies", { error }));
+      }),
     );
   }
 
   // Hero
   async getHero(): Promise<Result<ManufacturingHero, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingHero> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingHero, AppError>> => {
         const hero = await withCircuit(
           "get-manufacturing-hero",
           () => manufacturingRepository.getManufacturingHero(),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!hero) throw new NotFoundError("Manufacturing hero configuration");
-        return hero;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!hero) return err(new NotFoundError("Manufacturing hero configuration"));
+        return ok(hero);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to fetch hero", error as Error);
-        return new InternalError("Failed to fetch manufacturing hero configuration", { error });
-      },
+        return err(
+          new InternalError("Failed to fetch manufacturing hero configuration", { error }),
+        );
+      }),
     );
   }
 
   async updateHero(
     data: Partial<InsertManufacturingHero>,
   ): Promise<Result<ManufacturingHero, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingHero> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingHero, AppError>> => {
         const updated = await withCircuit(
           "update-manufacturing-hero",
           () =>
@@ -504,59 +493,59 @@ class ManufacturingService {
             ),
           DB_CIRCUIT_OPTIONS,
         );
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to update hero", error as Error);
-        return new InternalError("Failed to update manufacturing hero configuration", { error });
-      },
+        return err(
+          new InternalError("Failed to update manufacturing hero configuration", { error }),
+        );
+      }),
     );
   }
 
   // Qualities
   async getQualities(includeInactive = false): Promise<Result<ManufacturingQuality[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingQuality[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingQuality[], AppError>> => {
         const qualities = await withCircuit(
           "get-manufacturing-qualities",
           () => manufacturingRepository.getManufacturingQualities(includeInactive),
           DB_CIRCUIT_OPTIONS,
         );
-        return qualities;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(qualities);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to fetch qualities", error as Error);
-        return new InternalError("Failed to fetch manufacturing qualities", { error });
-      },
+        return err(new InternalError("Failed to fetch manufacturing qualities", { error }));
+      }),
     );
   }
 
   async getQuality(id: number): Promise<Result<ManufacturingQuality, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingQuality> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingQuality, AppError>> => {
         const quality = await withCircuit(
           `get-manufacturing-quality-${id}`,
           () => manufacturingRepository.getManufacturingQuality(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!quality) throw new NotFoundError(`Manufacturing quality with ID ${id}`);
-        return quality;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!quality) return err(new NotFoundError(`Manufacturing quality with ID ${id}`));
+        return ok(quality);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to fetch quality", { id }, error as Error);
-        return new InternalError(`Failed to fetch manufacturing quality ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch manufacturing quality ${id}`, { error }));
+      }),
     );
   }
 
   async createQuality(
     data: InsertManufacturingQuality,
   ): Promise<Result<ManufacturingQuality, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingQuality> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingQuality, AppError>> => {
         const created = await withCircuit(
           "create-manufacturing-quality",
           () =>
@@ -569,13 +558,13 @@ class ManufacturingService {
             ),
           DB_CIRCUIT_OPTIONS,
         );
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (created.isErr()) return err(created.error as any);
+        return ok(created.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to create quality", error as Error);
-        return new InternalError("Failed to create manufacturing quality", { error });
-      },
+        return err(new InternalError("Failed to create manufacturing quality", { error }));
+      }),
     );
   }
 
@@ -583,8 +572,8 @@ class ManufacturingService {
     id: number,
     data: Partial<InsertManufacturingQuality>,
   ): Promise<Result<ManufacturingQuality, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ManufacturingQuality> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ManufacturingQuality, AppError>> => {
         const updated = await withCircuit(
           `update-manufacturing-quality-${id}`,
           () =>
@@ -598,50 +587,48 @@ class ManufacturingService {
             ),
           DB_CIRCUIT_OPTIONS,
         );
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to update quality", { id }, error as Error);
-        return new InternalError(`Failed to update manufacturing quality ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update manufacturing quality ${id}`, { error }));
+      }),
     );
   }
 
   async deleteQuality(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-manufacturing-quality-${id}`,
           () => manufacturingRepository.deleteManufacturingQuality(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!deleted) throw new NotFoundError(`Manufacturing quality with ID ${id}`);
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!deleted) return err(new NotFoundError(`Manufacturing quality with ID ${id}`));
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to delete quality", { id }, error as Error);
-        return new InternalError(`Failed to delete manufacturing quality ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete manufacturing quality ${id}`, { error }));
+      }),
     );
   }
 
   async reorderQualities(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-manufacturing-qualities",
           () => manufacturingRepository.reorderManufacturingQualities(orderedIds),
           DB_CIRCUIT_OPTIONS,
         );
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ManufacturingService] Failed to reorder qualities", error as Error);
-        return new InternalError("Failed to reorder manufacturing qualities", { error });
-      },
+        return err(new InternalError("Failed to reorder manufacturing qualities", { error }));
+      }),
     );
   }
 }

@@ -98,7 +98,6 @@ export default function Component() {
   useGSAP(
     () => {
       gsap.to(".hero-reveal", {
-        opacity: 1,
         y: 0,
         duration: 1,
         stagger: 0.2,
@@ -275,7 +274,7 @@ export default function Component() {
         {/* Hero Section */}
         <div className="container px-4 md:px-8 mt-0 mb-0 pt-6 pb-6 md:pt-custom-space-289 md:pb-custom-space-290">
           {/* Breadcrumbs Integration */}
-          <div className="mb-8 flex justify-center opacity-0 hero-reveal">
+          <div className="mb-8 flex justify-center hero-reveal">
             <nav className="flex items-center space-x-2 text-luxury-gray-400 text-xs uppercase tracking-widest">
               <a href="/" className="hover:text-luxury-charcoal transition-colors">
                 Home
@@ -288,12 +287,12 @@ export default function Component() {
           <h1
             className={cn(
               headingVariants({ variant: "h1" }),
-              "font-neue-stance text-luxury-heading text-center font-bold md:text-5xl opacity-0 hero-reveal",
+              "font-neue-stance text-luxury-heading text-center font-bold md:text-5xl hero-reveal",
             )}
           >
             Product Categories
           </h1>
-          <p className="text-luxury-body mx-auto mt-3 mb-4 max-w-2xl text-center text-lg opacity-0 hero-reveal">
+          <p className="text-luxury-body mx-auto mt-3 mb-4 max-w-2xl text-center text-lg hero-reveal">
             Explore our comprehensive range of sportswear solutions
           </p>
         </div>

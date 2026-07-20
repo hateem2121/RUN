@@ -23,7 +23,7 @@ import {
   insertTechnologyResearchSchema,
   insertTechnologyRoadmapSchema,
 } from "@run-remix/shared";
-import { type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
@@ -50,8 +50,8 @@ class TechnologyService {
 
   // Hero
   async getHero(): Promise<Result<TechnologyHero, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyHero> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyHero, AppError>> => {
         const hero = await withCircuit(
           "get-technology-hero",
           () => technologyRepository.getTechnologyHero(),
@@ -59,22 +59,21 @@ class TechnologyService {
         );
 
         if (!hero) {
-          throw new NotFoundError("Technology hero configuration");
+          return err(new NotFoundError("Technology hero configuration"));
         }
 
-        return hero;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(hero);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to fetch hero", error as Error);
-        return new InternalError("Failed to fetch technology hero configuration", { error });
-      },
+        return err(new InternalError("Failed to fetch technology hero configuration", { error }));
+      }),
     );
   }
 
   async updateHero(data: Partial<InsertTechnologyHero>): Promise<Result<TechnologyHero, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyHero> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyHero, AppError>> => {
         const updated = await withCircuit(
           "update-technology-hero",
           () =>
@@ -89,20 +88,20 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to update hero", error as Error);
-        return new InternalError("Failed to update technology hero configuration", { error });
-      },
+        return err(new InternalError("Failed to update technology hero configuration", { error }));
+      }),
     );
   }
 
   // CTA
   async getCta(): Promise<Result<TechnologyCta, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyCta> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyCta, AppError>> => {
         const cta = await withCircuit(
           "get-technology-cta",
           () => technologyRepository.getTechnologyCta(),
@@ -110,22 +109,21 @@ class TechnologyService {
         );
 
         if (!cta) {
-          throw new NotFoundError("Technology CTA configuration");
+          return err(new NotFoundError("Technology CTA configuration"));
         }
 
-        return cta;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(cta);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to fetch CTA", error as Error);
-        return new InternalError("Failed to fetch technology CTA configuration", { error });
-      },
+        return err(new InternalError("Failed to fetch technology CTA configuration", { error }));
+      }),
     );
   }
 
   async createCta(data: InsertTechnologyCta): Promise<Result<TechnologyCta, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyCta> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyCta, AppError>> => {
         const created = await withCircuit(
           "create-technology-cta",
           () =>
@@ -140,19 +138,19 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (created.isErr()) return err(created.error as any);
+        return ok(created.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to create CTA", error as Error);
-        return new InternalError("Failed to create technology CTA configuration", { error });
-      },
+        return err(new InternalError("Failed to create technology CTA configuration", { error }));
+      }),
     );
   }
 
   async updateCta(data: Partial<InsertTechnologyCta>): Promise<Result<TechnologyCta, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyCta> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyCta, AppError>> => {
         const updated = await withCircuit(
           "update-technology-cta",
           () =>
@@ -167,19 +165,19 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to update CTA", error as Error);
-        return new InternalError("Failed to update technology CTA configuration", { error });
-      },
+        return err(new InternalError("Failed to update technology CTA configuration", { error }));
+      }),
     );
   }
 
   async deleteCta(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-technology-cta-${id}`,
           () => technologyRepository.deleteTechnologyCta(id),
@@ -187,42 +185,40 @@ class TechnologyService {
         );
 
         if (!deleted) {
-          throw new NotFoundError(`Technology CTA with ID ${id}`);
+          return err(new NotFoundError(`Technology CTA with ID ${id}`));
         }
 
         await this.invalidateCache();
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to delete CTA", { id }, error as Error);
-        return new InternalError(`Failed to delete technology CTA ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete technology CTA ${id}`, { error }));
+      }),
     );
   }
 
   // Equipment
   async getEquipment(): Promise<Result<TechnologyEquipment[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyEquipment[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyEquipment[], AppError>> => {
         const equipment = await withCircuit(
           "get-technology-equipment",
           () => technologyRepository.getTechnologyEquipment(),
           DB_CIRCUIT_OPTIONS,
         );
-        return equipment;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(equipment);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to fetch equipment", error as Error);
-        return new InternalError("Failed to fetch technology equipment", { error });
-      },
+        return err(new InternalError("Failed to fetch technology equipment", { error }));
+      }),
     );
   }
 
   async getEquipmentItem(id: number): Promise<Result<TechnologyEquipment, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyEquipment> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyEquipment, AppError>> => {
         const item = await withCircuit(
           `get-technology-equipment-${id}`,
           () => technologyRepository.getTechnologyEquipmentItem(id),
@@ -230,24 +226,23 @@ class TechnologyService {
         );
 
         if (!item) {
-          throw new NotFoundError(`Technology equipment item with ID ${id}`);
+          return err(new NotFoundError(`Technology equipment item with ID ${id}`));
         }
 
-        return item;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(item);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to fetch equipment item", { id }, error as Error);
-        return new InternalError(`Failed to fetch technology equipment item ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch technology equipment item ${id}`, { error }));
+      }),
     );
   }
 
   async createEquipment(
     data: InsertTechnologyEquipment,
   ): Promise<Result<TechnologyEquipment, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyEquipment> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyEquipment, AppError>> => {
         const created = await withCircuit(
           "create-technology-equipment",
           () =>
@@ -262,13 +257,13 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (created.isErr()) return err(created.error as any);
+        return ok(created.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to create equipment", error as Error);
-        return new InternalError("Failed to create technology equipment", { error });
-      },
+        return err(new InternalError("Failed to create technology equipment", { error }));
+      }),
     );
   }
 
@@ -276,8 +271,8 @@ class TechnologyService {
     id: number,
     data: Partial<InsertTechnologyEquipment>,
   ): Promise<Result<TechnologyEquipment, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyEquipment> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyEquipment, AppError>> => {
         const updated = await withCircuit(
           `update-technology-equipment-${id}`,
           () =>
@@ -293,19 +288,19 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to update equipment", { id }, error as Error);
-        return new InternalError(`Failed to update technology equipment ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update technology equipment ${id}`, { error }));
+      }),
     );
   }
 
   async deleteEquipment(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-technology-equipment-${id}`,
           () => technologyRepository.deleteTechnologyEquipment(id),
@@ -313,23 +308,22 @@ class TechnologyService {
         );
 
         if (!deleted) {
-          throw new NotFoundError(`Technology equipment item with ID ${id}`);
+          return err(new NotFoundError(`Technology equipment item with ID ${id}`));
         }
 
         await this.invalidateCache();
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to delete equipment", { id }, error as Error);
-        return new InternalError(`Failed to delete technology equipment ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete technology equipment ${id}`, { error }));
+      }),
     );
   }
 
   async reorderEquipment(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-technology-equipment",
           () => technologyRepository.reorderTechnologyEquipment(orderedIds),
@@ -337,38 +331,36 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to reorder equipment", error as Error);
-        return new InternalError("Failed to reorder technology equipment", { error });
-      },
+        return err(new InternalError("Failed to reorder technology equipment", { error }));
+      }),
     );
   }
 
   // Innovations
   async getInnovations(includeInactive = false): Promise<Result<TechnologyInnovation[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyInnovation[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyInnovation[], AppError>> => {
         const innovations = await withCircuit(
           "get-technology-innovations",
           () => technologyRepository.getTechnologyInnovations(includeInactive),
           DB_CIRCUIT_OPTIONS,
         );
-        return innovations;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(innovations);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to fetch innovations", error as Error);
-        return new InternalError("Failed to fetch technology innovations", { error });
-      },
+        return err(new InternalError("Failed to fetch technology innovations", { error }));
+      }),
     );
   }
 
   async getInnovation(id: number): Promise<Result<TechnologyInnovation, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyInnovation> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyInnovation, AppError>> => {
         const innovation = await withCircuit(
           `get-technology-innovation-${id}`,
           () => technologyRepository.getTechnologyInnovation(id),
@@ -376,24 +368,23 @@ class TechnologyService {
         );
 
         if (!innovation) {
-          throw new NotFoundError(`Technology innovation with ID ${id}`);
+          return err(new NotFoundError(`Technology innovation with ID ${id}`));
         }
 
-        return innovation;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(innovation);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to fetch innovation", { id }, error as Error);
-        return new InternalError(`Failed to fetch technology innovation ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch technology innovation ${id}`, { error }));
+      }),
     );
   }
 
   async createInnovation(
     data: InsertTechnologyInnovation,
   ): Promise<Result<TechnologyInnovation, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyInnovation> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyInnovation, AppError>> => {
         const created = await withCircuit(
           "create-technology-innovation",
           () =>
@@ -408,13 +399,13 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (created.isErr()) return err(created.error as any);
+        return ok(created.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to create innovation", error as Error);
-        return new InternalError("Failed to create technology innovation", { error });
-      },
+        return err(new InternalError("Failed to create technology innovation", { error }));
+      }),
     );
   }
 
@@ -422,8 +413,8 @@ class TechnologyService {
     id: number,
     data: Partial<InsertTechnologyInnovation>,
   ): Promise<Result<TechnologyInnovation, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyInnovation> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyInnovation, AppError>> => {
         const updated = await withCircuit(
           `update-technology-innovation-${id}`,
           () =>
@@ -439,19 +430,19 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to update innovation", { id }, error as Error);
-        return new InternalError(`Failed to update technology innovation ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update technology innovation ${id}`, { error }));
+      }),
     );
   }
 
   async deleteInnovation(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-technology-innovation-${id}`,
           () => technologyRepository.deleteTechnologyInnovation(id),
@@ -459,23 +450,22 @@ class TechnologyService {
         );
 
         if (!deleted) {
-          throw new NotFoundError(`Technology innovation with ID ${id}`);
+          return err(new NotFoundError(`Technology innovation with ID ${id}`));
         }
 
         await this.invalidateCache();
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to delete innovation", { id }, error as Error);
-        return new InternalError(`Failed to delete technology innovation ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete technology innovation ${id}`, { error }));
+      }),
     );
   }
 
   async reorderInnovations(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-technology-innovations",
           () => technologyRepository.reorderTechnologyInnovations(orderedIds),
@@ -483,38 +473,36 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to reorder innovations", error as Error);
-        return new InternalError("Failed to reorder technology innovations", { error });
-      },
+        return err(new InternalError("Failed to reorder technology innovations", { error }));
+      }),
     );
   }
 
   // Research
   async getResearch(includeInactive = false): Promise<Result<TechnologyResearch[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyResearch[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyResearch[], AppError>> => {
         const research = await withCircuit(
           "get-technology-research",
           () => technologyRepository.getTechnologyResearch(includeInactive),
           DB_CIRCUIT_OPTIONS,
         );
-        return research;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(research);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to fetch research", error as Error);
-        return new InternalError("Failed to fetch technology research items", { error });
-      },
+        return err(new InternalError("Failed to fetch technology research items", { error }));
+      }),
     );
   }
 
   async getResearchItem(id: number): Promise<Result<TechnologyResearch, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyResearch> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyResearch, AppError>> => {
         const item = await withCircuit(
           `get-technology-research-${id}`,
           () => technologyRepository.getTechnologyResearchItem(id),
@@ -522,24 +510,23 @@ class TechnologyService {
         );
 
         if (!item) {
-          throw new NotFoundError(`Technology research item with ID ${id}`);
+          return err(new NotFoundError(`Technology research item with ID ${id}`));
         }
 
-        return item;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(item);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to fetch research item", { id }, error as Error);
-        return new InternalError(`Failed to fetch technology research item ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch technology research item ${id}`, { error }));
+      }),
     );
   }
 
   async createResearch(
     data: InsertTechnologyResearch,
   ): Promise<Result<TechnologyResearch, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyResearch> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyResearch, AppError>> => {
         const created = await withCircuit(
           "create-technology-research",
           () =>
@@ -554,13 +541,13 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (created.isErr()) return err(created.error as any);
+        return ok(created.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to create research", error as Error);
-        return new InternalError("Failed to create technology research item", { error });
-      },
+        return err(new InternalError("Failed to create technology research item", { error }));
+      }),
     );
   }
 
@@ -568,8 +555,8 @@ class TechnologyService {
     id: number,
     data: Partial<InsertTechnologyResearch>,
   ): Promise<Result<TechnologyResearch, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyResearch> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyResearch, AppError>> => {
         const updated = await withCircuit(
           `update-technology-research-${id}`,
           () =>
@@ -585,19 +572,19 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to update research", { id }, error as Error);
-        return new InternalError(`Failed to update technology research item ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update technology research item ${id}`, { error }));
+      }),
     );
   }
 
   async deleteResearch(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-technology-research-${id}`,
           () => technologyRepository.deleteTechnologyResearch(id),
@@ -605,23 +592,22 @@ class TechnologyService {
         );
 
         if (!deleted) {
-          throw new NotFoundError(`Technology research item with ID ${id}`);
+          return err(new NotFoundError(`Technology research item with ID ${id}`));
         }
 
         await this.invalidateCache();
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to delete research", { id }, error as Error);
-        return new InternalError(`Failed to delete technology research item ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete technology research item ${id}`, { error }));
+      }),
     );
   }
 
   async reorderResearch(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-technology-research",
           () => technologyRepository.reorderTechnologyResearch(orderedIds),
@@ -629,38 +615,36 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to reorder research", error as Error);
-        return new InternalError("Failed to reorder technology research items", { error });
-      },
+        return err(new InternalError("Failed to reorder technology research items", { error }));
+      }),
     );
   }
 
   // Roadmap
   async getRoadmap(includeInactive = false): Promise<Result<TechnologyRoadmap[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyRoadmap[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyRoadmap[], AppError>> => {
         const roadmap = await withCircuit(
           "get-technology-roadmap",
           () => technologyRepository.getTechnologyRoadmap(includeInactive),
           DB_CIRCUIT_OPTIONS,
         );
-        return roadmap;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(roadmap);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to fetch roadmap", error as Error);
-        return new InternalError("Failed to fetch technology roadmap", { error });
-      },
+        return err(new InternalError("Failed to fetch technology roadmap", { error }));
+      }),
     );
   }
 
   async getRoadmapItem(id: number): Promise<Result<TechnologyRoadmap, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyRoadmap> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyRoadmap, AppError>> => {
         const item = await withCircuit(
           `get-technology-roadmap-${id}`,
           () => technologyRepository.getTechnologyRoadmapItem(id),
@@ -668,24 +652,23 @@ class TechnologyService {
         );
 
         if (!item) {
-          throw new NotFoundError(`Technology roadmap item with ID ${id}`);
+          return err(new NotFoundError(`Technology roadmap item with ID ${id}`));
         }
 
-        return item;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(item);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to fetch roadmap item", { id }, error as Error);
-        return new InternalError(`Failed to fetch technology roadmap item ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch technology roadmap item ${id}`, { error }));
+      }),
     );
   }
 
   async createRoadmapItem(
     data: InsertTechnologyRoadmap,
   ): Promise<Result<TechnologyRoadmap, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyRoadmap> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyRoadmap, AppError>> => {
         const created = await withCircuit(
           "create-technology-roadmap",
           () =>
@@ -700,13 +683,13 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (created.isErr()) return err(created.error as any);
+        return ok(created.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to create roadmap", error as Error);
-        return new InternalError("Failed to create technology roadmap item", { error });
-      },
+        return err(new InternalError("Failed to create technology roadmap item", { error }));
+      }),
     );
   }
 
@@ -714,8 +697,8 @@ class TechnologyService {
     id: number,
     data: Partial<InsertTechnologyRoadmap>,
   ): Promise<Result<TechnologyRoadmap, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyRoadmap> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyRoadmap, AppError>> => {
         const updated = await withCircuit(
           `update-technology-roadmap-${id}`,
           () =>
@@ -731,19 +714,19 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to update roadmap", { id }, error as Error);
-        return new InternalError(`Failed to update technology roadmap item ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update technology roadmap item ${id}`, { error }));
+      }),
     );
   }
 
   async deleteRoadmapItem(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-technology-roadmap-${id}`,
           () => technologyRepository.deleteTechnologyRoadmap(id),
@@ -751,23 +734,22 @@ class TechnologyService {
         );
 
         if (!deleted) {
-          throw new NotFoundError(`Technology roadmap item with ID ${id}`);
+          return err(new NotFoundError(`Technology roadmap item with ID ${id}`));
         }
 
         await this.invalidateCache();
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to delete roadmap", { id }, error as Error);
-        return new InternalError(`Failed to delete technology roadmap item ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete technology roadmap item ${id}`, { error }));
+      }),
     );
   }
 
   async reorderRoadmap(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-technology-roadmap",
           () => technologyRepository.reorderTechnologyRoadmap(orderedIds),
@@ -775,41 +757,39 @@ class TechnologyService {
         );
 
         await this.invalidateCache();
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to reorder roadmap", error as Error);
-        return new InternalError("Failed to reorder technology roadmap", { error });
-      },
+        return err(new InternalError("Failed to reorder technology roadmap", { error }));
+      }),
     );
   }
 
   // Gradient Settings
   async getGradientSettings(): Promise<Result<TechnologyGradientSettings, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyGradientSettings> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyGradientSettings, AppError>> => {
         const settings = await withCircuit(
           "get-technology-gradient",
           () => technologyRepository.getTechnologyGradientSettings(),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!settings) throw new NotFoundError("Technology gradient settings");
-        return settings;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (!settings) return err(new NotFoundError("Technology gradient settings"));
+        return ok(settings);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to fetch gradient settings", error as Error);
-        return new InternalError("Failed to fetch technology gradient settings", { error });
-      },
+        return err(new InternalError("Failed to fetch technology gradient settings", { error }));
+      }),
     );
   }
 
   async updateGradientSettings(
     data: Partial<InsertTechnologyGradientSettings>,
   ): Promise<Result<TechnologyGradientSettings, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<TechnologyGradientSettings> => {
+    return new ResultAsync(
+      (async (): Promise<Result<TechnologyGradientSettings, AppError>> => {
         const updated = await withCircuit(
           "update-technology-gradient",
           () =>
@@ -822,13 +802,13 @@ class TechnologyService {
           DB_CIRCUIT_OPTIONS,
         );
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (updated.isErr()) return err(updated.error as any);
+        return ok(updated.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to update gradient settings", error as Error);
-        return new InternalError("Failed to update technology gradient settings", { error });
-      },
+        return err(new InternalError("Failed to update technology gradient settings", { error }));
+      }),
     );
   }
 
@@ -850,8 +830,8 @@ class TechnologyService {
 
   // Batch
   async getBatch(): Promise<Result<Record<string, unknown>, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Record<string, unknown>> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Record<string, unknown>, AppError>> => {
         // Fetch all technology data in parallel using circuit breaker
         const [hero, innovations, equipment, research, roadmap, cta, gradientSettings] =
           await withCircuit(
@@ -885,7 +865,7 @@ class TechnologyService {
               )
             : [];
 
-        return {
+        return ok({
           hero: hero || null,
           innovations: innovations || [],
           equipment: equipment || [],
@@ -899,13 +879,12 @@ class TechnologyService {
             mediaAssetsLoaded: mediaAssets.length,
             mediaIdsRequested: Array.from(mediaIds),
           },
-        };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[TechnologyService] Failed to fetch batch", error as Error);
-        return new InternalError("Failed to fetch technology page batch content", { error });
-      },
+        return err(new InternalError("Failed to fetch technology page batch content", { error }));
+      }),
     );
   }
 }

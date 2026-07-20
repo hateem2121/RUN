@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type ContactContentForm, contactContentFormSchema } from "@shared/validation/contact";
+import { type ContactContentForm, contactContentFormSchema } from "@shared/index";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   CheckCircle2,
@@ -224,7 +224,7 @@ export function ContactPageSettings() {
             onClick={form.handleSubmit(onSubmit, onInvalid)}
             disabled={!isDirty || saveMutation.isPending}
             data-testid="button-save"
-            className="h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 shadow-custom-misc-17 font-bold uppercase tracking-widest text-xxs outline-none border-0 transition-all active:scale-95"
+            className="h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 shadow-custom-misc-17 font-bold uppercase tracking-widest text-xxs outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border-0 transition-all active:scale-95"
           >
             {saveMutation.isPending ? (
               <>
@@ -643,7 +643,7 @@ export function ContactPageSettings() {
             <Button
               onClick={form.handleSubmit(onSubmit, onInvalid)}
               disabled={!isDirty || saveMutation.isPending}
-              className="h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 shadow-custom-misc-19 font-bold uppercase tracking-widest text-xxs outline-none border-0 transition-all active:scale-95"
+              className="h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 shadow-custom-misc-19 font-bold uppercase tracking-widest text-xxs outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border-0 transition-all active:scale-95"
             >
               {saveMutation.isPending ? "Saving..." : "Save All Changes"}
             </Button>

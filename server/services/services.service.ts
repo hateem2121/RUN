@@ -65,8 +65,8 @@ class ServicesService {
   }
 
   async getServices(includeInactive = false): Promise<Result<Service[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Service[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Service[], AppError>> => {
         const list = await withCircuit(
           "get-services",
           () => servicesRepository.getServices(includeInactive),
@@ -77,15 +77,14 @@ class ServicesService {
           const fallbacks = includeInactive
             ? DEFAULT_SERVICES
             : DEFAULT_SERVICES.filter((s) => s.isActive);
-          return fallbacks;
+          return ok(fallbacks);
         }
 
-        return list;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError("Failed to fetch services", { error });
-      },
+        return ok(list);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("Failed to fetch services", { error }));
+      }),
     ).orElse((error) => {
       logger.error("[ServicesService] Failed to fetch services", error as Error);
       const fallbacks = includeInactive
@@ -96,8 +95,8 @@ class ServicesService {
   }
 
   async getService(id: number): Promise<Result<Service, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Service> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Service, AppError>> => {
         const service = await withCircuit(
           `get-service-${id}`,
           () => servicesRepository.getService(id),
@@ -107,17 +106,16 @@ class ServicesService {
         if (!service) {
           const fallback = DEFAULT_SERVICES.find((s) => s.id === id);
           if (!fallback) {
-            throw new NotFoundError(`Service with ID ${id}`);
+            return err(new NotFoundError(`Service with ID ${id}`));
           }
-          return fallback;
+          return ok(fallback);
         }
 
-        return service;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError(`Failed to fetch service ${id}`, { error });
-      },
+        return ok(service);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError(`Failed to fetch service ${id}`, { error }));
+      }),
     ).orElse((error) => {
       logger.error("[ServicesService] Failed to fetch service", { id }, error as Error);
       const fallback = DEFAULT_SERVICES.find((s) => s.id === id);
@@ -129,21 +127,21 @@ class ServicesService {
   }
 
   async createService(data: InsertService): Promise<Result<Service, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Service> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Service, AppError>> => {
         const created = await withCircuit(
           "create-service",
           () => servicesRepository.createService(data),
           DB_CIRCUIT_OPTIONS,
         );
         await this.invalidateCache();
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (created.isErr()) return err(created.error as any);
+        return ok(created.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ServicesService] Failed to create service", error as Error);
-        return new InternalError("Failed to create service", { error });
-      },
+        return err(new InternalError("Failed to create service", { error }));
+      }),
     );
   }
 
@@ -151,65 +149,62 @@ class ServicesService {
     id: number,
     data: Partial<InsertService>,
   ): Promise<Result<Service, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Service> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Service, AppError>> => {
         const updated = await withCircuit(
           `update-service-${id}`,
           () => servicesRepository.updateService(id, data),
           DB_CIRCUIT_OPTIONS,
         );
         if (!updated) {
-          throw new NotFoundError(`Service with ID ${id}`);
+          return err(new NotFoundError(`Service with ID ${id}`));
         }
         await this.invalidateCache();
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(updated);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ServicesService] Failed to update service", { id }, error as Error);
-        return new InternalError(`Failed to update service ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update service ${id}`, { error }));
+      }),
     );
   }
 
   async deleteService(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const deleted = await withCircuit(
           `delete-service-${id}`,
           () => servicesRepository.deleteService(id),
           DB_CIRCUIT_OPTIONS,
         );
         if (!deleted) {
-          throw new NotFoundError(`Service with ID ${id}`);
+          return err(new NotFoundError(`Service with ID ${id}`));
         }
         await this.invalidateCache();
-        return deleted;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(deleted);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ServicesService] Failed to delete service", { id }, error as Error);
-        return new InternalError(`Failed to delete service ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete service ${id}`, { error }));
+      }),
     );
   }
 
   async reorderServices(orderedIds: number[]): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "reorder-services",
           () => servicesRepository.reorderServices(orderedIds),
           DB_CIRCUIT_OPTIONS,
         );
         await this.invalidateCache();
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ServicesService] Failed to reorder services", error as Error);
-        return new InternalError("Failed to reorder services", { error });
-      },
+        return err(new InternalError("Failed to reorder services", { error }));
+      }),
     );
   }
 }

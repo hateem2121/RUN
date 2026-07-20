@@ -19,6 +19,7 @@ import type {
 } from "@run-remix/shared";
 import { folders, mediaAssets } from "@run-remix/shared";
 import { and, asc, desc, eq, ilike, inArray, isNull, or, sql } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import { db } from "../../db.js";
 import { emitCacheInvalidation } from "../../lib/cache/cache-events.js";
 import { CacheKeys, InvalidationPatterns } from "../../lib/cache/cache-keys.js";
@@ -259,9 +260,9 @@ export class MediaRepository {
     return updated;
   }
 
-  async deleteMediaAsset(id: number): Promise<boolean> {
+  async deleteMediaAsset(id: number): Promise<Result<boolean, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().deleteMediaAsset(id);
+      return ok(await StorageSingleton.getInstance().deleteMediaAsset(id));
     }
     // CACHE-FIRST DELETE PATTERN (neon-http doesn't support transactions)
     // Pattern: Invalidate cache BEFORE DB delete to prevent stale cache responses
@@ -279,8 +280,10 @@ export class MediaRepository {
         `[MediaRepository] ❌ Cache invalidation failed for asset ${id}, aborting delete:`,
         cacheError,
       );
-      throw new CacheInvalidationError(
-        `Cache invalidation failed for delete operation: ${cacheError instanceof Error ? cacheError.message : String(cacheError)}`,
+      return err(
+        new CacheInvalidationError(
+          `Cache invalidation failed for delete operation: ${cacheError instanceof Error ? cacheError.message : String(cacheError)}`,
+        ),
       );
     }
 
@@ -333,11 +336,11 @@ export class MediaRepository {
     // If asset not found or already deleted, throw typed error
     if (!result.length) {
       logger.warn(`[MediaRepository] ⚠️ Asset ${id} not found for deletion (cache already cleared)`);
-      throw new MediaNotFoundError(`Media asset with ID ${id} not found`);
+      return err(new MediaNotFoundError(`Media asset with ID ${id} not found`));
     }
 
     logger.info(`[MediaRepository] ✅ Cache-first delete succeeded for asset ${id}`);
-    return true;
+    return ok(await true);
   }
 
   async getMediaAssetsCount(filters?: {

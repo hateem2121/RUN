@@ -1,5 +1,6 @@
 import { type InsertService, type Service, services } from "@run-remix/shared";
 import { asc, eq } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import { db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../../lib/cache/cache-events.js";
 import { UnifiedCache } from "../../../lib/cache/unified-cache.js";
@@ -57,17 +58,17 @@ class ServicesRepository {
     return service ?? undefined;
   }
 
-  async createService(service: InsertService): Promise<Service> {
+  async createService(service: InsertService): Promise<Result<Service, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createService(service);
+      return ok(await StorageSingleton.getInstance().createService(service));
     }
     await unifiedCache.del("services");
     await unifiedCache.del("services:all");
     const [created] = await db.insert(services).values(service).returning();
-    if (!created) throw new Error("Failed to create service");
+    if (!created) return err(new Error("Failed to create service"));
     await emitCacheInvalidation("services", "create");
     await invalidateHtmlCache("/services");
-    return created;
+    return ok(await created);
   }
 
   async updateService(id: number, service: Partial<InsertService>): Promise<Service | undefined> {

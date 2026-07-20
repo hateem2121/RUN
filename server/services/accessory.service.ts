@@ -1,5 +1,5 @@
 import type { Accessory, InsertAccessory } from "@run-remix/shared";
-import { type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
@@ -18,20 +18,19 @@ class AccessoryService {
     offset = 0,
     filters?: { category?: string; search?: string },
   ): Promise<Result<{ accessories: Accessory[]; total: number }, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<{ accessories: Accessory[]; total: number }> => {
+    return new ResultAsync(
+      (async (): Promise<Result<{ accessories: Accessory[]; total: number }, AppError>> => {
         const result = await withCircuit(
           "get-accessories",
           () => accessoryRepository.getAccessoriesWithCount(limit, offset, filters),
           DB_CIRCUIT_OPTIONS,
         );
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AccessoryService] Failed to fetch accessories", error as Error);
-        return new InternalError("Failed to fetch accessories", { error });
-      },
+        return err(new InternalError("Failed to fetch accessories", { error }));
+      }),
     );
   }
 
@@ -39,8 +38,8 @@ class AccessoryService {
    * Retrieves a single accessory by ID
    */
   async getAccessory(id: number): Promise<Result<Accessory, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Accessory> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Accessory, AppError>> => {
         const accessory = await withCircuit(
           `get-accessory-${id}`,
           () => accessoryRepository.getAccessory(id),
@@ -48,16 +47,15 @@ class AccessoryService {
         );
 
         if (!accessory) {
-          throw new NotFoundError(`Accessory with ID ${id}`);
+          return err(new NotFoundError(`Accessory with ID ${id}`));
         }
 
-        return accessory;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(accessory);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AccessoryService] Failed to fetch accessory", { id }, error as Error);
-        return new InternalError(`Failed to fetch accessory ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to fetch accessory ${id}`, { error }));
+      }),
     );
   }
 
@@ -65,20 +63,19 @@ class AccessoryService {
    * Creates a new accessory
    */
   async createAccessory(data: InsertAccessory): Promise<Result<Accessory, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Accessory> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Accessory, AppError>> => {
         const created = await withCircuit(
           "create-accessory",
           () => accessoryRepository.createAccessory(data),
           DB_CIRCUIT_OPTIONS,
         );
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(created);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AccessoryService] Failed to create accessory", error as Error);
-        return new InternalError("Failed to create accessory", { error });
-      },
+        return err(new InternalError("Failed to create accessory", { error }));
+      }),
     );
   }
 
@@ -89,8 +86,8 @@ class AccessoryService {
     id: number,
     data: Partial<InsertAccessory>,
   ): Promise<Result<Accessory, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Accessory> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Accessory, AppError>> => {
         const updated = await withCircuit(
           `update-accessory-${id}`,
           () => accessoryRepository.updateAccessory(id, data),
@@ -98,16 +95,15 @@ class AccessoryService {
         );
 
         if (!updated) {
-          throw new NotFoundError(`Accessory with ID ${id}`);
+          return err(new NotFoundError(`Accessory with ID ${id}`));
         }
 
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(updated);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AccessoryService] Failed to update accessory", { id }, error as Error);
-        return new InternalError(`Failed to update accessory ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to update accessory ${id}`, { error }));
+      }),
     );
   }
 
@@ -115,8 +111,8 @@ class AccessoryService {
    * Deletes an accessory (soft delete)
    */
   async deleteAccessory(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const success = await withCircuit(
           `delete-accessory-${id}`,
           () => accessoryRepository.deleteAccessory(id),
@@ -124,16 +120,16 @@ class AccessoryService {
         );
 
         if (!success) {
-          throw new NotFoundError(`Accessory with ID ${id}`);
+          return err(new NotFoundError(`Accessory with ID ${id}`));
         }
 
-        return success;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        if (success.isErr()) return err(success.error as any);
+        return ok(success.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AccessoryService] Failed to delete accessory", { id }, error as Error);
-        return new InternalError(`Failed to delete accessory ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to delete accessory ${id}`, { error }));
+      }),
     );
   }
 
@@ -141,8 +137,8 @@ class AccessoryService {
    * Restores a deleted accessory
    */
   async restoreAccessory(id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const success = await withCircuit(
           `restore-accessory-${id}`,
           () => accessoryRepository.restoreAccessory(id),
@@ -150,16 +146,15 @@ class AccessoryService {
         );
 
         if (!success) {
-          throw new NotFoundError(`Accessory with ID ${id}`);
+          return err(new NotFoundError(`Accessory with ID ${id}`));
         }
 
-        return success;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(success);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AccessoryService] Failed to restore accessory", { id }, error as Error);
-        return new InternalError(`Failed to restore accessory ${id}`, { error });
-      },
+        return err(new InternalError(`Failed to restore accessory ${id}`, { error }));
+      }),
     );
   }
 }

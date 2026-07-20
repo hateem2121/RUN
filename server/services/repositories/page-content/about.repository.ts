@@ -22,6 +22,7 @@ import {
   mediaAssets,
 } from "@run-remix/shared";
 import { asc, eq, getTableColumns } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import { db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../../lib/cache/cache-events.js";
 import { UnifiedCache } from "../../../lib/cache/unified-cache.js";
@@ -53,9 +54,9 @@ class AboutRepository {
     return hero ?? undefined;
   }
 
-  async updateAboutHero(hero: Partial<InsertAboutHero>): Promise<AboutHero> {
+  async updateAboutHero(hero: Partial<InsertAboutHero>): Promise<Result<AboutHero, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateAboutHero(hero);
+      return ok(await StorageSingleton.getInstance().updateAboutHero(hero));
     }
     await unifiedCache.del("about:hero");
     await unifiedCache.del("about:batch");
@@ -68,7 +69,7 @@ class AboutRepository {
         .insert(aboutHero)
         .values(hero as InsertAboutHero)
         .returning();
-      if (!created) throw new Error("Failed to create about hero");
+      if (!created) return err(new Error("Failed to create about hero"));
       result = created;
       await emitCacheInvalidation("about:hero", "create");
     } else {
@@ -77,12 +78,12 @@ class AboutRepository {
         .set({ ...hero, updatedAt: new Date() })
         .where(eq(aboutHero.id, existing[0]!.id))
         .returning();
-      if (!updated) throw new Error("Failed to update about hero");
+      if (!updated) return err(new Error("Failed to update about hero"));
       result = updated;
       await emitCacheInvalidation("about:hero", "update");
     }
 
-    return result;
+    return ok(await result);
   }
 
   async getAboutTimelineEntries(
@@ -147,11 +148,12 @@ class AboutRepository {
   async updateAboutTimelineEntry(
     id: number,
     entry: Partial<InsertAboutTimelineEntry>,
-  ): Promise<AboutTimelineEntry> {
+  ): Promise<Result<AboutTimelineEntry, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateAboutTimelineEntry(id, entry);
-      if (!result) throw new Error(`updateAboutTimelineEntry returned undefined for id ${id}`);
-      return result;
+      if (!result)
+        return err(new Error(`updateAboutTimelineEntry returned undefined for id ${id}`));
+      return ok(await result);
     }
     await unifiedCache.del("about:timeline");
     await unifiedCache.del("about:batch");
@@ -161,9 +163,9 @@ class AboutRepository {
       .where(eq(aboutTimelineEntries.id, id))
       .returning();
 
-    if (!updated) throw new Error(`About timeline entry ${id} not found`);
+    if (!updated) return err(new Error(`About timeline entry ${id} not found`));
     await emitCacheInvalidation("about:timeline", "update");
-    return updated;
+    return ok(await updated);
   }
 
   async deleteAboutTimelineEntry(id: number): Promise<boolean> {
@@ -252,11 +254,11 @@ class AboutRepository {
   async updateAboutMapLocation(
     id: number,
     location: Partial<InsertAboutMapLocation>,
-  ): Promise<AboutMapLocation> {
+  ): Promise<Result<AboutMapLocation, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateAboutMapLocation(id, location);
-      if (!result) throw new Error(`updateAboutMapLocation returned undefined for id ${id}`);
-      return result;
+      if (!result) return err(new Error(`updateAboutMapLocation returned undefined for id ${id}`));
+      return ok(await result);
     }
     await unifiedCache.del("about:locations");
     await unifiedCache.del("about:batch");
@@ -266,9 +268,9 @@ class AboutRepository {
       .where(eq(aboutMapLocations.id, id))
       .returning();
 
-    if (!updated) throw new Error(`About map location ${id} not found`);
+    if (!updated) return err(new Error(`About map location ${id} not found`));
     await emitCacheInvalidation("about:locations", "update");
-    return updated;
+    return ok(await updated);
   }
 
   async deleteAboutMapLocation(id: number): Promise<boolean> {
@@ -357,11 +359,11 @@ class AboutRepository {
   async updateAboutSection(
     id: number,
     section: Partial<InsertAboutSection>,
-  ): Promise<AboutSection> {
+  ): Promise<Result<AboutSection, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateAboutSection(id, section);
-      if (!result) throw new Error(`updateAboutSection returned undefined for id ${id}`);
-      return result;
+      if (!result) return err(new Error(`updateAboutSection returned undefined for id ${id}`));
+      return ok(await result);
     }
     await unifiedCache.del("about:sections");
     await unifiedCache.del("about:batch");
@@ -371,9 +373,9 @@ class AboutRepository {
       .where(eq(aboutSections.id, id))
       .returning();
 
-    if (!updated) throw new Error(`About section ${id} not found`);
+    if (!updated) return err(new Error(`About section ${id} not found`));
     await emitCacheInvalidation("about:sections", "update");
-    return updated;
+    return ok(await updated);
   }
 
   async deleteAboutSection(id: number): Promise<boolean> {
@@ -531,9 +533,11 @@ class AboutRepository {
     return message;
   }
 
-  async updateAboutTeamMessage(data: Partial<InsertAboutTeamMessage>): Promise<AboutTeamMessage> {
+  async updateAboutTeamMessage(
+    data: Partial<InsertAboutTeamMessage>,
+  ): Promise<Result<AboutTeamMessage, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateAboutTeamMessage(data);
+      return ok(await StorageSingleton.getInstance().updateAboutTeamMessage(data));
     }
     const existing = await this.getAboutTeamMessage(true);
     await unifiedCache.del("about:team-message");
@@ -545,17 +549,17 @@ class AboutRepository {
         .set(data)
         .where(eq(aboutTeamMessages.id, existing.id))
         .returning();
-      if (!updated) throw new Error("Failed to update about team message");
+      if (!updated) return err(new Error("Failed to update about team message"));
       await emitCacheInvalidation("about:team-message", "update");
-      return updated;
+      return ok(await updated);
     } else {
       const [created] = await db
         .insert(aboutTeamMessages)
         .values(data as unknown as InsertAboutTeamMessage)
         .returning();
-      if (!created) throw new Error("Failed to create about team message");
+      if (!created) return err(new Error("Failed to create about team message"));
       await emitCacheInvalidation("about:team-message", "create");
-      return created;
+      return ok(await created);
     }
   }
 

@@ -65,7 +65,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
   return (
     <section
       ref={containerRef}
-      className="bg-background-alt w-full px-4 py-32 md:px-8"
+      className="bg-background-alt w-full px-4 py-32 md:px-8 content-auto"
       aria-labelledby="featured-products-heading"
     >
       <div className="max-w-container-2xl mx-auto">

@@ -81,7 +81,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
             <Button
               onClick={handleSave}
               disabled={!isDirty || updateFeaturedSettings.isPending}
-              className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none border-0"
+              className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border-0"
             >
               {updateFeaturedSettings.isPending ? (
                 "Deploying Configuration..."

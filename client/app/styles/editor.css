@@ -5,6 +5,10 @@
   padding: 1rem;
 }
 
+.ProseMirror:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-technology-accent, hsl(var(--primary)));
+}
+
 .ProseMirror p {
   margin-bottom: 1rem;
   color: rgba(227, 223, 214, 0.8);

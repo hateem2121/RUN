@@ -10,6 +10,7 @@
 import type { Accessory, InsertAccessory } from "@run-remix/shared";
 import { accessories } from "@run-remix/shared";
 import { and, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import { db } from "../../db.js";
 import { emitCacheInvalidation } from "../../lib/cache/cache-events.js";
 import { UnifiedCache } from "../../lib/cache/unified-cache.js";
@@ -250,9 +251,9 @@ class AccessoryRepository {
   /**
    * Soft delete accessory with cache-first pattern
    */
-  async deleteAccessory(id: number): Promise<boolean> {
+  async deleteAccessory(id: number): Promise<Result<boolean, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().deleteAccessory(id);
+      return ok(await StorageSingleton.getInstance().deleteAccessory(id));
     }
     // Cache-first delete: invalidate cache BEFORE DB operation
     try {
@@ -263,7 +264,7 @@ class AccessoryRepository {
         `[AccessoryRepository] ❌ Cache invalidation failed for accessory ${id}:`,
         cacheError,
       );
-      throw new Error("Cache invalidation failed");
+      return err(new Error("Cache invalidation failed"));
     }
 
     // Soft delete in database
@@ -278,11 +279,11 @@ class AccessoryRepository {
 
     if (!result.length) {
       logger.warn(`[AccessoryRepository] ⚠️ Accessory ${id} not found for deletion`);
-      return false;
+      return ok(await false);
     }
 
     logger.info(`[AccessoryRepository] ✅ Cache-first delete succeeded for accessory ${id}`);
-    return true;
+    return ok(await true);
   }
 
   async getAccessoriesIncludingDeleted(): Promise<Accessory[]> {

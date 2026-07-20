@@ -3,15 +3,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock dependencies
 
-vi.mock("@upstash/redis", () => ({ Redis: vi.fn() }));
 vi.mock("pg", () => ({ Client: vi.fn() }));
 vi.mock("../../../server/lib/monitoring/logger.js", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
-vi.mock("../../../server/lib/cache/upstash-client.js", () => ({
-  redis: {},
-  isRedisEnabled: false,
-}));
+
 // ProductRepository has class-level eager prepared statements (db.select(...)) that
 // run at import time. After vi.resetModules() the module re-initialises, so the db
 // mock must expose the full Drizzle query-builder chain or the class init throws.

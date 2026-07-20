@@ -116,7 +116,7 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
 
   return (
     <section
-      className="overflow-hidden bg-background text-foreground"
+      className="overflow-hidden bg-background text-foreground content-auto"
       aria-labelledby="process-heading"
     >
       <div

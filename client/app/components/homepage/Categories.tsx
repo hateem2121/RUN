@@ -72,7 +72,7 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
     <section
       id="catalogue"
       ref={containerRef}
-      className="relative w-full overflow-hidden bg-background px-4 py-32 md:px-8"
+      className="relative w-full overflow-hidden bg-background px-4 py-32 md:px-8 content-auto"
       aria-label="Product Categories Catalogue"
     >
       <div className="pointer-events-none absolute top-0 left-0 h-full w-full bg-radial-primary-glow opacity-5" />

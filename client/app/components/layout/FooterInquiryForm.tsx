@@ -1,6 +1,6 @@
 import { cva } from "class-variance-authority";
 import gsap from "gsap";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { cn } from "@/lib/utils";
 import { useCursorStore } from "@/stores/useCursorStore";
@@ -30,6 +30,13 @@ export function FooterInquiryForm() {
 
   const formRef = useRef<HTMLFormElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const handleSubmit = async (formDataAction: FormData) => {
     // Get form elements via formData for robustness
@@ -99,7 +106,8 @@ export function FooterInquiryForm() {
         }
 
         // Hide message after 5 seconds
-        setTimeout(() => {
+        if (timerRef.current) clearTimeout(timerRef.current);
+        timerRef.current = setTimeout(() => {
           setShowSuccess(false);
           setIsSent(false);
         }, 5000);

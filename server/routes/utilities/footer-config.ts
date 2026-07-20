@@ -24,16 +24,14 @@ router.get("/footer", async (_req, res) => {
     res.setHeader("X-Cache-Hit", "true");
     return res.json(cached);
   }
-
   const result = await footerService.getFooterConfig();
-
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  const response = result.value;
-  await unifiedCache.set(cacheKey, response, CACHE_TTL_FOOTER * 1000);
-  return res.json(response);
+  return result.match(
+    async (response) => {
+      await unifiedCache.set(cacheKey, response, CACHE_TTL_FOOTER * 1000);
+      return res.json(response);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // ADMIN endpoint for footer configuration
@@ -45,40 +43,37 @@ router.get("/admin/footer", authService.requireAdmin, async (_req, res) => {
     res.setHeader("X-Cache-Hit", "true");
     return res.json(cached);
   }
-
   const result = await footerService.getFooterConfig();
-
-  if (result.isErr()) {
-    throw result.error;
-  }
-
-  const response = result.value;
-  await unifiedCache.set(cacheKey, response, CACHE_TTL_FOOTER * 1000);
-  return res.json(response);
+  return result.match(
+    async (response) => {
+      await unifiedCache.set(cacheKey, response, CACHE_TTL_FOOTER * 1000);
+      return res.json(response);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 router.patch("/admin/footer", authService.requireAdmin, async (req, res) => {
   const result = await footerService.updateFooterConfig(req.body);
 
-  if (result.isErr()) {
-    throw result.error;
-  }
+  return result.match(
+    async (updated) => {
+      // Invalidate Cache
+      unifiedCache
+        .delete(CacheKeys.footer.config())
+        .then(() => logger.info(`[Footer] Cache invalidated for ${CacheKeys.footer.config()}`))
+        .catch((cacheError) =>
+          logger.warn("[Footer] Cache invalidation failed (non-fatal):", cacheError),
+        );
 
-  const updated = result.value;
+      logger.info("[Footer] Footer configuration updated successfully", {
+        id: updated?.id,
+      });
 
-  // Invalidate Cache
-  unifiedCache
-    .delete(CacheKeys.footer.config())
-    .then(() => logger.info(`[Footer] Cache invalidated for ${CacheKeys.footer.config()}`))
-    .catch((cacheError) =>
-      logger.warn("[Footer] Cache invalidation failed (non-fatal):", cacheError),
-    );
-
-  logger.info("[Footer] Footer configuration updated successfully", {
-    id: updated?.id,
-  });
-
-  return res.json(updated);
+      return res.json(updated);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 logger.debug("[Footer Config Routes] ✅ Footer configuration routes loaded (Service Refactored)");

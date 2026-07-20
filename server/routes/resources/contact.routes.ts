@@ -99,12 +99,14 @@ router.get("/contact-info", async (req, res) => {
   }
 
   const result = await contactService.getContactPageConfiguration();
-  if (result.isErr()) throw result.error;
 
-  const config = result.value;
-  await unifiedCache.set(cacheKey, config, CACHE_TTL_NAVIGATION * 1000);
-
-  return res.json(config);
+  return result.match(
+    async (config) => {
+      await unifiedCache.set(cacheKey, config, CACHE_TTL_NAVIGATION * 1000);
+      return res.json(config);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 /**
@@ -127,12 +129,14 @@ router.get("/locations", async (req, res) => {
   }
 
   const result = await contactService.getBusinessLocations();
-  if (result.isErr()) throw result.error;
 
-  const locations = result.value;
-  await unifiedCache.set(cacheKey, locations, CACHE_TTL_STATIC * 1000);
-
-  return res.json(locations);
+  return result.match(
+    async (locations) => {
+      await unifiedCache.set(cacheKey, locations, CACHE_TTL_STATIC * 1000);
+      return res.json(locations);
+    },
+    (error) => res.status(error.statusCode || 500).json({ error: error.message }),
+  );
 });
 
 // ============================================================================
@@ -159,13 +163,16 @@ router.post(
         .json({ error: { code: "VALIDATION_ERROR", message: parsed.error.message } });
     }
     const result = await contactService.createContactPageConfiguration(parsed.data);
-    if (result.isErr()) throw result.error;
 
-    await CacheOperations.invalidateContact().catch((err) =>
-      logger.error("[Contact] Cache invalidation failed:", err),
+    return result.match(
+      async (config) => {
+        await CacheOperations.invalidateContact().catch((err) =>
+          logger.error("[Contact] Cache invalidation failed:", err),
+        );
+        return res.status(201).json(config);
+      },
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
     );
-
-    return res.status(201).json(result.value);
   },
 );
 
@@ -182,13 +189,16 @@ router.patch(
         .json({ error: { code: "VALIDATION_ERROR", message: parsed.error.message } });
     }
     const result = await contactService.updateContactPageConfiguration(1, parsed.data);
-    if (result.isErr()) throw result.error;
 
-    await CacheOperations.invalidateContact().catch((err) =>
-      logger.error("[Contact] Cache invalidation failed:", err),
+    return result.match(
+      async (config) => {
+        await CacheOperations.invalidateContact().catch((err) =>
+          logger.error("[Contact] Cache invalidation failed:", err),
+        );
+        return res.json(config);
+      },
+      (error) => res.status(error.statusCode || 500).json({ error: error.message }),
     );
-
-    return res.json(result.value);
   },
 );
 

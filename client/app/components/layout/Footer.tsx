@@ -91,7 +91,7 @@ export const Footer: React.FC = () => {
   return (
     <footer
       ref={footerRef}
-      className="bg-background text-foreground relative w-full isolate overflow-hidden px-4 pt-32 pb-0 md:px-8 min-h-custom-space-163 flex flex-col justify-between"
+      className="bg-background text-foreground relative w-full isolate overflow-hidden px-4 pt-32 pb-0 md:px-8 min-h-custom-space-163 flex flex-col justify-between content-auto"
     >
       {/* SEO ENHANCEMENT: Render JSON-LD Structured Data */}
       {footerConfig?.structuredData && (
@@ -332,9 +332,8 @@ export const Footer: React.FC = () => {
         <div
           ref={textRef}
           className="leading-none font-bold tracking-tighter opacity-muted-decoration mix-blend-normal select-none will-change-transform dark:opacity-20 whitespace-nowrap text-logotype"
-        >
-          RUN APPAREL
-        </div>
+          data-content="RUN APPAREL"
+        />
       </div>
     </footer>
   );

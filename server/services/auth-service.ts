@@ -184,8 +184,8 @@ export class AuthService {
       return err(new InternalError("No email provided by Google"));
     }
 
-    return ResultAsync.fromPromise(
-      (async (): Promise<User> => {
+    return new ResultAsync(
+      (async (): Promise<Result<User, AppError>> => {
         const user = await withCircuit(
           "upsert-user",
           () =>
@@ -199,17 +199,18 @@ export class AuthService {
           DB_CIRCUIT_OPTIONS,
         );
 
+        if (user.isErr()) return err(user.error as any);
+
         // Bootstrapping: Auto-promote initial admin
-        if (process.env.INITIAL_ADMIN_EMAIL === email && !user.isAdmin) {
+        if (process.env.INITIAL_ADMIN_EMAIL === email && !user.value.isAdmin) {
           logger.info("[AuthService] Promoting initial admin", { email });
         }
 
-        return user;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new DatabaseError("Failed to upsert user", { cause: error });
-      },
+        return ok(user.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new DatabaseError("Failed to upsert user", { cause: error }));
+      }),
     );
   }
 
@@ -331,26 +332,25 @@ export class AuthService {
       return ok(true);
     }
 
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const dbUser = await withCircuit(
           "get-user-admin-check",
           () => userRepository.getUser(userId),
           DB_CIRCUIT_OPTIONS,
         );
         if (!dbUser) {
-          return false;
+          return ok(false);
         }
 
         const isAdmin = dbUser.isAdmin ?? false;
         adminCacheManager.set(userId, isAdmin);
-        return isAdmin;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(isAdmin);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AuthService] Error checking admin status", { error, userId });
-        return new DatabaseError("Error checking admin status", { cause: error });
-      },
+        return err(new DatabaseError("Error checking admin status", { cause: error }));
+      }),
     );
   }
 
@@ -392,39 +392,38 @@ export class AuthService {
    * SECURITY: Account Lockout Logic
    */
   public async isAccountLocked(email: string): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const user = await withCircuit(
           "get-user-lockout-check",
           () => userRepository.getUserByEmail(email),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!user?.lockoutUntil) return false;
+        if (!user?.lockoutUntil) return ok(false);
 
         if (user.lockoutUntil > new Date()) {
-          return true;
+          return ok(true);
         }
 
         // Lock expired, reset attempts
         await this.recordSuccessfulLogin(email);
-        return false;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new DatabaseError("Failed to check lockout status", { cause: error });
-      },
+        return ok(false);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new DatabaseError("Failed to check lockout status", { cause: error }));
+      }),
     );
   }
 
   public async recordFailedLogin(email: string): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         const user = await withCircuit(
           "get-user-failed-login",
           () => userRepository.getUserByEmail(email),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!user) return undefined;
+        if (!user) return ok(undefined);
 
         const attempts = (user.failedLoginAttempts || 0) + 1;
         const updates: Partial<User> = {
@@ -446,24 +445,23 @@ export class AuthService {
           () => userRepository.updateUser(user.id, updates),
           DB_CIRCUIT_OPTIONS,
         );
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new DatabaseError("Failed to record failed login", { cause: error });
-      },
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new DatabaseError("Failed to record failed login", { cause: error }));
+      }),
     );
   }
 
   public async recordSuccessfulLogin(email: string): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         const user = await withCircuit(
           "get-user-successful-login",
           () => userRepository.getUserByEmail(email),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!user) return undefined;
+        if (!user) return ok(undefined);
 
         await withCircuit(
           "update-user-successful-login",
@@ -475,29 +473,27 @@ export class AuthService {
             }),
           DB_CIRCUIT_OPTIONS,
         );
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new DatabaseError("Failed to record successful login", { cause: error });
-      },
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new DatabaseError("Failed to record successful login", { cause: error }));
+      }),
     );
   }
 
   public async getFailedAttempts(email: string): Promise<Result<number, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<number> => {
+    return new ResultAsync(
+      (async (): Promise<Result<number, AppError>> => {
         const user = await withCircuit(
           "get-user-failed-attempts",
           () => userRepository.getUserByEmail(email),
           DB_CIRCUIT_OPTIONS,
         );
-        return user?.failedLoginAttempts ?? 0;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new DatabaseError("Failed to get failed attempts", { cause: error });
-      },
+        return ok(user?.failedLoginAttempts ?? 0);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new DatabaseError("Failed to get failed attempts", { cause: error }));
+      }),
     );
   }
 
@@ -525,8 +521,8 @@ export class AuthService {
       return err(new InternalError("Dev login not allowed in production"));
     }
 
-    return ResultAsync.fromPromise(
-      (async (): Promise<SessionUser> => {
+    return new ResultAsync(
+      (async (): Promise<Result<SessionUser, AppError>> => {
         const adminUser = await withCircuit(
           "dev-login-fetch",
           () => userRepository.getUserByEmail("team@wear-run.com"),
@@ -534,7 +530,7 @@ export class AuthService {
         );
 
         if (!adminUser) {
-          throw new NotFoundError("Admin user team@wear-run.com");
+          return err(new NotFoundError("Admin user team@wear-run.com"));
         }
 
         const sessionUser: SessionUser = {
@@ -542,12 +538,11 @@ export class AuthService {
           claims: { sub: adminUser.id, email: adminUser.email, isMock: true },
         };
 
-        return sessionUser;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError("Failed to perform dev login", { error });
-      },
+        return ok(sessionUser);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("Failed to perform dev login", { error }));
+      }),
     );
   }
 
@@ -561,8 +556,8 @@ export class AuthService {
     const skipDb = process.env.MOCK_DB === "true" || !(await isDatabasePoolHealthy());
     if (skipDb) return ok(undefined);
 
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         await withCircuit(
           "seed-mock-user",
           () =>
@@ -577,13 +572,12 @@ export class AuthService {
             }),
           DB_CIRCUIT_OPTIONS,
         );
-        return undefined;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.warn("[AuthService] Failed to seed mock user", error);
-        return new InternalError("Failed to seed mock user", { cause: error });
-      },
+        return err(new InternalError("Failed to seed mock user", { cause: error }));
+      }),
     );
   }
 
@@ -592,20 +586,19 @@ export class AuthService {
    */
   public async getUserInfo(userId: string): Promise<Result<User, AppError>> {
     const { userRepository } = await import("./repositories/index.js");
-    return ResultAsync.fromPromise(
-      (async (): Promise<User> => {
+    return new ResultAsync(
+      (async (): Promise<Result<User, AppError>> => {
         const dbUser = await withCircuit(
           "get-user-info",
           () => userRepository.getUser(userId),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!dbUser) throw new NotFoundError("User not found");
-        return dbUser;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError("Failed to get user info", { cause: error });
-      },
+        if (!dbUser) return err(new NotFoundError("User not found"));
+        return ok(dbUser);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("Failed to get user info", { cause: error }));
+      }),
     );
   }
 }

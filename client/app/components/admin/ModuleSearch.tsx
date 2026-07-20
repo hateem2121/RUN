@@ -60,7 +60,7 @@ export function ModuleSearch({ links }: ModuleSearchProps) {
           <Command className="bg-transparent text-white [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
             <CommandInput
               placeholder="Type a command or search..."
-              className="border-b border-white/[0.08] text-white placeholder:text-muted-foreground focus:ring-0 outline-none"
+              className="border-b border-white/[0.08] text-white placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50"
             />
             <CommandList className="max-h-custom-space-1 overflow-y-auto overflow-x-hidden">
               <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">

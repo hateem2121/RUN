@@ -182,6 +182,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 ### 5.1.1 Exceptions to `noExplicitAny`
 - **React Hook Form**: When strict type inference fails for `form.control` or `useFieldArray` combined with complex Zod schemas under React 19, you may bypass the constraint using `// biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict` combined with an explicit `as any` cast. This is the **only** permitted use case for `any`.
 - **Third-Party Interfaces**: When implementing third-party interfaces (like `express-session` Store) that dictate `any` in their types (e.g., `callback?: (err?: any) => void`), you must use `unknown` in your implementation parameters (e.g., `callback?: (err?: unknown) => void`). Do not use `as any` for type casting external properties (like dates); instead, cast to the specific expected union types (e.g., `as string | number | Date`). Note: When adapting third-party classes, you must still return `ResultAsync` objects internally to maintain safety, even if the parent interface defines the return type as `void`.
+- **General Type Casting**: When resolving complex type mismatches across layers (e.g., casting a repository `Error` to a service `AppError`), NEVER use `as any` as a shortcut. Use double-casting via unknown: `as unknown as ExpectedType`.
 
 ### 5.1.2 Middleware Strictness
 - **neverthrow mandatory**: All Express middleware (`server/middleware/`) including rate limiters, CSRF validation, idempotency caching, and RBAC audit logs MUST strictly use `ResultAsync.fromPromise` and `Result.fromThrowable`. Raw `try/catch` blocks used as fail-safes or fallbacks (even for synchronous operations like `JSON.parse` or input sanitization) are strictly prohibited and must be converted to `match()` handlers.
@@ -297,6 +298,9 @@ export function MyComponent() { ... }          // Named exports for general comp
 // CSP Nonce handling
 // In React 19, never pass an empty string to `nonce` as it causes hydration mismatches (the server emits `nonce=""` but the client drops the attribute). Always fallback to `undefined`.
 const nonce = loaderData?.cspNonce || undefined;
+
+// HTML DOM Attributes
+// React strictly enforces camelCase for specific HTML attributes. Always use `fetchPriority` (not `fetchpriority`).
 ```
 
 ### 6.5 `neverthrow` Service Pattern (Mandatory)
@@ -321,6 +325,16 @@ result.match(
 // NEVER .unwrap() in production — it throws
 // NEVER raw throw in service files
 // NEVER use raw try/catch blocks as fallbacks in middleware or services
+
+// Complex Async Blocks (IIFEs)
+// When wrapping complex async logic that requires an IIFE, do not use `ResultAsync.fromPromise` as it breaks method chaining type inference. Use `new ResultAsync` directly:
+// return new ResultAsync(
+//   (async () => {
+//     const res = await doSomething();
+//     if (!res) return err(new AppError("Failed"));
+//     return ok(res);
+//   })().catch(error => err(new InternalError("Crash", { error })))
+// );
 ```
 
 ### 6.6 Drizzle + Zod Schema Pattern (Mandatory)

@@ -1,5 +1,6 @@
 import { type InsertLegalPolicy, type LegalPolicy, legalPolicies } from "@run-remix/shared";
 import { eq } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import { db } from "../../../db.js";
 import { emitCacheInvalidation } from "../../../lib/cache/cache-events.js";
 import { UnifiedCache } from "../../../lib/cache/unified-cache.js";
@@ -82,15 +83,15 @@ class LegalRepository {
     return policy ?? undefined;
   }
 
-  async createLegalPolicy(policy: InsertLegalPolicy): Promise<LegalPolicy> {
+  async createLegalPolicy(policy: InsertLegalPolicy): Promise<Result<LegalPolicy, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createLegalPolicy(policy);
+      return ok(await StorageSingleton.getInstance().createLegalPolicy(policy));
     }
     const [created] = await db.insert(legalPolicies).values(policy).returning();
-    if (!created) throw new Error("Failed to create legal policy");
+    if (!created) return err(new Error("Failed to create legal policy"));
 
     await this.clearCache(created.slug);
-    return created;
+    return ok(await created);
   }
 
   async updateLegalPolicy(

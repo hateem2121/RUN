@@ -33,7 +33,7 @@ import {
   sizeCharts,
 } from "@run-remix/shared";
 import { count } from "drizzle-orm";
-import { type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { db } from "../../db.js";
 import { encrypt, getBlindIndex } from "../../lib/encryption.js";
 import { AppError, InternalError, NotFoundError } from "../../lib/errors.js";
@@ -133,14 +133,19 @@ export interface AuditContext {
       AppError
     >
   > {
-    return ResultAsync.fromPromise(
-      (async (): Promise<{
-        products: unknown[];
-        categories: unknown[];
-        fabrics: unknown[];
-        mediaAssets: unknown[];
-        meta: unknown;
-      }> => {
+    return new ResultAsync(
+      (async (): Promise<
+        Result<
+          {
+            products: unknown[];
+            categories: unknown[];
+            fabrics: unknown[];
+            mediaAssets: unknown[];
+            meta: unknown;
+          },
+          AppError
+        >
+      > => {
         const offset = (page - 1) * limit;
 
         const metadataPromises = options.skipMetadata
@@ -213,7 +218,7 @@ export interface AuditContext {
           originalName: asset.originalName,
         }));
 
-        return {
+        return ok({
           products: enhancedProducts,
           categories: Array.isArray(categories) ? categories : [],
           fabrics: Array.isArray(fabrics) ? fabrics : [],
@@ -228,17 +233,16 @@ export interface AuditContext {
             limit,
             totalPages: Math.ceil(totalProductsCount / limit),
           },
-        };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error(
           "[AdminService] Failed to fetch initial products data",
           undefined,
           error as Error,
         );
-        return new InternalError("Failed to fetch initial products data", { error });
-      },
+        return err(new InternalError("Failed to fetch initial products data", { error }));
+      }),
     );
   }
 
@@ -263,14 +267,19 @@ export interface AuditContext {
       AppError
     >
   > {
-    return ResultAsync.fromPromise(
-      (async (): Promise<{
-        products: unknown[];
-        categories: unknown[];
-        fabrics: unknown[];
-        mediaAssets: unknown[];
-        meta: unknown;
-      }> => {
+    return new ResultAsync(
+      (async (): Promise<
+        Result<
+          {
+            products: unknown[];
+            categories: unknown[];
+            fabrics: unknown[];
+            mediaAssets: unknown[];
+            meta: unknown;
+          },
+          AppError
+        >
+      > => {
         const { page = 1, limit = 50, search, categoryId, status } = options;
         const offset = (page - 1) * limit;
 
@@ -336,7 +345,7 @@ export interface AuditContext {
           primaryModelId: product.modelFileId || null,
         }));
 
-        return {
+        return ok({
           products: enhancedProducts,
           categories: Array.isArray(categories) ? categories : [],
           fabrics: Array.isArray(fabrics) ? fabrics : [],
@@ -350,13 +359,12 @@ export interface AuditContext {
             ),
             hasMore: offset + products.length < totalProductsCount,
           },
-        };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to fetch products list", undefined, error as Error);
-        return new InternalError("Failed to fetch products list", { error });
-      },
+        return err(new InternalError("Failed to fetch products list", { error }));
+      }),
     );
   }
 
@@ -367,28 +375,28 @@ export interface AuditContext {
     audit: AuditContext,
     data: InsertProduct,
   ): Promise<Result<Product, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Product> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Product, AppError>> => {
         const newProduct = await this.productRepo.createProduct(data);
+        if (newProduct.isErr()) return err(newProduct.error as any);
 
         // Log the creation
         await this.logAudit({
           action: "INSERT",
           tableName: "products",
-          recordId: newProduct.id.toString(),
+          recordId: newProduct.value.id.toString(),
           user: audit.user,
           userAgent: audit.userAgent,
           ipAddress: audit.ipAddress,
-          newValues: newProduct as Record<string, unknown>,
+          newValues: newProduct.value as Record<string, unknown>,
         });
 
-        return newProduct;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(newProduct.value);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to create product", undefined, error as Error);
-        return new InternalError("Failed to create product", { error });
-      },
+        return err(new InternalError("Failed to create product", { error }));
+      }),
     );
   }
 
@@ -400,12 +408,12 @@ export interface AuditContext {
     id: number,
     data: Partial<InsertProduct>,
   ): Promise<Result<Product, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Product> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Product, AppError>> => {
         // Get original for audit log
         const original = await this.productRepo.getProduct(id);
         if (!original) {
-          throw new NotFoundError(`Product with ID ${id}`);
+          return err(new NotFoundError(`Product with ID ${id}`));
         }
 
         const updatedProduct = await this.productRepo.updateProduct(id, data);
@@ -422,13 +430,12 @@ export interface AuditContext {
           newValues: updatedProduct! as Record<string, unknown>,
         });
 
-        return updatedProduct!;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(updatedProduct!);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to update product", { id }, error as Error);
-        return new InternalError("Failed to update product", { id, error });
-      },
+        return err(new InternalError("Failed to update product", { id, error }));
+      }),
     );
   }
 
@@ -440,8 +447,8 @@ export interface AuditContext {
     audit: AuditContext,
     timeoutMs = 30000,
   ): Promise<Result<{ fixedCount: number; fixedCategories: string[] }, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<{ fixedCount: number; fixedCategories: string[] }> => {
+    return new ResultAsync(
+      (async (): Promise<Result<{ fixedCount: number; fixedCategories: string[] }, AppError>> => {
         logger.debug("AdminService: Starting cleanup of corrupted media URLs", { timeoutMs });
         // Fetch all categories - this is fast
         const categories = await withCircuit(
@@ -475,7 +482,7 @@ export interface AuditContext {
 
         if (categoriesToUpdate.length === 0) {
           logger.info("AdminService: No corrupted media URLs found.");
-          return { fixedCount: 0, fixedCategories: [] };
+          return ok({ fixedCount: 0, fixedCategories: [] });
         }
 
         logger.info("AdminService: Found categories with corrupted media. Processing updates...", {
@@ -547,13 +554,12 @@ export interface AuditContext {
           });
         }
 
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to fix corrupted media", undefined, error as Error);
-        return new InternalError("Failed to fix corrupted media", { error });
-      },
+        return err(new InternalError("Failed to fix corrupted media", { error }));
+      }),
     );
   }
 
@@ -565,8 +571,8 @@ export interface AuditContext {
     autoClean: boolean,
     timeoutMs = 60000,
   ): Promise<Result<Record<string, unknown>, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Record<string, unknown>> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Record<string, unknown>, AppError>> => {
         const scheduler = getLifecycleScheduler();
         // Assuming scheduler runs in background/async, but if we await a report, we should timeout the wait
         // If runCleanup is long, we wrap it.
@@ -594,13 +600,12 @@ export interface AuditContext {
         });
 
         // biome-ignore lint/suspicious/noExplicitAny: Dynamic cleanup report structure
-        return report as unknown as Record<string, any>;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(report as unknown as Record<string, any>);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to trigger cleanup", undefined, error as Error);
-        return new InternalError("Failed to trigger cleanup", { error });
-      },
+        return err(new InternalError("Failed to trigger cleanup", { error }));
+      }),
     );
   }
 
@@ -611,8 +616,8 @@ export interface AuditContext {
     audit: AuditContext,
     config: { enabled?: boolean | undefined; trackedTables?: string[] | undefined },
   ): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         if (typeof config.enabled === "boolean") {
           this.systemRepo.setAuditTrailEnabled(config.enabled);
         }
@@ -632,13 +637,12 @@ export interface AuditContext {
           metadata: { operation: "update-audit-config" },
         });
 
-        return true;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(true);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to update audit config", undefined, error as Error);
-        return new InternalError("Failed to update audit config", { error });
-      },
+        return err(new InternalError("Failed to update audit config", { error }));
+      }),
     );
   }
 
@@ -646,8 +650,8 @@ export interface AuditContext {
    * Restores a soft-deleted category
    */
   async restoreCategory(audit: AuditContext, id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const result = await withTimeout(
           this.productRepo.restoreCategory(id),
           5000,
@@ -666,13 +670,12 @@ export interface AuditContext {
           });
         }
 
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to restore category", { id }, error as Error);
-        return new InternalError("Failed to restore category", { id, error });
-      },
+        return err(new InternalError("Failed to restore category", { id, error }));
+      }),
     );
   }
 
@@ -680,8 +683,8 @@ export interface AuditContext {
    * Restores a soft-deleted product
    */
   async restoreProduct(audit: AuditContext, id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const result = await withCircuit(
           "restore-product",
           () => this.productRepo.restoreProduct(id),
@@ -700,13 +703,12 @@ export interface AuditContext {
           });
         }
 
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to restore product", { id }, error as Error);
-        return new InternalError("Failed to restore product", { id, error });
-      },
+        return err(new InternalError("Failed to restore product", { id, error }));
+      }),
     );
   }
 
@@ -714,8 +716,8 @@ export interface AuditContext {
    * Restores a soft-deleted media asset
    */
   async restoreMediaAsset(audit: AuditContext, id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const result = await withTimeout(
           this.mediaRepo.restoreMediaAsset(id),
           5000,
@@ -734,13 +736,12 @@ export interface AuditContext {
           });
         }
 
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to restore media asset", { id }, error as Error);
-        return new InternalError("Failed to restore media asset", { id, error });
-      },
+        return err(new InternalError("Failed to restore media asset", { id, error }));
+      }),
     );
   }
 
@@ -748,8 +749,8 @@ export interface AuditContext {
    * Retrieves aggregated statistics for the Admin CMS Dashboard
    */
   async getDashboardStats(): Promise<Result<Record<string, number>, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Record<string, number>> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Record<string, number>, AppError>> => {
         const [
           productsCount,
           categoriesCount,
@@ -774,7 +775,7 @@ export interface AuditContext {
           db.select({ count: count() }).from(inquiries),
         ]);
 
-        return {
+        return ok({
           products: productsCount[0]?.count || 0,
           categories: categoriesCount[0]?.count || 0,
           media: mediaCount[0]?.count || 0,
@@ -786,13 +787,12 @@ export interface AuditContext {
           navigationItems: navigationItemsCount[0]?.count || 0,
           inquiries: inquiriesCount[0]?.count || 0,
           storage: 0, // Implement proper storage metrics later
-        };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to fetch dashboard stats", undefined, error as Error);
-        return new InternalError("Failed to fetch dashboard stats", { error });
-      },
+        return err(new InternalError("Failed to fetch dashboard stats", { error }));
+      }),
     );
   }
 
@@ -800,23 +800,22 @@ export interface AuditContext {
    * Retrieves a single product by ID with full detail columns.
    */
   async getProductById(id: number): Promise<Result<ProductDetail, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ProductDetail> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ProductDetail, AppError>> => {
         const product = await withCircuit(
           "get-product-by-id",
           () => this.productRepo.getProduct(id),
           DB_CIRCUIT_OPTIONS,
         );
         if (!product) {
-          throw new NotFoundError(`Product with ID ${id}`);
+          return err(new NotFoundError(`Product with ID ${id}`));
         }
-        return product;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(product);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to fetch product", { id }, error as Error);
-        return new InternalError("Failed to fetch product", { id, error });
-      },
+        return err(new InternalError("Failed to fetch product", { id, error }));
+      }),
     );
   }
 
@@ -824,12 +823,12 @@ export interface AuditContext {
    * Soft-deletes a product (sets deletedAt) and logs the action.
    */
   async softDeleteProduct(audit: AuditContext, id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         // Fetch original to log old values
         const original = await this.productRepo.getProduct(id);
         if (!original) {
-          throw new NotFoundError(`Product with ID ${id}`);
+          return err(new NotFoundError(`Product with ID ${id}`));
         }
 
         const result = await withTimeout(
@@ -853,13 +852,12 @@ export interface AuditContext {
           });
         }
 
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to soft delete product", { id }, error as Error);
-        return new InternalError("Failed to soft delete product", { id, error });
-      },
+        return err(new InternalError("Failed to soft delete product", { id, error }));
+      }),
     );
   }
 
@@ -868,20 +866,19 @@ export interface AuditContext {
    * Extracted from route handler to maintain thin controller pattern (AS-106).
    */
   async getMediaAssetsList(): Promise<Result<MediaAssetSummary[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<MediaAssetSummary[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<MediaAssetSummary[], AppError>> => {
         const assets = await withCircuit(
           "get-all-media-assets-admin",
           () => this.mediaRepo.getMediaAssets(),
           DB_CIRCUIT_OPTIONS,
         );
-        return assets || [];
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(assets || []);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to fetch all media assets", undefined, error as Error);
-        return new InternalError("Failed to fetch all media assets", { error });
-      },
+        return err(new InternalError("Failed to fetch all media assets", { error }));
+      }),
     );
   }
 
@@ -894,16 +891,16 @@ export interface AuditContext {
     id: number,
     confirm: string,
   ): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         if (confirm !== "DELETE") {
-          throw new InternalError("Hard delete requires { confirm: 'DELETE' }");
+          return err(new InternalError("Hard delete requires { confirm: 'DELETE' }"));
         }
 
         // Fetch original to log old values
         const original = await this.productRepo.getProduct(id);
         if (!original) {
-          throw new NotFoundError(`Product with ID ${id}`);
+          return err(new NotFoundError(`Product with ID ${id}`));
         }
 
         const result = await withTimeout(
@@ -924,13 +921,12 @@ export interface AuditContext {
           });
         }
 
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to hard delete product", { id }, error as Error);
-        return new InternalError("Failed to hard delete product", { id, error });
-      },
+        return err(new InternalError("Failed to hard delete product", { id, error }));
+      }),
     );
   }
 
@@ -945,23 +941,22 @@ export interface AuditContext {
     const { normalizeSlug } = await import("../../lib/utilities/slug-utils.js");
     const normalizedSlug = normalizeSlug(slug);
 
-    return ResultAsync.fromPromise(
-      (async (): Promise<{ available: boolean }> => {
+    return new ResultAsync(
+      (async (): Promise<Result<{ available: boolean }, AppError>> => {
         const existing = await this.productRepo.getProductBySlug(normalizedSlug);
         if (!existing) {
-          return { available: true };
+          return ok({ available: true });
         }
         // If the slug belongs to the product being edited, consider it available
         if (excludeId && existing.id === excludeId) {
-          return { available: true };
+          return ok({ available: true });
         }
-        return { available: false };
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok({ available: false });
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to check slug availability", { slug }, error as Error);
-        return new InternalError("Failed to check slug availability", { slug, error });
-      },
+        return err(new InternalError("Failed to check slug availability", { slug, error }));
+      }),
     );
   }
 
@@ -970,16 +965,15 @@ export interface AuditContext {
   // =============================================================================
 
   async getCertificatesList(): Promise<Result<Certificate[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Certificate[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Certificate[], AppError>> => {
         const result = await this.miscRepo.getCertificates();
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to fetch certificates list", undefined, error as Error);
-        return new InternalError("Failed to fetch certificates list", { error });
-      },
+        return err(new InternalError("Failed to fetch certificates list", { error }));
+      }),
     );
   }
 
@@ -987,8 +981,8 @@ export interface AuditContext {
     audit: AuditContext,
     data: unknown,
   ): Promise<Result<Certificate, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Certificate> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Certificate, AppError>> => {
         const validated = insertCertificateSchema.parse(data);
         const result = await this.miscRepo.createCertificate(validated);
 
@@ -1002,13 +996,12 @@ export interface AuditContext {
           newValues: result as Record<string, unknown>,
         });
 
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to create certificate", undefined, error as Error);
-        return new InternalError("Failed to create certificate", { error });
-      },
+        return err(new InternalError("Failed to create certificate", { error }));
+      }),
     );
   }
 
@@ -1017,11 +1010,11 @@ export interface AuditContext {
     id: number,
     data: Partial<InsertCertificate>,
   ): Promise<Result<Certificate, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Certificate> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Certificate, AppError>> => {
         const original = await this.miscRepo.getCertificate(id);
         if (!original) {
-          throw new NotFoundError(`Certificate with ID ${id}`);
+          return err(new NotFoundError(`Certificate with ID ${id}`));
         }
 
         const result = await this.miscRepo.updateCertificate(id, data);
@@ -1037,22 +1030,21 @@ export interface AuditContext {
           newValues: result! as Record<string, unknown>,
         });
 
-        return result!;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result!);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to update certificate", { id }, error as Error);
-        return new InternalError("Failed to update certificate", { id, error });
-      },
+        return err(new InternalError("Failed to update certificate", { id, error }));
+      }),
     );
   }
 
   async deleteCertificate(audit: AuditContext, id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const original = await this.miscRepo.getCertificate(id);
         if (!original) {
-          throw new NotFoundError(`Certificate with ID ${id}`);
+          return err(new NotFoundError(`Certificate with ID ${id}`));
         }
 
         const result = await this.miscRepo.deleteCertificate(id);
@@ -1069,13 +1061,12 @@ export interface AuditContext {
           });
         }
 
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to delete certificate", { id }, error as Error);
-        return new InternalError("Failed to delete certificate", { id, error });
-      },
+        return err(new InternalError("Failed to delete certificate", { id, error }));
+      }),
     );
   }
 
@@ -1084,22 +1075,21 @@ export interface AuditContext {
   // =============================================================================
 
   async getFibersList(): Promise<Result<Fiber[], AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Fiber[]> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Fiber[], AppError>> => {
         const result = await this.miscRepo.getFibers();
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to fetch fibers list", undefined, error as Error);
-        return new InternalError("Failed to fetch fibers list", { error });
-      },
+        return err(new InternalError("Failed to fetch fibers list", { error }));
+      }),
     );
   }
 
   async createFiber(audit: AuditContext, data: unknown): Promise<Result<Fiber, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Fiber> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Fiber, AppError>> => {
         const validated = insertFiberSchema.parse(data);
         const result = await this.miscRepo.createFiber(validated);
 
@@ -1112,13 +1102,12 @@ export interface AuditContext {
           ipAddress: audit.ipAddress,
           newValues: result as Record<string, unknown>,
         });
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to create fiber", undefined, error as Error);
-        return new InternalError("Failed to create fiber", { error });
-      },
+        return err(new InternalError("Failed to create fiber", { error }));
+      }),
     );
   }
 
@@ -1127,11 +1116,11 @@ export interface AuditContext {
     id: number,
     data: Partial<InsertFiber>,
   ): Promise<Result<Fiber, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<Fiber> => {
+    return new ResultAsync(
+      (async (): Promise<Result<Fiber, AppError>> => {
         const original = await this.miscRepo.getFiber(id);
         if (!original) {
-          throw new NotFoundError(`Fiber with ID ${id}`);
+          return err(new NotFoundError(`Fiber with ID ${id}`));
         }
 
         const updatedFiber = await this.miscRepo.updateFiber(id, data);
@@ -1146,22 +1135,21 @@ export interface AuditContext {
           oldValues: original as Record<string, unknown>,
           newValues: updatedFiber as Record<string, unknown>,
         });
-        return updatedFiber!;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(updatedFiber!);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to update fiber", { id }, error as Error);
-        return new InternalError("Failed to update fiber", { id, error });
-      },
+        return err(new InternalError("Failed to update fiber", { id, error }));
+      }),
     );
   }
 
   async deleteFiber(audit: AuditContext, id: number): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const original = await this.miscRepo.getFiber(id);
         if (!original) {
-          throw new NotFoundError(`Fiber with ID ${id}`);
+          return err(new NotFoundError(`Fiber with ID ${id}`));
         }
 
         const result = await this.miscRepo.deleteFiber(id);
@@ -1178,13 +1166,12 @@ export interface AuditContext {
           });
         }
 
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to delete fiber", { id }, error as Error);
-        return new InternalError("Failed to delete fiber", { id, error });
-      },
+        return err(new InternalError("Failed to delete fiber", { id, error }));
+      }),
     );
   }
 
@@ -1200,13 +1187,13 @@ export interface AuditContext {
     audit: AuditContext,
     data: unknown,
   ): Promise<Result<AboutTimelineEntry, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutTimelineEntry> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutTimelineEntry, AppError>> => {
         const validated = insertAboutTimelineEntrySchema.parse(data);
         const result = await this.about.createTimelineEntry(validated);
 
         if (result.isErr()) {
-          throw result.error;
+          return err(result.error);
         }
 
         const entry = result.value;
@@ -1221,13 +1208,12 @@ export interface AuditContext {
           newValues: entry as Record<string, unknown>,
         });
 
-        return entry;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(entry);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to create timeline entry", undefined, error as Error);
-        return new InternalError("Failed to create timeline entry", { error });
-      },
+        return err(new InternalError("Failed to create timeline entry", { error }));
+      }),
     );
   }
 
@@ -1236,17 +1222,17 @@ export interface AuditContext {
     id: number,
     data: Partial<InsertAboutTimelineEntry>,
   ): Promise<Result<AboutTimelineEntry, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<AboutTimelineEntry> => {
+    return new ResultAsync(
+      (async (): Promise<Result<AboutTimelineEntry, AppError>> => {
         const originalResult = await this.about.getTimelineEntry(id);
         if (originalResult.isErr()) {
-          throw originalResult.error;
+          return err(originalResult.error);
         }
         const original = originalResult.value;
 
         const updateResult = await this.about.updateTimelineEntry(id, data);
         if (updateResult.isErr()) {
-          throw updateResult.error;
+          return err(updateResult.error);
         }
         const result = updateResult.value;
 
@@ -1261,13 +1247,12 @@ export interface AuditContext {
           newValues: result! as Record<string, unknown>,
         });
 
-        return result!;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result!);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to update timeline entry", { id }, error as Error);
-        return new InternalError("Failed to update timeline entry", { id, error });
-      },
+        return err(new InternalError("Failed to update timeline entry", { id, error }));
+      }),
     );
   }
 
@@ -1275,14 +1260,14 @@ export interface AuditContext {
     audit: AuditContext,
     id: number,
   ): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
         const originalResult = await this.about.getTimelineEntry(id);
         const original = originalResult.isOk() ? originalResult.value : null;
 
         const deleteResult = await this.about.deleteTimelineEntry(id);
         if (deleteResult.isErr()) {
-          throw deleteResult.error;
+          return err(deleteResult.error);
         }
         const result = deleteResult.value;
 
@@ -1298,13 +1283,12 @@ export interface AuditContext {
           });
         }
 
-        return result;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(result);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[AdminService] Failed to delete timeline entry", { id }, error as Error);
-        return new InternalError("Failed to delete timeline entry", { id, error });
-      },
+        return err(new InternalError("Failed to delete timeline entry", { id, error }));
+      }),
     );
   }
 
@@ -1333,27 +1317,29 @@ export interface AuditContext {
       timestamp: number;
     }[] = [];
 
-    return ResultAsync.fromPromise(
+    return new ResultAsync(
       (async (): Promise<
-        {
-          id: string | undefined;
-          queue: string;
-          name: string;
-          data: unknown;
-          failedReason: string;
-          timestamp: number;
-        }[]
+        Result<
+          {
+            id: string | undefined;
+            queue: string;
+            name: string;
+            data: unknown;
+            failedReason: string;
+            timestamp: number;
+          }[],
+          AppError
+        >
       > => {
         // Background jobs have been migrated to Google Cloud Tasks,
         // which manages its own dead-letter queues and retry policies.
         // Monitoring and retries are now performed via GCP Console.
 
-        return failedJobs;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError("Failed to fetch failed jobs", { cause: error });
-      },
+        return ok(failedJobs);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError("Failed to fetch failed jobs", { cause: error }));
+      }),
     );
   }
 
@@ -1361,16 +1347,15 @@ export interface AuditContext {
    * Manually retries a failed job [WJ-108]
    */
   async retryJob(queueName: string, jobId: string): Promise<Result<boolean, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<boolean> => {
-        throw new NotFoundError(
-          `Queue ${queueName} not found. Retries are managed via Cloud Tasks.`,
+    return new ResultAsync(
+      (async (): Promise<Result<boolean, AppError>> => {
+        return err(
+          new NotFoundError(`Queue ${queueName} not found. Retries are managed via Cloud Tasks.`),
         );
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
-        return new InternalError(`Failed to retry job ${jobId}`, { cause: error });
-      },
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
+        return err(new InternalError(`Failed to retry job ${jobId}`, { cause: error }));
+      }),
     );
   }
 }

@@ -156,7 +156,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         />
       </head>
 
-      <body suppressHydrationWarning>
+      <body
+        className="bg-background text-foreground transition-colors duration-300"
+        suppressHydrationWarning
+      >
         <ThemeProvider>
           <HelmetProvider>
             <QueryClientProvider client={queryClient}>

@@ -1,5 +1,5 @@
 import type { ContactPageConfiguration, InsertContactPageConfiguration } from "@run-remix/shared";
-import { ok, type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { AppError, InternalError, NotFoundError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
@@ -21,8 +21,8 @@ class ContactService {
    * Retrieves the contact page configuration
    */
   async getContactPageConfiguration(): Promise<Result<ContactPageConfiguration, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ContactPageConfiguration> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ContactPageConfiguration, AppError>> => {
         const config = await withCircuit(
           "get-contact-config",
           () => miscRepository.getContactPageConfiguration(),
@@ -30,16 +30,15 @@ class ContactService {
         );
 
         if (!config) {
-          throw new NotFoundError("Contact page configuration");
+          return err(new NotFoundError("Contact page configuration"));
         }
 
-        return config;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(config);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ContactService] Failed to fetch contact configuration", error as Error);
-        return new InternalError("Failed to fetch contact configuration", { error });
-      },
+        return err(new InternalError("Failed to fetch contact configuration", { error }));
+      }),
     );
   }
 
@@ -49,21 +48,20 @@ class ContactService {
   async createContactPageConfiguration(
     data: InsertContactPageConfiguration,
   ): Promise<Result<ContactPageConfiguration, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ContactPageConfiguration> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ContactPageConfiguration, AppError>> => {
         const created = await withCircuit(
           "create-contact-config",
           () => miscRepository.createContactPageConfiguration(data),
           DB_CIRCUIT_OPTIONS,
         );
 
-        return created;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(created);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[ContactService] Failed to create contact configuration", error as Error);
-        return new InternalError("Failed to create contact configuration", { error });
-      },
+        return err(new InternalError("Failed to create contact configuration", { error }));
+      }),
     );
   }
 
@@ -74,8 +72,8 @@ class ContactService {
     id: number,
     data: Partial<InsertContactPageConfiguration>,
   ): Promise<Result<ContactPageConfiguration, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<ContactPageConfiguration> => {
+    return new ResultAsync(
+      (async (): Promise<Result<ContactPageConfiguration, AppError>> => {
         const updated = await withCircuit(
           "update-contact-config",
           () => miscRepository.updateContactPageConfiguration(id, data),
@@ -83,20 +81,19 @@ class ContactService {
         );
 
         if (!updated) {
-          throw new NotFoundError(`Contact configuration with ID ${id}`);
+          return err(new NotFoundError(`Contact configuration with ID ${id}`));
         }
 
-        return updated;
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(updated);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error(
           "[ContactService] Failed to update contact configuration",
           { id },
           error as Error,
         );
-        return new InternalError("Failed to update contact configuration", { id, error });
-      },
+        return err(new InternalError("Failed to update contact configuration", { id, error }));
+      }),
     );
   }
 

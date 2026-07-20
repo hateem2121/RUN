@@ -60,7 +60,10 @@ export const Sections: React.FC<SectionsProps> = ({ data }) => {
       : DEFAULT_SECTIONS;
 
   return (
-    <section className="w-full bg-background px-4 py-32 md:px-8" aria-labelledby="sections-heading">
+    <section
+      className="w-full bg-background px-4 py-32 md:px-8 content-auto"
+      aria-labelledby="sections-heading"
+    >
       <div className="mx-auto max-w-container-2xl">
         <h2 id="sections-heading" className="sr-only">
           About RUN Apparel

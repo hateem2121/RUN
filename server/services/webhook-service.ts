@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import type { WebhookEventName, WebhookPayloadMap, WebhookSubscription } from "@shared/index.js";
-import { type Result, ResultAsync } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { AppError, InternalError } from "../lib/errors.js";
 import { logger } from "../lib/monitoring/logger.js";
 import {
@@ -27,8 +27,8 @@ class WebhookService {
     event: E,
     payload: WebhookPayloadMap[E],
   ): Promise<Result<void, AppError>> {
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         const subscriptions = await withCircuit(
           "get-webhook-subscriptions",
           () => webhookRepository.getWebhookSubscriptions(),
@@ -41,7 +41,7 @@ class WebhookService {
 
         if (activeSubs.length === 0) {
           logger.debug("[WebhookService] No active subscribers for event", { event });
-          return;
+          return ok(undefined);
         }
 
         logger.info("[WebhookService] Triggering event", {
@@ -58,12 +58,12 @@ class WebhookService {
             });
           });
         }
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[WebhookService] Failed to trigger event", { error, event });
-        return new InternalError("Failed to trigger event", { error });
-      },
+        return err(new InternalError("Failed to trigger event", { error }));
+      }),
     );
   }
 
@@ -85,8 +85,8 @@ class WebhookService {
 
     const signature = this.generateSignature(deliveryPayload, sub.secret);
 
-    return ResultAsync.fromPromise(
-      (async (): Promise<void> => {
+    return new ResultAsync(
+      (async (): Promise<Result<void, AppError>> => {
         // Use withCircuit for external API call
         const response = await withCircuit(
           `webhook-delivery-${sub.id}`,
@@ -132,9 +132,9 @@ class WebhookService {
             status: response.status,
           });
         }
-      })(),
-      (error) => {
-        if (error instanceof AppError) return error;
+        return ok(undefined);
+      })().catch((error) => {
+        if (error instanceof AppError) return err(error);
         logger.error("[WebhookService] Delivery failed", { error, url: sub.url });
 
         // Fire-and-forget logging for failure so we don't block
@@ -155,8 +155,8 @@ class WebhookService {
           logger.error("[WebhookService] Failed to log delivery failure", { error: logError });
         });
 
-        return new InternalError("Delivery failed", { error });
-      },
+        return err(new InternalError("Delivery failed", { error }));
+      }),
     );
   }
 

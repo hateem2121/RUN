@@ -16,6 +16,7 @@ import {
   manufacturingQualities,
 } from "@run-remix/shared";
 import { asc, eq, sql } from "drizzle-orm";
+import { err, ok, type Result } from "neverthrow";
 import { db } from "../../../db.js";
 import { CacheKeys } from "../../../lib/cache/cache-keys.js";
 import { CacheOperations } from "../../../lib/cache/cache-strategies.js";
@@ -43,9 +44,9 @@ class ManufacturingRepository {
 
   async updateManufacturingHero(
     data: Partial<InsertManufacturingHero>,
-  ): Promise<ManufacturingHero> {
+  ): Promise<Result<ManufacturingHero, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().updateManufacturingHero(data);
+      return ok(await StorageSingleton.getInstance().updateManufacturingHero(data));
     }
     const existing = await this.getManufacturingHero();
     await unifiedCache.del(CacheKeys.manufacturing.hero());
@@ -56,25 +57,25 @@ class ManufacturingRepository {
         .set({ ...data, updatedAt: new Date() })
         .where(eq(manufacturingHero.id, existing.id))
         .returning();
-      if (!updated) throw new Error("Failed to update manufacturing hero");
+      if (!updated) return err(new Error("Failed to update manufacturing hero"));
       await CacheOperations.invalidateManufacturing();
-      return updated;
+      return ok(await updated);
     } else {
       const [created] = await db
         .insert(manufacturingHero)
         .values(data as unknown as InsertManufacturingHero)
         .returning();
-      if (!created) throw new Error("Failed to create manufacturing hero");
+      if (!created) return err(new Error("Failed to create manufacturing hero"));
       await CacheOperations.invalidateManufacturing();
-      return created;
+      return ok(await created);
     }
   }
 
   async createManufacturingCapability(
     data: InsertManufacturingCapability,
-  ): Promise<ManufacturingCapability> {
+  ): Promise<Result<ManufacturingCapability, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createManufacturingCapability(data);
+      return ok(await StorageSingleton.getInstance().createManufacturingCapability(data));
     }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${manufacturingCapabilities.sortOrder})` })
@@ -86,9 +87,9 @@ class ManufacturingRepository {
       .values({ ...data, sortOrder: newOrder })
       .returning();
 
-    if (!created) throw new Error("Failed to create manufacturing capability");
+    if (!created) return err(new Error("Failed to create manufacturing capability"));
     await CacheOperations.invalidateManufacturing();
-    return created;
+    return ok(await created);
   }
 
   async getManufacturingCapabilities(includeInactive = false): Promise<ManufacturingCapability[]> {
@@ -119,11 +120,12 @@ class ManufacturingRepository {
   async updateManufacturingCapability(
     id: number,
     data: Partial<InsertManufacturingCapability>,
-  ): Promise<ManufacturingCapability> {
+  ): Promise<Result<ManufacturingCapability, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateManufacturingCapability(id, data);
-      if (!result) throw new Error(`updateManufacturingCapability returned undefined for id ${id}`);
-      return result;
+      if (!result)
+        return err(new Error(`updateManufacturingCapability returned undefined for id ${id}`));
+      return ok(await result);
     }
     await CacheOperations.invalidateManufacturing();
     const [updated] = await db
@@ -132,9 +134,9 @@ class ManufacturingRepository {
       .where(eq(manufacturingCapabilities.id, id))
       .returning();
 
-    if (!updated) throw new Error(`Failed to update manufacturing capability with id ${id}`);
+    if (!updated) return err(new Error(`Failed to update manufacturing capability with id ${id}`));
     await CacheOperations.invalidateManufacturing();
-    return updated;
+    return ok(await updated);
   }
 
   async deleteManufacturingCapability(id: number): Promise<boolean> {
@@ -193,9 +195,9 @@ class ManufacturingRepository {
 
   async createManufacturingProcess(
     data: InsertManufacturingProcess,
-  ): Promise<ManufacturingProcess> {
+  ): Promise<Result<ManufacturingProcess, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createManufacturingProcess(data);
+      return ok(await StorageSingleton.getInstance().createManufacturingProcess(data));
     }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${manufacturingProcesses.sortOrder})` })
@@ -207,19 +209,20 @@ class ManufacturingRepository {
       .values({ ...data, sortOrder: newOrder })
       .returning();
 
-    if (!created) throw new Error("Failed to create manufacturing process");
+    if (!created) return err(new Error("Failed to create manufacturing process"));
     await CacheOperations.invalidateManufacturing();
-    return created;
+    return ok(await created);
   }
 
   async updateManufacturingProcess(
     id: number,
     data: Partial<InsertManufacturingProcess>,
-  ): Promise<ManufacturingProcess> {
+  ): Promise<Result<ManufacturingProcess, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateManufacturingProcess(id, data);
-      if (!result) throw new Error(`updateManufacturingProcess returned undefined for id ${id}`);
-      return result;
+      if (!result)
+        return err(new Error(`updateManufacturingProcess returned undefined for id ${id}`));
+      return ok(await result);
     }
     await CacheOperations.invalidateManufacturing();
     const [updated] = await db
@@ -228,9 +231,9 @@ class ManufacturingRepository {
       .where(eq(manufacturingProcesses.id, id))
       .returning();
 
-    if (!updated) throw new Error(`Failed to update manufacturing process with id ${id}`);
+    if (!updated) return err(new Error(`Failed to update manufacturing process with id ${id}`));
     await CacheOperations.invalidateManufacturing();
-    return updated;
+    return ok(await updated);
   }
 
   async deleteManufacturingProcess(id: number): Promise<boolean> {
@@ -287,9 +290,9 @@ class ManufacturingRepository {
 
   async createManufacturingQuality(
     data: InsertManufacturingQuality,
-  ): Promise<ManufacturingQuality> {
+  ): Promise<Result<ManufacturingQuality, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createManufacturingQuality(data);
+      return ok(await StorageSingleton.getInstance().createManufacturingQuality(data));
     }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${manufacturingQualities.sortOrder})` })
@@ -301,19 +304,20 @@ class ManufacturingRepository {
       .values({ ...data, sortOrder: newOrder })
       .returning();
 
-    if (!created) throw new Error("Failed to create manufacturing quality");
+    if (!created) return err(new Error("Failed to create manufacturing quality"));
     await CacheOperations.invalidateManufacturing();
-    return created;
+    return ok(await created);
   }
 
   async updateManufacturingQuality(
     id: number,
     data: Partial<InsertManufacturingQuality>,
-  ): Promise<ManufacturingQuality> {
+  ): Promise<Result<ManufacturingQuality, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateManufacturingQuality(id, data);
-      if (!result) throw new Error(`updateManufacturingQuality returned undefined for id ${id}`);
-      return result;
+      if (!result)
+        return err(new Error(`updateManufacturingQuality returned undefined for id ${id}`));
+      return ok(await result);
     }
     await CacheOperations.invalidateManufacturing();
     const [updated] = await db
@@ -322,9 +326,9 @@ class ManufacturingRepository {
       .where(eq(manufacturingQualities.id, id))
       .returning();
 
-    if (!updated) throw new Error(`Failed to update manufacturing quality with id ${id}`);
+    if (!updated) return err(new Error(`Failed to update manufacturing quality with id ${id}`));
     await CacheOperations.invalidateManufacturing();
-    return updated;
+    return ok(await updated);
   }
 
   async deleteManufacturingQuality(id: number): Promise<boolean> {
@@ -385,9 +389,9 @@ class ManufacturingRepository {
 
   async createManufacturingCaseStudy(
     data: InsertManufacturingCaseStudy,
-  ): Promise<ManufacturingCaseStudy> {
+  ): Promise<Result<ManufacturingCaseStudy, Error>> {
     if (StorageSingleton.hasInstance()) {
-      return StorageSingleton.getInstance().createManufacturingCaseStudy(data);
+      return ok(await StorageSingleton.getInstance().createManufacturingCaseStudy(data));
     }
     const maxOrder = await db
       .select({ max: sql<number>`MAX(${manufacturingCaseStudies.sortOrder})` })
@@ -399,19 +403,20 @@ class ManufacturingRepository {
       .values({ ...data, sortOrder: newOrder })
       .returning();
 
-    if (!created) throw new Error("Failed to create manufacturing case study");
+    if (!created) return err(new Error("Failed to create manufacturing case study"));
     await CacheOperations.invalidateManufacturing();
-    return created;
+    return ok(await created);
   }
 
   async updateManufacturingCaseStudy(
     id: number,
     data: Partial<InsertManufacturingCaseStudy>,
-  ): Promise<ManufacturingCaseStudy> {
+  ): Promise<Result<ManufacturingCaseStudy, Error>> {
     if (StorageSingleton.hasInstance()) {
       const result = await StorageSingleton.getInstance().updateManufacturingCaseStudy(id, data);
-      if (!result) throw new Error(`updateManufacturingCaseStudy returned undefined for id ${id}`);
-      return result;
+      if (!result)
+        return err(new Error(`updateManufacturingCaseStudy returned undefined for id ${id}`));
+      return ok(await result);
     }
     await CacheOperations.invalidateManufacturing();
     const [updated] = await db
@@ -420,9 +425,9 @@ class ManufacturingRepository {
       .where(eq(manufacturingCaseStudies.id, id))
       .returning();
 
-    if (!updated) throw new Error(`Failed to update manufacturing case study with id ${id}`);
+    if (!updated) return err(new Error(`Failed to update manufacturing case study with id ${id}`));
     await CacheOperations.invalidateManufacturing();
-    return updated;
+    return ok(await updated);
   }
 
   async deleteManufacturingCaseStudy(id: number): Promise<boolean> {
