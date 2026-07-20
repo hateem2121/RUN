@@ -74,7 +74,7 @@ export const Sections: React.FC<SectionsProps> = ({ data }) => {
             <Card
               key={section.id}
               className={cn(
-                "group overflow-hidden border-border transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl",
+                "scroll-reveal group overflow-hidden border-border transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl",
                 section.sectionType === "sustainability" && "md:col-span-2",
               )}
               variant="glass-premium"

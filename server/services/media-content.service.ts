@@ -51,6 +51,13 @@ class MediaContentService {
         }
 
         const signedUrl = await appStorageService.generateSignedUrl(pathToServe, ttl);
+
+        // Ensure the asset actually exists in storage to prevent GCS 404 XML responses (which trigger CORB in browsers)
+        const exists = await appStorageService.assetExists(pathToServe);
+        if (!exists) {
+          return err(new NotFoundError(`Media source not found in storage: ${pathToServe}`));
+        }
+
         return ok(signedUrl);
       })().catch((error) => {
         if (error instanceof AppError) return err(error);

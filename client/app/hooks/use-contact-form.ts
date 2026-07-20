@@ -117,8 +117,25 @@ export function useContactForm(config?: UseContactFormConfig) {
     return [...countries].sort((a, b) => a.name.localeCompare(b.name));
   }, []);
 
+  const handleAgentSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const nativeEvent = event.nativeEvent as unknown as {
+      agentInvoked?: boolean;
+      respondWith?: (result: Promise<string>) => void;
+    };
+    if (nativeEvent.agentInvoked && nativeEvent.respondWith) {
+      const formData = new FormData(event.currentTarget);
+      const resultPromise = submitAction(state, formData).then((res) => {
+        if (res.success) return "Successfully submitted contact form.";
+        return "Error: " + (res.error || "Failed to submit.");
+      });
+      nativeEvent.respondWith(resultPromise);
+      event.preventDefault();
+    }
+  };
+
   return {
     formAction,
+    handleAgentSubmit,
     isPending,
     showSuccess,
     setShowSuccess,

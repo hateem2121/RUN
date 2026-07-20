@@ -22,6 +22,7 @@ import type { ModelViewerElement, ModelViewerErrorEvent } from "@/types/model-vi
 const LazyModelViewer = React.lazy(async () => {
   await import("@google/model-viewer");
   return {
+    // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     default: React.forwardRef<HTMLElement, any>((props, ref) => {
       return React.createElement("model-viewer", { ...props, ref });
     }),

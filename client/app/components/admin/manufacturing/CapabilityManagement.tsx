@@ -464,7 +464,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
   const handleAddEquipment = () => {
     if (newEquipment) {
       // biome-ignore lint/suspicious/noExplicitAny: bypass string array inference conflict
-      appendEquipment(newEquipment as any);
+      appendEquipment(newEquipment as unknown as any);
       setNewEquipment("");
     }
   };

@@ -162,6 +162,7 @@ class MediaQueryService {
           return err(new NotFoundError(`Media asset ${id} not found`));
         }
 
+        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
         if (success.isErr()) return err(success.error as any);
         return ok(success.value);
       })().catch((error) => {

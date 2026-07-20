@@ -54,6 +54,7 @@ export async function setupMiddleware(app: Express) {
         },
       },
       crossOriginEmbedderPolicy: false, // Required for some 3D/Media elements
+      crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow loading media from GCS storage buckets
     })(req, res, next);
   });
 

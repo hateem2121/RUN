@@ -267,6 +267,15 @@ export async function getMediaContent(req: Request<{ id: string }>, res: Respons
       return res.redirect(302, data);
     },
     (error) => {
+      if (error.name === "NotFoundError" || error.statusCode === 404) {
+        const transparentGif = Buffer.from(
+          "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+          "base64",
+        );
+        res.set("Content-Type", "image/gif");
+        res.set("Cache-Control", "public, max-age=300");
+        return res.status(404).send(transparentGif);
+      }
       throw error;
     },
   );
@@ -283,6 +292,15 @@ export async function getThumbnail(req: Request<{ id: string }>, res: Response) 
       return res.redirect(302, data);
     },
     (error) => {
+      if (error.name === "NotFoundError" || error.statusCode === 404) {
+        const transparentGif = Buffer.from(
+          "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+          "base64",
+        );
+        res.set("Content-Type", "image/gif");
+        res.set("Cache-Control", "public, max-age=300");
+        return res.status(404).send(transparentGif);
+      }
       throw error;
     },
   );

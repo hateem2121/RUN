@@ -166,3 +166,31 @@
 }
 
 /* Note: @keyframes (shadow-sm-pulse, rotate-bg, rotate, hue-animation) are defined in theme.css */
+
+/* Scroll-Driven Animations (View Timeline) */
+@keyframes scroll-grow {
+  from {
+    scale: 0.9;
+    opacity: 0;
+  }
+}
+@keyframes scroll-shrink {
+  to {
+    scale: 0.9;
+    opacity: 0;
+  }
+}
+
+@utility scroll-reveal {
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    @media (prefers-reduced-motion: no-preference) {
+      animation:
+        scroll-grow auto linear backwards,
+        scroll-shrink auto linear forwards;
+      animation-timeline: view(block);
+      animation-range:
+        entry 10%,
+        exit 10%;
+    }
+  }
+}

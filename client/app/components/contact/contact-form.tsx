@@ -40,6 +40,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
     setSelectedPlatform,
     countryOptions,
     state,
+    handleAgentSubmit,
   } = useContactForm({
     successMessage: contactConfig?.successMessage || "Your message has been sent successfully.",
   });
@@ -76,7 +77,14 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
               </div>
             )}
 
-            <form action={formAction} className="space-y-5" data-testid="form-contact">
+            <form
+              action={formAction}
+              onSubmit={handleAgentSubmit}
+              className="space-y-5"
+              data-testid="form-contact"
+              toolname="submit-contact-form"
+              tooldescription="Send a direct contact message to the company"
+            >
               <ContactFields
                 isPending={isPending}
                 countryOptions={countryOptions}

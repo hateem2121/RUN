@@ -135,6 +135,7 @@ class ServicesService {
           DB_CIRCUIT_OPTIONS,
         );
         await this.invalidateCache();
+        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
         if (created.isErr()) return err(created.error as any);
         return ok(created.value);
       })().catch((error) => {

@@ -95,6 +95,7 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
+        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
         if (updated.isErr()) return err(updated.error as any);
         return ok(updated.value);
       })().catch((error) => {
@@ -196,6 +197,7 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
+        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
         if (updated.isErr()) return err(updated.error as any);
         return ok(updated.value);
       })().catch((error) => {
@@ -337,6 +339,7 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
+        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
         if (updated.isErr()) return err(updated.error as any);
         return ok(updated.value);
       })().catch((error) => {
@@ -476,6 +479,7 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
+        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
         if (updated.isErr()) return err(updated.error as any);
         return ok(updated.value);
       })().catch((error) => {
@@ -712,6 +716,7 @@ const tracer = trace.getTracer("run-remix-services");
         );
 
         await this.invalidateCache();
+        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
         if (updated.isErr()) return err(updated.error as any);
         return ok(updated.value);
       })().catch((error) => {

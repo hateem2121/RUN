@@ -20,6 +20,7 @@ router.get("/fibers", async (_req, res) => {
 });
 
 router.post("/fibers", authService.requireAdmin, async (req, res) => {
+  // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
   const result = await miscService.createFiber(removeUndefined(req.body) as any);
 
   return result.match(

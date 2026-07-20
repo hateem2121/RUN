@@ -37,7 +37,9 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   useEffect(() => {
     return () => {
       if (navTimeoutRef.current) clearTimeout(navTimeoutRef.current);
-      loadTimeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
+      loadTimeoutsRef.current.forEach((timeout) => {
+        clearTimeout(timeout);
+      });
     };
   }, []);
 

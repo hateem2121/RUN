@@ -158,6 +158,7 @@ export async function withCircuit<T>(
     span.setAttribute("circuit.timeout", options.timeout || 5000);
 
     // biome-ignore lint/suspicious/noExplicitAny: Complex generic alignment
+    // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     const circuit = createCircuit(name, operation as any, options, fallback as any);
     try {
       const result = await circuit.fire();

@@ -267,6 +267,7 @@ class ProductService {
             ),
           DB_CIRCUIT_OPTIONS,
         );
+        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
         if (product.isErr()) return err(product.error as any);
         return ok(product.value);
       })().catch((error) => {

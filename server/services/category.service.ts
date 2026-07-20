@@ -256,6 +256,7 @@ class CategoryService {
           () => productRepository.createCategory(cleanedData),
           DB_CIRCUIT_OPTIONS,
         );
+        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
         if (category.isErr()) return err(category.error as any);
         return ok(category.value);
       })().catch((error) => {

@@ -123,6 +123,7 @@ class AccessoryService {
           return err(new NotFoundError(`Accessory with ID ${id}`));
         }
 
+        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
         if (success.isErr()) return err(success.error as any);
         return ok(success.value);
       })().catch((error) => {

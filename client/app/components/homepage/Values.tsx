@@ -37,7 +37,7 @@ const ValuesCard: React.FC<ValuesCardProps> = memo(
       <Card
         className={cn(
           colSpan,
-          "group relative flex min-h-value-card flex-col justify-between overflow-hidden border-border p-0 transition-all duration-500 will-change-transform hover:-translate-y-1 hover:shadow-2xl motion-reduce:transform-none",
+          "scroll-reveal group relative flex min-h-value-card flex-col justify-between overflow-hidden border-border p-0 transition-all duration-500 will-change-transform hover:-translate-y-1 hover:shadow-2xl motion-reduce:transform-none",
         )}
         variant="glass-premium"
         onMouseEnter={() => !isMobile && setCursor("button")}

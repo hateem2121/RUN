@@ -420,6 +420,8 @@ export default function Component() {
                   <div className="relative flex-1 sm:flex-none">
                     <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                     <Input
+                      id="search-products"
+                      name="search"
                       placeholder="Search products..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
@@ -429,8 +431,16 @@ export default function Component() {
                   </div>
 
                   {/* Category Filter */}
-                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger className="w-full sm:w-48" aria-label="Filter by category">
+                  <Select
+                    name="category"
+                    value={selectedCategory}
+                    onValueChange={setSelectedCategory}
+                  >
+                    <SelectTrigger
+                      id="category-filter"
+                      className="w-full sm:w-48"
+                      aria-label="Filter by category"
+                    >
                       <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
                     <SelectContent>
@@ -446,8 +456,8 @@ export default function Component() {
                   </Select>
 
                   {/* Sort */}
-                  <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-full sm:w-40" aria-label="Sort by">
+                  <Select name="sort" value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger id="sort-filter" className="w-full sm:w-40" aria-label="Sort by">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

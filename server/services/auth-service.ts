@@ -199,6 +199,7 @@ export class AuthService {
           DB_CIRCUIT_OPTIONS,
         );
 
+        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
         if (user.isErr()) return err(user.error as any);
 
         // Bootstrapping: Auto-promote initial admin

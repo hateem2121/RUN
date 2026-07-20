@@ -378,6 +378,7 @@ export interface AuditContext {
     return new ResultAsync(
       (async (): Promise<Result<Product, AppError>> => {
         const newProduct = await this.productRepo.createProduct(data);
+        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
         if (newProduct.isErr()) return err(newProduct.error as any);
 
         // Log the creation

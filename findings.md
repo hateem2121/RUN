@@ -38,3 +38,19 @@ All required verification steps pass successfully, ensuring the codebase strictl
 - **Code Quality**: Pushed DB retry logic and Zod validation from `fabrics.ts` and `materials.ts` controllers into `misc.service.ts` to strictly adhere to the Thin Controller pattern.
 - **Memory Leaks**: Confirmed all React `setTimeout` instances are properly cleared in `useEffect` cleanup blocks and verified detached DOM node cleanups.
 - **Validation**: Passed the 8-check `npm run verify:tech-integrity` script with 0 TS errors, 0 lint errors, and 0 bundle threshold violations.
+
+## 3. Modern Web Guidance Implementation
+- **Agentic Forms**: Added WebMCP attributes (`toolname`, `tooldescription`) to `InquiryForm` and `ContactForm` allowing programmatic discovery and interaction by external agents. React and TypeScript types were augmented in `env.d.ts`.
+- **Scroll-Driven Animations**: Created a native CSS view timeline utility (`@utility scroll-reveal`) in `animations.css` and added an `IntersectionObserver` fallback in `root.tsx` for browsers lacking native support. Applied the animations to the homepage `Sections` and `Values` components.
+- **LCP Optimization**: Verified `fetchpriority="high"` on critical hero images across the monorepo to improve LCP. Fixes related to TS typing of `toolname` and `@utility` nesting within Tailwind v4 were resolved.
+
+## 4. Accessibility Audit (a11y-debugging)
+- **Automated Audit**: Conducted a Lighthouse accessibility audit via Chrome DevTools MCP. Achieved a perfect 100/100 Accessibility score after remediation.
+- **Color Contrast (Stats.tsx)**: Fixed an issue where the GSAP fade-in effect (`opacity: 0.2`) caused `#39393b` foreground text against a dark `#09090b` background image to fail contrast ratios. Added `dark` class, forced explicit `text-white` classes, and adjusted initial GSAP state to `opacity: 0`.
+- **Heading Hierarchy (Footer.tsx)**: Fixed non-sequential heading order by migrating orphan `<h4>` elements directly to `<h2>` to accurately represent the layout semantics.
+- **Accessible Names (floating-dock-header.tsx, FeaturedProducts.tsx)**: Removed non-matching `aria-label` properties from interactive elements containing complex textual child nodes to allow screen readers to parse the visible text natively.
+
+## 5. QA Automation Pass (Products Page)
+- **CORB Prevention**: Discovered that 404 missing seed images in dev were returning JSON payloads and triggering Chrome's strict Cross-Origin Read Blocking (CORB) and broken image icons. Implemented a `1x1 transparent GIF` fallback pattern in `server/routes/media/handlers.ts` to cleanly handle `NotFoundError` responses. Added this invariant to `GEMINI.md`.
+- **Accessibility**: Fixed missing `id` and `name` attributes on the `Search` input and `Category`/`Sort` Radix Select elements in `products.tsx`.
+- **Helmet Security**: Ensured `helmet` sets `crossOriginResourcePolicy: { policy: "cross-origin" }` to allow 302 redirects to third-party GCS storage buckets.

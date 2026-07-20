@@ -187,6 +187,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 ### 5.1.2 Middleware Strictness
 - **neverthrow mandatory**: All Express middleware (`server/middleware/`) including rate limiters, CSRF validation, idempotency caching, and RBAC audit logs MUST strictly use `ResultAsync.fromPromise` and `Result.fromThrowable`. Raw `try/catch` blocks used as fail-safes or fallbacks (even for synchronous operations like `JSON.parse` or input sanitization) are strictly prohibited and must be converted to `match()` handlers.
 - **useIterableCallbackReturn**: When mapping `neverthrow` Results (e.g. converting a db result to void), you must explicitly return `undefined` to satisfy Biome. `() => {}` is forbidden; use `.map(() => undefined)` instead.
+- **noImplicitReturns**: When writing `useEffect` hooks, if you conditionally return a cleanup function, you MUST explicitly `return undefined;` as the default fallback to satisfy strict TypeScript constraints.
 
 ### 5.1.3 Static Analysis & Knip Tech Debt
 - **Unused Exports**: When Knip flags unused exports (e.g., React Router v8 route components, loaders, actions, or shared types), **never** use regex-based AST destruction to remove the `export` keyword.
@@ -301,6 +302,10 @@ const nonce = loaderData?.cspNonce || undefined;
 
 // HTML DOM Attributes
 // React strictly enforces camelCase for specific HTML attributes. Always use `fetchPriority` (not `fetchpriority`).
+
+// WebMCP Agentic Forms
+// When implementing Agentic Forms, augment `React.HTMLAttributes` in `env.d.ts` with `toolname` and `tooldescription`.
+// In React 19, the `action={}` prop does NOT expose the `SubmitEvent`. To support `event.agentInvoked`, you MUST add an explicit `onSubmit` handler to the `<form>` that intercepts `event.nativeEvent.agentInvoked` and calls `event.nativeEvent.respondWith()`.
 ```
 
 ### 6.5 `neverthrow` Service Pattern (Mandatory)
@@ -336,6 +341,10 @@ result.match(
 //   })().catch(error => err(new InternalError("Crash", { error })))
 // );
 ```
+
+### 6.5.1 Media Endpoint 404 Handling (CORB Prevention)
+- **Transparent GIF Fallback**: When an Express route serving media content (e.g., images, thumbnails) encounters a missing asset (`NotFoundError`), it MUST intercept the error and return a 1x1 transparent GIF (`image/gif`) instead of throwing the error to the global JSON error handler. 
+- **Why**: Returning a JSON error payload (`application/problem+json`) to an HTML `<img>` tag triggers strict Cross-Origin Read Blocking (CORB) warnings in Chrome and renders a broken image icon. A transparent pixel ensures graceful degradation when seed data is missing.
 
 ### 6.6 Drizzle + Zod Schema Pattern (Mandatory)
 
@@ -390,6 +399,9 @@ export const selectProductSchema = createSelectSchema(products)
 /* NO tailwind.config.js — ever */
 /* NO @theme inside index.css */
 /* NO arbitrary values in JSX: p-[23px] — always tokenize */
+
+/* @utility Nesting Rule: NEVER nest @utility inside @media or @supports. 
+   Instead, define the @utility at the top level, and nest @media inside it. */
 ```
 
 ### 6.8 GSAP Animation Pattern (Mandatory)

@@ -95,7 +95,7 @@ export const Stats: React.FC = () => {
         stats.forEach((stat) => {
           gsap.fromTo(
             stat,
-            { opacity: 0.2, y: 50 },
+            { opacity: 0, y: 50 },
             {
               opacity: 1,
               y: 0,
@@ -117,7 +117,7 @@ export const Stats: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="relative flex min-h-screen w-full flex-col border-border border-t bg-background md:min-h-custom-space-151 md:flex-row content-auto"
+      className="relative flex min-h-screen w-full flex-col border-border border-t bg-background md:min-h-custom-space-151 md:flex-row content-auto dark"
       aria-labelledby="stats-heading"
     >
       {/* Sticky Background Image */}
@@ -158,10 +158,7 @@ export const Stats: React.FC = () => {
       </div>
 
       {/* Right Scrollable Side */}
-      <div
-        ref={rightRef}
-        className="relative z-elevated flex w-full flex-col text-foreground md:w-1/2"
-      >
+      <div ref={rightRef} className="relative z-elevated flex w-full flex-col text-white md:w-1/2">
         {KEY_STATS.map((stat, index) => (
           <div
             key={index}
@@ -170,9 +167,11 @@ export const Stats: React.FC = () => {
             <h3 className="font-bold text-custom-space-155 leading-none tracking-tighter md:text-custom-space-156">
               <ScrambleNumber value={stat.value} />
             </h3>
-            <div className="my-4 h-custom-space-157 w-full origin-left scale-x-100 transform bg-foreground/30 transition-transform duration-700" />
-            <h4 className="mb-2 font-bold text-xl uppercase md:text-2xl">{stat.label}</h4>
-            <p className="text-muted-foreground text-sm md:text-base">{stat.description}</p>
+            <div className="my-4 h-custom-space-157 w-full origin-left scale-x-100 transform bg-white/30 transition-transform duration-700" />
+            <h4 className="mb-2 font-bold text-xl text-white uppercase md:text-2xl">
+              {stat.label}
+            </h4>
+            <p className="text-white/70 text-sm md:text-base">{stat.description}</p>
           </div>
         ))}
       </div>

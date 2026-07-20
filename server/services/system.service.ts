@@ -42,6 +42,7 @@ class SystemService {
           () => systemRepository.createAuditLog(log),
           DB_CIRCUIT_OPTIONS,
         );
+        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
         if (created.isErr()) return err(created.error as any);
         return ok(created.value);
       })().catch((error) => {

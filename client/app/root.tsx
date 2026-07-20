@@ -114,6 +114,40 @@ export function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setMounted(true);
     reportWebVitals();
+
+    if (
+      typeof CSS !== "undefined" &&
+      !CSS.supports("(animation-timeline: view()) and (animation-range: entry)")
+    ) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.target instanceof HTMLElement) {
+              const scale = 0.9 + entry.intersectionRatio * 0.1;
+              const opacity = entry.intersectionRatio;
+              entry.target.style.transform = `scale(${scale})`;
+              entry.target.style.opacity = `${opacity}`;
+            }
+          }
+        },
+        {
+          threshold: Array.from({ length: 11 }, (_, i) => i / 10),
+        },
+      );
+
+      const elements = document.querySelectorAll(".scroll-reveal");
+      for (const el of elements) {
+        observer.observe(el);
+      }
+
+      return () => {
+        for (const el of elements) {
+          observer.unobserve(el);
+        }
+        observer.disconnect();
+      };
+    }
+    return undefined;
   }, []);
 
   return (

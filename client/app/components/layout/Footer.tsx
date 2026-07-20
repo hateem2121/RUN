@@ -117,9 +117,9 @@ export const Footer: React.FC = () => {
 
         <div className="border-glass flex flex-col justify-between border-l pl-8 md:col-span-1">
           <div>
-            <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
+            <h2 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
               [ HQ COORDINATES ]
-            </h4>
+            </h2>
             <div className="text-muted-foreground text-lg leading-relaxed whitespace-pre-line">
               {footerConfig?.companyAddress ? (
                 footerConfig.companyAddress
@@ -143,9 +143,9 @@ export const Footer: React.FC = () => {
             </div>
           </div>
           <div className="mt-12">
-            <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
+            <h2 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
               [ DIRECT LINE ]
-            </h4>
+            </h2>
             <a
               href={`mailto:${footerConfig?.companyEmail || contactConfig?.email || "hello@runapparel.com"}`}
               className={footerLinkVariants()}
@@ -163,9 +163,9 @@ export const Footer: React.FC = () => {
 
         <div className="border-glass flex flex-col justify-between border-l pl-8 md:col-span-1">
           <div>
-            <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
+            <h2 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
               [ NETWORK ]
-            </h4>
+            </h2>
             <ul className="space-y-2">
               {footerConfig?.socialLinks && footerConfig.socialLinks.length > 0
                 ? footerConfig.socialLinks.map((link) => (
@@ -204,9 +204,9 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
           <div className="mt-12">
-            <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
+            <h2 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
               [ PROTOCOLS ]
-            </h4>
+            </h2>
             <ul className="text-muted-foreground space-y-2 text-sm">
               {footerConfig?.legalLinks && footerConfig.legalLinks.length > 0
                 ? footerConfig.legalLinks.map((link) => (
@@ -253,9 +253,9 @@ export const Footer: React.FC = () => {
                   idx > 0 && "hidden lg:flex",
                 )}
               >
-                <h4 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
+                <h2 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
                   [ {column.title} ]
-                </h4>
+                </h2>
                 <ul className="space-y-2">
                   {column.links.map((link) => (
                     <li key={link.label}>
@@ -277,9 +277,9 @@ export const Footer: React.FC = () => {
       {/* Certification Marquee (Phase 3 Achievement) */}
       {footerConfig?.certifications && footerConfig.certifications.length > 0 && (
         <div className="container-centered mt-20 mb-10 overflow-hidden">
-          <h4 className="text-muted-foreground mb-8 text-center font-mono text-xs tracking-widest uppercase">
+          <h2 className="text-muted-foreground mb-8 text-center font-mono text-xs tracking-widest uppercase">
             [ CERTIFIED STANDARDS ]
-          </h4>
+          </h2>
           <div className="relative flex overflow-x-hidden">
             <div className="flex animate-marquee items-center gap-12 whitespace-nowrap py-4 pr-12">
               {[...footerConfig.certifications, ...footerConfig.certifications].map((cert, idx) => (
