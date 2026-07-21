@@ -9,7 +9,7 @@ import {
   Search,
   Star,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAdminHomepageData } from "@/hooks/use-admin-homepage-data";
 import { cn } from "@/lib/utils";
@@ -23,29 +23,15 @@ export function HomepageManagement() {
   const { isLoading, hero, slogans, sections, featuredSettings, processCards } =
     useAdminHomepageData();
 
-  const getTabFromUrl = useCallback(() => {
-    if (typeof window === "undefined") return "hero";
-    const searchParams = new URLSearchParams(window.location.search);
-    return searchParams.get("tab") || "hero";
-  }, []);
-
-  const [activeTab, setActiveTab] = useState(getTabFromUrl);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get("tab") || "hero";
 
   const handleTabChange = (value: string) => {
-    setActiveTab(value);
-    const searchParams = new URLSearchParams(window.location.search);
-    searchParams.set("tab", value);
-    const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
-    window.history.pushState({}, "", newUrl);
+    setSearchParams(prev => {
+      prev.set("tab", value);
+      return prev;
+    }, { replace: true });
   };
-
-  useEffect(() => {
-    const handlePopState = () => {
-      setActiveTab(getTabFromUrl());
-    };
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, [getTabFromUrl]);
 
   if (isLoading) {
     return (

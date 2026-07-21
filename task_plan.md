@@ -19,6 +19,12 @@
   - [x] Verify keyboard focus outlines on the newly added elements to ensure they conform to the previous audit's `focus-visible:ring-2` requirements.
 - [x] Verify accessibility of the entire `/products` page after changes.
 - [x] Audit remaining secondary pages (like admin pages) if necessary.
+- [x] Resolved memory leak in `root.tsx` SPA navigation.
+- [x] Resolved severe GSAP-induced detached DOM tree memory leaks by refactoring all affected components to use the `@gsap/react` plugin's `useGSAP` hook for proper unmount cleanup.
+- [x] Ran comprehensive `memlab` scenarios (`home-to-manufacturing` and `home-to-products`) returning 0 memory leaks.
+- [x] Updated `GEMINI.md` to document proper Memlab SPA testing constraints (client-side navigation rules and handling 0-byte false positive closures).
+- [x] Fixed LCP render delay in `Hero.tsx`.
+- [x] Fixed A11y issues in `skip-link.tsx` and `RoadAheadTimeline.tsx`.
 
 ## Next Steps
-- None. All tasks completed.
+- None. All tasks completed and verified with `verify:tech-integrity`.

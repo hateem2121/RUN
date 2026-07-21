@@ -3,6 +3,7 @@ import { IconMenu2, IconX } from "@tabler/icons-react";
 import gsap from "gsap";
 import type React from "react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { useGSAP } from "@gsap/react";
 import { Link, useLocation } from "react-router";
 import { cn } from "@/lib/utils";
 
@@ -87,14 +88,14 @@ const DesktopSidebar = ({ className, children, ...props }: React.ComponentProps<
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   // GSAP width animation
-  useEffect(() => {
+  useGSAP(() => {
     if (!sidebarRef.current || !animate) return;
     gsap.to(sidebarRef.current, {
       width: open ? "300px" : "60px",
       duration: 0.3,
       ease: "power2.inOut",
     });
-  }, [open, animate]);
+  }, { dependencies: [open, animate] });
 
   return (
     <nav
@@ -131,7 +132,7 @@ const MobileSidebar = ({ className, children, ...props }: React.ComponentProps<"
   }, [open]);
 
   // Animate in/out
-  useEffect(() => {
+  useGSAP(() => {
     if (!drawerRef.current || !shouldRender) return;
     if (open) {
       gsap.fromTo(
@@ -148,7 +149,7 @@ const MobileSidebar = ({ className, children, ...props }: React.ComponentProps<"
         onComplete: () => setShouldRender(false),
       });
     }
-  }, [open, shouldRender]);
+  }, { dependencies: [open, shouldRender] });
 
   return (
     <nav
@@ -202,7 +203,7 @@ export const SidebarLink = ({ link, className, ...props }: { link: Links; classN
     location === link.href || (link.href.startsWith("/admin/") && location.startsWith(link.href));
 
   // Animate label display/opacity based on open state
-  useEffect(() => {
+  useGSAP(() => {
     if (!labelRef.current || !animate) return;
     if (open) {
       gsap.to(labelRef.current, {
@@ -223,7 +224,7 @@ export const SidebarLink = ({ link, className, ...props }: { link: Links; classN
         },
       });
     }
-  }, [open, animate]);
+  }, { dependencies: [open, animate] });
 
   return (
     <Link

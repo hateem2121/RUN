@@ -31,11 +31,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     isLoading: false,
     error: null,
     sidebarOpen: true, // Defaulting sidebar to open per standard desktop practice, though can be false
-    // SSR-safe: defer window access to client
-    queryParams:
-      typeof window !== "undefined"
-        ? new URLSearchParams(window.location.search)
-        : new URLSearchParams(),
+    // SSR-safe: use location from React Router
+    queryParams: new URLSearchParams(location.search),
     hasUnsavedChanges: false,
   }));
 

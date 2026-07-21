@@ -26,63 +26,55 @@ export function TechnologyStackSection({
   const tabContentRef = React.useRef<HTMLDivElement>(null);
 
   // GSAP scroll-triggered stagger animation for cards
-  React.useEffect(() => {
+  useGSAP(() => {
     if (!cardsRef.current) return;
 
-    const ctx = gsap.context(() => {
-      gsap.from(".tech-stack-card", {
-        scrollTrigger: {
-          trigger: cardsRef.current,
-          start: "top 85%",
-          toggleActions: "play none none none",
-        },
-        y: 40,
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: "power3.out",
-      });
-    }, cardsRef);
-
-    return () => ctx.revert();
-  }, []);
+    gsap.from(".tech-stack-card", {
+      scrollTrigger: {
+        trigger: cardsRef.current,
+        start: "top 85%",
+        toggleActions: "play none none none",
+      },
+      y: 40,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: "power3.out",
+    });
+  }, { scope: cardsRef });
 
   // GSAP count-up animation for stat values
-  React.useEffect(() => {
+  useGSAP(() => {
     if (!sectionRef.current) return;
 
-    const ctx = gsap.context(() => {
-      const statElements = sectionRef.current?.querySelectorAll(".stat-countup");
-      if (!statElements?.length) return;
+    const statElements = sectionRef.current?.querySelectorAll(".stat-countup");
+    if (!statElements?.length) return;
 
-      statElements.forEach((el) => {
-        const target = el.getAttribute("data-target") || "0";
-        const suffix = el.getAttribute("data-suffix") || "";
-        const prefix = el.getAttribute("data-prefix") || "";
-        const numericValue = parseFloat(target.replace(/[^0-9.-]/g, ""));
+    statElements.forEach((el) => {
+      const target = el.getAttribute("data-target") || "0";
+      const suffix = el.getAttribute("data-suffix") || "";
+      const prefix = el.getAttribute("data-prefix") || "";
+      const numericValue = parseFloat(target.replace(/[^0-9.-]/g, ""));
 
-        if (Number.isNaN(numericValue)) return;
+      if (Number.isNaN(numericValue)) return;
 
-        gsap.from(el, {
-          scrollTrigger: {
-            trigger: el,
-            start: "top 90%",
-            toggleActions: "play none none none",
-          },
-          textContent: 0,
-          duration: 1.5,
-          ease: "power2.out",
-          snap: { textContent: numericValue % 1 === 0 ? 1 : 0.1 },
-          onUpdate: () => {
-            const current = parseFloat(el.textContent || "0");
-            el.textContent = `${prefix}${numericValue % 1 === 0 ? Math.round(current) : current.toFixed(1)}${suffix}`;
-          },
-        });
+      gsap.from(el, {
+        scrollTrigger: {
+          trigger: el,
+          start: "top 90%",
+          toggleActions: "play none none none",
+        },
+        textContent: 0,
+        duration: 1.5,
+        ease: "power2.out",
+        snap: { textContent: numericValue % 1 === 0 ? 1 : 0.1 },
+        onUpdate: () => {
+          const current = parseFloat(el.textContent || "0");
+          el.textContent = `${prefix}${numericValue % 1 === 0 ? Math.round(current) : current.toFixed(1)}${suffix}`;
+        },
       });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+    });
+  }, { scope: sectionRef });
 
   // Animate tab content on tab change
   useGSAP(() => {

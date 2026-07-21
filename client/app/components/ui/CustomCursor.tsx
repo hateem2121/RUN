@@ -1,6 +1,7 @@
 import gsap from "gsap";
 import type React from "react";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
 import { useCursorStore } from "../../stores/useCursorStore";
 
 /**
@@ -13,7 +14,7 @@ export const CustomCursor: React.FC = () => {
   const followerRef = useRef<HTMLDivElement>(null);
   const { cursorVariant, cursorImage } = useCursorStore();
 
-  useEffect(() => {
+  useGSAP(() => {
     const cursor = cursorRef.current;
     const follower = followerRef.current;
 
@@ -56,7 +57,7 @@ export const CustomCursor: React.FC = () => {
     return () => window.removeEventListener("mousemove", moveCursor);
   }, []);
 
-  useEffect(() => {
+  useGSAP(() => {
     const follower = followerRef.current;
     const cursor = cursorRef.current;
     if (!follower || !cursor) {
@@ -111,7 +112,7 @@ export const CustomCursor: React.FC = () => {
         mixBlendMode: "difference",
       });
     }
-  }, [cursorVariant, cursorImage]);
+  }, { dependencies: [cursorVariant, cursorImage] });
 
   return (
     <>

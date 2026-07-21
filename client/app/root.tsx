@@ -15,6 +15,7 @@ import {
   ScrollRestoration,
   useRouteError,
   useRouteLoaderData,
+  useNavigate,
 } from "react-router";
 import { Toaster } from "sonner";
 import { FloatingDockHeader } from "@/components/navigation/floating-dock-header";
@@ -135,15 +136,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         },
       );
 
-      const elements = document.querySelectorAll(".scroll-reveal");
-      for (const el of elements) {
+      // Query elements and observe, but do not capture the NodeList in the cleanup closure
+      document.querySelectorAll(".scroll-reveal").forEach((el) => {
         observer.observe(el);
-      }
+      });
 
       return () => {
-        for (const el of elements) {
-          observer.unobserve(el);
-        }
         observer.disconnect();
       };
     }
@@ -220,6 +218,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    (window as any).__navigate = navigate;
+  }, [navigate]);
   return <Outlet />;
 }
 

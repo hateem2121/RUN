@@ -1,7 +1,8 @@
 import type React from "react";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 
 interface ManufacturingCardProps {
@@ -33,7 +34,7 @@ interface ManufacturingCardProps {
 }: ManufacturingCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     if (!enableAnimations || !cardRef.current) {
       return;
     }
@@ -74,7 +75,7 @@ interface ManufacturingCardProps {
         },
       );
     }
-  }, [index, variant, enableAnimations]);
+  }, { dependencies: [index, variant, enableAnimations], scope: cardRef });
 
   const cardContent = (
     <Card

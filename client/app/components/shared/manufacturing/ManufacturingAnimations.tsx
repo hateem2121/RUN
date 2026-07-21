@@ -1,4 +1,5 @@
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { useEffect, useRef } from "react";
 
 // Mechanical gear animation component
@@ -7,7 +8,7 @@ import { useEffect, useRef } from "react";
   const gear2Ref = useRef<SVGSVGElement>(null);
   const gear3Ref = useRef<SVGSVGElement>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     if (gear1Ref.current && gear2Ref.current && gear3Ref.current) {
       gsap.to(gear1Ref.current, {
         rotation: 360,

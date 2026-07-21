@@ -110,6 +110,8 @@ export const Stats: React.FC = () => {
           );
         });
       }
+
+      return () => mm.revert();
     },
     { scope: containerRef },
   );

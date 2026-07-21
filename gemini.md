@@ -303,6 +303,11 @@ const nonce = loaderData?.cspNonce || undefined;
 // HTML DOM Attributes
 // React strictly enforces camelCase for specific HTML attributes. Always use `fetchPriority` (not `fetchpriority`).
 
+// SSR Hydration Rules
+// - NEVER use `typeof window !== "undefined"` or access `window` inside initial state or render body.
+// - ALWAYS initialize state with an SSR-safe fallback (e.g. `false`), then update via `useEffect`.
+// - For routing/URL state, NEVER use `window.location.search`. ALWAYS use React Router's `useSearchParams` and `useLocation` hooks.
+
 // WebMCP Agentic Forms
 // When implementing Agentic Forms, augment `React.HTMLAttributes` in `env.d.ts` with `toolname` and `tooldescription`.
 // In React 19, the `action={}` prop does NOT expose the `SubmitEvent`. To support `event.agentInvoked`, you MUST add an explicit `onSubmit` handler to the `<form>` that intercepts `event.nativeEvent.agentInvoked` and calls `event.nativeEvent.respondWith()`.
@@ -443,6 +448,9 @@ function MyComponent() {
 // Never initialise scroll libraries (lenis/locomotive-scroll) inside components
 // Scroll context (Locomotive Scroll v5.0.1) MUST exclusively be initialized once in `_public.tsx` layout — never in individual page components like `_index.tsx`.
 // When defining the Locomotive Scroll instance dynamically in `useEffect`, avoid `noExplicitAny` by typing it strictly: `let scroll: { destroy: () => void } | undefined;`
+// Scroll-Driven Architecture Rules:
+// - Velocity Skewing: When building continuous marquees, link `ScrollTrigger` velocity (`self.getVelocity()`) to a dynamic skew effect for premium physical drag.
+// - Horizontal Parallax: When building horizontal scroll sections (`xPercent: -100`), select internal images and shift them inversely (e.g. `xPercent: -15` to `15`) to create deep 3D window effects.
 ```
 
 ### 6.9 Cache Architecture
@@ -488,6 +496,12 @@ Dev endpoint firewall:
 ### 6.11 React Router v8 & Vite 8 Resolution Rules
 - **CSP Nonce Context**: Always resolve the React Router v8 `nonceContext` dynamically via `globalThis.__nonceContext` rather than importing it directly across client/server packages. The server's `ssr-handler.ts` must instantiate the key, register it on `globalThis`, set the nonce value on `RouterContextProvider`, and return it.
 - **isomorphic-dompurify / DOMPurify SSR**: Never load `isomorphic-dompurify` using the default browser config. It must be externalized in `client/vite.config.ts` via `ssr.external`, and Node.js-compatible export conditions must be enforced in `ssr.resolve`.
+
+### 6.12 Memlab SPA Memory Testing (Mandatory Guidelines)
+When diagnosing memory leaks or running `npx memlab run --scenario <file>`, you MUST adhere to the following constraints:
+- **Client-Side Navigation Only**: Memlab crashes if the page reloads between heap snapshots. Inside your scenario's `action()` and `back()` blocks, ALWAYS use `await page.evaluate(() => window.__navigate('/route'))`. Never use `page.goto()` or standard `<a>` tag clicks unless you are 100% certain they do not trigger a hard reload.
+- **Protected Routes**: Do not run Memlab scenarios against auth-gated routes (e.g., `/admin`) unless you have explicitly configured a mock session cookie in the scenario. Unauthenticated server-side redirects will trigger a hard reload and fail the test.
+- **Triage False Positives**: React 19 and React Router v8 maintain global contexts that Memlab will flag as leaks (e.g., `__reactRouterContext`, `PerformanceObserver`, or native DOM wrapper nodes). If the `--Retained size of leaked objects--` is tiny (e.g., `0 byte` to `100 bytes`), ignore it. Only investigate leaks retaining detached DOM subtrees or massive JS heaps.
 
 ---
 
@@ -728,8 +742,11 @@ toast.error('Something went wrong. Try again.')
 - Keyboard navigation: logical Tab order, visible focus rings
 - Skip-to-content link in `_public.tsx` layout
 - GSAP animations: respect `prefers-reduced-motion`
+- GSAP initial states: Avoid `opacity: 0` blending artifacts that cause Lighthouse contrast-ratio failures. Use explicit text variables for initial states.
 - Mobile nav: focus trap active while open
 - Focus styling: Always use `focus-visible` (e.g., `focus-visible:ring-2`) instead of standard `focus:` to prevent redundant outlines on mouse clicks.
+- Interactive Links: Never use mismatched `aria-label` properties on interactive navigation links; ensure semantic accessible naming matches the text.
+- Form Fields: Every form `<input>`, `<select>`, and `<textarea>` must have both `id` and `name` attributes for full screen-reader compatibility.
 
 ---
 

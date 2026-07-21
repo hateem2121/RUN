@@ -1,6 +1,7 @@
 import type React from "react";
 import { memo, useEffect, useRef, useState } from "react";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 import { useCursorStore } from "@/stores/useCursorStore";
 import { CATEGORIES } from "./constants";
@@ -56,6 +57,42 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
     return () => observer.disconnect();
   }, []);
 
+  useGSAP(
+    () => {
+      const marquee = containerRef.current?.querySelector(".marquee-container");
+      if (!marquee || isMobile) return;
+
+      let resetTween: gsap.core.Tween | null = null;
+
+      ScrollTrigger.create({
+        trigger: containerRef.current,
+        start: "top bottom",
+        end: "bottom top",
+        onUpdate: (self) => {
+          const velocity = self.getVelocity();
+          // Cap the skew between -15 and 15 degrees
+          const skewAmount = Math.max(-15, Math.min(15, velocity / -100));
+          
+          gsap.to(marquee, {
+            skewX: skewAmount,
+            duration: 0.4,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+          
+          if (resetTween) resetTween.kill();
+          resetTween = gsap.to(marquee, {
+            skewX: 0,
+            duration: 0.8,
+            delay: 0.1,
+            ease: "power2.out",
+          });
+        },
+      });
+    },
+    { dependencies: [isMobile], scope: containerRef },
+  );
+
   const handleMouseEnter = (index: string, image: string) => {
     setHoveredIndex(index);
     if (!isMobile) {
@@ -85,7 +122,7 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
         {/* Optimized Forward Marquee */}
         <div
           className={cn(
-            "animate-marquee flex whitespace-nowrap will-change-transform hover:[animation-play-state:paused] motion-reduce:[animation-play-state:paused] motion-reduce:animate-none",
+            "marquee-container animate-marquee flex whitespace-nowrap will-change-transform hover:[animation-play-state:paused] motion-reduce:[animation-play-state:paused] motion-reduce:animate-none",
             !isIntersecting && "[animation-play-state:paused]",
           )}
         >

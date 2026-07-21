@@ -59,13 +59,11 @@ export const Hero: React.FC = () => {
               scale: 0.85,
               rotateX: 15,
               transformOrigin: "center bottom",
-              filter: "blur(12px)",
             },
             {
               y: "0%",
               scale: 1,
               rotateX: 0,
-              filter: "blur(0px)",
               duration: 1.8,
               stagger: 0.1,
               ease: "power3.out",

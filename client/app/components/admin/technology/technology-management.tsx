@@ -1,5 +1,5 @@
 import { BarChart3, Beaker, Bell, Box, Cpu, Rocket, Search, Settings, Zap } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import { TechnologyCtaManagement } from "@/components/admin/technology/TechnologyCtaManagement";
 import { TechnologyEquipmentManagement } from "@/components/admin/technology/TechnologyEquipmentManagement";
 import { TechnologyHeroManagement } from "@/components/admin/technology/TechnologyHeroManagement";
@@ -19,29 +19,15 @@ import { cn } from "@/lib/utils";
 export function TechnologyManagement() {
   const featureFlags = useTechnologyFeatureFlags();
 
-  const getTabFromUrl = useCallback(() => {
-    if (typeof window === "undefined") return "hero";
-    const searchParams = new URLSearchParams(window.location.search);
-    return searchParams.get("tab") || "hero";
-  }, []);
-
-  const [activeTab, setActiveTab] = useState(getTabFromUrl);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get("tab") || "hero";
 
   const handleTabChange = (value: string) => {
-    setActiveTab(value);
-    const searchParams = new URLSearchParams(window.location.search);
-    searchParams.set("tab", value);
-    const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
-    window.history.pushState({}, "", newUrl);
+    setSearchParams(prev => {
+      prev.set("tab", value);
+      return prev;
+    }, { replace: true });
   };
-
-  useEffect(() => {
-    const handlePopState = () => {
-      setActiveTab(getTabFromUrl());
-    };
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, [getTabFromUrl]);
 
   // If modular components are disabled, show fallback message
   if (!featureFlags.useModularTechnologyComponents) {

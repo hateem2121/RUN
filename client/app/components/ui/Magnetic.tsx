@@ -1,5 +1,6 @@
 import gsap from "gsap";
-import React, { useEffect, useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import React, { useRef } from "react";
 
 interface MagneticProps {
   children: React.ReactElement;
@@ -13,7 +14,7 @@ interface MagneticProps {
 export const Magnetic: React.FC<MagneticProps> = ({ children, strength = 0.35 }) => {
   const magnetRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     if (!magnetRef.current) {
       return;
     }
@@ -54,7 +55,7 @@ export const Magnetic: React.FC<MagneticProps> = ({ children, strength = 0.35 })
       magnet.removeEventListener("mousemove", handleMouseMove);
       magnet.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [strength]);
+  }, { dependencies: [strength] });
 
   // Clone the child to attach the ref directly to it
   return React.cloneElement(children as React.ReactElement<{ ref?: React.Ref<HTMLElement> }>, {

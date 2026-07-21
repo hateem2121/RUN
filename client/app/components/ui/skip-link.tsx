@@ -30,10 +30,9 @@ export function SkipLink({ targetId, className }: SkipLinkProps) {
       href={`#${targetId}`}
       onClick={handleClick}
       className={cn(
-        "sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-max",
+        "sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-50",
         "focus:px-6 focus:py-3 focus:bg-blue-600 focus:text-white focus:font-bold",
-        "focus:rounded-xl focus:shadow-2xl focus:shadow-blue-500/50 focus:outline-none",
-        "transition-all duration-300 transform -translate-y-full focus:translate-y-0",
+        "focus:rounded-xl focus:shadow-2xl focus:outline-none",
         className,
       )}
     >

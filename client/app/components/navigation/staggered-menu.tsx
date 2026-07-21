@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
@@ -41,10 +43,7 @@ export const StaggeredMenu = ({
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const openRef = useRef(false);
-  const shouldReduceMotion =
-    typeof window !== "undefined"
-      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      : false;
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     setMounted(true);
@@ -92,40 +91,37 @@ export const StaggeredMenu = ({
 
   const toggleBtnRef = useRef<HTMLButtonElement | null>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     if (!mounted) return;
-    const ctx = gsap.context(() => {
-      const panel = panelRef.current;
-      const preContainer = preLayersRef.current;
+    const panel = panelRef.current;
+    const preContainer = preLayersRef.current;
 
-      const top = hamburgerTopRef.current;
-      const middle = hamburgerMiddleRef.current;
-      const bottom = hamburgerBottomRef.current;
-      const icon = iconRef.current;
+    const top = hamburgerTopRef.current;
+    const middle = hamburgerMiddleRef.current;
+    const bottom = hamburgerBottomRef.current;
+    const icon = iconRef.current;
 
-      if (!panel || !top || !middle || !bottom || !icon) {
-        return;
-      }
+    if (!panel || !top || !middle || !bottom || !icon) {
+      return;
+    }
 
-      let preLayers: HTMLElement[] = [];
-      if (preContainer) {
-        preLayers = Array.from(preContainer.querySelectorAll(".sm-prelayer")) as HTMLElement[];
-      }
-      preLayerElsRef.current = preLayers;
+    let preLayers: HTMLElement[] = [];
+    if (preContainer) {
+      preLayers = Array.from(preContainer.querySelectorAll(".sm-prelayer")) as HTMLElement[];
+    }
+    preLayerElsRef.current = preLayers;
 
-      const offscreen = position === "left" ? -100 : 100;
-      gsap.set([panel, ...preLayers], { xPercent: offscreen });
+    const offscreen = position === "left" ? -100 : 100;
+    gsap.set([panel, ...preLayers], { xPercent: offscreen });
 
-      gsap.set(top, { y: 0, rotation: 0 });
-      gsap.set(middle, { opacity: 1 });
-      gsap.set(bottom, { y: 0, rotation: 0 });
+    gsap.set(top, { y: 0, rotation: 0 });
+    gsap.set(middle, { opacity: 1 });
+    gsap.set(bottom, { y: 0, rotation: 0 });
 
-      if (toggleBtnRef.current) {
-        gsap.set(toggleBtnRef.current, { color: menuButtonColor });
-      }
-    });
-    return () => ctx.revert();
-  }, [menuButtonColor, position, panelRef.current, mounted]);
+    if (toggleBtnRef.current) {
+      gsap.set(toggleBtnRef.current, { color: menuButtonColor });
+    }
+  }, { dependencies: [menuButtonColor, position, mounted] });
 
   const buildOpenTimeline = useCallback(() => {
     const panel = panelRef.current;

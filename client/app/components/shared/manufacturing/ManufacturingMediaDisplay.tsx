@@ -1,7 +1,8 @@
 import type { MediaAsset } from "@shared/index";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { ImageOff, Play } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { EmptyState } from "@/components/ui/empty-state";
 
 interface ManufacturingMediaDisplayProps {
@@ -55,7 +56,7 @@ interface ManufacturingMediaDisplayProps {
   }, [mediaAssets, mediaIds, mediaId]);
 
   // Fade out skeleton when media loads
-  useEffect(() => {
+  useGSAP(() => {
     if (!isLoaded && !hasError) return;
     if (!skeletonRef.current) {
       setShouldRenderSkeleton(false);
@@ -67,7 +68,7 @@ interface ManufacturingMediaDisplayProps {
       ease: "power1.out",
       onComplete: () => setShouldRenderSkeleton(false),
     });
-  }, [isLoaded, hasError]);
+  }, { dependencies: [isLoaded, hasError] });
 
   const primaryMedia = relevantMedia[0];
   const hasMultipleMedia = relevantMedia.length > 1;
