@@ -278,7 +278,7 @@ export function ProductFilters({
                   <button
                     type="button"
                     onClick={() => handleFabricToggle(fabricId)}
-                    className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500"
+                    className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:text-red-500"
                     aria-label={`Remove ${fabric.name} filter`}
                   >
                     <X className="h-4 w-4" />
@@ -299,7 +299,7 @@ export function ProductFilters({
                   <button
                     type="button"
                     onClick={() => handleCertificateToggle(certId)}
-                    className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500"
+                    className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:text-red-500"
                     aria-label={`Remove ${cert.name} filter`}
                   >
                     <X className="h-4 w-4" />
@@ -314,7 +314,7 @@ export function ProductFilters({
                 <button
                   type="button"
                   onClick={() => handleTagToggle(tag)}
-                  className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500"
+                  className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:text-red-500"
                   aria-label={`Remove ${tag} filter`}
                 >
                   <X className="h-4 w-4" />
@@ -328,7 +328,7 @@ export function ProductFilters({
                 <button
                   type="button"
                   onClick={() => handleMoqChange([0, 10000])}
-                  className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500"
+                  className="-my-1 -mr-1 ml-2 flex min-h-11 min-w-11 items-center justify-center hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:text-red-500"
                   aria-label="Remove MOQ filter"
                 >
                   <X className="h-4 w-4" />

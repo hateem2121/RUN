@@ -102,7 +102,7 @@ export const ProductCard = ({
               <button
                 type="button"
                 onClick={() => onQuickViewClick(product)}
-                className="flex min-h-11 items-center justify-center bg-background/90 px-6 py-3 text-foreground text-xs uppercase tracking-widest backdrop-blur-xs transition-colors hover:bg-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                className="flex min-h-11 items-center justify-center bg-background/90 px-6 py-3 text-foreground text-xs uppercase tracking-widest backdrop-blur-xs transition-colors hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 data-testid={`quick-view-${product.id}`}
                 aria-label={`Quick view ${product.name}`}
               >
@@ -116,7 +116,7 @@ export const ProductCard = ({
             type="button"
             onClick={() => onQuickViewClick(product)}
             className={cn(
-              "absolute bottom-3 left-3 flex min-h-11 min-w-11 items-center justify-center rounded-full bg-background p-2 text-foreground shadow-lg transition-colors hover:bg-muted focus:ring-2 focus:ring-ring focus:ring-offset-2 md:hidden",
+              "absolute bottom-3 left-3 flex min-h-11 min-w-11 items-center justify-center rounded-full bg-background p-2 text-foreground shadow-lg transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:hidden",
               viewMode === "small" && "bottom-2 left-2 h-8 w-8 min-h-8 min-w-8",
             )}
             data-testid={`quick-view-mobile-${product.id}`}
@@ -130,14 +130,14 @@ export const ProductCard = ({
       <CardFooter
         className={cn("flex-col items-start p-4 text-center", viewMode === "small" && "p-2")}
       >
-        <h3
+        <h2
           className={cn(
             "mb-2 w-full font-semibold text-foreground leading-tight uppercase tracking-wide",
             viewMode === "small" ? "line-clamp-2 text-sm" : "text-lg",
           )}
         >
           {product.name}
-        </h3>
+        </h2>
 
         {viewMode !== "small" && (
           <>
@@ -162,7 +162,7 @@ export const ProductCard = ({
         >
           <Link
             to={product.detailUrl}
-            className="flex min-h-11 w-full items-center justify-center gap-2 border border-border bg-background px-4 py-3 text-foreground text-xs uppercase tracking-widest transition-colors hover:border-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            className="flex min-h-11 w-full items-center justify-center gap-2 border border-border bg-background px-4 py-3 text-foreground text-xs uppercase tracking-widest transition-colors hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             data-testid={`view-details-${product.id}`}
           >
             <span>View Details</span>
@@ -172,7 +172,7 @@ export const ProductCard = ({
             type="button"
             onClick={handleRequestQuote}
             disabled={alreadyInCart}
-            className="flex min-h-11 w-full items-center justify-center bg-primary px-4 py-3 text-primary-foreground text-xs uppercase tracking-widest transition-colors focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
+            className="flex min-h-11 w-full items-center justify-center bg-primary px-4 py-3 text-primary-foreground text-xs uppercase tracking-widest transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
             data-testid={`request-quote-${product.id}`}
           >
             {alreadyInCart ? "Added" : "Request Quote"}

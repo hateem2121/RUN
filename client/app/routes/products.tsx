@@ -380,7 +380,7 @@ export default function Component() {
   const selectedCategoryObj = categories.find((c) => c.id.toString() === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-muted/30 pt-production-header">
+    <main id="main-content" className="min-h-screen bg-muted/30 pt-production-header">
       <GlobalErrorBoundary>
         <Suspense fallback={<ProductsLoader />}>
           {/* SEO Component */}
@@ -561,7 +561,7 @@ export default function Component() {
           </div>
         </Suspense>
       </GlobalErrorBoundary>
-    </div>
+    </main>
   );
 }
 

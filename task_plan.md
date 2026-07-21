@@ -13,7 +13,12 @@
 - Conducted a QA pass on the Products page. Fixed CORB warnings by serving a transparent GIF for 404 missing media assets.
 - Fixed accessibility issues by adding `id` and `name` attributes to form fields in `products.tsx`.
 - Updated `GEMINI.md` to document the 404 media asset transparent GIF fallback rule.
+- [x] Complete the accessibility audit of `/products`.
+- [x] Fix specific Lighthouse audit failures on `/products`:
+  - [x] Apply focus-visible styles to the remaining filter remove buttons in `ProductFilters.tsx` (lines 317, 331).
+  - [x] Verify keyboard focus outlines on the newly added elements to ensure they conform to the previous audit's `focus-visible:ring-2` requirements.
+- [x] Verify accessibility of the entire `/products` page after changes.
+- [x] Audit remaining secondary pages (like admin pages) if necessary.
 
 ## Next Steps
-- Verify keyboard focus outlines on the newly added elements to ensure they conform to the previous audit's `focus-visible:ring-2` requirements.
-- Audit remaining secondary pages (like admin pages) if necessary.
+- None. All tasks completed.

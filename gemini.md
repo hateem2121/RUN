@@ -506,6 +506,13 @@ This script runs automatically at the end of every session. All 8 must pass.
 | 7 | Env schema | All required environment variables validated |
 | 8 | Dependency audit | Zero critical npm vulnerabilities |
 
+**Resolving Dependency Audits (Check 8):**
+If `check:audit` fails due to deeply nested transitive dependencies (e.g., in `@google-cloud/*`):
+1. Do NOT run `npm audit fix --force`.
+2. Identify the direct parent dependency and update its major/minor version in `server/package.json` or `package.json` if a patch exists.
+3. If necessary, define `overrides` in the root `package.json` with the validated safe version.
+4. Delete `package-lock.json` and run a clean `npm install` to regenerate the tree securely.
+
 **If any check fails, document it in `findings.md` and do not proceed to ship.**
 
 ---
@@ -722,6 +729,7 @@ toast.error('Something went wrong. Try again.')
 - Skip-to-content link in `_public.tsx` layout
 - GSAP animations: respect `prefers-reduced-motion`
 - Mobile nav: focus trap active while open
+- Focus styling: Always use `focus-visible` (e.g., `focus-visible:ring-2`) instead of standard `focus:` to prevent redundant outlines on mouse clicks.
 
 ---
 
