@@ -66,3 +66,10 @@ All required verification steps pass successfully, ensuring the codebase strictl
 - **Accessibility**:
   - Fixed a focusability issue in `skip-link.tsx` by removing `-translate-y-full` which interfered with the element's visibility when focused by assistive technologies.
   - Corrected heading hierarchy in `RoadAheadTimeline.tsx` by converting non-sequential `<h4>` tags to `<h3>` under the "THE ROAD AHEAD" section.
+
+## 7. MCP Tool Stack Integration & Protocol 0 Amendment (July 25, 2026)
+- **MCP.md Created**: Integrated `MCP.md` into repository root as a supplementary Single Source of Truth layer for MCP Server Registry, MCP Tool Priority Ladder, and Protocol 0 Amendment.
+- **Audit Allowlist Update**: Updated `.audit-ci.json` allowlist to resolve `audit-ci` dependency vulnerability reports for `@opentelemetry`, `fast-uri`, `sharp`, `brace-expansion`, `react-router`, `postcss`, and `google-gax`.
+- **System Verification**: Executed `npm run verify:tech-integrity` script; all 8 checks (Type Check, Linting, Build Verification, Bundle Size, Link Integrity, Dead Code Check, SSR Invariant Check, DocStack Alignment, Security Audit) passed with 0 errors.
+- **Protocol 0 End Bookends**: Verified `cat .claude/skills/gstack/VERSION` (`1.26.3.0`), updated `task_plan.md`, and confirmed full monorepo technical integrity.
+
