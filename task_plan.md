@@ -1,19 +1,21 @@
 # RUN Remix Session Plan
 
-**Goal**: Workflow and Skills Organization Audit
+**Goal**: Configure GStack Skills & Automate Updates
 **Date**: July 25, 2026
 **Status**: Completed.
 
 ## Outcome
-- Conducted a forensic audit specifically targeting the `.agents/` workflow directories and `.claude/skills/`.
-- Validated their structure against `gemini.md` and `AGENTS.md` guidelines.
-- Appended Section 11 to `findings.md` with severity-scored observations focused on agentic execution workspaces.
+- Created `.claude/skills/gstack/scripts/register-agent-skills.sh` to dynamically symlink tools to `.agents/skills`.
+- Updated Protocol 0 in `GEMINI.md` to automate the execution of the registration script and the `gstack-update-check` version check.
+- Verified the build via `npm run verify:tech-integrity`, `npm run check`, and `npm run build`.
+- Closed the session with proper protocol bookends (updates to `task_plan.md` and `findings.md`).
 
 ## Tasks
-- [x] Phase 1: Investigate `.agents/` workflow directories and session artifacts.
-- [x] Phase 1: Investigate `.claude/skills/` vs `.agents/skills/` distribution.
-- [x] Phase 1: Generate severity-scored findings report.
-- [x] Protocol 0 end bookends: Updated `task_plan.md` and `findings.md`.
+- [x] Phase 1: Investigate gstack setup mechanics and produce `implementation_plan.md`.
+- [x] Phase 2: Create `register-agent-skills.sh` script.
+- [x] Phase 2: Update Protocol 0 hook in `GEMINI.md`.
+- [x] Phase 2: Execute build verifications and validations.
+- [x] Phase 2: Update `task_plan.md` and `findings.md`.
 
 ## Next Steps
-- Address the P3 cosmetic issue of scattered session directories in `.agents/` by implementing a cleanup routine or moving them into `.agents/sessions/`.
+- Continue with any remaining PR or deployment steps if this branch is ready to land, or proceed with new feature development now that the agent skills are fully available natively.

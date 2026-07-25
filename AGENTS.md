@@ -64,3 +64,7 @@ When creating or generating unit test files:
 
 ### 6.11 React Router v8 & Vite 8 Resolution Rules (Addendum)
 - **CSP Nonce Hydration Mismatch**: In React 19, Chrome hides the `nonce` attribute on `<link>` tags for security, causing a fatal hydration mismatch if the Virtual DOM expects a value. When rendering React Router's `<Links />` component in the root layout or error boundaries, you **MUST** pass an empty string on the client (e.g., `<Links nonce="" />`) to bypass the mismatch and prevent React from crashing the client-side render tree.
+
+## Agent Skills Setup Guardrails
+- **Skill Directory Resolution:** The Antigravity IDE slash command scanner does NOT follow directory-level symlinks when indexing `.agents/skills/`. 
+- When programmatically registering external or workspace skills (e.g., from `.claude/skills/`), you must create a **real top-level directory** in `.agents/skills/` (e.g., `.agents/skills/office-hours/`) and symlink the `SKILL.md` file directly inside it. Never symlink the parent directory itself.

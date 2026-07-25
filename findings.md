@@ -1,5 +1,11 @@
 # Audit Findings & Resolutions
 
+## 9. GStack Skills & Upgrades Automation (July 25, 2026)
+- **Agent Skill Registration**: Automated the registration of native `gstack` slash commands (`/office-hours`, `/qa`, `/browse`, etc.) by writing `register-agent-skills.sh` which dynamically symlinks the allowed `.claude/skills` to `.agents/skills` on startup.
+- **Protocol 0 Automation**: Modified Protocol 0 in `GEMINI.md` to run the skills registration script and trigger the automated `gstack-update-check`, replacing the legacy manual version check.
+- **Tech-Integrity Compliance**: Completed Phase 2 implementation. The agent environment successfully passes `npm run verify:tech-integrity`, `npm run check`, and `npm run build` with zero critical errors, completing the Definition of Done.
+
+
 **Date:** July 20, 2026
 **Agent:** Antigravity
 
