@@ -73,3 +73,83 @@ All required verification steps pass successfully, ensuring the codebase strictl
 - **System Verification**: Executed `npm run verify:tech-integrity` script; all 8 checks (Type Check, Linting, Build Verification, Bundle Size, Link Integrity, Dead Code Check, SSR Invariant Check, DocStack Alignment, Security Audit) passed with 0 errors.
 - **Protocol 0 End Bookends**: Verified `cat .claude/skills/gstack/VERSION` (`1.26.3.0`), updated `task_plan.md`, and confirmed full monorepo technical integrity.
 
+## 8. AI Coding Guidelines & Anti-Slop Rules — Reference Repository Synthesis (July 25, 2026)
+
+Synthesized from 5 reference repositories: `kunchenguid/no-mistakes`, `asgeirtj/system_prompts_leaks`, `bojieli/ai-agent-book`, `rohitg00/ai-engineering-from-scratch`, `Lordog/dive-into-llms`.
+
+### 8.1 Agent Architecture Principles
+- **Agent = LLM + Context + Tools:** Reliable autonomous systems must be structured around combining language model reasoning with precise context engineering and robust tool invocation — never relying on LLM parametric knowledge alone. *(ai-agent-book)*
+- **Build-from-Scratch First:** Developers should implement fundamental components (ReAct loops, tool parsing, state management) from scratch before abstracting behind production frameworks. Understanding internal mechanics ensures robust deployment. *(ai-engineering-from-scratch)*
+- **Event-Driven Execution:** Modern agents should implement asynchronous loops and event-driven triggers to coordinate perception, planning, and execution without blocking, ensuring higher throughput and responsiveness. *(ai-agent-book)*
+- **Multi-Agent Collaboration with Isolation:** For complex workflows, partition tasks across specialized subagents with context sharing and isolation strategies. Limit scope and permissions of individual agents to minimize attack surface. *(ai-agent-book, system_prompts_leaks)*
+
+### 8.2 Anti-Slop & Quality Gates
+- **Local Proxy Interception:** Implement a local git proxy that intercepts `git push` to act as an automated gatekeeper, preventing low-quality AI-generated code from reaching the upstream repository. *(no-mistakes)*
+- **Disposable Validation Environments:** Run AI-generated code through rigorous validation pipelines within temporary, isolated worktrees. If code fails tests, linting, or intent verification, discard or send back for automated revision before any merging. *(no-mistakes)*
+- **Automated Peer Review:** Utilize secondary coding agents as an automated QA team. Only after passing multi-layered checks should the system create a clean Pull Request. *(no-mistakes)*
+- **Structural Diversity over Cosmetic Variation:** Anti-slop measures should enforce structural variety (different macrostructures and layout patterns) rather than just swapping colors or fonts. *(hallmark — applied learning)*
+
+### 8.3 System Prompt Design Patterns
+- **Constraint-First Architecture:** System prompts must strictly define operational rules, model personas, and explicit refusals for unsafe or out-of-scope requests before user interaction begins, forming the primary defense layer. *(system_prompts_leaks)*
+- **Tool-Use Formatting:** Prompts should explicitly dictate how the model formats tool invocations, handles tool errors, and processes multi-step logic, often using specialized syntax and injected reminders. *(system_prompts_leaks)*
+- **Embedded Chain-of-Thought:** Structure thinking processes (CoT) directly within prompt constraints, encouraging the model to outline reasoning before emitting code or answers. *(ai-agent-book)*
+- **Guardrail Layering:** Frontier AI models use multi-layered guardrails: system-level constraints, tool-specific rules, and output validation. Each layer operates independently to prevent single-point failures. *(system_prompts_leaks)*
+
+### 8.4 Context & Memory Management
+- **Persistent Cross-Session Memory:** Agents must maintain long-term context through structured memory stores (SQLite knowledge graphs, vector databases) and RAG — not just in-context window state. *(ai-agent-book)*
+- **Context Compression:** Employ context compression techniques and optimize KV cache usage to avoid token limits while retaining crucial operational context. *(ai-agent-book, ai-engineering-from-scratch)*
+- **Active Context Discovery:** Structure prompts to actively guide the model to search for necessary missing context (e.g., active tool discovery) rather than hallucinating answers when information is absent. *(ai-agent-book)*
+
+### 8.5 Security & Alignment
+- **RLHF and DPO Alignment:** Align models to human expectations using reinforcement learning from human feedback (RLHF) and direct preference optimization (DPO), ensuring safe, helpful, high-quality outputs. *(ai-engineering-from-scratch, dive-into-llms)*
+- **Knowledge Editing & Jailbreak Defense:** Implement knowledge editing tools to dynamically update or constrain model factual recall, alongside specific prompt structures designed to defend against adversarial prompt injections and jailbreak attempts. *(dive-into-llms)*
+- **Separation of Duties:** Limit scope and permissions of individual agents or subagents (e.g., using specific MCP server instructions) to minimize attack surface if a single agent is compromised or hallucinates. *(system_prompts_leaks)*
+- **Never Store Secrets in Agent Memory:** Secrets, PII, session tokens, and environment values must never be persisted in agent memory stores or knowledge graphs. *(applied to codebase-memory-mcp usage)*
+
+### 8.6 Evaluation & Testing
+- **Simulation and Metric-Driven Evaluation:** Continuously test agent performance using robust evaluation environments and statistical significance metrics. Move beyond anecdotal testing by running agents against standardized benchmarks (SWE-bench, OSWorld). *(ai-agent-book)*
+- **End-to-End Artifact Validation:** Every AI component — prompt, skill, or MCP server — must be validated as a reusable artifact. Test for actual task completion and alignment with expected system states, not just code compilation. *(ai-engineering-from-scratch)*
+- **Feedback Loops:** Establish mechanisms to collect execution traces and learning signals from failed operations, using them to update the model's parameters, instructions, and knowledge base. *(ai-agent-book)*
+
+## 9. Agent Workspace & Skills Configuration (July 25, 2026)
+
+### 9.1 System CLI Tools
+- **GitHub CLI (`gh`)**: Updated from v2.89.0 to v2.96.0 via `brew upgrade gh`.
+- **Tree-sitter CLI**: Installed v0.26.11 via `brew install tree-sitter` + `brew install tree-sitter-cli` (Homebrew splits library and CLI into separate formulae).
+
+### 9.2 MCP Servers Installed
+- **`codebase-memory-mcp` v0.9.0**: Installed via curl script. Binary at `~/.local/bin/codebase-memory-mcp`. Auto-detected and configured for: Claude Code, Codex, Gemini CLI, VS Code, Cursor. Existing codebase index preserved at `~/.cache/codebase-memory-mcp/Users-hateemjamshaid-Sites-RUN.db`.
+- **`code-review-graph`**: Installed via `pipx` (which also installed Python 3.14.6 as a dependency, since the system Python 3.9.6 was below the 3.10+ requirement).
+
+### 9.3 Agent Skills Installed
+Skills installed via `npx skills add` to `.agents/skills/` (cross-agent convention):
+- **`hallmark`** (Nutlope): Anti-AI-slop design skill with 21 macrostructures, 20 visual themes, 57 slop-test gates. Supports build/audit/redesign/study verbs.
+- **`ui-skills`** (ibelick) — 7 skills installed:
+  - `baseline-ui`: Opinionated UI constraints (Tailwind, a11y primitives, animation standards)
+  - `create-design-md`: Design document generation
+  - `fixing-accessibility`: ARIA, keyboard navigation, WCAG audit & fix
+  - `fixing-metadata`: HTML metadata, Open Graph, canonical URLs
+  - `fixing-motion-performance`: Animation performance, layout thrashing prevention
+  - `improve-ui`: General UI audit and refinement
+  - `ui-skills-root`: Root skill for routing through sub-skills
+
+### 9.4 Reference Material Reviewed (Read-Only)
+- **`kunchenguid/no-mistakes`**: Git proxy QA tool — pre-push validation pipeline
+- **`asgeirtj/system_prompts_leaks`**: 50k+ star archive of frontier AI system prompts
+- **`bojieli/ai-agent-book`**: Agent design textbook — 10 chapters, 88 code experiments
+- **`rohitg00/ai-engineering-from-scratch`**: 435-lesson AI curriculum (Python/TS/Rust/Julia)
+- **`Lordog/dive-into-llms`**: LLM tutorial series — fine-tuning, jailbreak defense, RLHF
+
+### 9.5 Observations
+- The `npx skills add` CLI installs to `.agents/skills/` (cross-agent standard), not `.claude/skills/` (Claude-specific). Both directories coexist without conflict.
+- `codebase-memory-mcp` auto-writes hooks into Claude Code, Gemini CLI, and Cursor configs during installation. Review `.claude/.mcp.json`, `.gemini/settings.json`, and `.cursor/mcp.json` for correctness.
+- Python 3.9.6 (system default) is insufficient for modern Python MCP tools. `pipx` with brew-installed Python 3.14.6 provides an isolated, modern runtime.
+
+### 9.6 Recommended MCP Servers Configuration
+- **Installed Global Packages**: `@modelcontextprotocol/server-github` (2025.4.8), `@modelcontextprotocol/server-postgres` (0.6.2), `@upstash/context7-mcp` (3.2.5), `@executeautomation/playwright-mcp-server` (1.0.12).
+- **Agent Configuration (`~/.gemini/settings.json` & `~/.claude/.mcp.json`)**:
+  - `postgres`: Configured with the project's read-only Neon DB URL (`postgresql://neondb_owner:...`) extracted from the local `.env` file per user's "NEON only" instructions.
+  - `github`: Registered without PAT to avoid exposing unauthorized credentials since user declined providing one.
+  - `playwright`: Registered standard npx command for UI validation tasks.
+  - `context7`: Package installed globally but omitted from MCP JSON configs as per user constraints to not use paid API tokens.
+

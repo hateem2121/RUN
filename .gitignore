@@ -115,3 +115,5 @@ full_test_output.txt
 test_output.txt
 server.log
 check.log
+# Added by code-review-graph
+.code-review-graph/
