@@ -30,7 +30,6 @@ live production-grade monorepo. Every action has consequences. Act accordingly.
 **START OF SESSION:**
 1. Read `task_plan.md` if it exists — understand current sprint state
 2. Update `task_plan.md` with today's session goal and date
-3. Run `cat .claude/skills/gstack/VERSION` — to latest, run `/gstack-upgrade` first
 
 **END OF SESSION:**
 1. Write or update `findings.md` with everything discovered or changed

@@ -81,7 +81,6 @@ legacy/worktrees/
 task_plan.md
 findings.md
 findings/
-.agent/
 
 # Log output directories
 logs/
@@ -103,8 +102,6 @@ tests/e2e/**/*.png
 scratch/
 
 # Agent session artefacts (Phase 3 audit additions — 2026-07-08)
-.agents/
-.agent/
 .stryker-tmp/
 ORIGINAL_REQUEST.md
 knip.txt
