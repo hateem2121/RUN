@@ -134,6 +134,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 
 | ❌ Never use | ✅ Use instead | Severity |
 |-------------|---------------|----------|
+| `.claude/skills/` or `gstack` bash scripts | `.agent/workflows/` (Antigravity Native) | Critical |
 | `test.poolOptions` (Vitest config) | Top-level `pool` or `maxConcurrency` | Medium |
 | `bullmq` (any import) | Google Cloud Tasks + `worker.ts` | Critical |
 | `@upstash/redis` | `ioredis` | Critical |
@@ -503,6 +504,12 @@ When diagnosing memory leaks or running `npx memlab run --scenario <file>`, you 
 - **Triage False Positives**: React 19 and React Router v8 maintain global contexts that Memlab will flag as leaks (e.g., `__reactRouterContext`, `PerformanceObserver`, or native DOM wrapper nodes). If the `--Retained size of leaked objects--` is tiny (e.g., `0 byte` to `100 bytes`), ignore it. Only investigate leaks retaining detached DOM subtrees or massive JS heaps.
 
 ---
+
+### 6.12 Agent Tooling Architecture (Antigravity Port)
+- **Workflows:** All agent workflows MUST reside in `.agent/workflows/*.md`. Never use the legacy `.claude/skills/` directory or bash preambles.
+- **Rules:** Persistent project rules reside in `.agent/rules/*.md`.
+- **Browser Automation:** Never use the legacy Playwright `$B` binaries. Always rely on Antigravity's native `browser_subagent`.
+- **Slash Commands:** Antigravity natively parses `.agent/workflows/` into slash commands without requiring registration scripts or symlinks.
 
 ## 7. `npm run verify:tech-integrity` — Protocol 0 Check (8 Checks)
 
