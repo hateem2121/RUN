@@ -29,7 +29,7 @@ Query memory for current sprint state, then reconcile with `task_plan.md`.
 - End of every session (see Protocol 0 amendment in §3)
 
 **Memory key convention:**
-`run-remix::<subsystem>::<topic>`
+run-remix::<subsystem>::<topic>
 Examples:
 - `run-remix::auth::session-store`
 - `run-remix::schema::products`
@@ -116,31 +116,31 @@ Step 5 → T (Trigger) : Implement, verify, ship
 boundaries defined in §6.1 of `gemini.md`.
 
 **Allowed scopes (read + write):**
-- `<project-root>/client/`
-- `<project-root>/server/`
-- `<project-root>/shared/`
-- `<project-root>/scripts/`
-- `<project-root>/docs/`
-- `<project-root>/ops/`
-- `<project-root>/e2e/`
-- `<project-root>/tests/`
-- `<project-root>/task_plan.md`
-- `<project-root>/findings.md`
-- `<project-root>/gemini.md`
-- `<project-root>/CLAUDE.md`
-- `<project-root>/MCP.md`
-- `<project-root>/AGENTS.md`
+<project-root>/client/
+<project-root>/server/
+<project-root>/shared/
+<project-root>/scripts/
+<project-root>/docs/
+<project-root>/ops/
+<project-root>/e2e/
+<project-root>/tests/
+<project-root>/task_plan.md
+<project-root>/findings.md
+<project-root>/gemini.md
+<project-root>/CLAUDE.md
+<project-root>/MCP.md
+<project-root>/AGENTS.md
 
 **Read-only scopes:**
-- `<project-root>/package.json`
-- `<project-root>/.github/`
-- `<project-root>/.claude/`
+<project-root>/package.json
+<project-root>/.github/
+<project-root>/.claude/
 
 **Forbidden (never read or write):**
-- `<project-root>/.env` → GCP Secret Manager only
-- `<project-root>/.env.*` → GCP Secret Manager only
-- Any path outside project root
-- Home directory (`~/`)
+<project-root>/.env → GCP Secret Manager only
+<project-root>/.env.* → GCP Secret Manager only
+Any path outside project root
+Home directory (~/)
 
 **Rules:**
 - Always prefer filesystem-mcp for file operations over shell `cat`, `echo >`,
@@ -235,13 +235,13 @@ All patterns must be adapted to this repo's design system before use.
 ## 2. MCP Tool Priority Ladder
 
 When multiple tools could serve the same task, strictly follow this order:
-- **Priority 1** → `codebase-memory-mcp`: Check memory before reading any file
-- **Priority 2** → `context7-mcp`: Check live docs before writing any code
-- **Priority 3** → `sequential-thinking-mcp`: Structure reasoning before implementing
-- **Priority 4** → `filesystem-mcp`: All file read/write operations
-- **Priority 5** → `playwright-mcp`: All browser/QA/E2E operations
-- **Priority 6** → `github-mcp`: All git/PR/CI operations
-- **Priority 7** → `ui-skills`: Component pattern reference
+Priority 1 → codebase-memory-mcp Check memory before reading any file
+Priority 2 → context7-mcp Check live docs before writing any code
+Priority 3 → sequential-thinking Structure reasoning before implementing
+Priority 4 → filesystem-mcp All file read/write operations
+Priority 5 → playwright-mcp All browser/QA/E2E operations
+Priority 6 → github-mcp All git/PR/CI operations
+Priority 7 → ui-skills Component pattern reference
 
 Skipping a higher-priority tool when it applies to the task is a
 **protocol violation**. Document it in `findings.md` if a tool is
@@ -267,6 +267,9 @@ unavailable or returns an error.
    - Forbidden patterns encountered and resolved
    - Recommended starting point for next session
 5. Run `npm run check` and `npm run build` → zero errors
+
+**These bookends are non-negotiable. The MCP amendments do not replace
+the original Protocol 0 — they augment it.**
 
 ---
 
