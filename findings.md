@@ -153,3 +153,27 @@ Skills installed via `npx skills add` to `.agents/skills/` (cross-agent conventi
   - `playwright`: Registered standard npx command for UI validation tasks.
   - `context7`: Package installed globally but omitted from MCP JSON configs as per user constraints to not use paid API tokens.
 
+## 10. Repository Architecture & Best Practices Audit (July 25, 2026)
+
+**Agent:** Antigravity (Single Agent Mode)
+**Scope:** Repository root, global folder structure, and configuration files.
+
+### 10.1 Monorepo Architecture & Tech Stack Verification
+- **Turborepo & Workspaces**: Correctly implemented with `client`, `server`, `shared`, and `scripts`. `turbo.json` handles task dependencies efficiently.
+- **Client Layer**: Uses Vite 8 (`^8.1.3` override) and React Router v8. Tailwind CSS v4 is configured correctly via `@tailwindcss/vite` and standard modular `@import` syntax in `index.css` (no legacy `tailwind.config.js`). Port 5002 is correctly respected in dev scripts.
+- **Server Layer**: Uses Express 5 (`^5.2.1`) and Drizzle ORM (`0.45.2`). Drizzle configuration points accurately to the shared package schema (`../shared/schemas/index.ts`).
+- **Code Quality**: Biome `2.5.2` is configured globally as the single linter and formatter. TypeScript strict mode is enabled across `tsconfig.base.json` and workspace-specific configurations.
+
+### 10.2 Agent Workflow & Skills Organization
+- **Workflow Directories**: The `.agents/` directory contains numerous session-specific folders (e.g., `explorer_*`, `worker_*`, `orchestrator_*`). While this denotes active multi-agent use, the root `.agents` folder is becoming cluttered.
+- **Skills Directory**: Skills are correctly housed in `.agents/skills/` (cross-agent convention) and `.claude/skills/`.
+
+### 10.3 Severity-Scored Findings
+
+| Category | Finding | Severity | Recommendation |
+|----------|---------|----------|----------------|
+| **Architecture** | Tech stack configurations perfectly align with `gemini.md` constraints (Vite 8, RR v8, Tailwind v4, Express 5, Biome). | **Passed** | None required. |
+| **Configuration** | The `dev` script in `client/package.json` explicitly passes `--port 5002`, while `vite.config.ts` comments out `server.port` indicating Express controls it. | **P2: Minor** | Align `client` dev scripts with `server` behavior to avoid port collision confusion if developers run client dev directly. |
+| **Workflow** | Extensive presence of disposable agent session directories (e.g., `explorer_accessibility`, `teamwork_preview_*`) in `.agents/`. | **P3: Cosmetic** | Implement an automated cleanup script or group session artifacts under a `.agents/sessions/` subdirectory to maintain a clean root. |
+
+**Audit Result:** The repository strictly conforms to the defined 2026 architecture rules with no Critical (P0) or Major (P1) violations.
