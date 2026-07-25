@@ -81,7 +81,7 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
             // Give images an extra 20% width via CSS if we shift them, but the containers
             // are hidden overflow. We scale them up to prevent empty edges during parallax.
             gsap.set(img, { scale: 1.2 });
-            
+
             tl.fromTo(
               img,
               { xPercent: i === 0 ? 0 : -15 },

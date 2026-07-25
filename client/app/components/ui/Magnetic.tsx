@@ -1,5 +1,5 @@
-import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import React, { useRef } from "react";
 
 interface MagneticProps {
@@ -14,48 +14,51 @@ interface MagneticProps {
 export const Magnetic: React.FC<MagneticProps> = ({ children, strength = 0.35 }) => {
   const magnetRef = useRef<HTMLElement>(null);
 
-  useGSAP(() => {
-    if (!magnetRef.current) {
-      return;
-    }
+  useGSAP(
+    () => {
+      if (!magnetRef.current) {
+        return;
+      }
 
-    const magnet = magnetRef.current;
+      const magnet = magnetRef.current;
 
-    // QuickTo provides better performance for mouse movement than standard .to()
-    const xTo = gsap.quickTo(magnet, "x", {
-      duration: 1,
-      ease: "elastic.out(1, 0.3)",
-    });
-    const yTo = gsap.quickTo(magnet, "y", {
-      duration: 1,
-      ease: "elastic.out(1, 0.3)",
-    });
+      // QuickTo provides better performance for mouse movement than standard .to()
+      const xTo = gsap.quickTo(magnet, "x", {
+        duration: 1,
+        ease: "elastic.out(1, 0.3)",
+      });
+      const yTo = gsap.quickTo(magnet, "y", {
+        duration: 1,
+        ease: "elastic.out(1, 0.3)",
+      });
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const { clientX, clientY } = e;
-      const { height, width, left, top } = magnet.getBoundingClientRect();
+      const handleMouseMove = (e: MouseEvent) => {
+        const { clientX, clientY } = e;
+        const { height, width, left, top } = magnet.getBoundingClientRect();
 
-      // Calculate distance from center
-      const x = clientX - (left + width / 2);
-      const y = clientY - (top + height / 2);
+        // Calculate distance from center
+        const x = clientX - (left + width / 2);
+        const y = clientY - (top + height / 2);
 
-      xTo(x * strength);
-      yTo(y * strength);
-    };
+        xTo(x * strength);
+        yTo(y * strength);
+      };
 
-    const handleMouseLeave = () => {
-      xTo(0);
-      yTo(0);
-    };
+      const handleMouseLeave = () => {
+        xTo(0);
+        yTo(0);
+      };
 
-    magnet.addEventListener("mousemove", handleMouseMove);
-    magnet.addEventListener("mouseleave", handleMouseLeave);
+      magnet.addEventListener("mousemove", handleMouseMove);
+      magnet.addEventListener("mouseleave", handleMouseLeave);
 
-    return () => {
-      magnet.removeEventListener("mousemove", handleMouseMove);
-      magnet.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, { dependencies: [strength] });
+      return () => {
+        magnet.removeEventListener("mousemove", handleMouseMove);
+        magnet.removeEventListener("mouseleave", handleMouseLeave);
+      };
+    },
+    { dependencies: [strength] },
+  );
 
   // Clone the child to attach the ref directly to it
   return React.cloneElement(children as React.ReactElement<{ ref?: React.Ref<HTMLElement> }>, {

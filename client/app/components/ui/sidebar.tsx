@@ -1,9 +1,9 @@
 "use client";
+import { useGSAP } from "@gsap/react";
 import { IconMenu2, IconX } from "@tabler/icons-react";
 import gsap from "gsap";
 import type React from "react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { useGSAP } from "@gsap/react";
 import { Link, useLocation } from "react-router";
 import { cn } from "@/lib/utils";
 
@@ -88,14 +88,17 @@ const DesktopSidebar = ({ className, children, ...props }: React.ComponentProps<
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   // GSAP width animation
-  useGSAP(() => {
-    if (!sidebarRef.current || !animate) return;
-    gsap.to(sidebarRef.current, {
-      width: open ? "300px" : "60px",
-      duration: 0.3,
-      ease: "power2.inOut",
-    });
-  }, { dependencies: [open, animate] });
+  useGSAP(
+    () => {
+      if (!sidebarRef.current || !animate) return;
+      gsap.to(sidebarRef.current, {
+        width: open ? "300px" : "60px",
+        duration: 0.3,
+        ease: "power2.inOut",
+      });
+    },
+    { dependencies: [open, animate] },
+  );
 
   return (
     <nav
@@ -132,24 +135,27 @@ const MobileSidebar = ({ className, children, ...props }: React.ComponentProps<"
   }, [open]);
 
   // Animate in/out
-  useGSAP(() => {
-    if (!drawerRef.current || !shouldRender) return;
-    if (open) {
-      gsap.fromTo(
-        drawerRef.current,
-        { x: "-100%", opacity: 0 },
-        { x: "0%", opacity: 1, duration: 0.3, ease: "power2.inOut" },
-      );
-    } else {
-      gsap.to(drawerRef.current, {
-        x: "-100%",
-        opacity: 0,
-        duration: 0.3,
-        ease: "power2.inOut",
-        onComplete: () => setShouldRender(false),
-      });
-    }
-  }, { dependencies: [open, shouldRender] });
+  useGSAP(
+    () => {
+      if (!drawerRef.current || !shouldRender) return;
+      if (open) {
+        gsap.fromTo(
+          drawerRef.current,
+          { x: "-100%", opacity: 0 },
+          { x: "0%", opacity: 1, duration: 0.3, ease: "power2.inOut" },
+        );
+      } else {
+        gsap.to(drawerRef.current, {
+          x: "-100%",
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.inOut",
+          onComplete: () => setShouldRender(false),
+        });
+      }
+    },
+    { dependencies: [open, shouldRender] },
+  );
 
   return (
     <nav
@@ -203,28 +209,31 @@ export const SidebarLink = ({ link, className, ...props }: { link: Links; classN
     location === link.href || (link.href.startsWith("/admin/") && location.startsWith(link.href));
 
   // Animate label display/opacity based on open state
-  useGSAP(() => {
-    if (!labelRef.current || !animate) return;
-    if (open) {
-      gsap.to(labelRef.current, {
-        display: "inline-block",
-        opacity: 1,
-        duration: 0.15,
-        ease: "power1.out",
-      });
-    } else {
-      gsap.to(labelRef.current, {
-        opacity: 0,
-        duration: 0.1,
-        ease: "power1.in",
-        onComplete: () => {
-          if (labelRef.current) {
-            gsap.set(labelRef.current, { display: "none" });
-          }
-        },
-      });
-    }
-  }, { dependencies: [open, animate] });
+  useGSAP(
+    () => {
+      if (!labelRef.current || !animate) return;
+      if (open) {
+        gsap.to(labelRef.current, {
+          display: "inline-block",
+          opacity: 1,
+          duration: 0.15,
+          ease: "power1.out",
+        });
+      } else {
+        gsap.to(labelRef.current, {
+          opacity: 0,
+          duration: 0.1,
+          ease: "power1.in",
+          onComplete: () => {
+            if (labelRef.current) {
+              gsap.set(labelRef.current, { display: "none" });
+            }
+          },
+        });
+      }
+    },
+    { dependencies: [open, animate] },
+  );
 
   return (
     <Link

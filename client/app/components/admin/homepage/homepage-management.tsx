@@ -27,10 +27,13 @@ export function HomepageManagement() {
   const activeTab = searchParams.get("tab") || "hero";
 
   const handleTabChange = (value: string) => {
-    setSearchParams(prev => {
-      prev.set("tab", value);
-      return prev;
-    }, { replace: true });
+    setSearchParams(
+      (prev) => {
+        prev.set("tab", value);
+        return prev;
+      },
+      { replace: true },
+    );
   };
 
   if (isLoading) {

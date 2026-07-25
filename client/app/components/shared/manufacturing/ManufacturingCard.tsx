@@ -1,8 +1,8 @@
+import { useGSAP } from "@gsap/react";
 import type React from "react";
 import { useRef } from "react";
 import { ManufacturingErrorBoundary } from "@/components/error-boundaries/manufacturing-error-boundary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 
 interface ManufacturingCardProps {
@@ -34,48 +34,51 @@ interface ManufacturingCardProps {
 }: ManufacturingCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
-  useGSAP(() => {
-    if (!enableAnimations || !cardRef.current) {
-      return;
-    }
+  useGSAP(
+    () => {
+      if (!enableAnimations || !cardRef.current) {
+        return;
+      }
 
-    if (variant === "public") {
-      // Public variant: scroll-triggered animations
-      gsap.fromTo(
-        cardRef.current,
-        {
-          opacity: 0,
-          y: index % 2 === 0 ? 30 : -30,
-          rotateX: -10,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          rotateX: 0,
-          duration: 0.8,
-          delay: index * 0.1,
-          scrollTrigger: {
-            trigger: cardRef.current,
-            start: "top 85%",
-            end: "bottom 15%",
-            toggleActions: "play none none reverse",
+      if (variant === "public") {
+        // Public variant: scroll-triggered animations
+        gsap.fromTo(
+          cardRef.current,
+          {
+            opacity: 0,
+            y: index % 2 === 0 ? 30 : -30,
+            rotateX: -10,
           },
-        },
-      );
-    } else {
-      // Admin variant: simple fade-in
-      gsap.fromTo(
-        cardRef.current,
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          delay: index * 0.05,
-        },
-      );
-    }
-  }, { dependencies: [index, variant, enableAnimations], scope: cardRef });
+          {
+            opacity: 1,
+            y: 0,
+            rotateX: 0,
+            duration: 0.8,
+            delay: index * 0.1,
+            scrollTrigger: {
+              trigger: cardRef.current,
+              start: "top 85%",
+              end: "bottom 15%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        );
+      } else {
+        // Admin variant: simple fade-in
+        gsap.fromTo(
+          cardRef.current,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            delay: index * 0.05,
+          },
+        );
+      }
+    },
+    { dependencies: [index, variant, enableAnimations], scope: cardRef },
+  );
 
   const cardContent = (
     <Card

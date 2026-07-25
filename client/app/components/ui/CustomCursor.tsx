@@ -1,7 +1,7 @@
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import type React from "react";
 import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
 import { useCursorStore } from "../../stores/useCursorStore";
 
 /**
@@ -57,62 +57,65 @@ export const CustomCursor: React.FC = () => {
     return () => window.removeEventListener("mousemove", moveCursor);
   }, []);
 
-  useGSAP(() => {
-    const follower = followerRef.current;
-    const cursor = cursorRef.current;
-    if (!follower || !cursor) {
-      return;
-    }
+  useGSAP(
+    () => {
+      const follower = followerRef.current;
+      const cursor = cursorRef.current;
+      if (!follower || !cursor) {
+        return;
+      }
 
-    if (cursorVariant === "view" && cursorImage) {
-      // VIEW State: Scale up and fade slightly
-      gsap.to(follower, {
-        width: 250,
-        height: 250,
-        opacity: 0.8,
-        backgroundColor: "transparent",
-        borderWidth: 0,
-        borderColor: "transparent",
-        mixBlendMode: "normal",
-        duration: 0.5,
-        ease: "power2.out",
-      });
-      gsap.to(cursor, { opacity: 0, duration: 0.2 });
-    } else if (cursorVariant === "button") {
-      // BUTTON State
-      gsap.to(follower, {
-        width: 80,
-        height: 80,
-        opacity: 1,
-        backgroundColor: "var(--color-primary)",
-        mixBlendMode: "exclusion",
-        borderWidth: 0,
-        borderColor: "transparent",
-        duration: 0.3,
-        ease: "power2.out",
-      });
-      gsap.to(cursor, { opacity: 1, scale: 0 });
-    } else {
-      // DEFAULT State
-      gsap.to(follower, {
-        width: 16,
-        height: 16,
-        opacity: 1,
-        backgroundColor: "var(--color-white)",
-        mixBlendMode: "difference",
-        borderWidth: 1,
-        borderColor: "var(--color-white)",
-        duration: 0.3,
-        ease: "power2.out",
-      });
-      gsap.to(cursor, {
-        opacity: 1,
-        scale: 1,
-        backgroundColor: "var(--color-white)",
-        mixBlendMode: "difference",
-      });
-    }
-  }, { dependencies: [cursorVariant, cursorImage] });
+      if (cursorVariant === "view" && cursorImage) {
+        // VIEW State: Scale up and fade slightly
+        gsap.to(follower, {
+          width: 250,
+          height: 250,
+          opacity: 0.8,
+          backgroundColor: "transparent",
+          borderWidth: 0,
+          borderColor: "transparent",
+          mixBlendMode: "normal",
+          duration: 0.5,
+          ease: "power2.out",
+        });
+        gsap.to(cursor, { opacity: 0, duration: 0.2 });
+      } else if (cursorVariant === "button") {
+        // BUTTON State
+        gsap.to(follower, {
+          width: 80,
+          height: 80,
+          opacity: 1,
+          backgroundColor: "var(--color-primary)",
+          mixBlendMode: "exclusion",
+          borderWidth: 0,
+          borderColor: "transparent",
+          duration: 0.3,
+          ease: "power2.out",
+        });
+        gsap.to(cursor, { opacity: 1, scale: 0 });
+      } else {
+        // DEFAULT State
+        gsap.to(follower, {
+          width: 16,
+          height: 16,
+          opacity: 1,
+          backgroundColor: "var(--color-white)",
+          mixBlendMode: "difference",
+          borderWidth: 1,
+          borderColor: "var(--color-white)",
+          duration: 0.3,
+          ease: "power2.out",
+        });
+        gsap.to(cursor, {
+          opacity: 1,
+          scale: 1,
+          backgroundColor: "var(--color-white)",
+          mixBlendMode: "difference",
+        });
+      }
+    },
+    { dependencies: [cursorVariant, cursorImage] },
+  );
 
   return (
     <>

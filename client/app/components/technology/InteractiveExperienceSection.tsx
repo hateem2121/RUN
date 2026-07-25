@@ -1,10 +1,10 @@
+import { useGSAP } from "@gsap/react";
 import type { MediaAsset } from "@shared/index";
 import { Box, Loader2 } from "lucide-react";
 import React from "react";
 import { ModelViewerErrorBoundary } from "@/components/ui/ModelViewerErrorBoundary";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Typography } from "@/components/ui/typography";
-import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
 import { useIntersectionObserver } from "@/lib/performance-intersection-observer";
@@ -270,37 +270,40 @@ export function InteractiveExperienceSection({
   const [activeLayer, setActiveLayer] = React.useState<LayerOption>("active");
   const sectionRef = React.useRef<HTMLElement>(null);
 
-  useGSAP(() => {
-    if (!sectionRef.current) return;
+  useGSAP(
+    () => {
+      if (!sectionRef.current) return;
 
-    const statElements = sectionRef.current?.querySelectorAll(".stat-countup");
-    if (!statElements?.length) return;
+      const statElements = sectionRef.current?.querySelectorAll(".stat-countup");
+      if (!statElements?.length) return;
 
-    statElements.forEach((el) => {
-      const target = el.getAttribute("data-target") || "0";
-      const suffix = el.getAttribute("data-suffix") || "";
-      const prefix = el.getAttribute("data-prefix") || "";
-      const numericValue = parseFloat(target.replace(/[^0-9.-]/g, ""));
+      statElements.forEach((el) => {
+        const target = el.getAttribute("data-target") || "0";
+        const suffix = el.getAttribute("data-suffix") || "";
+        const prefix = el.getAttribute("data-prefix") || "";
+        const numericValue = parseFloat(target.replace(/[^0-9.-]/g, ""));
 
-      if (Number.isNaN(numericValue)) return;
+        if (Number.isNaN(numericValue)) return;
 
-      gsap.from(el, {
-        scrollTrigger: {
-          trigger: el,
-          start: "top 90%",
-          toggleActions: "play none none none",
-        },
-        textContent: 0,
-        duration: 1.5,
-        ease: "power2.out",
-        snap: { textContent: numericValue % 1 === 0 ? 1 : 0.1 },
-        onUpdate: () => {
-          const current = parseFloat(el.textContent || "0");
-          el.textContent = `${prefix}${numericValue % 1 === 0 ? Math.round(current) : current.toFixed(1)}${suffix}`;
-        },
+        gsap.from(el, {
+          scrollTrigger: {
+            trigger: el,
+            start: "top 90%",
+            toggleActions: "play none none none",
+          },
+          textContent: 0,
+          duration: 1.5,
+          ease: "power2.out",
+          snap: { textContent: numericValue % 1 === 0 ? 1 : 0.1 },
+          onUpdate: () => {
+            const current = parseFloat(el.textContent || "0");
+            el.textContent = `${prefix}${numericValue % 1 === 0 ? Math.round(current) : current.toFixed(1)}${suffix}`;
+          },
+        });
       });
-    });
-  }, { scope: sectionRef });
+    },
+    { scope: sectionRef },
+  );
 
   if (!media) return null;
 

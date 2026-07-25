@@ -69,7 +69,7 @@
     "zustand": "^5.0.9"
   },
   "scripts": {
-    "dev": "vite --port 5002",
+    "dev": "vite",
     "build": "tsc -b && react-router build",
     "build:analyze": "VITE_ANALYZE=true tsc -b && react-router build",
     "preview": "vite preview",

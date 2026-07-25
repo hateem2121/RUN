@@ -72,14 +72,14 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
           const velocity = self.getVelocity();
           // Cap the skew between -15 and 15 degrees
           const skewAmount = Math.max(-15, Math.min(15, velocity / -100));
-          
+
           gsap.to(marquee, {
             skewX: skewAmount,
             duration: 0.4,
             ease: "power2.out",
             overwrite: "auto",
           });
-          
+
           if (resetTween) resetTween.kill();
           resetTween = gsap.to(marquee, {
             skewX: 0,

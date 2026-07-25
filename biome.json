@@ -28,7 +28,8 @@
       "!.claude",
       "!**/.kilo",
       "!docs",
-      "!client/public"
+      "!client/public",
+      "!server/migrations"
     ]
   },
   "formatter": {

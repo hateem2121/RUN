@@ -13,9 +13,9 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useNavigate,
   useRouteError,
   useRouteLoaderData,
-  useNavigate,
 } from "react-router";
 import { Toaster } from "sonner";
 import { FloatingDockHeader } from "@/components/navigation/floating-dock-header";
@@ -220,6 +220,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   const navigate = useNavigate();
   useEffect(() => {
+    // biome-ignore lint/suspicious/noExplicitAny: inject global navigate for testing
     (window as any).__navigate = navigate;
   }, [navigate]);
   return <Outlet />;

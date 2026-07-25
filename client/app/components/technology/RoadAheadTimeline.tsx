@@ -1,6 +1,6 @@
+import { useGSAP } from "@gsap/react";
 import type { ResearchVM, RoadmapVM } from "@shared/viewmodels";
 import React from "react";
-import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
@@ -48,22 +48,25 @@ export function RoadAheadTimeline({ roadmap, research, className }: RoadAheadTim
   }, [roadmap, research]);
 
   // GSAP scroll-triggered stagger animation
-  useGSAP(() => {
-    if (!sectionRef.current) return;
+  useGSAP(
+    () => {
+      if (!sectionRef.current) return;
 
-    gsap.from(".timeline-node", {
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-        toggleActions: "play none none none",
-      },
-      y: 30,
-      opacity: 0,
-      duration: 0.5,
-      stagger: 0.15,
-      ease: "power2.out",
-    });
-  }, { scope: sectionRef });
+      gsap.from(".timeline-node", {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+        y: 30,
+        opacity: 0,
+        duration: 0.5,
+        stagger: 0.15,
+        ease: "power2.out",
+      });
+    },
+    { scope: sectionRef },
+  );
 
   if (nodes.length === 0) return null;
 

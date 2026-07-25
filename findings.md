@@ -177,3 +177,24 @@ Skills installed via `npx skills add` to `.agents/skills/` (cross-agent conventi
 | **Workflow** | Extensive presence of disposable agent session directories (e.g., `explorer_accessibility`, `teamwork_preview_*`) in `.agents/`. | **P3: Cosmetic** | Implement an automated cleanup script or group session artifacts under a `.agents/sessions/` subdirectory to maintain a clean root. |
 
 **Audit Result:** The repository strictly conforms to the defined 2026 architecture rules with no Critical (P0) or Major (P1) violations.
+
+## 11. Secondary Workflow & Skills Audit (July 25, 2026)
+
+**Agent:** Antigravity (Single Agent Mode)
+**Scope:** Strict evaluation of `.agents/` workflows and `.claude/skills/`
+
+### 11.1 Skills Directory Distribution
+- **`.claude/skills/`**: Contains 52+ system-level and agentic skills (`autoplan`, `benchmark`, `design-html`, `explore-codebase`, etc.). These appear to be the default environment skills.
+- **`.agents/skills/`**: Contains 8 specialized, project-specific UI skills (`baseline-ui`, `create-design-md`, `fixing-accessibility`, `hallmark`, `improve-ui`, etc.).
+- **Evaluation**: The separation explicitly adheres to the `gemini.md` observation (Section 9.5) which documents that `npx skills add` targets `.agents/skills/` (a cross-agent convention), allowing it to peacefully coexist with `.claude/skills/` without conflicts.
+
+### 11.2 Workflow Directories (`.agents/`)
+- **Structure**: The `.agents/` folder contains 24 subdirectories that are largely named after specific execution sessions or agent types (e.g., `explorer_accessibility`, `explorer_bestpractices`, `orchestrator`, `teamwork_preview_worker_verification`, `worker_contrast`, etc.).
+- **Evaluation**: These are ephemeral/disposable worktrees left behind by automated agents or teamwork previews. While functional, their accumulation at the root of `.agents/` degrades the structural hygiene of the repository over time.
+
+### 11.3 Severity-Scored Workflow Findings
+
+| Category | Finding | Severity | Recommendation |
+|----------|---------|----------|----------------|
+| **Workflow (Skills)** | `.claude/skills/` and `.agents/skills/` coexist perfectly in accordance with documented standard operating procedures (gemini.md §9.5). | **Passed** | Continue using `npx skills add` to centralize new project-specific skills in `.agents/skills/`. |
+| **Workflow (Hygiene)** | The `.agents/` directory is cluttered with 24+ disposable session logs and worktrees (`explorer_*`, `worker_*`). | **P3: Cosmetic** | Implement a lifecycle policy: either `.gitignore` these session folders, move them into `.agents/sessions/`, or automatically delete them on task completion to keep `.agents/` strictly for configuration (`.agents/skills/`). |

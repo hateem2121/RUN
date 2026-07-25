@@ -1,9 +1,10 @@
+import { useGSAP } from "@gsap/react";
 import type { ContactPageConfiguration, FooterConfiguration } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { cva } from "class-variance-authority";
-import React, { useRef } from "react";
+import type React from "react";
+import { useRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 import { FooterInquiryForm } from "./FooterInquiryForm";
@@ -58,25 +59,28 @@ export const Footer: React.FC = () => {
   const footerRef = useRef<HTMLElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
 
-  useGSAP(() => {
-    // Parallax effect for the massive logotype
-    if (textRef.current && footerRef.current) {
-      gsap.fromTo(
-        textRef.current,
-        { yPercent: -20 },
-        {
-          yPercent: 20,
-          ease: "none",
-          scrollTrigger: {
-            trigger: footerRef.current,
-            start: "top bottom",
-            end: "bottom bottom",
-            scrub: 1,
+  useGSAP(
+    () => {
+      // Parallax effect for the massive logotype
+      if (textRef.current && footerRef.current) {
+        gsap.fromTo(
+          textRef.current,
+          { yPercent: -20 },
+          {
+            yPercent: 20,
+            ease: "none",
+            scrollTrigger: {
+              trigger: footerRef.current,
+              start: "top bottom",
+              end: "bottom bottom",
+              scrub: 1,
+            },
           },
-        },
-      );
-    }
-  }, { scope: footerRef });
+        );
+      }
+    },
+    { scope: footerRef },
+  );
 
   return (
     <footer
