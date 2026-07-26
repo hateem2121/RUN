@@ -135,6 +135,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 | ❌ Never use | ✅ Use instead | Severity |
 |-------------|---------------|----------|
 | `.claude/skills/` or `gstack` bash scripts | `.agent/workflows/` (Antigravity Native) | Critical |
+| `.cursor/`, `.claude/`, `.qoder/`, `.vscode/mcp.json` | `.gemini/antigravity/` and `mcp_config.json` | Critical |
 | `test.poolOptions` (Vitest config) | Top-level `pool` or `maxConcurrency` | Medium |
 | `bullmq` (any import) | Google Cloud Tasks + `worker.ts` | Critical |
 | `@upstash/redis` | `ioredis` | Critical |
@@ -182,7 +183,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 ### 5.1.1 Exceptions to `noExplicitAny`
 - **React Hook Form**: When strict type inference fails for `form.control` or `useFieldArray` combined with complex Zod schemas under React 19, you may bypass the constraint using `// biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict` combined with an explicit `as any` cast. This is the **only** permitted use case for `any`.
 - **Third-Party Interfaces**: When implementing third-party interfaces (like `express-session` Store) that dictate `any` in their types (e.g., `callback?: (err?: any) => void`), you must use `unknown` in your implementation parameters (e.g., `callback?: (err?: unknown) => void`). Do not use `as any` for type casting external properties (like dates); instead, cast to the specific expected union types (e.g., `as string | number | Date`). Note: When adapting third-party classes, you must still return `ResultAsync` objects internally to maintain safety, even if the parent interface defines the return type as `void`.
-- **General Type Casting**: When resolving complex type mismatches across layers (e.g., casting a repository `Error` to a service `AppError`), NEVER use `as any` as a shortcut. Use double-casting via unknown: `as unknown as ExpectedType`.
+- **General Type Casting**: When resolving complex type mismatches across layers (e.g., casting a repository `Error` to a service `AppError`), NEVER use `as any` as a shortcut for function signatures or complex objects. Use double-casting via unknown: `as unknown as Function` or `as unknown as ExpectedType`.
 
 ### 5.1.2 Middleware Strictness
 - **neverthrow mandatory**: All Express middleware (`server/middleware/`) including rate limiters, CSRF validation, idempotency caching, and RBAC audit logs MUST strictly use `ResultAsync.fromPromise` and `Result.fromThrowable`. Raw `try/catch` blocks used as fail-safes or fallbacks (even for synchronous operations like `JSON.parse` or input sanitization) are strictly prohibited and must be converted to `match()` handlers.
@@ -963,3 +964,42 @@ grep -rn "from.*['\"].*<filename>['\"]" client/ server/ shared/ --include="*.ts"
 Always spawn parallel subagents (`invoke_subagent`), assigning a strictly scoped target (e.g., 1-2 files or a single component) to each. This bypasses context window truncation limits, prevents hallucinations, and avoids organic task degradation over long sessions.
 
 *For: M. Hateem Jamshaid*
+
+<!-- code-review-graph MCP tools -->
+## MCP Tools: code-review-graph
+
+**IMPORTANT: This project has a knowledge graph. ALWAYS use the
+code-review-graph MCP tools BEFORE using Grep/Glob/Read to explore
+the codebase.** The graph is faster, cheaper (fewer tokens), and gives
+you structural context (callers, dependents, test coverage) that file
+scanning cannot.
+
+### When to use graph tools FIRST
+
+- **Exploring code**: `semantic_search_nodes_tool` or `query_graph_tool` instead of Grep
+- **Understanding impact**: `get_impact_radius_tool` instead of manually tracing imports
+- **Code review**: `detect_changes_tool` + `get_review_context_tool` instead of reading entire files
+- **Finding relationships**: `query_graph_tool` with callers_of/callees_of/imports_of/tests_for
+- **Architecture questions**: `get_architecture_overview_tool` + `list_communities_tool`
+
+Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
+
+### Key Tools
+
+| Tool | Use when |
+| ------ | ---------- |
+| `detect_changes_tool` | Reviewing code changes — gives risk-scored analysis |
+| `get_review_context_tool` | Need source snippets for review — token-efficient |
+| `get_impact_radius_tool` | Understanding blast radius of a change |
+| `get_affected_flows_tool` | Finding which execution paths are impacted |
+| `query_graph_tool` | Tracing callers, callees, imports, tests, dependencies |
+| `semantic_search_nodes_tool` | Finding functions/classes by name or keyword |
+| `get_architecture_overview_tool` | Understanding high-level codebase structure |
+| `refactor_tool` | Planning renames, finding dead code |
+
+### Workflow
+
+1. The graph auto-updates on file changes (via hooks).
+2. Use `detect_changes_tool` for code review.
+3. Use `get_affected_flows_tool` to understand impact.
+4. Use `query_graph_tool` pattern="tests_for" to check coverage.

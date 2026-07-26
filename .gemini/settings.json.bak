@@ -2,9 +2,12 @@
   "mcpServers": {
     "code-review-graph": {
       "command": "/Users/hateemjamshaid/Library/Application Support/pipx/venvs/code-review-graph/bin/python",
-      "args": ["-m", "code_review_graph", "serve"],
-      "cwd": "/Users/hateemjamshaid/Sites/RUN",
-      "type": "stdio"
+      "args": [
+        "-m",
+        "code_review_graph",
+        "serve"
+      ],
+      "cwd": "/Users/hateemjamshaid/Sites/RUN"
     }
   }
 }

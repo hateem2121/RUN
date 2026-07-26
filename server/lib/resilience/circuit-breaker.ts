@@ -157,7 +157,12 @@ export async function withCircuit<T>(
     span.setAttribute("circuit.name", name);
     span.setAttribute("circuit.timeout", options.timeout || 5000);
 
-    const circuit = createCircuit(name, operation as any, options, fallback as any);
+    const circuit = createCircuit(
+      name,
+      operation as unknown as (...args: unknown[]) => Promise<unknown>,
+      options,
+      fallback as unknown as (...args: unknown[]) => Promise<unknown>,
+    );
     try {
       const result = await circuit.fire();
       span.setStatus({ code: SpanStatusCode.OK });
