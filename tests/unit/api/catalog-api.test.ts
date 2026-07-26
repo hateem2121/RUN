@@ -22,6 +22,7 @@
  */
 
 import express from "express";
+import { ok } from "neverthrow";
 import request from "supertest";
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import { setupErrorHandling } from "../../../server/boot/middleware.js";
@@ -554,13 +555,15 @@ describe("POST /api/products — auth enforcement", () => {
 
   test("creates product with admin role and returns 201", async () => {
     const repo = productRepository as Record<string, ReturnType<typeof vi.fn>>;
-    repo.createProduct.mockResolvedValueOnce({
-      id: 100,
-      name: "New Product",
-      slug: "new-product",
-      sku: "SKU-NEW",
-      categoryId: 36,
-    });
+    repo.createProduct.mockResolvedValueOnce(
+      ok({
+        id: 100,
+        name: "New Product",
+        slug: "new-product",
+        sku: "SKU-NEW",
+        categoryId: 36,
+      }) as any,
+    );
     const res = await request(adminApp)
       .post("/api/products")
       .send({ name: "New Product", slug: "new-product", sku: "SKU-NEW", categoryId: 36 });
@@ -697,12 +700,14 @@ describe("POST /api/categories — auth enforcement", () => {
   test("creates category with admin role and returns 201", async () => {
     const repo = productRepository as Record<string, ReturnType<typeof vi.fn>>;
     repo.getCategories.mockResolvedValueOnce([]);
-    repo.createCategory.mockResolvedValueOnce({
-      id: 99,
-      name: "New Category",
-      slug: "new-category",
-      isActive: true,
-    });
+    repo.createCategory.mockResolvedValueOnce(
+      ok({
+        id: 99,
+        name: "New Category",
+        slug: "new-category",
+        isActive: true,
+      }) as any,
+    );
     const res = await request(adminApp)
       .post("/api/categories")
       .send({ name: "New Category", slug: "new-category" });

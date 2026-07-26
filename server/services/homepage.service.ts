@@ -36,11 +36,12 @@ class HomepageService {
    * Invalidates all homepage related cache entries
    */
   private async invalidateCache(): Promise<void> {
-    try {
-      await CacheOperations.invalidateHomepage();
-    } catch (error) {
-      logger.error("[HomepageService] Cache invalidation failed", error as Error);
-    }
+    await ResultAsync.fromPromise(
+      CacheOperations.invalidateHomepage(),
+      (error) => error as Error,
+    ).mapErr((error) => {
+      logger.error("[HomepageService] Cache invalidation failed", error);
+    });
   }
 
   // Hero

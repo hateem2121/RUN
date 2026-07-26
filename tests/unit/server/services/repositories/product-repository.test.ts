@@ -1,3 +1,4 @@
+import { ok } from "neverthrow";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { db } from "../../../../../server/db.js";
 import { UnifiedCache } from "../../../../../server/lib/cache/unified-cache.js";
@@ -460,15 +461,13 @@ describe("ProductRepository", () => {
     describe("Product Mutations", () => {
       it("createProduct throws on failure", async () => {
         vi.mocked(db.insert).mockReturnValue(createMockDbChain([], []));
-        await expect(repository.createProduct({ name: "fail" } as any)).rejects.toThrow(
-          "Failed to create product",
-        );
+        expect((await repository.createProduct({ name: "fail" } as any)).isErr()).toBe(true);
       });
 
       it("createProduct works and sets relations", async () => {
         vi.mocked(db.insert).mockReturnValue(createMockDbChain([{ id: 1 }], [{ id: 1 }]));
         const res = await repository.createProduct({ name: "ok", relatedProductIds: [2] } as any);
-        expect(res.id).toBe(1);
+        expect(res).toEqual(ok(expect.objectContaining({ id: 1 })));
         expect(mockUnifiedCache.clearPattern).toHaveBeenCalled();
       });
 
@@ -518,9 +517,7 @@ describe("ProductRepository", () => {
 
       it("createCategory throws if no category returned", async () => {
         vi.mocked(db.insert).mockReturnValue(createMockDbChain([], []));
-        await expect(repository.createCategory({ name: "fail" } as any)).rejects.toThrow(
-          "Failed to create category",
-        );
+        expect((await repository.createCategory({ name: "fail" } as any)).isErr()).toBe(true);
       });
 
       it("updateCategory invalidates cache", async () => {

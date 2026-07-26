@@ -12,7 +12,10 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: "jsdom",
-    setupFiles: [path.resolve(__dirname, "./tests/setup.ts")],
+    setupFiles: [
+      path.resolve(__dirname, "./tests/setup.ts"),
+      path.resolve(__dirname, "./tests/vitest-neverthrow.setup.ts"),
+    ],
     globals: true,
     exclude: [
       "**/node_modules/**",

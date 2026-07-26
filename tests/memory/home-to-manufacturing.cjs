@@ -18,7 +18,7 @@ module.exports = {
     // Wait for home page to render
     await new Promise((r) => setTimeout(r, 3000));
   },
-  leakFilter: (node) => {
+  leakFilter: (_node) => {
     return true;
   },
 };

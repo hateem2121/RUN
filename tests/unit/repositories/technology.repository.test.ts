@@ -102,7 +102,8 @@ describe("TechnologyRepository", () => {
         .mockImplementationOnce((resolve: any) => resolve([{ id: 1, title: "Old" }] as any))
         .mockImplementationOnce((resolve: any) => resolve([{ id: 1, title: "Updated" }] as any));
       const result = await technologyRepository.updateTechnologyHero({ title: "Updated" });
-      expect(result.title).toBe("Updated");
+      expect(result.isOk()).toBe(true);
+      if (result.isOk()) expect(result.value.title).toBe("Updated");
     });
 
     it("should update hero (create new)", async () => {
@@ -110,7 +111,8 @@ describe("TechnologyRepository", () => {
         .mockImplementationOnce((resolve: any) => resolve([] as any))
         .mockImplementationOnce((resolve: any) => resolve([{ id: 1, title: "New" }] as any));
       const result = await technologyRepository.updateTechnologyHero({ title: "New" });
-      expect(result.title).toBe("New");
+      expect(result.isOk()).toBe(true);
+      if (result.isOk()) expect(result.value.title).toBe("New");
     });
   });
 

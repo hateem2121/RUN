@@ -1,3 +1,4 @@
+import { ok } from "neverthrow";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { unifiedCache } from "../../../../server/lib/cache/unified-cache.js";
 import { emailService } from "../../../../server/lib/integrations/email-service.js";
@@ -19,7 +20,7 @@ vi.mock("../../../../server/lib/cache/unified-cache.js", () => ({
   unifiedCache: {
     get: vi.fn(),
     set: vi.fn(),
-    delete: vi.fn(),
+    delete: vi.fn().mockResolvedValue(true),
   },
 }));
 
@@ -67,9 +68,10 @@ describe("InquiryService", () => {
         submittedAt: new Date(),
       };
 
-      vi.mocked(miscRepository.createInquiry).mockResolvedValue(mockInquiry);
+      vi.mocked(miscRepository.createInquiry).mockResolvedValue(ok(mockInquiry) as any);
 
       const result = await service.createInquiry(mockData);
+      expect(result.isOk()).toBe(true);
       const val = result._unsafeUnwrap();
 
       expect(miscRepository.createInquiry).toHaveBeenCalledWith(mockData);

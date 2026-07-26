@@ -11,12 +11,7 @@ import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
 import { logger } from "../monitoring/logger.js";
 
 // Secrets to load from Secret Manager
-const MANAGED_SECRETS = [
-  "DATABASE_URL",
-  "SESSION_SECRET",
-  "GOOGLE_CLIENT_SECRET",
-  "UPSTASH_REDIS_REST_TOKEN",
-] as const;
+const MANAGED_SECRETS = ["DATABASE_URL", "SESSION_SECRET", "GOOGLE_CLIENT_SECRET"] as const;
 
 type ManagedSecret = (typeof MANAGED_SECRETS)[number];
 

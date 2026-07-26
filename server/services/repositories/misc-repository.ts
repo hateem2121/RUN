@@ -33,7 +33,7 @@ import {
   sizeCharts,
 } from "@run-remix/shared";
 import { and, asc, count, desc, eq, getTableColumns, isNull, like, or, sql } from "drizzle-orm";
-import { err, ok, type Result } from "neverthrow";
+import { err, ok, Result, ResultAsync } from "neverthrow";
 import { type DbClient, db } from "../../db.js";
 import { emitCacheInvalidation } from "../../lib/cache/cache-events.js";
 import { UnifiedCache } from "../../lib/cache/unified-cache.js";
@@ -57,14 +57,16 @@ export class MiscRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getFibers();
     }
-    try {
-      // Use unifiedCache (Redis) instead of global memory for statelessness
-      const cached = await unifiedCache.get<Fiber[]>(FIBERS_CACHE_KEY, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
+    // Use unifiedCache (Redis) instead of global memory for statelessness
+    const cacheResult = await ResultAsync.fromPromise(
+      unifiedCache.get<Fiber[]>(FIBERS_CACHE_KEY, "data"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[MiscRepo] Failed to get fibers from cache:", error);
+    });
+
+    if (cacheResult.isOk() && cacheResult.value) {
+      return cacheResult.value;
     }
 
     // Cache miss or error: fetch from database
@@ -74,11 +76,12 @@ export class MiscRepository {
       .where(isNull(fibers.deletedAt))
       .orderBy(asc(fibers.name));
 
-    try {
-      await unifiedCache.set(FIBERS_CACHE_KEY, result, FIBERS_CACHE_TTL, "data");
-    } catch (error) {
+    await ResultAsync.fromPromise(
+      unifiedCache.set(FIBERS_CACHE_KEY, result, FIBERS_CACHE_TTL, "data"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[MiscRepo] Failed to set fibers cache:", error);
-    }
+    });
 
     return result;
   }
@@ -101,17 +104,17 @@ export class MiscRepository {
     const dbConn = tx || db;
     const [created] = await dbConn.insert(fibers).values(fiber).returning();
 
-    try {
-      await unifiedCache.delete(FIBERS_CACHE_KEY);
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear fiber cache:", error);
-    }
+    await ResultAsync.fromPromise(unifiedCache.delete(FIBERS_CACHE_KEY), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to clear fiber cache:", error);
+      },
+    );
 
-    try {
-      await emitCacheInvalidation("fibers:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("fibers:", "create"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return created!;
   }
@@ -131,17 +134,17 @@ export class MiscRepository {
       .where(and(eq(fibers.id, id), isNull(fibers.deletedAt)))
       .returning();
 
-    try {
-      await unifiedCache.delete(FIBERS_CACHE_KEY);
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear fiber cache:", error);
-    }
+    await ResultAsync.fromPromise(unifiedCache.delete(FIBERS_CACHE_KEY), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to clear fiber cache:", error);
+      },
+    );
 
-    try {
-      await emitCacheInvalidation("fibers:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("fibers:", "update"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return updated;
   }
@@ -156,17 +159,17 @@ export class MiscRepository {
       .set({ deletedAt: sql`NOW()` })
       .where(eq(fibers.id, id));
 
-    try {
-      await unifiedCache.delete(FIBERS_CACHE_KEY);
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear fiber cache:", error);
-    }
+    await ResultAsync.fromPromise(unifiedCache.delete(FIBERS_CACHE_KEY), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to clear fiber cache:", error);
+      },
+    );
 
-    try {
-      await emitCacheInvalidation("fibers:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("fibers:", "delete"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return (result.rowCount ?? 0) > 0;
   }
@@ -203,13 +206,15 @@ export class MiscRepository {
       return StorageSingleton.getInstance().getFabrics();
     }
     const cacheKey = "fabrics:all";
-    try {
-      const cached = await unifiedCache.get<Fabric[]>(cacheKey, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
+    const cacheResult = await ResultAsync.fromPromise(
+      unifiedCache.get<Fabric[]>(cacheKey, "data"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to get fabrics from cache:", error);
+    });
+
+    if (cacheResult.isOk() && cacheResult.value) {
+      return cacheResult.value;
     }
 
     const result = await db
@@ -218,12 +223,12 @@ export class MiscRepository {
       .where(isNull(fabrics.deletedAt))
       .orderBy(asc(fabrics.name));
 
-    try {
-      // PERFORMANCE: Increase TTL to 30min (static taxonomy data, rarely changes)
-      await unifiedCache.set(cacheKey, result, 30 * 60 * 1000, "data");
-    } catch (error) {
+    await ResultAsync.fromPromise(
+      unifiedCache.set(cacheKey, result, 30 * 60 * 1000, "data"), // PERFORMANCE: Increase TTL to 30min (static taxonomy data, rarely changes)
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to set cache:", error);
-    }
+    });
     return result;
   }
 
@@ -253,17 +258,15 @@ export class MiscRepository {
 
     const [created] = await dbConn.insert(fabrics).values(transformedFabric).returning();
 
-    try {
-      await unifiedCache.delete("fabrics:all");
-    } catch (error) {
+    await ResultAsync.fromPromise(unifiedCache.delete("fabrics:all"), (e) => e).mapErr((error) => {
       logger.debug("[Cache] Failed to clear fabric cache:", error);
-    }
+    });
 
-    try {
-      await emitCacheInvalidation("fabrics:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("fabrics:", "create"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return created!;
   }
@@ -294,17 +297,15 @@ export class MiscRepository {
       .where(and(eq(fabrics.id, id), isNull(fabrics.deletedAt)))
       .returning();
 
-    try {
-      await unifiedCache.delete("fabrics:all");
-    } catch (error) {
+    await ResultAsync.fromPromise(unifiedCache.delete("fabrics:all"), (e) => e).mapErr((error) => {
       logger.debug("[Cache] Failed to clear fabric cache:", error);
-    }
+    });
 
-    try {
-      await emitCacheInvalidation("fabrics:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("fabrics:", "update"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return updated;
   }
@@ -599,17 +600,15 @@ export class MiscRepository {
       .set({ deletedAt: sql`NOW()` })
       .where(eq(fabrics.id, id));
 
-    try {
-      await unifiedCache.delete("fabrics:all");
-    } catch (error) {
+    await ResultAsync.fromPromise(unifiedCache.delete("fabrics:all"), (e) => e).mapErr((error) => {
       logger.debug("[Cache] Failed to clear fabric cache:", error);
-    }
+    });
 
-    try {
-      await emitCacheInvalidation("fabrics:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("fabrics:", "delete"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return (result.rowCount ?? 0) > 0;
   }
@@ -654,13 +653,15 @@ export class MiscRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getCertificates();
     }
-    try {
-      const cached = await unifiedCache.get<Certificate[]>(this.CERTIFICATES_CACHE_KEY, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
+    const cacheResult = await ResultAsync.fromPromise(
+      unifiedCache.get<Certificate[]>(this.CERTIFICATES_CACHE_KEY, "data"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to get certificates from cache:", error);
+    });
+
+    if (cacheResult.isOk() && cacheResult.value) {
+      return cacheResult.value;
     }
 
     // CHUNK 3: Fetch certificates with media URL hydration
@@ -688,12 +689,12 @@ export class MiscRepository {
       };
     });
 
-    try {
-      // PERFORMANCE: Increase TTL to 30min (static taxonomy data, rarely changes)
-      await unifiedCache.set(this.CERTIFICATES_CACHE_KEY, hydratedResult, 30 * 60 * 1000, "data");
-    } catch (error) {
+    await ResultAsync.fromPromise(
+      unifiedCache.set(this.CERTIFICATES_CACHE_KEY, hydratedResult, 30 * 60 * 1000, "data"), // PERFORMANCE: Increase TTL to 30min (static taxonomy data, rarely changes)
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to set cache:", error);
-    }
+    });
     return hydratedResult;
   }
 
@@ -731,17 +732,19 @@ export class MiscRepository {
     const dbConn = tx || db;
     const [created] = await dbConn.insert(certificates).values(certificate).returning();
 
-    try {
-      await unifiedCache.delete(this.CERTIFICATES_CACHE_KEY);
-    } catch (error) {
+    await ResultAsync.fromPromise(
+      unifiedCache.delete(this.CERTIFICATES_CACHE_KEY),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to clear certificate cache:", error);
-    }
+    });
 
-    try {
-      await emitCacheInvalidation("certificates:", "create");
-    } catch (error) {
+    await ResultAsync.fromPromise(
+      emitCacheInvalidation("certificates:", "create"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    });
 
     await unifiedCache.delete("batch:/api/sustainability/batch");
     return created!;
@@ -762,17 +765,19 @@ export class MiscRepository {
       .where(and(eq(certificates.id, id), isNull(certificates.deletedAt)))
       .returning();
 
-    try {
-      await unifiedCache.delete(this.CERTIFICATES_CACHE_KEY);
-    } catch (error) {
+    await ResultAsync.fromPromise(
+      unifiedCache.delete(this.CERTIFICATES_CACHE_KEY),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to clear certificate cache:", error);
-    }
+    });
 
-    try {
-      await emitCacheInvalidation("certificates:", "update");
-    } catch (error) {
+    await ResultAsync.fromPromise(
+      emitCacheInvalidation("certificates:", "update"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    });
 
     await unifiedCache.delete("batch:/api/sustainability/batch");
     return updated;
@@ -788,17 +793,19 @@ export class MiscRepository {
       .set({ deletedAt: sql`NOW()` })
       .where(eq(certificates.id, id));
 
-    try {
-      await unifiedCache.delete(this.CERTIFICATES_CACHE_KEY);
-    } catch (error) {
+    await ResultAsync.fromPromise(
+      unifiedCache.delete(this.CERTIFICATES_CACHE_KEY),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to clear certificate cache:", error);
-    }
+    });
 
-    try {
-      await emitCacheInvalidation("certificates:", "delete");
-    } catch (error) {
+    await ResultAsync.fromPromise(
+      emitCacheInvalidation("certificates:", "delete"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    });
 
     await unifiedCache.delete("batch:/api/sustainability/batch");
     return (result.rowCount ?? 0) > 0;
@@ -839,13 +846,15 @@ export class MiscRepository {
       return StorageSingleton.getInstance().getSizeCharts();
     }
     const cacheKey = "size-charts:active";
-    try {
-      const cached = await unifiedCache.get<SizeChart[]>(cacheKey, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
+    const cacheResult = await ResultAsync.fromPromise(
+      unifiedCache.get<SizeChart[]>(cacheKey, "data"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to get size charts from cache:", error);
+    });
+
+    if (cacheResult.isOk() && cacheResult.value) {
+      return cacheResult.value;
     }
 
     const result = await db
@@ -854,11 +863,12 @@ export class MiscRepository {
       .where(and(eq(sizeCharts.isActive, true), isNull(sizeCharts.deletedAt)))
       .orderBy(asc(sizeCharts.name));
 
-    try {
-      await unifiedCache.set(cacheKey, result, 24 * 60 * 60 * 1000, "data"); // 24 hours - size charts are static data
-    } catch (error) {
+    await ResultAsync.fromPromise(
+      unifiedCache.set(cacheKey, result, 24 * 60 * 60 * 1000, "data"), // 24 hours - size charts are static data
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to set cache:", error);
-    }
+    });
     return result;
   }
 
@@ -884,17 +894,17 @@ export class MiscRepository {
     const dbConn = tx || db;
     const [created] = await dbConn.insert(sizeCharts).values(sizeChart).returning();
 
-    try {
-      await unifiedCache.delete("size-charts:active");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear size chart cache:", error);
-    }
+    await ResultAsync.fromPromise(unifiedCache.delete("size-charts:active"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to clear size chart cache:", error);
+      },
+    );
 
-    try {
-      await emitCacheInvalidation("size-charts:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("size-charts:", "create"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return created!;
   }
@@ -914,17 +924,17 @@ export class MiscRepository {
       .where(and(eq(sizeCharts.id, id), isNull(sizeCharts.deletedAt)))
       .returning();
 
-    try {
-      await unifiedCache.delete("size-charts:active");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear size chart cache:", error);
-    }
+    await ResultAsync.fromPromise(unifiedCache.delete("size-charts:active"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to clear size chart cache:", error);
+      },
+    );
 
-    try {
-      await emitCacheInvalidation("size-charts:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("size-charts:", "update"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return updated;
   }
@@ -939,17 +949,17 @@ export class MiscRepository {
       .set({ deletedAt: sql`NOW()` })
       .where(eq(sizeCharts.id, id));
 
-    try {
-      await unifiedCache.delete("size-charts:active");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear size chart cache:", error);
-    }
+    await ResultAsync.fromPromise(unifiedCache.delete("size-charts:active"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to clear size chart cache:", error);
+      },
+    );
 
-    try {
-      await emitCacheInvalidation("size-charts:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("size-charts:", "delete"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return (result.rowCount ?? 0) > 0;
   }
@@ -989,13 +999,15 @@ export class MiscRepository {
       return StorageSingleton.getInstance().getAccessories();
     }
     const cacheKey = "accessories:active";
-    try {
-      const cached = await unifiedCache.get<Accessory[]>(cacheKey, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
+    const cacheResult = await ResultAsync.fromPromise(
+      unifiedCache.get<Accessory[]>(cacheKey, "data"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to get accessories from cache:", error);
+    });
+
+    if (cacheResult.isOk() && cacheResult.value) {
+      return cacheResult.value;
     }
 
     const result = await db
@@ -1004,11 +1016,12 @@ export class MiscRepository {
       .where(and(eq(accessories.isActive, true), isNull(accessories.deletedAt)))
       .orderBy(asc(accessories.name));
 
-    try {
-      await unifiedCache.set(cacheKey, result, 5 * 60 * 1000, "data");
-    } catch (error) {
+    await ResultAsync.fromPromise(
+      unifiedCache.set(cacheKey, result, 5 * 60 * 1000, "data"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to set cache:", error);
-    }
+    });
     return result;
   }
 
@@ -1034,17 +1047,17 @@ export class MiscRepository {
     const dbConn = tx || db;
     const [created] = await dbConn.insert(accessories).values(accessory).returning();
 
-    try {
-      await unifiedCache.delete("accessories:active");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear accessory cache:", error);
-    }
+    await ResultAsync.fromPromise(unifiedCache.delete("accessories:active"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to clear accessory cache:", error);
+      },
+    );
 
-    try {
-      await emitCacheInvalidation("accessories:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("accessories:", "create"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return created!;
   }
@@ -1064,17 +1077,17 @@ export class MiscRepository {
       .where(and(eq(accessories.id, id), isNull(accessories.deletedAt)))
       .returning();
 
-    try {
-      await unifiedCache.delete("accessories:active");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear accessory cache:", error);
-    }
+    await ResultAsync.fromPromise(unifiedCache.delete("accessories:active"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to clear accessory cache:", error);
+      },
+    );
 
-    try {
-      await emitCacheInvalidation("accessories:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("accessories:", "update"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return updated;
   }
@@ -1089,17 +1102,17 @@ export class MiscRepository {
       .set({ deletedAt: sql`NOW()` })
       .where(eq(accessories.id, id));
 
-    try {
-      await unifiedCache.delete("accessories:active");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear accessory cache:", error);
-    }
+    await ResultAsync.fromPromise(unifiedCache.delete("accessories:active"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to clear accessory cache:", error);
+      },
+    );
 
-    try {
-      await emitCacheInvalidation("accessories:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("accessories:", "delete"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return (result.rowCount ?? 0) > 0;
   }
@@ -1133,11 +1146,11 @@ export class MiscRepository {
     }
     const [created] = await db.insert(navigationItems).values(item).returning();
     // CHUNK 4: Removed legacy cache code - caching now handled at route level
-    try {
-      await emitCacheInvalidation("navigation:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("navigation:", "create"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
     return created!;
   }
 
@@ -1154,11 +1167,11 @@ export class MiscRepository {
       .where(eq(navigationItems.id, id))
       .returning();
     // CHUNK 4: Removed legacy cache code - caching now handled at route level
-    try {
-      await emitCacheInvalidation("navigation:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("navigation:", "update"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
     return updated;
   }
 
@@ -1168,11 +1181,11 @@ export class MiscRepository {
     }
     const result = await db.delete(navigationItems).where(eq(navigationItems.id, id));
     // CHUNK 4: Removed legacy cache code - caching now handled at route level
-    try {
-      await emitCacheInvalidation("navigation:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("navigation:", "delete"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
     return (result.rowCount ?? 0) > 0;
   }
 
@@ -1190,11 +1203,11 @@ export class MiscRepository {
       }
     });
 
-    try {
-      await emitCacheInvalidation("navigation:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("navigation:", "update"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
   }
 
   async getNavigationGlassmorphismSettings(): Promise<NavigationGlassmorphismSettings | undefined> {
@@ -1233,11 +1246,11 @@ export class MiscRepository {
       }
     }
 
-    try {
-      await emitCacheInvalidation("navigation:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("navigation:", "update"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return result;
   }
@@ -1261,11 +1274,11 @@ export class MiscRepository {
       return StorageSingleton.getInstance().createContactPageConfiguration(config);
     }
     const [created] = await db.insert(contactPageConfigurations).values(config).returning();
-    try {
-      await emitCacheInvalidation("contact:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("contact:", "create"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
     return created!;
   }
 
@@ -1281,11 +1294,11 @@ export class MiscRepository {
       .set(config)
       .where(eq(contactPageConfigurations.id, id))
       .returning();
-    try {
-      await emitCacheInvalidation("contact:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("contact:", "update"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
     return updated;
   }
 
@@ -1299,23 +1312,26 @@ export class MiscRepository {
     }
     // PERFORMANCE: Cache footer config for 30min (truly static content, rarely changes)
     const cacheKey = "footer:config";
-    try {
-      const cached = await unifiedCache.get<FooterConfiguration>(cacheKey, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
+    const cacheResult = await ResultAsync.fromPromise(
+      unifiedCache.get<FooterConfiguration>(cacheKey, "data"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to get footer config from cache:", error);
+    });
+
+    if (cacheResult.isOk() && cacheResult.value) {
+      return cacheResult.value;
     }
 
     const [config] = await db.select().from(footerConfiguration).limit(1);
 
     if (config) {
-      try {
-        await unifiedCache.set(cacheKey, config, 30 * 60 * 1000, "data");
-      } catch (error) {
+      await ResultAsync.fromPromise(
+        unifiedCache.set(cacheKey, config, 30 * 60 * 1000, "data"),
+        (e) => e,
+      ).mapErr((error) => {
         logger.debug("[Cache] Failed to set footer config cache:", error);
-      }
+      });
     }
 
     return config;
@@ -1360,11 +1376,11 @@ export class MiscRepository {
       return StorageSingleton.getInstance().updateFooterConfiguration(config);
     }
     // PERFORMANCE: Invalidate 30min cache on update to prevent stale data
-    try {
-      await unifiedCache.delete("footer:config");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear footer config cache:", error);
-    }
+    await ResultAsync.fromPromise(unifiedCache.delete("footer:config"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to clear footer config cache:", error);
+      },
+    );
 
     const existing = await db.select().from(footerConfiguration).limit(1);
 
@@ -1392,11 +1408,11 @@ export class MiscRepository {
       }
     }
 
-    try {
-      await emitCacheInvalidation("footer:", "update");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("footer:", "update"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return result;
   }
@@ -1421,17 +1437,17 @@ export class MiscRepository {
 
     const [created] = await db.insert(inquiries).values(encryptedData).returning();
 
-    try {
-      await unifiedCache.delete("inquiries:stats");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear inquiry cache:", error);
-    }
+    await ResultAsync.fromPromise(unifiedCache.delete("inquiries:stats"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to clear inquiry cache:", error);
+      },
+    );
 
-    try {
-      await emitCacheInvalidation("inquiries:", "create");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("inquiries:", "create"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return created!;
   }
@@ -1519,17 +1535,17 @@ export class MiscRepository {
       .returning();
 
     if (updated) {
-      try {
-        await unifiedCache.delete("inquiries:stats");
-      } catch (error) {
-        logger.debug("[Cache] Failed to clear inquiry cache:", error);
-      }
+      await ResultAsync.fromPromise(unifiedCache.delete("inquiries:stats"), (e) => e).mapErr(
+        (error) => {
+          logger.debug("[Cache] Failed to clear inquiry cache:", error);
+        },
+      );
 
-      try {
-        await emitCacheInvalidation("inquiries:", "update");
-      } catch (error) {
-        logger.debug("[Cache] Failed to emit invalidation event:", error);
-      }
+      await ResultAsync.fromPromise(emitCacheInvalidation("inquiries:", "update"), (e) => e).mapErr(
+        (error) => {
+          logger.debug("[Cache] Failed to emit invalidation event:", error);
+        },
+      );
 
       return this.decryptInquiry(updated as unknown as Inquiry);
     }
@@ -1558,17 +1574,17 @@ export class MiscRepository {
     }
     const result = await db.delete(inquiries).where(eq(inquiries.id, id));
 
-    try {
-      await unifiedCache.delete("inquiries:stats");
-    } catch (error) {
-      logger.debug("[Cache] Failed to clear inquiry cache:", error);
-    }
+    await ResultAsync.fromPromise(unifiedCache.delete("inquiries:stats"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to clear inquiry cache:", error);
+      },
+    );
 
-    try {
-      await emitCacheInvalidation("inquiries:", "delete");
-    } catch (error) {
-      logger.debug("[Cache] Failed to emit invalidation event:", error);
-    }
+    await ResultAsync.fromPromise(emitCacheInvalidation("inquiries:", "delete"), (e) => e).mapErr(
+      (error) => {
+        logger.debug("[Cache] Failed to emit invalidation event:", error);
+      },
+    );
 
     return (result.rowCount ?? 0) > 0;
   }
@@ -1582,17 +1598,19 @@ export class MiscRepository {
       return StorageSingleton.getInstance().getInquiryStats();
     }
     const cacheKey = "inquiries:stats";
-    try {
-      const cached = await unifiedCache.get<{
+    const cacheResult = await ResultAsync.fromPromise(
+      unifiedCache.get<{
         byStatus: Record<string, number>;
         bySource: Record<string, number>;
         recentCount: number;
-      }>(cacheKey, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
+      }>(cacheKey, "data"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to get inquiry stats from cache:", error);
+    });
+
+    if (cacheResult.isOk() && cacheResult.value) {
+      return cacheResult.value;
     }
 
     const sevenDaysAgo = new Date();
@@ -1637,11 +1655,12 @@ export class MiscRepository {
 
     const stats = { byStatus, bySource, recentCount };
 
-    try {
-      await unifiedCache.set(cacheKey, stats, 5 * 60 * 1000, "data");
-    } catch (error) {
+    await ResultAsync.fromPromise(
+      unifiedCache.set(cacheKey, stats, 5 * 60 * 1000, "data"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug("[Cache] Failed to set cache:", error);
-    }
+    });
 
     return stats;
   }
@@ -1655,44 +1674,54 @@ export class MiscRepository {
     }
     const encryptedEmail = encrypt(email);
     const index = getBlindIndex(email);
-    try {
-      const result = await db
+    const insertResult = await ResultAsync.fromPromise(
+      db
         .insert(newsletterSubscribers)
         .values({
           email: encryptedEmail,
           emailIndex: index,
         })
         .onConflictDoNothing()
-        .returning();
-      return result.length > 0;
-    } catch (error) {
-      logger.error("Failed to subscribe to newsletter", { email, error });
+        .returning(),
+      (e) => e,
+    );
+
+    if (insertResult.isErr()) {
+      logger.error("Failed to subscribe to newsletter", { email, error: insertResult.error });
       return false;
     }
+
+    return insertResult.value.length > 0;
   }
 
   private decryptInquiry(inquiry: Inquiry): Inquiry {
-    try {
-      return {
+    return Result.fromThrowable(
+      () => ({
         ...inquiry,
         email: inquiry.email ? this.safeDecrypt(inquiry.email) : inquiry.email,
         name: inquiry.name ? this.safeDecrypt(inquiry.name) : inquiry.name,
         company: inquiry.company ? this.safeDecrypt(inquiry.company) : inquiry.company,
         phone: inquiry.phone ? this.safeDecrypt(inquiry.phone) : inquiry.phone,
         message: inquiry.message ? this.safeDecrypt(inquiry.message) : inquiry.message,
-      };
-    } catch (error) {
-      logger.error(`[MiscRepository] Failed to decrypt inquiry ${inquiry.id}:`, error);
-      return inquiry;
-    }
+      }),
+      (e) => e,
+    )().match(
+      (decrypted) => decrypted,
+      (error) => {
+        logger.error(`[MiscRepository] Failed to decrypt inquiry ${inquiry.id}:`, error);
+        return inquiry;
+      },
+    );
   }
 
   private safeDecrypt(value: string): string {
     if (!value?.includes(":")) return value;
-    try {
-      return decrypt(value);
-    } catch {
-      return value;
-    }
+    return Result.fromThrowable(
+      decrypt,
+      (e) => e,
+    )(value).match(
+      (decrypted) => decrypted,
+      () => value,
+    );
   }
 }

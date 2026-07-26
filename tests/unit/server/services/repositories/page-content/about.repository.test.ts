@@ -1,3 +1,4 @@
+import { ok } from "neverthrow";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { db } from "../../../../../../server/db.js";
 import { emitCacheInvalidation } from "../../../../../../server/lib/cache/cache-events.js";
@@ -156,6 +157,14 @@ describe("AboutRepository", () => {
       it(`${method} delegates`, async () => {
         const repoMethod = aboutRepository[method as keyof typeof aboutRepository] as any;
         const mockReturn = { some: "data" };
+        const isResultMethod = [
+          "updateAboutHero",
+          "updateAboutTimelineEntry",
+          "updateAboutMapLocation",
+          "updateAboutSection",
+          "updateAboutTeamMessage",
+        ].includes(method);
+        const expectedReturn = isResultMethod ? ok(mockReturn) : mockReturn;
         mockStorageInstance[method].mockResolvedValue(mockReturn);
 
         // Some methods require specific argument lengths or types, pass generic ones
@@ -163,28 +172,22 @@ describe("AboutRepository", () => {
         const res = await repoMethod(...args);
 
         expect(mockStorageInstance[method]).toHaveBeenCalled();
-        expect(res).toEqual(mockReturn);
+        expect(res).toEqual(expectedReturn);
       });
     });
 
     // Test update method throws if storage returns undefined
     it("updateAboutTimelineEntry throws if undefined returned", async () => {
       mockStorageInstance.updateAboutTimelineEntry.mockResolvedValue(undefined);
-      await expect(aboutRepository.updateAboutTimelineEntry(1, {})).rejects.toThrow(
-        "updateAboutTimelineEntry returned undefined for id 1",
-      );
+      expect((await aboutRepository.updateAboutTimelineEntry(1, {})).isErr()).toBe(true);
     });
     it("updateAboutMapLocation throws if undefined returned", async () => {
       mockStorageInstance.updateAboutMapLocation.mockResolvedValue(undefined);
-      await expect(aboutRepository.updateAboutMapLocation(1, {})).rejects.toThrow(
-        "updateAboutMapLocation returned undefined for id 1",
-      );
+      expect((await aboutRepository.updateAboutMapLocation(1, {})).isErr()).toBe(true);
     });
     it("updateAboutSection throws if undefined returned", async () => {
       mockStorageInstance.updateAboutSection.mockResolvedValue(undefined);
-      await expect(aboutRepository.updateAboutSection(1, {})).rejects.toThrow(
-        "updateAboutSection returned undefined for id 1",
-      );
+      expect((await aboutRepository.updateAboutSection(1, {})).isErr()).toBe(true);
     });
   });
 
@@ -249,7 +252,7 @@ describe("AboutRepository", () => {
         expect(mockCache.del).toHaveBeenCalledWith("about:batch");
         expect(db.insert).toHaveBeenCalled();
         expect(emitCacheInvalidation).toHaveBeenCalledWith("about:hero", "create");
-        expect(res).toEqual({ id: 2, headline: "new" });
+        expect(res).toEqual(ok({ id: 2, headline: "new" }));
       });
 
       it("throws error if creating new hero fails", async () => {
@@ -258,9 +261,7 @@ describe("AboutRepository", () => {
         vi.mocked(db.select).mockReturnValue(selectChain);
         vi.mocked(db.insert).mockReturnValue(insertChain);
 
-        await expect(aboutRepository.updateAboutHero({ headline: "new" })).rejects.toThrow(
-          "Failed to create about hero",
-        );
+        expect((await aboutRepository.updateAboutHero({ headline: "new" })).isErr()).toBe(true);
       });
 
       it("updates existing hero if one exists", async () => {
@@ -272,7 +273,7 @@ describe("AboutRepository", () => {
         const res = await aboutRepository.updateAboutHero({ headline: "updated" });
         expect(db.update).toHaveBeenCalled();
         expect(emitCacheInvalidation).toHaveBeenCalledWith("about:hero", "update");
-        expect(res).toEqual({ id: 1, headline: "updated" });
+        expect(res).toEqual(ok({ id: 1, headline: "updated" }));
       });
 
       it("throws error if updating existing hero fails", async () => {
@@ -281,9 +282,7 @@ describe("AboutRepository", () => {
         vi.mocked(db.select).mockReturnValue(selectChain);
         vi.mocked(db.update).mockReturnValue(updateChain);
 
-        await expect(aboutRepository.updateAboutHero({ headline: "updated" })).rejects.toThrow(
-          "Failed to update about hero",
-        );
+        expect((await aboutRepository.updateAboutHero({ headline: "updated" })).isErr()).toBe(true);
       });
     });
 
@@ -327,16 +326,14 @@ describe("AboutRepository", () => {
       it("updateAboutTimelineEntry throws if not found", async () => {
         const chain = createMockDbChain([]);
         vi.mocked(db.update).mockReturnValue(chain);
-        await expect(aboutRepository.updateAboutTimelineEntry(1, {})).rejects.toThrow(
-          "About timeline entry 1 not found",
-        );
+        expect((await aboutRepository.updateAboutTimelineEntry(1, {})).isErr()).toBe(true);
       });
 
       it("updateAboutTimelineEntry updates successfully", async () => {
         const chain = createMockDbChain([{ id: 1 }]);
         vi.mocked(db.update).mockReturnValue(chain);
         const res = await aboutRepository.updateAboutTimelineEntry(1, {});
-        expect(res).toEqual({ id: 1 });
+        expect(res).toEqual(ok({ id: 1 }));
         expect(emitCacheInvalidation).toHaveBeenCalledWith("about:timeline", "update");
       });
 
@@ -400,9 +397,7 @@ describe("AboutRepository", () => {
       it("updateAboutMapLocation throws if not found", async () => {
         const chain = createMockDbChain([]);
         vi.mocked(db.update).mockReturnValue(chain);
-        await expect(aboutRepository.updateAboutMapLocation(1, {})).rejects.toThrow(
-          "About map location 1 not found",
-        );
+        expect((await aboutRepository.updateAboutMapLocation(1, {})).isErr()).toBe(true);
       });
 
       it("deleteAboutMapLocation", async () => {
@@ -459,9 +454,7 @@ describe("AboutRepository", () => {
       it("updateAboutSection throws if not found", async () => {
         const chain = createMockDbChain([]);
         vi.mocked(db.update).mockReturnValue(chain);
-        await expect(aboutRepository.updateAboutSection(1, {})).rejects.toThrow(
-          "About section 1 not found",
-        );
+        expect((await aboutRepository.updateAboutSection(1, {})).isErr()).toBe(true);
       });
 
       it("deleteAboutSection deletes and catches cache err", async () => {
@@ -564,7 +557,7 @@ describe("AboutRepository", () => {
 
         const res = await aboutRepository.updateAboutTeamMessage({});
         expect(db.insert).toHaveBeenCalled();
-        expect(res).toEqual({ id: 1 });
+        expect(res).toEqual(ok({ id: 1 }));
       });
 
       it("updateAboutTeamMessage updates if existing found", async () => {
@@ -575,7 +568,7 @@ describe("AboutRepository", () => {
 
         const res = await aboutRepository.updateAboutTeamMessage({});
         expect(db.update).toHaveBeenCalled();
-        expect(res).toEqual({ id: 1 });
+        expect(res).toEqual(ok({ id: 1 }));
       });
 
       it("updateAboutTeamMessage throws if insert fails", async () => {
@@ -584,9 +577,7 @@ describe("AboutRepository", () => {
         vi.mocked(db.select).mockReturnValue(selectChain);
         vi.mocked(db.insert).mockReturnValue(insertChain);
 
-        await expect(aboutRepository.updateAboutTeamMessage({})).rejects.toThrow(
-          "Failed to create about team message",
-        );
+        expect((await aboutRepository.updateAboutTeamMessage({})).isErr()).toBe(true);
       });
 
       it("updateAboutTeamMessage throws if update fails", async () => {
@@ -595,9 +586,7 @@ describe("AboutRepository", () => {
         vi.mocked(db.select).mockReturnValue(selectChain);
         vi.mocked(db.update).mockReturnValue(updateChain);
 
-        await expect(aboutRepository.updateAboutTeamMessage({})).rejects.toThrow(
-          "Failed to update about team message",
-        );
+        expect((await aboutRepository.updateAboutTeamMessage({})).isErr()).toBe(true);
       });
     });
 

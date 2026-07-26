@@ -19,7 +19,7 @@ import type {
 } from "@run-remix/shared";
 import { folders, mediaAssets } from "@run-remix/shared";
 import { and, asc, desc, eq, ilike, inArray, isNull, or, sql } from "drizzle-orm";
-import { err, ok, type Result } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { db } from "../../db.js";
 import { emitCacheInvalidation } from "../../lib/cache/cache-events.js";
 import { CacheKeys, InvalidationPatterns } from "../../lib/cache/cache-keys.js";
@@ -105,13 +105,15 @@ export class MediaRepository {
     // PERFORMANCE: Cache individual media assets for 1 hour (static content)
     // This prevents N+1 queries in footer/certificate loading
     const cacheKey = `media:asset:${id}`;
-    try {
-      const cached = await unifiedCache.get<MediaAsset>(cacheKey, "data");
-      if (cached) {
-        return cached;
-      }
-    } catch (error) {
+    const cacheResult = await ResultAsync.fromPromise(
+      unifiedCache.get<MediaAsset>(cacheKey, "data"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug(`[MediaRepo] Failed to get media asset ${id} from cache:`, error);
+    });
+
+    if (cacheResult.isOk() && cacheResult.value) {
+      return cacheResult.value;
     }
 
     const [asset] = await dbCircuitBreaker.execute(
@@ -130,11 +132,12 @@ export class MediaRepository {
     );
 
     if (asset) {
-      try {
-        await unifiedCache.set(cacheKey, asset, 60 * 60 * 1000, "data"); // 1 hour
-      } catch (error) {
+      await ResultAsync.fromPromise(
+        unifiedCache.set(cacheKey, asset, 60 * 60 * 1000, "data"), // 1 hour
+        (e) => e,
+      ).mapErr((error) => {
         logger.debug(`[MediaRepo] Failed to cache media asset ${id}:`, error);
-      }
+      });
     }
 
     return asset;
@@ -269,12 +272,13 @@ export class MediaRepository {
     // This ensures frontend never fetches stale data, even if DB delete fails
 
     // Step 1: BLOCKING cache invalidation (must succeed before DB operation)
-    try {
-      await this.invalidateMediaCacheSelectively("delete", id);
-      logger.info(
-        `[MediaRepository] ✅ Cache invalidated for asset ${id}, proceeding with DB delete`,
-      );
-    } catch (cacheError) {
+    const invalidateResult = await ResultAsync.fromPromise(
+      this.invalidateMediaCacheSelectively("delete", id),
+      (e) => e,
+    );
+
+    if (invalidateResult.isErr()) {
+      const cacheError = invalidateResult.error;
       // Cache invalidation failed - throw error to prevent DB delete
       logger.error(
         `[MediaRepository] ❌ Cache invalidation failed for asset ${id}, aborting delete:`,
@@ -287,41 +291,51 @@ export class MediaRepository {
       );
     }
 
+    logger.info(
+      `[MediaRepository] ✅ Cache invalidated for asset ${id}, proceeding with DB delete`,
+    );
+
     // Step 2: Clean up product references inline (remove deleted media from imageIds/certificateIds arrays)
-    try {
-      // Clean up products.imageIds arrays - remove deleted media ID
-      await db.execute(sql`
-        UPDATE products 
-        SET image_ids = (
-          SELECT jsonb_agg(elem)
-          FROM jsonb_array_elements(COALESCE(image_ids, '[]'::jsonb)) elem
-          WHERE (elem::text)::int != ${id}
-        ),
-        updated_at = NOW()
-        WHERE image_ids @> ${JSON.stringify([id])}::jsonb
-          AND deleted_at IS NULL
-      `);
+    await ResultAsync.fromPromise(
+      (async () => {
+        // Clean up products.imageIds arrays - remove deleted media ID
+        await db.execute(sql`
+          UPDATE products 
+          SET image_ids = (
+            SELECT jsonb_agg(elem)
+            FROM jsonb_array_elements(COALESCE(image_ids, '[]'::jsonb)) elem
+            WHERE (elem::text)::int != ${id}
+          ),
+          updated_at = NOW()
+          WHERE image_ids @> ${JSON.stringify([id])}::jsonb
+            AND deleted_at IS NULL
+        `);
 
-      // Clean up products.certificateIds arrays - remove deleted media ID
-      await db.execute(sql`
-        UPDATE products 
-        SET certificate_ids = (
-          SELECT jsonb_agg(elem)
-          FROM jsonb_array_elements(COALESCE(certificate_ids, '[]'::jsonb)) elem
-          WHERE (elem::text)::int != ${id}
-        ),
-        updated_at = NOW()
-        WHERE certificate_ids @> ${JSON.stringify([id])}::jsonb
-          AND deleted_at IS NULL
-      `);
-
-      logger.info(`[MediaRepository] ✅ Cleaned up product array references for media ${id}`);
-    } catch (cleanupError) {
-      logger.warn(
-        `[MediaRepository] ⚠️ Product reference cleanup failed for media ${id} (non-critical):`,
-        cleanupError,
-      );
-    }
+        // Clean up products.certificateIds arrays - remove deleted media ID
+        await db.execute(sql`
+          UPDATE products 
+          SET certificate_ids = (
+            SELECT jsonb_agg(elem)
+            FROM jsonb_array_elements(COALESCE(certificate_ids, '[]'::jsonb)) elem
+            WHERE (elem::text)::int != ${id}
+          ),
+          updated_at = NOW()
+          WHERE certificate_ids @> ${JSON.stringify([id])}::jsonb
+            AND deleted_at IS NULL
+        `);
+      })(),
+      (e) => e,
+    )
+      .map(() => {
+        logger.info(`[MediaRepository] ✅ Cleaned up product array references for media ${id}`);
+        return undefined;
+      })
+      .mapErr((cleanupError) => {
+        logger.warn(
+          `[MediaRepository] ⚠️ Product reference cleanup failed for media ${id} (non-critical):`,
+          cleanupError,
+        );
+      });
 
     // Step 3: Soft delete in database (cache already cleared, references cleaned)
     const result = await db
@@ -600,15 +614,17 @@ export class MediaRepository {
     const sortedIds = [...numericIds].sort((a, b) => a - b);
     const cacheKey = `media:batch:ids:${sortedIds.join(",")}`;
 
-    try {
-      const cached = await unifiedCache.get<MediaAsset[]>(cacheKey, "data");
-      if (cached) {
-        perfTracker.setCacheHit(true).complete();
-        logger.debug(`[MediaRepo] ✅ Cache HIT for getMediaAssetsByIds (${numericIds.length} IDs)`);
-        return cached;
-      }
-    } catch (error) {
+    const batchCacheResult = await ResultAsync.fromPromise(
+      unifiedCache.get<MediaAsset[]>(cacheKey, "data"),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug(`[MediaRepo] Failed to get batch media assets from cache:`, error);
+    });
+
+    if (batchCacheResult.isOk() && batchCacheResult.value) {
+      perfTracker.setCacheHit(true).complete();
+      logger.debug(`[MediaRepo] ✅ Cache HIT for getMediaAssetsByIds (${numericIds.length} IDs)`);
+      return batchCacheResult.value;
     }
 
     const result = await dbCircuitBreaker.execute(
@@ -628,14 +644,19 @@ export class MediaRepository {
     );
 
     if (result.length > 0) {
-      try {
-        await unifiedCache.set(cacheKey, result, MEDIA_CACHE_TTL, "data");
-        logger.debug(
-          `[MediaRepo] ✅ Cached getMediaAssetsByIds result (${result.length} assets, TTL: ${MEDIA_CACHE_TTL}ms)`,
-        );
-      } catch (error) {
-        logger.debug(`[MediaRepo] Failed to cache batch media assets:`, error);
-      }
+      await ResultAsync.fromPromise(
+        unifiedCache.set(cacheKey, result, MEDIA_CACHE_TTL, "data"),
+        (e) => e,
+      )
+        .map(() => {
+          logger.debug(
+            `[MediaRepo] ✅ Cached getMediaAssetsByIds result (${result.length} assets, TTL: ${MEDIA_CACHE_TTL}ms)`,
+          );
+          return undefined;
+        })
+        .mapErr((error) => {
+          logger.debug(`[MediaRepo] Failed to cache batch media assets:`, error);
+        });
     }
 
     perfTracker.setCacheHit(false).complete();
@@ -787,14 +808,19 @@ export class MediaRepository {
     // This fixes the footer N+1 query problem where individual assets are cached
     // MUST use 'data' namespace to match how the cache was set in getMediaAsset()
     if (operation === "update" || operation === "delete") {
-      try {
-        await unifiedCache.delete(CacheKeys.media.asset(mediaId), "data");
-        logger.debug(
-          `[MediaRepo] Cleared individual asset cache for media ${mediaId} (data namespace)`,
-        );
-      } catch (error) {
-        logger.debug(`[MediaRepo] Failed to clear asset cache for ${mediaId}:`, error);
-      }
+      await ResultAsync.fromPromise(
+        unifiedCache.delete(CacheKeys.media.asset(mediaId), "data"),
+        (e) => e,
+      )
+        .map(() => {
+          logger.debug(
+            `[MediaRepo] Cleared individual asset cache for media ${mediaId} (data namespace)`,
+          );
+          return undefined;
+        })
+        .mapErr((error) => {
+          logger.debug(`[MediaRepo] Failed to clear asset cache for ${mediaId}:`, error);
+        });
     }
 
     // EVENT-DRIVEN: Emit invalidation event for frontend (lightweight notification)
@@ -842,13 +868,14 @@ export class MediaRepository {
   }
 
   private async preloadFirstPageCache(): Promise<void> {
-    try {
+    await ResultAsync.fromPromise(
       Promise.allSettled([
         this.getMediaAssets().catch((err) => logger.debug("Cache preload failed:", err)),
-      ]);
-    } catch (_error) {
+      ]),
+      (e) => e,
+    ).mapErr((_error) => {
       // Silent failure for preloading
-    }
+    });
   }
 }
 

@@ -1,3 +1,4 @@
+import { ok } from "neverthrow";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CacheOperations } from "../../../server/lib/cache/cache-strategies.js";
 import { AppError } from "../../../server/lib/errors.js";
@@ -40,7 +41,7 @@ vi.mock("../../../server/services/repositories/index.js", () => ({
 
 vi.mock("../../../server/lib/cache/cache-strategies.js", () => ({
   CacheOperations: {
-    invalidateAbout: vi.fn(),
+    invalidateAbout: vi.fn().mockResolvedValue(true),
   },
 }));
 
@@ -73,7 +74,7 @@ describe("AboutService", () => {
 
       if (serviceMethods.get) {
         it(`should get ${entityName}`, async () => {
-          vi.mocked(repoMethods.get).mockResolvedValue(mockData);
+          vi.mocked(repoMethods.get).mockResolvedValue(ok(mockData) as any);
           const result = await serviceMethods.get(1);
           expect(result.isOk()).toBe(true);
         });
@@ -88,7 +89,7 @@ describe("AboutService", () => {
 
       if (serviceMethods.create) {
         it(`should create ${entityName}`, async () => {
-          vi.mocked(repoMethods.create).mockResolvedValue(mockData);
+          vi.mocked(repoMethods.create).mockResolvedValue(ok(mockData) as any);
           const result = await serviceMethods.create(insertData);
           expect(result.isOk()).toBe(true);
           expect(CacheOperations.invalidateAbout).toHaveBeenCalled();
@@ -97,7 +98,7 @@ describe("AboutService", () => {
 
       if (serviceMethods.update) {
         it(`should update ${entityName}`, async () => {
-          vi.mocked(repoMethods.update).mockResolvedValue(mockData);
+          vi.mocked(repoMethods.update).mockResolvedValue(ok(mockData) as any);
           const result = await serviceMethods.update(
             serviceMethods.updateNeedsId ? 1 : insertData,
             serviceMethods.updateNeedsId ? insertData : undefined,
@@ -109,7 +110,7 @@ describe("AboutService", () => {
 
       if (serviceMethods.delete) {
         it(`should delete ${entityName}`, async () => {
-          vi.mocked(repoMethods.delete).mockResolvedValue(true);
+          vi.mocked(repoMethods.delete).mockResolvedValue(ok(true) as any);
           const result = await serviceMethods.delete(1);
           expect(result.isOk()).toBe(true);
           expect(CacheOperations.invalidateAbout).toHaveBeenCalled();
@@ -234,8 +235,8 @@ describe("AboutService", () => {
     });
 
     it("should updateTeamMessage", async () => {
-      vi.mocked(aboutRepository.updateAboutTeamMessage).mockResolvedValue({ id: 1 } as any);
-      const result = await aboutService.updateTeamMessage({ signature: "Msg" });
+      vi.mocked(aboutRepository.updateAboutTeamMessage).mockResolvedValue(ok({ id: 1 }) as any);
+      const result = await aboutService.updateTeamMessage({ signature: "Jane Doe" });
       expect(result.isOk()).toBe(true);
       expect(CacheOperations.invalidateAbout).toHaveBeenCalled();
     });

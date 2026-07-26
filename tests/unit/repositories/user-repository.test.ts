@@ -3,6 +3,7 @@
  * Tests user CRUD operations with mocked database
  */
 
+import { ok } from "neverthrow";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the database module
@@ -95,7 +96,7 @@ describe("UserRepository", () => {
         lastName: "User",
       });
 
-      expect(result).toEqual(mockUser);
+      expect(result).toEqual(ok(mockUser));
     });
 
     it("should throw error if no user returned", async () => {
@@ -108,12 +109,14 @@ describe("UserRepository", () => {
         }),
       } as unknown as ReturnType<typeof db.insert>);
 
-      await expect(
-        userRepository.upsertUser({
-          id: "user-123",
-          email: "test@example.com",
-        }),
-      ).rejects.toThrow("Failed to upsert user");
+      expect(
+        (
+          await userRepository.upsertUser({
+            id: "user-123",
+            email: "test@example.com",
+          })
+        ).isErr(),
+      ).toBe(true);
     });
   });
 

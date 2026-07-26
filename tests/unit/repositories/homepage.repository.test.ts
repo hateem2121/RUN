@@ -86,7 +86,8 @@ describe("HomepageRepository", () => {
         .mockImplementationOnce((resolve: any) => resolve([{ id: 1 }] as any))
         .mockImplementationOnce((resolve: any) => resolve([{ id: 1, title: "Updated" }] as any));
       const result = await homepageRepository.updateHomepageHero({ title: "Updated" } as any);
-      expect(result.title).toBe("Updated");
+      expect(result.isOk()).toBe(true);
+      if (result.isOk()) expect(result.value.title).toBe("Updated");
       expect(vi.mocked(unifiedCache.del)).toHaveBeenCalled();
     });
 
@@ -95,7 +96,8 @@ describe("HomepageRepository", () => {
         .mockImplementationOnce((resolve: any) => resolve([] as any))
         .mockImplementationOnce((resolve: any) => resolve([{ id: 1, title: "New" }] as any));
       const result = await homepageRepository.updateHomepageHero({ title: "New" } as any);
-      expect(result.title).toBe("New");
+      expect(result.isOk()).toBe(true);
+      if (result.isOk()) expect(result.value.title).toBe("New");
     });
   });
 

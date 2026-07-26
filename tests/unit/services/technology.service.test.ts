@@ -1,3 +1,4 @@
+import { ok } from "neverthrow";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CacheOperations } from "../../../server/lib/cache/cache-strategies.js";
 import { AppError } from "../../../server/lib/errors.js";
@@ -63,7 +64,7 @@ describe("TechnologyService", () => {
     describe(`${entityName} Management`, () => {
       if (serviceMethods.list) {
         it(`should list ${entityName}`, async () => {
-          vi.mocked(repoMethods.list).mockResolvedValue([mockData]);
+          vi.mocked(repoMethods.list).mockResolvedValue(ok([mockData]) as any);
           const result = await serviceMethods.list();
           expect(result.isOk()).toBe(true);
           expect(repoMethods.list).toHaveBeenCalled();
@@ -72,7 +73,7 @@ describe("TechnologyService", () => {
 
       if (serviceMethods.get) {
         it(`should get ${entityName}`, async () => {
-          vi.mocked(repoMethods.get).mockResolvedValue(mockData);
+          vi.mocked(repoMethods.get).mockResolvedValue(ok(mockData) as any);
           const result = await serviceMethods.get(1);
           expect(result.isOk()).toBe(true);
         });
@@ -87,7 +88,7 @@ describe("TechnologyService", () => {
 
       if (serviceMethods.create) {
         it(`should create ${entityName}`, async () => {
-          vi.mocked(repoMethods.create).mockResolvedValue(mockData);
+          vi.mocked(repoMethods.create).mockResolvedValue(ok(mockData) as any);
           const result = await serviceMethods.create(insertData);
           expect(result.isOk()).toBe(true);
           expect(CacheOperations.invalidateTechnology).toHaveBeenCalled();
@@ -96,7 +97,7 @@ describe("TechnologyService", () => {
 
       if (serviceMethods.update) {
         it(`should update ${entityName}`, async () => {
-          vi.mocked(repoMethods.update).mockResolvedValue(mockData);
+          vi.mocked(repoMethods.update).mockResolvedValue(ok(mockData) as any);
           const result = await serviceMethods.update(
             serviceMethods.updateNeedsId ? 1 : insertData,
             serviceMethods.updateNeedsId ? insertData : undefined,
@@ -108,7 +109,7 @@ describe("TechnologyService", () => {
 
       if (serviceMethods.delete) {
         it(`should delete ${entityName}`, async () => {
-          vi.mocked(repoMethods.delete).mockResolvedValue(true);
+          vi.mocked(repoMethods.delete).mockResolvedValue(ok(true) as any);
           const result = await serviceMethods.delete(1);
           expect(result.isOk()).toBe(true);
           expect(CacheOperations.invalidateTechnology).toHaveBeenCalled();
@@ -243,9 +244,11 @@ describe("TechnologyService", () => {
 
   describe("Gradient Settings", () => {
     it("should getGradientSettings", async () => {
-      vi.mocked(technologyRepository.getTechnologyGradientSettings).mockResolvedValue({
-        id: 1,
-      } as any);
+      vi.mocked(technologyRepository.getTechnologyGradientSettings).mockResolvedValue(
+        ok({
+          id: 1,
+        }) as any,
+      );
       const result = await technologyService.getGradientSettings();
       expect(result.isOk()).toBe(true);
     });
@@ -257,9 +260,11 @@ describe("TechnologyService", () => {
     });
 
     it("should updateGradientSettings", async () => {
-      vi.mocked(technologyRepository.updateTechnologyGradientSettings).mockResolvedValue({
-        id: 1,
-      } as any);
+      vi.mocked(technologyRepository.updateTechnologyGradientSettings).mockResolvedValue(
+        ok({
+          id: 1,
+        }) as any,
+      );
       const result = await technologyService.updateGradientSettings({ colorStart: "#fff" });
       expect(result.isOk()).toBe(true);
       expect(CacheOperations.invalidateTechnology).toHaveBeenCalled();

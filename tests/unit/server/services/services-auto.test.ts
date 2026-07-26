@@ -176,7 +176,7 @@ describe("Services Auto", () => {
   });
 
   it("should blanket test all exported functions with DB failures", async () => {
-    const handler = (reason: any) => {
+    const handler = (_reason: unknown) => {
       // Suppress mock DB unhandled rejections
     };
     process.on("unhandledRejection", handler);

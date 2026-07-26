@@ -220,11 +220,16 @@ class CategoryService {
         if (validatedData.description)
           validatedData.description = sanitizeHtml(validatedData.description);
 
-        const allCategories = await withCircuit(
-          "get-categories-validation",
-          () => productRepository.getCategories(),
-          DB_CIRCUIT_OPTIONS,
+        const allCategoriesResult = await ResultAsync.fromPromise(
+          withCircuit(
+            "get-categories-validation",
+            () => productRepository.getCategories(),
+            DB_CIRCUIT_OPTIONS,
+          ),
+          (e) => new InternalError("Failed to fetch categories", { cause: e }),
         );
+        if (allCategoriesResult.isErr()) return err(allCategoriesResult.error);
+        const allCategories = allCategoriesResult.value;
 
         const cleanedData = removeUndefined(validatedData);
 
@@ -245,7 +250,7 @@ class CategoryService {
         // Auto-assign sort order if missing
         if (!cleanedData.sortOrder) {
           const maxSortOrder = allCategories.reduce(
-            (max, cat) => Math.max(max, cat.sortOrder || 0),
+            (max: number, cat: { sortOrder: number | null }) => Math.max(max, cat.sortOrder || 0),
             0,
           );
           cleanedData.sortOrder = maxSortOrder + 10;

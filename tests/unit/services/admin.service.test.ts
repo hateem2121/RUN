@@ -148,10 +148,12 @@ describe("AdminService", () => {
 
   describe("Product Management", () => {
     it("should create product and log audit", async () => {
-      vi.mocked(productRepository.createProduct).mockResolvedValue({
-        id: 1,
-        name: "New Prod",
-      } as any);
+      vi.mocked(productRepository.createProduct).mockResolvedValue(
+        ok({
+          id: 1,
+          name: "New Prod",
+        }) as any,
+      );
 
       const result = await adminService.createProduct(mockAudit, {
         name: "New Prod",
@@ -172,7 +174,9 @@ describe("AdminService", () => {
 
     it("should update product and log audit", async () => {
       vi.mocked(productRepository.getProduct).mockResolvedValue({ id: 1, name: "Old" } as any);
-      vi.mocked(productRepository.updateProduct).mockResolvedValue({ id: 1, name: "New" } as any);
+      vi.mocked(productRepository.updateProduct).mockResolvedValue(
+        ok({ id: 1, name: "New" }) as any,
+      );
 
       const result = await adminService.updateProduct(mockAudit, 1, { name: "New" });
       expect(result.isOk()).toBe(true);
@@ -206,7 +210,7 @@ describe("AdminService", () => {
         id: 1,
         name: "To Delete",
       } as any);
-      vi.mocked(productRepository.permanentlyDeleteProduct).mockResolvedValue(true);
+      vi.mocked(productRepository.permanentlyDeleteProduct).mockResolvedValue(ok(true) as any);
 
       const result = await adminService.hardDeleteProduct(mockAudit, 1, "DELETE");
       expect(result.isOk()).toBe(true);
@@ -214,7 +218,7 @@ describe("AdminService", () => {
     });
 
     it("should restore product and log audit", async () => {
-      vi.mocked(productRepository.restoreProduct).mockResolvedValue(true);
+      vi.mocked(productRepository.restoreProduct).mockResolvedValue(ok(true) as any);
 
       const result = await adminService.restoreProduct(mockAudit, 1);
       expect(result.isOk()).toBe(true);
@@ -336,7 +340,7 @@ describe("AdminService", () => {
 
     it("should delete fiber and log audit", async () => {
       vi.mocked(miscRepository.getFiber).mockResolvedValue({ id: 1, name: "To Delete" } as any);
-      vi.mocked(miscRepository.deleteFiber).mockResolvedValue(true);
+      vi.mocked(miscRepository.deleteFiber).mockResolvedValue(true as any);
 
       const result = await adminService.deleteFiber(mockAudit, 1);
       expect(result.isOk()).toBe(true);
@@ -367,7 +371,7 @@ describe("AdminService", () => {
 
     it("should delete certificate and log audit", async () => {
       vi.mocked(miscRepository.getCertificate).mockResolvedValue({ id: 1, name: "GOTS" } as any);
-      vi.mocked(miscRepository.deleteCertificate).mockResolvedValue(true);
+      vi.mocked(miscRepository.deleteCertificate).mockResolvedValue(true as any);
 
       const result = await adminService.deleteCertificate(mockAudit as any, 1);
 

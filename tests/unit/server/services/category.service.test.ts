@@ -1,3 +1,4 @@
+import { ok } from "neverthrow";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CacheOperations } from "../../../../server/lib/cache/cache-strategies.js";
 import { AppError } from "../../../../server/lib/errors.js";
@@ -140,12 +141,16 @@ describe("CategoryService", () => {
 
   describe("createCategory", () => {
     it("should create category and assign sortOrder", async () => {
-      vi.mocked(productRepository.getCategories).mockResolvedValue([{ sortOrder: 5 }] as any);
-      vi.mocked(productRepository.createCategory).mockResolvedValue({
-        id: 1,
-        name: "Test",
-        sortOrder: 15,
-      } as any);
+      vi.mocked(productRepository.getCategories).mockResolvedValue([
+        { id: 2, sortOrder: 5 },
+      ] as any);
+      vi.mocked(productRepository.createCategory).mockResolvedValue(
+        ok({
+          id: 1,
+          name: "Test",
+          sortOrder: 15,
+        }) as any,
+      );
 
       const result = await categoryService.createCategory({ name: "Test", slug: "test" });
 

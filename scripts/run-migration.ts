@@ -1,11 +1,4 @@
-import {
-  type ArrowFunction,
-  Node,
-  Project,
-  ReturnStatement,
-  SyntaxKind,
-  ThrowStatement,
-} from "ts-morph";
+import { type ArrowFunction, Node, Project, SyntaxKind } from "ts-morph";
 
 const project = new Project({
   tsConfigFilePath: "server/tsconfig.json",

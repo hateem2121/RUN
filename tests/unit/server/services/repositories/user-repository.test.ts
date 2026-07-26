@@ -1,3 +1,4 @@
+import { ok } from "neverthrow";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { db } from "../../../../../server/db.js";
 import { encrypt, getBlindIndex } from "../../../../../server/lib/encryption.js";
@@ -204,7 +205,7 @@ describe("UserRepository", () => {
 
       const result = await repository.upsertUser(upsertData);
       expect(mockStorage.upsertUser).toHaveBeenCalledWith(upsertData);
-      expect(result).toEqual(mockDecryptedUser);
+      expect(result).toEqual(ok(mockDecryptedUser));
     });
 
     it("should encrypt data, insert, and return decrypted user", async () => {
@@ -215,7 +216,7 @@ describe("UserRepository", () => {
       expect(mockValues).toHaveBeenCalled();
       expect(mockOnConflictDoUpdate).toHaveBeenCalled();
       expect(mockInsertReturning).toHaveBeenCalled();
-      expect(result).toEqual(mockDecryptedUser);
+      expect(result).toEqual(ok(mockDecryptedUser));
     });
 
     it("should handle upsertData with missing optional fields", async () => {
@@ -227,9 +228,7 @@ describe("UserRepository", () => {
 
     it("should throw error if db fails to return user", async () => {
       mockInsertReturning.mockResolvedValue([]);
-      await expect(repository.upsertUser(upsertData)).rejects.toThrow(
-        "Failed to upsert user - no user returned from database",
-      );
+      expect((await repository.upsertUser(upsertData)).isErr()).toBe(true);
     });
   });
 

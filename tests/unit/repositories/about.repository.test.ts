@@ -99,14 +99,16 @@ describe("AboutRepository", () => {
       vi.mocked(db.limit).mockResolvedValueOnce([] as any);
       vi.mocked(db.returning).mockResolvedValueOnce([{ id: 1, title: "New" }] as any);
       const result = await aboutRepository.updateAboutHero({ title: "New" });
-      expect(result.title).toBe("New");
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap().title).toBe("New");
     });
 
     it("should update hero (existing)", async () => {
       vi.mocked(db.limit).mockResolvedValueOnce([{ id: 1, title: "Old" }] as any);
       vi.mocked(db.returning).mockResolvedValueOnce([{ id: 1, title: "Updated" }] as any);
       const result = await aboutRepository.updateAboutHero({ title: "Updated" });
-      expect(result.title).toBe("Updated");
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap().title).toBe("Updated");
     });
   });
 
@@ -135,7 +137,8 @@ describe("AboutRepository", () => {
     it("should update timeline entry", async () => {
       vi.mocked(db.returning).mockResolvedValueOnce([{ id: 1, title: "Updated" }] as any);
       const result = await aboutRepository.updateAboutTimelineEntry(1, { title: "Updated" });
-      expect(result.title).toBe("Updated");
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap().title).toBe("Updated");
     });
 
     it("should delete timeline entry", async () => {
@@ -175,7 +178,8 @@ describe("AboutRepository", () => {
     it("should update map location", async () => {
       vi.mocked(db.returning).mockResolvedValueOnce([{ id: 1, name: "Updated" }] as any);
       const result = await aboutRepository.updateAboutMapLocation(1, { name: "Updated" });
-      expect(result.name).toBe("Updated");
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap().name).toBe("Updated");
     });
 
     it("should delete map location", async () => {
@@ -215,7 +219,8 @@ describe("AboutRepository", () => {
     it("should update section", async () => {
       vi.mocked(db.returning).mockResolvedValueOnce([{ id: 1, title: "Updated" }] as any);
       const result = await aboutRepository.updateAboutSection(1, { title: "Updated" });
-      expect(result.title).toBe("Updated");
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap().title).toBe("Updated");
     });
 
     it("should delete section", async () => {
@@ -281,14 +286,16 @@ describe("AboutRepository", () => {
       vi.mocked(db.limit).mockResolvedValueOnce([] as any); // get existing
       vi.mocked(db.returning).mockResolvedValueOnce([{ id: 1, message: "New" }] as any);
       const result = await aboutRepository.updateAboutTeamMessage({ message: "New" });
-      expect(result.message).toBe("New");
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap().message).toBe("New");
     });
 
     it("should update team message (existing)", async () => {
       vi.mocked(db.limit).mockResolvedValueOnce([{ id: 1, message: "Old" }] as any); // get existing
       vi.mocked(db.returning).mockResolvedValueOnce([{ id: 1, message: "Updated" }] as any);
       const result = await aboutRepository.updateAboutTeamMessage({ message: "Updated" });
-      expect(result.message).toBe("Updated");
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap().message).toBe("Updated");
     });
   });
 

@@ -36,11 +36,12 @@ const DEFAULT_POLICIES: Record<string, LegalPolicy> = {
 
 class LegalService {
   private async invalidateCache(): Promise<void> {
-    try {
-      await CacheOperations.invalidateLegal?.();
-    } catch (error) {
+    await ResultAsync.fromPromise(
+      CacheOperations.invalidateLegal?.() ?? Promise.resolve(),
+      (e) => e,
+    ).mapErr((error) => {
       logger.error("[LegalService] Cache invalidation failed", error as Error);
-    }
+    });
   }
 
   async getLegalPolicies(includeInactive = false): Promise<Result<LegalPolicy[], AppError>> {

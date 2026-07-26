@@ -351,6 +351,12 @@ result.match(
 - **Transparent GIF Fallback**: When an Express route serving media content (e.g., images, thumbnails) encounters a missing asset (`NotFoundError`), it MUST intercept the error and return a 1x1 transparent GIF (`image/gif`) instead of throwing the error to the global JSON error handler. 
 - **Why**: Returning a JSON error payload (`application/problem+json`) to an HTML `<img>` tag triggers strict Cross-Origin Read Blocking (CORB) warnings in Chrome and renders a broken image icon. A transparent pixel ensures graceful degradation when seed data is missing.
 
+### 6.5.2 neverthrow Testing Constraints (Zero Tolerance)
+When writing or updating unit tests for services/repositories that return `neverthrow` Results:
+1. **Mocking**: NEVER use `mockResolvedValue` to return raw data for a method that returns a `ResultAsync`. You MUST wrap the mocked return data in `ok()` or `err()` (e.g., `vi.fn().mockResolvedValue(ok(mockData))`).
+2. **Assertions (Success)**: NEVER use `expect(result).resolves.toEqual(...)`. Wait for the result and assert the value via `.isOk()`, `.isErr()`, or by using `_unsafeUnwrap()` *only* in tests: `expect((await service.method())._unsafeUnwrap()).toEqual(mockData)`.
+3. **Assertions (Failures)**: NEVER use `await expect(...).rejects.toThrow()`. The function does not throw; it returns an `err()`. You MUST assert failure using `expect((await service.method()).isErr()).toBe(true)`.
+
 ### 6.6 Drizzle + Zod Schema Pattern (Mandatory)
 
 ```typescript

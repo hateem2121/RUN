@@ -4,11 +4,11 @@ import { MiscRepository } from "../../../server/services/repositories/misc-repos
 
 const { mockUnifiedCache } = vi.hoisted(() => ({
   mockUnifiedCache: {
-    get: vi.fn(),
-    set: vi.fn(),
-    del: vi.fn(),
-    delete: vi.fn(),
-    clearPattern: vi.fn(),
+    get: vi.fn().mockResolvedValue(null),
+    set: vi.fn().mockResolvedValue(true),
+    del: vi.fn().mockResolvedValue(true),
+    delete: vi.fn().mockResolvedValue(true),
+    clearPattern: vi.fn().mockResolvedValue(true),
   },
 }));
 
@@ -68,7 +68,7 @@ vi.mock("../../../server/lib/cache/unified-cache.js", () => ({
 }));
 
 vi.mock("../../../server/lib/cache/cache-events.js", () => ({
-  emitCacheInvalidation: vi.fn(),
+  emitCacheInvalidation: vi.fn().mockResolvedValue(true),
 }));
 
 vi.mock("../../../server/lib/db/db-circuit-breaker.js", () => ({

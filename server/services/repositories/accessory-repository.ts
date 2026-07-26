@@ -10,7 +10,7 @@
 import type { Accessory, InsertAccessory } from "@run-remix/shared";
 import { accessories } from "@run-remix/shared";
 import { and, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
-import { err, ok, type Result } from "neverthrow";
+import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { db } from "../../db.js";
 import { emitCacheInvalidation } from "../../lib/cache/cache-events.js";
 import { UnifiedCache } from "../../lib/cache/unified-cache.js";
@@ -256,16 +256,20 @@ class AccessoryRepository {
       return ok(await StorageSingleton.getInstance().deleteAccessory(id));
     }
     // Cache-first delete: invalidate cache BEFORE DB operation
-    try {
-      await this.invalidateAccessoryCacheSelectively("delete", id);
-      logger.info(`[AccessoryRepository] ✅ Cache invalidated for accessory ${id}`);
-    } catch (cacheError) {
+    const cacheResult = await ResultAsync.fromPromise(
+      this.invalidateAccessoryCacheSelectively("delete", id),
+      (e) => e,
+    );
+
+    if (cacheResult.isErr()) {
       logger.error(
         `[AccessoryRepository] ❌ Cache invalidation failed for accessory ${id}:`,
-        cacheError,
+        cacheResult.error,
       );
       return err(new Error("Cache invalidation failed"));
     }
+
+    logger.info(`[AccessoryRepository] ✅ Cache invalidated for accessory ${id}`);
 
     // Soft delete in database
     const result = await db

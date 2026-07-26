@@ -629,28 +629,37 @@ class MediaUploadService {
           ) {
             successCount++;
             if (asset?.storagePath) {
-              try {
-                await withCircuit(
+              await ResultAsync.fromPromise(
+                withCircuit(
                   "delete-asset-batch",
                   () => appStorageService.deleteAsset(asset.storagePath!),
                   DB_CIRCUIT_OPTIONS,
-                );
-              } catch (storageError) {
-                // Compensating Rollback
-                try {
-                  await mediaRepository.updateMediaAsset(asset.id, { deletedAt: null });
-                  rollbackCount++;
-                  successCount--;
-                } catch (restoreError) {
-                  criticalFailureCount++;
-                  successCount--;
-                  logger.error("[MediaUploadService] Critical: Batch restore failed", {
-                    id: asset.id,
-                    storageError,
-                    restoreError,
-                  });
-                }
-              }
+                ),
+                (e) => e,
+              ).match(
+                () => {},
+                async (storageError) => {
+                  // Compensating Rollback
+                  await ResultAsync.fromPromise(
+                    mediaRepository.updateMediaAsset(asset.id, { deletedAt: null }),
+                    (e) => e,
+                  ).match(
+                    () => {
+                      rollbackCount++;
+                      successCount--;
+                    },
+                    (restoreError) => {
+                      criticalFailureCount++;
+                      successCount--;
+                      logger.error("[MediaUploadService] Critical: Batch restore failed", {
+                        id: asset.id,
+                        storageError,
+                        restoreError,
+                      });
+                    },
+                  );
+                },
+              );
             }
           }
         }

@@ -120,19 +120,21 @@ export class InquiryService {
         );
 
         // 1. Invalidate Relevant Caches
-        try {
-          await unifiedCache.delete("inquiries:stats");
-        } catch (error) {
-          logger.debug("[InquiryService] Cache invalidation failed:", error);
-        }
+        await ResultAsync.fromPromise(unifiedCache.delete("inquiries:stats"), (e) => e).mapErr(
+          (error) => {
+            logger.debug("[InquiryService] Cache invalidation failed:", error);
+          },
+        );
 
         // 2. Trigger Webhook
-        try {
-          const { webhookService } = await import("./webhook-service.js");
-          webhookService.trigger("inquiry.created", inquiry);
-        } catch (error) {
-          logger.error("[InquiryService] Failed to trigger inquiry webhook:", error);
-        }
+        await ResultAsync.fromPromise(import("./webhook-service.js"), (e) => e)
+          .map(({ webhookService }) => {
+            webhookService.trigger("inquiry.created", inquiry);
+            return undefined;
+          })
+          .mapErr((error) => {
+            logger.error("[InquiryService] Failed to trigger inquiry webhook:", error);
+          });
 
         // 3. Stream to BigQuery (Fire and Forget)
         if (process.env.NODE_ENV === "production" && GOOGLE_CLOUD_PROJECT) {
@@ -158,8 +160,8 @@ export class InquiryService {
    * Internal helper to stream inquiry to BigQuery analytics.
    */
   private async streamToBigQuery(inquiry: Inquiry) {
-    try {
-      await withCircuit(
+    await ResultAsync.fromPromise(
+      withCircuit(
         "stream-to-bigquery",
         async () => {
           await bigquery
@@ -177,12 +179,19 @@ export class InquiryService {
             ]);
         },
         EXTERNAL_API_CIRCUIT_OPTIONS,
-      );
-      logger.info("[InquiryService] Streamed inquiry to BigQuery", { inquiryId: inquiry.id });
-    } catch (error) {
-      // Breaker open or insert failed
-      logger.debug("[InquiryService] BigQuery insert skipped (Circuit Open or Failed)", { error });
-    }
+      ),
+      (e) => e,
+    )
+      .map(() => {
+        logger.info("[InquiryService] Streamed inquiry to BigQuery", { inquiryId: inquiry.id });
+        return undefined;
+      })
+      .mapErr((error) => {
+        // Breaker open or insert failed
+        logger.debug("[InquiryService] BigQuery insert skipped (Circuit Open or Failed)", {
+          error,
+        });
+      });
   }
 
   /**
@@ -203,8 +212,8 @@ export class InquiryService {
     };
 
     if (process.env.NODE_ENV === "production" && GOOGLE_CLOUD_PROJECT) {
-      try {
-        await withCircuit(
+      await ResultAsync.fromPromise(
+        withCircuit(
           "dispatch-cloud-task",
           async () => {
             const parent = tasksClient.queuePath(
@@ -223,31 +232,41 @@ export class InquiryService {
             await tasksClient.createTask({ parent, task });
           },
           EXTERNAL_API_CIRCUIT_OPTIONS,
-        );
-        logger.info(`[InquiryService] Dispatched Cloud Task for inquiry #${inquiry.id}`);
-      } catch (error) {
-        logger.error("[InquiryService] Cloud Tasks failed, falling back to EmailService:", error);
-        await this.fallbackSyncEmail(emailData);
-      }
+        ),
+        (e) => e,
+      ).match(
+        () => {
+          logger.info(`[InquiryService] Dispatched Cloud Task for inquiry #${inquiry.id}`);
+        },
+        async (error) => {
+          logger.error("[InquiryService] Cloud Tasks failed, falling back to EmailService:", error);
+          await this.fallbackSyncEmail(emailData);
+        },
+      );
     } else {
       await this.fallbackSyncEmail(emailData);
     }
   }
 
   private async fallbackSyncEmail(emailData: InquiryEmailJobData) {
-    try {
-      await withCircuit(
+    await ResultAsync.fromPromise(
+      withCircuit(
         "fallback-sync-email",
         async () => {
           await emailService.sendAdminNotification(emailData);
           await emailService.sendCustomerConfirmation(emailData);
         },
         EXTERNAL_API_CIRCUIT_OPTIONS,
-      );
-      logger.info("[InquiryService] Dispatched synchronous emails", { inquiryId: emailData.id });
-    } catch (error) {
-      logger.error("[InquiryService] Email dispatch failed (Circuit Open or Failed)", { error });
-    }
+      ),
+      (e) => e,
+    )
+      .map(() => {
+        logger.info("[InquiryService] Dispatched synchronous emails", { inquiryId: emailData.id });
+        return undefined;
+      })
+      .mapErr((error) => {
+        logger.error("[InquiryService] Email dispatch failed (Circuit Open or Failed)", { error });
+      });
   }
 
   /**
@@ -488,12 +507,15 @@ export class InquiryService {
    * Helper to invalidate stats and detail caches.
    */
   private async invalidateInquiryCaches(id: number) {
-    try {
-      await unifiedCache.delete("inquiries:stats");
-      await unifiedCache.delete(`inquiries:detail:${id}`);
-    } catch (error) {
+    await ResultAsync.fromPromise(
+      (async () => {
+        await unifiedCache.delete("inquiries:stats");
+        await unifiedCache.delete(`inquiries:detail:${id}`);
+      })(),
+      (e) => e,
+    ).mapErr((error) => {
       logger.debug(`[InquiryService] Cache invalidation failed for #${id}:`, error);
-    }
+    });
   }
 }
 

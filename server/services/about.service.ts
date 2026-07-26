@@ -41,11 +41,12 @@ const tracer = trace.getTracer("run-remix-services");
    * Invalidates all about page related cache entries
    */
   private async invalidateCache(): Promise<void> {
-    try {
-      await CacheOperations.invalidateAbout();
-    } catch (error) {
-      logger.error("[AboutService] Cache invalidation failed", error as Error);
-    }
+    await ResultAsync.fromPromise(
+      CacheOperations.invalidateAbout(),
+      (error) => error as Error,
+    ).mapErr((error) => {
+      logger.error("[AboutService] Cache invalidation failed", error);
+    });
   }
 
   // Hero

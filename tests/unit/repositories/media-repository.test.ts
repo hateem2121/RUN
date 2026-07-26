@@ -202,7 +202,8 @@ describe("MediaRepository", () => {
 
       const result = await mediaRepository.deleteMediaAsset(1);
 
-      expect(result).toBe(true);
+      expect(result.isOk()).toBe(true);
+      if (result.isOk()) expect(result.value).toBe(true);
     });
 
     it("should throw MediaNotFoundError for non-existent asset", async () => {
@@ -214,9 +215,9 @@ describe("MediaRepository", () => {
         }),
       } as unknown as ReturnType<typeof db.update>);
 
-      await expect(mediaRepository.deleteMediaAsset(999)).rejects.toThrow(
-        "Media asset with ID 999 not found",
-      );
+      const result = await mediaRepository.deleteMediaAsset(999);
+      expect(result.isErr()).toBe(true);
+      if (result.isErr()) expect(result.error.message).toBe("Media asset with ID 999 not found");
     });
   });
 

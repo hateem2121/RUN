@@ -56,7 +56,7 @@ vi.mock("../../../../../server/services/repositories/index.js", () => ({
     getCategories: vi.fn().mockResolvedValue([]),
     getProductsIncludingDeleted: vi.fn().mockResolvedValue([]),
     getProductsCount: vi.fn().mockResolvedValue(0),
-    createProduct: vi.fn().mockResolvedValue({ id: 1, name: "Prod" }),
+    createProduct: vi.fn().mockResolvedValue(ok({ id: 1, name: "Prod" })),
     getProduct: vi.fn(),
     updateProduct: vi.fn().mockResolvedValue({ id: 1, name: "Prod Updated" }),
     updateCategory: vi.fn().mockResolvedValue(true),
@@ -278,7 +278,9 @@ describe("AdminService", () => {
     });
 
     it("should handle failures", async () => {
-      vi.mocked(productRepository.createProduct).mockRejectedValueOnce(new Error("fail"));
+      vi.mocked(productRepository.createProduct).mockResolvedValueOnce(
+        err(new Error("fail")) as any,
+      );
       const result = await adminService.createProduct(mockAuditContext, {} as any);
       expect(result.isErr()).toBe(true);
     });

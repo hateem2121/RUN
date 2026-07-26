@@ -355,7 +355,8 @@ describe("AccessoryRepository", () => {
         const chain = createMockDbChain([{ id: 1 }]);
         vi.mocked(db.update).mockReturnValue(chain);
         const result = await accessoryRepository.deleteAccessory(1);
-        expect(result).toBe(true);
+        expect(result.isOk()).toBe(true);
+        if (result.isOk()) expect(result.value).toBe(true);
         expect(cacheInstance.clearPattern).toHaveBeenCalledWith("accessories:");
         expect(db.update).toHaveBeenCalled();
       });
@@ -364,14 +365,15 @@ describe("AccessoryRepository", () => {
         const chain = createMockDbChain([]);
         vi.mocked(db.update).mockReturnValue(chain);
         const result = await accessoryRepository.deleteAccessory(1);
-        expect(result).toBe(false);
+        expect(result.isOk()).toBe(true);
+        if (result.isOk()) expect(result.value).toBe(false);
       });
 
       it("throws error if cache invalidation fails", async () => {
         vi.mocked(cacheInstance.clearPattern).mockRejectedValueOnce(new Error("Cache fail"));
-        await expect(accessoryRepository.deleteAccessory(1)).rejects.toThrow(
-          "Cache invalidation failed",
-        );
+        const result = await accessoryRepository.deleteAccessory(1);
+        expect(result.isErr()).toBe(true);
+        if (result.isErr()) expect(result.error.message).toBe("Cache invalidation failed");
         expect(db.update).not.toHaveBeenCalled();
       });
     });

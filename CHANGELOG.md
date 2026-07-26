@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Architecture
+- **Neverthrow Migration**: Completed a massive refactor of the service and repository layers to eliminate `try/catch` blocks. All domain logic now strictly returns `neverthrow` `Result<T, E>` types for robust, compile-time error handling.
+- **Upstash Purged**: Completely removed `@upstash/redis` and `bullmq` from the system, migrating all caching logic to use standard `ioredis` pointing to local/hosted Redis, saving third-party vendor costs.
+- **Test Suite Stabilization**: Fixed over 2,500 test assertions across 25+ files to properly handle `Result` types (using `.isOk()`, `.isErr()`, and `ok()`/`err()` mocks).
+
+
 ## [4.1.2] - 2026-06-20
 
 ### Security

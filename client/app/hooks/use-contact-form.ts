@@ -126,7 +126,7 @@ export function useContactForm(config?: UseContactFormConfig) {
       const formData = new FormData(event.currentTarget);
       const resultPromise = submitAction(state, formData).then((res) => {
         if (res.success) return "Successfully submitted contact form.";
-        return "Error: " + (res.error || "Failed to submit.");
+        return `Error: ${res.error || "Failed to submit."}`;
       });
       nativeEvent.respondWith(resultPromise);
       event.preventDefault();

@@ -128,7 +128,6 @@ describe("SecretManager", () => {
       expect(result).toHaveProperty("DATABASE_URL", "DATABASE_URL-value");
       expect(result).toHaveProperty("SESSION_SECRET", "SESSION_SECRET-value");
       expect(result).toHaveProperty("GOOGLE_CLIENT_SECRET", "GOOGLE_CLIENT_SECRET-value");
-      expect(result).toHaveProperty("UPSTASH_REDIS_REST_TOKEN", "UPSTASH_REDIS_REST_TOKEN-value");
     });
 
     it("should handle string payload from Secret Manager", async () => {
@@ -173,7 +172,7 @@ describe("SecretManager", () => {
 
       expect(result1).toBe(result2);
       // Should only call the API once per secret due to caching
-      expect(mockAccessSecretVersion).toHaveBeenCalledTimes(4); // 4 managed secrets
+      expect(mockAccessSecretVersion).toHaveBeenCalledTimes(3); // 3 managed secrets
     });
   });
 
@@ -216,16 +215,6 @@ describe("SecretManager", () => {
       const secret = secretManager.getSecret("GOOGLE_CLIENT_SECRET");
 
       expect(secret).toBe("my-google-secret");
-    });
-
-    it("should return UPSTASH_REDIS_REST_TOKEN from environment", async () => {
-      process.env.NODE_ENV = "development";
-      process.env.UPSTASH_REDIS_REST_TOKEN = "my-redis-token";
-
-      await secretManager.loadSecrets();
-      const secret = secretManager.getSecret("UPSTASH_REDIS_REST_TOKEN");
-
-      expect(secret).toBe("my-redis-token");
     });
 
     it("should return secret from cache when available", async () => {

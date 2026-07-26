@@ -1,5 +1,6 @@
 import path from "node:path";
 import type { InsertCategory, InsertProduct } from "@run-remix/shared";
+import { ok } from "neverthrow";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Define the mock object FIRST
@@ -124,14 +125,13 @@ describe("ProductRepository", () => {
       const returnedProduct = { id: 1, ...productData };
       insertChain.then.mockImplementation((res) => res([returnedProduct]));
       const result = await repository.createProduct(productData as unknown as InsertProduct);
-      expect(result).toEqual(returnedProduct);
+      expect(result).toEqual(ok(returnedProduct));
     });
 
     it("throws error if insertion fails", async () => {
       insertChain.then.mockImplementation((res) => res([]));
-      await expect(repository.createProduct({} as unknown as InsertProduct)).rejects.toThrow(
-        "Failed to create product",
-      );
+      const result = await repository.createProduct({} as unknown as InsertProduct);
+      expect(result.isErr()).toBe(true);
     });
   });
 
@@ -529,15 +529,14 @@ describe("ProductRepository", () => {
 
       const result = await repository.createCategory(categoryData as unknown as InsertCategory);
 
-      expect(result).toEqual(returnedCategory);
+      expect(result).toEqual(ok(returnedCategory));
     });
 
     it("throws error if category creation fails", async () => {
       insertChain.then.mockImplementation((res) => res([]));
 
-      await expect(repository.createCategory({} as unknown as InsertCategory)).rejects.toThrow(
-        "Failed to create category",
-      );
+      const result = await repository.createCategory({} as unknown as InsertCategory);
+      expect(result.isErr()).toBe(true);
     });
   });
 
