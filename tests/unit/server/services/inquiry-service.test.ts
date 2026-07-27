@@ -68,7 +68,7 @@ describe("InquiryService", () => {
         submittedAt: new Date(),
       };
 
-      vi.mocked(miscRepository.createInquiry).mockResolvedValue(ok(mockInquiry) as any);
+      vi.mocked(miscRepository.createInquiry).mockResolvedValue(mockInquiry as any);
 
       const result = await service.createInquiry(mockData);
       expect(result.isOk()).toBe(true);

@@ -155,6 +155,9 @@ jobs:
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url || secrets.DATABASE_URL_PREVIEW }}
           CLOUD_TASKS_AUDIENCE: "placeholder"
           CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
+          SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"
+          ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only"
+          INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
 
       - name: Check Coverage Thresholds
         run: |
