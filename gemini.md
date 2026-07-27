@@ -381,6 +381,12 @@ When writing or updating unit tests for services/repositories that return `never
 2. **Assertions (Success)**: NEVER use `expect(result).resolves.toEqual(...)`. Wait for the result and assert the value via `.isOk()`, `.isErr()`, or by using `_unsafeUnwrap()` *only* in tests: `expect((await service.method())._unsafeUnwrap()).toEqual(mockData)`.
 3. **Assertions (Failures)**: NEVER use `await expect(...).rejects.toThrow()`. The function does not throw; it returns an `err()`. You MUST assert failure using `expect((await service.method()).isErr()).toBe(true)`.
 
+### 6.5.3 MemoryStorage "God Node" Invariant
+
+The `tests/integration/server/memory-storage.ts` mock repository is the foundational dependency for over 343+ test files. 
+- It **MUST** remain perfectly synchronized with the `IStorage` interface in `server/repositories/storage-interfaces.ts`. 
+- Any refactoring to the storage interface requires an immediate mirroring update to the `MemoryStorage` class. Failure to do so will cascade into hundreds of integration test failures.
+
 ### 6.6 Drizzle + Zod Schema Pattern (Mandatory)
 
 ```typescript

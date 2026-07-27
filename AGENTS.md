@@ -69,6 +69,10 @@ When creating or generating unit test files:
 
 4. **Always run the new tests before marking task items complete.** Execute `npx vitest run <path>` on the newly created test files to confirm they parse and pass before checking off items in `task.md`.
 
+5. **CLI Tool & Script Testing:** When writing tests for CLI scripts (e.g., in `scripts/`), ensure the target script's execution blocks are wrapped in `if (process.env.NODE_ENV !== "test")`. Importing scripts that contain top-level `process.exit()` calls will crash the Vitest runner prematurely.
+
+6. **JSDOM Animation Stubbing:** When writing DOM-based React tests for components that utilize GSAP (`ScrollTrigger`) or `locomotive-scroll`, you must provide extensive global stubs for `IntersectionObserver`, `window.matchMedia`, and GSAP's matchMedia hooks, as JSDOM does not support layout engines.
+
 ### 6.11 React Router v8 & Vite 8 Resolution Rules (Addendum)
 
 - **CSP Nonce Hydration Mismatch**: In React 19, Chrome hides the `nonce` attribute on `<link>` tags for security, causing a fatal hydration mismatch if the Virtual DOM expects a value. When rendering React Router's `<Links />` component in the root layout or error boundaries, you **MUST** pass an empty string on the client (e.g., `<Links nonce="" />`) to bypass the mismatch and prevent React from crashing the client-side render tree.
