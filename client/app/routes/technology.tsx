@@ -362,7 +362,7 @@ function TechnologyInner({ batchData }: { batchData: TechnologyBatchResponse | n
                 <span className="block text-slate-900 dark:text-white opacity-90">{firstWord}</span>
               )}
               {gradientWord && (
-                <span className="bg-clip-text text-transparent py-2 bg-gradient-to-br from-technology-primary to-technology-primary/80 dark:from-technology-accent dark:to-technology-accent/70">
+                <span className="text-technology-primary dark:text-technology-accent py-2">
                   {gradientWord}
                 </span>
               )}

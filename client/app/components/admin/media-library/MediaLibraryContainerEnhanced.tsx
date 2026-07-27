@@ -99,7 +99,7 @@ function LoadingFallback() {
   return (
     <div className="center-flex p-8">
       <div className="text-center">
-        <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-blue-500 border-b-2"></div>
+        <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-blue-500 border-2 border-t-transparent"></div>
         <p className="text-admin-muted text-sm">Loading media library...</p>
       </div>
     </div>

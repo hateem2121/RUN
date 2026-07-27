@@ -668,7 +668,7 @@ export function MediaUploadEnhanced() {
       {hasActiveUploads && (
         <div className="text-center">
           <div className="text-admin-muted inline-flex items-center gap-2 text-sm">
-            <div className="border-primary h-4 w-4 animate-spin rounded-full border-b-2"></div>
+            <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></div>
             Processing uploads...
           </div>
         </div>

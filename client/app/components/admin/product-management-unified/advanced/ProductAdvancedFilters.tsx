@@ -211,7 +211,7 @@ export function ProductAdvancedFilters({
           />
           {isSearching && (
             <div className="absolute top-1/2 right-3 -translate-y-1/2 transform">
-              <output className="h-4 w-4 animate-spin rounded-full border-blue-600 border-b-2">
+              <output className="h-4 w-4 animate-spin rounded-full border-blue-600 border-2 border-t-transparent">
                 <span className="sr-only">Searching...</span>
               </output>
             </div>

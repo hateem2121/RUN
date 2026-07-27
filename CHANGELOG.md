@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Tech Integrity Verification**: Fixed lingering `noDescendingSpecificity` CSS warnings and enforced strict `as unknown as Function` double-casting for `any` types in `circuit-breaker.ts` to ensure 100% compliance with `verify:tech-integrity` checks.
 - **Rules Documentation**: Updated `gemini.md` and `AGENTS.md` to formally document the strict Antigravity-native rule and clarify exceptions to the `noExplicitAny` TypeScript constraint.
 
+### Performance
+- **UI Render Optimization**: You can now experience smoother scrolling on the homepage, as unnecessary `will-change-transform` usage was eliminated across 7 components to prevent GPU memory bloat.
+- **Image Optimization**: Images in expandable bento cards now lazy-load automatically, speeding up initial page render.
+
+### Design
+- **AI Anti-Pattern Purge**: The UI now strictly adheres to a premium, unified brand identity. Tacky bouncy easings, decorative side-tabs, and generic purple gradients have been completely stripped out and replaced with strict `primary` brand tokens and exponential curves.
 
 ## [4.1.2] - 2026-06-20
 

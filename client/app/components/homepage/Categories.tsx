@@ -122,7 +122,7 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
         {/* Optimized Forward Marquee */}
         <div
           className={cn(
-            "marquee-container animate-marquee flex whitespace-nowrap will-change-transform hover:[animation-play-state:paused] motion-reduce:[animation-play-state:paused] motion-reduce:animate-none",
+            "marquee-container animate-marquee flex whitespace-nowrap hover:[animation-play-state:paused] motion-reduce:[animation-play-state:paused] motion-reduce:animate-none",
             !isIntersecting && "[animation-play-state:paused]",
           )}
         >

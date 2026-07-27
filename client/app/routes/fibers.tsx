@@ -205,7 +205,7 @@ export default function Component() {
 
               <div className="mt-8 flex justify-center gap-6">
                 <div className="text-center">
-                  <div className="font-bold text-3xl text-purple-600">{fibers.length}</div>
+                  <div className="font-bold text-3xl text-primary">{fibers.length}</div>
                   <div className="text-muted-foreground text-sm">Total Fibers</div>
                 </div>
                 <div className="text-center">

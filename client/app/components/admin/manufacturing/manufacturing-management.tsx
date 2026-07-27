@@ -34,9 +34,9 @@ export function ManufacturingManagement() {
         <div className="flex h-64 items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <div className="flex space-x-2">
-              <div className="h-3 w-3 animate-bounce rounded-full bg-blue-500 [animation-delay:-0.3s]"></div>
-              <div className="h-3 w-3 animate-bounce rounded-full bg-blue-500 [animation-delay:-0.15s]"></div>
-              <div className="h-3 w-3 animate-bounce rounded-full bg-blue-500"></div>
+              <div className="h-3 w-3 animate-pulse rounded-full bg-blue-500 [animation-delay:-0.3s]"></div>
+              <div className="h-3 w-3 animate-pulse rounded-full bg-blue-500 [animation-delay:-0.15s]"></div>
+              <div className="h-3 w-3 animate-pulse rounded-full bg-blue-500"></div>
             </div>
             <p className="text-xs font-medium text-admin-muted uppercase tracking-widest">
               Loading assets...

@@ -63,7 +63,7 @@ class FluidGlassErrorBoundary extends Component<{ children: ReactNode }, { hasEr
   override render() {
     if (this.state.hasError) {
       return (
-        <div className="absolute inset-0 bg-linear-to-br from-purple-100/20 to-blue-100/20 dark:from-purple-900/20 dark:to-blue-900/20" />
+        <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-transparent dark:from-primary/5 dark:to-transparent" />
       );
     }
     return this.props.children;
@@ -154,7 +154,7 @@ export function CategoryFeaturedContent({
         {/* Card 4 - Fluid Glass Lens */}
         <div className={cn("bento-card", getResponsiveSpanClasses("card4"))}>
           {featuredContent.card4 && (
-            <div className="max-h-modal-md relative h-auto min-h-custom-space-129 overflow-hidden rounded-lg bg-linear-to-br from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
+            <div className="max-h-modal-md relative h-auto min-h-custom-space-129 overflow-hidden rounded-lg bg-linear-to-br from-slate-100 to-slate-50 dark:from-slate-900 dark:to-slate-950">
               {getMediaUrl(featuredContent.card4.mediaUrl) &&
                 (() => {
                   const resolvedUrl = getMediaUrl(featuredContent.card4!.mediaUrl)!;
@@ -211,7 +211,7 @@ export function CategoryFeaturedContent({
               <FluidGlassErrorBoundary>
                 <Suspense
                   fallback={
-                    <div className="absolute inset-0 bg-linear-to-br from-purple-100/20 to-blue-100/20 dark:from-purple-900/20 dark:to-blue-900/20" />
+                    <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-transparent dark:from-primary/5 dark:to-transparent" />
                   }
                 >
                   <div className="z-elevated pointer-events-none absolute inset-0">

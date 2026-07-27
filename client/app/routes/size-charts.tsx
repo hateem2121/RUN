@@ -159,7 +159,7 @@ export default function Component() {
 
           <div className="mt-8 flex justify-center gap-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">{sizeCharts.length}</div>
+              <div className="text-3xl font-bold text-primary">{sizeCharts.length}</div>
               <div className="text-muted-foreground text-sm">Size Guides</div>
             </div>
             <div className="text-center">

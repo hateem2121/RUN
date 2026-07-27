@@ -1,21 +1,12 @@
-# RUN Remix Session Plan
+# Session Goal: July 27, 2026
+Execute performance optimization and design polish identified by `/audit`. Eliminate all AI design anti-patterns (purple gradients, side-tab borders, bounce easings, layout thrashing) and unify RUN APPAREL design identity.
 
-**Goal**: Configure GStack Skills & Automate Updates
-**Date**: July 25, 2026
-**Status**: Completed.
+# Session Outcome
+- Resolved `will-change-transform` GPU rendering bloat and layout thrashing issues across 7 homepage and UI components.
+- Eliminated 20+ instances of "AI slop", standardizing colors to brand tokens, removing decorative UI card borders, and updating bouncy easings to smooth pulses or exponential curves.
+- Re-ran mechanical slop detector (`detect.mjs`) to verify cleanliness across `client/app`.
+- Successfully ran `npm run verify:tech-integrity` ensuring no regressions in CI.
 
-## Outcome
-- Created `.claude/skills/gstack/scripts/register-agent-skills.sh` to dynamically symlink tools to `.agents/skills`.
-- Updated Protocol 0 in `GEMINI.md` to automate the execution of the registration script and the `gstack-update-check` version check.
-- Verified the build via `npm run verify:tech-integrity`, `npm run check`, and `npm run build`.
-- Closed the session with proper protocol bookends (updates to `task_plan.md` and `findings.md`).
-
-## Tasks
-- [x] Phase 1: Investigate gstack setup mechanics and produce `implementation_plan.md`.
-- [x] Phase 2: Create `register-agent-skills.sh` script.
-- [x] Phase 2: Update Protocol 0 hook in `GEMINI.md`.
-- [x] Phase 2: Execute build verifications and validations.
-- [x] Phase 2: Update `task_plan.md` and `findings.md`.
-
-## Next Steps
-- Continue with any remaining PR or deployment steps if this branch is ready to land, or proceed with new feature development now that the agent skills are fully available natively.
+# Next Steps
+- Review frontend components for layout optimizations on smaller viewports.
+- Continue tracking UI anomalies natively in `findings.md`.

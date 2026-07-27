@@ -130,7 +130,7 @@ export const Hero: React.FC = () => {
             {heroLines.map((line: string, i: number) => (
               <span
                 key={i}
-                className="hero-line block my-0 md:-my-2 overflow-visible py-2 will-change-transform text-foreground font-bold tracking-tighter leading-custom-misc-151 md:leading-custom-misc-152 text-custom-space-138 sm:text-custom-space-139 md:text-custom-space-140 lg:text-custom-space-141 xl:text-custom-space-142"
+                className="hero-line block my-0 md:-my-2 overflow-visible py-2 text-foreground font-bold tracking-tighter leading-custom-misc-151 md:leading-custom-misc-152 text-custom-space-138 sm:text-custom-space-139 md:text-custom-space-140 lg:text-custom-space-141 xl:text-custom-space-142"
               >
                 {line}
               </span>

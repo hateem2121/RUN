@@ -183,7 +183,7 @@ export default function Component() {
                 <div className="text-muted-foreground text-sm">Total Accessories</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-3xl text-purple-600">
+                <div className="font-bold text-3xl text-primary">
                   {new Set(accessories.map((a) => a.category).filter(Boolean)).size}
                 </div>
                 <div className="text-muted-foreground text-sm">Categories</div>

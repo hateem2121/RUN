@@ -52,7 +52,7 @@ const resourceCategories = [
     description: "International sizing standards",
     icon: Ruler,
     href: "/size-charts",
-    color: "from-purple-500 to-pink-600",
+    color: "from-primary/80 to-primary",
   },
   {
     id: "fabrics",
@@ -68,7 +68,7 @@ const resourceCategories = [
     description: "Raw material characteristics",
     icon: Sparkles,
     href: "/fibers",
-    color: "from-indigo-500 to-purple-600",
+    color: "from-primary to-primary/80",
   },
 ];
 
@@ -177,7 +177,7 @@ export default function Component() {
               <div className="text-muted-foreground text-sm">Total Resources</div>
             </div>
             <div className="text-center">
-              <AnimatedCounter value={5} className="font-bold text-3xl text-purple-600" />
+              <AnimatedCounter value={5} className="font-bold text-3xl text-primary" />
               <div className="text-muted-foreground text-sm">Categories</div>
             </div>
           </div>

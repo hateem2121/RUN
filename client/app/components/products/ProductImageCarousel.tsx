@@ -240,6 +240,6 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
 const LoaderState = () => (
   <div className="flex flex-col items-center gap-2">
-    <div className="h-6 w-6 animate-spin rounded-full border-muted-foreground border-b-2" />
+    <div className="h-6 w-6 animate-spin rounded-full border-muted-foreground border-2 border-t-transparent" />
   </div>
 );

@@ -891,7 +891,7 @@ export function UnifiedMediaTheater({
                     </div>
                   </div>
                 ) : item.type === "3d_model" ? (
-                  <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-purple-100 to-purple-200">
+                  <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-primary/10 to-primary/20">
                     <Layers className="h-6 w-6 text-purple-600" />
                   </div>
                 ) : (

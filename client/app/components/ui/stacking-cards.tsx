@@ -312,7 +312,7 @@ export function StackingCards({ sections, getAssetUrl, getAsset }: StackingCards
           <p className="header-hint center-flex gap-2 text-sm text-text-subtle">
             <span>Scroll down to explore</span>
             <svg
-              className="h-4 w-4 animate-bounce"
+              className="h-4 w-4 opacity-80"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

@@ -133,7 +133,7 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
             <h2 className="text-4xl md:text-5xl font-neue-stance font-bold text-white uppercase tracking-tighter italic skew-x-custom-misc-170">
               Production Blueprint
             </h2>
-            <p className="text-custom-misc-171 mt-3 font-mono text-sm tracking-wider uppercase border-l-4 border-custom-misc-172 pl-3 ml-1 font-bold">
+            <p className="text-custom-misc-171 mt-3 font-mono text-sm tracking-wider uppercase pl-3 ml-1 font-bold">
               Sequence: 001-A to 005-E
             </p>
           </div>

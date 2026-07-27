@@ -478,9 +478,9 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
           {qualityLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="flex space-x-2">
-                <div className="h-2 w-2 animate-bounce rounded-full bg-emerald-500 [animation-delay:-0.3s]"></div>
-                <div className="h-2 w-2 animate-bounce rounded-full bg-emerald-500 [animation-delay:-0.15s]"></div>
-                <div className="h-2 w-2 animate-bounce rounded-full bg-emerald-500"></div>
+                <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-500 [animation-delay:-0.3s]"></div>
+                <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-500 [animation-delay:-0.15s]"></div>
+                <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-500"></div>
               </div>
               <p className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                 Auditing Protocols...

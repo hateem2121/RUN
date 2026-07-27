@@ -147,7 +147,7 @@ export const MediaGridItem = React.memo(
               </div>
             </div>
           ) : is3DModel ? (
-            <div className="relative h-full w-full bg-linear-to-br from-purple-900/20 to-purple-800/20">
+            <div className="relative h-full w-full bg-linear-to-br from-primary/5/20 to-purple-800/20">
               <div
                 className={`h-full w-full ${
                   selectionMode ? "pointer-events-none" : "pointer-events-auto"
@@ -255,7 +255,7 @@ export const MediaGridItem = React.memo(
         {/* Optimistic upload state */}
         {isOptimistic && (
           <div className="center-flex absolute inset-0 bg-black/60">
-            <div className="border-blue-500 h-8 w-8 animate-spin rounded-full border-b-2"></div>
+            <div className="border-blue-500 h-8 w-8 animate-spin rounded-full border-2 border-t-transparent"></div>
           </div>
         )}
       </div>

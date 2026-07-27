@@ -73,7 +73,7 @@ interface FeaturedContent {
 //     if (this.state.hasError) {
 //       // Render nothing or a fallback background
 //       return (
-//         <div className="absolute inset-0 bg-linear-to-br from-purple-100/20 to-blue-100/20 dark:from-purple-900/20 dark:to-blue-900/20" />
+//         <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-transparent dark:from-primary/5 dark:to-transparent" />
 //       );
 //     }
 

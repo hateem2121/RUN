@@ -410,7 +410,7 @@ export function InteractiveExperienceSection({
               </div>
 
               {/* Biometric Analysis Panel */}
-              <div className="dashboard-panel p-6 bg-slate-50 dark:bg-white/[0.02] border border-transparent dark:border-white/[0.08] border-t-2 border-t-custom-color-292 dark:!border-t-custom-color-293 rounded-xl">
+              <div className="dashboard-panel p-6 bg-slate-50 dark:bg-white/[0.02] border border-transparent dark:border-white/[0.08] rounded-xl">
                 <div className="flex justify-between items-start mb-4">
                   <h3 className="text-xs font-bold uppercase tracking-custom-misc-329 text-black dark:text-white">
                     Biometric Analysis

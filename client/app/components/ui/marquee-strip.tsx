@@ -55,7 +55,7 @@ export function MarqueeStrip({
       onBlur={handleMouseLeave}
       aria-label="Scrolling marquee"
     >
-      <div ref={contentRef} className="flex whitespace-nowrap items-center will-change-transform">
+      <div ref={contentRef} className="flex whitespace-nowrap items-center">
         {/* We duplicate the content to ensure a seamless infinite scroll */}
         {[...Array(4)].map((_, i) => (
           <span

@@ -461,7 +461,7 @@ export const StaggeredMenu = ({
                               : undefined,
                       }}
                     >
-                      <span className="sm-panel-itemLabel inline-block will-change-transform [transform-origin:50%_100%]">
+                      <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%]">
                         {it.label}
                       </span>
                     </Link>
@@ -473,7 +473,7 @@ export const StaggeredMenu = ({
                   aria-hidden="true"
                 >
                   <span className="sm-panel-item relative inline-block cursor-pointer pr-custom-misc-161 font-bold text-4xl text-muted-foreground uppercase leading-tight tracking-tight no-underline transition-all duration-200 ease-out sm:text-5xl">
-                    <span className="sm-panel-itemLabel inline-block will-change-transform [transform-origin:50%_100%]">
+                    <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%]">
                       No items
                     </span>
                   </span>

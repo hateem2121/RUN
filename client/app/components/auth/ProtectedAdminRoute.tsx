@@ -27,7 +27,7 @@ export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
       <div className="from-background to-muted flex min-h-screen items-center justify-center bg-linear-to-br">
         <output className="text-center" aria-label="Checking access">
           <div
-            className="border-primary inline-block h-12 w-12 animate-spin rounded-full border-b-2"
+            className="border-primary inline-block h-12 w-12 animate-spin rounded-full border-2 border-t-transparent"
             aria-hidden="true"
           />
           <p className="text-muted-foreground mt-4">Checking access...</p>

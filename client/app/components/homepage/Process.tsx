@@ -170,7 +170,7 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
 
         {/* Container */}
         <div
-          className="flex h-auto w-full flex-col pt-24 will-change-transform md:h-full md:flex-row md:pt-0"
+          className="flex h-auto w-full flex-col pt-24 md:h-full md:flex-row md:pt-0"
           ref={sectionRef}
         >
           {steps.map((step, index) => (

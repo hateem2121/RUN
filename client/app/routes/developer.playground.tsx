@@ -171,7 +171,7 @@ export default function Component() {
   if (loading)
     return (
       <div className="flex flex-col items-center justify-center h-64 space-y-4">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-600 border-t-transparent" />
         <Typography.P>Loading API Specification...</Typography.P>
       </div>
     );
@@ -272,7 +272,7 @@ export default function Component() {
               </div>
               <Button onClick={handleExecute} disabled={isExecuting} className="gap-2">
                 {isExecuting ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
                 ) : (
                   <Send className="h-4 w-4" />
                 )}

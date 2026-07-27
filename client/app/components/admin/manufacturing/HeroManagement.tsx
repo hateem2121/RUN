@@ -148,9 +148,9 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
         <CardContent className="p-12 w-full flex items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <div className="flex space-x-2">
-              <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing [animation-delay:-0.3s]"></div>
-              <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing [animation-delay:-0.15s]"></div>
-              <div className="h-2 w-2 animate-bounce rounded-full bg-brand-manufacturing"></div>
+              <div className="h-2 w-2 animate-pulse rounded-full bg-brand-manufacturing [animation-delay:-0.3s]"></div>
+              <div className="h-2 w-2 animate-pulse rounded-full bg-brand-manufacturing [animation-delay:-0.15s]"></div>
+              <div className="h-2 w-2 animate-pulse rounded-full bg-brand-manufacturing"></div>
             </div>
             <p className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
               Orchestrating Hero Tab...

@@ -161,7 +161,7 @@ export function TechnologyStackSection({
       >
         {/* Featured Innovation Card — 2-col span */}
         {featured && (activeTab === "all" || activeTab === "innovations") && (
-          <div className="lg:col-span-2 lab-card group flex flex-col md:flex-row border-l-4 !border-l-custom-color-327 dark:!border-l-custom-color-328 bg-white dark:bg-white/[0.04] dark:backdrop-blur-xl border border-transparent dark:border-white/[0.08] shadow-lg dark:shadow-none overflow-hidden rounded-xl">
+          <div className="lg:col-span-2 lab-card group flex flex-col md:flex-row bg-white dark:bg-white/[0.04] dark:backdrop-blur-xl border border-transparent dark:border-white/[0.08] shadow-lg dark:shadow-none overflow-hidden rounded-xl">
             <div className="scan-line"></div>
             {/* Image/Video half */}
             <div className="w-full md:w-1/2 bg-slate-50 dark:bg-black relative overflow-hidden min-h-custom-space-253">
@@ -270,7 +270,7 @@ export function TechnologyStackSection({
           {filteredItems.equipment.map((equip) => (
             <div
               key={`eq-${equip.id}`}
-              className="tech-stack-card lab-card p-10 group flex flex-col justify-between rounded-xl bg-white dark:bg-white/[0.04] dark:backdrop-blur-xl border border-slate-100 dark:border-white/[0.08] shadow-sm dark:shadow-none hover:shadow-md transition-shadow !border-l-4 !border-l-slate-200 dark:!border-l-slate-700 hover:!border-l-custom-color-344 dark:hover:!border-l-custom-color-345"
+              className="tech-stack-card lab-card p-10 group flex flex-col justify-between rounded-xl bg-white dark:bg-white/[0.04] dark:backdrop-blur-xl border border-slate-100 dark:border-white/[0.08] shadow-sm dark:shadow-none hover:shadow-md transition-shadow"
             >
               <div className="scan-line"></div>
               <div>

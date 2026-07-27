@@ -213,6 +213,18 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 
 ---
 
+### 5.3 Design Anti-Patterns (AI Slop)
+The project enforces strict design rules via a mechanical detector (`detect.mjs`). To prevent failing the CI/audit pipeline, NEVER use the following patterns:
+
+| ❌ Anti-Pattern (Fails Detector) | ✅ Allowed Pattern | Reason |
+|----------------------------------|--------------------|--------|
+| `border-b-2` on a `rounded-full` spinner | `border-2 border-t-transparent` | Avoids the "Border accent on rounded element" flag while keeping the same visual. |
+| `border-l-4` side-tab accents on cards | Clean structural layout without colored side borders | Prevents the generic AI side-tab aesthetic. |
+| `animate-bounce` for loading dots | `animate-pulse` or exponential translations | Bounce easings are considered tacky. |
+| Elastic beziers (e.g. `cubic-bezier(0.175, 0.885, 0.32, 1.275)`) | Exponential ease-out (e.g. `cubic-bezier(0.16, 1, 0.3, 1)`) | Real objects decelerate smoothly; elastic bouncing is dated. |
+| Purple gradients (`from-purple-*`) | `primary`, `manufacturing-accent` | Generic purple/cyan gradients are highly recognizable AI signatures. |
+| Gradient text (`bg-clip-text bg-gradient`) | Solid text colors (e.g., `text-primary`) | Gradient text is decorative; use solid colors for modern minimalism. |
+
 ## 6. Architectural Rules
 
 ### 6.1 Monorepo Structure
