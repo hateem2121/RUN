@@ -1,10 +1,12 @@
 # Unified Repository Health Audit
+
 **Date:** 2026-07-12
 **Mode:** Multi-agent fan-out/fan-in (1 Orchestrator + 5 Sub-Agents)
 **Status:** Complete
 
 ## 1. Executive Summary & Composite Health Score
-This audit was performed strictly against the live repo state as of July 2026. Prior audit conclusions were re-verified. 
+
+This audit was performed strictly against the live repo state as of July 2026. Prior audit conclusions were re-verified.
 
 | Dimension | Weight | Score | Notes |
 | :--- | :--- | :--- | :--- |
@@ -18,6 +20,7 @@ This audit was performed strictly against the live repo state as of July 2026. P
 | **TOTAL SCORE** | **100%** | **67 / 100** | |
 
 ### Delta vs. 2026-07-11 Audit
+
 - **Corrected**: Yesterday's audit falsely claimed ADR 0017 was duplicated. It is not (`docs/adr/` has exactly 1 file).
 - **Corrected**: Yesterday's audit falsely claimed Biome was at 2.3.10 and needed 2.5.3. The live pin is exactly 2.5.2.
 - **Corrected**: Yesterday's audit claimed 0 Critical/High, 6 Moderate vulnerabilities. A fresh audit found the same 6 Moderate.
@@ -30,6 +33,7 @@ This audit was performed strictly against the live repo state as of July 2026. P
 ## 2. Organization & Structure (Sub-Agent A)
 
 ### Findings
+
 - **A1**: `CHANGELOG.md` (root, 159 lines) is canonical and up-to-date. `docs/core/CHANGELOG.md` (90 lines) is stale.
 - **A2**: `docs/core/CONTRIBUTING.md` (93 lines) is canonical for deep guidance. Root `CONTRIBUTING.md` (83 lines) is a quick-start stub.
 - **A3**: `docs/development/dependency-graph.md` (542 lines) is canonical. `docs/core/dependency-graph.md` (61 lines) is a stub.
@@ -39,6 +43,7 @@ This audit was performed strictly against the live repo state as of July 2026. P
 - **A9, A10, A11**: Confirmed clean. No duplicate ADR 0017, no `docs/infra` collision, and unique `gemini.md` headings. `server/migrations/` remains the sole migration directory.
 
 ### Recommendations
+
 - [ ] **P2**: Delete `docs/core/CHANGELOG.md` and `k8s/argocd/`.
 - [ ] **P3**: Add cross-references to the tops of both `AGENTS.md` files. Merge or redirect `docs/core/dependency-graph.md`.
 - [ ] **P3**: Update `docs/structure.json` to include the `scripts` workspace.
@@ -48,6 +53,7 @@ This audit was performed strictly against the live repo state as of July 2026. P
 ## 3. Dead Code, Unused Files & Broken References (Sub-Agent B)
 
 ### Findings
+
 - **B1**: There are 40 absolute path symlinks in `.claude/skills/*/SKILL.md` pointing to a local machine's `gstack` path. 1 symlink (`checkpoint`) is completely broken. **[Citation: `ls -la .claude/skills/`]**.
 - **B2**: `.gitignore` line 96 explicitly ignores `.gstack/`, but the actual directory being tracked is `.claude/skills/gstack/`. **[Citation: `.gitignore` line 96]**.
 - **B3**: The 7 ignored files in `knip.config.ts` (`Preloader.tsx`, etc.) no longer exist.
@@ -55,6 +61,7 @@ This audit was performed strictly against the live repo state as of July 2026. P
 - **B5 & B6**: `turbo.json` outputs include `.next/**` and Sentry environment variables, both of which are dead features.
 
 ### Recommendations
+
 - [ ] **P0**: Convert all 40 `.claude/skills` symlinks to relative paths (e.g., `../gstack/<skill>/SKILL.md`).
 - [ ] **P1**: Fix `.gitignore` line 96 to `.claude/skills/gstack/` so git tracking aligns with intent.
 - [ ] **P2**: Remove `react-leaflet` from `client/package.json` and its Knip ignore entry. Remove `.next/**` and Sentry vars from `turbo.json`.
@@ -64,6 +71,7 @@ This audit was performed strictly against the live repo state as of July 2026. P
 ## 4. Future-Proofing & Best Practices (Sub-Agent C)
 
 ### Findings
+
 - **Node.js**: Verified at `v24.15.0`. **Staying on 24 is the correct production choice right now.** Node 26 does not reach LTS until October 2026. Recommending a jump to 26 now is an error.
 - **TypeScript**: Pinned at `^6.0.3`. Waiting for TS 7.1 is recommended due to `ts-morph` dependency limitations with the v7.0 Go rewrite.
 - **Vite/Rolldown**: Verified at Vite `^8.1.3`. However, `client/vite.config.ts` still explicitly relies on legacy Rollup configurations.
@@ -72,7 +80,8 @@ This audit was performed strictly against the live repo state as of July 2026. P
 - **VoidZero Supply Chain Risk**: Vite, Rolldown, and Biome are now all part of the VoidZero ecosystem, constituting a vendor lock-in risk for frontend infrastructure.
 
 ### Recommendations
-- [ ] **P3**: Rename `docs/adr/0015-react-router-7.md` to reflect v8. 
+
+- [ ] **P3**: Rename `docs/adr/0015-react-router-7.md` to reflect v8.
 - [ ] **P3**: Clean up legacy Rollup configurations in `client/vite.config.ts` to fully embrace native Rolldown.
 
 ---
@@ -80,6 +89,7 @@ This audit was performed strictly against the live repo state as of July 2026. P
 ## 5. Correctness Gate & Test Health (Sub-Agent D)
 
 ### Findings
+
 - **Tech Integrity**: `npm run verify:tech-integrity` passed.
   - TypeScript: 0 errors.
   - Biome: Checked 883 files in 211ms. 0 violations, 8 non-critical warnings.
@@ -89,6 +99,7 @@ This audit was performed strictly against the live repo state as of July 2026. P
 - **Dependency Audit**: 6 Moderate vulnerabilities. 0 High, 0 Critical.
 
 ### Recommendations
+
 - [ ] **P0**: Fix test suite resolution paths for `supertest` and `repositories/index.js` to restore coverage reporting.
 
 ---
@@ -96,6 +107,7 @@ This audit was performed strictly against the live repo state as of July 2026. P
 ## 6. Security & Dependencies (Sub-Agent E)
 
 ### Findings
+
 - **SEC-01 (CSRF)**: Satisfied (`server/middleware/csrf.ts` Lines 171-179).
 - **SEC-02 (Admin Auth)**: Satisfied (`server/services/auth-service.ts` Lines 359-388).
 - **SEC-03 (Session Cookie)**: **Failed/Partial** (`server/services/auth-service.ts` Lines 96-100). `sameSite` is `"lax"`, violating `gemini.md` §6.10 which dictates `"strict"`.
@@ -105,6 +117,7 @@ This audit was performed strictly against the live repo state as of July 2026. P
 - **Exclusions**: `.gitleaks.toml` exceptions and `.zap/rules.tsv` comments are genuinely secure and justified.
 
 ### Recommendations
+
 - [ ] **P1**: Enforce `sameSite: 'strict'` for session cookies in `auth-service.ts` to comply with the constitution.
 - [ ] **P2**: Review the 500MB multer upload limit to ensure it doesn't present an intentional DoS vector.
 
@@ -113,6 +126,7 @@ This audit was performed strictly against the live repo state as of July 2026. P
 ## 7. Claims & Documentation (Sub-Agent E)
 
 ### Findings
+
 - **E1**: `CHANGELOG.md` (Line 46) claims `Architecture Health Score: Achieved verified 100/100 score`.
 - **Spot-Checks**: `README.md` versions are stale relative to `package.json`:
   - Claims React 19.2.4 (Actually 19.2.7)
@@ -120,5 +134,6 @@ This audit was performed strictly against the live repo state as of July 2026. P
   - Claims Drizzle 0.45.1 (Actually 0.45.2)
 
 ### Recommendations
+
 - [ ] **P3**: Add a timestamp caveat to the score claim in `CHANGELOG.md`.
 - [ ] **P3**: Synchronize `README.md` versions with current `package.json` installs.

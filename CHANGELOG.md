@@ -15,39 +15,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Test Suite Stabilization**: Fixed over 2,500 test assertions across 25+ files to properly handle `Result` types (using `.isOk()`, `.isErr()`, and `ok()`/`err()` mocks).
 
 ### Environment & Tooling
+
 - **Strict Antigravity Native**: Purged all legacy IDE and AI configuration files (`.claude`, `.cursor`, `.vscode/mcp.json`, etc.) to enforce a strict Antigravity-native environment via `.gemini/antigravity/`.
 - **Tech Integrity Verification**: Fixed lingering `noDescendingSpecificity` CSS warnings and enforced strict `as unknown as Function` double-casting for `any` types in `circuit-breaker.ts` to ensure 100% compliance with `verify:tech-integrity` checks.
 - **CI/CD Consolidation**: Consolidated 15+ disparate GitHub Actions workflows down to 5 core pipelines (`ci.yml`, `deploy.yml`, `docs.yml`, `e2e.yml`, `security.yml`). Migrated all workflows from self-hosted macOS runners to GitHub-hosted `ubuntu-latest` to resolve infinite runner queue deadlocks. Removed irrelevant and duplicative checks to streamline the merge process.
 - **Rules Documentation**: Updated `gemini.md` and `AGENTS.md` to formally document the strict Antigravity-native rule and clarify exceptions to the `noExplicitAny` TypeScript constraint.
 
 ### Performance
+
 - **UI Render Optimization**: You can now experience smoother scrolling on the homepage, as unnecessary `will-change-transform` usage was eliminated across 7 components to prevent GPU memory bloat.
 - **Image Optimization**: Images in expandable bento cards now lazy-load automatically, speeding up initial page render.
 
 ### Design
+
 - **AI Anti-Pattern Purge**: The UI now strictly adheres to a premium, unified brand identity. Tacky bouncy easings, decorative side-tabs, and generic purple gradients have been completely stripped out and replaced with strict `primary` brand tokens and exponential curves.
 
 ## [4.1.2] - 2026-06-20
 
 ### Security
+
 - **P0 CVE Remediation**: Pinned `nodemailer` to `v9.0.1` and `undici` to resolve critical vulnerabilities flagged in `npm audit`.
 
 ### Architecture
+
 - **Local Schema Violations Resolved (D04)**: Centralized 11 inline Zod schema definitions (`reorderSchema`) into 8 canonical exports within `@run-remix/shared/schemas/api/common.ts`.
 - **Express 5 Native Async**: Eliminated 5 redundant `try/catch` blocks from async routes (H12/H13 compliance).
 - **React 19 Forms**: Upgraded 5 legacy `onSubmit` handlers to native React 19 `<form action={fn}>` patterns.
 
 ### Process & Tooling
+
 - **Main Branch Rules Override**: Updated system agent rules (`gemini.md`, `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`) to permit direct `main` commits given explicit user authorization, bypassing `/ship`.
 - **Bundle Optimization**: Verified code-splitting for `LazyUnifiedModelViewer` (415KB dynamic chunk).
 
 ## [4.1.1] - 2026-05-30
 
 ### Added
+
 - **Stateless HTTP Driver Connection**: Integrated `httpDb` using `@neondatabase/serverless` HTTP client in `server/db.ts` to execute lightweight, non-transactional read queries without WebSocket handshake overhead.
 - **Automated Timestamp Automation**: Added `$onUpdate` hooks for all database `updatedAt` columns across shared schemas.
 
 ### Fixed
+
 - **Foreign Key Type Safety**: Resolved columns type mismatch for `recordedBy` in `sustainability_metric_history` to reference `users.id` with a physical foreign key constraint.
 - **Media Folders Self-Referential Integrity**: Added parent-child self-referential foreign key constraint on `parentId` referencing `id` in `folders` table to prevent orphan directories.
 - **Database Performance Indexes**: Configured database indexes on JOIN foreign key columns across materials, webhooks, blog, catalog, common, manufacturing, technology, and media schemas.

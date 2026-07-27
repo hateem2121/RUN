@@ -1,7 +1,9 @@
 # RUN Remix — Full-Site Investigation Master Report
+
 Date: 2026-06-04 | Agents: 26 | Crawl: Gemini 3.5 Flash | Synthesis: Claude Opus 4.6 (emulated via Antigravity)
 
 ## Executive Summary
+
 | Severity | Count | Pages Affected |
 |----------|-------|----------------|
 | P0 Critical | 6 | Fabrics, Sustainability, Certifications, Legal, API Endpoints, Contact |
@@ -11,6 +13,7 @@ Date: 2026-06-04 | Agents: 26 | Crawl: Gemini 3.5 Flash | Synthesis: Claude Opus
 | **Failures** | 18 | 18 pages failed to crawl due to API Quota (RESOURCE_EXHAUSTED). Logged as best-effort failures. |
 
 ## Critical Path (P0 — Fix Immediately)
+
 - **APIX-001**: Unauthenticated Endpoint Returning Admin Data (`/api/analytics/vitals` bypasses auth due to `BYPASS_RBAC_FOR_TESTING=true`).
 - **LEGL-001**: Missing Legal Data / Stub Content (CMS returns generic placeholder for Privacy/Terms).
 - **FABR-001**: API Endpoint `/api/resources/batch` fails with 422 when `types` query parameter is missing, causing UI crashes.
@@ -19,6 +22,7 @@ Date: 2026-06-04 | Agents: 26 | Crawl: Gemini 3.5 Flash | Synthesis: Claude Opus
 - **CONT-001**: Missing React Router `ErrorBoundary` on the Contact route.
 
 ## Systemic Issues (Cross-Cutting Patterns)
+
 1. **Accessibility - Missing `aria-label` (P0/P1)**: Pervasive across Contact, Services, Sustainability, and Certifications.
 2. **Accessibility - GSAP `prefers-reduced-motion` Ignored (P1)**: Animations run unconditionally in Fabrics, Services, Certifications, and Accessories.
 3. **Architecture - Hardcoded API Strings (P1)**: Loaders bypass `API_CONSTANTS` in Fabrics, Legal, and Accessories.
@@ -29,6 +33,7 @@ Date: 2026-06-04 | Agents: 26 | Crawl: Gemini 3.5 Flash | Synthesis: Claude Opus
 ## Full Issue Register
 
 ### P0 (Critical)
+
 - **APIX-001** (API Endpoints): Unauthenticated endpoint returning admin data.
 - **LEGL-001** (Legal): Missing legal data / stub content.
 - **FABR-001** (Fabrics): API endpoint missing validation/types param.
@@ -37,6 +42,7 @@ Date: 2026-06-04 | Agents: 26 | Crawl: Gemini 3.5 Flash | Synthesis: Claude Opus
 - **CONT-001** (Contact): Missing Error Boundary.
 
 ### P1 (Major)
+
 - **FABR-002** (Fabrics): Hardcoded API strings.
 - **FABR-003** (Fabrics): GSAP does not respect `prefers-reduced-motion`.
 - **FABR-004** (Fabrics): Incorrect Renderer for 2D fabric swatches.
@@ -57,6 +63,7 @@ Date: 2026-06-04 | Agents: 26 | Crawl: Gemini 3.5 Flash | Synthesis: Claude Opus
 - **CONT-007** (Contact): Custom toast implementation instead of `sonner`.
 
 ### P2 (Minor)
+
 - **FABR-005** (Fabrics): Missed opportunity for API batching.
 - **FABR-006** (Fabrics): Inadequate touch target size for expand button.
 - **FABR-007** (Fabrics): Lack of validation for composition percentages (100%).
@@ -79,6 +86,7 @@ Date: 2026-06-04 | Agents: 26 | Crawl: Gemini 3.5 Flash | Synthesis: Claude Opus
 - **CONT-008** (Contact): Rate limiter bypassed for localhost.
 
 ### P3 (Cosmetic)
+
 - **FABR-008** (Fabrics): Default composition slicing hides data.
 - **CERT-009** (Certifications): Placeholder test certificates in CMS data.
 - **LEGL-003** (Legal): Sub-optimal loading fallback text.
@@ -86,6 +94,7 @@ Date: 2026-06-04 | Agents: 26 | Crawl: Gemini 3.5 Flash | Synthesis: Claude Opus
 - **CONT-009** (Contact): API probe file format incorrect (text vs JSON).
 
 ## Failed Crawls (RESOURCE_EXHAUSTED)
+
 18 branches failed to complete their investigation due to API Quota limits. Under the "Best-effort" failure strategy, these are logged as findings that require follow-up:
 - Homepage
 - About
@@ -107,6 +116,7 @@ Date: 2026-06-04 | Agents: 26 | Crawl: Gemini 3.5 Flash | Synthesis: Claude Opus
 - System Integrity
 
 ## Recommended Fix Sequence (Dependency-Aware)
+
 1. **Security & Auth**: Fix `APIX-001` immediately (remove `BYPASS_RBAC_FOR_TESTING`).
 2. **Architecture**: Fix `CONT-001` (Error Boundaries) and replace hardcoded API strings with `API_CONSTANTS` across all pages.
 3. **Accessibility**: Do a site-wide pass to add missing `aria-label` attributes and implement the `prefers-reduced-motion` kill switch in all `useGSAP` hooks.
@@ -114,6 +124,7 @@ Date: 2026-06-04 | Agents: 26 | Crawl: Gemini 3.5 Flash | Synthesis: Claude Opus
 5. **Performance**: Audit database indices and `lru-cache` hits for endpoints taking >500ms (`APIX-002`, `ACCS-003`).
 
 ## Protocol 0 Summary
+
 - Typecheck: PASS
 - Linting: PASS
 - Build: PASS
@@ -122,6 +133,7 @@ Date: 2026-06-04 | Agents: 26 | Crawl: Gemini 3.5 Flash | Synthesis: Claude Opus
 (Refer to `findings/system/protocol-0.txt` for raw logs)
 
 ## API Health Matrix
+
 - **/api/analytics/vitals**: OK (but Unauthenticated P0)
 - **/api/resources/batch**: Fails without types (P0)
 - **/api/legal-policies**: Stub content only (P0)

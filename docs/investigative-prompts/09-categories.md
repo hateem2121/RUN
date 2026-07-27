@@ -1,4 +1,5 @@
 # 🔍 INVESTIGATE: Categories Pages
+
 **Route**: `/categories + sub-routes`
 **Agent Host**: Antigravity 2.0 Desktop · Agent Teams Panel
 **Crawl Model**: `@gemini-3.5-flash`
@@ -9,12 +10,15 @@
 **Issue ID Prefix**: `CATE-`
 
 ---
+
 ## Goal
+
 Investigate all four category route variants for correct rendering, routing logic, SSR, and API data integrity.
 
 ---
 
 ## Context
+
 **Source Files**:
 - `client/app/routes/categories._index.tsx` — All categories list (loader)
 - `client/app/routes/categories.$slug.tsx` — Category detail (loader)
@@ -24,6 +28,7 @@ Investigate all four category route variants for correct rendering, routing logi
 All four have React Router loaders (SSR-eligible).
 
 ### CMS API Endpoints
+
 | Endpoint | Purpose |
 |----------|---------|
 | `GET /api/categories` | Full category list |
@@ -45,6 +50,7 @@ git diff --name-only            # Confirm no source files modified
 ```
 
 ---
+
 ## Agent Team Configuration (Antigravity 2.0 — Agent Teams Panel)
 
 | Sub-Agent | Model | Responsibility |
@@ -61,6 +67,7 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 ## Investigation Axes
 
 ### 1. Visual & UI (All 4 Routes)
+
 - [ ] `/categories`: grid renders, all images load, correct counts
 - [ ] `/categories/activewear` (use a real slug from `GET /api/categories`): header + product grid load
 - [ ] `/categories/activewear/products`: distinct from `/categories/activewear` or duplicate layout?
@@ -69,6 +76,7 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 - [ ] Empty category: graceful empty state
 
 ### 2. Routing Correctness (Critical)
+
 ```bash
 curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/api/categories
 # Note the first real slug, then test:
@@ -76,32 +84,39 @@ curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/categories/[real-slug]
 curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/categories/fakeslug-nonexistent
 curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/categories/[real-slug]/products
 ```
+
 - [ ] Valid slug → 200; Non-existent slug → 404 or error state (not crash)
 - [ ] No routing conflict between `categories.$slug.tsx` and `categories.$.tsx`
 - [ ] Deep path (`/categories/activewear/tops`): splat parameter parsed correctly
 
 ### 3. API Health
+
 ```bash
 curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/api/categories
 curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/api/categories/by-slug/activewear
 curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/api/categories/1
 curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/api/categories/by-slug/fake-nonexistent
 ```
+
 - [ ] Non-existent slug: 404 (not 500)
 - [ ] Category hierarchy: parent-child relationships correct
 
 ### 4. SEO & SSR (Loader Present)
+
 ```bash
 curl http://localhost:5002/categories | grep -i "<title\|category"
 ```
+
 - [ ] Initial HTML contains category data (loader = SSR)
 - [ ] Each category page: unique `<title>` and `<meta description>` (CMS-driven?)
 - [ ] Breadcrumb structured data (JSON-LD) for nested paths
 
 ### 5–10. Standard Axes
+
 Apply standard axes 5–10.
 
 ---
+
 ## Artifacts to Produce
 
 ```
@@ -116,6 +131,7 @@ findings/cate/
 ```
 
 Issue format in `findings.md`:
+
 ```
 ## P0 — Critical
 ### CATE-001: [Title]
@@ -126,6 +142,7 @@ Issue format in `findings.md`:
 ```
 
 ---
+
 ## Success Criteria
 
 - [ ] `npm run verify:tech-integrity` output logged

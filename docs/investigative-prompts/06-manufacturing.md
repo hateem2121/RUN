@@ -1,4 +1,5 @@
 # 🔍 INVESTIGATE: Manufacturing Page  🚨 HIGHEST PRIORITY
+
 **Route**: `/manufacturing`
 **Agent Host**: Antigravity 2.0 Desktop · Agent Teams Panel
 **Crawl Model**: `@gemini-3.5-flash`
@@ -9,7 +10,9 @@
 **Issue ID Prefix**: `MFGI-`
 
 ---
+
 ## Goal
+
 Conduct a comprehensive deep investigation of `/manufacturing` and all five CMS modules that power it. This is the primary technical credibility page in RUN APPAREL's B2B buyer journey — any issue here directly impacts enterprise conversion. Identify and severity-score every bug across all axes. Do not fix anything; produce a complete findings report only.
 
 ---
@@ -17,6 +20,7 @@ Conduct a comprehensive deep investigation of `/manufacturing` and all five CMS 
 ## Context
 
 ### Source Files
+
 | File | Role |
 |------|------|
 | `client/app/routes/manufacturing.tsx` | Page component — **no React Router loader**, all data client-side |
@@ -26,6 +30,7 @@ Conduct a comprehensive deep investigation of `/manufacturing` and all five CMS 
 | `@run-remix/shared` | Shared types and API constants |
 
 ### CMS API Endpoints
+
 | Endpoint | Admin Module | Purpose |
 |----------|-------------|---------|
 | `GET /api/manufacturing-hero` | `admin/manufacturing-hero` | Page hero banner config |
@@ -39,6 +44,7 @@ All 5 endpoints are fetched client-side on mount. Content is invisible to search
 Waterfall fetch risk: if sequential `await` is used instead of `Promise.all`, load time multiplies.
 
 ### Known Issues from Route Audit
+
 - No React Router loader → zero SSR → content not indexed by crawlers (P1 SEO)
 - Route files use `.js` extension (TypeScript coverage gap — P2)
 - Unknown: whether `Promise.all` or sequential `await` is used
@@ -59,6 +65,7 @@ git diff --name-only            # Confirm no source files modified
 ```
 
 ---
+
 ## Agent Team Configuration (Antigravity 2.0 — Agent Teams Panel)
 
 | Sub-Agent | Model | Responsibility |
@@ -247,6 +254,7 @@ findings/mfgi/
 ```
 
 Issue format in `findings.md`:
+
 ```
 ## P0 — Critical
 ### MFGI-001: [Title]

@@ -1,4 +1,5 @@
 # 🔍 INVESTIGATE: Developer Portal
+
 **Route**: `/developer + sub-routes`
 **Agent Host**: Antigravity 2.0 Desktop · Agent Teams Panel
 **Crawl Model**: `@gemini-3.5-flash`
@@ -9,12 +10,15 @@
 **Issue ID Prefix**: `DEVP-`
 
 ---
+
 ## Goal
+
 Investigate the developer portal and its sub-routes with a critical focus on the confirmed SSR cache mismatch for `/developer/guides/:slug`.
 
 ---
 
 ## Context
+
 **Source Files**:
 - `client/app/routes/developer.tsx` — Layout wrapper
 - `client/app/routes/developer._index.tsx` — Portal home (no loader)
@@ -38,6 +42,7 @@ git diff --name-only            # Confirm no source files modified
 ```
 
 ---
+
 ## Agent Team Configuration (Antigravity 2.0 — Agent Teams Panel)
 
 | Sub-Agent | Model | Responsibility |
@@ -54,12 +59,14 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 ## Investigation Axes
 
 ### 1. Visual & UI (All Sub-Routes)
+
 - [ ] `/developer`: portal home renders, sub-route navigation works
 - [ ] `/developer/playground`: component sandbox loads, all components render
 - [ ] `/developer/guides/[slug]` (use a real slug from admin or DB): guide renders
 - [ ] Layout wrapper (`developer.tsx`): shared nav elements on all sub-routes
 
 ### 2. SSR Cache Mismatch (Critical — Reproduce It)
+
 ```bash
 # Find a real guide slug
 curl -s http://localhost:5002/api/[guides-endpoint] | python3 -m json.tool | grep slug | head -3
@@ -70,25 +77,30 @@ curl http://localhost:5002/developer/guides/getting-started | grep -i "<title\|<
 # Test non-existent path (no slug)
 curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/developer/guides
 ```
+
 - [ ] Guide page loads correctly (loader works)
 - [ ] BUT: is it SSR-cached? (Expected: NO — document as P1 performance/caching finding)
 - [ ] `/developer/guides` (no slug): 404 or redirect? Document behavior.
 - [ ] Non-existent slug: correct error state rendered
 
 ### 3. Guide Content
+
 - [ ] Identify the API endpoint called by the guide loader (search in `developer.guides.$slug.tsx`)
 - [ ] Probe the endpoint directly with curl
 - [ ] Markdown/rich text renders correctly
 - [ ] No hardcoded guide content in JSX
 
 ### 4. Performance
+
 - [ ] Playground: heavy component imports lazy-loaded?
 - [ ] Guide pages: document TTFB (SSR cache bypass = slower cold requests)
 
 ### 5–10. Standard Axes
+
 Apply standard axes 5–10: SEO (unique title per guide), broken links, mobile, a11y, animation, TypeScript/Biome.
 
 ---
+
 ## Artifacts to Produce
 
 ```
@@ -103,6 +115,7 @@ findings/devp/
 ```
 
 Issue format in `findings.md`:
+
 ```
 ## P0 — Critical
 ### DEVP-001: [Title]
@@ -113,6 +126,7 @@ Issue format in `findings.md`:
 ```
 
 ---
+
 ## Success Criteria
 
 - [ ] `npm run verify:tech-integrity` output logged

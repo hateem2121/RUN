@@ -708,6 +708,7 @@ Native browser `confirm()` or `alert()` dialogs are strictly prohibited as they 
 Always use the accessible `@radix-ui/react-alert-dialog` based `<DeleteConfirmationDialog />` component for destructive actions.
 
 **❌ FORBIDDEN:**
+
 ```javascript
 if (confirm("Are you sure?")) { ... }
 ```
@@ -719,11 +720,13 @@ if (confirm("Are you sure?")) { ... }
 The `@run-remix/shared` package strictly locks down exports to the root (`.`). Deep imports bypass the module's public API and cause Vite build crashes.
 
 **✅ CORRECT:**
+
 ```typescript
 import { insertManufacturingCapabilitySchema } from "@shared/index"; // or @run-remix/shared
 ```
 
 **❌ FORBIDDEN:**
+
 ```typescript
 import { insertManufacturingCapabilitySchema } from "@run-remix/shared/schemas/content/manufacturing";
 ```

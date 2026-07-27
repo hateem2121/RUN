@@ -74,15 +74,18 @@ The legacy monolithic `PageContentRepository` (2,400 LOC) has been permanently d
 Large frontend components (>500 LOC) must be decomposed following the patterns established during the Media Library extraction:
 
 ### Hook Extraction
+
 - **[RULE]** Extract data-fetching logic into custom hooks (e.g., `useMediaGridQuery`). Components should be pure presentation.
 - **[RULE]** Extract state-management logic into focused hooks (e.g., `useMediaFilters`, `useMediaSelection`). Each hook manages a single concern.
 - **[RULE]** URL synchronization logic must be isolated into its own hook (e.g., `useMediaUrlSync`).
 
 ### Utility Extraction
+
 - **[RULE]** Pure utility functions, constants, and class instances must live in dedicated `.ts` files (not `.tsx`).
 - **[RULE]** Memoized sub-components with no shared state must be extracted into their own `.tsx` files.
 
 ### Directory Convention
+
 - Hooks go in a `hooks/` subdirectory within the domain module.
 - Utility modules go in a domain-appropriate subdirectory (e.g., `upload/`).
 - Extracted UI sub-components go in a `components/` subdirectory.

@@ -5,6 +5,7 @@
 **Status**: Read-only Discovery Complete
 
 ## 1. Executive Summary & Overall Health Score
+
 Based on the extensive multi-agent fan-out investigation, the RUN Remix monorepo maintains a strong baseline of security, tech stack currency, and operational integrity, but suffers from documentation drift, test fragmentation, and residual cleanup debt.
 
 ### Composite Health Score: 78 / 100 (Grade B)
@@ -22,6 +23,7 @@ Based on the extensive multi-agent fan-out investigation, the RUN Remix monorepo
 ---
 
 ## 2. Organization & Structure (Sub-Agent 1)
+
 - **ADR 0010 (Monorepo Structure):** Massively incomplete. It documents `client/`, `server/`, and `shared/`, but totally ignores `tests/`, `e2e/`, `docs/`, `ops/`, `scripts/`, `k8s/`, `.github/`, and `.claude/`.
 - **Test-Location Fragmentation:** Multiple conventions are active (`tests/`, `client/tests/`, `server/services/__tests__/`, `e2e/`). Duplicate files exist:
   - `auth-service.test.ts`: Canonical is `server/services/__tests__/`, orphaned duplicate in `tests/unit/services/`.
@@ -38,6 +40,7 @@ Based on the extensive multi-agent fan-out investigation, the RUN Remix monorepo
 ---
 
 ## 3. Dead Code & Unused Files (Sub-Agent 2)
+
 - **Knip Suppressions Verification:**
   - `patch.js` & `test-globals.js`: Genuinely dead (deleted).
   - `server/worker.ts`: Genuinely dead entry (actual path is `server/routes/worker.ts`).
@@ -50,6 +53,7 @@ Based on the extensive multi-agent fan-out investigation, the RUN Remix monorepo
 ---
 
 ## 4. Best Practices & Future-Proofing (Sub-Agent 3)
+
 - **Tech Stack Currency:**
   - **Current:** React (19.2.x), React Router (v8), Vite (v8.1.x), Express (5.2.1), Zod (4.2.1), Tailwind CSS (4.2.4).
   - **Outdated:** Node.js (v24.15 vs v26.5), TypeScript (v6.0.3 vs v7.0 GA), Drizzle ORM (0.45.2 vs v1.0), Biome (2.3.10 vs 2.5.3).
@@ -62,6 +66,7 @@ Based on the extensive multi-agent fan-out investigation, the RUN Remix monorepo
 ---
 
 ## 5. Security & Dependencies (Sub-Agent 4)
+
 - **Vulnerabilities:** 0 Critical, 0 High, 6 Moderate. Allowlisted advisories (GHSA-q8mj-m7cp-5q26, GHSA-w5hq-g745-h8pq) are documented.
 - **Security Invariants (SEC-01 to SEC-10):** All 10 invariants passed verification from scratch.
   - `isomorphic-dompurify` handles server-side XSS.
@@ -72,6 +77,7 @@ Based on the extensive multi-agent fan-out investigation, the RUN Remix monorepo
 ---
 
 ## 6. Claims & Documentation Accuracy (Sub-Agent 4)
+
 - **Spot-Check Accuracy Rate:** 70% (7 True, 3 False).
 - **Verified False (Failing Claims):**
   1. `docs/core/sdk-workspace.md` does not exist (claimed to have a deprecation notice).
@@ -81,6 +87,7 @@ Based on the extensive multi-agent fan-out investigation, the RUN Remix monorepo
 ---
 
 ## 7. Recommended Action Plan
+
 1. **Directory & File Cleanup:** Delete the `findings/` directory and orphaned files identified by Knip (e.g., `Preloader.tsx`). Merge duplicate ADRs and `docs/infra/` folders.
 2. **Test Consolidation:** Pick one canonical test directory pattern (`server/services/__tests__/` and `tests/unit/`) and delete duplicate historical snapshot files.
 3. **Documentation Sync:** Renumber `gemini.md` §10-§13 appended sections to §22-§25. Fix `CLAUDE.md` version title to v4.1.2. Update `docs/structure.json` and `docs/adr/0010-monorepo-structure.md`.

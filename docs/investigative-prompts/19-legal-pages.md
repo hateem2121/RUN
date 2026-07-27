@@ -1,4 +1,5 @@
 # 🔍 INVESTIGATE: Legal Pages
+
 **Route**: `/privacy + /terms`
 **Agent Host**: Antigravity 2.0 Desktop · Agent Teams Panel
 **Crawl Model**: `@gemini-3.5-flash`
@@ -9,12 +10,15 @@
 **Issue ID Prefix**: `LEGL-`
 
 ---
+
 ## Goal
+
 Investigate both legal pages for content rendering, CMS management, SEO, and accessibility. These pages likely contain static JSX content — that itself is a finding.
 
 ---
 
 ## Context
+
 **Source Files**: `client/app/routes/privacy.tsx`, `client/app/routes/terms.tsx`
 **No loaders, no CMS APIs** — likely static JSX content.
 
@@ -33,6 +37,7 @@ git diff --name-only            # Confirm no source files modified
 ```
 
 ---
+
 ## Agent Team Configuration (Antigravity 2.0 — Agent Teams Panel)
 
 | Sub-Agent | Model | Responsibility |
@@ -49,48 +54,58 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 ## Investigation Axes
 
 ### 1. Content Rendering
+
 - [ ] `/privacy`: full privacy policy text renders, no truncation
 - [ ] `/terms`: full terms and conditions text renders
 - [ ] No placeholder tokens left: `[DATE]`, `[COMPANY NAME]`, `[LOREM IPSUM]`
 - [ ] All headings and sections render with correct hierarchy
 
 ### 2. Static vs CMS (Critical Check)
+
 - [ ] Read source files: is content hardcoded JSX strings or fetched from API?
 - [ ] If fully hardcoded: document as P2 CMS gap (legal content must be editable without code deploy)
 - [ ] If no CMS management: when was content last updated? Is it legally current?
 
 ### 3. SEO & HTTP Status
+
 ```bash
 curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/privacy
 curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/terms
 ```
+
 - [ ] Both return HTTP 200 (not redirect or 404)
 - [ ] Unique `<title>` and `<meta description>` on each page
 - [ ] Content in initial HTML (static render — should be yes even without loader)
 - [ ] `robots.txt`: legal pages should be indexable (verify not blocked)
 
 ### 4. Links & References
+
 - [ ] Internal links navigate correctly
 - [ ] External links (GDPR, privacy authorities): `target="_blank"` + `rel="noopener noreferrer"`
 - [ ] Email addresses use `mailto:` links (not plain text)
 - [ ] Last updated date: present and not in the distant past
 
 ### 5. Mobile Responsiveness
+
 - [ ] Long-form text readable at 375px (correct line-height, font-size)
 - [ ] No table overflow (if any legal tables present)
 
 ### 6. Accessibility
+
 - [ ] Logical heading hierarchy throughout document
 - [ ] All links descriptive (no "click here" without context)
 - [ ] Color contrast ≥ 4.5:1 on all body text
 
 ### 7. TypeScript & Biome
+
 ```bash
 npx biome check client/app/routes/privacy.tsx client/app/routes/terms.tsx
 ```
+
 - [ ] Zero violations
 
 ---
+
 ## Artifacts to Produce
 
 ```
@@ -105,6 +120,7 @@ findings/legl/
 ```
 
 Issue format in `findings.md`:
+
 ```
 ## P0 — Critical
 ### LEGL-001: [Title]
@@ -115,6 +131,7 @@ Issue format in `findings.md`:
 ```
 
 ---
+
 ## Success Criteria
 
 - [ ] `npm run verify:tech-integrity` output logged

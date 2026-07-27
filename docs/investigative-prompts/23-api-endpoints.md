@@ -1,4 +1,5 @@
 # 🔍 INVESTIGATE: Full API Endpoints Health Audit
+
 **Route**: `/api/* (all endpoints)`
 **Agent Host**: Antigravity 2.0 Desktop · Agent Teams Panel
 **Crawl Model**: `@gemini-3.5-flash`
@@ -9,7 +10,9 @@
 **Issue ID Prefix**: `APIX-`
 
 ---
+
 ## Goal
+
 Run a comprehensive health check on every documented REST API endpoint. Log HTTP status, response time, response shape, caching headers, and security headers.
 
 ---
@@ -27,6 +30,7 @@ git diff --name-only            # Confirm no source files modified
 ```
 
 ---
+
 ## Agent Team Configuration (Antigravity 2.0 — Agent Teams Panel)
 
 | Sub-Agent | Model | Responsibility |
@@ -45,6 +49,7 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 Run each group and log all results to `findings/api-endpoints/api-probe.json`:
 
 ### Group A — Homepage
+
 ```bash
 for ep in homepage-batch homepage-hero homepage-slogans homepage-sections homepage-featured-products-settings homepage-process-cards; do
   echo "=== $ep ===" && curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/$ep
@@ -52,6 +57,7 @@ done
 ```
 
 ### Group B — About
+
 ```bash
 for ep in about-hero about-timeline about-locations about-sections about-statistics about-team-message; do
   echo "=== $ep ===" && curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/$ep
@@ -59,6 +65,7 @@ done
 ```
 
 ### Group C — Sustainability
+
 ```bash
 for ep in sustainability sustainability-metrics sustainability-initiatives sustainability-goals; do
   echo "=== $ep ===" && curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/$ep
@@ -67,6 +74,7 @@ curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api
 ```
 
 ### Group D — Manufacturing (Priority)
+
 ```bash
 for ep in manufacturing-hero manufacturing-processes manufacturing-capabilities manufacturing-qualities manufacturing-case-studies; do
   echo "=== $ep ===" && curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/$ep
@@ -74,6 +82,7 @@ done
 ```
 
 ### Group E — Technology
+
 ```bash
 for ep in technology-hero technology-innovations technology-equipment technology-research technology-roadmap technology-cta technology-gradient-settings; do
   echo "=== $ep ===" && curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/$ep
@@ -81,6 +90,7 @@ done
 ```
 
 ### Group F — Navigation, Footer, Contact, Resources
+
 ```bash
 for ep in navigation-items navigation-settings footer contact-info locations resources/batch; do
   echo "=== $ep ===" && curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/$ep
@@ -88,6 +98,7 @@ done
 ```
 
 ### Group G — Catalog
+
 ```bash
 curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" "http://localhost:5002/api/products?page=1&limit=5"
 curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/categories
@@ -95,6 +106,7 @@ curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api
 ```
 
 ### Group H — Health & Observability
+
 ```bash
 for ep in health health/live health/ready health/deep; do
   echo "=== $ep ===" && curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/$ep
@@ -105,6 +117,7 @@ curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/api/media/rate-limiter/h
 ```
 
 ### Group I — Security (Unauthenticated)
+
 ```bash
 curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/api/auth/user         # Expect 401
 curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/api/analytics/vitals  # Expect 401
@@ -124,12 +137,14 @@ curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/api/analytics/vitals  # 
 - [ ] Security headers present: `X-Content-Type-Options`, `X-Frame-Options`
 
 ## Special Findings
+
 - [ ] Any endpoint returning > 500ms → P2 (caching may be broken)
 - [ ] Any endpoint returning HTML instead of JSON → P0
 - [ ] Any unauthenticated endpoint returning admin data → P0 security
 - [ ] Document all endpoints using `.js` route handler files (vs `.ts`)
 
 ---
+
 ## Artifacts to Produce
 
 ```
@@ -144,6 +159,7 @@ findings/apix/
 ```
 
 Issue format in `findings.md`:
+
 ```
 ## P0 — Critical
 ### APIX-001: [Title]
@@ -154,6 +170,7 @@ Issue format in `findings.md`:
 ```
 
 ---
+
 ## Success Criteria
 
 - [ ] `npm run verify:tech-integrity` output logged

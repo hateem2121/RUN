@@ -1,4 +1,5 @@
 # Antigravity — Agent Rules
+
 **Project:** RUN APPAREL CMS v4.1.2 (`run-remix`)
 **Agent:** Antigravity (Gemini)
 **Last updated:** July 2026
@@ -184,21 +185,25 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 | Duplicating security/docs checks inside `ci.yml` | Dedicated pipelines (e.g. `security.yml`, `docs.yml`) | High |
 
 ### 5.1.1 Exceptions to `noExplicitAny`
+
 - **React Hook Form**: When strict type inference fails for `form.control` or `useFieldArray` combined with complex Zod schemas under React 19, you may bypass the constraint using `// biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict` combined with an explicit `as any` cast. This is the **only** permitted use case for `any`.
 - **Third-Party Interfaces**: When implementing third-party interfaces (like `express-session` Store) that dictate `any` in their types (e.g., `callback?: (err?: any) => void`), you must use `unknown` in your implementation parameters (e.g., `callback?: (err?: unknown) => void`). Do not use `as any` for type casting external properties (like dates); instead, cast to the specific expected union types (e.g., `as string | number | Date`). Note: When adapting third-party classes, you must still return `ResultAsync` objects internally to maintain safety, even if the parent interface defines the return type as `void`.
 - **General Type Casting**: When resolving complex type mismatches across layers (e.g., casting a repository `Error` to a service `AppError`), NEVER use `as any` as a shortcut for function signatures or complex objects. Use double-casting via unknown: `as unknown as Function` or `as unknown as ExpectedType`.
 
 ### 5.1.2 Middleware Strictness
+
 - **neverthrow mandatory**: All Express middleware (`server/middleware/`) including rate limiters, CSRF validation, idempotency caching, and RBAC audit logs MUST strictly use `ResultAsync.fromPromise` and `Result.fromThrowable`. Raw `try/catch` blocks used as fail-safes or fallbacks (even for synchronous operations like `JSON.parse` or input sanitization) are strictly prohibited and must be converted to `match()` handlers.
 - **useIterableCallbackReturn**: When mapping `neverthrow` Results (e.g. converting a db result to void), you must explicitly return `undefined` to satisfy Biome. `() => {}` is forbidden; use `.map(() => undefined)` instead.
 - **noImplicitReturns**: When writing `useEffect` hooks, if you conditionally return a cleanup function, you MUST explicitly `return undefined;` as the default fallback to satisfy strict TypeScript constraints.
 
 ### 5.1.3 Static Analysis & Knip Tech Debt
+
 - **Unused Exports**: When Knip flags unused exports (e.g., React Router v8 route components, loaders, actions, or shared types), **never** use regex-based AST destruction to remove the `export` keyword.
 - **Remediation Strategy**: Apply the `/** @public */` JSDoc tag above the export to explicitly tell Knip to ignore it without breaking TypeScript compilation or module resolution.
 - **Bulk Refactoring Restriction**: NEVER use generic regex or Python scripts to bulk-modify TypeScript syntax, destructured properties, or relative imports across multiple files. This inevitably leads to syntax corruption and incorrect path depths. Rely exclusively on careful `ts-morph` AST manipulation or precise line-by-line replacements.
 
 ### 5.1.4 `neverthrow` Fallback Resilience
+
 - **Mandatory `.orElse()`**: When implementing fallback logic (e.g., returning default content when a database query fails), NEVER use `try/catch` inside `ResultAsync.fromPromise()`. You must chain `.orElse()` directly onto the `ResultAsync` execution to handle the failure case safely and maintain the `ResultAsync<T, E>` contract.
 
 ### 5.2 Forbidden by Architecture
@@ -217,6 +222,7 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 ---
 
 ### 5.3 Design Anti-Patterns (AI Slop)
+
 The project enforces strict design rules via a mechanical detector (`detect.mjs`). To prevent failing the CI/audit pipeline, NEVER use the following patterns:
 
 | ❌ Anti-Pattern (Fails Detector) | ✅ Allowed Pattern | Reason |
@@ -364,10 +370,12 @@ result.match(
 ```
 
 ### 6.5.1 Media Endpoint 404 Handling (CORB Prevention)
-- **Transparent GIF Fallback**: When an Express route serving media content (e.g., images, thumbnails) encounters a missing asset (`NotFoundError`), it MUST intercept the error and return a 1x1 transparent GIF (`image/gif`) instead of throwing the error to the global JSON error handler. 
+
+- **Transparent GIF Fallback**: When an Express route serving media content (e.g., images, thumbnails) encounters a missing asset (`NotFoundError`), it MUST intercept the error and return a 1x1 transparent GIF (`image/gif`) instead of throwing the error to the global JSON error handler.
 - **Why**: Returning a JSON error payload (`application/problem+json`) to an HTML `<img>` tag triggers strict Cross-Origin Read Blocking (CORB) warnings in Chrome and renders a broken image icon. A transparent pixel ensures graceful degradation when seed data is missing.
 
 ### 6.5.2 neverthrow Testing Constraints (Zero Tolerance)
+
 When writing or updating unit tests for services/repositories that return `neverthrow` Results:
 1. **Mocking**: NEVER use `mockResolvedValue` to return raw data for a method that returns a `ResultAsync`. You MUST wrap the mocked return data in `ok()` or `err()` (e.g., `vi.fn().mockResolvedValue(ok(mockData))`).
 2. **Assertions (Success)**: NEVER use `expect(result).resolves.toEqual(...)`. Wait for the result and assert the value via `.isOk()`, `.isErr()`, or by using `_unsafeUnwrap()` *only* in tests: `expect((await service.method())._unsafeUnwrap()).toEqual(mockData)`.
@@ -516,10 +524,12 @@ Dev endpoint firewall:
 ```
 
 ### 6.11 React Router v8 & Vite 8 Resolution Rules
+
 - **CSP Nonce Context**: Always resolve the React Router v8 `nonceContext` dynamically via `globalThis.__nonceContext` rather than importing it directly across client/server packages. The server's `ssr-handler.ts` must instantiate the key, register it on `globalThis`, set the nonce value on `RouterContextProvider`, and return it.
 - **isomorphic-dompurify / DOMPurify SSR**: Never load `isomorphic-dompurify` using the default browser config. It must be externalized in `client/vite.config.ts` via `ssr.external`, and Node.js-compatible export conditions must be enforced in `ssr.resolve`.
 
 ### 6.12 Memlab SPA Memory Testing (Mandatory Guidelines)
+
 When diagnosing memory leaks or running `npx memlab run --scenario <file>`, you MUST adhere to the following constraints:
 - **Client-Side Navigation Only**: Memlab crashes if the page reloads between heap snapshots. Inside your scenario's `action()` and `back()` blocks, ALWAYS use `await page.evaluate(() => window.__navigate('/route'))`. Never use `page.goto()` or standard `<a>` tag clicks unless you are 100% certain they do not trigger a hard reload.
 - **Protected Routes**: Do not run Memlab scenarios against auth-gated routes (e.g., `/admin`) unless you have explicitly configured a mock session cookie in the scenario. Unauthenticated server-side redirects will trigger a hard reload and fail the test.
@@ -528,6 +538,7 @@ When diagnosing memory leaks or running `npx memlab run --scenario <file>`, you 
 ---
 
 ### 6.12 Agent Tooling Architecture (Antigravity Port)
+
 - **Workflows:** All agent workflows MUST reside in `.agent/workflows/*.md`. Never use the legacy `.claude/skills/` directory or bash preambles.
 - **Rules:** Persistent project rules reside in `.agent/rules/*.md`.
 - **Browser Automation:** Never use the legacy Playwright `$B` binaries. Always rely on Antigravity's native `browser_subagent`.
@@ -748,6 +759,7 @@ toast.error('Something went wrong. Try again.')
 - No N+1 queries — use Drizzle joins
 
 **Performance targets:**
+
 | Metric | Target |
 |--------|--------|
 | TTFB (cached) | < 100ms |
@@ -814,6 +826,7 @@ Before shipping anything that touches auth, forms, or file uploads:
 ## 16. CI/CD & Deployment Rules
 
 **Pipeline order (non-negotiable):**
+
 ```
 npm ci → lint → type check → test → build → migrate → deploy
 ```
@@ -975,7 +988,7 @@ grep -rn "from.*['\"].*<filename>['\"]" client/ server/ shared/ --include="*.ts"
 
 ## 26. Mass Generation & Delegation (Codified 2026-07-15)
 
-**Rule (Swarm Pattern):** When tasked with generating, migrating, or updating a massive number of files (e.g., unit tests for an entire directory or bulk refactoring), **NEVER attempt to write them sequentially in a single turn.** 
+**Rule (Swarm Pattern):** When tasked with generating, migrating, or updating a massive number of files (e.g., unit tests for an entire directory or bulk refactoring), **NEVER attempt to write them sequentially in a single turn.**
 Always spawn parallel subagents (`invoke_subagent`), assigning a strictly scoped target (e.g., 1-2 files or a single component) to each. This bypasses context window truncation limits, prevents hallucinations, and avoids organic task degradation over long sessions.
 
 *For: M. Hateem Jamshaid*

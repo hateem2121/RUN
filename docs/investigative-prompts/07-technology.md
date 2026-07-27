@@ -1,4 +1,5 @@
 # 🔍 INVESTIGATE: Technology Page
+
 **Route**: `/technology`
 **Agent Host**: Antigravity 2.0 Desktop · Agent Teams Panel
 **Crawl Model**: `@gemini-3.5-flash`
@@ -9,16 +10,20 @@
 **Issue ID Prefix**: `TECH-`
 
 ---
+
 ## Goal
+
 Investigate `/technology` for all visual, CMS, API, performance, SEO, accessibility, animation, and TypeScript issues. Produce a severity-scored findings report without modifying any source files.
 
 ---
 
 ## Context
+
 **Source File**: `client/app/routes/technology.tsx`
 **Description**: Innovation roadmap, digital tools, smart-manufacturing, R&D programs. No React Router loader. 7 API calls on mount.
 
 ### CMS API Endpoints
+
 | Endpoint | Purpose |
 |----------|---------|
 | `GET /api/technology-hero` | Innovation page hero banner |
@@ -30,12 +35,14 @@ Investigate `/technology` for all visual, CMS, API, performance, SEO, accessibil
 | `GET /api/technology-gradient-settings` | Web layout shader/gradient color config |
 
 ### Known Issues
+
 - No React Router loader → no SSR (7 separate API calls on mount — verify all use Promise.all)
 - `technology-gradient-settings`: verify gradient values applied via CSS custom properties, not inline styles
 - Roadmap section: verify chronological date sort and no expired past dates presented as future
 - 7 endpoints = highest API call count of any page — potential waterfall risk
 
 ---
+
 ## Pre-flight: Protocol 0
 
 Run once before beginning. Log all output to `findings/tech/protocol-0.txt`.
@@ -49,6 +56,7 @@ git diff --name-only            # Confirm no source files modified
 ```
 
 ---
+
 ## Agent Team Configuration (Antigravity 2.0 — Agent Teams Panel)
 
 | Sub-Agent | Model | Responsibility |
@@ -65,6 +73,7 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 ## Investigation Axes
 
 ### 1. Visual & UI Rendering (375px / 768px / 1440px)
+
 - [ ] All sections render without error or missing content
 - [ ] GSAP scroll-reveal animations fire correctly
 - [ ] No console errors or React 19 hydration warnings
@@ -74,6 +83,7 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 - [ ] Section spacing and typography consistent
 
 ### 2. CMS Data Integrity
+
 - [ ] All CMS endpoints return expected data shape (not `null` or `[]`)
 - [ ] Admin modules accessible and CRUD functional:
   - [ ] `http://localhost:5002/admin/technology-hero`
@@ -84,6 +94,7 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 - [ ] No hardcoded content bypassing CMS
 
 ### 3. API Health
+
 ```bash
 curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/technology-hero
 curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/technology-innovations
@@ -93,12 +104,14 @@ curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api
 curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/technology-cta
 curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/technology-gradient-settings
 ```
+
 - [ ] All endpoints return HTTP 200
 - [ ] Response time < 200ms
 - [ ] Response shapes match `@run-remix/shared` TypeScript types
 - [ ] Error boundary exists for failed fetches
 
 ### 4. Performance (LCP <2.5s · INP <200ms · CLS <0.1)
+
 - [ ] Lighthouse audit — document LCP, INP, CLS
 - [ ] Hero image: `fetchpriority="high"`, `loading="eager"`
 - [ ] Below-fold images: `loading="lazy"`
@@ -106,6 +119,7 @@ curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api
 - [ ] No unnecessary re-renders or heavy client-side computation on load
 
 ### 5. SEO & Metadata
+
 - [ ] View page source — is content in initial HTML? (no loader = no SSR)
 - [ ] `<title>`, `<meta name="description">`, Open Graph tags all present
 - [ ] Single `<h1>`, logical heading hierarchy (h1 → h2 → h3)
@@ -113,12 +127,14 @@ curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api
 - [ ] `robots.txt`: route not blocked
 
 ### 6. Broken Links & Assets
+
 - [ ] Network tab: zero 404 asset requests on page load
 - [ ] All internal links navigate to valid routes
 - [ ] External links: `target="_blank"` + `rel="noopener noreferrer"`
 - [ ] No `href="#"` placeholder links
 
 ### 7. Mobile Responsiveness
+
 - [ ] No fixed-width elements wider than 375px
 - [ ] Typography readable at 375px (no overflow or truncation)
 - [ ] Touch targets ≥ 44×44px on all interactive elements
@@ -126,6 +142,7 @@ curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api
 - [ ] Tailwind responsive prefixes only (no arbitrary breakpoints)
 
 ### 8. Accessibility (WCAG AA)
+
 - [ ] All `<button>` + `<a>` have `aria-label` (zero tolerance)
 - [ ] Color contrast ≥ 4.5:1 on all text
 - [ ] Focus ring visible for keyboard navigation
@@ -133,6 +150,7 @@ curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api
 - [ ] Form elements (if any) have associated `<label>` elements
 
 ### 9. Animation & Motion (GSAP)
+
 - [ ] Zero `framer-motion` imports in component
 - [ ] Single scroll library (lenis OR locomotive-scroll — never both)
 - [ ] `ScrollTrigger.refresh()` called after dynamic content loads
@@ -140,9 +158,11 @@ curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api
 - [ ] No CSS `transition` on GSAP-animated elements (conflicts)
 
 ### 10. TypeScript & Biome 2.4.10
+
 ```bash
 npx biome check {source_file}
 ```
+
 - [ ] Zero violations (log all `noExplicitAny` + `noMisusedPromises`)
 - [ ] All types from `@run-remix/shared` (no local re-definitions)
 - [ ] No hardcoded API strings (use `@run-remix/shared/api-constants.ts`)
@@ -150,15 +170,18 @@ npx biome check {source_file}
 - [ ] `neverthrow` Result types in server service layer
 
 ### TECHNOLOGY-SPECIFIC: Gradient Settings + 3D Audit
+
 ```bash
 curl -s http://localhost:5002/api/technology-gradient-settings | python3 -m json.tool
 ```
+
 - [ ] Gradient response shape: what fields? How are values applied in `technology.tsx`?
 - [ ] CSS custom properties: do gradient values override Tailwind v4 `@theme` tokens?
 - [ ] Any THREE.js / @react-three/fiber usage? Must use `LazyUnifiedModelViewer` if 3D present
 - [ ] Innovation R&D details: are these truly dynamic from CMS or partially hardcoded?
 
 ---
+
 ## Artifacts to Produce
 
 ```
@@ -176,6 +199,7 @@ findings/tech/
 ```
 
 Issue format in `findings.md`:
+
 ```
 ## P0 — Critical
 ### TECH-001: [Title]
@@ -186,6 +210,7 @@ Issue format in `findings.md`:
 ```
 
 ---
+
 ## Success Criteria
 
 - [ ] `npm run verify:tech-integrity` output logged

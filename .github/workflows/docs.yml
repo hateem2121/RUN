@@ -25,12 +25,14 @@ jobs:
         with:
           globs: |
             **/*.md
-            !node_modules/**
+            !**/node_modules/**
             !.gemini/**
             !.agent/**
             !.claude/**
             !docs/audit/**
             !findings.md
             !task_plan.md
+            !playwright-report/**
+            !test-results/**
           config: '.markdownlint.json'
 

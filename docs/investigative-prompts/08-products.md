@@ -1,4 +1,5 @@
 # 🔍 INVESTIGATE: Products Catalog Page
+
 **Route**: `/products`
 **Agent Host**: Antigravity 2.0 Desktop · Agent Teams Panel
 **Crawl Model**: `@gemini-3.5-flash`
@@ -9,16 +10,20 @@
 **Issue ID Prefix**: `PROD-`
 
 ---
+
 ## Goal
+
 Investigate the main product catalog page — the only catalog route with a React Router loader (SSR-eligible). Focus on SSR confirmation, filtering, pagination, API layer, and the known slug-checker TODO.
 
 ---
 
 ## Context
+
 **Source File**: `client/app/routes/products.tsx`
 **Loader**: YES — React Router loader present (SSR eligible — verify it works)
 
 ### CMS API Endpoints
+
 | Endpoint | Purpose |
 |----------|---------|
 | `GET /api/products` | Paginated catalog with filters: `category`, `tag`, `search`, `featured` |
@@ -27,6 +32,7 @@ Investigate the main product catalog page — the only catalog route with a Reac
 | `GET /api/products/:id/3d-model` | GLB/GLTF model metadata |
 
 ### Known Issues
+
 - `useProductForm.ts` has active TODO for slug-checker API (`GET /api/v1/admin/products/check-slug`) — not wired up (P1)
 - Pagination handling: must not cause layout shift (CLS)
 
@@ -45,6 +51,7 @@ git diff --name-only            # Confirm no source files modified
 ```
 
 ---
+
 ## Agent Team Configuration (Antigravity 2.0 — Agent Teams Panel)
 
 | Sub-Agent | Model | Responsibility |
@@ -61,6 +68,7 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 ## Investigation Axes
 
 ### 1. Visual & UI
+
 - [ ] Product grid: correct column layout at 1440px / 768px / 375px
 - [ ] Product cards: image, title, category badge, CTA all visible
 - [ ] Filter/sort UI: populates from API (not hardcoded)
@@ -70,6 +78,7 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 - [ ] No console errors or React 19 hydration warnings
 
 ### 2. CMS & Data Integrity
+
 - [ ] `GET /api/products`: valid paginated shape `{data: [], pagination: {page, limit, total}}`
 - [ ] Product images: all resolve (no broken images in grid)
 - [ ] Admin (`http://localhost:5002/admin/products`): product list loads
@@ -78,6 +87,7 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 - [ ] Check `useProductForm.ts` for the TODO comment — screenshot and log
 
 ### 3. API Health
+
 ```bash
 curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" "http://localhost:5002/api/products?page=1&limit=12"
 curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" "http://localhost:5002/api/products?category=activewear"
@@ -86,21 +96,26 @@ curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" "http://localhost:5002/ap
 curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" "http://localhost:5002/api/products/1"
 curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" "http://localhost:5002/api/products/1/3d-model"
 ```
+
 - [ ] All filters return correct subsets
 - [ ] Invalid product ID (e.g., `/api/products/99999`): returns 404 (not 500)
 - [ ] 3D model endpoint: returns metadata or 404 if no model (not crash)
 
 ### 4. SSR Confirmation (Loader Present)
+
 ```bash
 curl http://localhost:5002/products | grep -i "product\|<title"
 ```
+
 - [ ] Initial HTML contains product data (loader = SSR should work)
 - [ ] If content missing from initial HTML: P1 finding (loader not SSR-rendering correctly)
 
 ### 5–10. Standard Axes
+
 Apply standard axes 5–10: SEO (unique title/desc per page), broken links, mobile (single-column at 375px), a11y (product cards keyboard-navigable), animation (card hover: CSS permitted for simple hover), TypeScript/Biome.
 
 ---
+
 ## Artifacts to Produce
 
 ```
@@ -116,6 +131,7 @@ findings/prod/
 ```
 
 Issue format in `findings.md`:
+
 ```
 ## P0 — Critical
 ### PROD-001: [Title]
@@ -126,6 +142,7 @@ Issue format in `findings.md`:
 ```
 
 ---
+
 ## Success Criteria
 
 - [ ] `npm run verify:tech-integrity` output logged

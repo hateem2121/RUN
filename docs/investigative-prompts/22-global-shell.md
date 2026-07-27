@@ -1,4 +1,5 @@
 # 🔍 INVESTIGATE: Global Layout Shell
+
 **Route**: `root.tsx + _public.tsx (all routes)`
 **Agent Host**: Antigravity 2.0 Desktop · Agent Teams Panel
 **Crawl Model**: `@gemini-3.5-flash`
@@ -9,17 +10,21 @@
 **Issue ID Prefix**: `GLBL-`
 
 ---
+
 ## Goal
+
 Investigate the global layout shell that wraps every public page. Bugs here affect the entire site simultaneously — highest blast radius of any finding category.
 
 ---
 
 ## Context
+
 **Source Files**:
 - `client/app/root.tsx` — Root: FloatingDockHeader, ScrollProvider
 - `client/app/routes/_public.tsx` — Public shell: Footer, QuoteOverlay
 
 ### CMS API Endpoints (Load on Every Public Page)
+
 | Endpoint | Purpose |
 |----------|---------|
 | `GET /api/navigation-items` | Hierarchical items for FloatingDockHeader |
@@ -43,6 +48,7 @@ git diff --name-only            # Confirm no source files modified
 ```
 
 ---
+
 ## Agent Team Configuration (Antigravity 2.0 — Agent Teams Panel)
 
 | Sub-Agent | Model | Responsibility |
@@ -59,6 +65,7 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 ## Investigation Axes
 
 ### 1. FloatingDockHeader (Navigation)
+
 - [ ] Header renders on `/`, `/manufacturing`, `/about` — all consistent
 - [ ] Navigation items from `/api/navigation-items` (not hardcoded)
 - [ ] Active route highlighted correctly as user navigates
@@ -68,18 +75,22 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 - [ ] Mobile: hamburger opens/closes, all nav items accessible
 
 ### 2. Footer
+
 - [ ] Footer renders on all public pages
 - [ ] Footer columns/links from `/api/footer`: correct structure
 - [ ] All footer links valid (zero 404s):
+
   ```bash
   curl -s http://localhost:5002/api/footer | python3 -m json.tool | grep '"url"' | while read line; do
     url=$(echo $line | cut -d'"' -f4)
     [[ $url == /* ]] && curl -sw "$url -> %{http_code}\n" -o /dev/null "http://localhost:5002$url"
   done
   ```
+
 - [ ] External footer links: `target="_blank"` + `rel="noopener noreferrer"`
 
 ### 3. QuoteOverlay
+
 - [ ] Trigger button visible and accessible on all public pages
 - [ ] Overlay opens correctly (animation smooth)
 - [ ] Overlay form: all fields render, validation works
@@ -88,6 +99,7 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 - [ ] Focus trap inside overlay when open
 
 ### 4. ScrollProvider (Scroll Library — Critical Single-Library Rule)
+
 - [ ] Identify active library: `lenis` OR `locomotive-scroll`
 - [ ] **Hard rule**: confirm ONLY ONE is instantiated — never both
 - [ ] Smooth scroll behavior, no jank
@@ -95,19 +107,23 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 - [ ] Scroll position resets correctly on route change
 
 ### 5. API Health (Navigation + Footer)
+
 ```bash
 curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/navigation-items
 curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/navigation-settings
 curl -sw "\nHTTP: %{http_code} Time: %{time_total}s\n" http://localhost:5002/api/footer
 ```
+
 - [ ] All 3 return 200 with valid shapes
 - [ ] What happens if `/api/navigation-items` returns 500? Does the entire site break?
 - [ ] Are navigation API calls cached (repeated requests fast)?
 
 ### 6–10. Standard Axes
+
 Performance (header bundle weight), a11y (skip-to-main link, `<nav aria-label>`), animation, TypeScript/Biome.
 
 ---
+
 ## Artifacts to Produce
 
 ```
@@ -124,6 +140,7 @@ findings/glbl/
 ```
 
 Issue format in `findings.md`:
+
 ```
 ## P0 — Critical
 ### GLBL-001: [Title]
@@ -134,6 +151,7 @@ Issue format in `findings.md`:
 ```
 
 ---
+
 ## Success Criteria
 
 - [ ] `npm run verify:tech-integrity` output logged

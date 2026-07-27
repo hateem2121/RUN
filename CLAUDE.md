@@ -2,7 +2,7 @@
 
 > **PRIMARY SOURCE OF TRUTH (SSOT): `gemini.md`**
 >
-> This file (`CLAUDE.md`) is a supplementary layer containing Claude Code-native behavior only (identity, tone, and the 8-Step Agentic Sprint). 
+> This file (`CLAUDE.md`) is a supplementary layer containing Claude Code-native behavior only (identity, tone, and the 8-Step Agentic Sprint).
 > For all architectural rules, tech-stack constraints, forbidden patterns, repository structure, and deployment conventions, you MUST obey `gemini.md`. `gemini.md` is the absolute Single Source of Truth (SSOT) for this repository and always takes precedence.
 > Do NOT duplicate technical rules from `gemini.md` here.
 > **MCP Tool Stack:** See `MCP.md` for MCP server registry and priority ladder.

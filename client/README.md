@@ -3,6 +3,7 @@
 This directory contains the frontend application code for the RUN Apparel B2B Platform.
 
 ## 🛠️ Frontend Tech Stack
+
 - **Framework**: React 19.2.4 (Strict Mode, NO `forwardRef`)
 - **Router**: React Router v8
 - **Bundler**: Vite 8 (Rolldown)

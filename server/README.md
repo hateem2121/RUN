@@ -3,6 +3,7 @@
 This directory contains the backend REST API for the RUN Apparel B2B Platform.
 
 ## 🛠️ Backend Tech Stack
+
 - **Runtime**: Node.js v24.15+
 - **Framework**: Express 5.1.0 (Async-native handlers, NO `try/catch` in routes)
 - **Database**: Neon Serverless Postgres (HTTP Driver)
@@ -13,4 +14,5 @@ This directory contains the backend REST API for the RUN Apparel B2B Platform.
 - **Observability**: OTel + Pino structured logging (NO Sentry)
 
 ## ⚠️ Important Note
+
 Please refer to the [Root README](../README.md) for full project documentation and installation instructions. All operational scripts (e.g. `npm run dev`) must be run from the root monorepo directory.

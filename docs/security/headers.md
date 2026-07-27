@@ -40,5 +40,5 @@ This ensures that `req.ip` and `req.protocol` are correctly resolved from `X-For
 
 ## 4. Cross-Origin Policies
 
--   **CrossOriginEmbedderPolicy**: Set to `false` in `middleware.ts` to allow 3D models and external media that may not send the COEP header.
--   **CORS**: Strictly enforced origin validation in production using the `STRICT_ALLOWED_ORIGINS` environment variable.
+- **CrossOriginEmbedderPolicy**: Set to `false` in `middleware.ts` to allow 3D models and external media that may not send the COEP header.
+- **CORS**: Strictly enforced origin validation in production using the `STRICT_ALLOWED_ORIGINS` environment variable.

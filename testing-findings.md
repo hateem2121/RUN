@@ -1,6 +1,7 @@
 # Browser Testing Findings - Complete Report
 
 ## General Issues Encountered
+
 1. **API Rate Limiting**: All subagents reported numerous `429 Too Many Requests` console warnings. This prevents dynamic data from fully populating (e.g. metrics show as '0', featured categories show "not yet configured"). However, the frontend handles this gracefully without crashing.
 2. **Routing Mismatches**: Several components render the wrong content entirely. This suggests the route definitions, imports, or API payload handlers are crossed.
 3. **Accessibility Warning**: "A form field element should have an id or name attribute" on footers/contact forms.
@@ -38,6 +39,7 @@
 ---
 
 ## Phase 2: Dynamic Routes
+
 1. `/blog`: Loads correctly, displays "NO STORIES FOUND IN THIS PROTOCOL." No crash.
 2. `/blog/test-slug`: Loads correctly, safely redirects back to `/blog`.
 3. `/developer`: Loads correctly, sidebar navigation present.
@@ -47,6 +49,7 @@
 ---
 
 ## Phase 3: Admin & Internal Routes (Unauthenticated Test)
+
 **Critical Vulnerability: Missing Route Guards**
 1. `/dashboard`: **Security Issue**. Mistakenly allows viewing the content. Loads the page structure and displays performance metrics.
 2. `/analytics`: **Security Issue**. Mistakenly allows viewing the content. Loads the analytics dashboard and key indicators.
@@ -58,6 +61,7 @@
 ---
 
 ## ✅ Post-Execution Resolution (Session Fixes)
+
 Following the identification of the issues above, the following fixes were successfully implemented:
 1. **Routing Mismatches**: Resolved by restarting the Vite Dev Server. The collisions were caused by a corrupt HMR state following global export syntax updates. `/products` now correctly loads the Products view.
 2. **Missing Route Guards**: Removed the local dev bypass in `ProtectedAdminRoute.tsx`, and wrapped both `dashboard.tsx` and `analytics.tsx` in `<ProtectedAdminRoute>`. Unauthenticated requests to these endpoints now properly redirect to `/api/login`.

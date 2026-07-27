@@ -1,9 +1,10 @@
 # Tracked Debt Registry (D01-D04)
 
 ## D01: Permanently Removed Dependencies Present
+
 **Severity:** P0 (Critical)
 **Status:** Closed
-**Location:** 
+**Location:**
 - `server/package.json`
 - `client/package.json`
 
@@ -19,9 +20,10 @@ The codebase has residual instances of tools that are permanently forbidden per 
 - Purge any dead code or configuration referencing these libraries.
 
 ## D02: Missing Locomotive Scroll & GSAP Version Mismatch
+
 **Severity:** P1 (Major)
 **Status:** Closed
-**Location:** 
+**Location:**
 - `client/package.json`
 
 **Description:**
@@ -34,12 +36,14 @@ The client workspace deviates from the strict animation/scroll dependencies.
 - Update `gsap` to `^3.15.0`.
 
 ## D03: Tech Integrity Check
+
 **Severity:** None
 **Status:** Passed
 **Location:** Monorepo
 **Description:** `verify:tech-integrity` completed successfully. Tests passed, build succeeded, and the NPM security audit passed with allowlisted advisories.
 
 ## D04: Worker Payload Schema Location Deviation
+
 **Severity:** P2 (Minor)
 **Status:** Closed
 **Location:** `shared/schemas/jobs.ts`

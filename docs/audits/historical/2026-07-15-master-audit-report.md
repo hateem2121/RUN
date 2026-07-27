@@ -1,6 +1,7 @@
 # RUN Remix v4.0.3 — Master Audit Report & Remediation Roadmap
 
 ## Executive Summary
+
 This document serves as the master record of the system-wide audit conducted on the RUN Remix monorepo. It outlines all discovered deviations from the architectural standard, their severity, and the roadmap for remediation.
 
 > **Resolution Note:** All P0 and P1 tech debt (including H17, H18, and H19 violations for forbidden packages like BullMQ, Upstash, and Sentry) have been fully resolved to establish the v4.0.3 baseline. This report remains as a historical baseline.
@@ -29,6 +30,7 @@ This read-only investigation uncovered substantial violations of architectural l
 Automated scanning of the monorepo codebase identified the following violations (ordered by severity and count):
 
 ### High Volume Violations (>100 instances)
+
 - **H35 (`/context-save` references):** 1358 violations
 - **H07 (Arbitrary Tailwind Values):** 403 violations
 - **H26 (Accessible Labels on Interactive Elements):** 176 violations
@@ -38,6 +40,7 @@ Automated scanning of the monorepo codebase identified the following violations 
 - **H16 (Zod Schemas in shared/ Only):** 128 violations
 
 ### Medium Volume Violations (10-100 instances)
+
 - **H17 (No bullmq / Job Queue Libraries):** 57 violations
 - **H03 (Named Exports in components/, Default in routes/):** 28 violations
 - **H22 (No mcp__claude-in-chrome__* Tool References):** 24 violations
@@ -47,6 +50,7 @@ Automated scanning of the monorepo codebase identified the following violations 
 - **H19 (No @sentry/node):** 11 violations
 
 ### Low Volume Violations (<10 instances)
+
 - **H12 (No try/catch in Express Route Handlers):** 4 violations
 - **H01 (Port Law 5002 only):** 3 violations
 - **H28 (Vite 8 Config Only — No esbuild / Rollup Patterns):** 2 violations
@@ -62,13 +66,16 @@ Automated scanning of the monorepo codebase identified the following violations 
 ## Phase 3: Security Invariants (SEC-01–SEC-10)
 
 ### 🔴 Critical Failures / Partial Violations
+
 - **SEC-01 (Server-Side XSS Sanitisation):** Partial violations detected. While `isomorphic-dompurify` is used, some routes access `req.body.content` without explicit sanitisation checks.
 - **SEC-10 (Input Validation on All API Endpoints):** Partial failure. Explicit casting (e.g., `req.body.initiatives as InitiativeSortItem[]`) bypassing Zod validation was found in `sustainability-initiatives.routes.ts`.
 
 ### 🟡 Warnings
+
 - **SEC-04 (ioredis Session Store):** `MemoryStore` is present as a fallback in `auth-service.ts`. While logged as a warning for local dev, strict environment gating is required to prevent its use in production.
 
 ### 🟢 Passes
+
 - **SEC-02 (CSRF Protection):** Comprehensive Double-Submit Cookie pattern middleware implemented.
 - **SEC-03 (Session Security):** Session rotation/regeneration and User-Agent hashing are implemented.
 - **SEC-05 (Admin Route Auth):** Middleware correctly gated under `/api/admin`.
@@ -83,6 +90,7 @@ Automated scanning of the monorepo codebase identified the following violations 
 The following prioritized roadmap provides an ordered strategy for resolving the violations:
 
 ### P0: Critical Infrastructure & Security
+
 1. **Security Vulnerabilities (Phase 1 & 3):**
    - Resolve 51 npm dependency vulnerabilities (especially the 10 High severity).
    - Implement strict Zod validation replacing unsafe type casts (SEC-10) in `sustainability-initiatives.routes.ts`.
@@ -96,14 +104,16 @@ The following prioritized roadmap provides an ordered strategy for resolving the
    - Address 1 `framer-motion` (H08) and 1 `lenis` (H09) rogue imports.
 
 ### P1: Component & Form Architecture
+
 1. **React 19 Forms:** Migrate the 22 `onSubmit` handlers to `action=` forms (H04).
 2. **Exports:** Fix 28 Named Export violations (H03).
 3. **Tailwind:** Tokenize the 403 Arbitrary Tailwind Values (H07) into the `@theme` directive.
 4. **Shared Typing:** Centralize 141 Types (H15) and 128 Zod schemas (H16) into `@run-remix/shared`.
 
 ### P2: Tooling, Accessibility, & Optimization
+
 1. **Accessibility:** Rectify 176 missing accessible labels (H26) and update 149 Playwright selectors (H25) to use `getByRole`/`getByLabelText`.
-2. **Third-party Libraries:** 
+2. **Third-party Libraries:**
    - Standardize 150 instances on `sonner` for Toasts (H11).
    - Replace 57 `bullmq` queue library instances (H17).
    - Standardize 23 `ioredis` instances over alternatives (H18).

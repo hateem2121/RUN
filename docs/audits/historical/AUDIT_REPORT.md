@@ -1,4 +1,5 @@
 # RUN Remix — Architecture & Structural Audit
+
 **Date:** 2026-04-04
 **Auditor:** Claude Code (read-only session)
 **gstack version on disk:** 0.15.2.1
@@ -19,6 +20,7 @@
 ## 1. Monorepo Architecture
 
 ### Workspace Layout
+
 | Package | Path | Status |
 |---|---|---|
 | `@run-remix/client` | `client/` | ✅ Present and wired |
@@ -28,6 +30,7 @@
 Root `package.json` workspaces field correctly declares `["client", "server", "shared"]`. Turborepo 2.7.2 is configured at root only.
 
 ### Turborepo Pipeline
+
 | Task | `dependsOn` | Cache | Notes |
 |---|---|---|---|
 | `build` | — | ✅ outputs `dist/**`, `build/**` | Correct |
@@ -115,18 +118,22 @@ Zero violations found. `client/app/` never imports from `server/` paths. All sha
 ```
 
 ### Stray / Legacy Directories
+
 **Severity: 🟢 Informational**
 No directories named `old/`, `temp/`, `backup/`, `archive/`, `__OLD__`, or with timestamp suffixes found anywhere in the repo.
 
 ### Build Artifacts
+
 **Severity: 🟢 Informational**
 `dist/` (15 MB) and `.turbo/` (203 MB) exist on disk but are **not committed** — git status is clean and both paths are covered by `.gitignore`. `client/build/` is similarly gitignored. No action required.
 
 ### Lock Files
+
 **Severity: 🟢 Informational**
 Only `package-lock.json` present. No `yarn.lock` or `pnpm-lock.yaml`. Correct for an npm-workspace project.
 
 ### Editor Artifacts (`.DS_Store`)
+
 **Severity: 🟡 Warning**
 
 Three `.DS_Store` files found outside gitignored paths:
@@ -142,6 +149,7 @@ The root `.gitignore` covers `.DS_Store` at the root level but does not use the 
 **Action:** Add `**/.DS_Store` to `.gitignore`. Remove existing files if tracked.
 
 ### Log Files
+
 **Severity: 🟢 Informational**
 No `*.log` files found at root or in workspace source directories.
 
@@ -150,6 +158,7 @@ No `*.log` files found at root or in workspace source directories.
 ## 3. Client (`@run-remix/client`) Structure
 
 ### React Router v7 Routes
+
 **Severity: 🟢 Informational — Pass**
 
 All 33 route files reside in `client/app/routes/` and follow React Router v7 file-based conventions correctly:
@@ -165,24 +174,29 @@ All 33 route files reside in `client/app/routes/` and follow React Router v7 fil
 No orphaned route files detected. All routes have corresponding loader/component logic.
 
 ### `forwardRef` Usage
+
 **Severity: 🟢 Informational — Pass**
 Zero `forwardRef` usages found. Codebase correctly uses the React 19 raw `ref` prop pattern throughout all 272 component files.
 
 ### `@react-three/fiber` / `@react-three/drei` Imports
+
 **Severity: 🟢 Informational — Pass**
 Zero R3F imports. 3D rendering exclusively uses `LazyUnifiedModelViewer` wrapping `@google/model-viewer` as required.
 
 ### `three.js` Dependency (Dead)
+
 **Severity: 🔴 Critical**
 `three@0.172.0` is declared in `client/package.json` `dependencies`. Static analysis of all `.ts`/`.tsx` files under `client/app/` found **zero imports** of `'three'`. The package is dead weight — it inflates the install footprint and may appear in bundle analysis as a false positive.
 
 **Action:** Remove `three` from `client/package.json` dependencies.
 
 ### Tailwind v4 Setup
+
 **Severity: 🟢 Informational — Pass**
 `client/app/index.css` opens with `@import "tailwindcss"` and defines `@theme` + `@utility` blocks. No `tailwind.config.js` present. Fully compliant with Tailwind v4 oxide engine conventions.
 
 ### Zod Schemas Defined Inside `client/`
+
 **Severity: 🔴 Critical**
 
 Zod schemas are defined in at least three locations within the client package, violating the rule that all schemas must originate from `@run-remix/shared`:
@@ -201,16 +215,19 @@ Note: `client/app/schemas/product.ts` also contains a `safeParseArray()` utility
 **Action:** Migrate all schema definitions to `@run-remix/shared`; import from there in client.
 
 ### TypeScript Escape Hatches
+
 **Severity: 🟢 Informational — Pass**
 Zero `@ts-ignore` or `@ts-nocheck` directives in the entire client package.
 
 ### Console Statements
+
 **Severity: 🟡 Warning**
 35 console statement occurrences across 19 client source files. The majority are `console.error` calls in error boundaries and route-level catch paths — appropriate use. A minority appear in service and utility files.
 
 **Action:** Audit and migrate non-error-boundary `console.*` calls to the structured logging pattern already established server-side.
 
 ### Naming Anomaly: `fabric-management-enhanced-v2.tsx`
+
 **Severity: 🟡 Warning**
 `client/app/components/admin/fabric-management-enhanced-v2.tsx` exists with no corresponding `v1` file. The `-v2` suffix implies a replacement that was never cleaned up.
 
@@ -221,6 +238,7 @@ Zero `@ts-ignore` or `@ts-nocheck` directives in the entire client package.
 ## 4. Server (`@run-remix/server`) Structure
 
 ### Business Logic Separation
+
 **Severity: 🟢 Informational — Pass**
 
 Clean three-tier separation confirmed:
@@ -231,6 +249,7 @@ Clean three-tier separation confirmed:
 No business logic found directly in route handler files.
 
 ### `try/catch` in Express 5 Route Handlers
+
 **Severity: 🔴 Critical**
 
 Express 5 automatically propagates rejected async promises to the error middleware — wrapping route handler bodies in `try/catch` is an anti-pattern that undermines this contract and can swallow errors silently if the catch block is incomplete.
@@ -250,6 +269,7 @@ The media subsystem (`handlers.ts`, `utils.ts`, `services.ts`) accounts for the 
 **Action:** Strip `try/catch` wrappers; let Express 5 propagate async errors to `production-error-handler.ts`. (Per `findings.md` C1 — this is a known open item.)
 
 ### Port Configuration
+
 **Severity: 🟢 Informational — Pass**
 
 Port 5002 enforced correctly across all configuration surfaces:
@@ -262,14 +282,17 @@ Port 5002 enforced correctly across all configuration surfaces:
 Zero `process.env.PORT || 3000` patterns found.
 
 ### Dead Route Files
+
 **Severity: 🟢 Informational — Pass**
 All 67 route files are imported and mounted in `server/routes/index.ts`. No orphaned route files.
 
 ### Authentication Architecture
+
 **Severity: 🟢 Informational — Pass**
 `server/services/auth-service.ts` implements Passport.js + Google OAuth 2.0. Session storage uses `express-session` with Upstash Redis in production and in-memory fallback in development. No JWT-only patterns detected.
 
 ### Cache Layers
+
 **Severity: 🟢 Informational — Pass**
 
 `server/lib/cache/unified-cache.ts` implements a clean two-tier strategy:
@@ -280,6 +303,7 @@ All 67 route files are imported and mounted in `server/routes/index.ts`. No orph
 No ad-hoc `Map` or plain-object caches found elsewhere.
 
 ### Observability
+
 **Severity: 🟢 Informational — Pass**
 
 - **Pino** (`server/lib/monitoring/logger.ts`) — structured logging, 20+ field redaction, AsyncLocalStorage correlation IDs
@@ -289,6 +313,7 @@ No ad-hoc `Map` or plain-object caches found elsewhere.
 - No `morgan` or `winston` present anywhere.
 
 ### Console Statements in Production Paths
+
 **Severity: 🟡 Warning**
 
 | File | Line | Statement |
@@ -303,6 +328,7 @@ The bootstrap `console.log` calls predate Pino initialization (Pino cannot log b
 **Action:** Add a code comment to each instance noting it is a pre-Pino bootstrap log. Replace `sanitization.ts:85` with the Pino logger (Pino is available at that point).
 
 ### TypeScript Escape Hatches
+
 **Severity: 🟢 Informational — Pass**
 Zero `@ts-ignore` / `@ts-nocheck` in the entire server package.
 
@@ -311,6 +337,7 @@ Zero `@ts-ignore` / `@ts-nocheck` in the entire server package.
 ## 5. Shared (`@run-remix/shared`) Structure
 
 ### Package Dependencies
+
 **Severity: 🟡 Warning — Informational**
 
 `shared/package.json` runtime dependencies:
@@ -324,6 +351,7 @@ Zero `@ts-ignore` / `@ts-nocheck` in the entire server package.
 These are necessary for `shared/` to serve as the canonical schema source. Flagged as informational — the project constitution should be updated to acknowledge that `shared/` is a schema library with these three runtime dependencies, not a zero-dep package.
 
 ### Zod v4 Pattern Compliance
+
 **Severity: 🟡 Warning**
 
 Three instances of the Zod v3 pattern `.optional().nullable()` found in `shared/schemas/products.ts`:
@@ -340,6 +368,7 @@ In Zod v4 the canonical form is `.nullish()` (equivalent semantics, cleaner API)
 **Action:** Replace the three occurrences with `.nullish()`.
 
 ### Drizzle Schema Location
+
 **Severity: 🟡 Warning — Needs Manual Verification**
 
 Two potential schema locations observed:
@@ -351,6 +380,7 @@ It is unclear whether `server/migrations/schema.ts` is the authoritative Drizzle
 **Action:** Investigate further — read both files to confirm the dependency direction.
 
 ### Barrel Exports
+
 **Severity: 🟢 Informational — Pass**
 
 `shared/index.ts` cleanly re-exports from `errors.js`, `routes.js`, `schemas/index.js`, and two `types/` modules. No internal implementation details are leaking through the public API.
@@ -394,11 +424,13 @@ The root `vitest.config.ts` uses `jsdom` environment, 60s timeout, and 80% cover
 *Note: `npm ls` could not be executed in this session. Analysis is based on static inspection of all `package.json` files.*
 
 ### Dead Dependencies
+
 | Package | Declared In | Imports Found | Severity |
 |---|---|---|---|
 | `three@0.172.0` | `client/package.json` | 0 | 🔴 Critical |
 
 ### Version Mismatches Across Workspaces
+
 | Package | Root | Client | Server | Risk |
 |---|---|---|---|---|
 | `react-router` | `7.12.0` | `7.11.0` | `@react-router/express@7.11.0` | 🟡 Minor — should be aligned |
@@ -407,17 +439,20 @@ The root `vitest.config.ts` uses `jsdom` environment, 60s timeout, and 80% cover
 | `drizzle-orm` | — | — | `0.45.1` / shared `0.45.1` | ✅ Consistent |
 
 ### Correctly Categorised Dependencies
+
 - All `@types/*` packages are in `devDependencies` ✅
 - Build tools (`vite`, `esbuild`, `tsx`, `turbo`, `biome`) are in `devDependencies` ✅
 - Test tools (`vitest`, `playwright`, `supertest`) are in `devDependencies` ✅
 
 ### Deprecated / Legacy Alternatives
+
 - No `axios` found (project uses native `fetch`) ✅
 - No `moment` found ✅
 - No `lodash` found ✅
 - No `winston` or `morgan` found ✅
 
 ### Package Overrides (Root)
+
 Root `package.json` declares `overrides` for: `lodash`, `axios`, `react-helmet-async`, `fast-xml-parser`, `esbuild`. These are security/compatibility pins — intentional and expected.
 
 ---
@@ -442,17 +477,21 @@ The project uses a hybrid test layout: some tests are co-located with source (pr
 **Action:** Document the intended pattern in `docs/testing/` or a `CONTRIBUTING.md`. A future consolidation sprint could co-locate all unit tests.
 
 ### E2E / Unit Separation
+
 **Severity: 🟢 Informational — Pass**
 Playwright E2E tests in `/e2e/` are fully separate from Vitest unit/integration tests. No mixed concerns.
 
 ### MSW Mock Server
+
 **Severity: 🟢 Informational**
 `/tests/mocks/server.ts` provides MSW (Mock Service Worker) for HTTP mocking in Vitest. Present and expected.
 
 ### Test Fixtures
+
 No explicit `__fixtures__/` or `__seeds__/` directories found. Fixtures appear to be inline or generated on-the-fly. No outdated or orphaned fixture files detected.
 
 ### Accessibility Coverage
+
 **Severity: 🟢 Informational**
 `/e2e/accessibility.spec.ts` exists and performs Axe Core + WCAG 2.2 AA checks — strong signal of mature testing culture.
 
@@ -461,16 +500,19 @@ No explicit `__fixtures__/` or `__seeds__/` directories found. Fixtures appear t
 ## 9. Legacy & Dead Code Inventory
 
 ### Files with Legacy Naming Patterns
+
 **Severity: 🟢 Informational — Pass**
 Zero files found matching: `old`, `legacy`, `bak`, `backup`, `copy`, `v1`, `_unused`, `_deprecated`, `TODO_DELETE`, `REMOVE_ME`, `temp`, `tmp`.
 
 Exception: `client/app/components/admin/fabric-management-enhanced-v2.tsx` — the `-v2` suffix is a naming smell (no corresponding `v1` exists). Not a legacy file; just a naming cleanup task.
 
 ### TypeScript Escape Hatches
+
 **Severity: 🟢 Informational — Pass**
 Zero `@ts-ignore` or `@ts-nocheck` annotations anywhere in the repository (client, server, shared, utils, scripts).
 
 ### Console Statements in Production Source
+
 *(See Sections 3 and 4 for full details.)*
 
 Summary:
@@ -487,9 +529,11 @@ Summary:
 Only 2 TODO comments in the entire repository — excellent hygiene.
 
 ### Commented-Out Code Blocks (> 10 lines)
+
 No large commented-out code blocks detected. One commented-out `console.warn` in `server/lib/api/openapi-generator.ts:37` (single line — acceptable).
 
 ### Feature Flags / Always-True Guards
+
 No `if (process.env.NODE_ENV === 'development')` gates that are always-true or always-false relative to `.env.example` values were detected.
 
 ---
@@ -497,6 +541,7 @@ No `if (process.env.NODE_ENV === 'development')` gates that are always-true or a
 ## 10. `CLAUDE.md` & Agent Configuration
 
 ### `CLAUDE.md` Status
+
 **Severity: 🟢 Informational — Pass**
 
 `CLAUDE.md` exists at the project root and contains:
@@ -511,6 +556,7 @@ No `if (process.env.NODE_ENV === 'development')` gates that are always-true or a
 The gstack section lists all required skills and includes the `setup` fallback instruction.
 
 ### gstack Version
+
 | | Version |
 |---|---|
 | On disk (`.claude/skills/gstack/VERSION`) | `0.15.2.1` |
@@ -520,10 +566,12 @@ The gstack section lists all required skills and includes the `setup` fallback i
 **Action:** Run `/gstack-upgrade` to pull the latest version.
 
 ### `.claude/skills/` Directory
+
 **Severity: 🟢 Informational — Pass**
 Contains 36 entries: 5 standalone skill directories (`gstack/`, `checkpoint/`, `design-html/`, `health/`, `learn/`) plus 31 symlinks pointing into `gstack/` for skill aliasing. All expected skill directories are present.
 
 ### `.agent/skills/` Directory
+
 **Severity: 🟢 Informational**
 22 custom project skills defined for RUN Remix-specific automation:
 `advanced-debugging`, `agent-teams`, `brainstorming`, `core-identity`, `development-workflow`, `dispatching-parallel-agents`, `executing-plans`, `express-5-async-patterns`, `gsap-3-13-react-integration`, `neon-drizzle-edge-sql`, `playwright-visual-regression`, `port-5002-compliance`, `production-standards`, `project-standards`, `react-19-optimistic-ui`, `subagent-driven-development`, `systematic-debugging`, `tailwind-v4-oxide-engine`, `tech-integrity-validator`, `test-driven-development`, `using-git-worktrees`.

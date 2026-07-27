@@ -1,4 +1,5 @@
 # MCP.md — MCP Tool Stack
+
 **Project:** RUN APPAREL CMS v4.1.2 (`run-remix`)
 **Agent:** Antigravity (Gemini)
 **Last updated:** July 2026
@@ -14,6 +15,7 @@
 ## 1. MCP Server Registry
 
 ### 1.1 codebase-memory-mcp
+
 **Source:** https://github.com/DeusData/codebase-memory-mcp
 
 **Purpose:** Persistent, cross-session memory of the RUN Remix codebase.
@@ -45,6 +47,7 @@ Examples:
 ---
 
 ### 1.2 context7-mcp
+
 **Source:** https://github.com/upstash/context7
 
 **Purpose:** Fetches live, version-pinned library documentation at query time.
@@ -80,6 +83,7 @@ Prevents hallucination on bleeding-edge APIs across this stack.
 ---
 
 ### 1.3 sequential-thinking-mcp
+
 **Source:** https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking
 
 **Purpose:** Enforces structured, auditable step-by-step reasoning before
@@ -110,6 +114,7 @@ Step 5 → T (Trigger) : Implement, verify, ship
 ---
 
 ### 1.4 filesystem-mcp
+
 **Source:** https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
 
 **Purpose:** Scoped, safe file read/write access. Enforces workspace
@@ -154,6 +159,7 @@ Home directory (~/)
 ---
 
 ### 1.5 playwright-mcp
+
 **Source:** https://github.com/microsoft/playwright-mcp
 
 **Purpose:** Direct browser control for QA, visual audit, and E2E test
@@ -183,6 +189,7 @@ execution. Integrates with the existing `e2e/` directory and gstack
 ---
 
 ### 1.6 github-mcp
+
 **Source:** https://github.com/github/github-mcp-server
 
 **Purpose:** Native GitHub operations within the agent loop — branch
@@ -208,6 +215,7 @@ creation, PR management, CI status monitoring.
 ---
 
 ### 1.7 ui-skills (Reference Library)
+
 **Source:** https://github.com/ibelick/ui-skills
 
 **Purpose:** Curated UI component pattern reference. Used for inspiration

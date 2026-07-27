@@ -1,4 +1,5 @@
 # 🔍 INVESTIGATE: Admin Console
+
 **Route**: `/admin + /admin/:module/*`
 **Agent Host**: Antigravity 2.0 Desktop · Agent Teams Panel
 **Crawl Model**: `@gemini-3.5-flash`
@@ -9,12 +10,15 @@
 **Issue ID Prefix**: `ADMN-`
 
 ---
+
 ## Goal
+
 Investigate the full admin console for auth gating, CRUD functionality across all CMS modules, and the known slug-checker gap in product management.
 
 ---
 
 ## Context
+
 **Source Files**:
 - `client/app/routes/admin.tsx` — Auth-gated layout shell
 - `client/app/routes/admin._index.tsx` — Admin dashboard
@@ -39,6 +43,7 @@ git diff --name-only            # Confirm no source files modified
 ```
 
 ---
+
 ## Agent Team Configuration (Antigravity 2.0 — Agent Teams Panel)
 
 | Sub-Agent | Model | Responsibility |
@@ -55,20 +60,24 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 ## Investigation Axes
 
 ### 1. Auth Gating
+
 ```bash
 curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/admin        # Without session: expect redirect
 curl -sw "\nHTTP: %{http_code}\n" http://localhost:5002/api/auth/user # Without session: expect 401
 ```
+
 - [ ] Unauthenticated `/admin` → redirects to login (not renders or crashes)
 - [ ] After mock login: `/admin` dashboard loads correctly
 - [ ] Non-admin role: verify admin routes return access-denied (not silently expose)
 
 ### 2. Admin Dashboard
+
 - [ ] `/admin`: dashboard renders all module navigation links
 - [ ] Module counts/stats accurate (if shown)
 - [ ] Navigation to each CMS module from dashboard works
 
 ### 3. Manufacturing Modules — CRUD (Priority)
+
 For each of the 5 modules, test Create, Read, Update, Delete:
 - [ ] `http://localhost:5002/admin/manufacturing-hero` — CRUD functional
 - [ ] `http://localhost:5002/admin/manufacturing-processes` — CRUD functional, order editable
@@ -77,6 +86,7 @@ For each of the 5 modules, test Create, Read, Update, Delete:
 - [ ] `http://localhost:5002/admin/manufacturing-case-studies` — CRUD + image upload functional
 
 ### 4. Products Admin — Known P1 Gap
+
 - [ ] `http://localhost:5002/admin/products`: list loads
 - [ ] Create product with a duplicate slug:
   - Navigate to create product form
@@ -87,6 +97,7 @@ For each of the 5 modules, test Create, Read, Update, Delete:
 - [ ] Read `client/app/[path]/useProductForm.ts` and screenshot the TODO comment
 
 ### 5. Additional Module CRUD Spot Check (5 modules)
+
 Pick 5 from admin nav and test CRUD:
 - [ ] `admin/homepage-hero`
 - [ ] `admin/homepage-slogans`
@@ -95,6 +106,7 @@ Pick 5 from admin nav and test CRUD:
 - [ ] `admin/navigation-items`
 
 ### 6. Admin UI Quality
+
 - [ ] All form inputs have `<label>` + `aria-label`
 - [ ] Form validation errors display clearly
 - [ ] Success/error feedback: `sonner` toasts (not custom notifications)
@@ -103,9 +115,11 @@ Pick 5 from admin nav and test CRUD:
 - [ ] No broken navigation links in admin shell
 
 ### 7–10. Standard Axes
+
 Tablet responsiveness (admin usable on tablet), a11y (all inputs labeled), TypeScript/Biome.
 
 ---
+
 ## Artifacts to Produce
 
 ```
@@ -122,6 +136,7 @@ findings/admn/
 ```
 
 Issue format in `findings.md`:
+
 ```
 ## P0 — Critical
 ### ADMN-001: [Title]
@@ -132,6 +147,7 @@ Issue format in `findings.md`:
 ```
 
 ---
+
 ## Success Criteria
 
 - [ ] `npm run verify:tech-integrity` output logged

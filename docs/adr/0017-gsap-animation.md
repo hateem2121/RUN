@@ -31,11 +31,13 @@ We will use **GSAP (GreenSock Animation Platform)** with `@gsap/react` for React
 ## Consequences
 
 ### Positive
+
 - Smaller bundle, better performance, more animation control.
 - Industry-standard animation tool with excellent performance.
 - ScrollTrigger plugin for scroll-based animations.
 
 ### Negative
+
 - Imperative API requires careful cleanup in `useEffect` (Mitigated by `@gsap/react` `useGSAP` hook).
 - Licensed (though free for most use cases).
 
