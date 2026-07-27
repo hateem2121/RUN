@@ -41,7 +41,9 @@ jobs:
           SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"
           ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only"
           INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
-        run: npm run start &
+        run: |
+          npm run start &
+          npx wait-on http://127.0.0.1:5002/api/health --timeout 60000
 
       - name: "🧪 Run E2E Proof Suite"
         run: npx playwright test

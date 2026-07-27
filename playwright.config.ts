@@ -54,7 +54,7 @@ export default defineConfig({
   webServer: {
     command: "cd server && npx tsx index.ts",
     url: "http://127.0.0.1:5002/api/health",
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
     timeout: 120000,
     env: {
       NODE_ENV: "development",
