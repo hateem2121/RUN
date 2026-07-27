@@ -146,14 +146,14 @@ jobs:
         continue-on-error: ${{ steps.create_neon_branch.outcome == 'failure' }}
         run: npm run db:push
         env:
-          DATABASE_URL: ${{ needs.changes.outputs.db == 'true' && steps.create_neon_branch.outputs.db_url_with_pooler || secrets.DATABASE_URL_PREVIEW }}
+          DATABASE_URL: ${{ needs.changes.outputs.db == 'true' && steps.create_neon_branch.outputs.db_url || secrets.DATABASE_URL_PREVIEW }}
           CLOUD_TASKS_AUDIENCE: "placeholder"
           CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
 
       - name: Run Tests with Coverage
         run: npx vitest run --coverage
         env:
-          DATABASE_URL: ${{ needs.changes.outputs.db == 'true' && steps.create_neon_branch.outputs.db_url_with_pooler || secrets.DATABASE_URL_PREVIEW }}
+          DATABASE_URL: ${{ needs.changes.outputs.db == 'true' && steps.create_neon_branch.outputs.db_url || secrets.DATABASE_URL_PREVIEW }}
           CLOUD_TASKS_AUDIENCE: "placeholder"
           CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
 

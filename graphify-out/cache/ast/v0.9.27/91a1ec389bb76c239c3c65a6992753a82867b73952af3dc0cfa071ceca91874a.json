@@ -1,1 +1,83 @@
-{"nodes": [{"id": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh", "label": "check-secrets.sh", "file_type": "code", "source_file": "scripts/security/check-secrets.sh", "source_location": "L1", "metadata": {"language": "bash", "kind": "file"}}, {"id": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry", "label": "check-secrets.sh script", "file_type": "code", "source_file": "scripts/security/check-secrets.sh", "source_location": "L1", "metadata": {"language": "bash", "kind": "bash_entrypoint"}}], "edges": [{"source": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh", "target": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "scripts/security/check-secrets.sh", "source_location": "L1", "weight": 1.0}], "raw_calls": [{"language": "bash", "callee": "set", "caller_nid": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry", "source_file": "scripts/security/check-secrets.sh", "source_location": "L2"}, {"language": "bash", "callee": "echo", "caller_nid": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry", "source_file": "scripts/security/check-secrets.sh", "source_location": "L7"}, {"language": "bash", "callee": "git", "caller_nid": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry", "source_file": "scripts/security/check-secrets.sh", "source_location": "L21"}, {"language": "bash", "callee": "exit", "caller_nid": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry", "source_file": "scripts/security/check-secrets.sh", "source_location": "L23"}, {"language": "bash", "callee": "read", "caller_nid": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry", "source_file": "scripts/security/check-secrets.sh", "source_location": "L29"}, {"language": "bash", "callee": "continue", "caller_nid": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry", "source_file": "scripts/security/check-secrets.sh", "source_location": "L32"}, {"language": "bash", "callee": "grep", "caller_nid": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry", "source_file": "scripts/security/check-secrets.sh", "source_location": "L39"}], "bash_sources": []}
+{
+  "nodes": [
+    {
+      "id": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh",
+      "label": "check-secrets.sh",
+      "file_type": "code",
+      "source_file": "scripts/security/check-secrets.sh",
+      "source_location": "L1",
+      "metadata": { "language": "bash", "kind": "file" }
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry",
+      "label": "check-secrets.sh script",
+      "file_type": "code",
+      "source_file": "scripts/security/check-secrets.sh",
+      "source_location": "L1",
+      "metadata": { "language": "bash", "kind": "bash_entrypoint" }
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh",
+      "target": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/security/check-secrets.sh",
+      "source_location": "L1",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "language": "bash",
+      "callee": "set",
+      "caller_nid": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry",
+      "source_file": "scripts/security/check-secrets.sh",
+      "source_location": "L2"
+    },
+    {
+      "language": "bash",
+      "callee": "echo",
+      "caller_nid": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry",
+      "source_file": "scripts/security/check-secrets.sh",
+      "source_location": "L7"
+    },
+    {
+      "language": "bash",
+      "callee": "git",
+      "caller_nid": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry",
+      "source_file": "scripts/security/check-secrets.sh",
+      "source_location": "L21"
+    },
+    {
+      "language": "bash",
+      "callee": "exit",
+      "caller_nid": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry",
+      "source_file": "scripts/security/check-secrets.sh",
+      "source_location": "L23"
+    },
+    {
+      "language": "bash",
+      "callee": "read",
+      "caller_nid": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry",
+      "source_file": "scripts/security/check-secrets.sh",
+      "source_location": "L29"
+    },
+    {
+      "language": "bash",
+      "callee": "continue",
+      "caller_nid": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry",
+      "source_file": "scripts/security/check-secrets.sh",
+      "source_location": "L32"
+    },
+    {
+      "language": "bash",
+      "callee": "grep",
+      "caller_nid": "users_hateemjamshaid_sites_run_scripts_security_check_secrets_sh__entry",
+      "source_file": "scripts/security/check-secrets.sh",
+      "source_location": "L39"
+    }
+  ],
+  "bash_sources": []
+}

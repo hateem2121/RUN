@@ -20,9 +20,7 @@ export function PublicCTASection() {
 
           <h2 className="text-5xl md:text-7xl font-neue-stance font-bold text-white uppercase tracking-tighter mb-8 italic skew-x-custom-misc-204 leading-custom-misc-205">
             Ready to Manufacture <br />
-            <span className="text-manufacturing-accent">
-              Excellence?
-            </span>
+            <span className="text-manufacturing-accent">Excellence?</span>
           </h2>
 
           <p className="text-manufacturing-body text-lg max-w-2xl mx-auto mb-16 font-light leading-relaxed">

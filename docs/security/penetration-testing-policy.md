@@ -148,7 +148,7 @@ Each finding must include:
 
 - [Threat Model](./threat-model.md)
 - [Incident Response](../runbooks/incident-response.md)
-- [Security Scanning Workflow](../../.github/workflows/security-scanning.yml)
+- [Security Scanning Workflow](../../.github/workflows/security.yml)
 
 ---
 

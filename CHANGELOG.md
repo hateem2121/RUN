@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Architecture
+
 - **Neverthrow Migration**: Completed a massive refactor of the service and repository layers to eliminate `try/catch` blocks. All domain logic now strictly returns `neverthrow` `Result<T, E>` types for robust, compile-time error handling.
 - **Circular Dependency Resolution**: Broken import cycles between server repository interfaces and React UI components (Inquiry CRM) by strategically extracting standalone `types.ts` and `storage-interfaces.ts` files.
 - **Upstash Purged**: Completely removed `@upstash/redis` and `bullmq` from the system, migrating all caching logic to use standard `ioredis` pointing to local/hosted Redis, saving third-party vendor costs.

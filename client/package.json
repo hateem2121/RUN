@@ -70,8 +70,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && react-router build",
-    "build:analyze": "VITE_ANALYZE=true tsc -b && react-router build",
+    "build": "react-router typegen && tsc -b && react-router build",
+    "build:analyze": "react-router typegen && VITE_ANALYZE=true tsc -b && react-router build",
     "preview": "vite preview",
     "lint": "biome check .",
     "lint:html": "html-validate \"index.html\" \"public/**/*.html\" \"src/**/*.html\"",

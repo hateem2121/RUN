@@ -9251,11 +9251,7 @@
       "package_react_helmet_async_react",
       "package_react_helmet_async_react_dom"
     ],
-    "278": [
-      "scripts_auto_fix",
-      "scripts_auto_fix_clientfiles",
-      "scripts_auto_fix_files"
-    ],
+    "278": ["scripts_auto_fix", "scripts_auto_fix_clientfiles", "scripts_auto_fix_files"],
     "279": [
       "scripts_migrate_neverthrow",
       "scripts_migrate_neverthrow_project",
@@ -9300,74 +9296,23 @@
       "client_app_types_modules_d",
       "client_app_types_modules_d_tabler_icons_react_dist_esm_icons_iconhome_mjs"
     ],
-    "288": [
-      "client_vite_config",
-      "client_vite_config_dirname"
-    ],
-    "289": [
-      "e2e_accessibility_spec",
-      "e2e_accessibility_spec_axeconfig"
-    ],
-    "290": [
-      "e2e_homepage_visual_spec",
-      "e2e_homepage_visual_spec_routes"
-    ],
-    "291": [
-      "e2e_regression_verification_spec",
-      "e2e_regression_verification_spec_routes"
-    ],
-    "292": [
-      "e2e_release_verification_spec",
-      "e2e_release_verification_spec_matrix"
-    ],
-    "293": [
-      "gemini_hooks_crg_session_start",
-      "gemini_hooks_crg_session_start_sh__entry"
-    ],
-    "294": [
-      "gemini_hooks_crg_update",
-      "gemini_hooks_crg_update_sh__entry"
-    ],
-    "295": [
-      "knip_config",
-      "knip_config_config"
-    ],
-    "296": [
-      "lintstagedrc",
-      "lintstagedrc_biomecheck"
-    ],
-    "297": [
-      "scripts_auto_fix_ignore",
-      "scripts_auto_fix_ignore_files"
-    ],
-    "298": [
-      "scripts_bootstrap",
-      "scripts_bootstrap_sh__entry"
-    ],
-    "299": [
-      "scripts_check_bundle_size",
-      "scripts_check_bundle_size_limits"
-    ],
-    "300": [
-      "scripts_security_check_secrets",
-      "scripts_security_check_secrets_sh__entry"
-    ],
-    "301": [
-      "scripts_setup_install_extensions",
-      "scripts_setup_install_extensions_sh__entry"
-    ],
-    "302": [
-      "scripts_setup_verify_setup",
-      "scripts_setup_verify_setup_sh__entry"
-    ],
-    "303": [
-      "test_auth",
-      "test_auth_chromium"
-    ],
-    "304": [
-      "tests_setup",
-      "tests_setup_mockintersectionobserver"
-    ],
+    "288": ["client_vite_config", "client_vite_config_dirname"],
+    "289": ["e2e_accessibility_spec", "e2e_accessibility_spec_axeconfig"],
+    "290": ["e2e_homepage_visual_spec", "e2e_homepage_visual_spec_routes"],
+    "291": ["e2e_regression_verification_spec", "e2e_regression_verification_spec_routes"],
+    "292": ["e2e_release_verification_spec", "e2e_release_verification_spec_matrix"],
+    "293": ["gemini_hooks_crg_session_start", "gemini_hooks_crg_session_start_sh__entry"],
+    "294": ["gemini_hooks_crg_update", "gemini_hooks_crg_update_sh__entry"],
+    "295": ["knip_config", "knip_config_config"],
+    "296": ["lintstagedrc", "lintstagedrc_biomecheck"],
+    "297": ["scripts_auto_fix_ignore", "scripts_auto_fix_ignore_files"],
+    "298": ["scripts_bootstrap", "scripts_bootstrap_sh__entry"],
+    "299": ["scripts_check_bundle_size", "scripts_check_bundle_size_limits"],
+    "300": ["scripts_security_check_secrets", "scripts_security_check_secrets_sh__entry"],
+    "301": ["scripts_setup_install_extensions", "scripts_setup_install_extensions_sh__entry"],
+    "302": ["scripts_setup_verify_setup", "scripts_setup_verify_setup_sh__entry"],
+    "303": ["test_auth", "test_auth_chromium"],
+    "304": ["tests_setup", "tests_setup_mockintersectionobserver"],
     "305": [
       "tests_technology_equipment_management_test",
       "tests_technology_equipment_management_test_mocktechnologyequipmentmanagement"
@@ -9388,150 +9333,54 @@
       "tests_unit_server_audit_verification_test",
       "tests_unit_server_audit_verification_test_selectchain"
     ],
-    "310": [
-      "client_app_lib_technology_constants_d"
-    ],
-    "311": [
-      "client_app_routes_ts_client_app_routes"
-    ],
-    "312": [
-      "client_react_router_config"
-    ],
-    "313": [
-      "client_tests_setup"
-    ],
-    "314": [
-      "client_vitest_config"
-    ],
-    "315": [
-      "e2e_about_and_content_spec"
-    ],
-    "316": [
-      "e2e_admin_products_spec"
-    ],
-    "317": [
-      "e2e_api_spec"
-    ],
-    "318": [
-      "e2e_contact_inquiry_spec"
-    ],
-    "319": [
-      "e2e_custom_dropdown_spec"
-    ],
-    "320": [
-      "e2e_diagnostic_auth_spec"
-    ],
-    "321": [
-      "e2e_failure_error_boundary_spec"
-    ],
-    "322": [
-      "e2e_footer_remediation_spec"
-    ],
-    "323": [
-      "e2e_hydration_spec"
-    ],
-    "324": [
-      "e2e_interaction_refs_spec"
-    ],
-    "325": [
-      "e2e_manufacturing_cms_e2e_spec"
-    ],
-    "326": [
-      "e2e_performance_spec"
-    ],
-    "327": [
-      "e2e_product_detail_spec"
-    ],
-    "328": [
-      "e2e_regression_guardrails_spec"
-    ],
-    "329": [
-      "e2e_smoke_spec"
-    ],
-    "330": [
-      "e2e_ssr_hydration_spec"
-    ],
-    "331": [
-      "e2e_supporting_pages_spec"
-    ],
-    "332": [
-      "e2e_sustainability_cms_e2e_spec"
-    ],
-    "333": [
-      "e2e_technology_cms_e2e_spec"
-    ],
-    "334": [
-      "e2e_temp_audit_spec"
-    ],
-    "335": [
-      "e2e_verify_ui_spec"
-    ],
-    "336": [
-      "e2e_visual_bugs_spec"
-    ],
-    "337": [
-      "e2e_visual_tokens_spec"
-    ],
-    "338": [
-      "playwright_config"
-    ],
-    "339": [
-      "playwright_script"
-    ],
-    "340": [
-      "server_drizzle_config"
-    ],
-    "341": [
-      "test_console"
-    ],
-    "342": [
-      "test_nonce"
-    ],
-    "343": [
-      "tests_e2e_a11y_spec"
-    ],
-    "344": [
-      "tests_e2e_regression_guardrails_spec"
-    ],
-    "345": [
-      "tests_integration_slow_query_test"
-    ],
-    "346": [
-      "tests_memory_admin_dashboard"
-    ],
-    "347": [
-      "tests_memory_home_to_manufacturing"
-    ],
-    "348": [
-      "tests_memory_home_to_products"
-    ],
-    "349": [
-      "tests_technology_api_integration_test"
-    ],
-    "350": [
-      "tests_technology_performance_benchmark_test"
-    ],
-    "351": [
-      "tests_technology_technology_sync_test"
-    ],
-    "352": [
-      "tests_unit_client_components_ui_button_test"
-    ],
-    "353": [
-      "tests_unit_client_components_ui_input_test"
-    ],
-    "354": [
-      "tests_unit_client_contract_test"
-    ],
-    "355": [
-      "tests_unit_client_hooks_useservervalidation_test"
-    ],
-    "356": [
-      "tests_verification_slow_query_test"
-    ],
-    "357": [
-      "vitest_config"
-    ],
+    "310": ["client_app_lib_technology_constants_d"],
+    "311": ["client_app_routes_ts_client_app_routes"],
+    "312": ["client_react_router_config"],
+    "313": ["client_tests_setup"],
+    "314": ["client_vitest_config"],
+    "315": ["e2e_about_and_content_spec"],
+    "316": ["e2e_admin_products_spec"],
+    "317": ["e2e_api_spec"],
+    "318": ["e2e_contact_inquiry_spec"],
+    "319": ["e2e_custom_dropdown_spec"],
+    "320": ["e2e_diagnostic_auth_spec"],
+    "321": ["e2e_failure_error_boundary_spec"],
+    "322": ["e2e_footer_remediation_spec"],
+    "323": ["e2e_hydration_spec"],
+    "324": ["e2e_interaction_refs_spec"],
+    "325": ["e2e_manufacturing_cms_e2e_spec"],
+    "326": ["e2e_performance_spec"],
+    "327": ["e2e_product_detail_spec"],
+    "328": ["e2e_regression_guardrails_spec"],
+    "329": ["e2e_smoke_spec"],
+    "330": ["e2e_ssr_hydration_spec"],
+    "331": ["e2e_supporting_pages_spec"],
+    "332": ["e2e_sustainability_cms_e2e_spec"],
+    "333": ["e2e_technology_cms_e2e_spec"],
+    "334": ["e2e_temp_audit_spec"],
+    "335": ["e2e_verify_ui_spec"],
+    "336": ["e2e_visual_bugs_spec"],
+    "337": ["e2e_visual_tokens_spec"],
+    "338": ["playwright_config"],
+    "339": ["playwright_script"],
+    "340": ["server_drizzle_config"],
+    "341": ["test_console"],
+    "342": ["test_nonce"],
+    "343": ["tests_e2e_a11y_spec"],
+    "344": ["tests_e2e_regression_guardrails_spec"],
+    "345": ["tests_integration_slow_query_test"],
+    "346": ["tests_memory_admin_dashboard"],
+    "347": ["tests_memory_home_to_manufacturing"],
+    "348": ["tests_memory_home_to_products"],
+    "349": ["tests_technology_api_integration_test"],
+    "350": ["tests_technology_performance_benchmark_test"],
+    "351": ["tests_technology_technology_sync_test"],
+    "352": ["tests_unit_client_components_ui_button_test"],
+    "353": ["tests_unit_client_components_ui_input_test"],
+    "354": ["tests_unit_client_contract_test"],
+    "355": ["tests_unit_client_hooks_useservervalidation_test"],
+    "356": ["tests_verification_slow_query_test"],
+    "357": ["vitest_config"],
     "358": [
       "server_lib_utilities_core_utils_mediaurlbuilder",
       "server_lib_utilities_core_utils_mediaurlbuilder_buildstoragekey",

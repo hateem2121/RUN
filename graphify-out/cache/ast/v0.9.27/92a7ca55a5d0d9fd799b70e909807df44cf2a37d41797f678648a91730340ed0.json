@@ -1,1 +1,445 @@
-{"nodes": [{"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json", "label": "storage-lifecycle-policy.json", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L1"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_schema", "label": "$schema", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L2"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_title", "label": "title", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L3"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_description", "label": "description", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L4"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_version", "label": "version", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L5"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_bucket", "label": "bucket", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L6"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_rules", "label": "rules", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L8"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule", "label": "cleanup_schedule", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L88"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_interval", "label": "interval", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L89"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_timezone", "label": "timezone", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L90"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_enabled", "label": "enabled", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L91"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_batch_size", "label": "batch_size", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L92"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_retry_failures", "label": "retry_failures", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L93"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_retry_delay", "label": "retry_delay", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L94"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_max_retries", "label": "max_retries", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L95"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_log_level", "label": "log_level", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L96"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_metrics_enabled", "label": "metrics_enabled", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L97"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_max_deletions_per_run", "label": "max_deletions_per_run", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L98"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_dry_run", "label": "dry_run", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L99"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring", "label": "monitoring", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L102"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring_metrics", "label": "metrics", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L103"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring_alerts", "label": "alerts", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L123"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference", "label": "reference", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L139"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference_comment", "label": "comment", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L140"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference_gcs_lifecycle_format", "label": "gcs_lifecycle_format", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L141"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_gcs_lifecycle_format_lifecycle", "label": "lifecycle", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L142"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_lifecycle_rule", "label": "rule", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L143"}, {"id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference_cli_command", "label": "cli_command", "file_type": "code", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L171"}], "edges": [{"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_schema", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L2", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_title", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L3", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_description", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L4", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_version", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L5", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_bucket", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L6", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_rules", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L8", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L88", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_interval", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L89", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_timezone", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L90", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_enabled", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L91", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_batch_size", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L92", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_retry_failures", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L93", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_retry_delay", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L94", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_max_retries", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L95", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_log_level", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L96", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_metrics_enabled", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L97", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_max_deletions_per_run", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L98", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_dry_run", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L99", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L102", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring_metrics", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L103", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring_alerts", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L123", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L139", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference_comment", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L140", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference_gcs_lifecycle_format", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L141", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference_gcs_lifecycle_format", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_gcs_lifecycle_format_lifecycle", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L142", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_gcs_lifecycle_format_lifecycle", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_lifecycle_rule", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L143", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference", "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference_cli_command", "relation": "contains", "confidence": "EXTRACTED", "source_file": "server/config/storage-lifecycle-policy.json", "source_location": "L171", "weight": 1.0}]}
+{
+  "nodes": [
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json",
+      "label": "storage-lifecycle-policy.json",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_schema",
+      "label": "$schema",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_title",
+      "label": "title",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_description",
+      "label": "description",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_version",
+      "label": "version",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_bucket",
+      "label": "bucket",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_rules",
+      "label": "rules",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule",
+      "label": "cleanup_schedule",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L88"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_interval",
+      "label": "interval",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L89"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_timezone",
+      "label": "timezone",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L90"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_enabled",
+      "label": "enabled",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L91"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_batch_size",
+      "label": "batch_size",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L92"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_retry_failures",
+      "label": "retry_failures",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L93"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_retry_delay",
+      "label": "retry_delay",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L94"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_max_retries",
+      "label": "max_retries",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L95"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_log_level",
+      "label": "log_level",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L96"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_metrics_enabled",
+      "label": "metrics_enabled",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L97"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_max_deletions_per_run",
+      "label": "max_deletions_per_run",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L98"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_dry_run",
+      "label": "dry_run",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L99"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring",
+      "label": "monitoring",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L102"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring_metrics",
+      "label": "metrics",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L103"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring_alerts",
+      "label": "alerts",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L123"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference",
+      "label": "reference",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L139"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference_comment",
+      "label": "comment",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L140"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference_gcs_lifecycle_format",
+      "label": "gcs_lifecycle_format",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L141"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_gcs_lifecycle_format_lifecycle",
+      "label": "lifecycle",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L142"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_lifecycle_rule",
+      "label": "rule",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L143"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference_cli_command",
+      "label": "cli_command",
+      "file_type": "code",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L171"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_schema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_title",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_description",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_bucket",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_rules",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_interval",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_timezone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_enabled",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_batch_size",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_retry_failures",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_retry_delay",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_max_retries",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_log_level",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_metrics_enabled",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_max_deletions_per_run",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_cleanup_schedule_dry_run",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring_metrics",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_monitoring_alerts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L123",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_json",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference_comment",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L140",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference_gcs_lifecycle_format",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference_gcs_lifecycle_format",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_gcs_lifecycle_format_lifecycle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L142",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_gcs_lifecycle_format_lifecycle",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_lifecycle_rule",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference",
+      "target": "users_hateemjamshaid_sites_run_server_config_storage_lifecycle_policy_reference_cli_command",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/config/storage-lifecycle-policy.json",
+      "source_location": "L171",
+      "weight": 1.0
+    }
+  ]
+}

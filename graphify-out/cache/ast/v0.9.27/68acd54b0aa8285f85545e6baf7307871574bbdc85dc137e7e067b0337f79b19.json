@@ -1,1 +1,2259 @@
-{"nodes": [{"id": "users_hateemjamshaid_sites_run_package_json", "label": "package.json", "file_type": "code", "source_file": "package.json", "source_location": "L1"}, {"id": "users_hateemjamshaid_sites_run_package_name", "label": "name", "file_type": "code", "source_file": "package.json", "source_location": "L2"}, {"id": "users_hateemjamshaid_sites_run_package_version", "label": "version", "file_type": "code", "source_file": "package.json", "source_location": "L3"}, {"id": "users_hateemjamshaid_sites_run_package_engines", "label": "engines", "file_type": "code", "source_file": "package.json", "source_location": "L4"}, {"id": "users_hateemjamshaid_sites_run_package_engines_node", "label": "node", "file_type": "code", "source_file": "package.json", "source_location": "L5"}, {"id": "users_hateemjamshaid_sites_run_package_packagemanager", "label": "packageManager", "file_type": "code", "source_file": "package.json", "source_location": "L7"}, {"id": "users_hateemjamshaid_sites_run_package_private", "label": "private", "file_type": "code", "source_file": "package.json", "source_location": "L8"}, {"id": "users_hateemjamshaid_sites_run_package_type", "label": "type", "file_type": "code", "source_file": "package.json", "source_location": "L9"}, {"id": "users_hateemjamshaid_sites_run_package_workspaces", "label": "workspaces", "file_type": "code", "source_file": "package.json", "source_location": "L10"}, {"id": "ref_client", "label": "client", "file_type": "concept", "source_file": "package.json", "source_location": "L10"}, {"id": "ref_server", "label": "server", "file_type": "concept", "source_file": "package.json", "source_location": "L10"}, {"id": "ref_shared", "label": "shared", "file_type": "concept", "source_file": "package.json", "source_location": "L10"}, {"id": "ref_scripts", "label": "scripts", "file_type": "concept", "source_file": "package.json", "source_location": "L10"}, {"id": "users_hateemjamshaid_sites_run_package_scripts", "label": "scripts", "file_type": "code", "source_file": "package.json", "source_location": "L16"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_dev_server", "label": "dev:server", "file_type": "code", "source_file": "package.json", "source_location": "L17"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_dev_client", "label": "dev:client", "file_type": "code", "source_file": "package.json", "source_location": "L18"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_start", "label": "start", "file_type": "code", "source_file": "package.json", "source_location": "L19"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_build_client", "label": "build:client", "file_type": "code", "source_file": "package.json", "source_location": "L20"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_build_server", "label": "build:server", "file_type": "code", "source_file": "package.json", "source_location": "L21"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_migrate_deploy", "label": "migrate:deploy", "file_type": "code", "source_file": "package.json", "source_location": "L22"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_db_push", "label": "db:push", "file_type": "code", "source_file": "package.json", "source_location": "L23"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_dev", "label": "dev", "file_type": "code", "source_file": "package.json", "source_location": "L24"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_build", "label": "build", "file_type": "code", "source_file": "package.json", "source_location": "L25"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_test", "label": "test", "file_type": "code", "source_file": "package.json", "source_location": "L26"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_test_coverage", "label": "test:coverage", "file_type": "code", "source_file": "package.json", "source_location": "L27"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_test_coverage_ci", "label": "test:coverage:ci", "file_type": "code", "source_file": "package.json", "source_location": "L28"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_test_e2e", "label": "test:e2e", "file_type": "code", "source_file": "package.json", "source_location": "L29"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_test_integration", "label": "test:integration", "file_type": "code", "source_file": "package.json", "source_location": "L30"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_test_mutation", "label": "test:mutation", "file_type": "code", "source_file": "package.json", "source_location": "L31"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_lint", "label": "lint", "file_type": "code", "source_file": "package.json", "source_location": "L32"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_lint_html", "label": "lint:html", "file_type": "code", "source_file": "package.json", "source_location": "L33"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_check", "label": "check", "file_type": "code", "source_file": "package.json", "source_location": "L34"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_check_apply", "label": "check:apply", "file_type": "code", "source_file": "package.json", "source_location": "L35"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_check_audit", "label": "check:audit", "file_type": "code", "source_file": "package.json", "source_location": "L36"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_check_bundle", "label": "check:bundle", "file_type": "code", "source_file": "package.json", "source_location": "L37"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_check_links", "label": "check:links", "file_type": "code", "source_file": "package.json", "source_location": "L38"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_check_secrets", "label": "check:secrets", "file_type": "code", "source_file": "package.json", "source_location": "L39"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_check_docs", "label": "check:docs", "file_type": "code", "source_file": "package.json", "source_location": "L40"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_build_analyze", "label": "build:analyze", "file_type": "code", "source_file": "package.json", "source_location": "L41"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_typecheck", "label": "typecheck", "file_type": "code", "source_file": "package.json", "source_location": "L42"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_build_ssr", "label": "build:ssr", "file_type": "code", "source_file": "package.json", "source_location": "L43"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_verify_ssr", "label": "verify:ssr", "file_type": "code", "source_file": "package.json", "source_location": "L44"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_verify_tech_integrity", "label": "verify:tech-integrity", "file_type": "code", "source_file": "package.json", "source_location": "L45"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_verify_docs_versions", "label": "verify:docs-versions", "file_type": "code", "source_file": "package.json", "source_location": "L46"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_verify_docs_structure", "label": "verify:docs-structure", "file_type": "code", "source_file": "package.json", "source_location": "L47"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_ci_checks", "label": "ci:checks", "file_type": "code", "source_file": "package.json", "source_location": "L48"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_verify_build", "label": "verify:build", "file_type": "code", "source_file": "package.json", "source_location": "L49"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_verify_port", "label": "verify-port", "file_type": "code", "source_file": "package.json", "source_location": "L50"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_kill_all", "label": "kill:all", "file_type": "code", "source_file": "package.json", "source_location": "L51"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_lhci", "label": "lhci", "file_type": "code", "source_file": "package.json", "source_location": "L52"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_verify_connect", "label": "verify:connect", "file_type": "code", "source_file": "package.json", "source_location": "L53"}, {"id": "users_hateemjamshaid_sites_run_package_scripts_prepare", "label": "prepare", "file_type": "code", "source_file": "package.json", "source_location": "L54"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies", "label": "devDependencies", "file_type": "code", "source_file": "package.json", "source_location": "L56"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_axe_core_playwright", "label": "@axe-core/playwright", "file_type": "code", "source_file": "package.json", "source_location": "L57"}, {"id": "axe_core_playwright", "label": "@axe-core/playwright", "file_type": "concept", "source_file": "package.json", "source_location": "L57"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_biomejs_biome", "label": "@biomejs/biome", "file_type": "code", "source_file": "package.json", "source_location": "L58"}, {"id": "biomejs_biome", "label": "@biomejs/biome", "file_type": "concept", "source_file": "package.json", "source_location": "L58"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_playwright_test", "label": "@playwright/test", "file_type": "code", "source_file": "package.json", "source_location": "L59"}, {"id": "playwright_test", "label": "@playwright/test", "file_type": "concept", "source_file": "package.json", "source_location": "L59"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_stryker_mutator_core", "label": "@stryker-mutator/core", "file_type": "code", "source_file": "package.json", "source_location": "L60"}, {"id": "stryker_mutator_core", "label": "@stryker-mutator/core", "file_type": "concept", "source_file": "package.json", "source_location": "L60"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_stryker_mutator_vitest_runner", "label": "@stryker-mutator/vitest-runner", "file_type": "code", "source_file": "package.json", "source_location": "L61"}, {"id": "stryker_mutator_vitest_runner", "label": "@stryker-mutator/vitest-runner", "file_type": "concept", "source_file": "package.json", "source_location": "L61"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_dom", "label": "@testing-library/dom", "file_type": "code", "source_file": "package.json", "source_location": "L62"}, {"id": "testing_library_dom", "label": "@testing-library/dom", "file_type": "concept", "source_file": "package.json", "source_location": "L62"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_jest_dom", "label": "@testing-library/jest-dom", "file_type": "code", "source_file": "package.json", "source_location": "L63"}, {"id": "testing_library_jest_dom", "label": "@testing-library/jest-dom", "file_type": "concept", "source_file": "package.json", "source_location": "L63"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_react", "label": "@testing-library/react", "file_type": "code", "source_file": "package.json", "source_location": "L64"}, {"id": "testing_library_react", "label": "@testing-library/react", "file_type": "concept", "source_file": "package.json", "source_location": "L64"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_user_event", "label": "@testing-library/user-event", "file_type": "code", "source_file": "package.json", "source_location": "L65"}, {"id": "testing_library_user_event", "label": "@testing-library/user-event", "file_type": "concept", "source_file": "package.json", "source_location": "L65"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_types_node", "label": "@types/node", "file_type": "code", "source_file": "package.json", "source_location": "L66"}, {"id": "types_node", "label": "@types/node", "file_type": "concept", "source_file": "package.json", "source_location": "L66"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_types_supertest", "label": "@types/supertest", "file_type": "code", "source_file": "package.json", "source_location": "L67"}, {"id": "types_supertest", "label": "@types/supertest", "file_type": "concept", "source_file": "package.json", "source_location": "L67"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_types_yargs", "label": "@types/yargs", "file_type": "code", "source_file": "package.json", "source_location": "L68"}, {"id": "types_yargs", "label": "@types/yargs", "file_type": "concept", "source_file": "package.json", "source_location": "L68"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_vitest_coverage_v8", "label": "@vitest/coverage-v8", "file_type": "code", "source_file": "package.json", "source_location": "L69"}, {"id": "vitest_coverage_v8", "label": "@vitest/coverage-v8", "file_type": "concept", "source_file": "package.json", "source_location": "L69"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_audit_ci", "label": "audit-ci", "file_type": "code", "source_file": "package.json", "source_location": "L70"}, {"id": "audit_ci", "label": "audit-ci", "file_type": "concept", "source_file": "package.json", "source_location": "L70"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_cheerio", "label": "cheerio", "file_type": "code", "source_file": "package.json", "source_location": "L71"}, {"id": "cheerio", "label": "cheerio", "file_type": "concept", "source_file": "package.json", "source_location": "L71"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_dotenv", "label": "dotenv", "file_type": "code", "source_file": "package.json", "source_location": "L72"}, {"id": "dotenv", "label": "dotenv", "file_type": "concept", "source_file": "package.json", "source_location": "L72"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_husky", "label": "husky", "file_type": "code", "source_file": "package.json", "source_location": "L73"}, {"id": "husky", "label": "husky", "file_type": "concept", "source_file": "package.json", "source_location": "L73"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_jsdom", "label": "jsdom", "file_type": "code", "source_file": "package.json", "source_location": "L74"}, {"id": "jsdom", "label": "jsdom", "file_type": "concept", "source_file": "package.json", "source_location": "L74"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_knip", "label": "knip", "file_type": "code", "source_file": "package.json", "source_location": "L75"}, {"id": "knip", "label": "knip", "file_type": "concept", "source_file": "package.json", "source_location": "L75"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_node_fetch", "label": "node-fetch", "file_type": "code", "source_file": "package.json", "source_location": "L76"}, {"id": "node_fetch", "label": "node-fetch", "file_type": "concept", "source_file": "package.json", "source_location": "L76"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_nodemailer", "label": "nodemailer", "file_type": "code", "source_file": "package.json", "source_location": "L77"}, {"id": "nodemailer", "label": "nodemailer", "file_type": "concept", "source_file": "package.json", "source_location": "L77"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_playwright_core", "label": "playwright-core", "file_type": "code", "source_file": "package.json", "source_location": "L78"}, {"id": "playwright_core", "label": "playwright-core", "file_type": "concept", "source_file": "package.json", "source_location": "L78"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_supertest", "label": "supertest", "file_type": "code", "source_file": "package.json", "source_location": "L79"}, {"id": "supertest", "label": "supertest", "file_type": "concept", "source_file": "package.json", "source_location": "L79"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_ts_morph", "label": "ts-morph", "file_type": "code", "source_file": "package.json", "source_location": "L80"}, {"id": "ts_morph", "label": "ts-morph", "file_type": "concept", "source_file": "package.json", "source_location": "L80"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_turbo", "label": "turbo", "file_type": "code", "source_file": "package.json", "source_location": "L81"}, {"id": "turbo", "label": "turbo", "file_type": "concept", "source_file": "package.json", "source_location": "L81"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_typescript", "label": "typescript", "file_type": "code", "source_file": "package.json", "source_location": "L82"}, {"id": "typescript", "label": "typescript", "file_type": "concept", "source_file": "package.json", "source_location": "L82"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_vitest", "label": "vitest", "file_type": "code", "source_file": "package.json", "source_location": "L83"}, {"id": "vitest", "label": "vitest", "file_type": "concept", "source_file": "package.json", "source_location": "L83"}, {"id": "users_hateemjamshaid_sites_run_package_devdependencies_vitest_axe", "label": "vitest-axe", "file_type": "code", "source_file": "package.json", "source_location": "L84"}, {"id": "vitest_axe", "label": "vitest-axe", "file_type": "concept", "source_file": "package.json", "source_location": "L84"}, {"id": "users_hateemjamshaid_sites_run_package_dependencies", "label": "dependencies", "file_type": "code", "source_file": "package.json", "source_location": "L86"}, {"id": "users_hateemjamshaid_sites_run_package_dependencies_react_router_node", "label": "@react-router/node", "file_type": "code", "source_file": "package.json", "source_location": "L87"}, {"id": "react_router_node", "label": "@react-router/node", "file_type": "concept", "source_file": "package.json", "source_location": "L87"}, {"id": "users_hateemjamshaid_sites_run_package_dependencies_drizzle_orm", "label": "drizzle-orm", "file_type": "code", "source_file": "package.json", "source_location": "L88"}, {"id": "drizzle_orm", "label": "drizzle-orm", "file_type": "concept", "source_file": "package.json", "source_location": "L88"}, {"id": "users_hateemjamshaid_sites_run_package_dependencies_google_auth_library", "label": "google-auth-library", "file_type": "code", "source_file": "package.json", "source_location": "L89"}, {"id": "google_auth_library", "label": "google-auth-library", "file_type": "concept", "source_file": "package.json", "source_location": "L89"}, {"id": "users_hateemjamshaid_sites_run_package_dependencies_isomorphic_dompurify", "label": "isomorphic-dompurify", "file_type": "code", "source_file": "package.json", "source_location": "L90"}, {"id": "isomorphic_dompurify", "label": "isomorphic-dompurify", "file_type": "concept", "source_file": "package.json", "source_location": "L90"}, {"id": "users_hateemjamshaid_sites_run_package_dependencies_react_router", "label": "react-router", "file_type": "code", "source_file": "package.json", "source_location": "L91"}, {"id": "react_router", "label": "react-router", "file_type": "concept", "source_file": "package.json", "source_location": "L91"}, {"id": "users_hateemjamshaid_sites_run_package_dependencies_yargs", "label": "yargs", "file_type": "code", "source_file": "package.json", "source_location": "L92"}, {"id": "yargs", "label": "yargs", "file_type": "concept", "source_file": "package.json", "source_location": "L92"}, {"id": "users_hateemjamshaid_sites_run_package_overrides", "label": "overrides", "file_type": "code", "source_file": "package.json", "source_location": "L94"}, {"id": "users_hateemjamshaid_sites_run_package_overrides_brace_expansion", "label": "brace-expansion", "file_type": "code", "source_file": "package.json", "source_location": "L95"}, {"id": "users_hateemjamshaid_sites_run_package_overrides_protobufjs", "label": "protobufjs", "file_type": "code", "source_file": "package.json", "source_location": "L96"}, {"id": "users_hateemjamshaid_sites_run_package_overrides_qs", "label": "qs", "file_type": "code", "source_file": "package.json", "source_location": "L97"}, {"id": "users_hateemjamshaid_sites_run_package_overrides_teeny_request", "label": "teeny-request", "file_type": "code", "source_file": "package.json", "source_location": "L98"}, {"id": "users_hateemjamshaid_sites_run_package_overrides_vite", "label": "vite", "file_type": "code", "source_file": "package.json", "source_location": "L99"}, {"id": "users_hateemjamshaid_sites_run_package_overrides_lodash", "label": "lodash", "file_type": "code", "source_file": "package.json", "source_location": "L100"}, {"id": "users_hateemjamshaid_sites_run_package_overrides_axios", "label": "axios", "file_type": "code", "source_file": "package.json", "source_location": "L101"}, {"id": "users_hateemjamshaid_sites_run_package_overrides_react_helmet_async", "label": "react-helmet-async", "file_type": "code", "source_file": "package.json", "source_location": "L102"}, {"id": "users_hateemjamshaid_sites_run_package_react_helmet_async_react", "label": "react", "file_type": "code", "source_file": "package.json", "source_location": "L103"}, {"id": "users_hateemjamshaid_sites_run_package_react_helmet_async_react_dom", "label": "react-dom", "file_type": "code", "source_file": "package.json", "source_location": "L104"}, {"id": "users_hateemjamshaid_sites_run_package_overrides_fast_xml_parser", "label": "fast-xml-parser", "file_type": "code", "source_file": "package.json", "source_location": "L106"}, {"id": "users_hateemjamshaid_sites_run_package_overrides_esbuild", "label": "esbuild", "file_type": "code", "source_file": "package.json", "source_location": "L107"}, {"id": "users_hateemjamshaid_sites_run_package_overrides_uuid", "label": "uuid", "file_type": "code", "source_file": "package.json", "source_location": "L108"}, {"id": "users_hateemjamshaid_sites_run_package_overrides_fast_uri", "label": "fast-uri", "file_type": "code", "source_file": "package.json", "source_location": "L109"}, {"id": "users_hateemjamshaid_sites_run_package_overrides_tootallnate_once", "label": "@tootallnate/once", "file_type": "code", "source_file": "package.json", "source_location": "L110"}, {"id": "users_hateemjamshaid_sites_run_package_overrides_undici", "label": "undici", "file_type": "code", "source_file": "package.json", "source_location": "L111"}], "edges": [{"source": "users_hateemjamshaid_sites_run_package_json", "target": "users_hateemjamshaid_sites_run_package_name", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L2", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_json", "target": "users_hateemjamshaid_sites_run_package_version", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L3", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_json", "target": "users_hateemjamshaid_sites_run_package_engines", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L4", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_engines", "target": "users_hateemjamshaid_sites_run_package_engines_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L5", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_json", "target": "users_hateemjamshaid_sites_run_package_packagemanager", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L7", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_json", "target": "users_hateemjamshaid_sites_run_package_private", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L8", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_json", "target": "users_hateemjamshaid_sites_run_package_type", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L9", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_json", "target": "users_hateemjamshaid_sites_run_package_workspaces", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L10", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_workspaces", "target": "ref_client", "relation": "extends", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L10", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_workspaces", "target": "ref_server", "relation": "extends", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L10", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_workspaces", "target": "ref_shared", "relation": "extends", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L10", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_workspaces", "target": "ref_scripts", "relation": "extends", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L10", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_json", "target": "users_hateemjamshaid_sites_run_package_scripts", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L16", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_dev_server", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L17", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_dev_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L18", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_start", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L19", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_build_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L20", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_build_server", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L21", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_migrate_deploy", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L22", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_db_push", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L23", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_dev", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L24", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_build", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L25", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_test", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L26", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_test_coverage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L27", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_test_coverage_ci", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L28", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_test_e2e", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L29", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_test_integration", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L30", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_test_mutation", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L31", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_lint", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L32", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_lint_html", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L33", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_check", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L34", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_check_apply", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L35", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_check_audit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L36", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_check_bundle", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L37", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_check_links", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L38", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_check_secrets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L39", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_check_docs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L40", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_build_analyze", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L41", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_typecheck", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L42", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_build_ssr", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L43", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_verify_ssr", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L44", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_verify_tech_integrity", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L45", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_verify_docs_versions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L46", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_verify_docs_structure", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L47", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_ci_checks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L48", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_verify_build", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L49", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_verify_port", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L50", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_kill_all", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L51", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_lhci", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L52", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_verify_connect", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L53", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_scripts", "target": "users_hateemjamshaid_sites_run_package_scripts_prepare", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L54", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_json", "target": "users_hateemjamshaid_sites_run_package_devdependencies", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L56", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_axe_core_playwright", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L57", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_axe_core_playwright", "target": "axe_core_playwright", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L57", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_biomejs_biome", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L58", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_biomejs_biome", "target": "biomejs_biome", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L58", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_playwright_test", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L59", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_playwright_test", "target": "playwright_test", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L59", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_stryker_mutator_core", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L60", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_stryker_mutator_core", "target": "stryker_mutator_core", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L60", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_stryker_mutator_vitest_runner", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L61", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_stryker_mutator_vitest_runner", "target": "stryker_mutator_vitest_runner", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L61", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_dom", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L62", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_dom", "target": "testing_library_dom", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L62", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_jest_dom", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L63", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_jest_dom", "target": "testing_library_jest_dom", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L63", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_react", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L64", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_react", "target": "testing_library_react", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L64", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_user_event", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L65", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_user_event", "target": "testing_library_user_event", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L65", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_types_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L66", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_types_node", "target": "types_node", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L66", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_types_supertest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L67", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_types_supertest", "target": "types_supertest", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L67", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_types_yargs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L68", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_types_yargs", "target": "types_yargs", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L68", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_vitest_coverage_v8", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L69", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_vitest_coverage_v8", "target": "vitest_coverage_v8", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L69", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_audit_ci", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L70", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_audit_ci", "target": "audit_ci", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L70", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_cheerio", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L71", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_cheerio", "target": "cheerio", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L71", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_dotenv", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L72", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_dotenv", "target": "dotenv", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L72", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_husky", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L73", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_husky", "target": "husky", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L73", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_jsdom", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L74", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_jsdom", "target": "jsdom", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L74", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_knip", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L75", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_knip", "target": "knip", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L75", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_node_fetch", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L76", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_node_fetch", "target": "node_fetch", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L76", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_nodemailer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L77", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_nodemailer", "target": "nodemailer", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L77", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_playwright_core", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L78", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_playwright_core", "target": "playwright_core", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L78", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_supertest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L79", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_supertest", "target": "supertest", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L79", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_ts_morph", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L80", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_ts_morph", "target": "ts_morph", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L80", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_turbo", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L81", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_turbo", "target": "turbo", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L81", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_typescript", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L82", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_typescript", "target": "typescript", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L82", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_vitest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L83", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_vitest", "target": "vitest", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L83", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies", "target": "users_hateemjamshaid_sites_run_package_devdependencies_vitest_axe", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L84", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_devdependencies_vitest_axe", "target": "vitest_axe", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L84", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_json", "target": "users_hateemjamshaid_sites_run_package_dependencies", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L86", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_dependencies", "target": "users_hateemjamshaid_sites_run_package_dependencies_react_router_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L87", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_dependencies_react_router_node", "target": "react_router_node", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L87", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_dependencies", "target": "users_hateemjamshaid_sites_run_package_dependencies_drizzle_orm", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L88", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_dependencies_drizzle_orm", "target": "drizzle_orm", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L88", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_dependencies", "target": "users_hateemjamshaid_sites_run_package_dependencies_google_auth_library", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L89", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_dependencies_google_auth_library", "target": "google_auth_library", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L89", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_dependencies", "target": "users_hateemjamshaid_sites_run_package_dependencies_isomorphic_dompurify", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L90", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_dependencies_isomorphic_dompurify", "target": "isomorphic_dompurify", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L90", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_dependencies", "target": "users_hateemjamshaid_sites_run_package_dependencies_react_router", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L91", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_dependencies_react_router", "target": "react_router", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L91", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_dependencies", "target": "users_hateemjamshaid_sites_run_package_dependencies_yargs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L92", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_dependencies_yargs", "target": "yargs", "relation": "imports", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L92", "weight": 1.0, "context": "import"}, {"source": "users_hateemjamshaid_sites_run_package_json", "target": "users_hateemjamshaid_sites_run_package_overrides", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L94", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides", "target": "users_hateemjamshaid_sites_run_package_overrides_brace_expansion", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L95", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides", "target": "users_hateemjamshaid_sites_run_package_overrides_protobufjs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L96", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides", "target": "users_hateemjamshaid_sites_run_package_overrides_qs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L97", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides", "target": "users_hateemjamshaid_sites_run_package_overrides_teeny_request", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L98", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides", "target": "users_hateemjamshaid_sites_run_package_overrides_vite", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L99", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides", "target": "users_hateemjamshaid_sites_run_package_overrides_lodash", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L100", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides", "target": "users_hateemjamshaid_sites_run_package_overrides_axios", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L101", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides", "target": "users_hateemjamshaid_sites_run_package_overrides_react_helmet_async", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L102", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides_react_helmet_async", "target": "users_hateemjamshaid_sites_run_package_react_helmet_async_react", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L103", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides_react_helmet_async", "target": "users_hateemjamshaid_sites_run_package_react_helmet_async_react_dom", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L104", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides", "target": "users_hateemjamshaid_sites_run_package_overrides_fast_xml_parser", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L106", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides", "target": "users_hateemjamshaid_sites_run_package_overrides_esbuild", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L107", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides", "target": "users_hateemjamshaid_sites_run_package_overrides_uuid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L108", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides", "target": "users_hateemjamshaid_sites_run_package_overrides_fast_uri", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L109", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides", "target": "users_hateemjamshaid_sites_run_package_overrides_tootallnate_once", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L110", "weight": 1.0}, {"source": "users_hateemjamshaid_sites_run_package_overrides", "target": "users_hateemjamshaid_sites_run_package_overrides_undici", "relation": "contains", "confidence": "EXTRACTED", "source_file": "package.json", "source_location": "L111", "weight": 1.0}]}
+{
+  "nodes": [
+    {
+      "id": "users_hateemjamshaid_sites_run_package_json",
+      "label": "package.json",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_version",
+      "label": "version",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_engines",
+      "label": "engines",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_engines_node",
+      "label": "node",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_packagemanager",
+      "label": "packageManager",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_private",
+      "label": "private",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_type",
+      "label": "type",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_workspaces",
+      "label": "workspaces",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "ref_client",
+      "label": "client",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "ref_server",
+      "label": "server",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "ref_shared",
+      "label": "shared",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "ref_scripts",
+      "label": "scripts",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts",
+      "label": "scripts",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L16"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_dev_server",
+      "label": "dev:server",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L17"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_dev_client",
+      "label": "dev:client",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_start",
+      "label": "start",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_build_client",
+      "label": "build:client",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L20"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_build_server",
+      "label": "build:server",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_migrate_deploy",
+      "label": "migrate:deploy",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L22"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_db_push",
+      "label": "db:push",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L23"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_dev",
+      "label": "dev",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L24"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_build",
+      "label": "build",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L25"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_test",
+      "label": "test",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L26"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_test_coverage",
+      "label": "test:coverage",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L27"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_test_coverage_ci",
+      "label": "test:coverage:ci",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L28"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_test_e2e",
+      "label": "test:e2e",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L29"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_test_integration",
+      "label": "test:integration",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L30"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_test_mutation",
+      "label": "test:mutation",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L31"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_lint",
+      "label": "lint",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L32"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_lint_html",
+      "label": "lint:html",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L33"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_check",
+      "label": "check",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L34"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_check_apply",
+      "label": "check:apply",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L35"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_check_audit",
+      "label": "check:audit",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L36"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_check_bundle",
+      "label": "check:bundle",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L37"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_check_links",
+      "label": "check:links",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L38"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_check_secrets",
+      "label": "check:secrets",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L39"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_check_docs",
+      "label": "check:docs",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L40"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_build_analyze",
+      "label": "build:analyze",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L41"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_typecheck",
+      "label": "typecheck",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L42"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_build_ssr",
+      "label": "build:ssr",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L43"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_verify_ssr",
+      "label": "verify:ssr",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L44"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_verify_tech_integrity",
+      "label": "verify:tech-integrity",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L45"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_verify_docs_versions",
+      "label": "verify:docs-versions",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L46"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_verify_docs_structure",
+      "label": "verify:docs-structure",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L47"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_ci_checks",
+      "label": "ci:checks",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L48"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_verify_build",
+      "label": "verify:build",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L49"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_verify_port",
+      "label": "verify-port",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L50"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_kill_all",
+      "label": "kill:all",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L51"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_lhci",
+      "label": "lhci",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L52"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_verify_connect",
+      "label": "verify:connect",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L53"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_scripts_prepare",
+      "label": "prepare",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L54"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "label": "devDependencies",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L56"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_axe_core_playwright",
+      "label": "@axe-core/playwright",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L57"
+    },
+    {
+      "id": "axe_core_playwright",
+      "label": "@axe-core/playwright",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L57"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_biomejs_biome",
+      "label": "@biomejs/biome",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L58"
+    },
+    {
+      "id": "biomejs_biome",
+      "label": "@biomejs/biome",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L58"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_playwright_test",
+      "label": "@playwright/test",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L59"
+    },
+    {
+      "id": "playwright_test",
+      "label": "@playwright/test",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L59"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_stryker_mutator_core",
+      "label": "@stryker-mutator/core",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L60"
+    },
+    {
+      "id": "stryker_mutator_core",
+      "label": "@stryker-mutator/core",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L60"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_stryker_mutator_vitest_runner",
+      "label": "@stryker-mutator/vitest-runner",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L61"
+    },
+    {
+      "id": "stryker_mutator_vitest_runner",
+      "label": "@stryker-mutator/vitest-runner",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L61"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_dom",
+      "label": "@testing-library/dom",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L62"
+    },
+    {
+      "id": "testing_library_dom",
+      "label": "@testing-library/dom",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L62"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_jest_dom",
+      "label": "@testing-library/jest-dom",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L63"
+    },
+    {
+      "id": "testing_library_jest_dom",
+      "label": "@testing-library/jest-dom",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L63"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_react",
+      "label": "@testing-library/react",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L64"
+    },
+    {
+      "id": "testing_library_react",
+      "label": "@testing-library/react",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L64"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_user_event",
+      "label": "@testing-library/user-event",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L65"
+    },
+    {
+      "id": "testing_library_user_event",
+      "label": "@testing-library/user-event",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L65"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_types_node",
+      "label": "@types/node",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L66"
+    },
+    {
+      "id": "types_node",
+      "label": "@types/node",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L66"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_types_supertest",
+      "label": "@types/supertest",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L67"
+    },
+    {
+      "id": "types_supertest",
+      "label": "@types/supertest",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L67"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_types_yargs",
+      "label": "@types/yargs",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L68"
+    },
+    {
+      "id": "types_yargs",
+      "label": "@types/yargs",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L68"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_vitest_coverage_v8",
+      "label": "@vitest/coverage-v8",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L69"
+    },
+    {
+      "id": "vitest_coverage_v8",
+      "label": "@vitest/coverage-v8",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L69"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_audit_ci",
+      "label": "audit-ci",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L70"
+    },
+    {
+      "id": "audit_ci",
+      "label": "audit-ci",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L70"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_cheerio",
+      "label": "cheerio",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L71"
+    },
+    {
+      "id": "cheerio",
+      "label": "cheerio",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L71"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_dotenv",
+      "label": "dotenv",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L72"
+    },
+    {
+      "id": "dotenv",
+      "label": "dotenv",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L72"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_husky",
+      "label": "husky",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L73"
+    },
+    {
+      "id": "husky",
+      "label": "husky",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L73"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_jsdom",
+      "label": "jsdom",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L74"
+    },
+    {
+      "id": "jsdom",
+      "label": "jsdom",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L74"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_knip",
+      "label": "knip",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L75"
+    },
+    {
+      "id": "knip",
+      "label": "knip",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L75"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_node_fetch",
+      "label": "node-fetch",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L76"
+    },
+    {
+      "id": "node_fetch",
+      "label": "node-fetch",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L76"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_nodemailer",
+      "label": "nodemailer",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L77"
+    },
+    {
+      "id": "nodemailer",
+      "label": "nodemailer",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L77"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_playwright_core",
+      "label": "playwright-core",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L78"
+    },
+    {
+      "id": "playwright_core",
+      "label": "playwright-core",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L78"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_supertest",
+      "label": "supertest",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L79"
+    },
+    {
+      "id": "supertest",
+      "label": "supertest",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L79"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_ts_morph",
+      "label": "ts-morph",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L80"
+    },
+    {
+      "id": "ts_morph",
+      "label": "ts-morph",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L80"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_turbo",
+      "label": "turbo",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L81"
+    },
+    {
+      "id": "turbo",
+      "label": "turbo",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L81"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_typescript",
+      "label": "typescript",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L82"
+    },
+    {
+      "id": "typescript",
+      "label": "typescript",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L82"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_vitest",
+      "label": "vitest",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L83"
+    },
+    {
+      "id": "vitest",
+      "label": "vitest",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L83"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_devdependencies_vitest_axe",
+      "label": "vitest-axe",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L84"
+    },
+    {
+      "id": "vitest_axe",
+      "label": "vitest-axe",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L84"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_dependencies",
+      "label": "dependencies",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L86"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_dependencies_react_router_node",
+      "label": "@react-router/node",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L87"
+    },
+    {
+      "id": "react_router_node",
+      "label": "@react-router/node",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L87"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_dependencies_drizzle_orm",
+      "label": "drizzle-orm",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L88"
+    },
+    {
+      "id": "drizzle_orm",
+      "label": "drizzle-orm",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L88"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_dependencies_google_auth_library",
+      "label": "google-auth-library",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L89"
+    },
+    {
+      "id": "google_auth_library",
+      "label": "google-auth-library",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L89"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_dependencies_isomorphic_dompurify",
+      "label": "isomorphic-dompurify",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L90"
+    },
+    {
+      "id": "isomorphic_dompurify",
+      "label": "isomorphic-dompurify",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L90"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_dependencies_react_router",
+      "label": "react-router",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L91"
+    },
+    {
+      "id": "react_router",
+      "label": "react-router",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L91"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_dependencies_yargs",
+      "label": "yargs",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L92"
+    },
+    {
+      "id": "yargs",
+      "label": "yargs",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L92"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides",
+      "label": "overrides",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L94"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides_brace_expansion",
+      "label": "brace-expansion",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L95"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides_protobufjs",
+      "label": "protobufjs",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L96"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides_qs",
+      "label": "qs",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L97"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides_teeny_request",
+      "label": "teeny-request",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L98"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides_vite",
+      "label": "vite",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L99"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides_lodash",
+      "label": "lodash",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L100"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides_axios",
+      "label": "axios",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L101"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides_react_helmet_async",
+      "label": "react-helmet-async",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L102"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_react_helmet_async_react",
+      "label": "react",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L103"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_react_helmet_async_react_dom",
+      "label": "react-dom",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L104"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides_fast_xml_parser",
+      "label": "fast-xml-parser",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L106"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides_esbuild",
+      "label": "esbuild",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L107"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides_uuid",
+      "label": "uuid",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L108"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides_fast_uri",
+      "label": "fast-uri",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L109"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides_tootallnate_once",
+      "label": "@tootallnate/once",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L110"
+    },
+    {
+      "id": "users_hateemjamshaid_sites_run_package_overrides_undici",
+      "label": "undici",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L111"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_hateemjamshaid_sites_run_package_json",
+      "target": "users_hateemjamshaid_sites_run_package_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_json",
+      "target": "users_hateemjamshaid_sites_run_package_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_json",
+      "target": "users_hateemjamshaid_sites_run_package_engines",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_engines",
+      "target": "users_hateemjamshaid_sites_run_package_engines_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_json",
+      "target": "users_hateemjamshaid_sites_run_package_packagemanager",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_json",
+      "target": "users_hateemjamshaid_sites_run_package_private",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_json",
+      "target": "users_hateemjamshaid_sites_run_package_type",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_json",
+      "target": "users_hateemjamshaid_sites_run_package_workspaces",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_workspaces",
+      "target": "ref_client",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_workspaces",
+      "target": "ref_server",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_workspaces",
+      "target": "ref_shared",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_workspaces",
+      "target": "ref_scripts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_json",
+      "target": "users_hateemjamshaid_sites_run_package_scripts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_dev_server",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_dev_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_start",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_build_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_build_server",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_migrate_deploy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_db_push",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_dev",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_build",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_test",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_test_coverage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_test_coverage_ci",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_test_e2e",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_test_integration",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_test_mutation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_lint",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_lint_html",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_check",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_check_apply",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_check_audit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_check_bundle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_check_links",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_check_secrets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_check_docs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_build_analyze",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_typecheck",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_build_ssr",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_verify_ssr",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_verify_tech_integrity",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_verify_docs_versions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_verify_docs_structure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_ci_checks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_verify_build",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_verify_port",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_kill_all",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_lhci",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_verify_connect",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_scripts",
+      "target": "users_hateemjamshaid_sites_run_package_scripts_prepare",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_json",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_axe_core_playwright",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_axe_core_playwright",
+      "target": "axe_core_playwright",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L57",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_biomejs_biome",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_biomejs_biome",
+      "target": "biomejs_biome",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L58",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_playwright_test",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_playwright_test",
+      "target": "playwright_test",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L59",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_stryker_mutator_core",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_stryker_mutator_core",
+      "target": "stryker_mutator_core",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L60",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_stryker_mutator_vitest_runner",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_stryker_mutator_vitest_runner",
+      "target": "stryker_mutator_vitest_runner",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L61",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_dom",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_dom",
+      "target": "testing_library_dom",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L62",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_jest_dom",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_jest_dom",
+      "target": "testing_library_jest_dom",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L63",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_react",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_react",
+      "target": "testing_library_react",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L64",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_user_event",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_testing_library_user_event",
+      "target": "testing_library_user_event",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L65",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_types_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_types_node",
+      "target": "types_node",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L66",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_types_supertest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_types_supertest",
+      "target": "types_supertest",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L67",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_types_yargs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_types_yargs",
+      "target": "types_yargs",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L68",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_vitest_coverage_v8",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_vitest_coverage_v8",
+      "target": "vitest_coverage_v8",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L69",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_audit_ci",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_audit_ci",
+      "target": "audit_ci",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L70",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_cheerio",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_cheerio",
+      "target": "cheerio",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L71",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_dotenv",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_dotenv",
+      "target": "dotenv",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L72",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_husky",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_husky",
+      "target": "husky",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L73",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_jsdom",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_jsdom",
+      "target": "jsdom",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L74",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_knip",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_knip",
+      "target": "knip",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L75",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_node_fetch",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_node_fetch",
+      "target": "node_fetch",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L76",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_nodemailer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_nodemailer",
+      "target": "nodemailer",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L77",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_playwright_core",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_playwright_core",
+      "target": "playwright_core",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L78",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_supertest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_supertest",
+      "target": "supertest",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L79",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_ts_morph",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_ts_morph",
+      "target": "ts_morph",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L80",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_turbo",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L81",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_turbo",
+      "target": "turbo",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L81",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_typescript",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_typescript",
+      "target": "typescript",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L82",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_vitest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_vitest",
+      "target": "vitest",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L83",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies",
+      "target": "users_hateemjamshaid_sites_run_package_devdependencies_vitest_axe",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_devdependencies_vitest_axe",
+      "target": "vitest_axe",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L84",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_json",
+      "target": "users_hateemjamshaid_sites_run_package_dependencies",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_dependencies",
+      "target": "users_hateemjamshaid_sites_run_package_dependencies_react_router_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_dependencies_react_router_node",
+      "target": "react_router_node",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L87",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_dependencies",
+      "target": "users_hateemjamshaid_sites_run_package_dependencies_drizzle_orm",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_dependencies_drizzle_orm",
+      "target": "drizzle_orm",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L88",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_dependencies",
+      "target": "users_hateemjamshaid_sites_run_package_dependencies_google_auth_library",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_dependencies_google_auth_library",
+      "target": "google_auth_library",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L89",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_dependencies",
+      "target": "users_hateemjamshaid_sites_run_package_dependencies_isomorphic_dompurify",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_dependencies_isomorphic_dompurify",
+      "target": "isomorphic_dompurify",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L90",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_dependencies",
+      "target": "users_hateemjamshaid_sites_run_package_dependencies_react_router",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_dependencies_react_router",
+      "target": "react_router",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L91",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_dependencies",
+      "target": "users_hateemjamshaid_sites_run_package_dependencies_yargs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_dependencies_yargs",
+      "target": "yargs",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L92",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_json",
+      "target": "users_hateemjamshaid_sites_run_package_overrides",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides",
+      "target": "users_hateemjamshaid_sites_run_package_overrides_brace_expansion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides",
+      "target": "users_hateemjamshaid_sites_run_package_overrides_protobufjs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides",
+      "target": "users_hateemjamshaid_sites_run_package_overrides_qs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides",
+      "target": "users_hateemjamshaid_sites_run_package_overrides_teeny_request",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides",
+      "target": "users_hateemjamshaid_sites_run_package_overrides_vite",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides",
+      "target": "users_hateemjamshaid_sites_run_package_overrides_lodash",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides",
+      "target": "users_hateemjamshaid_sites_run_package_overrides_axios",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides",
+      "target": "users_hateemjamshaid_sites_run_package_overrides_react_helmet_async",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides_react_helmet_async",
+      "target": "users_hateemjamshaid_sites_run_package_react_helmet_async_react",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides_react_helmet_async",
+      "target": "users_hateemjamshaid_sites_run_package_react_helmet_async_react_dom",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides",
+      "target": "users_hateemjamshaid_sites_run_package_overrides_fast_xml_parser",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L106",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides",
+      "target": "users_hateemjamshaid_sites_run_package_overrides_esbuild",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides",
+      "target": "users_hateemjamshaid_sites_run_package_overrides_uuid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides",
+      "target": "users_hateemjamshaid_sites_run_package_overrides_fast_uri",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides",
+      "target": "users_hateemjamshaid_sites_run_package_overrides_tootallnate_once",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "users_hateemjamshaid_sites_run_package_overrides",
+      "target": "users_hateemjamshaid_sites_run_package_overrides_undici",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L111",
+      "weight": 1.0
+    }
+  ]
+}

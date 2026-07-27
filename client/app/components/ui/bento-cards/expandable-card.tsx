@@ -222,7 +222,12 @@ export const ExpandableCard = memo(function ExpandableCard({
               {/* Background */}
               {mediaUrl && (
                 <div className="absolute inset-0">
-                  <img src={mediaUrl} alt={title} loading="lazy" className="h-full w-full object-cover" />
+                  <img
+                    src={mediaUrl}
+                    alt={title}
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
                 </div>
               )}
 

@@ -10,34 +10,40 @@
 ---
 
 ## Environment
+
 - Server port: 5002 (never 3000)
 - Base URL: http://localhost:5002
 - Mode: Active Development — full read/write access to client/, server/, and shared/
 
 ## Scope
+
 - Full implementation access across the monorepo.
 - Follow B.L.A.S.T. execution order for all tasks.
 - Always run `npm run verify:tech-integrity` before considering a feature complete.
 
 ## Documentation & Markdown Constraints
+
 - **Identity:** All generated documentation, SOPs, and code comments must reflect RUN APPAREL (PVT) LTD's "100% B2B, premium sustainable manufacturing identity."
 - **Link Checking:** `npm run check:docs` runs rigorously in CI. To prevent pipeline failures:
   - Do not hyperlink private repository URLs (use `<repository-url>` or plain text).
   - Do not hyperlink local files with line-number fragments (e.g., `[file.ts](file.ts:10)`). Use inline code ticks instead.
 
 ## Browser Viewports
+
 - Mobile:  375px
 - Tablet:  768px
 - Desktop: 1440px
 - Wide:    1920px (check max-width constraints)
 
 ## Severity Scoring
+
 - P0: Critical — broken, crash, security issue, data missing
 - P1: Major — feature broken, SEO invisible, significant a11y failure
 - P2: Minor — layout issue, slow endpoint, non-critical warning
 - P3: Cosmetic — visual polish, minor inconsistency
 
 ## Model Routing
+
 - Crawling, screenshots, API probing: @gemini-3.5-flash
 - Report synthesis, pattern analysis: @claude-opus-4-6
 
@@ -48,6 +54,7 @@
 > auth & sessions (§6.10), CSP nonce & Vite SSR (§6.11) — all in `gemini.md`.
 
 ## Communication Guardrails
+
 - **Artifact Transparency**: Never mention or present the internal `task.md` system artifact to the user. When discussing sprint goals, tracking, or checklists, refer EXCLUSIVELY to the `task_plan.md` file required by Protocol 0.
 
 ## Test Generation Guardrails
@@ -63,6 +70,7 @@ When creating or generating unit test files:
 4. **Always run the new tests before marking task items complete.** Execute `npx vitest run <path>` on the newly created test files to confirm they parse and pass before checking off items in `task.md`.
 
 ### 6.11 React Router v8 & Vite 8 Resolution Rules (Addendum)
+
 - **CSP Nonce Hydration Mismatch**: In React 19, Chrome hides the `nonce` attribute on `<link>` tags for security, causing a fatal hydration mismatch if the Virtual DOM expects a value. When rendering React Router's `<Links />` component in the root layout or error boundaries, you **MUST** pass an empty string on the client (e.g., `<Links nonce="" />`) to bypass the mismatch and prevent React from crashing the client-side render tree.
 
 <!-- code-review-graph MCP tools -->
@@ -105,5 +113,6 @@ Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
 4. Use `query_graph_tool` pattern="tests_for" to check coverage.
 
 ### Known Limitations & False Positives
+
 - **Community Aggregation:** The graph may bundle `shared/schemas` into backend DB communities. Imports of shared Zod schemas in `client/` do NOT violate the DB-access rule.
 - **Fuzzy Matching:** Abstract variable names (e.g., `payload`) can sometimes trigger false "indirect call" inferred edges to similarly named functions in external scripts. Always verify "Surprising Connections" in code before citing them.
