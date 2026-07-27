@@ -1,0 +1,69 @@
+name: Security Scanning
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run weekly security scan
+    - cron: '0 0 * * 0'
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-audit:
+    name: Dependency Audit
+    runs-on: [self-hosted, macOS]
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Check production config safety
+        run: |
+          if grep -rn "ENABLE_MOCK_ADMIN=true" --include="*.yml" --include="*.yaml" --include="*.env" . 2>/dev/null | grep -v ".git" | grep -v "node_modules"; then
+            echo "ERROR: ENABLE_MOCK_ADMIN=true found in config files — must not be enabled in production"
+            exit 1
+          fi
+          echo "✓ Production config check passed"
+
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Run audit-ci
+        run: npm run check:audit
+        continue-on-error: true
+
+
+
+  codeql:
+    name: CodeQL Analysis
+    runs-on: [self-hosted, macOS]
+    permissions:
+      security-events: write
+      contents: read
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@ce64ddcb0d8d890d2df4a9d1c04ff297367dea2a # v3.35.2
+        with:
+          languages: javascript-typescript
+          build-mode: none
+      
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@ce64ddcb0d8d890d2df4a9d1c04ff297367dea2a # v3.35.2
+
+  # TruffleHog and Checkov removed as they are Linux-centric and Terraform is obsolete.
+  # Secret scanning is now handled by the gitleaks workflow.
+
