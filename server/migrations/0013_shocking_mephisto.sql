@@ -1,6 +1,8 @@
 DROP INDEX "cache_entries_key_idx";--> statement-breakpoint
 ALTER TABLE "sustainability_metric_history" ALTER COLUMN "recorded_by" SET DATA TYPE varchar(255);--> statement-breakpoint
+ALTER TABLE "sustainability_metric_history" DROP CONSTRAINT IF EXISTS "sustainability_metric_history_recorded_by_users_id_fk";--> statement-breakpoint
 ALTER TABLE "sustainability_metric_history" ADD CONSTRAINT "sustainability_metric_history_recorded_by_users_id_fk" FOREIGN KEY ("recorded_by") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "folders" DROP CONSTRAINT IF EXISTS "folders_parent_id_fk";--> statement-breakpoint
 ALTER TABLE "folders" ADD CONSTRAINT "folders_parent_id_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."folders"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "blog_posts_featured_image_id_idx" ON "blog_posts" USING btree ("featured_image_id");--> statement-breakpoint
 CREATE INDEX "blog_posts_category_id_idx" ON "blog_posts" USING btree ("category_id");--> statement-breakpoint

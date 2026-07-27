@@ -45,7 +45,9 @@ ALTER TABLE "technology_roadmap" ADD COLUMN IF NOT EXISTS "video_id" integer;-->
 ALTER TABLE "unified_sustainability" ADD COLUMN IF NOT EXISTS "fabric_portfolio_description" text;--> statement-breakpoint
 ALTER TABLE "unified_sustainability" ADD COLUMN IF NOT EXISTS "features_title" varchar(255);--> statement-breakpoint
 ALTER TABLE "unified_sustainability" ADD COLUMN IF NOT EXISTS "features_description" text;--> statement-breakpoint
+ALTER TABLE "technology_roadmap" DROP CONSTRAINT IF EXISTS "technology_roadmap_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "technology_roadmap" ADD CONSTRAINT "technology_roadmap_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "technology_roadmap" DROP CONSTRAINT IF EXISTS "technology_roadmap_video_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "technology_roadmap" ADD CONSTRAINT "technology_roadmap_video_id_media_assets_id_fk" FOREIGN KEY ("video_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "homepage_hero" DROP COLUMN IF EXISTS "description";--> statement-breakpoint
 ALTER TABLE "homepage_hero" DROP COLUMN IF EXISTS "primary_image_id";--> statement-breakpoint

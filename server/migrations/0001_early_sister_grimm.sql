@@ -374,7 +374,9 @@ ALTER TABLE "unified_sustainability" ADD COLUMN IF NOT EXISTS "call_to_action_bu
 ALTER TABLE "unified_sustainability" ADD COLUMN IF NOT EXISTS "button_text" varchar(100);--> statement-breakpoint
 ALTER TABLE "unified_sustainability" ADD COLUMN IF NOT EXISTS "button_link" varchar(255);--> statement-breakpoint
 ALTER TABLE "unified_sustainability" ADD COLUMN IF NOT EXISTS "background_image_id" integer;--> statement-breakpoint
+ALTER TABLE "fabric_compositions" DROP CONSTRAINT IF EXISTS "fabric_compositions_fabric_id_fabrics_id_fk";--> statement-breakpoint
 ALTER TABLE "fabric_compositions" ADD CONSTRAINT "fabric_compositions_fabric_id_fabrics_id_fk" FOREIGN KEY ("fabric_id") REFERENCES "public"."fabrics"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "fabric_compositions" DROP CONSTRAINT IF EXISTS "fabric_compositions_fiber_id_fibers_id_fk";--> statement-breakpoint
 ALTER TABLE "fabric_compositions" ADD CONSTRAINT "fabric_compositions_fiber_id_fibers_id_fk" FOREIGN KEY ("fiber_id") REFERENCES "public"."fibers"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "inquiries_status_idx" ON "inquiries" USING btree ("status");--> statement-breakpoint
 CREATE INDEX "inquiries_submitted_at_idx" ON "inquiries" USING btree ("submitted_at" DESC NULLS LAST);--> statement-breakpoint
@@ -382,9 +384,13 @@ CREATE INDEX "inquiries_email_idx" ON "inquiries" USING btree ("email");--> stat
 CREATE INDEX "inquiries_source_idx" ON "inquiries" USING btree ("source");--> statement-breakpoint
 CREATE INDEX "inquiries_status_submitted_idx" ON "inquiries" USING btree ("status","submitted_at" DESC NULLS LAST);--> statement-breakpoint
 CREATE INDEX "IDX_session_expire" ON "sessions" USING btree ("expire");--> statement-breakpoint
+ALTER TABLE "fabrics" DROP CONSTRAINT IF EXISTS "fabrics_visual_swatch_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "fabrics" ADD CONSTRAINT "fabrics_visual_swatch_id_media_assets_id_fk" FOREIGN KEY ("visual_swatch_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "manufacturing_qualities" DROP CONSTRAINT IF EXISTS "manufacturing_qualities_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "manufacturing_qualities" ADD CONSTRAINT "manufacturing_qualities_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "technology_hero" DROP CONSTRAINT IF EXISTS "technology_hero_background_media_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "technology_hero" ADD CONSTRAINT "technology_hero_background_media_id_media_assets_id_fk" FOREIGN KEY ("background_media_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "unified_sustainability" DROP CONSTRAINT IF EXISTS "unified_sustainability_background_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "unified_sustainability" ADD CONSTRAINT "unified_sustainability_background_image_id_media_assets_id_fk" FOREIGN KEY ("background_image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "about_hero_is_active_idx" ON "about_hero" USING btree ("is_active");--> statement-breakpoint
 CREATE INDEX "about_hero_image_id_idx" ON "about_hero" USING btree ("image_id");--> statement-breakpoint

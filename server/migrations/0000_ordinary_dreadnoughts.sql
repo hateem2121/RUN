@@ -766,43 +766,81 @@ CREATE TABLE IF NOT EXISTS "unified_sustainability" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
+ALTER TABLE "about_hero" DROP CONSTRAINT IF EXISTS "about_hero_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "about_hero" ADD CONSTRAINT "about_hero_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "about_hero" DROP CONSTRAINT IF EXISTS "about_hero_video_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "about_hero" ADD CONSTRAINT "about_hero_video_id_media_assets_id_fk" FOREIGN KEY ("video_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "about_hero" DROP CONSTRAINT IF EXISTS "about_hero_background_media_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "about_hero" ADD CONSTRAINT "about_hero_background_media_id_media_assets_id_fk" FOREIGN KEY ("background_media_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "about_sections" DROP CONSTRAINT IF EXISTS "about_sections_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "about_sections" ADD CONSTRAINT "about_sections_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "about_team_messages" DROP CONSTRAINT IF EXISTS "about_team_messages_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "about_team_messages" ADD CONSTRAINT "about_team_messages_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "about_timeline_entries" DROP CONSTRAINT IF EXISTS "about_timeline_entries_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "about_timeline_entries" ADD CONSTRAINT "about_timeline_entries_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "accessories" DROP CONSTRAINT IF EXISTS "accessories_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "accessories" ADD CONSTRAINT "accessories_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "categories" DROP CONSTRAINT IF EXISTS "categories_primary_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "categories" ADD CONSTRAINT "categories_primary_image_id_media_assets_id_fk" FOREIGN KEY ("primary_image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "categories" DROP CONSTRAINT IF EXISTS "categories_parent_id_fk";--> statement-breakpoint
 ALTER TABLE "categories" ADD CONSTRAINT "categories_parent_id_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."categories"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "certificates" DROP CONSTRAINT IF EXISTS "certificates_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "certificates" ADD CONSTRAINT "certificates_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "certificates" DROP CONSTRAINT IF EXISTS "certificates_document_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "certificates" ADD CONSTRAINT "certificates_document_id_media_assets_id_fk" FOREIGN KEY ("document_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "homepage_hero" DROP CONSTRAINT IF EXISTS "homepage_hero_primary_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "homepage_hero" ADD CONSTRAINT "homepage_hero_primary_image_id_media_assets_id_fk" FOREIGN KEY ("primary_image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "homepage_hero" DROP CONSTRAINT IF EXISTS "homepage_hero_background_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "homepage_hero" ADD CONSTRAINT "homepage_hero_background_image_id_media_assets_id_fk" FOREIGN KEY ("background_image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "homepage_process_cards" DROP CONSTRAINT IF EXISTS "homepage_process_cards_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "homepage_process_cards" ADD CONSTRAINT "homepage_process_cards_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "homepage_process_cards" DROP CONSTRAINT IF EXISTS "homepage_process_cards_icon_media_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "homepage_process_cards" ADD CONSTRAINT "homepage_process_cards_icon_media_id_media_assets_id_fk" FOREIGN KEY ("icon_media_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "homepage_sustainability" DROP CONSTRAINT IF EXISTS "homepage_sustainability_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "homepage_sustainability" ADD CONSTRAINT "homepage_sustainability_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "manufacturing_capabilities" DROP CONSTRAINT IF EXISTS "manufacturing_capabilities_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "manufacturing_capabilities" ADD CONSTRAINT "manufacturing_capabilities_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "manufacturing_hero" DROP CONSTRAINT IF EXISTS "manufacturing_hero_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "manufacturing_hero" ADD CONSTRAINT "manufacturing_hero_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "manufacturing_hero" DROP CONSTRAINT IF EXISTS "manufacturing_hero_video_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "manufacturing_hero" ADD CONSTRAINT "manufacturing_hero_video_id_media_assets_id_fk" FOREIGN KEY ("video_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "manufacturing_hero" DROP CONSTRAINT IF EXISTS "manufacturing_hero_background_media_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "manufacturing_hero" ADD CONSTRAINT "manufacturing_hero_background_media_id_media_assets_id_fk" FOREIGN KEY ("background_media_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "manufacturing_processes" DROP CONSTRAINT IF EXISTS "manufacturing_processes_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "manufacturing_processes" ADD CONSTRAINT "manufacturing_processes_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "media_assets" DROP CONSTRAINT IF EXISTS "media_assets_folder_id_folders_id_fk";--> statement-breakpoint
 ALTER TABLE "media_assets" ADD CONSTRAINT "media_assets_folder_id_folders_id_fk" FOREIGN KEY ("folder_id") REFERENCES "public"."folders"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "navigation_items" DROP CONSTRAINT IF EXISTS "navigation_items_media_icon_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "navigation_items" ADD CONSTRAINT "navigation_items_media_icon_id_media_assets_id_fk" FOREIGN KEY ("media_icon_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "products" DROP CONSTRAINT IF EXISTS "products_category_id_categories_id_fk";--> statement-breakpoint
 ALTER TABLE "products" ADD CONSTRAINT "products_category_id_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "products" DROP CONSTRAINT IF EXISTS "products_primary_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "products" ADD CONSTRAINT "products_primary_image_id_media_assets_id_fk" FOREIGN KEY ("primary_image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "products" DROP CONSTRAINT IF EXISTS "products_primary_video_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "products" ADD CONSTRAINT "products_primary_video_id_media_assets_id_fk" FOREIGN KEY ("primary_video_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "products" DROP CONSTRAINT IF EXISTS "products_model_file_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "products" ADD CONSTRAINT "products_model_file_id_media_assets_id_fk" FOREIGN KEY ("model_file_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "products" DROP CONSTRAINT IF EXISTS "products_fabric_id_fabrics_id_fk";--> statement-breakpoint
 ALTER TABLE "products" ADD CONSTRAINT "products_fabric_id_fabrics_id_fk" FOREIGN KEY ("fabric_id") REFERENCES "public"."fabrics"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "products" DROP CONSTRAINT IF EXISTS "products_size_chart_id_size_charts_id_fk";--> statement-breakpoint
 ALTER TABLE "products" ADD CONSTRAINT "products_size_chart_id_size_charts_id_fk" FOREIGN KEY ("size_chart_id") REFERENCES "public"."size_charts"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "size_charts" DROP CONSTRAINT IF EXISTS "size_charts_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "size_charts" ADD CONSTRAINT "size_charts_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sustainability_features" DROP CONSTRAINT IF EXISTS "sustainability_features_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "sustainability_features" ADD CONSTRAINT "sustainability_features_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sustainability_hero" DROP CONSTRAINT IF EXISTS "sustainability_hero_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "sustainability_hero" ADD CONSTRAINT "sustainability_hero_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sustainability_hero" DROP CONSTRAINT IF EXISTS "sustainability_hero_video_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "sustainability_hero" ADD CONSTRAINT "sustainability_hero_video_id_media_assets_id_fk" FOREIGN KEY ("video_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sustainability_initiatives" DROP CONSTRAINT IF EXISTS "sustainability_initiatives_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "sustainability_initiatives" ADD CONSTRAINT "sustainability_initiatives_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "technology_equipment" DROP CONSTRAINT IF EXISTS "technology_equipment_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "technology_equipment" ADD CONSTRAINT "technology_equipment_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "technology_hero" DROP CONSTRAINT IF EXISTS "technology_hero_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "technology_hero" ADD CONSTRAINT "technology_hero_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "technology_hero" DROP CONSTRAINT IF EXISTS "technology_hero_video_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "technology_hero" ADD CONSTRAINT "technology_hero_video_id_media_assets_id_fk" FOREIGN KEY ("video_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "technology_innovations" DROP CONSTRAINT IF EXISTS "technology_innovations_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "technology_innovations" ADD CONSTRAINT "technology_innovations_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "categories_is_active_idx" ON "categories" USING btree ("is_active");--> statement-breakpoint
 CREATE INDEX "categories_parent_id_idx" ON "categories" USING btree ("parent_id");--> statement-breakpoint

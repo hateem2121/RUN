@@ -93,15 +93,22 @@ ALTER TABLE "audit_logs" ADD COLUMN IF NOT EXISTS "user_email_index" varchar(255
 ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "email_index" varchar(255);--> statement-breakpoint
 ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "failed_login_attempts" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
 ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "lockout_until" timestamp (3);--> statement-breakpoint
+ALTER TABLE "blog_posts" DROP CONSTRAINT IF EXISTS "blog_posts_featured_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "blog_posts" ADD CONSTRAINT "blog_posts_featured_image_id_media_assets_id_fk" FOREIGN KEY ("featured_image_id") REFERENCES "public"."media_assets"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "blog_posts" DROP CONSTRAINT IF EXISTS "blog_posts_category_id_blog_categories_id_fk";--> statement-breakpoint
 ALTER TABLE "blog_posts" ADD CONSTRAINT "blog_posts_category_id_blog_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."blog_categories"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "blog_posts" DROP CONSTRAINT IF EXISTS "blog_posts_author_id_users_id_fk";--> statement-breakpoint
 ALTER TABLE "blog_posts" ADD CONSTRAINT "blog_posts_author_id_users_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "manufacturing_case_studies" DROP CONSTRAINT IF EXISTS "manufacturing_case_studies_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "manufacturing_case_studies" ADD CONSTRAINT "manufacturing_case_studies_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "webhook_deliveries" DROP CONSTRAINT IF EXISTS "webhook_deliveries_subscription_id_webhook_subscriptions_id_fk";--> statement-breakpoint
 ALTER TABLE "webhook_deliveries" ADD CONSTRAINT "webhook_deliveries_subscription_id_webhook_subscriptions_id_fk" FOREIGN KEY ("subscription_id") REFERENCES "public"."webhook_subscriptions"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "manufacturing_case_studies_is_active_idx" ON "manufacturing_case_studies" USING btree ("is_active");--> statement-breakpoint
 CREATE INDEX "manufacturing_case_studies_image_id_idx" ON "manufacturing_case_studies" USING btree ("image_id");--> statement-breakpoint
 CREATE INDEX "manufacturing_case_studies_sort_order_idx" ON "manufacturing_case_studies" USING btree ("sort_order");--> statement-breakpoint
+ALTER TABLE "fabric_compositions" DROP CONSTRAINT IF EXISTS "fabric_compositions_fabric_id_fabrics_id_fk";--> statement-breakpoint
 ALTER TABLE "fabric_compositions" ADD CONSTRAINT "fabric_compositions_fabric_id_fabrics_id_fk" FOREIGN KEY ("fabric_id") REFERENCES "public"."fabrics"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "fabric_compositions" DROP CONSTRAINT IF EXISTS "fabric_compositions_fiber_id_fibers_id_fk";--> statement-breakpoint
 ALTER TABLE "fabric_compositions" ADD CONSTRAINT "fabric_compositions_fiber_id_fibers_id_fk" FOREIGN KEY ("fiber_id") REFERENCES "public"."fibers"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "inquiries_email_index_idx" ON "inquiries" USING btree ("email_index");--> statement-breakpoint
 CREATE UNIQUE INDEX "products_slug_unique_idx" ON "products" USING btree ("slug") WHERE "products"."deleted_at" IS NULL;--> statement-breakpoint
@@ -114,5 +121,7 @@ ALTER TABLE "about_statistics" DROP COLUMN IF EXISTS "position";--> statement-br
 ALTER TABLE "about_timeline_entries" DROP COLUMN IF EXISTS "position";--> statement-breakpoint
 ALTER TABLE "manufacturing_hero" DROP COLUMN IF EXISTS "title";--> statement-breakpoint
 ALTER TABLE "manufacturing_hero" DROP COLUMN IF EXISTS "subtitle";--> statement-breakpoint
+ALTER TABLE "newsletter_subscribers" DROP CONSTRAINT IF EXISTS "newsletter_subscribers_emailIndex_unique";--> statement-breakpoint
 ALTER TABLE "newsletter_subscribers" ADD CONSTRAINT "newsletter_subscribers_emailIndex_unique" UNIQUE("email_index");--> statement-breakpoint
+ALTER TABLE "users" DROP CONSTRAINT IF EXISTS "users_emailIndex_unique";--> statement-breakpoint
 ALTER TABLE "users" ADD CONSTRAINT "users_emailIndex_unique" UNIQUE("email_index");
