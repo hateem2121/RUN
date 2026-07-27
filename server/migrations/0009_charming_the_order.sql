@@ -2,5 +2,5 @@ CREATE INDEX IF NOT EXISTS "products_tags_gin_idx" ON "products" USING gin ("tag
 CREATE INDEX IF NOT EXISTS "products_certificate_ids_gin_idx" ON "products" USING gin ("certificate_ids");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "products_accessory_ids_gin_idx" ON "products" USING gin ("accessory_ids");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "products_image_ids_gin_idx" ON "products" USING gin ("image_ids");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "products_name_trgm_idx" ON "products" USING gin ("name");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "products_description_trgm_idx" ON "products" USING gin ("description");
+CREATE INDEX IF NOT EXISTS "products_name_trgm_idx" ON "products" USING gin ("name" gin_trgm_ops);--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "products_description_trgm_idx" ON "products" USING gin ("description" gin_trgm_ops);
