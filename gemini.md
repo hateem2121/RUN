@@ -179,6 +179,9 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 | Secrets in `cloudbuild.yaml` or k8s YAML | GCP Secret Manager references | Critical |
 | `npm install` in CI pipeline | `npm ci` | High |
 | Non-root user missing in Dockerfile | `USER node` in runtime stage | High |
+| `runs-on: [self-hosted, macOS]` | `runs-on: ubuntu-latest` | Critical |
+| `github.event_name == 'pull_request'` restricting core CI jobs | Ensure core CI jobs also run on `push` to `main` | High |
+| Duplicating security/docs checks inside `ci.yml` | Dedicated pipelines (e.g. `security.yml`, `docs.yml`) | High |
 
 ### 5.1.1 Exceptions to `noExplicitAny`
 - **React Hook Form**: When strict type inference fails for `form.control` or `useFieldArray` combined with complex Zod schemas under React 19, you may bypass the constraint using `// biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict` combined with an explicit `as any` cast. This is the **only** permitted use case for `any`.
