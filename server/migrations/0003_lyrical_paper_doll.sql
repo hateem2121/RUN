@@ -1,4 +1,4 @@
-CREATE TABLE "newsletter_subscribers" (
+CREATE TABLE IF NOT EXISTS "newsletter_subscribers" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"email" varchar(255) NOT NULL,
 	"subscribed_at" timestamp (3) DEFAULT now() NOT NULL,

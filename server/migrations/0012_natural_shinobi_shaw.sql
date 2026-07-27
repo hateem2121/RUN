@@ -1,4 +1,4 @@
-CREATE TABLE "cache_entries" (
+CREATE TABLE IF NOT EXISTS "cache_entries" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"key" text NOT NULL,
 	"value" jsonb NOT NULL,

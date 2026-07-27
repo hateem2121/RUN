@@ -1,4 +1,4 @@
-CREATE TABLE "product_relations" (
+CREATE TABLE IF NOT EXISTS "product_relations" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"product_id" integer NOT NULL,
 	"related_product_id" integer NOT NULL,

@@ -1,4 +1,4 @@
-CREATE TABLE "services" (
+CREATE TABLE IF NOT EXISTS "services" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"icon_name" varchar(100) NOT NULL,
 	"title" varchar(255) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE "services" (
 	"updated_at" timestamp (3) DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "legal_policies" (
+CREATE TABLE IF NOT EXISTS "legal_policies" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"slug" varchar(255) NOT NULL,
 	"title" varchar(255) NOT NULL,

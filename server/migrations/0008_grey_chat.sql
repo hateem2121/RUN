@@ -1,4 +1,4 @@
-CREATE TABLE "sustainability_metric_history" (
+CREATE TABLE IF NOT EXISTS "sustainability_metric_history" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"metric_id" integer NOT NULL,
 	"value" varchar(100) NOT NULL,
@@ -7,11 +7,11 @@ CREATE TABLE "sustainability_metric_history" (
 	"notes" text
 );
 --> statement-breakpoint
-ALTER TABLE "blog_posts" DROP CONSTRAINT "blog_posts_featured_image_id_media_assets_id_fk";
+ALTER TABLE "blog_posts" DROP CONSTRAINT IF EXISTS "blog_posts_featured_image_id_media_assets_id_fk";
 --> statement-breakpoint
-ALTER TABLE "blog_posts" DROP CONSTRAINT "blog_posts_category_id_blog_categories_id_fk";
+ALTER TABLE "blog_posts" DROP CONSTRAINT IF EXISTS "blog_posts_category_id_blog_categories_id_fk";
 --> statement-breakpoint
-ALTER TABLE "blog_posts" DROP CONSTRAINT "blog_posts_author_id_users_id_fk";
+ALTER TABLE "blog_posts" DROP CONSTRAINT IF EXISTS "blog_posts_author_id_users_id_fk";
 --> statement-breakpoint
 ALTER TABLE "webhook_subscriptions" ALTER COLUMN "is_active" SET DATA TYPE boolean;--> statement-breakpoint
 ALTER TABLE "webhook_subscriptions" ALTER COLUMN "is_active" SET DEFAULT true;--> statement-breakpoint

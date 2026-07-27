@@ -37,7 +37,8 @@ jobs:
       - name: "🚀 Start Production Server"
         env:
           PORT: 5002
-          DATABASE_URL: ${{ secrets.DATABASE_URL_PREVIEW }}
+          MOCK_DB: "true"
+          DATABASE_URL: postgres://mockuser:mockpass@localhost:5432/mockdb
           SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"
           ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only"
           INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
@@ -50,7 +51,8 @@ jobs:
         env:
           CI: true
           E2E_BASE_URL: http://127.0.0.1:5002
-          DATABASE_URL: ${{ secrets.DATABASE_URL_PREVIEW }}
+          MOCK_DB: "true"
+          DATABASE_URL: postgres://mockuser:mockpass@localhost:5432/mockdb
           SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"
           ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only"
           INITIAL_ADMIN_EMAIL: "admin@runapparel.com"

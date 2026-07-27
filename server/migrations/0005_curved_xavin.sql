@@ -1,4 +1,4 @@
-ALTER TABLE "about_map_locations" ADD COLUMN "sort_order" integer DEFAULT 0;--> statement-breakpoint
+ALTER TABLE "about_map_locations" ADD COLUMN IF NOT EXISTS "sort_order" integer DEFAULT 0;--> statement-breakpoint
 CREATE INDEX "about_map_locations_sort_order_idx" ON "about_map_locations" USING btree ("sort_order");--> statement-breakpoint
 CREATE INDEX "anim_errors_type_resolved_idx" ON "animation_errors" USING btree ("error_type","resolved");--> statement-breakpoint
 CREATE INDEX "anim_errors_component_idx" ON "animation_errors" USING btree ("component_name");--> statement-breakpoint

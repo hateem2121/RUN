@@ -1,4 +1,4 @@
-CREATE TABLE "about_hero" (
+CREATE TABLE IF NOT EXISTS "about_hero" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"subtitle" text,
@@ -13,7 +13,7 @@ CREATE TABLE "about_hero" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "about_map_locations" (
+CREATE TABLE IF NOT EXISTS "about_map_locations" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"latitude" numeric(10, 8) NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE "about_map_locations" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "about_sections" (
+CREATE TABLE IF NOT EXISTS "about_sections" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"content" text,
@@ -44,7 +44,7 @@ CREATE TABLE "about_sections" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "about_statistics" (
+CREATE TABLE IF NOT EXISTS "about_statistics" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"label" varchar(255) NOT NULL,
 	"value" varchar(100) NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE "about_statistics" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "about_team_messages" (
+CREATE TABLE IF NOT EXISTS "about_team_messages" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"position" varchar(255),
@@ -71,7 +71,7 @@ CREATE TABLE "about_team_messages" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "about_timeline_entries" (
+CREATE TABLE IF NOT EXISTS "about_timeline_entries" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"year" varchar(10) NOT NULL,
 	"title" varchar(255) NOT NULL,
@@ -83,7 +83,7 @@ CREATE TABLE "about_timeline_entries" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "accessories" (
+CREATE TABLE IF NOT EXISTS "accessories" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"description" text,
@@ -101,7 +101,7 @@ CREATE TABLE "accessories" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE "animation_errors" (
+CREATE TABLE IF NOT EXISTS "animation_errors" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"error_type" varchar(100) NOT NULL,
 	"message" text NOT NULL,
@@ -115,7 +115,7 @@ CREATE TABLE "animation_errors" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "audit_configuration" (
+CREATE TABLE IF NOT EXISTS "audit_configuration" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"enabled" boolean DEFAULT true,
 	"track_all_tables" boolean DEFAULT false,
@@ -134,7 +134,7 @@ CREATE TABLE "audit_configuration" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "audit_logs" (
+CREATE TABLE IF NOT EXISTS "audit_logs" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"action" varchar(50) NOT NULL,
 	"table_name" varchar(100) NOT NULL,
@@ -156,7 +156,7 @@ CREATE TABLE "audit_logs" (
 	"retention_period" integer DEFAULT 2555
 );
 --> statement-breakpoint
-CREATE TABLE "categories" (
+CREATE TABLE IF NOT EXISTS "categories" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"slug" varchar(255) NOT NULL,
@@ -180,7 +180,7 @@ CREATE TABLE "categories" (
 	CONSTRAINT "categories_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
-CREATE TABLE "certificates" (
+CREATE TABLE IF NOT EXISTS "certificates" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"type" varchar(100) DEFAULT 'sustainability',
@@ -199,7 +199,7 @@ CREATE TABLE "certificates" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE "contact_inquiries" (
+CREATE TABLE IF NOT EXISTS "contact_inquiries" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"email" varchar(255) NOT NULL,
@@ -218,7 +218,7 @@ CREATE TABLE "contact_inquiries" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "contact_page_configurations" (
+CREATE TABLE IF NOT EXISTS "contact_page_configurations" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255),
 	"description" text,
@@ -233,7 +233,7 @@ CREATE TABLE "contact_page_configurations" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "fabrics" (
+CREATE TABLE IF NOT EXISTS "fabrics" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"description" text,
@@ -251,7 +251,7 @@ CREATE TABLE "fabrics" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE "fibers" (
+CREATE TABLE IF NOT EXISTS "fibers" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"type" varchar(100) NOT NULL,
@@ -264,7 +264,7 @@ CREATE TABLE "fibers" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE "folders" (
+CREATE TABLE IF NOT EXISTS "folders" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"description" text,
@@ -278,7 +278,7 @@ CREATE TABLE "folders" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE "homepage_featured_products_settings" (
+CREATE TABLE IF NOT EXISTS "homepage_featured_products_settings" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255),
 	"max_products" integer DEFAULT 8,
@@ -294,7 +294,7 @@ CREATE TABLE "homepage_featured_products_settings" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "homepage_hero" (
+CREATE TABLE IF NOT EXISTS "homepage_hero" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"subtitle" text,
@@ -309,7 +309,7 @@ CREATE TABLE "homepage_hero" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "homepage_process_cards" (
+CREATE TABLE IF NOT EXISTS "homepage_process_cards" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"description" text,
@@ -326,7 +326,7 @@ CREATE TABLE "homepage_process_cards" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "homepage_sections" (
+CREATE TABLE IF NOT EXISTS "homepage_sections" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"title" varchar(255),
@@ -341,7 +341,7 @@ CREATE TABLE "homepage_sections" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "homepage_slogans" (
+CREATE TABLE IF NOT EXISTS "homepage_slogans" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"text" text NOT NULL,
 	"position" varchar(50),
@@ -353,7 +353,7 @@ CREATE TABLE "homepage_slogans" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "homepage_sustainability" (
+CREATE TABLE IF NOT EXISTS "homepage_sustainability" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"description" text,
@@ -366,7 +366,7 @@ CREATE TABLE "homepage_sustainability" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "logo_animation_settings" (
+CREATE TABLE IF NOT EXISTS "logo_animation_settings" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"duration" integer DEFAULT 2000,
@@ -381,7 +381,7 @@ CREATE TABLE "logo_animation_settings" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "manufacturing_capabilities" (
+CREATE TABLE IF NOT EXISTS "manufacturing_capabilities" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"description" text,
@@ -395,7 +395,7 @@ CREATE TABLE "manufacturing_capabilities" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "manufacturing_hero" (
+CREATE TABLE IF NOT EXISTS "manufacturing_hero" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"subtitle" text,
@@ -408,7 +408,7 @@ CREATE TABLE "manufacturing_hero" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "manufacturing_processes" (
+CREATE TABLE IF NOT EXISTS "manufacturing_processes" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"description" text,
@@ -422,7 +422,7 @@ CREATE TABLE "manufacturing_processes" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "manufacturing_qualities" (
+CREATE TABLE IF NOT EXISTS "manufacturing_qualities" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"standard" varchar(255) NOT NULL,
 	"description" text,
@@ -434,7 +434,7 @@ CREATE TABLE "manufacturing_qualities" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "media_assets" (
+CREATE TABLE IF NOT EXISTS "media_assets" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"filename" varchar(255) NOT NULL,
 	"original_name" varchar(255),
@@ -461,7 +461,7 @@ CREATE TABLE "media_assets" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE "navigation_glassmorphism_settings" (
+CREATE TABLE IF NOT EXISTS "navigation_glassmorphism_settings" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"opacity" numeric(3, 2) DEFAULT '0.8',
 	"blur" integer DEFAULT 10,
@@ -475,7 +475,7 @@ CREATE TABLE "navigation_glassmorphism_settings" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "navigation_items" (
+CREATE TABLE IF NOT EXISTS "navigation_items" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"label" varchar(255) NOT NULL,
 	"url" varchar(255),
@@ -497,7 +497,7 @@ CREATE TABLE "navigation_items" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE "performance_metrics" (
+CREATE TABLE IF NOT EXISTS "performance_metrics" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"metric_type" varchar(100) NOT NULL,
 	"component_name" varchar(255) NOT NULL,
@@ -509,7 +509,7 @@ CREATE TABLE "performance_metrics" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "products" (
+CREATE TABLE IF NOT EXISTS "products" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"slug" varchar(255) NOT NULL,
@@ -550,7 +550,7 @@ CREATE TABLE "products" (
 	CONSTRAINT "products_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
-CREATE TABLE "size_charts" (
+CREATE TABLE IF NOT EXISTS "size_charts" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"category" varchar(100),
@@ -565,7 +565,7 @@ CREATE TABLE "size_charts" (
 	"deleted_at" timestamp
 );
 --> statement-breakpoint
-CREATE TABLE "storage_analysis_results" (
+CREATE TABLE IF NOT EXISTS "storage_analysis_results" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"timestamp" varchar(50) NOT NULL,
 	"total_files" integer NOT NULL,
@@ -580,7 +580,7 @@ CREATE TABLE "storage_analysis_results" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "storage_change_logs" (
+CREATE TABLE IF NOT EXISTS "storage_change_logs" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"timestamp" varchar(50) NOT NULL,
 	"action" varchar(20) NOT NULL,
@@ -590,7 +590,7 @@ CREATE TABLE "storage_change_logs" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "sustainability_features" (
+CREATE TABLE IF NOT EXISTS "sustainability_features" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"description" text,
@@ -603,7 +603,7 @@ CREATE TABLE "sustainability_features" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "sustainability_goals" (
+CREATE TABLE IF NOT EXISTS "sustainability_goals" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"description" text,
@@ -618,7 +618,7 @@ CREATE TABLE "sustainability_goals" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "sustainability_hero" (
+CREATE TABLE IF NOT EXISTS "sustainability_hero" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"subtitle" text,
@@ -630,7 +630,7 @@ CREATE TABLE "sustainability_hero" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "sustainability_initiatives" (
+CREATE TABLE IF NOT EXISTS "sustainability_initiatives" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"description" text,
@@ -645,7 +645,7 @@ CREATE TABLE "sustainability_initiatives" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "sustainability_metrics" (
+CREATE TABLE IF NOT EXISTS "sustainability_metrics" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"value" varchar(100) NOT NULL,
@@ -659,7 +659,7 @@ CREATE TABLE "sustainability_metrics" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "technology_cta" (
+CREATE TABLE IF NOT EXISTS "technology_cta" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"content" text,
@@ -672,7 +672,7 @@ CREATE TABLE "technology_cta" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "technology_equipment" (
+CREATE TABLE IF NOT EXISTS "technology_equipment" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"manufacturer" varchar(255),
@@ -686,7 +686,7 @@ CREATE TABLE "technology_equipment" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "technology_gradient_settings" (
+CREATE TABLE IF NOT EXISTS "technology_gradient_settings" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"gradient_type" varchar(100) NOT NULL,
 	"colors" jsonb,
@@ -698,7 +698,7 @@ CREATE TABLE "technology_gradient_settings" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "technology_hero" (
+CREATE TABLE IF NOT EXISTS "technology_hero" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"subtitle" text,
@@ -710,7 +710,7 @@ CREATE TABLE "technology_hero" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "technology_innovations" (
+CREATE TABLE IF NOT EXISTS "technology_innovations" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"description" text,
@@ -723,7 +723,7 @@ CREATE TABLE "technology_innovations" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "technology_research" (
+CREATE TABLE IF NOT EXISTS "technology_research" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"description" text,
@@ -739,7 +739,7 @@ CREATE TABLE "technology_research" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "technology_roadmap" (
+CREATE TABLE IF NOT EXISTS "technology_roadmap" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"description" text,
@@ -753,7 +753,7 @@ CREATE TABLE "technology_roadmap" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE "unified_sustainability" (
+CREATE TABLE IF NOT EXISTS "unified_sustainability" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"content" text,
