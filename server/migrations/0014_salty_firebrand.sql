@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS "legal_policies" (
 	"updated_at" timestamp (3) DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE INDEX "services_is_active_idx" ON "services" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "services_sort_order_idx" ON "services" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "legal_policies_slug_idx" ON "legal_policies" USING btree ("slug");--> statement-breakpoint
-CREATE UNIQUE INDEX "legal_policies_slug_unique_active" ON "legal_policies" USING btree ("slug");
+CREATE INDEX IF NOT EXISTS "services_is_active_idx" ON "services" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "services_sort_order_idx" ON "services" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "legal_policies_slug_idx" ON "legal_policies" USING btree ("slug");--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "legal_policies_slug_unique_active" ON "legal_policies" USING btree ("slug");

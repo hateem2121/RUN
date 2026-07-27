@@ -842,25 +842,25 @@ ALTER TABLE "technology_hero" DROP CONSTRAINT IF EXISTS "technology_hero_video_i
 ALTER TABLE "technology_hero" ADD CONSTRAINT "technology_hero_video_id_media_assets_id_fk" FOREIGN KEY ("video_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "technology_innovations" DROP CONSTRAINT IF EXISTS "technology_innovations_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "technology_innovations" ADD CONSTRAINT "technology_innovations_image_id_media_assets_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "categories_is_active_idx" ON "categories" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "categories_parent_id_idx" ON "categories" USING btree ("parent_id");--> statement-breakpoint
-CREATE INDEX "categories_active_created_idx" ON "categories" USING btree ("is_active","created_at" DESC NULLS LAST);--> statement-breakpoint
-CREATE INDEX "categories_featured_idx" ON "categories" USING btree ("featured_on_homepage");--> statement-breakpoint
-CREATE INDEX "categories_full_path_idx" ON "categories" USING btree ("full_path");--> statement-breakpoint
-CREATE INDEX "media_type_active_idx" ON "media_assets" USING btree ("type","is_active");--> statement-breakpoint
-CREATE INDEX "media_folder_id_idx" ON "media_assets" USING btree ("folder_id");--> statement-breakpoint
-CREATE INDEX "media_created_at_idx" ON "media_assets" USING btree ("created_at" DESC NULLS LAST);--> statement-breakpoint
-CREATE INDEX "media_active_created_idx" ON "media_assets" USING btree ("is_active","created_at" DESC NULLS LAST);--> statement-breakpoint
-CREATE INDEX "media_mime_type_idx" ON "media_assets" USING btree ("mime_type");--> statement-breakpoint
-CREATE INDEX "media_hot_query_idx" ON "media_assets" USING btree ("deleted_at","is_active","created_at" DESC NULLS LAST);--> statement-breakpoint
-CREATE INDEX "media_id_active_idx" ON "media_assets" USING btree ("id","is_active","deleted_at");--> statement-breakpoint
-CREATE INDEX "media_original_name_idx" ON "media_assets" USING btree ("original_name");--> statement-breakpoint
-CREATE INDEX "products_category_id_idx" ON "products" USING btree ("category_id");--> statement-breakpoint
-CREATE INDEX "products_is_active_idx" ON "products" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "products_is_featured_idx" ON "products" USING btree ("is_featured");--> statement-breakpoint
-CREATE INDEX "products_active_created_idx" ON "products" USING btree ("is_active","created_at" DESC NULLS LAST);--> statement-breakpoint
-CREATE INDEX "products_featured_active_idx" ON "products" USING btree ("is_featured","is_active");--> statement-breakpoint
-CREATE INDEX "products_category_active_idx" ON "products" USING btree ("category_id","is_active");--> statement-breakpoint
-CREATE INDEX "products_sku_idx" ON "products" USING btree ("sku");--> statement-breakpoint
-CREATE INDEX "products_fabric_id_idx" ON "products" USING btree ("fabric_id");--> statement-breakpoint
-CREATE INDEX "products_hot_query_idx" ON "products" USING btree ("deleted_at","is_active","created_at" DESC NULLS LAST);
+CREATE INDEX IF NOT EXISTS "categories_is_active_idx" ON "categories" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "categories_parent_id_idx" ON "categories" USING btree ("parent_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "categories_active_created_idx" ON "categories" USING btree ("is_active","created_at" DESC NULLS LAST);--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "categories_featured_idx" ON "categories" USING btree ("featured_on_homepage");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "categories_full_path_idx" ON "categories" USING btree ("full_path");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "media_type_active_idx" ON "media_assets" USING btree ("type","is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "media_folder_id_idx" ON "media_assets" USING btree ("folder_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "media_created_at_idx" ON "media_assets" USING btree ("created_at" DESC NULLS LAST);--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "media_active_created_idx" ON "media_assets" USING btree ("is_active","created_at" DESC NULLS LAST);--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "media_mime_type_idx" ON "media_assets" USING btree ("mime_type");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "media_hot_query_idx" ON "media_assets" USING btree ("deleted_at","is_active","created_at" DESC NULLS LAST);--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "media_id_active_idx" ON "media_assets" USING btree ("id","is_active","deleted_at");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "media_original_name_idx" ON "media_assets" USING btree ("original_name");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "products_category_id_idx" ON "products" USING btree ("category_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "products_is_active_idx" ON "products" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "products_is_featured_idx" ON "products" USING btree ("is_featured");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "products_active_created_idx" ON "products" USING btree ("is_active","created_at" DESC NULLS LAST);--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "products_featured_active_idx" ON "products" USING btree ("is_featured","is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "products_category_active_idx" ON "products" USING btree ("category_id","is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "products_sku_idx" ON "products" USING btree ("sku");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "products_fabric_id_idx" ON "products" USING btree ("fabric_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "products_hot_query_idx" ON "products" USING btree ("deleted_at","is_active","created_at" DESC NULLS LAST);

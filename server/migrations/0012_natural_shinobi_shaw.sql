@@ -7,6 +7,6 @@ CREATE TABLE IF NOT EXISTS "cache_entries" (
 	CONSTRAINT "cache_entries_key_unique" UNIQUE("key")
 );
 --> statement-breakpoint
-CREATE INDEX "cache_entries_key_idx" ON "cache_entries" USING btree ("key");--> statement-breakpoint
-CREATE INDEX "cache_entries_expiry_idx" ON "cache_entries" USING btree ("expiry");--> statement-breakpoint
-CREATE INDEX "categories_primary_image_id_idx" ON "categories" USING btree ("primary_image_id");
+CREATE INDEX IF NOT EXISTS "cache_entries_key_idx" ON "cache_entries" USING btree ("key");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "cache_entries_expiry_idx" ON "cache_entries" USING btree ("expiry");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "categories_primary_image_id_idx" ON "categories" USING btree ("primary_image_id");

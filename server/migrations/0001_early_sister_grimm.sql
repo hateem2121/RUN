@@ -378,12 +378,12 @@ ALTER TABLE "fabric_compositions" DROP CONSTRAINT IF EXISTS "fabric_compositions
 ALTER TABLE "fabric_compositions" ADD CONSTRAINT "fabric_compositions_fabric_id_fabrics_id_fk" FOREIGN KEY ("fabric_id") REFERENCES "public"."fabrics"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "fabric_compositions" DROP CONSTRAINT IF EXISTS "fabric_compositions_fiber_id_fibers_id_fk";--> statement-breakpoint
 ALTER TABLE "fabric_compositions" ADD CONSTRAINT "fabric_compositions_fiber_id_fibers_id_fk" FOREIGN KEY ("fiber_id") REFERENCES "public"."fibers"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "inquiries_status_idx" ON "inquiries" USING btree ("status");--> statement-breakpoint
-CREATE INDEX "inquiries_submitted_at_idx" ON "inquiries" USING btree ("submitted_at" DESC NULLS LAST);--> statement-breakpoint
-CREATE INDEX "inquiries_email_idx" ON "inquiries" USING btree ("email");--> statement-breakpoint
-CREATE INDEX "inquiries_source_idx" ON "inquiries" USING btree ("source");--> statement-breakpoint
-CREATE INDEX "inquiries_status_submitted_idx" ON "inquiries" USING btree ("status","submitted_at" DESC NULLS LAST);--> statement-breakpoint
-CREATE INDEX "IDX_session_expire" ON "sessions" USING btree ("expire");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "inquiries_status_idx" ON "inquiries" USING btree ("status");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "inquiries_submitted_at_idx" ON "inquiries" USING btree ("submitted_at" DESC NULLS LAST);--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "inquiries_email_idx" ON "inquiries" USING btree ("email");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "inquiries_source_idx" ON "inquiries" USING btree ("source");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "inquiries_status_submitted_idx" ON "inquiries" USING btree ("status","submitted_at" DESC NULLS LAST);--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "sessions" USING btree ("expire");--> statement-breakpoint
 ALTER TABLE "fabrics" DROP CONSTRAINT IF EXISTS "fabrics_visual_swatch_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "fabrics" ADD CONSTRAINT "fabrics_visual_swatch_id_media_assets_id_fk" FOREIGN KEY ("visual_swatch_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "manufacturing_qualities" DROP CONSTRAINT IF EXISTS "manufacturing_qualities_image_id_media_assets_id_fk";--> statement-breakpoint
@@ -392,97 +392,97 @@ ALTER TABLE "technology_hero" DROP CONSTRAINT IF EXISTS "technology_hero_backgro
 ALTER TABLE "technology_hero" ADD CONSTRAINT "technology_hero_background_media_id_media_assets_id_fk" FOREIGN KEY ("background_media_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "unified_sustainability" DROP CONSTRAINT IF EXISTS "unified_sustainability_background_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "unified_sustainability" ADD CONSTRAINT "unified_sustainability_background_image_id_media_assets_id_fk" FOREIGN KEY ("background_image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "about_hero_is_active_idx" ON "about_hero" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "about_hero_image_id_idx" ON "about_hero" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "about_hero_video_id_idx" ON "about_hero" USING btree ("video_id");--> statement-breakpoint
-CREATE INDEX "about_hero_background_media_id_idx" ON "about_hero" USING btree ("background_media_id");--> statement-breakpoint
-CREATE INDEX "about_map_locations_is_active_idx" ON "about_map_locations" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "about_sections_is_active_idx" ON "about_sections" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "about_sections_image_id_idx" ON "about_sections" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "about_sections_sort_order_idx" ON "about_sections" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "about_statistics_is_active_idx" ON "about_statistics" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "about_statistics_sort_order_idx" ON "about_statistics" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "about_team_messages_is_active_idx" ON "about_team_messages" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "about_team_messages_image_id_idx" ON "about_team_messages" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "about_team_messages_sort_order_idx" ON "about_team_messages" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "about_timeline_entries_is_active_idx" ON "about_timeline_entries" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "about_timeline_entries_image_id_idx" ON "about_timeline_entries" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "about_timeline_entries_sort_order_idx" ON "about_timeline_entries" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "accessories_sku_idx" ON "accessories" USING btree ("sku");--> statement-breakpoint
-CREATE INDEX "accessories_is_active_idx" ON "accessories" USING btree ("is_active");--> statement-breakpoint
-CREATE UNIQUE INDEX "categories_slug_unique_active" ON "categories" USING btree ("slug") WHERE "categories"."deleted_at" IS NULL;--> statement-breakpoint
-CREATE INDEX "certificates_show_on_sustainability_idx" ON "certificates" USING btree ("show_on_sustainability_page");--> statement-breakpoint
-CREATE INDEX "certificates_is_active_idx" ON "certificates" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "fabrics_is_active_idx" ON "fabrics" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "fabrics_fabric_type_idx" ON "fabrics" USING btree ("fabric_type");--> statement-breakpoint
-CREATE INDEX "fabrics_sport_idx" ON "fabrics" USING btree ("sport");--> statement-breakpoint
-CREATE INDEX "fabrics_seasonality_idx" ON "fabrics" USING btree ("seasonality");--> statement-breakpoint
-CREATE INDEX "fabrics_deleted_at_idx" ON "fabrics" USING btree ("deleted_at");--> statement-breakpoint
-CREATE INDEX "fabrics_active_query_idx" ON "fabrics" USING btree ("deleted_at","is_active");--> statement-breakpoint
-CREATE INDEX "fibers_type_idx" ON "fibers" USING btree ("type");--> statement-breakpoint
-CREATE INDEX "fibers_is_active_idx" ON "fibers" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "fibers_deleted_at_idx" ON "fibers" USING btree ("deleted_at");--> statement-breakpoint
-CREATE INDEX "homepage_hero_is_active_idx" ON "homepage_hero" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "homepage_hero_primary_image_id_idx" ON "homepage_hero" USING btree ("primary_image_id");--> statement-breakpoint
-CREATE INDEX "homepage_hero_background_image_id_idx" ON "homepage_hero" USING btree ("background_image_id");--> statement-breakpoint
-CREATE INDEX "homepage_hero_sort_order_idx" ON "homepage_hero" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "homepage_process_cards_is_active_idx" ON "homepage_process_cards" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "homepage_process_cards_image_id_idx" ON "homepage_process_cards" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "homepage_process_cards_icon_media_id_idx" ON "homepage_process_cards" USING btree ("icon_media_id");--> statement-breakpoint
-CREATE INDEX "homepage_process_cards_sort_order_idx" ON "homepage_process_cards" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "homepage_sections_is_active_idx" ON "homepage_sections" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "homepage_sections_sort_order_idx" ON "homepage_sections" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "homepage_slogans_is_active_idx" ON "homepage_slogans" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "homepage_slogans_sort_order_idx" ON "homepage_slogans" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "homepage_sustainability_is_active_idx" ON "homepage_sustainability" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "homepage_sustainability_image_id_idx" ON "homepage_sustainability" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "manufacturing_capabilities_is_active_idx" ON "manufacturing_capabilities" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "manufacturing_capabilities_image_id_idx" ON "manufacturing_capabilities" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "manufacturing_capabilities_sort_order_idx" ON "manufacturing_capabilities" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "manufacturing_hero_is_active_idx" ON "manufacturing_hero" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "manufacturing_hero_image_id_idx" ON "manufacturing_hero" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "manufacturing_hero_video_id_idx" ON "manufacturing_hero" USING btree ("video_id");--> statement-breakpoint
-CREATE INDEX "manufacturing_hero_background_media_id_idx" ON "manufacturing_hero" USING btree ("background_media_id");--> statement-breakpoint
-CREATE INDEX "manufacturing_processes_is_active_idx" ON "manufacturing_processes" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "manufacturing_processes_image_id_idx" ON "manufacturing_processes" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "manufacturing_processes_sort_order_idx" ON "manufacturing_processes" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "manufacturing_qualities_is_active_idx" ON "manufacturing_qualities" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "manufacturing_qualities_image_id_idx" ON "manufacturing_qualities" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "manufacturing_qualities_sort_order_idx" ON "manufacturing_qualities" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "media_uploaded_at_idx" ON "media_assets" USING btree ("uploaded_at" DESC NULLS LAST);--> statement-breakpoint
-CREATE INDEX "products_url_path_active_idx" ON "products" USING btree ("url_path","is_active","deleted_at");--> statement-breakpoint
-CREATE INDEX "products_primary_image_id_idx" ON "products" USING btree ("primary_image_id");--> statement-breakpoint
-CREATE INDEX "products_primary_video_id_idx" ON "products" USING btree ("primary_video_id");--> statement-breakpoint
-CREATE INDEX "products_model_file_id_idx" ON "products" USING btree ("model_file_id");--> statement-breakpoint
-CREATE INDEX "size_charts_is_active_idx" ON "size_charts" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "size_charts_deleted_at_idx" ON "size_charts" USING btree ("deleted_at");--> statement-breakpoint
-CREATE INDEX "size_charts_active_query_idx" ON "size_charts" USING btree ("is_active","deleted_at");--> statement-breakpoint
-CREATE INDEX "sustainability_goals_is_active_idx" ON "sustainability_goals" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "sustainability_goals_sort_order_idx" ON "sustainability_goals" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "sustainability_hero_is_active_idx" ON "sustainability_hero" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "sustainability_hero_image_id_idx" ON "sustainability_hero" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "sustainability_hero_video_id_idx" ON "sustainability_hero" USING btree ("video_id");--> statement-breakpoint
-CREATE INDEX "sustainability_initiatives_is_active_idx" ON "sustainability_initiatives" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "sustainability_initiatives_image_id_idx" ON "sustainability_initiatives" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "sustainability_initiatives_sort_order_idx" ON "sustainability_initiatives" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "sustainability_metrics_is_active_idx" ON "sustainability_metrics" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "sustainability_metrics_sort_order_idx" ON "sustainability_metrics" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "technology_cta_is_active_idx" ON "technology_cta" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "technology_equipment_is_active_idx" ON "technology_equipment" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "technology_equipment_image_id_idx" ON "technology_equipment" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "technology_equipment_sort_order_idx" ON "technology_equipment" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "technology_gradient_settings_is_active_idx" ON "technology_gradient_settings" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "technology_hero_is_active_idx" ON "technology_hero" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "technology_hero_image_id_idx" ON "technology_hero" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "technology_hero_video_id_idx" ON "technology_hero" USING btree ("video_id");--> statement-breakpoint
-CREATE INDEX "technology_hero_background_media_id_idx" ON "technology_hero" USING btree ("background_media_id");--> statement-breakpoint
-CREATE INDEX "technology_innovations_is_active_idx" ON "technology_innovations" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "technology_innovations_image_id_idx" ON "technology_innovations" USING btree ("image_id");--> statement-breakpoint
-CREATE INDEX "technology_innovations_sort_order_idx" ON "technology_innovations" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "technology_research_is_active_idx" ON "technology_research" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "technology_research_sort_order_idx" ON "technology_research" USING btree ("sort_order");--> statement-breakpoint
-CREATE INDEX "technology_roadmap_is_active_idx" ON "technology_roadmap" USING btree ("is_active");--> statement-breakpoint
-CREATE INDEX "technology_roadmap_sort_order_idx" ON "technology_roadmap" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_hero_is_active_idx" ON "about_hero" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_hero_image_id_idx" ON "about_hero" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_hero_video_id_idx" ON "about_hero" USING btree ("video_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_hero_background_media_id_idx" ON "about_hero" USING btree ("background_media_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_map_locations_is_active_idx" ON "about_map_locations" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_sections_is_active_idx" ON "about_sections" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_sections_image_id_idx" ON "about_sections" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_sections_sort_order_idx" ON "about_sections" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_statistics_is_active_idx" ON "about_statistics" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_statistics_sort_order_idx" ON "about_statistics" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_team_messages_is_active_idx" ON "about_team_messages" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_team_messages_image_id_idx" ON "about_team_messages" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_team_messages_sort_order_idx" ON "about_team_messages" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_timeline_entries_is_active_idx" ON "about_timeline_entries" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_timeline_entries_image_id_idx" ON "about_timeline_entries" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "about_timeline_entries_sort_order_idx" ON "about_timeline_entries" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "accessories_sku_idx" ON "accessories" USING btree ("sku");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "accessories_is_active_idx" ON "accessories" USING btree ("is_active");--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "categories_slug_unique_active" ON "categories" USING btree ("slug") WHERE "categories"."deleted_at" IS NULL;--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "certificates_show_on_sustainability_idx" ON "certificates" USING btree ("show_on_sustainability_page");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "certificates_is_active_idx" ON "certificates" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fabrics_is_active_idx" ON "fabrics" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fabrics_fabric_type_idx" ON "fabrics" USING btree ("fabric_type");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fabrics_sport_idx" ON "fabrics" USING btree ("sport");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fabrics_seasonality_idx" ON "fabrics" USING btree ("seasonality");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fabrics_deleted_at_idx" ON "fabrics" USING btree ("deleted_at");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fabrics_active_query_idx" ON "fabrics" USING btree ("deleted_at","is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fibers_type_idx" ON "fibers" USING btree ("type");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fibers_is_active_idx" ON "fibers" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "fibers_deleted_at_idx" ON "fibers" USING btree ("deleted_at");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "homepage_hero_is_active_idx" ON "homepage_hero" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "homepage_hero_primary_image_id_idx" ON "homepage_hero" USING btree ("primary_image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "homepage_hero_background_image_id_idx" ON "homepage_hero" USING btree ("background_image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "homepage_hero_sort_order_idx" ON "homepage_hero" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "homepage_process_cards_is_active_idx" ON "homepage_process_cards" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "homepage_process_cards_image_id_idx" ON "homepage_process_cards" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "homepage_process_cards_icon_media_id_idx" ON "homepage_process_cards" USING btree ("icon_media_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "homepage_process_cards_sort_order_idx" ON "homepage_process_cards" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "homepage_sections_is_active_idx" ON "homepage_sections" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "homepage_sections_sort_order_idx" ON "homepage_sections" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "homepage_slogans_is_active_idx" ON "homepage_slogans" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "homepage_slogans_sort_order_idx" ON "homepage_slogans" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "homepage_sustainability_is_active_idx" ON "homepage_sustainability" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "homepage_sustainability_image_id_idx" ON "homepage_sustainability" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "manufacturing_capabilities_is_active_idx" ON "manufacturing_capabilities" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "manufacturing_capabilities_image_id_idx" ON "manufacturing_capabilities" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "manufacturing_capabilities_sort_order_idx" ON "manufacturing_capabilities" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "manufacturing_hero_is_active_idx" ON "manufacturing_hero" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "manufacturing_hero_image_id_idx" ON "manufacturing_hero" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "manufacturing_hero_video_id_idx" ON "manufacturing_hero" USING btree ("video_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "manufacturing_hero_background_media_id_idx" ON "manufacturing_hero" USING btree ("background_media_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "manufacturing_processes_is_active_idx" ON "manufacturing_processes" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "manufacturing_processes_image_id_idx" ON "manufacturing_processes" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "manufacturing_processes_sort_order_idx" ON "manufacturing_processes" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "manufacturing_qualities_is_active_idx" ON "manufacturing_qualities" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "manufacturing_qualities_image_id_idx" ON "manufacturing_qualities" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "manufacturing_qualities_sort_order_idx" ON "manufacturing_qualities" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "media_uploaded_at_idx" ON "media_assets" USING btree ("uploaded_at" DESC NULLS LAST);--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "products_url_path_active_idx" ON "products" USING btree ("url_path","is_active","deleted_at");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "products_primary_image_id_idx" ON "products" USING btree ("primary_image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "products_primary_video_id_idx" ON "products" USING btree ("primary_video_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "products_model_file_id_idx" ON "products" USING btree ("model_file_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "size_charts_is_active_idx" ON "size_charts" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "size_charts_deleted_at_idx" ON "size_charts" USING btree ("deleted_at");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "size_charts_active_query_idx" ON "size_charts" USING btree ("is_active","deleted_at");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "sustainability_goals_is_active_idx" ON "sustainability_goals" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "sustainability_goals_sort_order_idx" ON "sustainability_goals" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "sustainability_hero_is_active_idx" ON "sustainability_hero" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "sustainability_hero_image_id_idx" ON "sustainability_hero" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "sustainability_hero_video_id_idx" ON "sustainability_hero" USING btree ("video_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "sustainability_initiatives_is_active_idx" ON "sustainability_initiatives" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "sustainability_initiatives_image_id_idx" ON "sustainability_initiatives" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "sustainability_initiatives_sort_order_idx" ON "sustainability_initiatives" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "sustainability_metrics_is_active_idx" ON "sustainability_metrics" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "sustainability_metrics_sort_order_idx" ON "sustainability_metrics" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_cta_is_active_idx" ON "technology_cta" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_equipment_is_active_idx" ON "technology_equipment" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_equipment_image_id_idx" ON "technology_equipment" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_equipment_sort_order_idx" ON "technology_equipment" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_gradient_settings_is_active_idx" ON "technology_gradient_settings" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_hero_is_active_idx" ON "technology_hero" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_hero_image_id_idx" ON "technology_hero" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_hero_video_id_idx" ON "technology_hero" USING btree ("video_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_hero_background_media_id_idx" ON "technology_hero" USING btree ("background_media_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_innovations_is_active_idx" ON "technology_innovations" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_innovations_image_id_idx" ON "technology_innovations" USING btree ("image_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_innovations_sort_order_idx" ON "technology_innovations" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_research_is_active_idx" ON "technology_research" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_research_sort_order_idx" ON "technology_research" USING btree ("sort_order");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_roadmap_is_active_idx" ON "technology_roadmap" USING btree ("is_active");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "technology_roadmap_sort_order_idx" ON "technology_roadmap" USING btree ("sort_order");--> statement-breakpoint
 ALTER TABLE "categories" DROP COLUMN IF EXISTS "product_count";--> statement-breakpoint
 ALTER TABLE "fabrics" DROP COLUMN IF EXISTS "composition";--> statement-breakpoint
 ALTER TABLE "manufacturing_qualities" DROP COLUMN IF EXISTS "standard";--> statement-breakpoint

@@ -4,4 +4,4 @@ CREATE TABLE IF NOT EXISTS "sessions" (
 	"expire" timestamp (6) NOT NULL
 );
 --> statement-breakpoint
-CREATE INDEX "sessions_expire_idx" ON "sessions" USING btree ("expire");
+CREATE INDEX IF NOT EXISTS "sessions_expire_idx" ON "sessions" USING btree ("expire");

@@ -17,7 +17,7 @@ ALTER TABLE "webhook_subscriptions" ALTER COLUMN "is_active" SET DATA TYPE boole
 ALTER TABLE "webhook_subscriptions" ALTER COLUMN "is_active" SET DEFAULT true;--> statement-breakpoint
 ALTER TABLE "sustainability_metric_history" DROP CONSTRAINT IF EXISTS "sustainability_metric_history_metric_id_sustainability_metrics_id_fk";--> statement-breakpoint
 ALTER TABLE "sustainability_metric_history" ADD CONSTRAINT "sustainability_metric_history_metric_id_sustainability_metrics_id_fk" FOREIGN KEY ("metric_id") REFERENCES "public"."sustainability_metrics"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "metric_history_metric_id_idx" ON "sustainability_metric_history" USING btree ("metric_id");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "metric_history_metric_id_idx" ON "sustainability_metric_history" USING btree ("metric_id");--> statement-breakpoint
 ALTER TABLE "blog_posts" DROP CONSTRAINT IF EXISTS "blog_posts_featured_image_id_media_assets_id_fk";--> statement-breakpoint
 ALTER TABLE "blog_posts" ADD CONSTRAINT "blog_posts_featured_image_id_media_assets_id_fk" FOREIGN KEY ("featured_image_id") REFERENCES "public"."media_assets"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "blog_posts" DROP CONSTRAINT IF EXISTS "blog_posts_category_id_blog_categories_id_fk";--> statement-breakpoint
