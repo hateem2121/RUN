@@ -3,7 +3,7 @@ import { Mail } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Typography } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
-import type { Inquiry } from "./index";
+import type { Inquiry } from "./types";
 
 interface InquiryListProps {
   inquiries: Inquiry[];

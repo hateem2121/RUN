@@ -4,18 +4,13 @@
  */
 
 import type {
-  Accessory,
   Category,
-  Certificate,
-  Fabric,
-  Fiber,
   InsertCategory,
   InsertProduct,
   MediaAsset,
   Product,
   ProductDetail,
   ProductSummary,
-  SizeChart,
 } from "@run-remix/shared";
 import {
   accessories,
@@ -45,27 +40,7 @@ const miscRepo = new MiscRepository();
 // Re-export ProductSummary and ProductDetail for callers
 export type { ProductDetail, ProductSummary };
 
-export interface ProductDetailWithContext {
-  product: ProductDetail & { canonicalUrl: string | null };
-  context: {
-    category: Category | null;
-    subcategory: Category | null;
-    categoryTree: Category[];
-    breadcrumb: Array<{ id: number; name: string; url: string }>;
-    fabric: Fabric | null;
-    certificates: Certificate[];
-    sizeChart: SizeChart | null;
-    accessories: Accessory[];
-    fibers: Fiber[];
-  };
-  media: MediaAsset[];
-  relatedProducts: ProductSummary[];
-  categoryProducts: ProductSummary[];
-  navigation: {
-    previousProduct: ProductSummary | null;
-    nextProduct: ProductSummary | null;
-  };
-}
+import type { ProductDetailWithContext } from "./storage-interfaces.js";
 
 // CHUNK 34: Cache TTL optimized by data volatility - products change moderately
 const PRODUCT_CACHE_TTL = 60 * 60 * 1000; // 60 minutes - Extended for better cache hit rates (900s)

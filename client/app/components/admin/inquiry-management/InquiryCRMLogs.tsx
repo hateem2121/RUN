@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Typography } from "@/components/ui/typography";
 import { apiRequest } from "@/lib/api";
-import type { Inquiry } from "./index";
+import type { Inquiry } from "./types";
 
 interface InquiryCRMLogsProps {
   inquiry: Inquiry;

@@ -18,7 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Typography } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { InquiryCRMLogs } from "./InquiryCRMLogs";
-import type { Inquiry } from "./index";
+import type { Inquiry } from "./types";
 
 interface InquiryDetailsProps {
   inquiryId: number | null;

@@ -103,3 +103,7 @@ Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
 2. Use `detect_changes_tool` for code review.
 3. Use `get_affected_flows_tool` to understand impact.
 4. Use `query_graph_tool` pattern="tests_for" to check coverage.
+
+### Known Limitations & False Positives
+- **Community Aggregation:** The graph may bundle `shared/schemas` into backend DB communities. Imports of shared Zod schemas in `client/` do NOT violate the DB-access rule.
+- **Fuzzy Matching:** Abstract variable names (e.g., `payload`) can sometimes trigger false "indirect call" inferred edges to similarly named functions in external scripts. Always verify "Surprising Connections" in code before citing them.

@@ -91,6 +91,8 @@ import type {
   NavigationItem,
   PerformanceMetric,
   Product,
+  ProductDetail,
+  ProductSummary,
   Service,
   SizeChart,
   StorageAnalysisResult,
@@ -112,11 +114,29 @@ import type {
   WebhookSubscription,
 } from "@run-remix/shared";
 import type { RepositoryCacheOptions } from "../../lib/cache/cache-strategies.js";
-import type {
-  ProductDetail,
-  ProductDetailWithContext,
-  ProductSummary,
-} from "./product-repository.js";
+
+// Product Repository Types
+export interface ProductDetailWithContext {
+  product: ProductDetail & { canonicalUrl: string | null };
+  context: {
+    category: Category | null;
+    subcategory: Category | null;
+    categoryTree: Category[];
+    breadcrumb: Array<{ id: number; name: string; url: string }>;
+    fabric: Fabric | null;
+    certificates: Certificate[];
+    sizeChart: SizeChart | null;
+    accessories: Accessory[];
+    fibers: Fiber[];
+  };
+  media: MediaAsset[];
+  relatedProducts: ProductSummary[];
+  categoryProducts: ProductSummary[];
+  navigation: {
+    previousProduct: ProductSummary | null;
+    nextProduct: ProductSummary | null;
+  };
+}
 
 // User Repository
 interface IUserRepository {

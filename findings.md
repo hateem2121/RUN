@@ -204,3 +204,11 @@ Skills installed via `npx skills add` to `.agents/skills/` (cross-agent conventi
 |----------|---------|----------|----------------|
 | **Workflow (Skills)** | `.claude/skills/` and `.agents/skills/` coexist perfectly in accordance with documented standard operating procedures (gemini.md §9.5). | **Passed** | Continue using `npx skills add` to centralize new project-specific skills in `.agents/skills/`. |
 | **Workflow (Hygiene)** | The `.agents/` directory is cluttered with 24+ disposable session logs and worktrees (`explorer_*`, `worker_*`). | **P3: Cosmetic** | Implement a lifecycle policy: either `.gitignore` these session folders, move them into `.agents/sessions/`, or automatically delete them on task completion to keep `.agents/` strictly for configuration (`.agents/skills/`). |
+
+## 12. Structural Integrity & Circular Dependency Remediation
+
+**Scope:** Monorepo UI components and Server Services
+
+- **Admin Inquiry Components**: Eliminated a 3-way circular dependency (`InquiryCRMLogs` ↔ `index` ↔ `InquiryDetails`) by extracting the `Inquiry` viewmodel into a discrete `types.ts` file.
+- **Server Repository Layer**: Eliminated an import cycle between `product-repository.ts` and `storage-interfaces.ts` by migrating the `ProductDetailWithContext` interface into the `storage-interfaces.ts` module.
+- **Graphify Audit False Positives Evaluated**: Analyzed the Graphify warnings for "Admin DB Access" and verified they were false positives triggered by compliant usage of `@run-remix/shared/schemas` (Zod validation schemas aggregated into the `db-constructor` community).
