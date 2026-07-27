@@ -90,5 +90,8 @@
   },
   "overrides": {
     "uuid": "14.0.0"
+  },
+  "optionalDependencies": {
+    "@img/sharp-linux-x64": "^0.34.5"
   }
 }
