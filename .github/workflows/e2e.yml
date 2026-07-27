@@ -1,6 +1,8 @@
 name: E2E Proof Suite
 
 on:
+  push:
+    branches: [main]
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
@@ -12,7 +14,6 @@ jobs:
   verify-proofs:
     name: 🕵️ Forensic Proof Suite (P0/P1/P2)
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
 
     steps:
       - name: 📥 Checkout
