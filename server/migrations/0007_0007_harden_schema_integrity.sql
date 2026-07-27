@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS IF NOT EXISTS "blog_categories" (
+CREATE TABLE IF NOT EXISTS "blog_categories" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"slug" text NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS IF NOT EXISTS "blog_categories" (
 	CONSTRAINT "blog_categories_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS IF NOT EXISTS "blog_posts" (
+CREATE TABLE IF NOT EXISTS "blog_posts" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" text NOT NULL,
 	"slug" text NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS IF NOT EXISTS "blog_posts" (
 	CONSTRAINT "blog_posts_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS IF NOT EXISTS "manufacturing_case_studies" (
+CREATE TABLE IF NOT EXISTS "manufacturing_case_studies" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"client" varchar(255) NOT NULL,
 	"type" varchar(255) NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS IF NOT EXISTS "manufacturing_case_studies" (
 	"updated_at" timestamp (3) DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS IF NOT EXISTS "webhook_deliveries" (
+CREATE TABLE IF NOT EXISTS "webhook_deliveries" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"subscription_id" integer NOT NULL,
 	"event" varchar(100) NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS IF NOT EXISTS "webhook_deliveries" (
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS IF NOT EXISTS "webhook_subscriptions" (
+CREATE TABLE IF NOT EXISTS "webhook_subscriptions" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"url" text NOT NULL,
 	"secret" varchar(255) NOT NULL,
@@ -69,10 +69,10 @@ CREATE TABLE IF NOT EXISTS IF NOT EXISTS "webhook_subscriptions" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-ALTER TABLE "products" DROP CONSTRAINT IF EXISTS IF EXISTS "products_slug_unique";--> statement-breakpoint
-ALTER TABLE "fabric_compositions" DROP CONSTRAINT IF EXISTS IF EXISTS "fabric_compositions_fabric_id_fabrics_id_fk";
+ALTER TABLE "products" DROP CONSTRAINT IF EXISTS "products_slug_unique";--> statement-breakpoint
+ALTER TABLE "fabric_compositions" DROP CONSTRAINT IF EXISTS "fabric_compositions_fabric_id_fabrics_id_fk";
 --> statement-breakpoint
-ALTER TABLE "fabric_compositions" DROP CONSTRAINT IF EXISTS IF EXISTS "fabric_compositions_fiber_id_fibers_id_fk";
+ALTER TABLE "fabric_compositions" DROP CONSTRAINT IF EXISTS "fabric_compositions_fiber_id_fibers_id_fk";
 --> statement-breakpoint
 DROP INDEX "inquiries_email_idx";--> statement-breakpoint
 ALTER TABLE "inquiries" ALTER COLUMN "name" SET DATA TYPE varchar(255);--> statement-breakpoint
@@ -81,18 +81,18 @@ ALTER TABLE "inquiries" ALTER COLUMN "company" SET DATA TYPE varchar(255);--> st
 ALTER TABLE "inquiries" ALTER COLUMN "phone" SET DATA TYPE varchar(255);--> statement-breakpoint
 ALTER TABLE "manufacturing_hero" ALTER COLUMN "headline" SET NOT NULL;--> statement-breakpoint
 ALTER TABLE "audit_logs" ALTER COLUMN "ip_address" SET DATA TYPE varchar(255);--> statement-breakpoint
-ALTER TABLE "inquiries" ADD COLUMN IF NOT EXISTS IF NOT EXISTS "email_index" varchar(255);--> statement-breakpoint
-ALTER TABLE "inquiries" ADD COLUMN IF NOT EXISTS IF NOT EXISTS "items" jsonb DEFAULT '[]'::jsonb;--> statement-breakpoint
-ALTER TABLE "inquiries" ADD COLUMN IF NOT EXISTS IF NOT EXISTS "priority" varchar(20) DEFAULT 'medium' NOT NULL;--> statement-breakpoint
-ALTER TABLE "inquiries" ADD COLUMN IF NOT EXISTS IF NOT EXISTS "crm_stage" varchar(50) DEFAULT 'lead' NOT NULL;--> statement-breakpoint
-ALTER TABLE "inquiries" ADD COLUMN IF NOT EXISTS IF NOT EXISTS "crm_logs" jsonb DEFAULT '[]'::jsonb NOT NULL;--> statement-breakpoint
-ALTER TABLE "inquiries" ADD COLUMN IF NOT EXISTS IF NOT EXISTS "lead_score" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
-ALTER TABLE "inquiries" ADD COLUMN IF NOT EXISTS IF NOT EXISTS "tags" jsonb DEFAULT '[]'::jsonb NOT NULL;--> statement-breakpoint
-ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS IF NOT EXISTS "email_index" varchar(255);--> statement-breakpoint
-ALTER TABLE "audit_logs" ADD COLUMN IF NOT EXISTS IF NOT EXISTS "user_email_index" varchar(255);--> statement-breakpoint
-ALTER TABLE "users" ADD COLUMN IF NOT EXISTS IF NOT EXISTS "email_index" varchar(255);--> statement-breakpoint
-ALTER TABLE "users" ADD COLUMN IF NOT EXISTS IF NOT EXISTS "failed_login_attempts" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
-ALTER TABLE "users" ADD COLUMN IF NOT EXISTS IF NOT EXISTS "lockout_until" timestamp (3);--> statement-breakpoint
+ALTER TABLE "inquiries" ADD COLUMN IF NOT EXISTS "email_index" varchar(255);--> statement-breakpoint
+ALTER TABLE "inquiries" ADD COLUMN IF NOT EXISTS "items" jsonb DEFAULT '[]'::jsonb;--> statement-breakpoint
+ALTER TABLE "inquiries" ADD COLUMN IF NOT EXISTS "priority" varchar(20) DEFAULT 'medium' NOT NULL;--> statement-breakpoint
+ALTER TABLE "inquiries" ADD COLUMN IF NOT EXISTS "crm_stage" varchar(50) DEFAULT 'lead' NOT NULL;--> statement-breakpoint
+ALTER TABLE "inquiries" ADD COLUMN IF NOT EXISTS "crm_logs" jsonb DEFAULT '[]'::jsonb NOT NULL;--> statement-breakpoint
+ALTER TABLE "inquiries" ADD COLUMN IF NOT EXISTS "lead_score" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
+ALTER TABLE "inquiries" ADD COLUMN IF NOT EXISTS "tags" jsonb DEFAULT '[]'::jsonb NOT NULL;--> statement-breakpoint
+ALTER TABLE "newsletter_subscribers" ADD COLUMN IF NOT EXISTS "email_index" varchar(255);--> statement-breakpoint
+ALTER TABLE "audit_logs" ADD COLUMN IF NOT EXISTS "user_email_index" varchar(255);--> statement-breakpoint
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "email_index" varchar(255);--> statement-breakpoint
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "failed_login_attempts" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "lockout_until" timestamp (3);--> statement-breakpoint
 ALTER TABLE "blog_posts" ADD CONSTRAINT "blog_posts_featured_image_id_media_assets_id_fk" FOREIGN KEY ("featured_image_id") REFERENCES "public"."media_assets"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "blog_posts" ADD CONSTRAINT "blog_posts_category_id_blog_categories_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."blog_categories"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "blog_posts" ADD CONSTRAINT "blog_posts_author_id_users_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -106,13 +106,13 @@ ALTER TABLE "fabric_compositions" ADD CONSTRAINT "fabric_compositions_fiber_id_f
 CREATE INDEX "inquiries_email_index_idx" ON "inquiries" USING btree ("email_index");--> statement-breakpoint
 CREATE UNIQUE INDEX "products_slug_unique_idx" ON "products" USING btree ("slug") WHERE "products"."deleted_at" IS NULL;--> statement-breakpoint
 CREATE INDEX "audit_user_email_index_idx" ON "audit_logs" USING btree ("user_email_index");--> statement-breakpoint
-ALTER TABLE "about_hero" DROP COLUMN IF EXISTS IF EXISTS "headline";--> statement-breakpoint
-ALTER TABLE "about_hero" DROP COLUMN IF EXISTS IF EXISTS "subheadline";--> statement-breakpoint
-ALTER TABLE "about_sections" DROP COLUMN IF EXISTS IF EXISTS "position";--> statement-breakpoint
-ALTER TABLE "about_statistics" DROP COLUMN IF EXISTS IF EXISTS "icon";--> statement-breakpoint
-ALTER TABLE "about_statistics" DROP COLUMN IF EXISTS IF EXISTS "position";--> statement-breakpoint
-ALTER TABLE "about_timeline_entries" DROP COLUMN IF EXISTS IF EXISTS "position";--> statement-breakpoint
-ALTER TABLE "manufacturing_hero" DROP COLUMN IF EXISTS IF EXISTS "title";--> statement-breakpoint
-ALTER TABLE "manufacturing_hero" DROP COLUMN IF EXISTS IF EXISTS "subtitle";--> statement-breakpoint
+ALTER TABLE "about_hero" DROP COLUMN IF EXISTS "headline";--> statement-breakpoint
+ALTER TABLE "about_hero" DROP COLUMN IF EXISTS "subheadline";--> statement-breakpoint
+ALTER TABLE "about_sections" DROP COLUMN IF EXISTS "position";--> statement-breakpoint
+ALTER TABLE "about_statistics" DROP COLUMN IF EXISTS "icon";--> statement-breakpoint
+ALTER TABLE "about_statistics" DROP COLUMN IF EXISTS "position";--> statement-breakpoint
+ALTER TABLE "about_timeline_entries" DROP COLUMN IF EXISTS "position";--> statement-breakpoint
+ALTER TABLE "manufacturing_hero" DROP COLUMN IF EXISTS "title";--> statement-breakpoint
+ALTER TABLE "manufacturing_hero" DROP COLUMN IF EXISTS "subtitle";--> statement-breakpoint
 ALTER TABLE "newsletter_subscribers" ADD CONSTRAINT "newsletter_subscribers_emailIndex_unique" UNIQUE("email_index");--> statement-breakpoint
 ALTER TABLE "users" ADD CONSTRAINT "users_emailIndex_unique" UNIQUE("email_index");

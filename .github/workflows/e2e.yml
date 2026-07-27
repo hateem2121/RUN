@@ -34,11 +34,25 @@ jobs:
       - name: 🔨 Build Application
         run: npm run build
 
+      - name: Create Neon Branch
+        id: create_neon_branch
+        continue-on-error: true
+        uses: neondatabase/create-branch-action@fb620d43d4c565abaf088b848a4e28e5c4ea4d9c # 6.3.1
+        with:
+          project_id: ${{ secrets.NEON_PROJECT_ID }}
+          branch_name: preview/e2e-${{ github.sha }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+
+      - name: Push Database Schema
+        run: npm run db:push
+        env:
+          DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url }}
+
       - name: "🚀 Start Production Server"
         env:
           PORT: 5002
-          MOCK_DB: "true"
-          DATABASE_URL: postgres://mockuser:mockpass@localhost:5432/mockdb
+          ENABLE_MOCK_ADMIN: "true"
+          DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url }}
           SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"
           ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only"
           INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
@@ -51,8 +65,8 @@ jobs:
         env:
           CI: true
           E2E_BASE_URL: http://127.0.0.1:5002
-          MOCK_DB: "true"
-          DATABASE_URL: postgres://mockuser:mockpass@localhost:5432/mockdb
+          ENABLE_MOCK_ADMIN: "true"
+          DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url }}
           SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"
           ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only"
           INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
