@@ -15,7 +15,7 @@ permissions:
 jobs:
   dependency-audit:
     name: Dependency Audit
-    runs-on: [self-hosted, macOS]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       
@@ -48,7 +48,7 @@ jobs:
 
   codeql:
     name: CodeQL Analysis
-    runs-on: [self-hosted, macOS]
+    runs-on: ubuntu-latest
     permissions:
       security-events: write
       contents: read
@@ -67,3 +67,14 @@ jobs:
   # TruffleHog and Checkov removed as they are Linux-centric and Terraform is obsolete.
   # Secret scanning is now handled by the gitleaks workflow.
 
+
+  gitleaks:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

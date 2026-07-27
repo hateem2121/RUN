@@ -15,7 +15,7 @@ permissions:
 jobs:
   deploy_db:
     name: Apply Database Migrations
-    runs-on: [self-hosted, macOS]
+    runs-on: ubuntu-latest
     environment: production
     steps:
       - name: Checkout code
