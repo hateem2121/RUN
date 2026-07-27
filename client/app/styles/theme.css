@@ -562,19 +562,7 @@
   background-repeat: repeat-x;
 }
 
-@utility tech-grid-manufacturing {
-  background-image:
-    linear-gradient(
-      color-mix(in srgb, var(--color-manufacturing-accent) 4%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--color-manufacturing-accent) 4%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 20px 20px;
-}
+
 
 @utility blueprint-corner {
   position: absolute;

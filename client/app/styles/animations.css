@@ -4,14 +4,12 @@
      ========================= */
 
 @utility gpu-accelerated {
-  will-change: transform;
   transform: translateZ(0);
   backface-visibility: hidden;
 }
 
 @utility animation-container {
   contain: layout style paint;
-  will-change: transform;
 }
 
 /* Interaction Animations */

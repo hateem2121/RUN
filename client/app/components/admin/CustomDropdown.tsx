@@ -186,7 +186,7 @@ export function CustomDropdown({
           aria-haspopup="listbox"
           aria-expanded={isOpen}
           aria-controls={isOpen ? listboxId : undefined}
-          className={`flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background hover:bg-accent hover:text-accent-foreground focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${isOpen ? "ring-2 ring-ring ring-offset-2" : ""}
+          className={`flex min-h-[44px] w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background hover:bg-accent hover:text-accent-foreground focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${isOpen ? "ring-2 ring-ring ring-offset-2" : ""}
           `}
         >
           <span className={currentOption ? "text-foreground" : "text-muted-foreground"}>
@@ -220,7 +220,7 @@ export function CustomDropdown({
                 onKeyDown={(e) => handleOptionKeyDown(e, index)}
                 disabled={option.disabled}
                 tabIndex={-1}
-                className={`relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-hidden hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 ${value === option.value ? "bg-accent text-accent-foreground" : ""}
+                className={`relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-2 min-h-[44px] text-sm outline-hidden hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 ${value === option.value ? "bg-accent text-accent-foreground" : ""}
                 `}
               >
                 <span className="flex-1 text-left">{option.label}</span>

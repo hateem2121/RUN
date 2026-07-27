@@ -20,7 +20,7 @@ const unifiedCache = UnifiedCache.getInstance();
   const startTime = Date.now();
 
   try {
-    // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
+    // biome-ignore lint/suspicious/noExplicitAny: bypass complex Drizzle type inference conflict
     const result = await db.transaction(async (tx: any) => {
       return await operation(tx as unknown as typeof db);
     });

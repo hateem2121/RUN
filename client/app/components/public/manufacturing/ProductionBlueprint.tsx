@@ -124,8 +124,7 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
         ref={containerRef}
         className="py-24 border-b border-white/5 relative overflow-hidden bg-custom-misc-169"
       >
-        {/* Background Grid */}
-        <div className="absolute inset-0 pointer-events-none opacity-10 tech-grid-manufacturing"></div>
+        {/* Background Grid removed for cleaner UI */}
 
         {/* Header Area */}
         <div className="max-w-7xl mx-auto px-6 mb-16 flex flex-col md:flex-row justify-between md:items-end relative z-20">
@@ -266,7 +265,7 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
                         loading="lazy"
                         decoding="async"
                       />
-                      <div className="absolute inset-0 tech-grid-manufacturing opacity-20 pointer-events-none"></div>
+
                       <div className="absolute inset-0 bg-gradient-to-t from-custom-misc-198 via-custom-misc-199/40 to-transparent opacity-90"></div>
                     </div>
 

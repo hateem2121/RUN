@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Architecture & Testing
+
+- **God Node Test Coverage**: You can now rely on verified integration tests for the `MemoryStorage` mock (exercised across 343+ test flows). Unit tests now also cover core logging (`SmartLogger`) and CSS merging (`cn`) utilities, providing a rock-solid foundation for future refactors.
+- **UI Component Testing Environment**: We established a robust JSDOM testing paradigm for complex UI elements (`CustomDropdown`, `PublicHeroSection`) that gracefully stubs out GSAP animations, intersection observers, and scrolling counters.
+- **Vitest Environment Stability**: Test runners will no longer unexpectedly exit when importing script utilities; execution blocks in `verify-docs-versions.ts` are now properly gated behind `NODE_ENV !== "test"`.
+- **System Integrity Enforcement**: You can now run all maintenance scripts (`verify-tech-integrity`, `verify-docs-versions`) knowing they adhere to strict internal standards (using `neverthrow` for error handling and `pino` for logging instead of raw `try/catch` or `console.log`).
+
+### Security & Design
+
+- **Sanitization Hardening**: We removed the obsolete `express-mongo-sanitize` dependency (as the system utilizes PostgreSQL) in favor of strict Zod schema validation at the edge.
+- **Brand Consistency**: You can enjoy a cleaner, premium UI experience; we permanently purged 20+ instances of generic "AI slop" (bouncy easings, decorative side-tabs, generic gradients) and mapped all properties to the strict Tailwind v4 `@theme` design tokens.
+
 ### Architecture
 
 - **Neverthrow Migration**: Completed a massive refactor of the service and repository layers to eliminate `try/catch` blocks. All domain logic now strictly returns `neverthrow` `Result<T, E>` types for robust, compile-time error handling.

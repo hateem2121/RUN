@@ -1,8 +1,9 @@
 import { spawn } from "node:child_process";
-
 import { hideBin } from "yargs/helpers";
-
 import yargs from "yargs/yargs";
+import { statSync } from "node:fs";
+import { ResultAsync, Result } from "neverthrow";
+import { logger } from "../server/lib/monitoring/logger.js";
 
 /**
  * RUN-Remix Technical Integrity Verifier
@@ -76,21 +77,19 @@ const steps = [
   },
 ];
 
-// Refactored Documentation Freshness Check
-import { statSync } from "node:fs";
-
-function checkDocsFreshness() {
-  try {
-    const stats = statSync("docs/overview.md");
-    const diff = Date.now() - stats.mtimeMs;
-    const days = diff / (1000 * 60 * 60 * 24);
-    if (days > 90) {
-    } else {
-    }
-    return true;
-  } catch (_e) {
-    return true; // Not critical
-  }
+function checkDocsFreshness(): Result<boolean, Error> {
+  return Result.fromThrowable(
+    () => {
+      const stats = statSync("docs/overview.md");
+      const diff = Date.now() - stats.mtimeMs;
+      const days = diff / (1000 * 60 * 60 * 24);
+      if (days > 90) {
+        logger.warn("Documentation overview.md is over 90 days old.");
+      }
+      return true;
+    },
+    (err) => err instanceof Error ? err : new Error(String(err))
+  )();
 }
 
 // Add Audit separately as it might be flaky
@@ -103,64 +102,92 @@ if (!argv.ci) {
   });
 }
 
-async function runCommand(step: {
+function runCommand(step: {
   name: string;
   command: string;
   args: string[];
   critical: boolean;
   env?: Record<string, string>;
-}) {
-  return new Promise<boolean>((resolve) => {
-    const child = spawn(step.command, step.args, {
-      stdio: "inherit",
-      shell: true,
-      env: { ...process.env, ...step.env },
-    });
+}): ResultAsync<boolean, Error> {
+  return ResultAsync.fromPromise(
+    new Promise<boolean>((resolve, _reject) => {
+      const child = spawn(step.command, step.args, {
+        stdio: "inherit",
+        shell: true,
+        env: { ...process.env, ...step.env },
+      });
 
-    child.on("close", (code) => {
-      // const _duration = ((Date.now() - start) / 1000).toFixed(2); // Unused
-
-      if (code === 0) {
-        resolve(true);
-      } else {
-        if (step.critical || argv.ci) {
-          resolve(false);
-        } else {
+      child.on("close", (code) => {
+        if (code === 0) {
           resolve(true);
+        } else {
+          if (step.critical || argv.ci) {
+            resolve(false);
+          } else {
+            resolve(true);
+          }
         }
-      }
-    });
+      });
 
-    child.on("error", (_err) => {
-      resolve(false);
-    });
-  });
+      child.on("error", (_err) => {
+        resolve(false);
+      });
+    }),
+    (err) => err instanceof Error ? err : new Error(String(err))
+  );
 }
 
 async function main() {
   let success = true;
 
   for (const step of steps) {
+    logger.info(`Running step: ${step.name}...`);
     const result = await runCommand(step);
-    if (!result) {
-      success = false;
-      if (argv.ci) {
-        break; // Fail fast in CI
+    
+    result.match(
+      (passed) => {
+        if (!passed) {
+          success = false;
+          if (argv.ci) {
+            logger.error(`❌ Step ${step.name} failed (critical/CI). Stopping.`);
+            process.exit(1);
+          } else {
+            logger.warn(`⚠️ Step ${step.name} failed (non-critical).`);
+          }
+        } else {
+          logger.info(`✅ Step ${step.name} passed.`);
+        }
+      },
+      (error) => {
+        success = false;
+        logger.error(`❌ Step ${step.name} encountered an error:`, error);
+        if (argv.ci) process.exit(1);
       }
-    }
+    );
+    
+    if (!success && argv.ci) break;
   }
 
   // Run native checks
-  if (!checkDocsFreshness()) {
-    // Freshness is not critical currently
-  }
+  checkDocsFreshness().match(
+    (_fresh) => {
+       // Freshness check passed
+    },
+    (error) => {
+       logger.debug("Failed to check doc freshness, skipping", error);
+    }
+  );
+
   if (success) {
+    logger.info("🎉 All checks passed!");
     process.exit(0);
   } else {
+    logger.error("❌ Some checks failed.");
     process.exit(1);
   }
 }
 
-main().catch((_err) => {
+main().catch((err) => {
+  logger.error("Fatal error:", err);
   process.exit(1);
 });
