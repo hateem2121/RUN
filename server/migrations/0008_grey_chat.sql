@@ -13,7 +13,7 @@ ALTER TABLE "blog_posts" DROP CONSTRAINT IF EXISTS "blog_posts_category_id_blog_
 --> statement-breakpoint
 ALTER TABLE "blog_posts" DROP CONSTRAINT IF EXISTS "blog_posts_author_id_users_id_fk";
 --> statement-breakpoint
-ALTER TABLE "webhook_subscriptions" ALTER COLUMN "is_active" SET DATA TYPE boolean;--> statement-breakpoint
+ALTER TABLE "webhook_subscriptions" ALTER COLUMN "is_active" SET DATA TYPE boolean USING CASE WHEN "is_active"::text IN ('1', 'true', 'Y', 'y', 't') THEN true ELSE false END;--> statement-breakpoint
 ALTER TABLE "webhook_subscriptions" ALTER COLUMN "is_active" SET DEFAULT true;--> statement-breakpoint
 ALTER TABLE "sustainability_metric_history" DROP CONSTRAINT IF EXISTS "sustainability_metric_history_metric_id_sustainability_metrics_id_fk";--> statement-breakpoint
 ALTER TABLE "sustainability_metric_history" ADD CONSTRAINT "sustainability_metric_history_metric_id_sustainability_metrics_id_fk" FOREIGN KEY ("metric_id") REFERENCES "public"."sustainability_metrics"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
