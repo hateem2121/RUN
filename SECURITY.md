@@ -73,10 +73,10 @@ The platform implements defence-in-depth:
 | Circuit Breakers | `opossum` for DB and Redis operations |
 | Input Validation | Zod schemas on all external inputs |
 | SQL Injection | Drizzle ORM parameterized queries (no raw SQL) |
-| Secrets | Never committed — scanned by `secret-scanning.yml` |
+| Secrets | Never committed — scanned by `security.yml` |
 | Dependencies | Weekly Dependabot updates + `npm audit` in CI |
-| Container | Trivy vulnerability scanning in `security-scanning.yml` |
-| Runtime | DAST scanning in `dast-scan.yml` |
+| Container | Trivy vulnerability scanning in `security.yml` |
+| Runtime | DAST scanning consolidated in `security.yml` |
 | Headers | Helmet middleware on all Express responses |
 
 Full threat model: [`docs/security/threat-model.md`](./docs/security/threat-model.md)
@@ -85,10 +85,7 @@ Full threat model: [`docs/security/threat-model.md`](./docs/security/threat-mode
 
 ## Security Tools in CI
 
-- **`secret-scanning.yml`** — GitHub secret scanning + custom patterns
-- **`security-scanning.yml`** — Trivy container and filesystem scan
-- **`security-check.yml`** — `npm audit`, dependency audit
-- **`dast-scan.yml`** — Dynamic Application Security Testing
+- **`security.yml`** — Consolidated pipeline executing Trivy container and filesystem scans, GitHub secret scanning + custom patterns, and `npm audit` dependency audits.
 
 ---
 

@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Environment & Tooling
 - **Strict Antigravity Native**: Purged all legacy IDE and AI configuration files (`.claude`, `.cursor`, `.vscode/mcp.json`, etc.) to enforce a strict Antigravity-native environment via `.gemini/antigravity/`.
 - **Tech Integrity Verification**: Fixed lingering `noDescendingSpecificity` CSS warnings and enforced strict `as unknown as Function` double-casting for `any` types in `circuit-breaker.ts` to ensure 100% compliance with `verify:tech-integrity` checks.
+- **CI/CD Consolidation**: Consolidated 15+ disparate GitHub Actions workflows down to 5 core pipelines (`ci.yml`, `deploy.yml`, `docs.yml`, `e2e.yml`, `security.yml`). Migrated all workflows from self-hosted macOS runners to GitHub-hosted `ubuntu-latest` to resolve infinite runner queue deadlocks. Removed irrelevant and duplicative checks to streamline the merge process.
 - **Rules Documentation**: Updated `gemini.md` and `AGENTS.md` to formally document the strict Antigravity-native rule and clarify exceptions to the `noExplicitAny` TypeScript constraint.
 
 ### Performance

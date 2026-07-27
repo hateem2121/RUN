@@ -6,8 +6,10 @@ Recommended GitHub branch protection settings for `main` and `develop` branches.
 
 Enable "Require status checks to pass before merging" with:
 
-- [x] `Visual Regression / Tailwind v4 Guardrails` (CSS import order lint)
-- [x] `Visual Regression / Visual Regression Tests` (Playwright suite)
+- [x] `CI / Neon Preview / Test & Verify`
+- [x] `CI / Neon Preview / Build`
+- [x] `E2E Proof Suite / 🕵️ Forensic Proof Suite (P0/P1/P2)`
+- [x] `Security Audit`
 
 ## Code Review
 
@@ -42,12 +44,13 @@ The `.github/CODEOWNERS` file requires review from designated teams for:
 
 ## Workflow Status Check Names
 
-When configuring required status checks, use these **exact** job names (from `.github/workflows/visual-regression.yml`):
+When configuring required status checks, use these **exact** job names:
 
 | Status Check Name         | Job ID              | Required? |
 | :------------------------ | :------------------ | :-------- |
-| `Tailwind v4 Guardrails`  | `guardrails`        | ✅ Yes    |
-| `Visual Regression Tests` | `visual-regression` | ✅ Yes    |
+| `Test & Verify`           | `test`              | ✅ Yes    |
+| `Build`                   | `build`             | ✅ Yes    |
+| `🕵️ Forensic Proof Suite (P0/P1/P2)` | `verify-proofs` | ✅ Yes    |
 
 **Steps to Configure:**
 
@@ -55,10 +58,11 @@ When configuring required status checks, use these **exact** job names (from `.g
 2. Branch name pattern: `main` (or `develop`)
 3. Check **Require status checks to pass before merging**
 4. Search and add:
-   - `Tailwind v4 Guardrails`
-   - `Visual Regression Tests`
+   - `Test & Verify`
+   - `Build`
+   - `🕵️ Forensic Proof Suite (P0/P1/P2)`
 5. Check **Require branches to be up to date before merging**
 6. Check **Require review from Code Owners**
 7. Save changes
 
-**Note**: The guardrails job runs CSS import order lint (blocking) and SSR preload check (informational).
+**Note**: The E2E Proof Suite runs visual regression, accessibility, and functional checks across all browsers.

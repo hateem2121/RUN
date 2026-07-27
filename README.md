@@ -141,7 +141,7 @@ Every task follows the deterministic **B.L.A.S.T.** methodology:
 
 For vulnerability reporting, see [`SECURITY.md`](./SECURITY.md).
 
-Security tools in use: Trivy, GitHub secret scanning, DAST (`dast-scan.yml`), `npm audit`.
+Security tools in use: Trivy, GitHub secret scanning, DAST, and `npm audit` (all consolidated in `security.yml`).
 
 ---
 
