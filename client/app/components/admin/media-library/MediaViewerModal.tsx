@@ -35,33 +35,7 @@ declare global {
 // import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 import { UnifiedMediaTheater } from "@/components/products/UnifiedMediaTheater";
 
-// PHASE 3 FIX: Global ImageBitmapLoader error handler to prevent unhandled promise rejections
-if (typeof window !== "undefined") {
-  // Add global handler for ImageBitmapLoader errors specifically
-  const handleImageBitmapError = (event: PromiseRejectionEvent) => {
-    const message = event.reason?.message || event.reason?.toString() || "";
-
-    // Check if this is an ImageBitmapLoader error
-    if (
-      message.includes("ImageBitmapLoader") ||
-      message.includes("Failed to fetch") ||
-      event.reason?.stack?.includes("ImageBitmapLoader")
-    ) {
-      // Handle ImageBitmapLoader errors gracefully
-      if (process.env.NODE_ENV === "development") {
-      }
-
-      // Prevent unhandled promise rejection
-      event.preventDefault();
-      return true;
-    }
-
-    return false; // Let other errors propagate normally
-  };
-
-  // Install global handler
-  window.addEventListener("unhandledrejection", handleImageBitmapError);
-}
+// PHASE 3 FIX: ImageBitmapLoader error handler moved into MediaViewerModal useEffect (ML-1)
 
 // PHASE 1-3: Enhanced Loading States for Large 3D Models
 // PHASE 1-3: Enhanced Loading States for Large 3D Models
@@ -98,6 +72,29 @@ export function MediaViewerModal() {
   } = useMediaLibrary();
 
   const { selectedAsset, lightboxOpen, editModalOpen, deleteModalOpen } = state;
+
+  // PHASE 3 FIX: Global ImageBitmapLoader error handler (ML-1 — moved from module scope)
+  useEffect(() => {
+    const handleImageBitmapError = (event: PromiseRejectionEvent) => {
+      const message = event.reason?.message || event.reason?.toString() || "";
+
+      if (
+        message.includes("ImageBitmapLoader") ||
+        message.includes("Failed to fetch") ||
+        event.reason?.stack?.includes("ImageBitmapLoader")
+      ) {
+        event.preventDefault();
+        return true;
+      }
+
+      return false;
+    };
+
+    window.addEventListener("unhandledrejection", handleImageBitmapError);
+    return () => {
+      window.removeEventListener("unhandledrejection", handleImageBitmapError);
+    };
+  }, []);
 
   // PHASE 1B FIX: Single asset delete mutation
   const deleteMutation = useMutation({
@@ -547,7 +544,9 @@ export function MediaViewerModal() {
                     <div>
                       <span className="font-medium">Upload Date:</span>
                       <p className="text-admin-muted">
-                        {new Date(selectedAsset.uploadedAt || Date.now()).toLocaleDateString()}
+                        {selectedAsset.uploadedAt
+                          ? new Date(selectedAsset.uploadedAt).toLocaleDateString("en-US")
+                          : "Unknown"}
                       </p>
                     </div>
                   </div>
