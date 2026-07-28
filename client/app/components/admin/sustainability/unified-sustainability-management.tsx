@@ -23,6 +23,7 @@ import {
   Wind,
 } from "lucide-react";
 import { memo, useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import { toast } from "sonner";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
@@ -308,29 +309,17 @@ const SortableGoalItem = memo(function SortableGoalItem({
 });
 
 export function UnifiedSustainabilityManagement() {
-  const getTabFromUrl = useCallback(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    return searchParams.get("tab") || "hero";
-  }, []);
-
-  const [activeTab, setActiveTab] = useState(getTabFromUrl);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(() => searchParams.get("tab") ?? "hero");
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    const searchParams = new URLSearchParams(window.location.search);
-    searchParams.set("tab", value);
-    const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
-    window.history.pushState({}, "", newUrl);
+    setSearchParams((prev) => {
+      prev.set("tab", value);
+      return prev;
+    });
   };
-
-  useEffect(() => {
-    const handlePopState = () => {
-      setActiveTab(getTabFromUrl());
-    };
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, [getTabFromUrl]);
 
   const [localForm, setLocalForm] = useState<Partial<UnifiedSustainability>>({});
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
