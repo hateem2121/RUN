@@ -163,7 +163,7 @@ export function FooterInquiryForm() {
         <div className="group">
           <div className="mb-2 flex items-end justify-between">
             <label
-              htmlFor="email"
+              htmlFor="footer-email"
               className={`group-focus-within:text-primary block pl-4 font-mono text-xs tracking-widest uppercase transition-colors ${
                 errors.email ? "text-destructive" : "text-muted-foreground"
               }`}
@@ -178,7 +178,7 @@ export function FooterInquiryForm() {
             )}
           </div>
           <input
-            id="email"
+            id="footer-email"
             type="email"
             name="email"
             autoComplete="email"
