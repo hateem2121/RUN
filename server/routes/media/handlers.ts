@@ -274,7 +274,7 @@ export async function getMediaContent(req: Request<{ id: string }>, res: Respons
         );
         res.set("Content-Type", "image/gif");
         res.set("Cache-Control", "public, max-age=300");
-        return res.status(404).send(transparentGif);
+        return res.status(200).send(transparentGif);
       }
       throw error;
     },
@@ -299,7 +299,7 @@ export async function getThumbnail(req: Request<{ id: string }>, res: Response) 
         );
         res.set("Content-Type", "image/gif");
         res.set("Cache-Control", "public, max-age=300");
-        return res.status(404).send(transparentGif);
+        return res.status(200).send(transparentGif);
       }
       throw error;
     },

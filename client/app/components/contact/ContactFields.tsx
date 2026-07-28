@@ -104,6 +104,7 @@ export function ContactFields({
             id="email"
             name="email"
             type="email"
+            autoComplete="email"
             data-testid="input-email"
             size="lg"
             required
