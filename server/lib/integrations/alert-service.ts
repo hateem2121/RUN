@@ -15,6 +15,7 @@
  * - ALERT_ENABLED: Set to 'true' to enable (default: true in production)
  */
 
+import { LRUCache } from "lru-cache";
 import { logger } from "../monitoring/logger.js";
 
 /**
@@ -200,7 +201,10 @@ async function sendSlackAlert(payload: AlertPayload): Promise<boolean> {
  * Alert Service - Free Tier
  */
 class AlertService {
-  private dedupeCache = new Map<string, number>();
+  private dedupeCache = new LRUCache<string, number>({
+    max: 5_000,
+    ttl: 60_000, // 1 minute deduplication
+  });
   private dedupeTtlMs = 60000; // 1 minute deduplication
 
   /**

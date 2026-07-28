@@ -1,4 +1,5 @@
 import { SpanStatusCode, trace } from "@opentelemetry/api";
+import { LRUCache } from "lru-cache";
 import { logger } from "../monitoring/logger.js";
 import { isRedisEnabled, redis } from "./upstash-client.js";
 
@@ -15,7 +16,10 @@ interface CacheInvalidationEvent {
 
 // In-memory storage for events (fallback)
 // Key: pattern, Value: CacheInvalidationEvent (only latest needed for functional parity with Redis logic optimization)
-const localEventStore = new Map<string, CacheInvalidationEvent>();
+const localEventStore = new LRUCache<string, CacheInvalidationEvent>({
+  max: 10_000,
+  ttl: 5 * 60 * 1000, // 5 minutes — matches EVENT_TTL_SECONDS
+});
 
 /**
  * EVENT-DRIVEN CACHE INVALIDATION
