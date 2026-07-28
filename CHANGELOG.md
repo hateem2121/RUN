@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Architecture & Testing
 
+- **Memory Leaks Resolved**: Fixed a severe SPA navigation closure leak (+23MB/cycle) by cleaning up `IntersectionObserver` in product grids. Replaced unbounded `Map` instances with `LRUCache` to prevent server out-of-memory crashes on single-node deployments. Moved module-level `unhandledrejection` listeners into component lifecycles to prevent Vite HMR listener accumulation.
+- **Hydration & React 19 Determinism**: Eliminated React 19 hydration mismatches by migrating to `useId()` and removing non-deterministic `Date.now()` and `window.location` references from render bodies.
+- **Runtime Error Mitigation**: Silenced browser CORB blockages by returning 200 OK transparent GIFs for missing media assets, and forced Vite re-bundling (`optimizeDeps.force: true`) inside `ssr-handler.ts` to prevent 504 errors on startup.
+
 - **God Node Test Coverage**: You can now rely on verified integration tests for the `MemoryStorage` mock (exercised across 343+ test flows). Unit tests now also cover core logging (`SmartLogger`) and CSS merging (`cn`) utilities, providing a rock-solid foundation for future refactors.
 - **UI Component Testing Environment**: We established a robust JSDOM testing paradigm for complex UI elements (`CustomDropdown`, `PublicHeroSection`) that gracefully stubs out GSAP animations, intersection observers, and scrolling counters.
 - **Vitest Environment Stability**: Test runners will no longer unexpectedly exit when importing script utilities; execution blocks in `verify-docs-versions.ts` are now properly gated behind `NODE_ENV !== "test"`.

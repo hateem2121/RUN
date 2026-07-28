@@ -284,6 +284,10 @@ No exceptions — a route without an error boundary can white-screen the user.
 ALL file-based route files in `client/app/routes/` MUST use `export default function Component()` for the primary UI element.
 DO NOT use named `export function Component()` for leaf routes, as React Router will fail to mount the leaf node and return a null Outlet (empty page).
 
+### 6.3.1 Vite Dev Server Execution
+
+**Never modify the client/package.json dev script to pass flags to Vite.** The Vite dev server is executed programmatically by Express inside `server/lib/ssr/ssr-handler.ts`. If you need to pass options like `optimizeDeps: { force: true }`, you must update the `createServer` configuration block inside `ssr-handler.ts`.
+
 ### 6.4 React 19 Patterns (Mandatory)
 
 ```tsx
@@ -329,6 +333,7 @@ const nonce = loaderData?.cspNonce || undefined;
 // - NEVER use `typeof window !== "undefined"` or access `window` inside initial state or render body.
 // - ALWAYS initialize state with an SSR-safe fallback (e.g. `false`), then update via `useEffect`.
 // - For routing/URL state, NEVER use `window.location.search`. ALWAYS use React Router's `useSearchParams` and `useLocation` hooks.
+// - NEVER use `Math.random()` or `Date.now()` in render bodies. Use `React.useId()` for DOM element IDs. Use static strings or `null` for unknown dates until the client hydrates via `useEffect`.
 
 // WebMCP Agentic Forms
 // When implementing Agentic Forms, augment `React.HTMLAttributes` in `env.d.ts` with `toolname` and `tooldescription`.
