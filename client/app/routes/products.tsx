@@ -373,6 +373,7 @@ export default function Component() {
 
     return () => {
       if (currentTarget) observer.unobserve(currentTarget);
+      observer.disconnect(); // Fixes ML-4 closure leak
     };
   }, [hasMore, sortedProducts, isHydrated]);
 
