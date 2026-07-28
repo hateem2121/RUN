@@ -1,5 +1,5 @@
 import { Check, ChevronDown } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 
 interface DropdownOption {
@@ -33,7 +33,8 @@ export function CustomDropdown({
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const listboxId = useRef(`dropdown-listbox-${Math.random().toString(36).slice(2)}`).current;
+  const rawId = useId();
+  const listboxId = `dropdown-listbox-${rawId.replace(/:/g, "")}`;
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const currentOption = options.find((opt) => opt.value === value);

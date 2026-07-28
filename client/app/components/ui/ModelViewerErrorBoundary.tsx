@@ -48,7 +48,7 @@ export class ModelViewerErrorBoundary extends Component<Props, State> {
       errorInfo: null,
       retryCount: 0,
       isRecovering: false,
-      errorId: this.generateErrorId(),
+      errorId: "", // Deterministic SSR-safe initial state (HY-6)
     };
   }
 
