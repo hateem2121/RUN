@@ -306,7 +306,10 @@ export const Footer: React.FC = () => {
       {/* Copyright Bar */}
       <div className="container-centered mt-16 border-t border-foreground/10 py-6 text-center">
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <p className="text-muted-foreground font-mono text-xs tracking-widest">
+          <p
+            suppressHydrationWarning
+            className="text-muted-foreground font-mono text-xs tracking-widest"
+          >
             © {new Date().getFullYear()} {footerConfig?.companyName || "RUN APPAREL (PVT) LTD"}. ALL
             RIGHTS RESERVED.
           </p>
