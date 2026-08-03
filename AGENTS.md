@@ -120,3 +120,4 @@ Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
 
 - **Community Aggregation:** The graph may bundle `shared/schemas` into backend DB communities. Imports of shared Zod schemas in `client/` do NOT violate the DB-access rule.
 - **Fuzzy Matching:** Abstract variable names (e.g., `payload`) can sometimes trigger false "indirect call" inferred edges to similarly named functions in external scripts. Always verify "Surprising Connections" in code before citing them.
+- **Tool Schema Validation:** The `get_affected_flows_tool` does NOT accept a `detail_level` argument. Passing it will cause a Pydantic validation error. Always call it without this argument.

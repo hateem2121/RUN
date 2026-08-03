@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Testing
+
+- **Test Gaps Closed**: Added robust unit and integration test coverage for `ContactFields`, `FooterInquiryForm`, `getMediaContent`, and `getThumbnail` components/handlers.
+
 ### Architecture & Testing
 
 - **Memory Leaks Resolved**: Fixed a severe SPA navigation closure leak (+23MB/cycle) by cleaning up `IntersectionObserver` in product grids. Replaced unbounded `Map` instances with `LRUCache` to prevent server out-of-memory crashes on single-node deployments. Moved module-level `unhandledrejection` listeners into component lifecycles to prevent Vite HMR listener accumulation.
