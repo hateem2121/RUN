@@ -62,7 +62,7 @@ jobs:
           build-mode: none
       
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@ce64ddcb0d8d890d2df4a9d1c04ff297367dea2a # v3.35.2
+        uses: github/codeql-action/analyze@f205ea1c3313d32999d8d6a48b4f6530d4437b38 # v4.37.4
 
   # TruffleHog and Checkov removed as they are Linux-centric and Terraform is obsolete.
   # Secret scanning is now handled by the gitleaks workflow.
