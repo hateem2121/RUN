@@ -124,7 +124,31 @@ export class RateLimiter {
           next();
         },
         async (error) => {
-          logger.error("[RateLimiter] Error in rate limiter, falling back to memory strict", error);
+          logger.error("[RateLimiter] Redis failure - DEGRADED TO IN-MEMORY", {
+            error: error.message,
+            fallback: "memory-strict",
+            alert: true, // Trigger monitoring alert
+          });
+
+          // Send alert to monitoring system in production
+          if (process.env.NODE_ENV === "production" && process.env.ALERTING_WEBHOOK_URL) {
+            ResultAsync.fromPromise(
+              fetch(process.env.ALERTING_WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  severity: "high",
+                  service: "rate-limiter",
+                  message: "Redis fallback activated - distributed rate limiting disabled",
+                  timestamp: new Date().toISOString(),
+                }),
+              }),
+              (err) => err as Error,
+            ).match(
+              () => {},
+              (alertErr) => logger.error("[RateLimiter] Failed to send alert", alertErr),
+            );
+          }
 
           await ResultAsync.fromSafePromise(
             new Promise<void>((resolve) => {

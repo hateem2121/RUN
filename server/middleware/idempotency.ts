@@ -45,7 +45,16 @@ export async function idempotencyMiddleware(
     return next();
   }
 
-  const cacheKey = `idempotency:${key}`;
+  // Validate key format: alphanumeric, hyphens, underscores only, 16-128 chars
+  const KEY_PATTERN = /^[a-zA-Z0-9_-]{16,128}$/;
+  if (!KEY_PATTERN.test(key)) {
+    logger.warn("[Idempotency] Invalid key format", { keyLength: key.length });
+    return next(); // Proceed without idempotency rather than blocking
+  }
+
+  // Prevent cache key injection by sanitizing
+  const sanitizedKey = key.replace(/[^a-zA-Z0-9_-]/g, "");
+  const cacheKey = `idempotency:${sanitizedKey}`;
 
   ResultAsync.fromPromise(
     unifiedCache.get<CachedEntry & { contentType?: string }>(cacheKey),

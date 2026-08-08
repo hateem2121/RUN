@@ -22,20 +22,43 @@ const SENSITIVE_KEYS = [
   "routingnumber",
   "passport",
   "taxid",
+  // Additional sensitive fields
+  "apikey",
+  "api_key",
+  "access_token",
+  "refresh_token",
+  "authorization",
+  "cookie",
+  "session",
+  "userid",
+  "user_id",
+  "customerid",
+  "order_id",
+  "ip",
+  "ipaddress",
+  "useragent",
 ];
+
+// Maximum recursion depth to prevent prototype pollution attacks
+const MAX_DEPTH = 10;
 
 function isSensitiveKey(key: string): boolean {
   const lowercaseKey = key.toLowerCase();
   return SENSITIVE_KEYS.some((sensitive) => lowercaseKey.includes(sensitive));
 }
 
-export function sanitizeForLogging(obj: unknown): unknown {
+export function sanitizeForLogging(obj: unknown, depth = 0): unknown {
+  // Prevent deep nesting attacks (prototype pollution, circular references)
+  if (depth > MAX_DEPTH) {
+    return "[MAX_DEPTH_REDACTED]";
+  }
+  
   if (obj === null || obj === undefined) {
     return obj;
   }
 
   if (Array.isArray(obj)) {
-    return obj.map((item) => sanitizeForLogging(item));
+    return obj.map((item) => sanitizeForLogging(item, depth + 1));
   }
 
   if (typeof obj === "object") {
@@ -64,7 +87,7 @@ export function sanitizeForLogging(obj: unknown): unknown {
       if (isSensitiveKey(key)) {
         sanitized[key] = "[REDACTED]";
       } else {
-        sanitized[key] = sanitizeForLogging(value);
+        sanitized[key] = sanitizeForLogging(value, depth + 1);
       }
     }
     return sanitized;

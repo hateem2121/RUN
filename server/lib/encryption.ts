@@ -1,20 +1,26 @@
-import { createCipheriv, createDecipheriv, createHash, createHmac, randomBytes } from "node:crypto";
+import { createCipheriv, createDecipheriv, createHash, createHmac, pbkdf2Sync, randomBytes } from "node:crypto";
 import { logger } from "../lib/monitoring/logger.js";
 
 // Algorithm: AES-256-GCM (Authenticated Encryption)
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 16;
+// Fixed salt for deterministic key derivation (derived from service name)
+const PBKDF2_SALT = Buffer.from("run-remix-encryption-salt-v1");
+const PBKDF2_ITERATIONS = 100000;
 
 /**
- * Derives a 32-byte key from the environment variable.
+ * Derives a 32-byte key from the environment variable using PBKDF2.
+ * This provides stronger key derivation than simple SHA-256 hashing.
  */
 function getDerivedKey(): Buffer {
   const rawKey = process.env.ENCRYPTION_KEY;
   if (!rawKey) {
     throw new Error("ENCRYPTION_KEY is not defined");
   }
-  // Use SHA-256 to ensure we always have exactly 32 bytes
-  return createHash("sha256").update(rawKey).digest();
+  
+  // Use PBKDF2 with 100,000 iterations for stronger key derivation
+  // The ENCRYPTION_KEY itself should be high-entropy (32+ random bytes)
+  return pbkdf2Sync(rawKey, PBKDF2_SALT, PBKDF2_ITERATIONS, 32, "sha256");
 }
 
 /**

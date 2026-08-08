@@ -82,8 +82,20 @@ export class AuthService {
       process.exit(1);
     }
 
+    // Validate secret length (must be at least 32 characters for security)
+    if (currentSecret.length < 32) {
+      logger.error("CRITICAL SECURITY ERROR: SESSION_SECRET must be at least 32 characters");
+      process.exit(1);
+    }
+
     const finalSecret = currentSecret;
     const previousSecret = process.env.SESSION_SECRET_PREVIOUS;
+    
+    // Validate previous secret if provided
+    if (previousSecret && previousSecret.length < 32) {
+      logger.warn("SESSION_SECRET_PREVIOUS is shorter than 32 characters - rotation may be insecure");
+    }
+    
     const secrets = previousSecret ? [finalSecret, previousSecret] : finalSecret;
 
     return ok(
