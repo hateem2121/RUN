@@ -24,11 +24,7 @@ const EXCLUDED_ROUTES = [
   "/api-docs",
   "/api/webhooks", // External webhooks need their own verification
   "/api/auth/mock-login", // E2E/Internal testing auth
-  "/api/debug/crash", // Integration testing
-  "/api/debug/slow-query", // Integration testing
-  "/api/debug/ip-check", // Integration testing
-  "/api/test/crash", // Integration testing
-  "/api/logs/error", // Client error logging endpoint
+  // Debug routes removed - they should not exist in production
 ];
 
 /**
@@ -58,7 +54,7 @@ export function csrfTokenGenerator(req: Request, res: Response, next: NextFuncti
       httpOnly: false, // Must be readable by JavaScript
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      maxAge: 60 * 60 * 1000, // 1 hour (reduced from 24 hours for security)
       path: "/",
     });
   }
@@ -160,6 +156,17 @@ export function csrfValidator(req: Request, res: Response, next: NextFunction): 
     });
     return;
   }
+
+  // Token rotation: generate new token after successful validation
+  const newToken = generateToken();
+  res.cookie(CSRF_COOKIE_NAME, newToken, {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 60 * 60 * 1000, // 1 hour
+    path: "/",
+  });
+  res.locals.csrfToken = newToken;
 
   next();
 }

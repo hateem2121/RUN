@@ -103,15 +103,20 @@ export async function setupMiddleware(app: Express) {
 function createCorsMiddleware(): RequestHandler {
   return (req, res, next) => {
     const origin = req.headers.origin;
-    if (process.env.NODE_ENV === "production") {
-      const allowedOrigins = (process.env.STRICT_ALLOWED_ORIGINS || "https://wear-run.com").split(
-        ",",
-      );
-      if (origin && allowedOrigins.includes(origin)) {
-        res.setHeader("Access-Control-Allow-Origin", origin);
+    
+    // Define allowed origins based on environment
+    const allowedOrigins = process.env.NODE_ENV === "production"
+      ? (process.env.STRICT_ALLOWED_ORIGINS || "https://wear-run.com").split(",")
+      : ["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:3000"];
+    
+    // Only allow requests from explicitly permitted origins
+    if (origin && allowedOrigins.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    } else if (process.env.NODE_ENV !== "production") {
+      // In development, allow wildcard only when no origin is provided
+      if (!origin) {
+        res.setHeader("Access-Control-Allow-Origin", "*");
       }
-    } else {
-      res.setHeader("Access-Control-Allow-Origin", origin || "*");
     }
 
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");

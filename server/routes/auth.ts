@@ -18,7 +18,16 @@ router.get(
 );
 
 // Mock Login Route (Development & Test Only)
-if (env.NODE_ENV === "development" || env.VITEST || env.ENABLE_MOCK_ADMIN === "true") {
+// SECURITY: Strict check - mock login ONLY enabled in development/test environments
+// ENABLE_MOCK_ADMIN is IGNORED in production regardless of value
+const isDevelopmentOrTest = 
+  process.env.NODE_ENV === "development" || 
+  process.env.NODE_ENV === "test" ||
+  process.env.VITEST === "true";
+
+const isMockEnabled = process.env.ENABLE_MOCK_ADMIN === "true";
+
+if (isDevelopmentOrTest && isMockEnabled) {
   router.get("/mock-login", async (req, res) => {
     const mockUser: SessionUser = {
       id: "mock-admin-id",
