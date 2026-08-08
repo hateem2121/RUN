@@ -1,116 +1,71 @@
-node_modules
-dist
-.DS_Store
-**/.DS_Store
-server/public
-vite.config.ts.*
-*.tar.gz
+```
+# Logs and temp files
+*.log
+*.tmp
+*.swp
 
-# Environment variables and secrets
+# Environment
 .env
 .env.local
-.env.*.local
+*.env.*
 
-# Google Cloud credentials
-gcs-service-account-key.json
-*-service-account-key.json
+# Editors
+.vscode/
+.idea/
 
-# Ignore compiled TypeScript outputs in source directories
-server/**/*.js
-server/**/*.js.map
-server/**/*.d.ts
-server/**/*.d.ts.map
-shared/**/*.js
-shared/**/*.js.map
-shared/**/*.d.ts
-shared/**/*.d.ts.map
-client/src/**/*.js
-client/src/**/*.js.map
-*.tsbuildinfo
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+dist/
+build/
+target/
+.gradle/
 
-# Temporary optimization files
-temp_gltf_optimization/
-trivy
+# System files
+.DS_Store
+Thumbs.db
 
-# Client Build Artifacts
-client/build
-client/.react-router/
+# Compiled files
+*.pyc
+*.class
+*.o
+*.exe
+*.dll
+*.so
+*.a
+*.obj
+*.out
 
-# Debug/Test Artifacts (prevent accidental commits)
-*.log
-*_debug*.txt
-*_output*.txt
-biome_errors*.txt
-crash_*.txt
-slow_query_output*.txt
-proxy_debug*.txt
-cookies.txt
-curl_debug.txt
-FINAL_REMEDIATION_PROMPT.txt
-.turbo
-playwright-report/
-test-results/
-openapi-spec.json
-# Temporary audit and log files
-audit.json
-biome-report.txt
-biome_full_v2.txt
+# Coverage
 coverage/
-duplication_report.md
-e2e/__snapshots__/
-lint.txt
-test-db-*.ts
-test-neon-http.ts
-typecheck*.txt
+htmlcov/
+.coverage
 
-# Compiled utility outputs
-utils/**/*.js
-utils/**/*.d.ts
-utils/**/*.d.ts.map
-
-# Legacy worktrees
-legacy/worktrees/
-
-# IDE/tool-specific
-.kilocodemodes
-.config/
-.context/
-.auth/
-
-# Protocol 0 session files (not project documentation)
-task_plan.md
-findings.md
-findings/
-
-# Log output directories
-logs/
-
-# One-off debug artifacts
-test-bind.ts
-shell_metadata.csv
-FULL_SYSTEM_CONTEXT.json
-
-# E2E visual regression snapshots (regenerable)
-tests/e2e/**/*.png
-.gstack/
-.claude/skills/gstack/
-
-# Self-hosted GitHub Actions runner
-.github/runner/
-
-# Scratch directory for temporary scripts
-scratch/
-
-# Agent session artefacts (Phase 3 audit additions — 2026-07-08)
-.stryker-tmp/
-ORIGINAL_REQUEST.md
-knip.txt
-test-results.json
-test-e2e-output.log
-e2e-console-logs.txt
-full_test_output.txt
-test_output.txt
-server.log
-check.log
-# Added by code-review-graph
-.code-review-graph/
+# Compressed files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
+```

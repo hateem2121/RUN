@@ -37,11 +37,13 @@ export async function verifyRecaptcha(
   }
 
   try {
-    const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${token}`;
-
-    const recaptchaRes = await fetch(verifyUrl, {
+    const recaptchaRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        secret: recaptchaSecret,
+        response: token,
+      }),
     });
 
     const recaptchaData = (await recaptchaRes.json()) as RecaptchaResponse;
