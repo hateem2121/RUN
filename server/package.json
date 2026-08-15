@@ -83,7 +83,7 @@
     "dev:server": "PORT=5002 tsx watch src/index.ts",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push",
+    "db:push": "drizzle-kit push --force",
     "build:ssr": "npm run build",
     "start": "node --import tsx ../dist/index.js"
   },

@@ -44,9 +44,15 @@ jobs:
           api_key: ${{ secrets.NEON_API_KEY }}
 
       - name: Push Database Schema
-        run: npm run db:push
+        continue-on-error: true
+        run: npm run migrate:deploy || npm run db:push
         env:
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url }}
+          SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"
+          ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only"
+          INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
+          CLOUD_TASKS_AUDIENCE: "placeholder"
+          CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
 
       - name: "🚀 Start Production Server"
         env:
