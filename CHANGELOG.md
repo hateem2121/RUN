@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### CI/CD & Automation Suite
+
+- **Workflow Security Static Analysis**: Integrated `zizmor` security scanning (`.github/workflows/workflow-security.yml`) to continuously audit GitHub Actions workflows for template injection, unpinned versions, and privilege escalation vulnerabilities.
+- **Automated Semantic B2B Changelogs**: Configured Release Drafter (`.github/workflows/release-drafter.yml` and `.github/release-drafter.yml`) to automatically produce categorized release notes from labeled pull requests.
+- **Monorepo Dead Code Gate**: Added automated Knip static analysis in CI (`.github/workflows/code-quality.yml`) to detect and eliminate unused exports, files, and dependencies.
+- **Issue & PR Lifecycle Automation**: Configured automated stale issue (60 days) and PR (30 days) triage via `.github/workflows/stale.yml` with protected label exemptions.
+- **Egress & Supply Chain Hardening**: Integrated `step-security/harden-runner` and `actions/dependency-review-action` into `.github/workflows/security.yml` to monitor runner outbound traffic and block vulnerable PR dependencies at the gate.
+
+### E2E Testing & Forensic Audit
+
+- **Forensic Suite Execution**: Completed a full 591-test audit of the E2E proof suite and categorized all 392 failures into 5 structured root-cause clusters in `findings.md`.
+- **Manufacturing CMS Stabilization**: Resolved admin hero update failure by fixing missing media `queryFn`, adding cache invalidation propagation retry, and implementing resilient API-based restoration.
+
 ### Testing
 
 - **Test Gaps Closed**: Added robust unit and integration test coverage for `ContactFields`, `FooterInquiryForm`, `getMediaContent`, and `getThumbnail` components/handlers.

@@ -15,21 +15,23 @@ import { Typography } from "@/components/ui/typography";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/categories.$slug";
 
-export async function loader({ params }: Route.LoaderArgs) {
-  const queryClient = getQueryClient();
+export async function loader({ request, params }: Route.LoaderArgs) {
+  const base = new URL(request.url);
   const slug = params.slug;
 
   if (!slug) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  // 1. Fetch category by slug to get ID
-  await queryClient.prefetchQuery({
-    queryKey: [`/api/categories/by-slug/${slug}`],
-    queryFn: () => apiRequest(`/api/categories/by-slug/${slug}`),
-  });
+  const get = (path: string) =>
+    fetch(new URL(path, base).toString(), {
+      headers: { cookie: request.headers.get("cookie") ?? "" },
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
 
-  const category = queryClient.getQueryData<Category>([`/api/categories/by-slug/${slug}`]);
+  // 1. Fetch category by slug
+  const category = (await get(`/api/categories/by-slug/${slug}`)) as Category | null;
 
   if (!category) {
     throw new Response(JSON.stringify({ message: "Category not found" }), {
@@ -39,26 +41,20 @@ export async function loader({ params }: Route.LoaderArgs) {
   }
 
   // 2. Fetch dependencies in parallel
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: ["/api/categories"],
-      queryFn: () => apiRequest("/api/categories"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/products", { category: category.id }],
-      queryFn: () => apiRequest(`/api/products?category=${category.id}`),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/fabrics"],
-      queryFn: () => apiRequest("/api/fabrics"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["/api/certificates"],
-      queryFn: () => apiRequest("/api/certificates"),
-    }),
+  const [allCategoriesRes, productsRes, fabricsRes, certificatesRes] = await Promise.all([
+    get("/api/categories") as Promise<Category[] | null>,
+    get(`/api/products?category=${category.id}`) as Promise<{ data: ProductSummary[] } | null>,
+    get("/api/fabrics") as Promise<Fabric[] | null>,
+    get("/api/certificates") as Promise<Certificate[] | null>,
   ]);
 
-  return { dehydratedState: dehydrate(queryClient) };
+  return {
+    category,
+    allCategories: Array.isArray(allCategoriesRes) ? allCategoriesRes : [],
+    products: Array.isArray(productsRes?.data) ? productsRes.data : [],
+    fabrics: Array.isArray(fabricsRes) ? fabricsRes : [],
+    certificates: Array.isArray(certificatesRes) ? certificatesRes : [],
+  };
 }
 
 export function meta({}: Route.MetaArgs) {
@@ -69,8 +65,6 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Component() {
   const loaderData = useLoaderData<typeof loader>();
-  const params = useParams();
-  const slug = params.slug;
   const heroRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -80,44 +74,11 @@ export default function Component() {
     { scope: heroRef },
   );
 
-  const { data: category, isLoading: categoryLoading } = useQuery<Category>({
-    queryKey: [`/api/categories/by-slug/${slug}`],
-    queryFn: () => apiRequest(`/api/categories/by-slug/${slug}`),
-    enabled: !!slug,
-  });
-
-  // Fetch all categories for breadcrumbs
-  const { data: allCategories = [] } = useQuery<Category[]>({
-    queryKey: ["/api/categories"],
-    queryFn: () => apiRequest("/api/categories"),
-  });
-
-  // Fetch products for this category
-  const { data: productsData, isLoading: productsLoading } = useQuery<{
-    data: ProductSummary[];
-  }>({
-    queryKey: ["/api/products", { category: category?.id }],
-    queryFn: async () => {
-      if (!category?.id) {
-        return { data: [] };
-      }
-      return apiRequest(`/api/products?category=${category.id}`);
-    },
-    enabled: !!category?.id,
-  });
-
-  // Fetch related data
-  const { data: fabrics = [] } = useQuery<Fabric[]>({
-    queryKey: ["/api/fabrics"],
-    queryFn: () => apiRequest("/api/fabrics"),
-  });
-
-  const { data: certificates = [] } = useQuery<Certificate[]>({
-    queryKey: ["/api/certificates"],
-    queryFn: () => apiRequest("/api/certificates"),
-  });
-
-  const products = Array.isArray(productsData?.data) ? productsData.data : [];
+  const category = loaderData?.category;
+  const allCategories = loaderData?.allCategories || [];
+  const products = loaderData?.products || [];
+  const fabrics = loaderData?.fabrics || [];
+  const certificates = loaderData?.certificates || [];
 
   // Build breadcrumbs
   const breadcrumbs = useMemo(() => {
@@ -142,18 +103,6 @@ export default function Component() {
 
     return crumbs;
   }, [category, allCategories]);
-
-  // Loading state
-  if (categoryLoading || productsLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
-        <div className="text-center">
-          <Loader2 className="mx-auto mb-3 h-8 w-8 animate-spin text-muted-foreground" />
-          <Typography.P className="text-muted-foreground text-sm">Loading category...</Typography.P>
-        </div>
-      </div>
-    );
-  }
 
   // No manual error state needed as loader throws 404
 

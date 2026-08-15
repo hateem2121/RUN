@@ -248,7 +248,6 @@ function ManufacturingInner({ loaderData }: ManufacturingInnerProps) {
     },
     { label: "Lead Time", value: 15, suffix: " Days", icon: "Zap" },
   ];
-
   return (
     <>
       <script
@@ -257,37 +256,41 @@ function ManufacturingInner({ loaderData }: ManufacturingInnerProps) {
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data is hardcoded, not user input
         dangerouslySetInnerHTML={{ __html: generateStructuredData() }}
       />
-      <div className="min-h-screen bg-background text-foreground font-helvetica selection:bg-amber-500/30">
+      <main className="min-h-screen bg-background text-foreground font-helvetica selection:bg-amber-500/30">
         {/* Hero Section */}
         <ManufacturingErrorBoundary>
           <PublicHeroSection
             mediaAssets={mediaAssets}
             hero={hero || undefined}
-            stats={derivedStats}
           />
         </ManufacturingErrorBoundary>
 
-        {/* Brand Marquee */}
+        {/* Marquee Strip */}
         <MarqueeStrip
-          text="CUTTING • ASSEMBLY • FINISHING • QUALITY • INNOVATION •"
-          accentColor="var(--color-manufacturing-accent)"
-          speed={40}
+          items={[
+            "CUTTING",
+            "ASSEMBLY",
+            "FINISHING",
+            "QUALITY",
+            "INNOVATION",
+          ]}
+          speed="normal"
         />
 
-        {/* Processes Section */}
+        {/* Blueprint Section */}
         <ManufacturingErrorBoundary>
           <ProductionBlueprint mediaAssets={mediaAssets} processes={processes} />
         </ManufacturingErrorBoundary>
 
         {/* Capabilities Section */}
-        <div className="bg-manufacturing-card">
-          <ManufacturingErrorBoundary>
-            <PublicCapabilitySection mediaAssets={mediaAssets} capabilities={capabilities} />
-          </ManufacturingErrorBoundary>
-        </div>
+        <ManufacturingErrorBoundary>
+          <PublicCapabilitySection mediaAssets={mediaAssets} capabilities={capabilities} />
+        </ManufacturingErrorBoundary>
 
-        {/* Factory Gallery */}
-        <FactoryGallery />
+        {/* Live Factory Gallery Section */}
+        <ManufacturingErrorBoundary>
+          <FactoryGallery />
+        </ManufacturingErrorBoundary>
 
         {/* Quality Section */}
         <ManufacturingErrorBoundary>
@@ -299,7 +302,7 @@ function ManufacturingInner({ loaderData }: ManufacturingInnerProps) {
 
         {/* Call to Action */}
         <PublicCTASection />
-      </div>
+      </main>
     </>
   );
 }

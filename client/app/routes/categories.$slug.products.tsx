@@ -21,33 +21,37 @@ import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/categories.$slug.products";
 
-export async function loader({ params }: Route.LoaderArgs) {
-  const queryClient = getQueryClient();
+export async function loader({ request, params }: Route.LoaderArgs) {
+  const base = new URL(request.url);
   const slug = params.slug;
 
-  // 1. Fetch categories
-  await queryClient.prefetchQuery({
-    queryKey: ["/api/categories"],
-    queryFn: () => apiRequest("/api/categories"),
-  });
+  const get = (path: string) =>
+    fetch(new URL(path, base).toString(), {
+      headers: { cookie: request.headers.get("cookie") ?? "" },
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
 
-  const categories = queryClient.getQueryData<Category[]>(["/api/categories"]) || [];
-  const category = categories.find((c) => c.slug === slug);
+  const categories = (await get("/api/categories")) || [];
+  const category = (Array.isArray(categories) ? categories : []).find(
+    (c: Category) => c.slug === slug,
+  );
 
+  let products: Product[] = [];
   if (category) {
-    await Promise.all([
-      queryClient.prefetchQuery({
-        queryKey: ["/api/products", "category", category.id],
-        queryFn: () => apiRequest(`/api/products?category=${category.id}&active=true`),
-      }),
-      queryClient.prefetchQuery({
-        queryKey: MediaQueryKeys.list,
-        queryFn: () => apiRequest("/api/media?all=true"),
-      }),
-    ]);
+    const productsRes = await get(`/api/products?category=${category.id}&active=true`);
+    products = Array.isArray(productsRes)
+      ? productsRes
+      : Array.isArray(productsRes?.data)
+        ? productsRes.data
+        : [];
   }
 
-  return { dehydratedState: dehydrate(queryClient) };
+  return {
+    categories: Array.isArray(categories) ? categories : [],
+    category: category || null,
+    products,
+  };
 }
 
 export function meta({}: Route.MetaArgs) {
@@ -69,13 +73,8 @@ export default function CategoryProductsPage() {
   const [viewMode, setViewMode] = useState<"small" | "medium" | "large">("medium");
   const [sortBy, setSortBy] = useState("name");
 
-  // Fetch category by slug
-  const { data: categories = [] } = useQuery<Category[]>({
-    queryKey: ["/api/categories"],
-    queryFn: () => apiRequest("/api/categories"),
-  });
-
-  const category = categories.find((c) => c.slug === slug);
+  const categories = loaderData?.categories || [];
+  const category = loaderData?.category;
 
   // Fetch subcategories
   const subcategories = categories.filter((c) => c.parentId === category?.id && c.isActive);
@@ -87,22 +86,7 @@ export default function CategoryProductsPage() {
   });
   const mediaAssets = mediaData?.data || [];
 
-  // Fetch products for this category
-  const { data: productsResponse, isLoading } = useQuery<{
-    data: Product[];
-    pagination?: { page?: number; total?: number; pageSize?: number };
-  }>({
-    queryKey: ["/api/products", "category", category?.id],
-    queryFn: async () => {
-      if (!category?.id) {
-        return { data: [] };
-      }
-      return apiRequest(`/api/products?category=${category.id}&active=true`);
-    },
-    enabled: !!category?.id,
-  });
-
-  const products = productsResponse?.data || [];
+  const products = loaderData?.products || [];
 
   // Filter products based on search
   const filteredProducts = products.filter((product) => {
@@ -297,7 +281,7 @@ export default function CategoryProductsPage() {
 
                 {/* Sort */}
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-full sm:w-custom-space-288">
+                  <SelectTrigger className="w-full sm:w-custom-space-288" aria-label="Sort products">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -314,6 +298,7 @@ export default function CategoryProductsPage() {
                     variant={viewMode === "small" ? "default" : "ghost"}
                     onClick={() => setViewMode("small")}
                     className="p-2"
+                    aria-label="Small grid view"
                   >
                     <Grid3X3 className="h-4 w-4" />
                   </Button>
@@ -322,6 +307,7 @@ export default function CategoryProductsPage() {
                     variant={viewMode === "medium" ? "default" : "ghost"}
                     onClick={() => setViewMode("medium")}
                     className="p-2"
+                    aria-label="Medium grid view"
                   >
                     <Grid2X2 className="h-4 w-4" />
                   </Button>
@@ -330,6 +316,7 @@ export default function CategoryProductsPage() {
                     variant={viewMode === "large" ? "default" : "ghost"}
                     onClick={() => setViewMode("large")}
                     className="p-2"
+                    aria-label="Large grid view"
                   >
                     <LayoutGrid className="h-4 w-4" />
                   </Button>
@@ -347,11 +334,7 @@ export default function CategoryProductsPage() {
 
         {/* Products Grid */}
         <div className="container mx-auto px-4 py-8">
-          {isLoading ? (
-            <div className="flex min-h-value-card items-center justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground/50" />
-            </div>
-          ) : sortedProducts.length === 0 ? (
+          {sortedProducts.length === 0 ? (
             <div className="py-12 text-center">
               <Typography.P className="text-muted-foreground">
                 No products found in this category

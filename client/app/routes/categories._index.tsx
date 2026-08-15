@@ -18,13 +18,19 @@ import { gsap } from "@/lib/gsap";
 import { apiRequest, batchFetchMediaContent, getQueryClient } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 
-export async function loader() {
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["/api/categories"],
-    queryFn: () => apiRequest("/api/categories"),
-  });
-  return { dehydratedState: dehydrate(queryClient) };
+export async function loader({ request }: Route.LoaderArgs) {
+  const base = new URL(request.url);
+  const get = (path: string) =>
+    fetch(new URL(path, base).toString(), {
+      headers: { cookie: request.headers.get("cookie") ?? "" },
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
+
+  const categories = (await get("/api/categories")) || [];
+  return {
+    categories: Array.isArray(categories) ? categories : [],
+  };
 }
 
 // Lazy-load FluidGlass (imports three.js)
@@ -56,31 +62,6 @@ interface FeaturedContent {
   card4?: BentoCardContent;
 }
 
-// Error boundary for FluidGlass component
-// class FluidGlassErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
-//   constructor(props: { children: ReactNode }) {
-//     super(props);
-//     this.state = { hasError: false };
-//   }
-
-//   static getDerivedStateFromError() {
-//     return { hasError: true };
-//   }
-
-//   override componentDidCatch(_error: Error) {}
-
-//   override render() {
-//     if (this.state.hasError) {
-//       // Render nothing or a fallback background
-//       return (
-//         <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-transparent dark:from-primary/5 dark:to-transparent" />
-//       );
-//     }
-
-//     return this.props.children;
-//   }
-// }
-
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Product Categories | Run Apparel" },
@@ -108,11 +89,7 @@ export default function Component() {
     { scope: containerRef },
   );
 
-  // Fetch all categories
-  const { data: categories = [], isLoading: categoriesLoading } = useQuery<Category[]>({
-    queryKey: ["/api/categories"],
-    queryFn: () => apiRequest("/api/categories"),
-  });
+  const categories = loaderData?.categories || [];
 
   // Filter active categories with featured content
   const activeCategories = categories.filter((cat) => cat.isActive);
@@ -250,23 +227,6 @@ export default function Component() {
     // Fallback: Convert to unified content format (rare case for unbatched media)
     return `/api/media/${mediaId}/content`;
   };
-
-  // Show loading state for both categories and media batch
-  // FIX: Only block on categories loading, not media batch
-  if (categoriesLoading) {
-    return (
-      <div className="bg-card flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="text-luxury-gray-600 mx-auto mb-3 h-8 w-8 animate-spin" />
-          <Typography.P className="text-luxury-body text-sm">
-            {categoriesLoading
-              ? "Loading categories..."
-              : `Loading ${allMediaIds.length} media assets...`}
-          </Typography.P>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>

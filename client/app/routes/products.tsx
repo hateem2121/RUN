@@ -75,11 +75,14 @@ export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const search = url.searchParams.get("search") || "";
   const categoryId = url.searchParams.get("category");
+  const base = new URL(request.url);
 
-  const port = import.meta.env.PORT || "5002" || "5002";
-  const base = `http://localhost:${port}`;
-  const cookie = request.headers.get("cookie") ?? "";
-  const fetchHeaders = { cookie };
+  const get = (path: string) =>
+    fetch(new URL(path, base).toString(), {
+      headers: { cookie: request.headers.get("cookie") ?? "" },
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null);
 
   // Build products query — pass through search/category to server API
   const productParams = new URLSearchParams({ limit: "100", active: "true" });
@@ -87,16 +90,6 @@ export async function loader({ request }: Route.LoaderArgs) {
   if (categoryId && categoryId !== "all") productParams.set("category", categoryId);
 
   // Parallel fetch from server API — replaces direct Drizzle queries
-  const [categoriesRes, fabricsRes, certificatesRes, sizeChartsRes, accessoriesRes, productsRes] =
-    await Promise.all([
-      fetch(`${base}/api/categories`, { headers: fetchHeaders }),
-      fetch(`${base}/api/fabrics`, { headers: fetchHeaders }),
-      fetch(`${base}/api/certificates`, { headers: fetchHeaders }),
-      fetch(`${base}/api/size-charts`, { headers: fetchHeaders }),
-      fetch(`${base}/api/accessories`, { headers: fetchHeaders }),
-      fetch(`${base}/api/products?${productParams}`, { headers: fetchHeaders }),
-    ]);
-
   const [
     categoriesData,
     fabricsData,
@@ -105,22 +98,26 @@ export async function loader({ request }: Route.LoaderArgs) {
     accessoriesData,
     productsData,
   ] = await Promise.all([
-    categoriesRes.json() as Promise<unknown[]>,
-    fabricsRes.json() as Promise<unknown[]>,
-    certificatesRes.json() as Promise<unknown[]>,
-    sizeChartsRes.json() as Promise<unknown[]>,
-    accessoriesRes.json() as Promise<unknown[]>,
-    productsRes.json() as Promise<{ data: unknown[]; pagination?: unknown }>,
+    get("/api/categories"),
+    get("/api/fabrics"),
+    get("/api/certificates"),
+    get("/api/size-charts"),
+    get("/api/accessories"),
+    get(`/api/products?${productParams.toString()}`),
   ]);
 
   return {
-    categories: categoriesData,
-    fabrics: fabricsData,
-    certificates: certificatesData,
-    sizeCharts: sizeChartsData,
-    accessories: accessoriesData,
+    categories: Array.isArray(categoriesData) ? categoriesData : [],
+    fabrics: Array.isArray(fabricsData) ? fabricsData : [],
+    certificates: Array.isArray(certificatesData) ? certificatesData : [],
+    sizeCharts: Array.isArray(sizeChartsData) ? sizeChartsData : [],
+    accessories: Array.isArray(accessoriesData) ? accessoriesData : [],
     // Products API returns paginated shape { data, pagination } — extract data array
-    products: productsData.data ?? [],
+    products: Array.isArray(productsData?.data)
+      ? productsData.data
+      : Array.isArray(productsData)
+        ? productsData
+        : [],
   };
 }
 
@@ -147,9 +144,15 @@ export default function Component() {
   const [searchParams, setSearchParams] = useSearchParams();
   usePerformanceMonitor("ProductsPage");
   const { trackPageView, trackFunnelStage } = useAnalyticsTracker();
-  const [displayedProducts, setDisplayedProducts] = useState<ProductSummary[]>([]);
-  const [hasMore, setHasMore] = useState(true);
   const itemsPerPage = 12;
+  const initialProducts = useMemo(
+    () => safeParseArray(ProductSummarySchema, serverProducts),
+    [serverProducts],
+  );
+  const [displayedProducts, setDisplayedProducts] = useState<ProductSummary[]>(() =>
+    initialProducts.slice(0, itemsPerPage),
+  );
+  const [hasMore, setHasMore] = useState(true);
 
   // Parse URL search params
   const initialSearchTerm = searchParams.get("search") || "";
@@ -164,11 +167,6 @@ export default function Component() {
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [viewMode, setViewMode] = useState<"small" | "medium" | "large">(validViewMode);
   const [sortBy, setSortBy] = useState(initialSortBy);
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
 
   // Advanced filters state
   const [selectedFilters, setSelectedFilters] = useState({
@@ -202,9 +200,8 @@ export default function Component() {
   // Use server products by default.
   // Note: Client-side search/filter state updates URL -> triggers Loader -> updates serverProducts.
   const products = useMemo(() => {
-    if (!isHydrated) return [];
     return safeParseArray(ProductSummarySchema, serverProducts);
-  }, [serverProducts, isHydrated]);
+  }, [serverProducts]);
 
   // Track page view on mount
   useEffect(() => {
@@ -259,9 +256,8 @@ export default function Component() {
 
   // Extract unique tags from all products
   const availableTags = useMemo(() => {
-    if (!isHydrated) return [];
     return [...new Set((products || []).filter(Boolean).flatMap((p) => p.tags || []))];
-  }, [products, isHydrated]);
+  }, [products]);
 
   // Filter and sort products (Client-side refinement of server results)
   const sortedProducts = useMemo(() => {
@@ -343,7 +339,7 @@ export default function Component() {
   const observerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!hasMore || !isHydrated) return;
+    if (!hasMore) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -375,7 +371,7 @@ export default function Component() {
       if (currentTarget) observer.unobserve(currentTarget);
       observer.disconnect(); // Fixes ML-4 closure leak
     };
-  }, [hasMore, sortedProducts, isHydrated]);
+  }, [hasMore, sortedProducts, itemsPerPage]);
 
   // Get selected category object for SEO
   const selectedCategoryObj = categories.find((c) => c.id.toString() === selectedCategory);

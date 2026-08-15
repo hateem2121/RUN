@@ -333,7 +333,7 @@ function TechnologyInner({ batchData }: { batchData: TechnologyBatchResponse | n
   return (
     <div
       ref={containerRef}
-      className="technology-page-root relative isolate min-h-screen bg-technology-bg"
+      className="technology-page-root relative isolate min-h-screen bg-technology-bg overflow-x-hidden"
     >
       {/* Grid Pattern */}
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-arctic dark:bg-grid-tech opacity-30"></div>

@@ -9,6 +9,7 @@ import { AdminPageHeader } from "@/components/admin/shared/AdminPageHeader";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
+import { apiRequest } from "@/lib/queryClient";
 
 export function ManufacturingManagement() {
   // OPTIMIZATION: Defer heavy media loading until editing mode is active (Refactor Phase 4)
@@ -17,6 +18,11 @@ export function ManufacturingManagement() {
     data: { data: MediaAsset[]; pagination: unknown };
   }>({
     queryKey: MediaQueryKeys.list,
+    queryFn: () =>
+      apiRequest<{
+        success: boolean;
+        data: { data: MediaAsset[]; pagination: unknown };
+      }>("/api/media"),
     staleTime: 10 * 60 * 1000, // 10 minutes cache
     gcTime: 15 * 60 * 1000, // Keep in cache for 15 minutes
   });

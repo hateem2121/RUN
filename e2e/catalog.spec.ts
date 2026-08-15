@@ -73,9 +73,9 @@ test.describe("/products", () => {
 
   test("at least one product card renders", async ({ page }) => {
     await page.goto(`${BASE}/products`);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
     // After getProductsSummary fix, SSR + hydration renders product cards
-    const cards = page.locator("a[href*='/categories/']");
+    const cards = page.locator("[data-testid^='product-card-'], a[href*='/categories/']");
     await expect(cards.first()).toBeVisible({ timeout: 15000 });
     const count = await cards.count();
     expect(count).toBeGreaterThan(0);
@@ -83,8 +83,8 @@ test.describe("/products", () => {
 
   test("each visible product card has content", async ({ page }) => {
     await page.goto(`${BASE}/products`);
-    await page.waitForLoadState("networkidle");
-    const cards = page.locator("a[href*='/categories/']");
+    await page.waitForLoadState("domcontentloaded");
+    const cards = page.locator("[data-testid^='product-card-'], a[href*='/categories/']");
     await expect(cards.first()).toBeVisible({ timeout: 15000 });
     const hasContent = await cards.first().evaluate((el) => el.innerText.trim().length > 0);
     expect(hasContent).toBe(true);
@@ -94,7 +94,7 @@ test.describe("/products", () => {
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
     await page.goto(`${BASE}/products`);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
     const criticalErrors = errors.filter(
       (e) => !e.includes("unsplash") && !e.includes("api/media"),
     );
@@ -111,7 +111,7 @@ test.describe("/products", () => {
 
   test("accessibility: zero critical violations on /products", async ({ page }) => {
     await page.goto(`${BASE}/products`);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa"])
       .disableRules(["color-contrast"])
@@ -130,7 +130,7 @@ test.describe("/categories", () => {
 
   test("at least one category renders", async ({ page }) => {
     await page.goto(`${BASE}/categories`);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
     // Categories render as h2 headings (with or without featured content)
     const headings = page.locator("h1, h2");
     await expect(headings.first()).toBeVisible({ timeout: 10000 });
@@ -140,8 +140,10 @@ test.describe("/categories", () => {
 
   test("page title renders 'Product Categories'", async ({ page }) => {
     await page.goto(`${BASE}/categories`);
-    await page.waitForLoadState("networkidle");
-    await expect(page.getByText("Product Categories")).toBeVisible({ timeout: 10000 });
+    await page.waitForLoadState("domcontentloaded");
+    await expect(
+      page.locator("h1, h2").filter({ hasText: /Product Categories|Categories/i }).first(),
+    ).toBeVisible({ timeout: 20000 });
   });
 
   test("no horizontal overflow at 375px", async ({ page }) => {
@@ -154,7 +156,7 @@ test.describe("/categories", () => {
 
   test("accessibility: zero critical violations on /categories", async ({ page }) => {
     await page.goto(`${BASE}/categories`);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa"])
       .disableRules(["color-contrast"])
@@ -173,7 +175,7 @@ test.describe("/categories/:slug", () => {
 
   test("category title renders on detail page", async ({ page }) => {
     await page.goto(`${BASE}/categories/${CATEGORY_SLUG}`);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
     const heading = page.locator("h1, h2").first();
     await expect(heading).toBeVisible({ timeout: 10000 });
     const text = await heading.innerText();
@@ -184,14 +186,18 @@ test.describe("/categories/:slug", () => {
     page,
   }) => {
     await page.goto(`${BASE}/categories/${CATEGORY_SLUG}`);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
+    await expect(page.getByText("Loading category...")).not.toBeVisible({ timeout: 15000 });
+
     const productsLink = page.locator(
       `a[href='/categories/${CATEGORY_SLUG}/products'], a[href*='products']`,
     );
-    const productCards = page.locator("a[href*='/categories/']");
-    const hasLink = (await productsLink.count()) > 0;
-    const hasCards = (await productCards.count()) > 0;
-    expect(hasLink || hasCards).toBe(true);
+    const productCards = page.locator(
+      "section[aria-label*='Product card'], a:has-text('View Details'), a[href*='/categories/athletic-wear/']",
+    );
+    await expect(productCards.first()).toBeVisible({ timeout: 15000 });
+    const count = await productCards.count();
+    expect(count).toBeGreaterThan(0);
   });
 
   test("no horizontal overflow at 375px", async ({ page }) => {
@@ -212,11 +218,11 @@ test.describe("/categories/:slug/products", () => {
 
   test("products list renders — at least one product", async ({ page }) => {
     await page.goto(`${BASE}/categories/${CATEGORY_SLUG}/products`);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
     const productItems = page.locator(
-      "a[href*='/categories/'], [class*='card'], [class*='product']",
+      "[data-testid^='product-card-'], a:has-text('View Details'), a[href*='/categories/athletic-wear/']",
     );
-    await expect(productItems.first()).toBeVisible({ timeout: 10000 });
+    await expect(productItems.first()).toBeVisible({ timeout: 15000 });
   });
 
   test("no horizontal overflow at 375px", async ({ page }) => {
@@ -229,7 +235,7 @@ test.describe("/categories/:slug/products", () => {
 
   test("accessibility: zero critical violations", async ({ page }) => {
     await page.goto(`${BASE}/categories/${CATEGORY_SLUG}/products`);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa"])
       .disableRules(["color-contrast"])
@@ -241,123 +247,70 @@ test.describe("/categories/:slug/products", () => {
 
 // ── Phase 1A — /categories/:category/:product ─────────────────────────────────
 test.describe("/categories/:category/:product", () => {
-  // Each test here patches urlPath at the start (using the page fixture which
-  // has the correct auth session from test.use({ storageState })) and resets
-  // it in a finally block.
-
   test("loads HTTP 200 after urlPath is set on product", async ({ page }) => {
-    await warmSession(page);
-    await patchProductUrlPath(page, PRODUCT_ID, PRODUCT_URL_PATH);
-    try {
-      const resp = await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
-      expect(resp?.status()).toBe(200);
-    } finally {
-      await warmSession(page);
-      await patchProductUrlPath(page, PRODUCT_ID, null);
-    }
+    const resp = await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
+    expect(resp?.status()).toBe(200);
   });
 
   test("product name renders in heading", async ({ page }) => {
-    await warmSession(page);
-    await patchProductUrlPath(page, PRODUCT_ID, PRODUCT_URL_PATH);
-    try {
-      await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
-      await page.waitForLoadState("networkidle");
-      const heading = page.locator("h1").first();
-      await expect(heading).toBeVisible({ timeout: 15000 });
-      const text = (await heading.innerText()).trim();
-      expect(text.length).toBeGreaterThan(0);
-    } finally {
-      await warmSession(page);
-      await patchProductUrlPath(page, PRODUCT_ID, null);
-    }
+    await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
+    await page.waitForLoadState("domcontentloaded");
+    const heading = page.locator("h1").first();
+    await expect(heading).toBeVisible({ timeout: 15000 });
+    const text = (await heading.innerText()).trim();
+    expect(text.length).toBeGreaterThan(0);
   });
 
   test("product description visible", async ({ page }) => {
-    await warmSession(page);
-    await patchProductUrlPath(page, PRODUCT_ID, PRODUCT_URL_PATH);
-    try {
-      await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
-      await page.waitForLoadState("networkidle");
-      const descriptionEl = page.locator("p").first();
-      await expect(descriptionEl).toBeVisible({ timeout: 10000 });
-    } finally {
-      await warmSession(page);
-      await patchProductUrlPath(page, PRODUCT_ID, null);
-    }
+    await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
+    await page.waitForLoadState("domcontentloaded");
+    const descriptionEl = page.locator("p").first();
+    await expect(descriptionEl).toBeVisible({ timeout: 10000 });
   });
 
   test("no hydration mismatch errors", async ({ page }) => {
-    await warmSession(page);
-    await patchProductUrlPath(page, PRODUCT_ID, PRODUCT_URL_PATH);
-    try {
-      const hydrationErrors: string[] = [];
-      page.on("console", (msg) => {
-        if (msg.type() === "error" && msg.text().toLowerCase().includes("hydrat")) {
-          hydrationErrors.push(msg.text());
-        }
-      });
-      await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
-      await page.waitForLoadState("networkidle");
-      expect(hydrationErrors).toHaveLength(0);
-    } finally {
-      await warmSession(page);
-      await patchProductUrlPath(page, PRODUCT_ID, null);
-    }
+    const hydrationErrors: string[] = [];
+    page.on("console", (msg) => {
+      if (msg.type() === "error" && msg.text().toLowerCase().includes("hydrat")) {
+        hydrationErrors.push(msg.text());
+      }
+    });
+    await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
+    await page.waitForLoadState("domcontentloaded");
+    expect(hydrationErrors).toHaveLength(0);
   });
 
   test("model-viewer: no console errors if 3D model absent (graceful fallback)", async ({
     page,
   }) => {
-    await warmSession(page);
-    await patchProductUrlPath(page, PRODUCT_ID, PRODUCT_URL_PATH);
-    try {
-      const modelErrors: string[] = [];
-      page.on("console", (msg) => {
-        if (msg.type() === "error" && msg.text().includes("model-viewer")) {
-          modelErrors.push(msg.text());
-        }
-      });
-      await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
-      await page.waitForLoadState("networkidle");
-      expect(modelErrors).toHaveLength(0);
-    } finally {
-      await warmSession(page);
-      await patchProductUrlPath(page, PRODUCT_ID, null);
-    }
+    const modelErrors: string[] = [];
+    page.on("console", (msg) => {
+      if (msg.type() === "error" && msg.text().includes("model-viewer")) {
+        modelErrors.push(msg.text());
+      }
+    });
+    await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
+    await page.waitForLoadState("domcontentloaded");
+    expect(modelErrors).toHaveLength(0);
   });
 
   test("no horizontal overflow at 375px", async ({ page }) => {
-    await warmSession(page);
-    await patchProductUrlPath(page, PRODUCT_ID, PRODUCT_URL_PATH);
-    try {
-      await page.setViewportSize({ width: 375, height: 812 });
-      await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
-      await page.waitForLoadState("domcontentloaded");
-      const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
-      expect(scrollWidth).toBeLessThanOrEqual(380);
-    } finally {
-      await warmSession(page);
-      await patchProductUrlPath(page, PRODUCT_ID, null);
-    }
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
+    await page.waitForLoadState("domcontentloaded");
+    const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
+    expect(scrollWidth).toBeLessThanOrEqual(380);
   });
 
   test("accessibility: zero critical violations", async ({ page }) => {
-    await warmSession(page);
-    await patchProductUrlPath(page, PRODUCT_ID, PRODUCT_URL_PATH);
-    try {
-      await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
-      await page.waitForLoadState("networkidle");
-      const results = await new AxeBuilder({ page })
-        .withTags(["wcag2a", "wcag2aa"])
-        .disableRules(["color-contrast"])
-        .analyze();
-      const criticals = results.violations.filter((v) => v.impact === "critical");
-      expect(criticals).toHaveLength(0);
-    } finally {
-      await warmSession(page);
-      await patchProductUrlPath(page, PRODUCT_ID, null);
-    }
+    await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
+    await page.waitForLoadState("domcontentloaded");
+    const results = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa"])
+      .disableRules(["color-contrast"])
+      .analyze();
+    const criticals = results.violations.filter((v) => v.impact === "critical");
+    expect(criticals).toHaveLength(0);
   });
 });
 

@@ -30,6 +30,7 @@ interface ConversionFunnelStage {
 export function useAnalyticsTracker() {
   // Track page view
   const trackPageView = (page: string) => {
+    if (typeof window === "undefined" || !window.localStorage) return;
     const analytics = JSON.parse(localStorage.getItem("productAnalytics") || "{}");
     analytics.pageViews = (analytics.pageViews || 0) + 1;
     analytics.lastPageView = {
@@ -41,6 +42,7 @@ export function useAnalyticsTracker() {
 
   // Track product view
   const trackProductView = (productName: string) => {
+    if (typeof window === "undefined" || !window.localStorage) return;
     const analytics = JSON.parse(localStorage.getItem("productAnalytics") || "{}");
     if (!analytics.productViews) {
       analytics.productViews = {};

@@ -1,24 +1,19 @@
 # Task Plan
 
 **Date:** 2026-08-15
-**Goal:** GitHub Actions 2026 Free & Future-Proof Automation & Security Workflow Suite Integration
+**Goal:** E2E Forensic Proof Suite Root-Cause Remediation & Comprehensive Audit
 
 ## Current Session Plan
-- **Bucket 1 (CI/CD Workflow Static Analysis)**: Implement `.github/workflows/workflow-security.yml` using `zizmor` and `actionlint` to continuously scan and protect GitHub Actions YAML files from template injection and unpinned dependencies.
-- **Bucket 2 (PR Dependency & Supply Chain Defense)**: Update `.github/workflows/security.yml` with `actions/dependency-review-action` and `step-security/harden-runner` for runner egress security and PR dependency vulnerability blocking.
-- **Bucket 3 (B2B Release & Changelog Automation)**: Add `.github/workflows/release-drafter.yml` and `.github/release-drafter.yml` for automated, labeled B2B release drafts.
-- **Bucket 4 (Dead Code & Monorepo Hygiene Gate)**: Add `.github/workflows/code-quality.yml` to run `knip` dead code detection in CI.
-- **Bucket 5 (Repository Issue & PR Lifecycle Management)**: Add `.github/workflows/stale.yml` using `actions/stale` to keep issue tracker and abandoned PRs tidy.
+- Execute targeted remediation across failing specs (`manufacturing-cms-e2e.spec.ts`).
+- Execute full 591-test E2E forensic run.
+- Collate complete diagnostic report of all test failures without making premature changes.
 
 ## Current Session Outcome
-- Successfully configured and verified 100% free, future-proof GitHub Actions suite:
-  - `workflow-security.yml` (Zizmor static security analysis)
-  - `release-drafter.yml` + `.github/release-drafter.yml` (B2B semantic changelogs)
-  - `code-quality.yml` (Knip dead code gate)
-  - `stale.yml` (Automated issue & PR hygiene)
-  - `security.yml` enhancements (PR Dependency Review & StepSecurity Harden Runner)
-- Fixed TypeScript nullability in `unified-sustainability-management.tsx`.
-- Verified `npm run build` and `npm run check:knip` with zero errors across all workspaces.
+- Resolved and verified `e2e/manufacturing-cms-e2e.spec.ts:364` (Manufacturing Hero CMS test) passing cleanly in isolation.
+- Executed full 591-test E2E run (21.3 minutes).
+- Mapped 392 failures into 5 clear root-cause clusters (350 Visual Golden Snapshot mismatches, 14 Admin Vite dev HMR session syncs, 12 Selector/Copy drift, 8 SSR/Hydration dev-mode assertions, 8 Layout/Performance threshold limits).
+- Documented findings in [findings.md](file:///Users/hateemjamshaid/Sites/RUN/findings.md).
 
 ## Next Steps
-- Ready for push to GitHub; all workflows will run automatically in the background.
+- Await user review and approval before executing targeted selector synchronization, snapshot generation, or session middleware stabilization.
+

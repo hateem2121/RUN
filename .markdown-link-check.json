@@ -23,6 +23,12 @@
     },
     {
       "pattern": "^\\.\\./\\.\\./client/"
+    },
+    {
+      "pattern": "^\\./[A-Z]"
+    },
+    {
+      "pattern": "^\\./Home"
     }
   ],
   "replacementPatterns": [

@@ -1,6 +1,6 @@
 # RUN Remix — The Agentic Sportswear Factory
 
-**Version:** 4.0.3 | **Port:** 5002 (Exclusively) | **Engine:** gstack | **Last Updated:** June 2026
+**Version:** 4.1.2 | **Port:** 5002 (Exclusively) | **Engine:** Antigravity / gstack | **Last Updated:** August 2026
 
 [![Node 24+](https://img.shields.io/badge/Node-24%2B-339933?logo=node.js)](https://nodejs.org)
 [![React 19](https://img.shields.io/badge/React-19.2.7-61DAFB?logo=react)](https://react.dev)
@@ -13,7 +13,7 @@
 
 ## 🏭 The Agentic Software Factory
 
-**RUN Remix** is not just a codebase; it is an **Agentic Software Factory**. Powered by Garry Tan's `gstack` setup, it orchestrates a high-performance virtual engineering team specialized in premium B2B sportswear tech.
+**RUN Remix** is not just a codebase; it is an **Agentic Software Factory**. Powered by Garry Tan's `gstack` setup and Google Antigravity, it orchestrates a high-performance virtual engineering team specialized in premium B2B sportswear tech.
 
 We combine **Heritage Craftsmanship** (Durus Industries, est. 1889) with **Advanced Agentic Engineering** to ship production-grade software at 10x velocity.
 
@@ -79,15 +79,15 @@ The factory is staffed by 23+ specialized agent roles:
 
 | Layer | Technology | Key Constraint |
 |-------|-----------|----------------|
-| **Frontend** | React Router v8, React 19.2.4, Vite 8 (Rolldown) | NO `forwardRef`. Named exports only. |
+| **Frontend** | React Router v8, React 19.2.7, Vite 8 (Rolldown) | NO `forwardRef`. Named exports only. |
 | **Styling** | Tailwind CSS V4 | `@utility` layer only. NO arbitrary JSX values. |
 | **Animations** | GSAP 3.15.0, locomotive-scroll 5.0.1 | NO framer-motion or lenis. |
-| **Backend** | Express 5.1.0, Node 24 | Async-native handlers. NO `try/catch`. |
+| **Backend** | Express 5.2.1, Node 24 | Async-native handlers. NO `try/catch`. |
 | **Database** | Neon Serverless Postgres | HTTP Driver only. |
-| **ORM** | Drizzle 0.45.1, Zod v4 | Parameterized queries. No raw SQL. |
+| **ORM** | Drizzle 0.45.2, Zod v4 | Parameterized queries. No raw SQL. |
 | **Background** | Google Cloud Tasks | HTTP Workers via `verifyCloudTaskToken`. |
 | **External APIs** | `opossum` Circuit Breaker | Mandatory for all external requests. |
-| **Cache/Session** | ioredis 5.10.1 | NO connect-redis or @upstash/redis. |
+| **Cache/Session** | DrizzleSessionStore (Neon) / ioredis | NO connect-redis or @upstash/redis. |
 | **Observability** | OTel / Pino | NO Sentry. |
 | **Testing** | Vitest | 80%+ service coverage required. |
 | **Linting** | Biome 2.3.10 | NOT ESLint or Prettier. |
@@ -111,6 +111,8 @@ Every task follows the deterministic **B.L.A.S.T.** methodology:
 | Resource | Path |
 |----------|------|
 | Constitution | [`gemini.md`](./gemini.md) |
+| Knowledge Base Wiki | [`wiki/Home.md`](./wiki/Home.md) |
+| Visual Architecture | [`wiki/Visual-Architecture.md`](./wiki/Visual-Architecture.md) |
 | Agent Ethos | [`docs/core/ETHOS.md`](./docs/core/ETHOS.md) |
 | Agent Roles | [`docs/core/AGENTS.md`](./docs/core/AGENTS.md) |
 | SOPs | [`docs/core/sops/`](./docs/core/sops/) |

@@ -840,58 +840,73 @@ async function seed() {
         .where(eq(manufacturingHero.id, mfgHeroRows[0].id));
     }
 
-    const mfgProcessRows = await db.select().from(manufacturingProcesses).limit(1);
-    if (mfgProcessRows.length === 0) {
-      await db.insert(manufacturingProcesses).values([
-        {
-          name: "Pattern Engineering & 3D Prototyping",
-          title: "Pattern Engineering",
-          description:
-            "Computerized 3D grading and biomechanical stress simulation.",
-          step: 1,
-          duration: "24-48 hrs",
-          efficiency: 98,
-          category: "Design",
-          iconName: "IconDraftingCompass",
-          isActive: true,
-        },
-        {
-          name: "Automated Laser Cutting",
-          title: "Automated Cutting",
-          description:
-            "High-precision computerized fabric cutting with zero fiber distortion.",
-          step: 2,
-          duration: "Continuous",
-          efficiency: 99,
-          category: "Cutting",
-          iconName: "IconScissors",
-          isActive: true,
-        },
-        {
-          name: "Ultrasonic Seam Welding",
-          title: "Precision Stitching",
-          description:
-            "Chafe-free, ultra-durable bonded seams for elite performance apparel.",
-          step: 3,
-          duration: "Continuous",
-          efficiency: 97,
-          category: "Assembly",
-          iconName: "IconSparkles",
-          isActive: true,
-        },
-        {
-          name: "Optical & Tensile Quality Inspection",
-          title: "Quality Assurance",
-          description:
-            "Automated optical scanning and tensile stress verification.",
-          step: 4,
-          duration: "Per batch",
-          efficiency: 100,
-          category: "Inspection",
-          iconName: "IconChecklist",
-          isActive: true,
-        },
-      ]);
+    const standardProcesses = [
+      {
+        name: "Sustainable Material Sourcing",
+        title: "Sourcing",
+        description:
+          "Procurement of high-performance technical fabrics from certified global partners. Carbon footprint analysis performed on every batch.",
+        step: 1,
+        duration: "24-48 hrs",
+        efficiency: 98,
+        category: "Sourcing",
+        iconName: "IconLeaf",
+        isActive: true,
+      },
+      {
+        name: "Pattern Engineering & 3D CAD",
+        title: "Digital CAD",
+        description:
+          "AI-assisted pattern making to maximize fabric utilization and fit precision. Generative design algorithms reduce waste by 18%.",
+        step: 2,
+        duration: "Continuous",
+        efficiency: 99,
+        category: "Design",
+        iconName: "IconDraftingCompass",
+        isActive: true,
+      },
+      {
+        name: "Automated Laser Cutting",
+        title: "Laser Cutting",
+        description:
+          "Automated high-speed laser cutting for sealed edges and micron-level accuracy. Zero-contact cutting preserves fabric integrity.",
+        step: 3,
+        duration: "Continuous",
+        efficiency: 99,
+        category: "Cutting",
+        iconName: "IconScissors",
+        isActive: true,
+      },
+      {
+        name: "Ultrasonic Bonding & Assembly",
+        title: "Assembly",
+        description:
+          "Ultrasonic bonding and flatlock stitching for seamless, chafe-free construction. Robotic arms assist in complex curvilinear seams.",
+        step: 4,
+        duration: "Continuous",
+        efficiency: 97,
+        category: "Assembly",
+        iconName: "IconSparkles",
+        isActive: true,
+      },
+      {
+        name: "Optical QC & Steam Finishing",
+        title: "Finishing",
+        description:
+          "Rigorous QC checks, steam finishing, and sustainable packaging protocols. Final product scanned against digital twin for variance.",
+        step: 5,
+        duration: "Per batch",
+        efficiency: 100,
+        category: "Finishing",
+        iconName: "IconChecklist",
+        isActive: true,
+      },
+    ];
+
+    const mfgProcessRows = await db.select().from(manufacturingProcesses);
+    if (mfgProcessRows.length < 5) {
+      await db.delete(manufacturingProcesses);
+      await db.insert(manufacturingProcesses).values(standardProcesses);
     }
 
     const mfgCapRows = await db.select().from(manufacturingCapabilities).limit(1);
