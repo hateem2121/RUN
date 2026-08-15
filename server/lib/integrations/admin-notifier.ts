@@ -29,7 +29,8 @@ export const adminNotifier = {
       if (
         process.env.NODE_ENV === "production" &&
         !process.env.VITEST &&
-        !process.env.FORCE_LISTEN
+        !process.env.FORCE_LISTEN &&
+        process.env.E2E !== "true"
       ) {
         throw new Error(
           "DIRECT_DATABASE_URL is required for admin-notifier (LISTEN/NOTIFY) in production.",

@@ -49,9 +49,9 @@ export async function startServices() {
 
   // 4. Admin Notifier
   try {
-    adminNotifier.start();
+    await adminNotifier.start();
   } catch (e) {
-    logger.error("Failed to start admin notifier", e);
+    logger.warn("Failed to start admin notifier", e);
   }
 
   // 5. DB Keep Alive (Critical for Neon)
