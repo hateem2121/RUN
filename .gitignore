@@ -1,10 +1,14 @@
-```
 # Logs and temp files
 *.log
 *.tmp
 *.swp
-
-# Environment
+lint_output.txt
+tsc_output.txt
+*.tsbuildinfo
+.turbo/
+playwright-report/
+test-results/
+.react-router/
 .env
 .env.local
 *.env.*
@@ -98,6 +102,7 @@ FULL_SYSTEM_CONTEXT.json
 
 # E2E visual regression snapshots (regenerable)
 tests/e2e/**/*.png
+e2e/__snapshots__/
 .gstack/
 .claude/skills/gstack/
 

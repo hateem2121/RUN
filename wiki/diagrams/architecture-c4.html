@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RUN Remix — System Context (C4 Level 1) — RUN APPAREL CMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #fafaf9;
+      --ink: #1c1917;
+      --muted: #78716c;
+      --accent: #d4a853;
+      --hairline: #d6d3d1;
+      --blue: #0047ab;
+      --success: #00c97b;
+      --card-bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1.5rem;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .diagram-container {
+      width: 100%;
+      max-width: 1200px;
+      background: var(--card-bg);
+      border: 1px solid var(--hairline);
+      border-radius: 4px;
+      padding: 2rem 2.5rem 2.25rem;
+    }
+
+    .diagram-header {
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--hairline);
+      padding-bottom: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .header-titles h1 {
+      font-family: "Inter", sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+    }
+
+    .header-titles p {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+    }
+
+    .header-badge {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink);
+      background: #fafaf9;
+      border: 1px solid var(--hairline);
+      padding: 0.35rem 0.75rem;
+      border-radius: 2px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-badge .badge-icon {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .text-title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 700;
+      fill: var(--ink);
+    }
+    .text-subtitle {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 400;
+      fill: var(--muted);
+    }
+    .text-label {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
+      fill: var(--ink);
+    }
+    .text-body {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 400;
+      fill: var(--muted);
+    }
+    .text-mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      fill: var(--muted);
+    }
+    .text-mono-bold {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      fill: var(--ink);
+    }
+
+    .diagram-footer {
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--hairline);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .footer-stat {
+      display: flex;
+      gap: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="diagram-container">
+    <header class="diagram-header">
+      <div class="header-titles">
+        <h1>RUN Remix — System Context</h1>
+        <p>C4 Level 1 · SSR-Native Decoupled Architecture</p>
+      </div>
+      <div class="header-badge">
+        <span class="badge-icon">★</span>
+        PORT 5002 · SYSTEM CONTEXT
+      </div>
+    </header>
+
+    <svg viewBox="0 0 1120 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="c4-title c4-desc">
+      <title id="c4-title">RUN Remix — System Context (C4 Level 1)</title>
+      <desc id="c4-desc">C4 Level 1 System Context Diagram for RUN APPAREL CMS showing RUN Remix Platform containing React 19 Client, Express 5 API, and @run-remix/shared, surrounded by Google OAuth 2.0, Neon Postgres, Redis, Google Cloud Storage, Google Cloud Tasks, and External B2B APIs.</desc>
+
+      <defs>
+        <!-- Arrowhead Marker (Ink) -->
+        <marker id="arr-c4-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1c1917" />
+        </marker>
+        <!-- Arrowhead Marker (Muted) -->
+        <marker id="arr-c4-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#78716c" />
+        </marker>
+        <!-- Arrowhead Marker (Accent Gold) -->
+        <marker id="arr-c4-gold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#d4a853" />
+        </marker>
+      </defs>
+
+      <!-- ================= ACTOR: B2B CLIENT / ADMIN (LEFT) ================= -->
+      <g id="actor-user">
+        <rect x="20" y="240" width="180" height="150" rx="3" fill="#ffffff" stroke="#1c1917" stroke-width="1.5"/>
+        
+        <!-- Header Pill -->
+        <rect x="32" y="252" width="98" height="18" rx="2" fill="#1c1917"/>
+        <text x="81" y="264" text-anchor="middle" class="text-mono" font-size="9" fill="#fafaf9" font-weight="600">PERSON · ACTOR</text>
+
+        <!-- Person Vector Icon -->
+        <circle cx="44" cy="296" r="7" fill="none" stroke="#1c1917" stroke-width="1.5"/>
+        <path d="M 33 316 C 33 307, 55 307, 55 316" fill="none" stroke="#1c1917" stroke-width="1.5"/>
+
+        <text x="68" y="295" class="text-label" font-size="13">B2B Client / Admin</text>
+        <text x="68" y="311" class="text-body" font-size="11">Garment Buyer &amp; Ops</text>
+
+        <line x1="32" y1="332" x2="188" y2="332" stroke="#f0efed" stroke-width="1"/>
+        <text x="32" y="352" class="text-mono" font-size="10">Browser on Port 5002</text>
+        <text x="32" y="368" class="text-mono" font-size="9" fill="#78716c">CSRF + Cookie Auth</text>
+      </g>
+
+      <!-- ================= SYSTEM BOUNDARY: RUN REMIX PLATFORM (CENTER) ================= -->
+      <g id="platform-boundary">
+        <!-- Boundary Container Box -->
+        <rect x="250" y="30" width="560" height="490" rx="4" fill="#faf8f5" stroke="#a8a29e" stroke-width="1.5" stroke-dasharray="5 5"/>
+
+        <!-- Boundary Badge -->
+        <rect x="270" y="44" width="225" height="22" rx="2" fill="#d4a853"/>
+        <text x="382" y="59" text-anchor="middle" class="text-mono" font-size="10" fill="#1c1917" font-weight="700">SYSTEM BOUNDARY · RUN REMIX</text>
+        <text x="790" y="59" text-anchor="end" class="text-mono" font-size="10" fill="#78716c">Decoupled SSR Architecture</text>
+
+        <!-- 1. Internal Box: React 19 Client -->
+        <g id="internal-client">
+          <rect x="275" y="90" width="240" height="190" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+          <!-- Pill -->
+          <rect x="287" y="102" width="76" height="18" rx="2" fill="#f0f7ff" stroke="#bfdbfe" stroke-width="1"/>
+          <text x="325" y="115" text-anchor="middle" class="text-mono" font-size="9" fill="#0047ab" font-weight="600">CLIENT · SPA</text>
+          
+          <text x="287" y="142" class="text-label" font-size="15">React 19 Client</text>
+          <text x="287" y="160" class="text-mono" font-size="11" fill="#78716c">Vite 8 · React Router v8</text>
+          <text x="287" y="176" class="text-body" font-size="12">SSR SPA with file-based routing</text>
+
+          <line x1="287" y1="192" x2="503" y2="192" stroke="#f0efed" stroke-width="1"/>
+          
+          <text x="287" y="212" class="text-mono" font-size="10">Tailwind CSS v4 Styles</text>
+          <text x="287" y="228" class="text-mono" font-size="10">TanStack Query v5 Cache</text>
+          <text x="287" y="244" class="text-mono" font-size="10">Isomorphic Hydration</text>
+          <text x="287" y="264" class="text-mono-bold" font-size="10" fill="#0047ab">client/ workspace</text>
+        </g>
+
+        <!-- 2. Internal Box: Express 5 API (ACCENT HIGHLIGHT) -->
+        <g id="internal-server">
+          <rect x="545" y="90" width="245" height="190" rx="3" fill="#ffffff" stroke="#d4a853" stroke-width="2"/>
+          <rect x="545" y="90" width="245" height="4" fill="#d4a853"/>
+
+          <!-- Pill -->
+          <rect x="557" y="102" width="76" height="18" rx="2" fill="#fffbeb" stroke="#fde047" stroke-width="1"/>
+          <text x="595" y="115" text-anchor="middle" class="text-mono" font-size="9" fill="#92400e" font-weight="600">SERVER · API</text>
+
+          <text x="557" y="142" class="text-label" font-size="15">Express 5 API</text>
+          <text x="557" y="160" class="text-mono" font-size="11" fill="#78716c">Node 24 · Drizzle ORM</text>
+          <text x="557" y="176" class="text-body" font-size="12">REST API &amp; business logic</text>
+
+          <line x1="557" y1="192" x2="778" y2="192" stroke="#f0efed" stroke-width="1"/>
+
+          <text x="557" y="212" class="text-mono" font-size="10">neverthrow ResultAsync</text>
+          <text x="557" y="228" class="text-mono" font-size="10">CSRF · RBAC · Rate Limits</text>
+          <text x="557" y="244" class="text-mono" font-size="10">Strict Layered Architecture</text>
+          <text x="557" y="264" class="text-mono-bold" font-size="10" fill="#d4a853">server/ workspace</text>
+        </g>
+
+        <!-- 3. Internal Box: @run-remix/shared -->
+        <g id="internal-shared">
+          <rect x="275" y="340" width="515" height="155" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+          <!-- Pill -->
+          <rect x="287" y="352" width="112" height="18" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+          <text x="343" y="365" text-anchor="middle" class="text-mono" font-size="9" fill="#1c1917" font-weight="600">SHARED WORKSPACE</text>
+
+          <text x="287" y="392" class="text-label" font-size="15">@run-remix/shared</text>
+          <text x="287" y="410" class="text-mono" font-size="11" fill="#78716c">TypeScript 6 · Zod v4 · Drizzle</text>
+          <text x="287" y="428" class="text-body" font-size="12">Schemas, types, DTO contracts, and centralized route manifest</text>
+
+          <line x1="287" y1="445" x2="778" y2="445" stroke="#f0efed" stroke-width="1"/>
+          <text x="287" y="466" class="text-mono" font-size="10" fill="#78716c">Isomorphic validation · Zero runtime dependencies · Strict barrel export discipline</text>
+          <text x="287" y="482" class="text-mono-bold" font-size="10" fill="#1c1917">shared/ workspace</text>
+        </g>
+
+        <!-- Internal Links (Within Boundary) -->
+        <!-- Client -> Server -->
+        <path d="M 515 185 L 537 185" stroke="#1c1917" stroke-width="1.5" marker-end="url(#arr-c4-ink)"/>
+        <rect x="516" y="165" width="28" height="16" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="530" y="176" text-anchor="middle" class="text-mono" font-size="8">REST</text>
+
+        <!-- Client -> Shared -->
+        <path d="M 395 280 L 395 332" stroke="#78716c" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arr-c4-muted)"/>
+        <rect x="360" y="300" width="70" height="16" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="395" y="311" text-anchor="middle" class="text-mono" font-size="8">imports types</text>
+
+        <!-- Server -> Shared -->
+        <path d="M 670 280 L 670 332" stroke="#78716c" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arr-c4-muted)"/>
+        <rect x="635" y="300" width="70" height="16" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="670" y="311" text-anchor="middle" class="text-mono" font-size="8">imports types</text>
+      </g>
+
+      <!-- ================= SURROUNDING EXTERNAL SYSTEMS ================= -->
+
+      <!-- 1. Google OAuth 2.0 (Top Right) -->
+      <g id="ext-oauth">
+        <rect x="870" y="30" width="230" height="95" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <rect x="882" y="42" width="76" height="16" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="920" y="54" text-anchor="middle" class="text-mono" font-size="8" fill="#78716c" font-weight="600">EXT · AUTH</text>
+        <text x="882" y="76" class="text-label" font-size="13">Google OAuth 2.0</text>
+        <text x="882" y="93" class="text-body" font-size="11">Authentication Provider &amp; SSO</text>
+        <text x="882" y="110" class="text-mono" font-size="10" fill="#78716c">OpenID Connect</text>
+      </g>
+
+      <!-- 2. Neon Serverless Postgres (Mid-Upper Right) -->
+      <g id="ext-neon">
+        <rect x="870" y="150" width="230" height="95" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <rect x="882" y="162" width="62" height="16" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="913" y="174" text-anchor="middle" class="text-mono" font-size="8" fill="#78716c" font-weight="600">EXT · DB</text>
+        <text x="882" y="196" class="text-label" font-size="13">Neon Postgres</text>
+        <text x="882" y="213" class="text-body" font-size="11">Primary Serverless Data Store</text>
+        <text x="882" y="230" class="text-mono" font-size="10" fill="#78716c">Connection Pooler</text>
+      </g>
+
+      <!-- 3. Redis (ioredis) (Mid-Lower Right) -->
+      <g id="ext-redis">
+        <rect x="870" y="270" width="230" height="95" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <rect x="882" y="282" width="76" height="16" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="920" y="294" text-anchor="middle" class="text-mono" font-size="8" fill="#78716c" font-weight="600">EXT · CACHE</text>
+        <text x="882" y="316" class="text-label" font-size="13">Redis (ioredis)</text>
+        <text x="882" y="333" class="text-body" font-size="11">L2 Cache &amp; Session Store</text>
+        <text x="882" y="350" class="text-mono" font-size="10" fill="#78716c">TCP In-Memory State</text>
+      </g>
+
+      <!-- 4. External B2B APIs (Bottom Right) -->
+      <g id="ext-b2b">
+        <rect x="870" y="390" width="230" height="95" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <rect x="882" y="402" width="68" height="16" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="916" y="414" text-anchor="middle" class="text-mono" font-size="8" fill="#78716c" font-weight="600">EXT · B2B</text>
+        <text x="882" y="436" class="text-label" font-size="13">External B2B APIs</text>
+        <text x="882" y="453" class="text-body" font-size="11">Logistics &amp; ERP Integrations</text>
+        <text x="882" y="470" class="text-mono" font-size="10" fill="#78716c">via Opossum Circuit Breaker</text>
+      </g>
+
+      <!-- 5. Google Cloud Storage (Bottom Left) -->
+      <g id="ext-gcs">
+        <rect x="275" y="560" width="240" height="90" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <rect x="287" y="572" width="68" height="16" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="321" y="584" text-anchor="middle" class="text-mono" font-size="8" fill="#78716c" font-weight="600">EXT · CDN</text>
+        <text x="287" y="606" class="text-label" font-size="13">Google Cloud Storage</text>
+        <text x="287" y="623" class="text-body" font-size="11">Garment Media Assets &amp; CDN</text>
+        <text x="287" y="639" class="text-mono" font-size="10" fill="#78716c">Global Edge Delivery</text>
+      </g>
+
+      <!-- 6. Google Cloud Tasks (Bottom Center-Right) -->
+      <g id="ext-tasks">
+        <rect x="550" y="560" width="240" height="90" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <rect x="562" y="572" width="76" height="16" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="600" y="584" text-anchor="middle" class="text-mono" font-size="8" fill="#78716c" font-weight="600">EXT · QUEUE</text>
+        <text x="562" y="606" class="text-label" font-size="13">Google Cloud Tasks</text>
+        <text x="562" y="623" class="text-body" font-size="11">Background Job Queue</text>
+        <text x="562" y="639" class="text-mono" font-size="10" fill="#78716c">Async Worker Dispatch</text>
+      </g>
+
+      <!-- ================= PROTOCOL CONNECTORS & EDGES ================= -->
+
+      <!-- User -> React Client (HTTPS) -->
+      <path d="M 200 315 L 267 315" stroke="#1c1917" stroke-width="1.5" marker-end="url(#arr-c4-ink)"/>
+      <rect x="204" y="295" width="56" height="18" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+      <text x="232" y="307" text-anchor="middle" class="text-mono" font-size="9" fill="#1c1917" font-weight="600">HTTPS</text>
+
+      <!-- Express API -> Google OAuth 2.0 (OAuth 2.0) -->
+      <path d="M 790 115 L 825 115 L 825 77 L 862 77" stroke="#1c1917" stroke-width="1.2" marker-end="url(#arr-c4-ink)"/>
+      <rect x="795" y="80" width="65" height="18" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+      <text x="827" y="92" text-anchor="middle" class="text-mono" font-size="8">OAuth 2.0</text>
+
+      <!-- Express API -> Neon Postgres (HTTP Driver) -->
+      <path d="M 790 195 L 862 195" stroke="#1c1917" stroke-width="1.2" marker-end="url(#arr-c4-ink)"/>
+      <rect x="792" y="184" width="72" height="18" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+      <text x="828" y="196" text-anchor="middle" class="text-mono" font-size="8">HTTP Driver</text>
+
+      <!-- Express API -> Redis (TCP) -->
+      <path d="M 790 235 L 825 235 L 825 317 L 862 317" stroke="#1c1917" stroke-width="1.2" marker-end="url(#arr-c4-ink)"/>
+      <rect x="807" y="270" width="36" height="18" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+      <text x="825" y="282" text-anchor="middle" class="text-mono" font-size="8">TCP</text>
+
+      <!-- Express API -> External B2B APIs (HTTPS) -->
+      <path d="M 790 260 L 815 260 L 815 437 L 862 437" stroke="#1c1917" stroke-width="1.2" marker-end="url(#arr-c4-ink)"/>
+      <rect x="797" y="380" width="46" height="18" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+      <text x="820" y="392" text-anchor="middle" class="text-mono" font-size="8">HTTPS</text>
+
+      <!-- React Client -> Google Cloud Storage (HTTPS) -->
+      <path d="M 320 280 L 320 552" stroke="#78716c" stroke-width="1.2" marker-end="url(#arr-c4-muted)"/>
+      <rect x="296" y="525" width="48" height="18" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+      <text x="320" y="537" text-anchor="middle" class="text-mono" font-size="8">HTTPS</text>
+
+      <!-- Express API -> Google Cloud Tasks (HTTPS) -->
+      <path d="M 670 280 L 670 552" stroke="#1c1917" stroke-width="1.2" marker-end="url(#arr-c4-ink)"/>
+      <rect x="646" y="525" width="48" height="18" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+      <text x="670" y="537" text-anchor="middle" class="text-mono" font-size="8">HTTPS</text>
+
+      <!-- ================= SVG FOOTER & LEGEND ================= -->
+      <g id="svg-legend">
+        <line x1="20" y1="675" x2="1100" y2="675" stroke="#d6d3d1" stroke-width="1"/>
+        
+        <line x1="20" y1="695" x2="40" y2="695" stroke="#1c1917" stroke-width="1.5"/>
+        <text x="48" y="699" class="text-mono" font-size="10">Direct Runtime Flow</text>
+
+        <line x1="180" y1="695" x2="200" y2="695" stroke="#78716c" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <text x="208" y="699" class="text-mono" font-size="10">Type Contract / Asset Fetch</text>
+
+        <rect x="380" y="689" width="12" height="12" rx="2" fill="#faf8f5" stroke="#a8a29e" stroke-width="1" stroke-dasharray="2 2"/>
+        <text x="400" y="699" class="text-mono" font-size="10">Monorepo Boundary</text>
+
+        <rect x="540" y="689" width="12" height="12" rx="2" fill="#ffffff" stroke="#d4a853" stroke-width="2"/>
+        <text x="560" y="699" class="text-mono" font-size="10">Focal Core Component</text>
+
+        <text x="1100" y="699" text-anchor="end" class="text-mono" font-size="10" fill="#78716c">RUN APPAREL (PVT) LTD · SIALKOT</text>
+      </g>
+    </svg>
+
+    <footer class="diagram-footer">
+      <div class="footer-stat">
+        <span>MONOREPO: Turborepo + npm Workspaces</span>
+        <span>PORTS: Dedicated 5002</span>
+        <span>COMMUNICATION: REST / JSON / HTTP Driver</span>
+      </div>
+      <div>ADR-001 · SYSTEM CONTEXT</div>
+    </footer>
+  </main>
+
+</body>
+</html>

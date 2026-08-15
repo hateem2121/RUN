@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RUN APPAREL — Visual Architecture Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fafaf9;
+      --sidebar-bg: #f5f5f4;
+      --border: #e7e5e4;
+      --ink: #1c1917;
+      --muted: #78716c;
+      --accent: #d4a853;
+      --accent-light: #fbf7ee;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #sidebar {
+      width: 320px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .header {
+      padding: 24px 20px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--accent);
+      color: #1c1917;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .category-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      padding: 16px 20px 6px;
+    }
+    .nav-list {
+      list-style: none;
+      overflow-y: auto;
+      flex: 1;
+      padding: 8px 12px 20px;
+    }
+    .nav-item {
+      padding: 10px 12px;
+      margin-bottom: 2px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.15s ease;
+    }
+    .nav-item:hover {
+      background: rgba(0,0,0,0.04);
+    }
+    .nav-item.active {
+      background: var(--accent-light);
+      color: #855b0a;
+      font-weight: 600;
+      box-shadow: inset 0 0 0 1px rgba(212, 168, 83, 0.4);
+    }
+    .nav-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .nav-item.active .nav-tag {
+      color: #855b0a;
+    }
+    #viewer-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      height: 100vh;
+    }
+    .viewer-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg);
+    }
+    .viewer-title-group h2 {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .viewer-actions a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+      transition: all 0.15s;
+    }
+    .viewer-actions a:hover {
+      border-color: var(--accent);
+      color: #855b0a;
+    }
+    #viewer {
+      flex: 1;
+      width: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar">
+    <div class="header">
+      <span class="badge">RUN CMS v4.1.2</span>
+      <h1 class="title">Visual Architecture</h1>
+      <p class="subtitle">12 Editorial Diagrams · diagram-design style</p>
+    </div>
+    <div class="nav-list">
+      <div class="category-title">01 · System Architecture</div>
+      <div class="nav-item active" onclick="loadDiagram('architecture-c4.html', this)">
+        <span>C4 System Context</span>
+        <span class="nav-tag">C4 L1</span>
+      </div>
+      <div class="nav-item" onclick="loadDiagram('architecture-layers.html', this)">
+        <span>Server Layered Stack</span>
+        <span class="nav-tag">Express 5</span>
+      </div>
+      <div class="nav-item" onclick="loadDiagram('architecture-monorepo.html', this)">
+        <span>Monorepo Boundaries</span>
+        <span class="nav-tag">Workspaces</span>
+      </div>
+      <div class="nav-item" onclick="loadDiagram('pyramid-tech-stack.html', this)">
+        <span>Technology Pyramid</span>
+        <span class="nav-tag">30+ Tech</span>
+      </div>
+
+      <div class="category-title">02 · Execution & Data Flows</div>
+      <div class="nav-item" onclick="loadDiagram('flow-blast.html', this)">
+        <span>B.L.A.S.T. Protocol</span>
+        <span class="nav-tag">5 Stages</span>
+      </div>
+      <div class="nav-item" onclick="loadDiagram('flow-request-lifecycle.html', this)">
+        <span>Request Lifecycle</span>
+        <span class="nav-tag">Swimlane</span>
+      </div>
+      <div class="nav-item" onclick="loadDiagram('flow-auth.html', this)">
+        <span>Google OAuth Flow</span>
+        <span class="nav-tag">Sequence</span>
+      </div>
+      <div class="nav-item" onclick="loadDiagram('data-erd.html', this)">
+        <span>Core Data Models</span>
+        <span class="nav-tag">ERD</span>
+      </div>
+
+      <div class="category-title">03 · Security, Infrastructure & Roadmap</div>
+      <div class="nav-item" onclick="loadDiagram('security-layers.html', this)">
+        <span>Defence-in-Depth</span>
+        <span class="nav-tag">6 Layers</span>
+      </div>
+      <div class="nav-item" onclick="loadDiagram('flow-cicd-canary.html', this)">
+        <span>CI/CD Canary Rollout</span>
+        <span class="nav-tag">Cloud Build</span>
+      </div>
+      <div class="nav-item" onclick="loadDiagram('infra-multiregion.html', this)">
+        <span>Multi-Region Strategy</span>
+        <span class="nav-tag">Topology</span>
+      </div>
+      <div class="nav-item" onclick="loadDiagram('timeline-roadmap.html', this)">
+        <span>2026 Strategic Roadmap</span>
+        <span class="nav-tag">Timeline</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="viewer-container">
+    <div class="viewer-header">
+      <div class="viewer-title-group">
+        <h2 id="current-title">C4 System Context</h2>
+      </div>
+      <div class="viewer-actions">
+        <a id="open-raw" href="architecture-c4.html" target="_blank">↗ Open Full Screen</a>
+      </div>
+    </div>
+    <iframe id="viewer" src="architecture-c4.html"></iframe>
+  </div>
+
+  <script>
+    function loadDiagram(filename, el) {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('viewer').src = filename;
+      document.getElementById('open-raw').href = filename;
+      document.getElementById('current-title').textContent = el.querySelector('span:first-child').textContent;
+    }
+  </script>
+</body>
+</html>

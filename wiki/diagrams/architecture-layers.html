@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Server Layered Architecture — RUN APPAREL CMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #fafaf9;
+      --ink: #1c1917;
+      --muted: #78716c;
+      --accent: #d4a853;
+      --hairline: #d6d3d1;
+      --blue: #0047ab;
+      --success: #00c97b;
+      --card-bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1.5rem;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .diagram-container {
+      width: 100%;
+      max-width: 1200px;
+      background: var(--card-bg);
+      border: 1px solid var(--hairline);
+      border-radius: 4px;
+      padding: 2rem 2.5rem 2.25rem;
+    }
+
+    .diagram-header {
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--hairline);
+      padding-bottom: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .header-titles h1 {
+      font-family: "Inter", sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+    }
+
+    .header-titles p {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+    }
+
+    .header-badge {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink);
+      background: #fafaf9;
+      border: 1px solid var(--hairline);
+      padding: 0.35rem 0.75rem;
+      border-radius: 2px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-badge .badge-icon {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .text-title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 700;
+      fill: var(--ink);
+    }
+    .text-subtitle {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 400;
+      fill: var(--muted);
+    }
+    .text-label {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
+      fill: var(--ink);
+    }
+    .text-body {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 400;
+      fill: var(--muted);
+    }
+    .text-mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      fill: var(--muted);
+    }
+    .text-mono-bold {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      fill: var(--ink);
+    }
+
+    .diagram-footer {
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--hairline);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .footer-stat {
+      display: flex;
+      gap: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="diagram-container">
+    <header class="diagram-header">
+      <div class="header-titles">
+        <h1>Server Layered Architecture</h1>
+        <p>Express 5 Server · Strict Unidirectional Flow · neverthrow ResultAsync&lt;T, E&gt;</p>
+      </div>
+      <div class="header-badge">
+        <span class="badge-icon">★</span>
+        EXPRESS 5 · PORT 5002
+      </div>
+    </header>
+
+    <svg viewBox="0 0 1120 860" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="layers-title layers-desc">
+      <title id="layers-title">Server Layered Architecture</title>
+      <desc id="layers-desc">Express 5 server vertical layered architecture diagram showing Middleware, Route Handlers, Service Layer with neverthrow ResultAsync, Repository Layer with Drizzle ORM, connected to Two-Tier Cache, Cloud Tasks, Opossum Circuit Breaker, and Neon Postgres.</desc>
+
+      <defs>
+        <!-- Arrowhead Marker (Ink) -->
+        <marker id="arr-l-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1c1917" />
+        </marker>
+        <!-- Arrowhead Marker (Muted) -->
+        <marker id="arr-l-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#78716c" />
+        </marker>
+        <!-- Arrowhead Marker (Accent Gold) -->
+        <marker id="arr-l-gold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#d4a853" />
+        </marker>
+      </defs>
+
+      <!-- Ingress Request Arrow (Top) -->
+      <g id="ingress-flow">
+        <line x1="360" y1="10" x2="360" y2="36" stroke="#1c1917" stroke-width="1.5" marker-end="url(#arr-l-ink)"/>
+        <rect x="290" y="8" width="140" height="18" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="360" y="20" text-anchor="middle" class="text-mono" font-size="9" fill="#1c1917">HTTP Request (JSON)</text>
+      </g>
+
+      <!-- ================= VERTICAL LAYERS STACK (LEFT COLUMN: X: 30, W: 660) ================= -->
+
+      <!-- LAYER 1: MIDDLEWARE (ACCENT BORDER HIGHLIGHT) -->
+      <g id="layer-middleware">
+        <rect x="30" y="40" width="660" height="110" rx="3" fill="#ffffff" stroke="#d4a853" stroke-width="1.5"/>
+
+        <!-- Header Tag -->
+        <rect x="46" y="52" width="170" height="18" rx="2" fill="#fffbeb" stroke="#fde047" stroke-width="1"/>
+        <text x="131" y="64" text-anchor="middle" class="text-mono" font-size="9" fill="#92400e" font-weight="600">LAYER 01 · MIDDLEWARE STACK</text>
+        <text x="674" y="64" text-anchor="end" class="text-mono" font-size="10" fill="#78716c">Accent Border · Ingress Filter</text>
+
+        <text x="46" y="90" class="text-label" font-size="15">Middleware Pipeline</text>
+        <text x="46" y="107" class="text-body" font-size="12">Request context initialization, security guardrails, rate limiting, and early termination</text>
+
+        <!-- Chips -->
+        <g id="mw-chips">
+          <rect x="46" y="116" width="112" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+          <text x="102" y="130" text-anchor="middle" class="text-mono" font-size="9">CSRF Protection</text>
+
+          <rect x="166" y="116" width="110" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+          <text x="221" y="130" text-anchor="middle" class="text-mono" font-size="9">RBAC &amp; Session</text>
+
+          <rect x="284" y="116" width="115" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+          <text x="341" y="130" text-anchor="middle" class="text-mono" font-size="9">Rate Limiter (Redis)</text>
+
+          <rect x="407" y="116" width="135" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+          <text x="474" y="130" text-anchor="middle" class="text-mono" font-size="9">Correlation ID (ALS)</text>
+
+          <rect x="550" y="116" width="95" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+          <text x="597" y="130" text-anchor="middle" class="text-mono" font-size="9">SSR Cache</text>
+        </g>
+      </g>
+
+      <!-- Flow: Layer 1 -> Layer 2 -->
+      <g id="flow-1-2">
+        <line x1="360" y1="150" x2="360" y2="174" stroke="#1c1917" stroke-width="1.5" marker-end="url(#arr-l-ink)"/>
+        <rect x="270" y="153" width="180" height="16" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="360" y="164" text-anchor="middle" class="text-mono" font-size="8" fill="#1c1917">Next: Validated Request Context</text>
+      </g>
+
+      <!-- LAYER 2: ROUTE HANDLERS (THIN CONTROLLERS) -->
+      <g id="layer-routes">
+        <rect x="30" y="178" width="660" height="112" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+
+        <!-- Header Tag -->
+        <rect x="46" y="190" width="175" height="18" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="133" y="202" text-anchor="middle" class="text-mono" font-size="9" fill="#1c1917" font-weight="600">LAYER 02 · ROUTE HANDLERS</text>
+        <text x="674" y="202" text-anchor="end" class="text-mono" font-size="10" fill="#78716c">Thin Controllers · Zero Domain Logic</text>
+
+        <text x="46" y="226" class="text-label" font-size="15">Route Handlers (Thin Controllers)</text>
+        <text x="46" y="242" class="text-body" font-size="12">Orchestration sequence: Validate input → Invoke domain service → Match Result → Send HTTP response</text>
+
+        <!-- Pipeline Steps Inside Controller -->
+        <g id="controller-pipeline">
+          <rect x="46" y="254" width="130" height="24" rx="2" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+          <text x="111" y="269" text-anchor="middle" class="text-mono" font-size="9">1. Validate (Zod)</text>
+
+          <text x="186" y="269" text-anchor="middle" class="text-mono" font-size="10" fill="#78716c">→</text>
+
+          <rect x="198" y="254" width="130" height="24" rx="2" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+          <text x="263" y="269" text-anchor="middle" class="text-mono" font-size="9">2. Call Service</text>
+
+          <text x="338" y="269" text-anchor="middle" class="text-mono" font-size="10" fill="#78716c">→</text>
+
+          <rect x="350" y="254" width="140" height="24" rx="2" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+          <text x="420" y="269" text-anchor="middle" class="text-mono" font-size="9">3. Match ResultAsync</text>
+
+          <text x="500" y="269" text-anchor="middle" class="text-mono" font-size="10" fill="#78716c">→</text>
+
+          <rect x="512" y="254" width="140" height="24" rx="2" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+          <text x="582" y="269" text-anchor="middle" class="text-mono" font-size="9">4. Respond (200/4xx)</text>
+        </g>
+      </g>
+
+      <!-- Flow: Layer 2 -> Layer 3 -->
+      <g id="flow-2-3">
+        <line x1="360" y1="290" x2="360" y2="314" stroke="#1c1917" stroke-width="1.5" marker-end="url(#arr-l-ink)"/>
+        <rect x="275" y="293" width="170" height="16" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="360" y="304" text-anchor="middle" class="text-mono" font-size="8" fill="#1c1917">Invokes Service with Type-Safe DTOs</text>
+      </g>
+
+      <!-- LAYER 3: SERVICE LAYER (ACCENT FOCAL LAYER) -->
+      <g id="layer-service">
+        <!-- Standout Box: 2px gold stroke & top gold bar -->
+        <rect x="30" y="318" width="660" height="165" rx="3" fill="#ffffff" stroke="#d4a853" stroke-width="2"/>
+        <rect x="30" y="318" width="660" height="4" fill="#d4a853"/>
+
+        <!-- Gold Pill Header -->
+        <rect x="46" y="332" width="225" height="20" rx="2" fill="#d4a853"/>
+        <text x="158" y="346" text-anchor="middle" class="text-mono" font-size="9" fill="#1c1917" font-weight="700">LAYER 03 · SERVICE LAYER (ACCENT FOCAL)</text>
+        <text x="674" y="346" text-anchor="end" class="text-mono" font-size="10" fill="#92400e" font-weight="600">Pure Functional Domain Core</text>
+
+        <text x="46" y="372" class="text-label" font-size="16">Service Layer — Domain Business Logic</text>
+        <text x="46" y="391" class="text-mono" font-size="11" fill="#78716c">neverthrow ResultAsync&lt;T, DomainError&gt; · Zero Thrown Exceptions</text>
+
+        <line x1="46" y1="404" x2="674" y2="404" stroke="#f0efed" stroke-width="1"/>
+
+        <!-- Bullet Invariants -->
+        <text x="46" y="423" class="text-mono-bold" font-size="11">• Garment Domain Logic:</text>
+        <text x="210" y="423" class="text-body" font-size="12">BOM matrix calculations, size curves, tiered B2B pricing, order approval state</text>
+
+        <text x="46" y="442" class="text-mono-bold" font-size="11">• Functional Error Model:</text>
+        <text x="210" y="442" class="text-body" font-size="12">Returns ok(T) or err(E). Eliminates hidden runtime try/catch crashes</text>
+
+        <text x="46" y="461" class="text-mono-bold" font-size="11">• Subsystem Coordinator:</text>
+        <text x="215" y="461" class="text-body" font-size="12">Orchestrates Cache Lookups, Cloud Task Enqueues, and Circuit Breakers</text>
+      </g>
+
+      <!-- Flow: Layer 3 -> Layer 4 -->
+      <g id="flow-3-4">
+        <line x1="360" y1="483" x2="360" y2="507" stroke="#1c1917" stroke-width="1.5" marker-end="url(#arr-l-ink)"/>
+        <rect x="275" y="487" width="170" height="16" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="360" y="498" text-anchor="middle" class="text-mono" font-size="8" fill="#1c1917">Invokes Typed Repository Methods</text>
+      </g>
+
+      <!-- LAYER 4: REPOSITORY LAYER -->
+      <g id="layer-repository">
+        <rect x="30" y="512" width="660" height="110" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+
+        <!-- Header Tag -->
+        <rect x="46" y="524" width="175" height="18" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="133" y="536" text-anchor="middle" class="text-mono" font-size="9" fill="#1c1917" font-weight="600">LAYER 04 · DATA ACCESS</text>
+        <text x="674" y="536" text-anchor="end" class="text-mono" font-size="10" fill="#78716c">Drizzle ORM · Parameterized Queries</text>
+
+        <text x="46" y="562" class="text-label" font-size="15">Repository Layer</text>
+        <text x="46" y="580" class="text-body" font-size="12">Schema bindings, parameterized SQL query generation, connection lease management</text>
+
+        <!-- Chips -->
+        <g id="repo-chips">
+          <rect x="46" y="590" width="140" height="20" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+          <text x="116" y="603" text-anchor="middle" class="text-mono" font-size="9">Drizzle Schema Entities</text>
+
+          <rect x="194" y="590" width="140" height="20" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+          <text x="264" y="603" text-anchor="middle" class="text-mono" font-size="9">Parameterized SQL</text>
+
+          <rect x="342" y="590" width="150" height="20" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+          <text x="417" y="603" text-anchor="middle" class="text-mono" font-size="9">Transaction Isolation</text>
+
+          <rect x="500" y="590" width="135" height="20" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+          <text x="567" y="603" text-anchor="middle" class="text-mono" font-size="9">Pool Connection Guard</text>
+        </g>
+      </g>
+
+      <!-- Flow: Layer 4 -> Neon Postgres -->
+      <g id="flow-4-db">
+        <line x1="360" y1="622" x2="360" y2="655" stroke="#1c1917" stroke-width="1.5" marker-end="url(#arr-l-ink)"/>
+        <rect x="290" y="630" width="140" height="16" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="360" y="641" text-anchor="middle" class="text-mono" font-size="8" fill="#1c1917">SQL Driver / WebSocket Pool</text>
+      </g>
+
+      <!-- ================= DATABASE CYLINDER (BELOW REPOSITORY) ================= -->
+      <g id="database-cylinder">
+        <ellipse cx="360" cy="675" rx="140" ry="14" fill="#ffffff" stroke="#1c1917" stroke-width="1.5"/>
+        <path d="M 220 675 L 220 735 A 140 14 0 0 0 500 735 L 500 675" fill="#ffffff" stroke="#1c1917" stroke-width="1.5"/>
+        <ellipse cx="360" cy="675" rx="140" ry="14" fill="#f5f5f4" stroke="#1c1917" stroke-width="1.5"/>
+
+        <text x="360" y="702" text-anchor="middle" class="text-label" font-size="14">Neon Serverless Postgres</text>
+        <text x="360" y="718" text-anchor="middle" class="text-mono" font-size="10" fill="#78716c">Primary Relational Store · Autoscaling Compute</text>
+        <text x="360" y="732" text-anchor="middle" class="text-mono" font-size="9" fill="#00c97b">TLS Encrypted · Sialkot Factory Datasets</text>
+      </g>
+
+      <!-- ================= SIDE SATELLITES (RIGHT COLUMN: X: 730, W: 360) ================= -->
+
+      <!-- 1. Two-Tier Cache Satellite -->
+      <g id="satellite-cache">
+        <rect x="730" y="250" width="360" height="120" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <rect x="742" y="262" width="130" height="18" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="807" y="274" text-anchor="middle" class="text-mono" font-size="9" fill="#78716c" font-weight="600">TWO-TIER CACHE</text>
+        <text x="1076" y="274" text-anchor="end" class="text-mono" font-size="9" fill="#0047ab">L1 &amp; L2</text>
+
+        <text x="742" y="298" class="text-label" font-size="14">Two-Tier Cache Subsystem</text>
+        
+        <line x1="742" y1="308" x2="1076" y2="308" stroke="#f0efed" stroke-width="1"/>
+
+        <text x="742" y="326" class="text-mono-bold" font-size="10">L1: lru-cache (In-Memory)</text>
+        <text x="742" y="340" class="text-body" font-size="11">Sub-millisecond process-local read for hot routes</text>
+
+        <text x="742" y="356" class="text-mono-bold" font-size="10">L2: Redis / ioredis (Distributed)</text>
+        <text x="742" y="370" class="text-body" font-size="11">Shared distributed cache &amp; global session state</text>
+
+        <!-- Connector Path: Service Layer -> Cache -->
+        <path d="M 690 370 L 710 370 L 710 310 L 722 310" stroke="#1c1917" stroke-width="1.2" marker-end="url(#arr-l-ink)"/>
+        <rect x="686" y="325" width="46" height="16" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="709" y="336" text-anchor="middle" class="text-mono" font-size="8">L1/L2</text>
+      </g>
+
+      <!-- 2. Google Cloud Tasks Satellite -->
+      <g id="satellite-tasks">
+        <rect x="730" y="390" width="360" height="115" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <rect x="742" y="402" width="130" height="18" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="807" y="414" text-anchor="middle" class="text-mono" font-size="9" fill="#78716c" font-weight="600">ASYNC WORKERS</text>
+
+        <text x="742" y="438" class="text-label" font-size="14">Google Cloud Tasks</text>
+        <text x="742" y="455" class="text-body" font-size="12">Decoupled asynchronous background execution</text>
+
+        <line x1="742" y1="466" x2="1076" y2="466" stroke="#f0efed" stroke-width="1"/>
+
+        <text x="742" y="482" class="text-mono" font-size="10">• BOM Export PDF Rendering</text>
+        <text x="742" y="496" class="text-mono" font-size="10">• Batch Order Webhooks &amp; Audit Logs</text>
+
+        <!-- Connector Path: Service Layer -> Cloud Tasks -->
+        <path d="M 690 405 L 722 405" stroke="#1c1917" stroke-width="1.2" marker-end="url(#arr-l-ink)"/>
+        <rect x="687" y="395" width="44" height="16" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="709" y="406" text-anchor="middle" class="text-mono" font-size="8">Enqueue</text>
+      </g>
+
+      <!-- 3. Opossum Circuit Breaker Satellite -->
+      <g id="satellite-opossum">
+        <rect x="730" y="525" width="360" height="115" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <rect x="742" y="537" width="145" height="18" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="814" y="549" text-anchor="middle" class="text-mono" font-size="9" fill="#78716c" font-weight="600">CIRCUIT BREAKER</text>
+
+        <text x="742" y="573" class="text-label" font-size="14">Opossum Circuit Breaker</text>
+        <text x="742" y="590" class="text-body" font-size="12">Resilience wrapper for external B2B integration calls</text>
+
+        <line x1="742" y1="601" x2="1076" y2="601" stroke="#f0efed" stroke-width="1"/>
+
+        <text x="742" y="617" class="text-mono" font-size="10">• Automatic fallback on ERP timeout / outage</text>
+        <text x="742" y="631" class="text-mono" font-size="10">• Half-open health probes &amp; jittered retry</text>
+
+        <!-- Connector Path: Service Layer -> Circuit Breaker -->
+        <path d="M 690 440 L 710 440 L 710 570 L 722 570" stroke="#1c1917" stroke-width="1.2" marker-end="url(#arr-l-ink)"/>
+        <rect x="686" y="525" width="46" height="16" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="709" y="536" text-anchor="middle" class="text-mono" font-size="8">Resilient</text>
+      </g>
+
+      <!-- ================= TYPED ERROR BUBBLING ANNOTATION (LEFT SIDE) ================= -->
+      <g id="error-bubbling-track">
+        <path d="M 22 400 L 10 400 L 10 234 L 22 234" stroke="#78716c" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#arr-l-muted)"/>
+        <text x="6" y="317" text-anchor="middle" class="text-mono" font-size="8" fill="#78716c" transform="rotate(-90 6 317)">ResultAsync Bubbling</text>
+      </g>
+
+      <!-- ================= SVG FOOTER & LEGEND ================= -->
+      <g id="svg-legend">
+        <line x1="30" y1="785" x2="1090" y2="785" stroke="#d6d3d1" stroke-width="1"/>
+        
+        <rect x="30" y="805" width="12" height="12" rx="2" fill="#ffffff" stroke="#d4a853" stroke-width="1.5"/>
+        <text x="50" y="815" class="text-mono" font-size="10">Middleware (Accent Border)</text>
+
+        <rect x="250" y="805" width="12" height="12" rx="2" fill="#ffffff" stroke="#d4a853" stroke-width="2"/>
+        <text x="270" y="815" class="text-mono" font-size="10">Service Layer (Accent Focal Core)</text>
+
+        <line x1="510" y1="811" x2="530" y2="811" stroke="#1c1917" stroke-width="1.5"/>
+        <text x="538" y="815" class="text-mono" font-size="10">Synchronous Execution Path</text>
+
+        <line x1="750" y1="811" x2="770" y2="811" stroke="#78716c" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <text x="778" y="815" class="text-mono" font-size="10">Typed Error Propagation</text>
+
+        <text x="1090" y="815" text-anchor="end" class="text-mono" font-size="10" fill="#78716c">RUN APPAREL · SIALKOT</text>
+      </g>
+    </svg>
+
+    <footer class="diagram-footer">
+      <div class="footer-stat">
+        <span>ERROR MODEL: neverthrow ResultAsync&lt;T, E&gt;</span>
+        <span>ORM: Drizzle ORM Parameterized</span>
+        <span>CACHE: Two-Tier L1 (lru-cache) + L2 (ioredis)</span>
+      </div>
+      <div>ADR-004 · SERVER LAYERS</div>
+    </footer>
+  </main>
+
+</body>
+</html>

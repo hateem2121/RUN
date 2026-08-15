@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Request Lifecycle — RUN APPAREL Swimlane</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #fafaf9;
+      color: #1c1917;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .diagram-container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      background: #fafaf9;
+    }
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="diagram-container">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1020" width="100%" height="100%" role="img" aria-labelledby="req-title req-desc">
+      <title id="req-title">Product Request Lifecycle</title>
+      <desc id="req-desc">Vertical swimlane diagram illustrating a product catalog request flow across Browser, React Client, Express 5 API, Redis Cache, and Neon Postgres database, detailing cache hits, misses, and middleware execution.</desc>
+
+      <defs>
+        <!-- Arrowhead Markers -->
+        <marker id="lane-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1c1917"/>
+        </marker>
+        <marker id="lane-arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0047ab"/>
+        </marker>
+        <marker id="lane-arrow-dashed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#00c97b"/>
+        </marker>
+        <marker id="lane-arrow-gold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#d4a853"/>
+        </marker>
+      </defs>
+
+      <!-- Canvas Background -->
+      <rect width="1280" height="1020" fill="#fafaf9"/>
+
+      <!-- ================= HEADER SECTION ================= -->
+      <g id="header" transform="translate(60, 40)">
+        <text x="0" y="0" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" letter-spacing="1.5" fill="#78716c">ARCHITECTURE &amp; DATA FLOW // RUN APPAREL CMS</text>
+        
+        <!-- Architecture Badge -->
+        <rect x="990" y="-14" width="170" height="26" fill="#ffffff" stroke="#d6d3d1" stroke-width="1" rx="2"/>
+        <circle cx="1004" cy="-1" r="3.5" fill="#0047ab"/>
+        <text x="1016" y="3" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917" letter-spacing="0.5">Two-Tier Cache Architecture</text>
+
+        <!-- Main Title -->
+        <text x="0" y="34" font-family="'Inter', sans-serif" font-size="24" font-weight="700" fill="#1c1917" letter-spacing="-0.5">Product Request Lifecycle</text>
+        
+        <!-- Subtitle -->
+        <text x="0" y="58" font-family="'Inter', sans-serif" font-size="13.5" font-weight="400" fill="#78716c">SSR data flow with two-tier cache</text>
+
+        <!-- Hairline Divider -->
+        <line x1="0" y1="74" x2="1160" y2="74" stroke="#d6d3d1" stroke-width="1"/>
+      </g>
+
+      <!-- ================= SWIMLANES STRUCTURE ================= -->
+
+      <!-- Swimlane 1: Browser (Center x = 168) -->
+      <g id="lane-browser">
+        <rect x="60" y="130" width="216" height="780" fill="#ffffff" stroke="#d6d3d1" stroke-width="1" rx="3"/>
+        <!-- Header -->
+        <rect x="60" y="130" width="216" height="52" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1" rx="3"/>
+        <line x1="60" y1="182" x2="276" y2="182" stroke="#d6d3d1" stroke-width="1"/>
+        <circle cx="78" cy="156" r="3.5" fill="#78716c"/>
+        <text x="90" y="153" font-family="'Inter', sans-serif" font-size="14" font-weight="700" fill="#1c1917">Browser</text>
+        <text x="90" y="169" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="500" fill="#78716c">Client DOM / UI</text>
+        <!-- Center Lifeline -->
+        <line x1="168" y1="182" x2="168" y2="910" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+      </g>
+
+      <!-- Swimlane 2: React Client (Center x = 404) -->
+      <g id="lane-react">
+        <rect x="296" y="130" width="216" height="780" fill="#ffffff" stroke="#d6d3d1" stroke-width="1" rx="3"/>
+        <!-- Header -->
+        <rect x="296" y="130" width="216" height="52" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1" rx="3"/>
+        <line x1="296" y1="182" x2="512" y2="182" stroke="#d6d3d1" stroke-width="1"/>
+        <circle cx="314" cy="156" r="3.5" fill="#0047ab"/>
+        <text x="326" y="153" font-family="'Inter', sans-serif" font-size="14" font-weight="700" fill="#1c1917">React Client</text>
+        <text x="326" y="169" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="500" fill="#0047ab">React Router v8</text>
+        <!-- Center Lifeline -->
+        <line x1="404" y1="182" x2="404" y2="910" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+      </g>
+
+      <!-- Swimlane 3: Express 5 API (Center x = 640) -->
+      <g id="lane-express">
+        <rect x="532" y="130" width="216" height="780" fill="#ffffff" stroke="#d6d3d1" stroke-width="1" rx="3"/>
+        <!-- Header -->
+        <rect x="532" y="130" width="216" height="52" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1" rx="3"/>
+        <line x1="532" y1="182" x2="748" y2="182" stroke="#d6d3d1" stroke-width="1"/>
+        <circle cx="550" cy="156" r="3.5" fill="#1c1917"/>
+        <text x="562" y="153" font-family="'Inter', sans-serif" font-size="14" font-weight="700" fill="#1c1917">Express 5 API</text>
+        <text x="562" y="169" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="500" fill="#78716c">Node 24 Core</text>
+        <!-- Center Lifeline -->
+        <line x1="640" y1="182" x2="640" y2="910" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+      </g>
+
+      <!-- Swimlane 4: Redis Cache (Center x = 876) -->
+      <g id="lane-redis">
+        <rect x="768" y="130" width="216" height="780" fill="#ffffff" stroke="#d6d3d1" stroke-width="1" rx="3"/>
+        <!-- Header -->
+        <rect x="768" y="130" width="216" height="52" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1" rx="3"/>
+        <line x1="768" y1="182" x2="984" y2="182" stroke="#d6d3d1" stroke-width="1"/>
+        <circle cx="786" cy="156" r="3.5" fill="#ea580c"/>
+        <text x="798" y="153" font-family="'Inter', sans-serif" font-size="14" font-weight="700" fill="#1c1917">Redis Cache</text>
+        <text x="798" y="169" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="500" fill="#ea580c">Upstash / Memory</text>
+        <!-- Center Lifeline -->
+        <line x1="876" y1="182" x2="876" y2="910" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+      </g>
+
+      <!-- Swimlane 5: Neon Postgres (Center x = 1112) -->
+      <g id="lane-neon">
+        <rect x="1004" y="130" width="216" height="780" fill="#ffffff" stroke="#d6d3d1" stroke-width="1" rx="3"/>
+        <!-- Header -->
+        <rect x="1004" y="130" width="216" height="52" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1" rx="3"/>
+        <line x1="1004" y1="182" x2="1220" y2="182" stroke="#d6d3d1" stroke-width="1"/>
+        <circle cx="1022" cy="156" r="3.5" fill="#00c97b"/>
+        <text x="1034" y="153" font-family="'Inter', sans-serif" font-size="14" font-weight="700" fill="#1c1917">Neon Postgres</text>
+        <text x="1034" y="169" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="500" fill="#00c97b">Drizzle HTTP DB</text>
+        <!-- Center Lifeline -->
+        <line x1="1112" y1="182" x2="1112" y2="910" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+      </g>
+
+      <!-- ================= SEQUENCE FLOW STEPS ================= -->
+
+      <!-- Step 1: Browser -> React Client (y = 215) -->
+      <g id="flow-step-1">
+        <line x1="168" y1="215" x2="396" y2="215" stroke="#1c1917" stroke-width="1.5" marker-end="url(#lane-arrow)"/>
+        <!-- Action Card Badge -->
+        <rect x="195" y="197" width="182" height="34" fill="#ffffff" stroke="#d6d3d1" stroke-width="1" rx="2"/>
+        <text x="204" y="211" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600" fill="#78716c">1. USER NAVIGATION</text>
+        <text x="204" y="225" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#1c1917">/categories/running</text>
+      </g>
+
+      <!-- Step 2: React Client Internal Loader (y = 265) -->
+      <g id="flow-step-2">
+        <rect x="312" y="250" width="184" height="42" fill="#fafaf9" stroke="#0047ab" stroke-width="1.25" rx="2"/>
+        <text x="322" y="266" font-family="'Inter', sans-serif" font-size="11.5" font-weight="700" fill="#1c1917">2. React Router v8</text>
+        <text x="322" y="282" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="500" fill="#0047ab">Client Loader initiated</text>
+      </g>
+
+      <!-- Step 3: React Client -> Express API (y = 325) -->
+      <g id="flow-step-3">
+        <line x1="404" y1="325" x2="632" y2="325" stroke="#0047ab" stroke-width="1.5" marker-end="url(#lane-arrow-blue)"/>
+        <rect x="424" y="307" width="195" height="35" fill="#ffffff" stroke="#0047ab" stroke-width="1" rx="2"/>
+        <text x="432" y="321" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600" fill="#0047ab">3. HTTP GET REQUEST</text>
+        <text x="432" y="335" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="600" fill="#1c1917">/api/v1/categories/running/products</text>
+      </g>
+
+      <!-- Step 4: Express API Middleware Chain (y = 375) -->
+      <g id="flow-step-4">
+        <rect x="548" y="360" width="184" height="42" fill="#fafaf9" stroke="#1c1917" stroke-width="1.25" rx="2"/>
+        <text x="558" y="376" font-family="'Inter', sans-serif" font-size="11.5" font-weight="700" fill="#1c1917">4. Middleware Chain</text>
+        <text x="558" y="392" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#78716c">CSRF · Correlation ID · Session</text>
+      </g>
+
+      <!-- Step 5: Express API -> Redis Cache (y = 435) -->
+      <g id="flow-step-5">
+        <line x1="640" y1="435" x2="868" y2="435" stroke="#1c1917" stroke-width="1.5" marker-end="url(#lane-arrow)"/>
+        <rect x="668" y="417" width="180" height="35" fill="#ffffff" stroke="#d6d3d1" stroke-width="1" rx="2"/>
+        <text x="678" y="431" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600" fill="#78716c">5. CACHE LOOKUP</text>
+        <text x="678" y="445" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#1c1917">GET cache key</text>
+      </g>
+
+      <!-- Step 6: Cache Hit / Miss Branching Block (y = 490 to 555) -->
+      
+      <!-- Cache Hit Fast Path (Dashed Green) -->
+      <g id="flow-step-6-hit">
+        <line x1="876" y1="495" x2="648" y2="495" stroke="#00c97b" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#lane-arrow-dashed)"/>
+        <rect x="668" y="478" width="180" height="34" fill="#ffffff" stroke="#00c97b" stroke-width="1" rx="2"/>
+        <circle cx="678" cy="495" r="3" fill="#00c97b"/>
+        <text x="686" y="491" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600" fill="#00c97b">6a. CACHE HIT (FAST)</text>
+        <text x="686" y="505" font-family="'Inter', sans-serif" font-size="9.5" font-weight="600" fill="#1c1917">Return cached JSON (5ms)</text>
+      </g>
+
+      <!-- Cache Miss Path Label Header (y = 540) -->
+      <g id="flow-miss-label">
+        <rect x="640" y="535" width="236" height="18" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75" rx="1.5"/>
+        <text x="758" y="547" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600" fill="#78716c">--- 6b. CACHE MISS FALLBACK PATH ---</text>
+      </g>
+
+      <!-- Step 7: Express API -> Neon Postgres (y = 590) -->
+      <g id="flow-step-7">
+        <line x1="640" y1="590" x2="1104" y2="590" stroke="#1c1917" stroke-width="1.5" marker-end="url(#lane-arrow)"/>
+        <rect x="760" y="572" width="232" height="35" fill="#ffffff" stroke="#d6d3d1" stroke-width="1" rx="2"/>
+        <text x="770" y="586" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600" fill="#78716c">7. DATABASE QUERY</text>
+        <text x="770" y="600" font-family="'Inter', sans-serif" font-size="10" font-weight="600" fill="#1c1917">SQL via Drizzle HTTP Driver</text>
+      </g>
+
+      <!-- Step 8: Neon Postgres -> Express API (y = 650) -->
+      <g id="flow-step-8">
+        <line x1="1112" y1="650" x2="648" y2="650" stroke="#1c1917" stroke-width="1.5" marker-end="url(#lane-arrow)"/>
+        <rect x="780" y="632" width="190" height="35" fill="#ffffff" stroke="#d6d3d1" stroke-width="1" rx="2"/>
+        <text x="790" y="646" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600" fill="#78716c">8. QUERY RESPONSE</text>
+        <text x="790" y="660" font-family="'Inter', sans-serif" font-size="10" font-weight="600" fill="#1c1917">Result Rows (Entity Set)</text>
+      </g>
+
+      <!-- Step 9: Express API -> Redis Cache (y = 710) -->
+      <g id="flow-step-9">
+        <line x1="640" y1="710" x2="868" y2="710" stroke="#d4a853" stroke-width="1.5" marker-end="url(#lane-arrow-gold)"/>
+        <rect x="670" y="692" width="176" height="35" fill="#ffffff" stroke="#d4a853" stroke-width="1.25" rx="2"/>
+        <text x="680" y="706" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600" fill="#d4a853">9. CACHE POPULATION</text>
+        <text x="680" y="720" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="700" fill="#1c1917">SETEX 300s</text>
+      </g>
+
+      <!-- Step 10: Express API -> React Client (y = 770) -->
+      <g id="flow-step-10">
+        <line x1="640" y1="770" x2="412" y2="770" stroke="#0047ab" stroke-width="1.5" marker-end="url(#lane-arrow-blue)"/>
+        <rect x="435" y="752" width="172" height="35" fill="#ffffff" stroke="#0047ab" stroke-width="1" rx="2"/>
+        <text x="444" y="766" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600" fill="#0047ab">10. RESPONSE PAYLOAD</text>
+        <text x="444" y="780" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="600" fill="#1c1917">200 OK { products: [...] }</text>
+      </g>
+
+      <!-- Step 11: React Client -> Browser (y = 830) -->
+      <g id="flow-step-11">
+        <line x1="404" y1="830" x2="176" y2="830" stroke="#00c97b" stroke-width="1.5" marker-end="url(#lane-arrow-dashed)"/>
+        <rect x="200" y="812" width="172" height="35" fill="#ffffff" stroke="#00c97b" stroke-width="1.25" rx="2"/>
+        <text x="210" y="826" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600" fill="#00c97b">11. DOM HYDRATION</text>
+        <text x="210" y="840" font-family="'Inter', sans-serif" font-size="10.5" font-weight="700" fill="#1c1917">Render Product Grid</text>
+      </g>
+
+      <!-- ================= FOOTER / LEGEND ================= -->
+      <g id="footer" transform="translate(60, 955)">
+        <line x1="0" y1="0" x2="1160" y2="0" stroke="#d6d3d1" stroke-width="1"/>
+        
+        <g transform="translate(0, 20)">
+          <!-- Solid Line Legend -->
+          <line x1="0" y1="0" x2="30" y2="0" stroke="#1c1917" stroke-width="1.5"/>
+          <text x="38" y="4" font-family="'Inter', sans-serif" font-size="11" font-weight="500" fill="#1c1917">Standard Request / Database Query Path</text>
+
+          <!-- Dashed Green Legend -->
+          <line x1="330" y1="0" x2="360" y2="0" stroke="#00c97b" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <text x="368" y="4" font-family="'Inter', sans-serif" font-size="11" font-weight="500" fill="#00c97b">Cache Hit Short-circuit (5ms response)</text>
+
+          <!-- Gold Legend -->
+          <line x1="660" y1="0" x2="690" y2="0" stroke="#d4a853" stroke-width="1.5"/>
+          <text x="698" y="4" font-family="'Inter', sans-serif" font-size="11" font-weight="500" fill="#d4a853">Cache Invalidation / Write-through</text>
+
+          <!-- Standard identifier -->
+          <text x="1160" y="4" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="500" fill="#78716c">RUN-LIFECYCLE-01</text>
+        </g>
+      </g>
+    </svg>
+  </div>
+</body>
+</html>

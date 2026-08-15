@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authentication Flow — RUN APPAREL CMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #fafaf9;
+      color: #1c1917;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .diagram-container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      background: #fafaf9;
+    }
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="diagram-container">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 880" width="100%" height="100%" role="img" aria-labelledby="auth-title auth-desc">
+      <title id="auth-title">Authentication Flow — RUN APPAREL CMS</title>
+      <desc id="auth-desc">Vertical sequence diagram illustrating Google OAuth 2.0 authentication flow, token exchange, user record upserting in Neon Postgres, and sliding session creation in Redis.</desc>
+
+      <defs>
+        <!-- Directional Arrowhead Markers -->
+        <marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1c1917"/>
+        </marker>
+        <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0047ab"/>
+        </marker>
+        <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#00c97b"/>
+        </marker>
+        <marker id="arrow-gold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#d4a853"/>
+        </marker>
+      </defs>
+
+      <!-- Background Canvas -->
+      <rect width="1280" height="880" fill="#fafaf9"/>
+
+      <!-- ================= HEADER SECTION ================= -->
+      <g id="header" transform="translate(60, 42)">
+        <text x="0" y="0" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" letter-spacing="1.5" fill="#78716c">SECURITY SPECIFICATION // AUTHENTICATION PROTOCOL</text>
+        
+        <!-- Standard Badge -->
+        <rect x="980" y="-14" width="180" height="26" fill="#ffffff" stroke="#d6d3d1" stroke-width="1" rx="2"/>
+        <circle cx="996" cy="-1" r="3.5" fill="#00c97b"/>
+        <text x="1008" y="3" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#1c1917" letter-spacing="0.5">OAUTH 2.0 · HARDENED</text>
+
+        <!-- Main Title -->
+        <text x="0" y="34" font-family="'Inter', sans-serif" font-size="24" font-weight="700" fill="#1c1917" letter-spacing="-0.5">Authentication Flow</text>
+        
+        <!-- Subtitle -->
+        <text x="0" y="58" font-family="'Inter', sans-serif" font-size="13.5" font-weight="400" fill="#78716c">Google OAuth 2.0 · Sliding sessions with Redis store</text>
+
+        <!-- Hairline Divider -->
+        <line x1="0" y1="76" x2="1160" y2="76" stroke="#d6d3d1" stroke-width="1"/>
+      </g>
+
+      <!-- ================= LIFELINES (VERTICAL TRACKS) ================= -->
+      <!-- 1. Browser -->
+      <line x1="120" y1="180" x2="120" y2="700" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+      <!-- 2. Express API -->
+      <line x1="380" y1="180" x2="380" y2="700" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+      <!-- 3. Google OAuth -->
+      <line x1="640" y1="180" x2="640" y2="700" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+      <!-- 4. Neon Postgres -->
+      <line x1="900" y1="180" x2="900" y2="700" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+      <!-- 5. Redis (ioredis) -->
+      <line x1="1140" y1="180" x2="1140" y2="700" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+
+      <!-- ================= ACTOR HEADER BOXES (TOP) ================= -->
+      <!-- Actor 1: Browser -->
+      <g transform="translate(45, 130)">
+        <rect x="0" y="0" width="150" height="48" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="75" y="22" font-family="'Inter', sans-serif" font-size="11.5" font-weight="700" fill="#1c1917" text-anchor="middle">Browser</text>
+        <text x="75" y="38" font-family="'JetBrains Mono', monospace" font-size="9" fill="#78716c" text-anchor="middle">CLIENT AGENT</text>
+      </g>
+
+      <!-- Actor 2: Express API (Port 5002) -->
+      <g transform="translate(300, 130)">
+        <rect x="0" y="0" width="160" height="48" rx="2" fill="#ffffff" stroke="#1c1917" stroke-width="1.5"/>
+        <text x="80" y="22" font-family="'Inter', sans-serif" font-size="11.5" font-weight="700" fill="#1c1917" text-anchor="middle">Express API</text>
+        <text x="80" y="38" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600" fill="#0047ab" text-anchor="middle">PORT 5002 GATEWAY</text>
+      </g>
+
+      <!-- Actor 3: Google OAuth -->
+      <g transform="translate(565, 130)">
+        <rect x="0" y="0" width="150" height="48" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="75" y="22" font-family="'Inter', sans-serif" font-size="11.5" font-weight="700" fill="#1c1917" text-anchor="middle">Google OAuth</text>
+        <text x="75" y="38" font-family="'JetBrains Mono', monospace" font-size="9" fill="#78716c" text-anchor="middle">IDP / OAUTH 2.0</text>
+      </g>
+
+      <!-- Actor 4: Neon Postgres -->
+      <g transform="translate(820, 130)">
+        <rect x="0" y="0" width="160" height="48" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="80" y="22" font-family="'Inter', sans-serif" font-size="11.5" font-weight="700" fill="#1c1917" text-anchor="middle">Neon Postgres</text>
+        <text x="80" y="38" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600" fill="#00c97b" text-anchor="middle">USER STORE (DRIZZLE)</text>
+      </g>
+
+      <!-- Actor 5: Redis -->
+      <g transform="translate(1065, 130)">
+        <rect x="0" y="0" width="150" height="48" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="75" y="22" font-family="'Inter', sans-serif" font-size="11.5" font-weight="700" fill="#1c1917" text-anchor="middle">Redis (ioredis)</text>
+        <text x="75" y="38" font-family="'JetBrains Mono', monospace" font-size="9" fill="#78716c" text-anchor="middle">SESSION CACHE</text>
+      </g>
+
+      <!-- ================= SEQUENCE FLOW STEPS ================= -->
+
+      <!-- STEP 1: Browser -> Express API (GET /api/login) -->
+      <g transform="translate(0, 205)">
+        <line x1="120" y1="12" x2="372" y2="12" stroke="#1c1917" stroke-width="1" marker-end="url(#arrow-ink)"/>
+        <rect x="140" y="0" width="20" height="15" rx="2" fill="#1c1917"/>
+        <text x="150" y="11" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">01</text>
+        <text x="168" y="10" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#1c1917">GET /api/login</text>
+        <text x="168" y="25" font-family="'Inter', sans-serif" font-size="9" fill="#78716c">User initiates Google authentication request</text>
+      </g>
+
+      <!-- STEP 2: Express API -> Browser (302 Redirect to Google Consent) -->
+      <g transform="translate(0, 260)">
+        <line x1="380" y1="12" x2="128" y2="12" stroke="#0047ab" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#arrow-blue)"/>
+        <rect x="330" y="0" width="20" height="15" rx="2" fill="#0047ab"/>
+        <text x="340" y="11" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">02</text>
+        <text x="150" y="10" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#0047ab">302 Redirect to Google Consent</text>
+        <text x="150" y="25" font-family="'Inter', sans-serif" font-size="9" fill="#78716c">Generates OAuth authorization URL with signed state &amp; nonce</text>
+      </g>
+
+      <!-- STEP 3: Browser -> Google OAuth (User grants consent) -->
+      <g transform="translate(0, 315)">
+        <line x1="120" y1="12" x2="632" y2="12" stroke="#1c1917" stroke-width="1" marker-end="url(#arrow-ink)"/>
+        <rect x="140" y="0" width="20" height="15" rx="2" fill="#1c1917"/>
+        <text x="150" y="11" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">03</text>
+        <text x="168" y="10" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#1c1917">User grants consent</text>
+        <text x="168" y="25" font-family="'Inter', sans-serif" font-size="9" fill="#78716c">Selects account and authorizes openid, email, and profile scopes</text>
+      </g>
+
+      <!-- STEP 4: Google OAuth -> Express API (GET /api/auth/google/callback with code) -->
+      <g transform="translate(0, 370)">
+        <line x1="640" y1="12" x2="388" y2="12" stroke="#1c1917" stroke-width="1" marker-end="url(#arrow-ink)"/>
+        <rect x="600" y="0" width="20" height="15" rx="2" fill="#1c1917"/>
+        <text x="610" y="11" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">04</text>
+        <text x="400" y="10" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#1c1917">GET /api/auth/google/callback (with code)</text>
+        <text x="400" y="25" font-family="'Inter', sans-serif" font-size="9" fill="#78716c">Google redirects browser with one-time authorization code</text>
+      </g>
+
+      <!-- STEP 5: Express API -> Google OAuth (Exchange code for tokens) -->
+      <g transform="translate(0, 425)">
+        <line x1="380" y1="12" x2="632" y2="12" stroke="#1c1917" stroke-width="1" marker-end="url(#arrow-ink)"/>
+        <rect x="400" y="0" width="20" height="15" rx="2" fill="#1c1917"/>
+        <text x="410" y="11" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">05</text>
+        <text x="428" y="10" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#1c1917">Exchange code for tokens</text>
+        <text x="428" y="25" font-family="'Inter', sans-serif" font-size="9" fill="#78716c">Direct backend POST request with client_secret to Google OAuth token endpoint</text>
+      </g>
+
+      <!-- STEP 6: Google OAuth -> Express API (Access token + user info) -->
+      <g transform="translate(0, 480)">
+        <line x1="640" y1="12" x2="388" y2="12" stroke="#0047ab" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#arrow-blue)"/>
+        <rect x="600" y="0" width="20" height="15" rx="2" fill="#0047ab"/>
+        <text x="610" y="11" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">06</text>
+        <text x="410" y="10" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#0047ab">Access token + user info</text>
+        <text x="410" y="25" font-family="'Inter', sans-serif" font-size="9" fill="#78716c">Returns verified id_token, email, name, avatar URI, and Google sub ID</text>
+      </g>
+
+      <!-- STEP 7: Express API -> Neon Postgres (Upsert user record) -->
+      <g transform="translate(0, 535)">
+        <line x1="380" y1="12" x2="892" y2="12" stroke="#00c97b" stroke-width="1.25" marker-end="url(#arrow-green)"/>
+        <rect x="400" y="0" width="20" height="15" rx="2" fill="#00c97b"/>
+        <text x="410" y="11" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">07</text>
+        <text x="428" y="10" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#00c97b">Upsert user record</text>
+        <text x="428" y="25" font-family="'Inter', sans-serif" font-size="9" fill="#78716c">Drizzle ORM upsert into users table; syncs role permissions and login timestamp</text>
+      </g>
+
+      <!-- STEP 8: Express API -> Redis (Create session sess:{id}) - ACCENT FOCAL -->
+      <g transform="translate(0, 590)">
+        <line x1="380" y1="12" x2="1132" y2="12" stroke="#d4a853" stroke-width="1.75" marker-end="url(#arrow-gold)"/>
+        <rect x="400" y="0" width="20" height="15" rx="2" fill="#d4a853"/>
+        <text x="410" y="11" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">08</text>
+        <text x="428" y="10" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#d4a853">Create session (sess:{id})</text>
+        <text x="428" y="25" font-family="'Inter', sans-serif" font-size="9" fill="#78716c">Stores session payload in Redis with 7-day rolling TTL and SHA-256 User-Agent binding</text>
+      </g>
+
+      <!-- STEP 9: Express API -> Browser (Set connect.sid cookie) -->
+      <g transform="translate(0, 645)">
+        <line x1="380" y1="12" x2="128" y2="12" stroke="#1c1917" stroke-width="1" marker-end="url(#arrow-ink)"/>
+        <rect x="330" y="0" width="20" height="15" rx="2" fill="#1c1917"/>
+        <text x="340" y="11" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">09</text>
+        <text x="130" y="10" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#1c1917">Set connect.sid cookie (HttpOnly, SameSite=strict)</text>
+        <text x="130" y="25" font-family="'Inter', sans-serif" font-size="9" fill="#78716c">Final redirect 302 to /admin dashboard with secured session cookie header</text>
+      </g>
+
+      <!-- ================= NOTE BOX: SECURITY POLICY ================= -->
+      <g id="note-box" transform="translate(60, 705)">
+        <rect x="0" y="0" width="1160" height="54" rx="2" fill="#fffdfa" stroke="#d4a853" stroke-width="1.25"/>
+        <rect x="16" y="16" width="76" height="20" rx="2" fill="#d4a853"/>
+        <text x="54" y="30" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#ffffff" text-anchor="middle">NOTE</text>
+        <text x="106" y="28" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="#1c1917">Session Security Guarantee:</text>
+        <text x="272" y="28" font-family="'JetBrains Mono', monospace" font-size="10" fill="#78716c">Session rotates every 15 minutes. User-Agent hash bound to session. 7-day rolling expiry.</text>
+        <text x="106" y="44" font-family="'Inter', sans-serif" font-size="9.5" fill="#00c97b">✓ Cryptographic rotation mitigates session hijacking · CSRF double-submit token guarded</text>
+      </g>
+
+      <!-- ================= FOOTER SECTION ================= -->
+      <g id="footer" transform="translate(60, 785)">
+        <line x1="0" y1="0" x2="1160" y2="0" stroke="#d6d3d1" stroke-width="1"/>
+        
+        <g transform="translate(0, 22)">
+          <text x="0" y="10" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#0047ab">PROTOCOL: GOOGLE OAUTH 2.0</text>
+          <text x="220" y="10" font-family="'Inter', sans-serif" font-size="10.5" fill="#78716c">Sliding session state persisted in Redis cluster (Upstash / ioredis).</text>
+          <text x="1160" y="10" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#78716c">ZERO COOKIE LEAKAGE</text>
+        </g>
+      </g>
+    </svg>
+  </div>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monorepo Import Boundaries — RUN APPAREL CMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #fafaf9;
+      --ink: #1c1917;
+      --muted: #78716c;
+      --accent: #d4a853;
+      --hairline: #d6d3d1;
+      --blue: #0047ab;
+      --success: #00c97b;
+      --card-bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1.5rem;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .diagram-container {
+      width: 100%;
+      max-width: 1200px;
+      background: var(--card-bg);
+      border: 1px solid var(--hairline);
+      border-radius: 4px;
+      padding: 2rem 2.5rem 2.25rem;
+    }
+
+    .diagram-header {
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--hairline);
+      padding-bottom: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .header-titles h1 {
+      font-family: "Inter", sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+    }
+
+    .header-titles p {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+    }
+
+    .header-badge {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink);
+      background: #fafaf9;
+      border: 1px solid var(--hairline);
+      padding: 0.35rem 0.75rem;
+      border-radius: 2px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-badge .badge-icon {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .text-title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 700;
+      fill: var(--ink);
+    }
+    .text-subtitle {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 400;
+      fill: var(--muted);
+    }
+    .text-label {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
+      fill: var(--ink);
+    }
+    .text-body {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 400;
+      fill: var(--muted);
+    }
+    .text-mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      fill: var(--muted);
+    }
+    .text-mono-bold {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      fill: var(--ink);
+    }
+
+    .diagram-footer {
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--hairline);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .footer-stat {
+      display: flex;
+      gap: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="diagram-container">
+    <header class="diagram-header">
+      <div class="header-titles">
+        <h1>Monorepo Import Boundaries</h1>
+        <p>Workspace isolation is sacred · Zero cyclic dependencies</p>
+      </div>
+      <div class="header-badge">
+        <span class="badge-icon">★</span>
+        TURBOREPO · 3 PACKAGES
+      </div>
+    </header>
+
+    <svg viewBox="0 0 1120 740" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="mono-title mono-desc">
+      <title id="mono-title">Monorepo Import Boundaries</title>
+      <desc id="mono-desc">Monorepo Import Boundaries diagram showing workspace isolation between client, server, and shared packages with strict import and never-import rules.</desc>
+
+      <defs>
+        <!-- Arrowhead Marker (Ink Solid) -->
+        <marker id="arr-mono-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#1c1917" />
+        </marker>
+        <!-- Cross Marker (Red) -->
+        <marker id="arr-mono-red" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <circle cx="5" cy="5" r="4" fill="#dc2626" />
+        </marker>
+      </defs>
+
+      <!-- ================= 3 TRIANGLE WORKSPACE PACKAGES ================= -->
+
+      <!-- PACKAGE 1: client/ (TOP LEFT - BLUE TINT) -->
+      <g id="pkg-client">
+        <rect x="40" y="30" width="390" height="225" rx="3" fill="#f0f7ff" stroke="#0047ab" stroke-width="1.5"/>
+
+        <!-- Header Pill -->
+        <rect x="56" y="44" width="125" height="20" rx="2" fill="#0047ab"/>
+        <text x="118" y="58" text-anchor="middle" class="text-mono" font-size="9" fill="#ffffff" font-weight="600">WORKSPACE · CLIENT</text>
+        <text x="414" y="58" text-anchor="end" class="text-mono" font-size="10" fill="#0047ab">client/</text>
+
+        <text x="56" y="88" class="text-label" font-size="17">client/ package</text>
+        <text x="56" y="106" class="text-mono" font-size="11" fill="#78716c">React 19 · Vite 8 · React Router v8</text>
+
+        <line x1="56" y1="118" x2="414" y2="118" stroke="#dbeafe" stroke-width="1"/>
+
+        <text x="56" y="140" class="text-mono-bold" font-size="11" fill="#1e3a8a">• Frontend Presentation Layer:</text>
+        <text x="56" y="157" class="text-body" font-size="12">SSR Single Page Application hydrated in modern browsers</text>
+
+        <text x="56" y="180" class="text-mono-bold" font-size="11" fill="#1e3a8a">• UI Framework &amp; State:</text>
+        <text x="56" y="197" class="text-body" font-size="12">Tailwind v4 styling, TanStack Query v5 cache, Lucide icons</text>
+
+        <text x="56" y="220" class="text-mono-bold" font-size="11" fill="#1e3a8a">• Communication Contract:</text>
+        <text x="56" y="237" class="text-body" font-size="12">Calls Express API strictly via HTTP/JSON REST endpoints</text>
+      </g>
+
+      <!-- PACKAGE 2: server/ (TOP RIGHT - GREEN TINT) -->
+      <g id="pkg-server">
+        <rect x="690" y="30" width="390" height="225" rx="3" fill="#f0fdf4" stroke="#00c97b" stroke-width="1.5"/>
+
+        <!-- Header Pill -->
+        <rect x="706" y="44" width="125" height="20" rx="2" fill="#00c97b"/>
+        <text x="768" y="58" text-anchor="middle" class="text-mono" font-size="9" fill="#1c1917" font-weight="700">WORKSPACE · SERVER</text>
+        <text x="1064" y="58" text-anchor="end" class="text-mono" font-size="10" fill="#065f46">server/</text>
+
+        <text x="706" y="88" class="text-label" font-size="17">server/ package</text>
+        <text x="706" y="106" class="text-mono" font-size="11" fill="#78716c">Express 5 · Drizzle ORM · neverthrow</text>
+
+        <line x1="706" y1="118" x2="1064" y2="118" stroke="#dcfce7" stroke-width="1"/>
+
+        <text x="706" y="140" class="text-mono-bold" font-size="11" fill="#065f46">• Backend API &amp; Services:</text>
+        <text x="706" y="157" class="text-body" font-size="12">Node 24 execution environment with strict layer segregation</text>
+
+        <text x="706" y="180" class="text-mono-bold" font-size="11" fill="#065f46">• Data &amp; Background Ops:</text>
+        <text x="706" y="197" class="text-body" font-size="12">Direct access to Neon Postgres, Redis L2, and Google Cloud Tasks</text>
+
+        <text x="706" y="220" class="text-mono-bold" font-size="11" fill="#065f46">• Functional Business Core:</text>
+        <text x="706" y="237" class="text-body" font-size="12">Business logic encapsulated in ResultAsync&lt;T, DomainError&gt;</text>
+      </g>
+
+      <!-- PACKAGE 3: shared/ (BOTTOM CENTER - GOLD / ACCENT TINT) -->
+      <g id="pkg-shared">
+        <rect x="365" y="375" width="390" height="235" rx="3" fill="#fffdfa" stroke="#d4a853" stroke-width="2"/>
+        <rect x="365" y="375" width="390" height="4" fill="#d4a853"/>
+
+        <!-- Header Pill -->
+        <rect x="381" y="389" width="165" height="20" rx="2" fill="#d4a853"/>
+        <text x="463" y="403" text-anchor="middle" class="text-mono" font-size="9" fill="#1c1917" font-weight="700">SHARED · SOURCE OF TRUTH</text>
+        <text x="739" y="403" text-anchor="end" class="text-mono" font-size="10" fill="#92400e">shared/</text>
+
+        <text x="381" y="433" class="text-label" font-size="17">@run-remix/shared</text>
+        <text x="381" y="451" class="text-mono" font-size="11" fill="#78716c">TypeScript 6 · Zod v4 · Route Manifest</text>
+
+        <line x1="381" y1="463" x2="739" y2="463" stroke="#fef3c7" stroke-width="1"/>
+
+        <text x="381" y="485" class="text-mono-bold" font-size="11" fill="#92400e">• Isomorphic Validation &amp; DTOs:</text>
+        <text x="381" y="502" class="text-body" font-size="12">Zod v4 schemas for product BOMs, RFQs, invoices, and auth</text>
+
+        <text x="381" y="525" class="text-mono-bold" font-size="11" fill="#92400e">• Unified Route Manifest:</text>
+        <text x="381" y="542" class="text-body" font-size="12">Single typed contract for client navigation &amp; server endpoints</text>
+
+        <text x="381" y="565" class="text-mono-bold" font-size="11" fill="#92400e">• Pure Zero-Dependency Core:</text>
+        <text x="381" y="582" class="text-body" font-size="12">Zero Node.js or DOM runtime coupling. Runs identically everywhere</text>
+      </g>
+
+      <!-- ================= SOLID ARROWS: PERMITTED IMPORTS ================= -->
+
+      <!-- 1. Client -> Shared (Solid Arrow) -->
+      <g id="flow-client-to-shared">
+        <path d="M 235 255 L 235 465 L 355 465" stroke="#1c1917" stroke-width="2" marker-end="url(#arr-mono-ink)"/>
+        
+        <!-- Label Badge -->
+        <rect x="135" y="345" width="200" height="42" rx="2" fill="#ffffff" stroke="#1c1917" stroke-width="1.2"/>
+        <text x="235" y="363" text-anchor="middle" class="text-mono-bold" font-size="10" fill="#1c1917">imports types &amp; schemas</text>
+        <text x="235" y="377" text-anchor="middle" class="text-mono" font-size="9" fill="#78716c">import { ... } from "@run-remix/shared"</text>
+      </g>
+
+      <!-- 2. Server -> Shared (Solid Arrow) -->
+      <g id="flow-server-to-shared">
+        <path d="M 885 255 L 885 465 L 765 465" stroke="#1c1917" stroke-width="2" marker-end="url(#arr-mono-ink)"/>
+
+        <!-- Label Badge -->
+        <rect x="785" y="345" width="200" height="42" rx="2" fill="#ffffff" stroke="#1c1917" stroke-width="1.2"/>
+        <text x="885" y="363" text-anchor="middle" class="text-mono-bold" font-size="10" fill="#1c1917">imports types &amp; schemas</text>
+        <text x="885" y="377" text-anchor="middle" class="text-mono" font-size="9" fill="#78716c">import { ... } from "@run-remix/shared"</text>
+      </g>
+
+      <!-- ================= DASHED RED LINES: NEVER IMPORTS ================= -->
+
+      <!-- 1. Client <-> Server NEVER Imports (Horizontal) -->
+      <g id="forbidden-client-server">
+        <line x1="430" y1="142" x2="690" y2="142" stroke="#dc2626" stroke-width="2" stroke-dasharray="6 4"/>
+
+        <!-- Red Center Cross Badge -->
+        <rect x="480" y="114" width="160" height="56" rx="3" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+        
+        <circle cx="500" cy="142" r="10" fill="#dc2626"/>
+        <text x="500" y="147" text-anchor="middle" font-family="Inter" font-weight="900" font-size="13" fill="#ffffff">✕</text>
+
+        <text x="570" y="134" text-anchor="middle" class="text-mono-bold" font-size="11" fill="#991b1b">NEVER imports</text>
+        <text x="570" y="150" text-anchor="middle" class="text-mono" font-size="9" fill="#b91c1c">REST API Only</text>
+        <text x="570" y="162" text-anchor="middle" class="text-mono" font-size="8" fill="#78716c">Zero DB/Secrets Leak</text>
+      </g>
+
+      <!-- 2. Shared <-> Client & Server NEVER Imports (Vertical Forbidden) -->
+      <g id="forbidden-shared-upstream">
+        <line x1="560" y1="375" x2="560" y2="210" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+        <!-- Center Cross Badge -->
+        <rect x="460" y="255" width="200" height="50" rx="3" fill="#fef2f2" stroke="#dc2626" stroke-width="1.2"/>
+        <circle cx="480" cy="280" r="9" fill="#dc2626"/>
+        <text x="480" y="284" text-anchor="middle" font-family="Inter" font-weight="900" font-size="11" fill="#ffffff">✕</text>
+
+        <text x="570" y="273" text-anchor="middle" class="text-mono-bold" font-size="10" fill="#991b1b">shared/ NEVER imports</text>
+        <text x="570" y="287" text-anchor="middle" class="text-mono" font-size="9" fill="#b91c1c">client/ or server/</text>
+        <text x="570" y="299" text-anchor="middle" class="text-mono" font-size="8" fill="#78716c">Zero Runtime/DOM Pollution</text>
+      </g>
+
+      <!-- ================= FOOTER & ARCHITECTURAL INVARIANTS ================= -->
+      <g id="footer">
+        <line x1="40" y1="645" x2="1080" y2="645" stroke="#d6d3d1" stroke-width="1"/>
+
+        <!-- 3 Invariant Summary Cards -->
+        <g id="rule-1">
+          <rect x="40" y="660" width="325" height="42" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+          <text x="54" y="677" class="text-mono-bold" font-size="10" fill="#1c1917">RULE 01: BARREL EXPORT ENFORCED</text>
+          <text x="54" y="691" class="text-mono" font-size="9" fill="#78716c">Deep imports (@run-remix/shared/schemas/*) prohibited</text>
+        </g>
+
+        <g id="rule-2">
+          <rect x="397" y="660" width="325" height="42" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+          <text x="411" y="677" class="text-mono-bold" font-size="10" fill="#1c1917">RULE 02: ZERO RUNTIME POLLUTION</text>
+          <text x="411" y="691" class="text-mono" font-size="9" fill="#78716c">Shared compiles cleanly in Node, Browser &amp; Workers</text>
+        </g>
+
+        <g id="rule-3">
+          <rect x="755" y="660" width="325" height="42" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+          <text x="769" y="677" class="text-mono-bold" font-size="10" fill="#1c1917">RULE 03: WIRE BOUNDARY STRICTNESS</text>
+          <text x="769" y="691" class="text-mono" font-size="9" fill="#78716c">Browser can never bundle server secrets or ORM drivers</text>
+        </g>
+      </g>
+    </svg>
+
+    <footer class="diagram-footer">
+      <div class="footer-stat">
+        <span>BOUNDARY ENFORCEMENT: Turborepo + ESLint / Biome</span>
+        <span>IMPORTS: Barrel `@run-remix/shared`</span>
+        <span>CYCLIC DEPS: 0 (Enforced)</span>
+      </div>
+      <div>ADR-002 · MONOREPO BOUNDARIES</div>
+    </footer>
+  </main>
+
+</body>
+</html>

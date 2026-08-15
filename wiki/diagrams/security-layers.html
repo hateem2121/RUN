@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Architecture — Defence-in-Depth — RUN APPAREL CMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #fafaf9;
+      --ink: #1c1917;
+      --muted: #78716c;
+      --accent: #d4a853;
+      --hairline: #d6d3d1;
+      --blue: #0047ab;
+      --success: #00c97b;
+      --card-bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1.5rem;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .diagram-container {
+      width: 100%;
+      max-width: 1320px;
+      background: var(--card-bg);
+      border: 1px solid var(--hairline);
+      border-radius: 4px;
+      padding: 2rem 2.5rem 2.25rem;
+    }
+
+    .diagram-header {
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--hairline);
+      padding-bottom: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .header-titles h1 {
+      font-family: "Inter", sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+    }
+
+    .header-titles p {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+    }
+
+    .header-badge {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--ink);
+      background: #fafaf9;
+      border: 1px solid var(--hairline);
+      padding: 0.35rem 0.75rem;
+      border-radius: 2px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-badge .badge-icon {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .diagram-footer {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--hairline);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .footer-stat {
+      display: flex;
+      gap: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="diagram-container">
+    <header class="diagram-header">
+      <div class="header-titles">
+        <h1>Security Architecture — Defence-in-Depth</h1>
+        <p>Twelve controls across six concentric layers</p>
+      </div>
+      <div class="header-badge">
+        <span class="badge-icon">★</span>
+        ZERO-TRUST CORE · OWASP HARDENED
+      </div>
+    </header>
+
+    <svg viewBox="0 0 1240 760" width="1240" height="760" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="sec-title sec-desc">
+      <title id="sec-title">Security Architecture — Defence-in-Depth</title>
+      <desc id="sec-desc">Concentric security architecture showing twelve controls across six nested defence-in-depth layers from Network perimeter inward to the Secrets core.</desc>
+
+      <!-- Background -->
+      <rect width="1240" height="760" fill="#fafaf9" rx="3"/>
+
+      <!-- ============================================================ -->
+      <!-- CONCENTRIC SECURITY LAYERS (OUTSIDE-IN) -->
+      <!-- ============================================================ -->
+
+      <!-- LAYER 6: NETWORK LAYER (OUTERMOST) -->
+      <g id="layer-6-network" transform="translate(20, 20)">
+        <!-- Outer Shell -->
+        <rect width="1200" height="720" rx="6" fill="#fcfbf9" stroke="#d6d3d1" stroke-width="1.5"/>
+        
+        <!-- Header Bar -->
+        <path d="M0 6 L0 30 L1200 30 L1200 6 A6 6 0 0 0 1194 0 L6 0 A6 6 0 0 0 0 6 Z" fill="#f5f5f4"/>
+        <line x1="0" y1="30" x2="1200" y2="30" stroke="#e7e5e4" stroke-width="1"/>
+        <text x="14" y="20" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" fill="#1c1917" letter-spacing="0.05em">06 · NETWORK LAYER (PERIMETER)</text>
+        <text x="1186" y="20" font-family="'Inter', sans-serif" font-size="11" font-weight="500" fill="#78716c" text-anchor="end">HTTP Headers &amp; Origin Isolation</text>
+
+        <!-- Network Controls (4 Cards along top perimeter) -->
+        <g transform="translate(18, 38)">
+          <!-- Control 1: Helmet.js CSP -->
+          <g transform="translate(0, 0)">
+            <rect width="276" height="42" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+            <text x="12" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917">Helmet.js CSP</text>
+            <text x="12" y="32" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Strict script-src &amp; style-src directives</text>
+          </g>
+
+          <!-- Control 2: HSTS -->
+          <g transform="translate(296, 0)">
+            <rect width="276" height="42" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+            <text x="12" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917">HSTS Preload</text>
+            <text x="12" y="32" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">max-age=31536000 · includeSubDomains</text>
+          </g>
+
+          <!-- Control 3: X-Frame-Options -->
+          <g transform="translate(592, 0)">
+            <rect width="276" height="42" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+            <text x="12" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917">X-Frame-Options: DENY</text>
+            <text x="12" y="32" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Clickjacking &amp; framing prevention</text>
+          </g>
+
+          <!-- Control 4: CORS -->
+          <g transform="translate(888, 0)">
+            <rect width="276" height="42" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+            <text x="12" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917">Strict CORS Allowlist</text>
+            <text x="12" y="32" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Origin &amp; credentials strict validation</text>
+          </g>
+        </g>
+
+        <!-- ============================================================ -->
+        <!-- LAYER 5: TRANSPORT LAYER -->
+        <!-- ============================================================ -->
+        <g id="layer-5-transport" transform="translate(18, 92)">
+          <rect width="1164" height="610" rx="5" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1.5"/>
+          
+          <!-- Header Bar -->
+          <path d="M0 5 L0 30 L1164 30 L1164 5 A5 5 0 0 0 1159 0 L5 0 A5 5 0 0 0 0 5 Z" fill="#eeeeec"/>
+          <line x1="0" y1="30" x2="1164" y2="30" stroke="#e0dedc" stroke-width="1"/>
+          <text x="14" y="20" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" fill="#1c1917" letter-spacing="0.05em">05 · TRANSPORT LAYER (INGRESS &amp; ROUTING)</text>
+          <text x="1150" y="20" font-family="'Inter', sans-serif" font-size="11" font-weight="500" fill="#78716c" text-anchor="end">Encrypted Transit &amp; Edge Termination</text>
+
+          <!-- Transport Controls (2 Wide Cards) -->
+          <g transform="translate(18, 38)">
+            <!-- Control 1: HTTPS/TLS -->
+            <g transform="translate(0, 0)">
+              <rect width="554" height="42" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+              <text x="12" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917">HTTPS / TLS 1.3</text>
+              <text x="12" y="32" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Enforced TLS 1.3 cipher suites, Perfect Forward Secrecy (PFS)</text>
+            </g>
+
+            <!-- Control 2: GCLB Trust Proxy -->
+            <g transform="translate(574, 0)">
+              <rect width="554" height="42" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+              <text x="12" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917">GCLB Trust Proxy</text>
+              <text x="12" y="32" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Google Cloud Load Balancer verified hop inspection &amp; client IP derivation</text>
+            </g>
+          </g>
+
+          <!-- ============================================================ -->
+          <!-- LAYER 4: APPLICATION LAYER -->
+          <!-- ============================================================ -->
+          <g id="layer-4-application" transform="translate(18, 92)">
+            <rect width="1128" height="498" rx="4" fill="#fcfbf9" stroke="#d6d3d1" stroke-width="1.5"/>
+            
+            <!-- Header Bar -->
+            <path d="M0 4 L0 30 L1128 30 L1128 4 A4 4 0 0 0 1124 0 L4 0 A4 4 0 0 0 0 4 Z" fill="#f5f5f4"/>
+            <line x1="0" y1="30" x2="1128" y2="30" stroke="#e7e5e4" stroke-width="1"/>
+            <text x="14" y="20" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" fill="#1c1917" letter-spacing="0.05em">04 · APPLICATION LAYER (BOUNDARY INSPECTION)</text>
+            <text x="1114" y="20" font-family="'Inter', sans-serif" font-size="11" font-weight="500" fill="#78716c" text-anchor="end">Traffic Throttling &amp; Contract Validation</text>
+
+            <!-- Application Controls (3 Cards) -->
+            <g transform="translate(18, 38)">
+              <!-- Control 1: Rate Limiting -->
+              <g transform="translate(0, 0)">
+                <rect width="350" height="42" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+                <text x="12" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917">Rate Limiting (Sliding-Window)</text>
+                <text x="12" y="32" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Redis sliding-window quota by IP and user ID</text>
+              </g>
+
+              <!-- Control 2: CSRF Double-Submit -->
+              <g transform="translate(370, 0)">
+                <rect width="352" height="42" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+                <text x="12" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917">CSRF Double-Submit Cookie</text>
+                <text x="12" y="32" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">HMAC cryptographic token verified against request</text>
+              </g>
+
+              <!-- Control 3: Zod v4 Input Validation -->
+              <g transform="translate(742, 0)">
+                <rect width="350" height="42" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+                <text x="12" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917">Zod v4 Input Validation</text>
+                <text x="12" y="32" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Strict schema parse, strip, and sanitization</text>
+              </g>
+            </g>
+
+            <!-- ============================================================ -->
+            <!-- LAYER 3: SERVICE LAYER -->
+            <!-- ============================================================ -->
+            <g id="layer-3-service" transform="translate(18, 92)">
+              <rect width="1092" height="386" rx="4" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1.5"/>
+              
+              <!-- Header Bar -->
+              <path d="M0 4 L0 30 L1092 30 L1092 4 A4 4 0 0 0 1088 0 L4 0 A4 4 0 0 0 0 4 Z" fill="#eeeeec"/>
+              <line x1="0" y1="30" x2="1092" y2="30" stroke="#e0dedc" stroke-width="1"/>
+              <text x="14" y="20" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" fill="#1c1917" letter-spacing="0.05em">03 · SERVICE LAYER (EXECUTION &amp; RESILIENCE)</text>
+              <text x="1078" y="20" font-family="'Inter', sans-serif" font-size="11" font-weight="500" fill="#78716c" text-anchor="end">Functional Flow &amp; Fault Isolation</text>
+
+              <!-- Service Controls (2 Wide Cards) -->
+              <g transform="translate(18, 38)">
+                <!-- Control 1: neverthrow ResultAsync -->
+                <g transform="translate(0, 0)">
+                  <rect width="518" height="42" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+                  <text x="12" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917">neverthrow ResultAsync</text>
+                  <text x="12" y="32" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Type-safe monadic error handling · No throw/catch uncaught exceptions</text>
+                </g>
+
+                <!-- Control 2: Opossum Circuit Breakers -->
+                <g transform="translate(538, 0)">
+                  <rect width="518" height="42" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+                  <text x="12" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917">Opossum Circuit Breakers</text>
+                  <text x="12" y="32" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Automated failure threshold detection, timeout failover, &amp; fallback execution</text>
+                </g>
+              </g>
+
+              <!-- ============================================================ -->
+              <!-- LAYER 2: DATA LAYER -->
+              <!-- ============================================================ -->
+              <g id="layer-2-data" transform="translate(18, 92)">
+                <rect width="1056" height="274" rx="4" fill="#fcfbf9" stroke="#d6d3d1" stroke-width="1.5"/>
+                
+                <!-- Header Bar -->
+                <path d="M0 4 L0 30 L1056 30 L1056 4 A4 4 0 0 0 1052 0 L4 0 A4 4 0 0 0 0 4 Z" fill="#f5f5f4"/>
+                <line x1="0" y1="30" x2="1056" y2="30" stroke="#e7e5e4" stroke-width="1"/>
+                <text x="14" y="20" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" fill="#1c1917" letter-spacing="0.05em">02 · DATA LAYER (PERSISTENCE INTEGRITY)</text>
+                <text x="1042" y="20" font-family="'Inter', sans-serif" font-size="11" font-weight="500" fill="#78716c" text-anchor="end">Query Parameterization &amp; Soft Deletion</text>
+
+                <!-- Data Controls (3 Cards) -->
+                <g transform="translate(18, 38)">
+                  <!-- Control 1: Drizzle Parameterized Queries -->
+                  <g transform="translate(0, 0)">
+                    <rect width="326" height="42" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+                    <text x="12" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917">Drizzle Parameterized Queries</text>
+                    <text x="12" y="32" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Type-safe AST compilation · Zero SQL injection</text>
+                  </g>
+
+                  <!-- Control 2: Soft Deletes -->
+                  <g transform="translate(346, 0)">
+                    <rect width="328" height="42" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+                    <text x="12" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917">Soft Deletes (deleted_at)</text>
+                    <text x="12" y="32" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Tamper-evident audit trail &amp; safe recovery</text>
+                  </g>
+
+                  <!-- Control 3: DrizzleSessionStore -->
+                  <g transform="translate(694, 0)">
+                    <rect width="326" height="42" rx="3" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+                    <text x="12" y="18" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#1c1917">DrizzleSessionStore</text>
+                    <text x="12" y="32" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Server-side PostgreSQL session store &amp; cleanup</text>
+                  </g>
+                </g>
+
+                <!-- ============================================================ -->
+                <!-- LAYER 1: SECRETS & CREDENTIALS (INNERMOST CORE - GOLD ACCENT) -->
+                <!-- ============================================================ -->
+                <g id="layer-1-secrets" transform="translate(18, 92)">
+                  <!-- Gold Accent Border & Warm Tint Background -->
+                  <rect width="1020" height="162" rx="4" fill="#fffdfa" stroke="#d4a853" stroke-width="2"/>
+                  
+                  <!-- Header Bar with Jet Black Fill -->
+                  <path d="M0 4 L0 32 L1020 32 L1020 4 A4 4 0 0 0 1016 0 L4 0 A4 4 0 0 0 0 4 Z" fill="#1c1917"/>
+                  
+                  <!-- Core Star & Title -->
+                  <text x="14" y="21" font-family="'JetBrains Mono', monospace" font-size="11.5" font-weight="700" fill="#fafaf9" letter-spacing="0.05em">01 · SECRETS &amp; CREDENTIALS</text>
+                  
+                  <!-- Highlight Pill -->
+                  <rect x="250" y="7" width="130" height="18" rx="2" fill="#d4a853"/>
+                  <text x="315" y="19.5" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#1c1917" text-anchor="middle">★ INNERMOST CORE</text>
+                  
+                  <text x="1006" y="21" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#d4a853" text-anchor="end">Zero-Trust Key Management &amp; Session Lifecycles</text>
+
+                  <!-- 3 Core Secret Controls (Gold-tinted Cards) -->
+                  <g transform="translate(18, 44)">
+                    <!-- Core Control 1: GCP Secret Manager -->
+                    <g transform="translate(0, 0)">
+                      <rect width="314" height="96" rx="3" fill="#ffffff" stroke="#d4a853" stroke-width="1.2"/>
+                      <text x="14" y="22" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#1c1917">GCP Secret Manager</text>
+                      <text x="14" y="42" font-family="'Inter', sans-serif" font-size="10.5" font-weight="500" fill="#1c1917">Runtime credential injection</text>
+                      <text x="14" y="58" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Zero raw secrets in code or git history</text>
+                      <text x="14" y="74" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#9e731b">IAM Role Bound · Encrypted KMS</text>
+                    </g>
+
+                    <!-- Core Control 2: HttpOnly + SameSite -->
+                    <g transform="translate(334, 0)">
+                      <rect width="316" height="96" rx="3" fill="#ffffff" stroke="#d4a853" stroke-width="1.2"/>
+                      <text x="14" y="22" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#1c1917">HttpOnly + SameSite Cookies</text>
+                      <text x="14" y="42" font-family="'Inter', sans-serif" font-size="10.5" font-weight="500" fill="#1c1917">XSS-immune session transport</text>
+                      <text x="14" y="58" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Strict secure flag on production domains</text>
+                      <text x="14" y="74" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#9e731b">SameSite=Lax · Path=/</text>
+                    </g>
+
+                    <!-- Core Control 3: Session Rotation -->
+                    <g transform="translate(670, 0)">
+                      <rect width="314" height="96" rx="3" fill="#ffffff" stroke="#d4a853" stroke-width="1.2"/>
+                      <text x="14" y="22" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#1c1917">Session Rotation (15min)</text>
+                      <text x="14" y="42" font-family="'Inter', sans-serif" font-size="10.5" font-weight="500" fill="#1c1917">Automated sliding window expiry</text>
+                      <text x="14" y="58" font-family="'Inter', sans-serif" font-size="10" font-weight="400" fill="#78716c">Prevents session fixation &amp; hijacking</text>
+                      <text x="14" y="74" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#9e731b">Rolling TTL · Active Invalidation</text>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
+
+    <footer class="diagram-footer">
+      <span>RUN APPAREL B2B CMS · Concentric Security Architecture · Certified Against OWASP Top 10</span>
+      <div class="footer-stat">
+        <span>6 Defensive Layers</span>
+        <span>12 Active Controls</span>
+        <span>Zero Trust Core</span>
+      </div>
+    </footer>
+  </main>
+
+</body>
+</html>

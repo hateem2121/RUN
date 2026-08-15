@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technology Stack — RUN APPAREL CMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #fafaf9;
+      color: #1c1917;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .diagram-container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      background: #fafaf9;
+    }
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="diagram-container">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 840" width="100%" height="100%" role="img" aria-labelledby="pyramid-title pyramid-desc">
+      <title id="pyramid-title">Technology Stack — RUN APPAREL CMS</title>
+      <desc id="pyramid-desc">Technology stack pyramid showing six distinct tiers from infrastructure foundation up to design layer, with the Schema layer highlighted as the central integration hub.</desc>
+
+      <!-- Background Canvas -->
+      <rect width="1280" height="840" fill="#fafaf9"/>
+
+      <!-- ================= HEADER SECTION ================= -->
+      <g id="header" transform="translate(60, 42)">
+        <text x="0" y="0" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" letter-spacing="1.5" fill="#78716c">ARCHITECTURE MATRIX // TECHNOLOGY STACK</text>
+        
+        <!-- Standard Badge -->
+        <rect x="990" y="-14" width="170" height="26" fill="#ffffff" stroke="#d6d3d1" stroke-width="1" rx="2"/>
+        <circle cx="1006" cy="-1" r="3.5" fill="#d4a853"/>
+        <text x="1018" y="3" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#1c1917" letter-spacing="0.5">HEALTH: 100 / 100</text>
+
+        <!-- Main Title -->
+        <text x="0" y="34" font-family="'Inter', sans-serif" font-size="24" font-weight="700" fill="#1c1917" letter-spacing="-0.5">Technology Stack</text>
+        
+        <!-- Subtitle -->
+        <text x="0" y="58" font-family="'Inter', sans-serif" font-size="13.5" font-weight="400" fill="#78716c">30+ technologies · Zero technical debt</text>
+
+        <!-- Hairline Divider -->
+        <line x1="0" y1="76" x2="1160" y2="76" stroke="#d6d3d1" stroke-width="1"/>
+      </g>
+
+      <!-- ================= ARCHITECTURAL GUIDE LINES ================= -->
+      <!-- Left and Right guide slope lines defining the pyramid form -->
+      <line x1="320" y1="145" x2="60" y2="690" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="960" y1="145" x2="1220" y2="690" stroke="#d6d3d1" stroke-width="1" stroke-dasharray="4 4"/>
+
+      <!-- ================= TIER 6: DESIGN LAYER (TOP, NARROWEST) ================= -->
+      <g id="tier-6" transform="translate(320, 145)">
+        <rect x="0" y="0" width="640" height="74" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="16" y="24" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="#1c1917" letter-spacing="0.04em">06 · DESIGN &amp; INTERACTION LAYER</text>
+        <text x="624" y="24" font-family="'JetBrains Mono', monospace" font-size="9" fill="#78716c" text-anchor="end">CLIENT STYLING &amp; MOTION</text>
+        <line x1="16" y1="34" x2="624" y2="34" stroke="#e7e5e4" stroke-width="0.75"/>
+        
+        <!-- Tech Pills -->
+        <g transform="translate(16, 43)">
+          <rect x="0" y="0" width="135" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="67.5" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="600" fill="#1c1917" text-anchor="middle">Tailwind v4</text>
+
+          <rect x="145" y="0" width="115" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="202.5" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#1c1917" text-anchor="middle">GSAP 3</text>
+
+          <rect x="270" y="0" width="180" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="360" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#1c1917" text-anchor="middle">locomotive-scroll</text>
+
+          <rect x="460" y="0" width="148" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="534" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#1c1917" text-anchor="middle">TipTap Editor</text>
+        </g>
+      </g>
+
+      <!-- ================= TIER 5: PRESENTATION LAYER ================= -->
+      <g id="tier-5" transform="translate(268, 235)">
+        <rect x="0" y="0" width="744" height="74" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="16" y="24" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="#1c1917" letter-spacing="0.04em">05 · PRESENTATION LAYER</text>
+        <text x="728" y="24" font-family="'JetBrains Mono', monospace" font-size="9" fill="#78716c" text-anchor="end">SPA REACT ECOSYSTEM</text>
+        <line x1="16" y1="34" x2="728" y2="34" stroke="#e7e5e4" stroke-width="0.75"/>
+        
+        <!-- Tech Pills -->
+        <g transform="translate(16, 43)">
+          <rect x="0" y="0" width="185" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="92.5" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="600" fill="#1c1917" text-anchor="middle">React 19.2.7</text>
+
+          <rect x="195" y="0" width="245" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="317.5" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#1c1917" text-anchor="middle">React Router v8 (v7.13)</text>
+
+          <rect x="450" y="0" width="262" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="581" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#1c1917" text-anchor="middle">Vite 8 · Rolldown Bundler</text>
+        </g>
+      </g>
+
+      <!-- ================= TIER 4: SCHEMA LAYER (ACCENT FOCAL HUB) ================= -->
+      <g id="tier-4" transform="translate(216, 325)">
+        <!-- Highlighted Card Body with Gold Border -->
+        <rect x="0" y="0" width="848" height="92" rx="2" fill="#fffdfa" stroke="#d4a853" stroke-width="2"/>
+        
+        <!-- Badge & Header -->
+        <rect x="16" y="12" width="190" height="19" rx="2" fill="#d4a853"/>
+        <text x="111" y="25" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">★ CENTRAL INTEGRATION POINT</text>
+        <text x="216" y="26" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="#1c1917">04 · SCHEMA &amp; CONTRACTS LAYER</text>
+        <text x="832" y="25" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="600" fill="#d4a853" text-anchor="end">SINGLE SOURCE OF TRUTH</text>
+        <line x1="16" y1="40" x2="832" y2="40" stroke="#d4a853" stroke-width="0.75"/>
+
+        <!-- Tech Pills (Gold trimmed) -->
+        <g transform="translate(16, 49)">
+          <!-- @run-remix/shared -->
+          <rect x="0" y="0" width="220" height="26" rx="2" fill="#ffffff" stroke="#d4a853" stroke-width="1.25"/>
+          <text x="110" y="17.5" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="700" fill="#1c1917" text-anchor="middle">@run-remix/shared</text>
+
+          <!-- Zod v4 -->
+          <rect x="232" y="0" width="140" height="26" rx="2" fill="#ffffff" stroke="#d4a853" stroke-width="1"/>
+          <text x="302" y="17.5" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#1c1917" text-anchor="middle">Zod v4</text>
+
+          <!-- drizzle-zod -->
+          <rect x="384" y="0" width="180" height="26" rx="2" fill="#ffffff" stroke="#d4a853" stroke-width="1"/>
+          <text x="474" y="17.5" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#1c1917" text-anchor="middle">drizzle-zod</text>
+
+          <!-- Route Manifest -->
+          <rect x="576" y="0" width="240" height="26" rx="2" fill="#ffffff" stroke="#d4a853" stroke-width="1"/>
+          <text x="696" y="17.5" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#1c1917" text-anchor="middle">Typed Route Manifest</text>
+        </g>
+      </g>
+
+      <!-- Side Callout Annotation for Schema Layer (Left) -->
+      <g transform="translate(60, 345)">
+        <rect x="0" y="0" width="136" height="52" rx="2" fill="#ffffff" stroke="#d4a853" stroke-width="1"/>
+        <text x="12" y="18" font-family="'Inter', sans-serif" font-size="9.5" font-weight="700" fill="#1c1917">Type Safety Spine</text>
+        <text x="12" y="32" font-family="'JetBrains Mono', monospace" font-size="8" fill="#78716c">Shared schemas</text>
+        <text x="12" y="43" font-family="'JetBrains Mono', monospace" font-size="8" fill="#78716c">enforce 0 type drift</text>
+        <line x1="136" y1="26" x2="216" y2="26" stroke="#d4a853" stroke-width="1.25"/>
+        <circle cx="216" cy="26" r="3" fill="#d4a853"/>
+      </g>
+
+      <!-- Side Callout Annotation for Schema Layer (Right) -->
+      <g transform="translate(1084, 345)">
+        <line x1="-20" y1="26" x2="0" y2="26" stroke="#d4a853" stroke-width="1.25"/>
+        <circle cx="-20" cy="26" r="3" fill="#d4a853"/>
+        <rect x="0" y="0" width="136" height="52" rx="2" fill="#ffffff" stroke="#d4a853" stroke-width="1"/>
+        <text x="12" y="18" font-family="'Inter', sans-serif" font-size="9.5" font-weight="700" fill="#1c1917">Contract Bridge</text>
+        <text x="12" y="32" font-family="'JetBrains Mono', monospace" font-size="8" fill="#78716c">Client &amp; Server</text>
+        <text x="12" y="43" font-family="'JetBrains Mono', monospace" font-size="8" fill="#78716c">100% synchronized</text>
+      </g>
+
+      <!-- ================= TIER 3: SERVICE LAYER ================= -->
+      <g id="tier-3" transform="translate(164, 433)">
+        <rect x="0" y="0" width="952" height="74" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="16" y="24" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="#1c1917" letter-spacing="0.04em">03 · APPLICATION SERVICE LAYER</text>
+        <text x="936" y="24" font-family="'JetBrains Mono', monospace" font-size="9" fill="#78716c" text-anchor="end">BACKEND BUSINESS LOGIC · PORT 5002</text>
+        <line x1="16" y1="34" x2="936" y2="34" stroke="#e7e5e4" stroke-width="0.75"/>
+        
+        <!-- Tech Pills -->
+        <g transform="translate(16, 43)">
+          <rect x="0" y="0" width="140" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="70" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="600" fill="#1c1917" text-anchor="middle">Express 5.0</text>
+
+          <rect x="150" y="0" width="195" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="247.5" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#1c1917" text-anchor="middle">neverthrow (Result&lt;T,E&gt;)</text>
+
+          <rect x="355" y="0" width="215" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="462.5" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#1c1917" text-anchor="middle">Opossum (Circuit Breaker)</text>
+
+          <rect x="580" y="0" width="135" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="647.5" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#1c1917" text-anchor="middle">Pino Logger</text>
+
+          <rect x="725" y="0" width="195" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="822.5" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#1c1917" text-anchor="middle">OpenTelemetry (OTel)</text>
+        </g>
+      </g>
+
+      <!-- ================= TIER 2: DATA LAYER ================= -->
+      <g id="tier-2" transform="translate(112, 523)">
+        <rect x="0" y="0" width="1056" height="74" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+        <text x="16" y="24" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="#1c1917" letter-spacing="0.04em">02 · DATA &amp; PERSISTENCE LAYER</text>
+        <text x="1040" y="24" font-family="'JetBrains Mono', monospace" font-size="9" fill="#78716c" text-anchor="end">SERVERLESS STORAGE &amp; IN-MEMORY CACHE</text>
+        <line x1="16" y1="34" x2="1040" y2="34" stroke="#e7e5e4" stroke-width="0.75"/>
+        
+        <!-- Tech Pills -->
+        <g transform="translate(16, 43)">
+          <rect x="0" y="0" width="240" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="120" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="600" fill="#1c1917" text-anchor="middle">Neon Serverless Postgres</text>
+
+          <rect x="250" y="0" width="210" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="355" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#1c1917" text-anchor="middle">Drizzle ORM (Type-Safe)</text>
+
+          <rect x="470" y="0" width="240" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="590" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#1c1917" text-anchor="middle">Redis / Upstash (ioredis)</text>
+
+          <rect x="720" y="0" width="304" height="22" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="872" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="500" fill="#1c1917" text-anchor="middle">Google Cloud Storage (GCS)</text>
+        </g>
+      </g>
+
+      <!-- ================= TIER 1: INFRASTRUCTURE LAYER (FOUNDATION) ================= -->
+      <g id="tier-1" transform="translate(60, 613)">
+        <rect x="0" y="0" width="1160" height="74" rx="2" fill="#fafaf9" stroke="#d6d3d1" stroke-width="1.25"/>
+        <text x="16" y="24" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="#1c1917" letter-spacing="0.04em">01 · INFRASTRUCTURE &amp; RUNTIME FOUNDATION</text>
+        <text x="1144" y="24" font-family="'JetBrains Mono', monospace" font-size="9" fill="#78716c" text-anchor="end">ENTERPRISE CLOUD RUNTIME</text>
+        <line x1="16" y1="34" x2="1144" y2="34" stroke="#d6d3d1" stroke-width="0.75"/>
+        
+        <!-- Tech Pills -->
+        <g transform="translate(16, 43)">
+          <rect x="0" y="0" width="175" height="22" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="87.5" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="600" fill="#1c1917" text-anchor="middle">Node.js 24 LTS</text>
+
+          <rect x="185" y="0" width="235" height="22" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="302.5" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="600" fill="#1c1917" text-anchor="middle">Google Cloud Platform (GCP)</text>
+
+          <rect x="430" y="0" width="225" height="22" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="542.5" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="600" fill="#1c1917" text-anchor="middle">Cloud Run (Serverless)</text>
+
+          <rect x="665" y="0" width="250" height="22" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="790" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="600" fill="#1c1917" text-anchor="middle">Cloud Build CI/CD Matrix</text>
+
+          <rect x="925" y="0" width="203" height="22" rx="2" fill="#ffffff" stroke="#d6d3d1" stroke-width="0.75"/>
+          <text x="1026.5" y="15" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="600" fill="#1c1917" text-anchor="middle">Docker Containerization</text>
+        </g>
+      </g>
+
+      <!-- ================= FOOTER / SYSTEM METRIC SECTION ================= -->
+      <g id="footer" transform="translate(60, 730)">
+        <line x1="0" y1="0" x2="1160" y2="0" stroke="#d6d3d1" stroke-width="1"/>
+        
+        <g transform="translate(0, 22)">
+          <text x="0" y="10" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#d4a853">INTEGRATION CORE:</text>
+          <text x="140" y="10" font-family="'Inter', sans-serif" font-size="10.5" fill="#78716c">@run-remix/shared eliminates runtime mismatches across 100% of routes.</text>
+          <text x="1160" y="10" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" fill="#78716c">BIOME STRICT · 0 TS ERRORS</text>
+        </g>
+      </g>
+    </svg>
+  </div>
+</body>
+</html>
