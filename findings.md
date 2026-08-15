@@ -306,13 +306,18 @@ Setting `advanced-security: false` instructs the action to output directly to th
 
 ---
 
-### 8.3 Recommended Remediation Blueprint
-1. **Pin all GitHub Action references to immutable commit SHAs** across all workflows in `.github/workflows/` (including `zizmorcore/zizmor-action` itself).
-2. **Add `persist-credentials: false`** to all `actions/checkout` steps.
-3. **Add `cooldown: default-days: 7`** to `.github/dependabot.yml`.
-4. **Either**:
-   - Resolve all audit items to achieve a 100% clean Zizmor audit pass (exit code 0), OR
-   - Configure a `.github/zizmor.yml` configuration file or `--min-severity` threshold if specific legacy warnings are accepted, OR
-   - If SARIF upload to GitHub Code Scanning is desired, enable `advanced-security: true` or upload results via `github/codeql-action/upload-sarif`.
+### 8.3 Online Audit Analysis (`known-vulnerable-actions`)
+In GitHub Actions CI runners, `zizmor-action` operates in **online mode** by providing the runner's `GITHUB_TOKEN`. In this mode, zizmor queries the GitHub Advisory Database for known vulnerable actions:
+- **`known-vulnerable-actions`**: Flagged `tj-actions/branch-names@dde14ac574a8b9b1cedc59a1cf312788af43d8d8 # v8.2.1` in `ci.yml` due to **GHSA-gq52-6phf-x2r6** / CVE-2023-49291 (code injection vulnerability).
+- **Remediation**: Upgraded `tj-actions/branch-names` to immutable commit SHA `5250492686b253f06fa55861556d1027b067aeb5 # v9.0.2` and aligned version tag annotations (`treosh/lighthouse-ci-action@3e7e23fb74242897f95c0ba9cabad3d0227b9b18 # 12.6.2`, `gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9`).
+
+---
+
+### 8.4 Verification Matrix
+- `GH_TOKEN=$(gh auth token) uvx zizmor .`: **0 findings, Exit Code 0 (100% clean online & offline)**.
+- `npx markdownlint-cli2 ...`: **0 issues in 0 files across 193 markdown files**.
+- `npm run check:knip`: **Exit code 0 (clean)**.
+- `npm run check`: **0 type errors, 0 lint errors across 973 files**.
+- `npm run verify:tech-integrity`: **8/8 checks passed**.
 
 

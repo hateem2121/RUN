@@ -29,7 +29,7 @@ jobs:
           persist-credentials: false
       - name: Get branch name
         id: branch_name
-        uses: tj-actions/branch-names@dde14ac574a8b9b1cedc59a1cf312788af43d8d8 # v8.2.1
+        uses: tj-actions/branch-names@5250492686b253f06fa55861556d1027b067aeb5 # v9.0.2
 
   changes:
     name: Detect Changes
@@ -262,7 +262,7 @@ jobs:
         env:
           DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
       - name: Run Lighthouse CI
-        uses: treosh/lighthouse-ci-action@3e7e23fb74242897f95c0ba9cabad3d0227b9b18
+        uses: treosh/lighthouse-ci-action@3e7e23fb74242897f95c0ba9cabad3d0227b9b18 # 12.6.2
         with:
           configPath: './.lighthouserc.json'
           uploadArtifacts: true
