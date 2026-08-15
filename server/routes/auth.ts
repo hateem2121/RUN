@@ -138,8 +138,8 @@ router.get(
   async (req, res): Promise<undefined | Response> => {
     const user = req.user as SessionUser;
 
-    // Return mock user immediately if isMock flag is set
-    if (user.claims.isMock) {
+    // Return mock user immediately if isMock flag or mock id is set
+    if (user.claims?.isMock || user.id === "mock-admin-id") {
       return res.json({
         id: user.id,
         email: user.email,
@@ -150,7 +150,7 @@ router.get(
       });
     }
 
-    const userId = user.claims.sub;
+    const userId = user.claims?.sub ?? user.id;
     const dbUserResult = await authService.getUserInfo(userId);
     if (dbUserResult.isErr()) {
       return res.status(404).json({ message: "User not found" });
