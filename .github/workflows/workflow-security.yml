@@ -20,6 +20,7 @@ jobs:
   zizmor:
     name: Zizmor Static Analysis
     runs-on: ubuntu-latest
+    # Permissions needed for security scanning and uploading results to GitHub Advanced Security
     permissions:
       security-events: write
       contents: read
@@ -30,6 +31,6 @@ jobs:
           persist-credentials: false
 
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@v0.6.1
+        uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2
         with:
           advanced-security: false

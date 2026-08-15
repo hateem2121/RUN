@@ -5,16 +5,23 @@ on:
     - cron: '0 0 * * *' # Run daily at midnight UTC
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
-  issues: write
-  pull-requests: write
+  contents: read
 
 jobs:
   stale:
     name: Manage Stale Issues and PRs
     runs-on: ubuntu-latest
+    # Permissions needed to label and close stale issues and pull requests
+    permissions:
+      issues: write
+      pull-requests: write
     steps:
-      - uses: actions/stale@v9
+      - uses: actions/stale@5bef64f19d7facfb25b37b414482c7164d639639 # v9.1.0
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           days-before-issue-stale: 60

@@ -248,4 +248,71 @@
 - **Remediation Blueprint:**
   - Correct the commit SHA in `.github/workflows/scorecard.yml` to the official `ossf/scorecard-action` v2.4.1 commit SHA: `f49aabe0b5af0936a0987cfb85d86b75731b0186` (or `v2.4.1`).
 
+---
+
+## 8. Workflow Security Lint / Zizmor Static Analysis CI Failure Investigation
+
+**Incident Date:** 2026-08-15  
+**Workflow:** `.github/workflows/workflow-security.yml`  
+**Failing Step:** `Run zizmor` (`zizmorcore/zizmor-action@v0.6.1`)  
+**Duration:** ~10 seconds  
+**Exit Code:** `14`
+
+### 8.1 Executive Summary
+When `.github/workflows/workflow-security.yml` executes on `push` to `main`, `zizmor` conducts static security analysis of all GitHub Actions workflows and the Dependabot configuration. 
+
+Because `workflow-security.yml` sets `advanced-security: false`, `zizmor-action` operates in **standalone console / blocking mode**, where any policy violations cause the CLI to terminate immediately with a non-zero exit code (`14`), failing the GitHub Actions job after ~10 seconds.
+
+### 8.2 Detailed Failure Mechanics & Findings Breakdown
+Locally reproduced via `uvx zizmor .`:
+- **Total Findings Detected:** 36 findings across 14 workflow / configuration files:
+  - **14 High-Severity Violations (`unpinned-uses`)**
+  - **19 Medium/Low-Severity Warnings (`artipacked`)**
+  - **3 Medium-Severity Warnings (`dependabot-cooldown`)**
+
+#### A. Category 1: Unpinned Action References (`unpinned-uses` — 14 High Severity)
+Zizmor enforces strict immutability by flagging actions referenced by mutable tags (e.g., `@v4`, `@v9`, `@v7`, `@v2`, `@v3`, `@v0.6.1`) rather than immutable 40-character commit SHAs:
+1. `.github/workflows/workflow-security.yml:33`: `uses: zizmorcore/zizmor-action@v0.6.1`
+2. `.github/workflows/codeql.yml:60`: `uses: actions/checkout@v7` (unpinned and non-existent version)
+3. `.github/workflows/codeql.yml:70`: `uses: github/codeql-action/init@v4`
+4. `.github/workflows/codeql.yml:99`: `uses: github/codeql-action/analyze@v4`
+5. `.github/workflows/dependency-review.yml:16`: `uses: actions/checkout@v4`
+6. `.github/workflows/dependency-review.yml:19`: `uses: actions/dependency-review-action@v4`
+7. `.github/workflows/release-drafter.yml:23`: `uses: release-drafter/release-drafter@v7`
+8. `.github/workflows/scorecard.yml:50`: `uses: github/codeql-action/upload-sarif@v3`
+9. `.github/workflows/security.yml:21`: `uses: step-security/harden-runner@v2`
+10. `.github/workflows/security.yml:60`: `uses: step-security/harden-runner@v2`
+11. `.github/workflows/security.yml:67`: `uses: actions/dependency-review-action@v4`
+12. `.github/workflows/security.yml:80`: `uses: step-security/harden-runner@v2`
+13. `.github/workflows/security.yml:100`: `uses: step-security/harden-runner@v2`
+14. `.github/workflows/stale.yml:17`: `uses: actions/stale@v9`
+
+#### B. Category 2: Credential Persistence (`artipacked` — 19 Medium/Low Severity)
+`actions/checkout` defaults to saving the repository token in `.git/config` if `persist-credentials: false` is omitted. Zizmor flags this as a security risk where subsequent third-party actions or scripts could exfiltrate tokens:
+- Omitted across: `ci.yml` (9 steps), `code-quality.yml` (1 step), `codeql.yml` (1 step), `dependency-review.yml` (1 step), `deploy.yml` (1 step), `docs.yml` (1 step), `e2e.yml` (1 step), `security.yml` (4 steps).
+
+#### C. Category 3: Dependabot Cooldown (`dependabot-cooldown` — 3 Medium Severity)
+`.github/dependabot.yml` lacks the supply-chain security `cooldown: default-days: 7` setting for package ecosystems (`npm`, `github-actions`, `docker`), which prevents immediate pulling of newly released packages before community vetting.
+
+#### D. Mode Configuration Impact (`advanced-security: false`)
+In `.github/workflows/workflow-security.yml`:
+```yaml
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@v0.6.1
+        with:
+          advanced-security: false
+```
+Setting `advanced-security: false` instructs the action to output directly to the runner console and emit exit code 14 on findings (acting as a hard blocking CI check) rather than uploading SARIF results into GitHub's Code Scanning / Advanced Security tab.
+
+---
+
+### 8.3 Recommended Remediation Blueprint
+1. **Pin all GitHub Action references to immutable commit SHAs** across all workflows in `.github/workflows/` (including `zizmorcore/zizmor-action` itself).
+2. **Add `persist-credentials: false`** to all `actions/checkout` steps.
+3. **Add `cooldown: default-days: 7`** to `.github/dependabot.yml`.
+4. **Either**:
+   - Resolve all audit items to achieve a 100% clean Zizmor audit pass (exit code 0), OR
+   - Configure a `.github/zizmor.yml` configuration file or `--min-severity` threshold if specific legacy warnings are accepted, OR
+   - If SARIF upload to GitHub Code Scanning is desired, enable `advanced-security: true` or upload results via `github/codeql-action/upload-sarif`.
+
 

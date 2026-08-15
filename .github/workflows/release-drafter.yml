@@ -12,15 +12,18 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
-  pull-requests: read
+  contents: read
 
 jobs:
   update_release_draft:
     name: Draft Release Notes
     runs-on: ubuntu-latest
+    # Permissions needed to create release drafts and inspect pull requests
+    permissions:
+      contents: write
+      pull-requests: read
     steps:
-      - uses: release-drafter/release-drafter@v7
+      - uses: release-drafter/release-drafter@34d80673e067bdc0c24568d3af899c216adcfaa9 # v7.7.0
         with:
           config-name: release-drafter.yml
         env:
