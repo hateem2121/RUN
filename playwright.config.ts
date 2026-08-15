@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: "./e2e",
   timeout: 60 * 1000, // 60s for visual regression tests
   expect: {
-    timeout: 15000,
+    timeout: 10000,
     toHaveScreenshot: {
       maxDiffPixelRatio: 0.05,
       animations: "disabled",
@@ -13,8 +13,8 @@ export default defineConfig({
   },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: undefined,
+  retries: process.env.CI ? 1 : 0,
+  workers: process.env.CI ? 2 : undefined,
   reporter: [
     ["html", { open: "never" }],
     ["json", { outputFile: "test-results/results.json" }],
@@ -22,7 +22,7 @@ export default defineConfig({
   snapshotDir: "./e2e/__snapshots__",
   snapshotPathTemplate: "{snapshotDir}/{testFilePath}/{arg}{ext}",
   use: {
-    actionTimeout: 15000,
+    actionTimeout: 8000,
     baseURL: process.env.E2E_BASE_URL || "http://localhost:5002",
     trace: "retain-on-failure",
     video: "retain-on-failure",
@@ -62,7 +62,7 @@ export default defineConfig({
       SKIP_SECRET_MANAGER: "true",
       PORT: "5002",
       DOTENV_CONFIG_PATH: "../.env",
-      SKIP_VITE_DEV_SERVER: "true",
+      SKIP_VITE_DEV_SERVER: "false",
       PLAYWRIGHT_TEST: "true",
     },
   },

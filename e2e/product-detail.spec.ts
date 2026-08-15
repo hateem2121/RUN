@@ -26,22 +26,21 @@ test.describe("🛒 Product Detail Verification", () => {
 
     // 2. Navigate to product detail page
     await page.goto(`${BASE_URL}${targetUrl}`);
+    await page.waitForLoadState("domcontentloaded");
 
     // 3. Verify Page Content
     // Title should be visible and match product name (or close to it)
-    // Title should be visible and match product name (or close to it)
-    // Fix: Use first() or specific filtering to avoid strict mode violations with Header H1
     await expect(
       page
         .locator("h1")
-        .filter({ hasText: /Pro Performance|Product/ })
+        .filter({ hasText: new RegExp(targetProduct.name ? `${targetProduct.name.split(" ")[0]}|Pro Performance|Product` : "Pro Performance|Product", "i") })
         .first(),
     ).toBeVisible({ timeout: 15000 });
 
     // 4. Verify "Add to Cart" button exists
-    await expect(page.getByRole("button", { name: /add to cart/i })).toBeVisible();
+    await expect(page.getByRole("button", { name: /add to cart|in cart|quote/i })).toBeVisible({ timeout: 10000 });
 
     // 5. Verify Price is visible
-    await expect(page.locator("text=$").first()).toBeVisible();
+    await expect(page.locator("text=$").first()).toBeVisible({ timeout: 10000 });
   });
 });

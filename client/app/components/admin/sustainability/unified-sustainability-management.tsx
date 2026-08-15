@@ -381,7 +381,10 @@ export function UnifiedSustainabilityManagement() {
     if (localForm.title !== undefined) cleanedData.title = localForm.title;
     if (localForm.content !== undefined) cleanedData.content = localForm.content;
     if (localForm.isActive !== undefined) cleanedData.isActive = localForm.isActive;
-    if (localForm.headline !== undefined) cleanedData.headline = localForm.headline;
+    if (localForm.headline !== undefined) {
+      cleanedData.headline = localForm.headline;
+      if (!cleanedData.title && localForm.headline) cleanedData.title = localForm.headline;
+    }
     if (localForm.subheadline !== undefined) cleanedData.subheadline = localForm.subheadline;
     if (localForm.backgroundImageId !== undefined)
       cleanedData.backgroundImageId = localForm.backgroundImageId;

@@ -54,6 +54,14 @@ jobs:
           CLOUD_TASKS_AUDIENCE: "placeholder"
           CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
 
+      - name: "🌱 Seed Database Fixtures"
+        run: npm run db:seed
+        env:
+          DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url }}
+          SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"
+          ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only"
+          INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
+
       - name: "🚀 Start Production Server for E2E"
         env:
           PORT: 5002
