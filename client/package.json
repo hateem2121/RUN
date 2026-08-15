@@ -84,7 +84,7 @@
     "@types/leaflet": "^1.9.19",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.0",
+    "@vitejs/plugin-react": "^6.0.5",
     "html-validate": "^10.13.1",
     "react-scan": "^0.5.3",
     "rollup-plugin-visualizer": "^7.0.1",
