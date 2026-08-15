@@ -135,6 +135,10 @@ export const envSchema = z.object({
     .string()
     .optional()
     .describe("Set to 'true' in Vitest to bypass certain production checks"),
+  E2E: z
+    .string()
+    .optional()
+    .describe("Set to 'true' in Playwright E2E to allow test server fixtures"),
   FORCE_LISTEN: z
     .string()
     .optional()
@@ -167,7 +171,9 @@ export function validateEnv(input: unknown = process.env): Env {
   const data = result.data;
 
   // Additional Production Hardening
-  if (data.NODE_ENV === "production" && data.VITEST !== "true") {
+  const isTestRunner = data.VITEST === "true" || data.E2E === "true";
+
+  if (data.NODE_ENV === "production" && !isTestRunner) {
     // SEC-F02: Mock Admin Sanity Check
     if (data.ENABLE_MOCK_ADMIN === "true") {
       console.error("❌ FATAL: ENABLE_MOCK_ADMIN is 'true' in PRODUCTION. Refusing to boot.");
