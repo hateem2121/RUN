@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:24-alpine AS builder
+FROM node:26-alpine AS builder
 
 WORKDIR /app
 
@@ -27,7 +27,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Production
-FROM node:24-alpine
+FROM node:26-alpine
 
 # P1 FIX: Tini for zombie process reaping
 ENV NODE_ENV=production
