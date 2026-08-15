@@ -430,11 +430,11 @@ export function productionErrorHandler(
 
 // Unhandled promise rejection handler
 export function setupGlobalErrorHandlers() {
-  const isTestOrE2E =
-    process.env.NODE_ENV === "test" || process.env.VITEST === "true" || process.env.E2E === "true";
   const shouldForceExit =
-    !isTestOrE2E &&
-    (config.app.environment === "production" || process.env.FORCE_EXIT_ON_CRASH === "true");
+    process.env.FORCE_EXIT_ON_CRASH === "true" ||
+    (config.app.environment === "production" &&
+      process.env.E2E !== "true" &&
+      process.env.VITEST !== "true");
 
   process.on("unhandledRejection", (reason) => {
     logger.error(
