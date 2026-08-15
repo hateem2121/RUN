@@ -1,6 +1,5 @@
 import { type Response, Router } from "express";
 import passport from "passport";
-import { env } from "../lib/env.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { authRateLimiter } from "../middleware/rateLimiter.js";
 import { authService } from "../services/auth-service.js";
@@ -20,69 +19,75 @@ router.get(
 // Mock Login Route (Development & Test Only)
 // SECURITY: Strict check - mock login ONLY enabled in development/test environments
 // ENABLE_MOCK_ADMIN is IGNORED in production regardless of value
-const isDevelopmentOrTest = 
-  process.env.NODE_ENV === "development" || 
-  process.env.NODE_ENV === "test" ||
-  process.env.VITEST === "true";
+router.get("/mock-login", async (req, res) => {
+  const isProduction = process.env.NODE_ENV === "production";
+  const isAllowedEnv =
+    process.env.NODE_ENV === "development" ||
+    process.env.NODE_ENV === "test" ||
+    process.env.VITEST === "true";
+  const isMockEnabled =
+    process.env.ENABLE_MOCK_ADMIN === "true" ||
+    process.env.NODE_ENV === "test" ||
+    process.env.VITEST === "true";
 
-const isMockEnabled = process.env.ENABLE_MOCK_ADMIN === "true";
+  if (isProduction || !isAllowedEnv || !isMockEnabled) {
+    res.status(404).json({ error: "Not found" });
+    return;
+  }
 
-if (isDevelopmentOrTest && isMockEnabled) {
-  router.get("/mock-login", async (req, res) => {
-    const mockUser: SessionUser = {
-      id: "mock-admin-id",
+  const mockUser: SessionUser = {
+    id: "mock-admin-id",
+    email: "mock-admin@example.com",
+    emailIndex: "mock-admin-email-index",
+    firstName: "Mock",
+    lastName: "Admin",
+    profileImageUrl: "https://via.placeholder.com/150",
+    isAdmin: true,
+    failedLoginAttempts: 0,
+    lockoutUntil: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    claims: {
       email: "mock-admin@example.com",
-      emailIndex: "mock-admin-email-index",
-      firstName: "Mock",
-      lastName: "Admin",
-      profileImageUrl: "https://via.placeholder.com/150",
-      isAdmin: true,
-      failedLoginAttempts: 0,
-      lockoutUntil: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      claims: {
-        email: "mock-admin@example.com",
-        sub: "mock-admin-id",
-        isMock: true,
-      },
-    };
+      sub: "mock-admin-id",
+      isMock: true,
+    },
+  };
 
-    await authService.seedMockUser(mockUser);
+  await authService.seedMockUser(mockUser);
 
-    req.session.regenerate((err) => {
-      if (err) {
-        logger.error("Session regeneration failed", undefined, err as Error);
-        res.status(500).json({ error: "Session regeneration failed" });
+  req.session.regenerate((err) => {
+    if (err) {
+      logger.error("Session regeneration failed", undefined, err as Error);
+      res.status(500).json({ error: "Session regeneration failed" });
+      return;
+    }
+
+    req.login(mockUser, (loginErr) => {
+      if (loginErr) {
+        logger.error("Mock login failed", undefined, loginErr as Error);
+        res.status(500).json({ error: "Mock login failed" });
         return;
       }
 
-      req.login(mockUser, (loginErr) => {
-        if (loginErr) {
-          logger.error("Mock login failed", undefined, loginErr as Error);
-          res.status(500).json({ error: "Mock login failed" });
+      // Ensure session is saved before redirecting/responding
+      req.session.save((saveErr) => {
+        if (saveErr) {
+          logger.error("Session save failed", undefined, saveErr as Error);
+          res.status(500).json({ error: "Session save failed" });
           return;
         }
 
-        // Ensure session is saved before redirecting/responding
-        req.session.save((saveErr) => {
-          if (saveErr) {
-            logger.error("Session save failed", undefined, saveErr as Error);
-            res.status(500).json({ error: "Session save failed" });
-            return;
-          }
-
-          const returnTo = (req.query.returnTo as string) || "/admin";
-          if (req.headers.accept?.includes("application/json")) {
-            res.json({ success: true, user: mockUser });
-            return;
-          }
-          res.redirect(returnTo);
-        });
+        const returnTo = (req.query.returnTo as string) || "/admin";
+        if (req.headers.accept?.includes("application/json")) {
+          res.json({ success: true, user: mockUser });
+          return;
+        }
+        res.redirect(returnTo);
       });
     });
   });
-}
+});
 
 // OAuth callback - completes authentication
 router.get(

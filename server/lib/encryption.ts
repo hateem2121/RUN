@@ -1,4 +1,4 @@
-import { createCipheriv, createDecipheriv, createHash, createHmac, pbkdf2Sync, randomBytes } from "node:crypto";
+import { createCipheriv, createDecipheriv, createHmac, pbkdf2Sync, randomBytes } from "node:crypto";
 import { logger } from "../lib/monitoring/logger.js";
 
 // Algorithm: AES-256-GCM (Authenticated Encryption)
@@ -17,7 +17,7 @@ function getDerivedKey(): Buffer {
   if (!rawKey) {
     throw new Error("ENCRYPTION_KEY is not defined");
   }
-  
+
   // Use PBKDF2 with 100,000 iterations for stronger key derivation
   // The ENCRYPTION_KEY itself should be high-entropy (32+ random bytes)
   return pbkdf2Sync(rawKey, PBKDF2_SALT, PBKDF2_ITERATIONS, 32, "sha256");

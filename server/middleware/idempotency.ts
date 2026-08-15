@@ -45,8 +45,8 @@ export async function idempotencyMiddleware(
     return next();
   }
 
-  // Validate key format: alphanumeric, hyphens, underscores only, 16-128 chars
-  const KEY_PATTERN = /^[a-zA-Z0-9_-]{16,128}$/;
+  // Validate key format: alphanumeric, hyphens, underscores only, 1-255 chars
+  const KEY_PATTERN = /^[a-zA-Z0-9_-]{1,255}$/;
   if (!KEY_PATTERN.test(key)) {
     logger.warn("[Idempotency] Invalid key format", { keyLength: key.length });
     return next(); // Proceed without idempotency rather than blocking

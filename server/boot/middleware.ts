@@ -103,12 +103,13 @@ export async function setupMiddleware(app: Express) {
 function createCorsMiddleware(): RequestHandler {
   return (req, res, next) => {
     const origin = req.headers.origin;
-    
+
     // Define allowed origins based on environment
-    const allowedOrigins = process.env.NODE_ENV === "production"
-      ? (process.env.STRICT_ALLOWED_ORIGINS || "https://wear-run.com").split(",")
-      : ["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:3000"];
-    
+    const allowedOrigins =
+      process.env.NODE_ENV === "production"
+        ? (process.env.STRICT_ALLOWED_ORIGINS || "https://wear-run.com").split(",")
+        : ["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:3000"];
+
     // Only allow requests from explicitly permitted origins
     if (origin && allowedOrigins.includes(origin)) {
       res.setHeader("Access-Control-Allow-Origin", origin);

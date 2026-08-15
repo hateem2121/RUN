@@ -29,10 +29,18 @@ jobs:
             !.gemini/**
             !.agent/**
             !.claude/**
+            !.agents/**
+            !.impeccable/**
+            !.code-review-graph/**
+            !graphify-out/**
             !docs/audit/**
             !findings.md
             !task_plan.md
             !playwright-report/**
             !test-results/**
+            !SECURITY_REMEDIATION_PLAN.md
+            !ORIGINAL_REQUEST.md
+            !coverage/**
+            !dist/**
           config: '.markdownlint.json'
 

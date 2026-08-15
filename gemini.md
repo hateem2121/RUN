@@ -388,8 +388,8 @@ When writing or updating unit tests for services/repositories that return `never
 
 ### 6.5.3 MemoryStorage "God Node" Invariant
 
-The `tests/integration/server/memory-storage.ts` mock repository is the foundational dependency for over 343+ test files. 
-- It **MUST** remain perfectly synchronized with the `IStorage` interface in `server/repositories/storage-interfaces.ts`. 
+The `tests/integration/server/memory-storage.ts` mock repository is the foundational dependency for over 343+ test files.
+- It **MUST** remain perfectly synchronized with the `IStorage` interface in `server/repositories/storage-interfaces.ts`.
 - Any refactoring to the storage interface requires an immediate mirroring update to the `MemoryStorage` class. Failure to do so will cascade into hundreds of integration test failures.
 
 ### 6.6 Drizzle + Zod Schema Pattern (Mandatory)

@@ -29,7 +29,8 @@
       "!**/.kilo",
       "!docs",
       "!client/public",
-      "!server/migrations"
+      "!server/migrations",
+      "!**/.turbo"
     ]
   },
   "formatter": {

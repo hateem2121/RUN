@@ -6,8 +6,6 @@ import type { NextFunction, Request, Response } from "express";
  * Implements granular sanitization that preserves rich text fields while protecting standard inputs.
  */
 
-import type { NextFunction, Request, Response } from "express";
-
 // Rich text field patterns that should preserve HTML (for TipTap and similar)
 const RICH_TEXT_PATHS = ["content", "description", "body", "message"];
 
@@ -17,9 +15,7 @@ const RICH_TEXT_PATHS = ["content", "description", "body", "message"];
 function sanitizeValue(value: unknown, path: string): unknown {
   if (typeof value === "string") {
     // Check if this is a rich text field that should preserve safe HTML
-    const isRichTextField = RICH_TEXT_PATHS.some((keyword) =>
-      path.toLowerCase().includes(keyword),
-    );
+    const isRichTextField = RICH_TEXT_PATHS.some((keyword) => path.toLowerCase().includes(keyword));
 
     if (isRichTextField) {
       // For rich text, only remove dangerous tags but preserve formatting

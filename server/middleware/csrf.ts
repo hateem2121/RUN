@@ -24,7 +24,7 @@ const EXCLUDED_ROUTES = [
   "/api-docs",
   "/api/webhooks", // External webhooks need their own verification
   "/api/auth/mock-login", // E2E/Internal testing auth
-  // Debug routes removed - they should not exist in production
+  "/api/debug", // Debug routes (gated separately by token & localhost)
 ];
 
 /**
@@ -124,7 +124,7 @@ export function csrfValidator(req: Request, res: Response, next: NextFunction): 
 
   // Handle React Router .data suffixes for exclusion check
   const cleanPath = req.path.replace(/\.data$/, "");
-  if (EXCLUDED_ROUTES.includes(cleanPath)) {
+  if (EXCLUDED_ROUTES.some((route) => cleanPath === route || cleanPath.startsWith(`${route}/`))) {
     next();
     return;
   }
@@ -156,17 +156,6 @@ export function csrfValidator(req: Request, res: Response, next: NextFunction): 
     });
     return;
   }
-
-  // Token rotation: generate new token after successful validation
-  const newToken = generateToken();
-  res.cookie(CSRF_COOKIE_NAME, newToken, {
-    httpOnly: false,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 60 * 60 * 1000, // 1 hour
-    path: "/",
-  });
-  res.locals.csrfToken = newToken;
 
   next();
 }

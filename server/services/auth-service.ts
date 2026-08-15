@@ -90,12 +90,14 @@ export class AuthService {
 
     const finalSecret = currentSecret;
     const previousSecret = process.env.SESSION_SECRET_PREVIOUS;
-    
+
     // Validate previous secret if provided
     if (previousSecret && previousSecret.length < 32) {
-      logger.warn("SESSION_SECRET_PREVIOUS is shorter than 32 characters - rotation may be insecure");
+      logger.warn(
+        "SESSION_SECRET_PREVIOUS is shorter than 32 characters - rotation may be insecure",
+      );
     }
-    
+
     const secrets = previousSecret ? [finalSecret, previousSecret] : finalSecret;
 
     return ok(

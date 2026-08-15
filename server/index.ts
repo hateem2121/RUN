@@ -35,6 +35,9 @@ export const serverReady: Promise<void> = (async () => {
     await mod.serverReady;
   } catch (error) {
     logger.error("[Bootstrap] Critical failure during startup:", undefined, error as Error);
-    process.exit(1);
+    if (process.env.NODE_ENV !== "test") {
+      process.exit(1);
+    }
+    throw error;
   }
 })();

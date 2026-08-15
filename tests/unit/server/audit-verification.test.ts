@@ -82,7 +82,7 @@ describe("Forensic Audit Verification", () => {
 
     it("should not exit in DEVELOPMENT if Google Auth credentials are missing", async () => {
       process.env.NODE_ENV = "development";
-      process.env.SESSION_SECRET = "test-secret";
+      process.env.SESSION_SECRET = "test-session-secret-must-be-32-chars-long";
       delete process.env.GOOGLE_CLIENT_ID;
       delete process.env.GOOGLE_CLIENT_SECRET;
 

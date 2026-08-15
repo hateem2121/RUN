@@ -8,8 +8,14 @@ vi.mock("../server/lib/secrets/secret-manager.js", () => ({
   getSecret: vi.fn().mockReturnValue(undefined),
 }));
 
-vi.mock("../server/env.schema.js", () => ({
-  validateEnv: vi.fn(),
+vi.mock("../shared/schemas/env.schema.js", () => ({
+  validateEnv: vi.fn().mockReturnValue({
+    NODE_ENV: "test",
+    DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/run_test",
+    SESSION_SECRET: "test-session-secret-must-be-32-chars-long",
+    ENCRYPTION_KEY: "test-encryption-key-must-be-32-chars-long",
+    INITIAL_ADMIN_EMAIL: "admin@runapparel.com",
+  }),
 }));
 
 import request from "supertest";

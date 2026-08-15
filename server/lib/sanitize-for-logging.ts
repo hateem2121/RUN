@@ -52,7 +52,7 @@ export function sanitizeForLogging(obj: unknown, depth = 0): unknown {
   if (depth > MAX_DEPTH) {
     return "[MAX_DEPTH_REDACTED]";
   }
-  
+
   if (obj === null || obj === undefined) {
     return obj;
   }
