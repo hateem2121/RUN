@@ -371,7 +371,7 @@ export default function Component() {
       if (currentTarget) observer.unobserve(currentTarget);
       observer.disconnect(); // Fixes ML-4 closure leak
     };
-  }, [hasMore, sortedProducts, itemsPerPage]);
+  }, [hasMore, sortedProducts]);
 
   // Get selected category object for SEO
   const selectedCategoryObj = categories.find((c) => c.id.toString() === selectedCategory);

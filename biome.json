@@ -28,6 +28,8 @@
       "!.claude",
       "!**/.kilo",
       "!docs",
+      "!wiki",
+      "!graphify-out",
       "!client/public",
       "!server/migrations",
       "!**/.turbo"

@@ -239,10 +239,7 @@ function ManufacturingInner({ loaderData }: ManufacturingInnerProps) {
         </ManufacturingErrorBoundary>
 
         {/* Marquee Strip */}
-        <MarqueeStrip
-          text="CUTTING · ASSEMBLY · FINISHING · QUALITY · INNOVATION"
-          speed={100}
-        />
+        <MarqueeStrip text="CUTTING · ASSEMBLY · FINISHING · QUALITY · INNOVATION" speed={100} />
 
         {/* Blueprint Section */}
         <ManufacturingErrorBoundary>
