@@ -22,8 +22,11 @@ updates:
           - "react*"
           - "@react-router/*"
           - "drizzle-orm"
-          - "@upstash/*"
-          - "@sentry/*"
+          - "zod"
+          - "neverthrow"
+          - "ioredis"
+          - "pino*"
+          - "opossum"
         update-types:
           - "minor"
           - "patch"
@@ -36,6 +39,7 @@ updates:
           - "vitest"
           - "biome"
           - "@biomejs/*"
+          - "turbo"
         update-types:
           - "minor"
           - "patch"
@@ -44,7 +48,7 @@ updates:
         patterns:
           - "playwright*"
           - "@playwright/*"
-          - "msw"
+          - "@testing-library/*"
         update-types:
           - "minor"
           - "patch"

@@ -33,12 +33,21 @@ test.describe("🛒 Product Detail Verification", () => {
     await expect(
       page
         .locator("h1")
-        .filter({ hasText: new RegExp(targetProduct.name ? `${targetProduct.name.split(" ")[0]}|Pro Performance|Product` : "Pro Performance|Product", "i") })
+        .filter({
+          hasText: new RegExp(
+            targetProduct.name
+              ? `${targetProduct.name.split(" ")[0]}|Pro Performance|Product`
+              : "Pro Performance|Product",
+            "i",
+          ),
+        })
         .first(),
     ).toBeVisible({ timeout: 15000 });
 
     // 4. Verify "Add to Cart" button exists
-    await expect(page.getByRole("button", { name: /add to cart|in cart|quote/i })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole("button", { name: /add to cart|in cart|quote/i })).toBeVisible({
+      timeout: 10000,
+    });
 
     // 5. Verify Price is visible
     await expect(page.locator("text=$").first()).toBeVisible({ timeout: 10000 });

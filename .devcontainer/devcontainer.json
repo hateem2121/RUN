@@ -1,0 +1,33 @@
+{
+  "name": "RUN Remix — The Agentic Sportswear Factory",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-24-bookworm",
+  "forwardPorts": [5002],
+  "portsAttributes": {
+    "5002": {
+      "label": "RUN Remix Dev Server",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "quickfix.biome": "explicit",
+          "source.organizeImports.biome": "explicit"
+        },
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "tailwindCSS.experimental.classRegex": [["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]]
+      },
+      "extensions": [
+        "biomejs.biome",
+        "bradlc.vscode-tailwindcss",
+        "eamodio.gitlens",
+        "github.vscode-github-actions"
+      ]
+    }
+  },
+  "postCreateCommand": "npm ci && npm run verify:tech-integrity",
+  "remoteUser": "node"
+}

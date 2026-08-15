@@ -7,6 +7,7 @@
 [![Node](https://img.shields.io/badge/Node-24%2B-339933?style=flat-square&logo=node.js)](./Tech-Stack)
 [![React](https://img.shields.io/badge/React-19.2.7-61DAFB?style=flat-square&logo=react)](./Tech-Stack)
 [![Port](https://img.shields.io/badge/Port-5002-orange?style=flat-square)](./Getting-Started)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](https://opensource.org/licenses/MIT)
 
 > **RUN Remix** is the production-grade CMS and B2B e-commerce platform powering RUN APPAREL's premium sustainable sportswear manufacturing business. This wiki serves as the **evergreen knowledge hub** — covering architecture, roadmap, operations, and developer onboarding.
 

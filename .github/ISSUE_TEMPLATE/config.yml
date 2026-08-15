@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "🛡️ Security Vulnerability Reporting"
+    url: "https://github.com/hateem2121/RUN/security/advisories/new"
+    about: "Report security vulnerabilities privately via GitHub Security Advisories or follow SECURITY.md."
+  - name: "💬 Community Discussions & Questions"
+    url: "https://github.com/hateem2121/RUN/discussions"
+    about: "Ask questions, share projects, and discuss architecture with the maintainer team."
+  - name: "📖 Documentation & Architecture SOPs"
+    url: "https://github.com/hateem2121/RUN/tree/main/docs"
+    about: "Read our comprehensive engineering standards, ADRs, and operational runbooks."

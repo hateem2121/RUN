@@ -1,21 +1,33 @@
-# CODEOWNERS - Critical Files
+# CODEOWNERS — Subsystem & Architecture Ownership
 #
-# These files require review from designated owners to prevent regressions
-# in CSS cascade, SSR, and visual regression testing.
-#
-# NOTE: Replace @hateemjamshaid with actual GitHub team slugs once
-# GitHub teams are configured in the RUN APPAREL organization.
+# These paths require explicit review from subsystem maintainers to prevent
+# regressions in CSS cascade, SSR hydration, DB integrity, and pipeline stability.
 
-# Tailwind v4 CSS Configuration - Cascade Layer Critical
+# Global Default Owner
+* @hateemjamshaid
+
+# Monorepo Shared Contracts & Schemas
+/shared/ @hateemjamshaid
+
+# Tailwind v4 CSS Configuration & Design System Tokens
 /client/app/index.css @hateemjamshaid
+/client/app/styles/ @hateemjamshaid
 
-# SSR Handler - FOUC and Hydration Critical
-/server/lib/ssr/ssr-handler.ts @hateemjamshaid
+# SSR Engine & Hydration Handlers
+/server/lib/ssr/ @hateemjamshaid
 
-# Visual Regression Test Suite
-/e2e/visual-regression-audit.spec.ts @hateemjamshaid
+# Database, Schemas, & Migrations
+/server/db.ts @hateemjamshaid
+/server/repositories/ @hateemjamshaid
+/server/services/ @hateemjamshaid
+
+# Visual Regression & E2E Testing
+/e2e/ @hateemjamshaid
 /playwright.config.ts @hateemjamshaid
 
-# CI Workflows - Pipeline Stability
-/.github/workflows/ @hateemjamshaid
+# CI/CD Pipelines & GitHub Security Configurations
+/.github/ @hateemjamshaid
+/cloudbuild*.yaml @hateemjamshaid
+/Dockerfile @hateemjamshaid
+
 

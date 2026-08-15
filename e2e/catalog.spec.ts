@@ -142,7 +142,10 @@ test.describe("/categories", () => {
     await page.goto(`${BASE}/categories`);
     await page.waitForLoadState("domcontentloaded");
     await expect(
-      page.locator("h1, h2").filter({ hasText: /Product Categories|Categories/i }).first(),
+      page
+        .locator("h1, h2")
+        .filter({ hasText: /Product Categories|Categories/i })
+        .first(),
     ).toBeVisible({ timeout: 20000 });
   });
 

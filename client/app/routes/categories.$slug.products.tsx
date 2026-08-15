@@ -1,8 +1,8 @@
 import type { Category, MediaAsset, Product } from "@shared/index";
-import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
-import { ChevronRight, Grid2X2, Grid3X3, LayoutGrid, Loader2, Search } from "lucide-react";
+import { HydrationBoundary, useQuery } from "@tanstack/react-query";
+import { ChevronRight, Grid2X2, Grid3X3, LayoutGrid, Search } from "lucide-react";
 import { useState } from "react";
-import { Link, useLoaderData, useNavigate, useParams } from "react-router";
+import { Link, useLoaderData, useNavigate } from "react-router";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -18,7 +18,7 @@ import { Typography } from "@/components/ui/typography";
 import { useOptimizedMedia } from "@/hooks/use-optimized-media";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/queryClient";
 import type { Route } from "./+types/categories.$slug.products";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
@@ -65,7 +65,6 @@ export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFal
 
 export default function CategoryProductsPage() {
   const loaderData = useLoaderData<typeof loader>();
-  const { slug } = useParams();
   const navigate = useNavigate();
   // location unused
   // const location = useLocation();
@@ -177,7 +176,7 @@ export default function CategoryProductsPage() {
   }
 
   return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
+    <HydrationBoundary state={undefined}>
       <div className="min-h-screen bg-muted/30">
         {/* Hero Section */}
         {category.bannerUrl && (
@@ -281,7 +280,10 @@ export default function CategoryProductsPage() {
 
                 {/* Sort */}
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-full sm:w-custom-space-288" aria-label="Sort products">
+                  <SelectTrigger
+                    className="w-full sm:w-custom-space-288"
+                    aria-label="Sort products"
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

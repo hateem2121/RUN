@@ -15,19 +15,19 @@
 
 ### Private Disclosure (Preferred)
 
-Use [GitHub's private vulnerability reporting](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability) for this repository.
+Use [GitHub's private vulnerability reporting](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability) directly in this repository.
 
-### Email
+### Email Disclosure
 
-Send a report to the maintainer: **M. Hateem Jamshaid** — Business Development Director, RUN APPAREL (PVT) LTD.
+If private reporting is unavailable, send a detailed PGP/encrypted report to the maintainer:  
+**M. Hateem Jamshaid** (`hateem@runapparel.com`) — Business Development Director, RUN APPAREL (PVT) LTD.
 
 Include in your report:
-
-- Vulnerability type (e.g., OWASP category)
-- Affected component and version
-- Steps to reproduce
-- Potential impact
-- Suggested fix (if any)
+- Vulnerability description (e.g., OWASP category / CWE ID)
+- Affected component, route, or file path
+- Step-by-step reproduction instructions or proof-of-concept
+- Potential impact assessment
+- Proposed remediation or patch (if available)
 
 ### Response SLA
 
@@ -43,58 +43,49 @@ Include in your report:
 ## Scope
 
 ### In Scope
-
 - `server/` — Express 5 API routes, services, middleware, authentication
-- `client/` — React 19 frontend, form handling, data exposure
-- `shared/` — Zod schemas, TypeScript types
-- Authentication — Google OAuth 2.0 flow, session management
-- Database access — Neon PostgreSQL query patterns
-- Admin panel (`/admin/*`) — RBAC, access control
+- `client/` — React 19 frontend, form handling, CSP nonce protection, data exposure
+- `shared/` — Zod schemas, TypeScript types, route manifests
+- Authentication & Sessions — Google OAuth 2.0 flow, `DrizzleSessionStore` (Neon PostgreSQL)
+- Database access — Parameterized Drizzle ORM queries
+- Admin panel (`/admin/*`) — RBAC, session integrity, audit logging
 
 ### Out of Scope
-
-- Third-party dependencies (report upstream)
-- Social engineering attacks
-- Physical access attacks
-- Denial-of-service attacks
-- Issues requiring non-standard hardware
+- Third-party upstream dependencies (report directly to upstream maintainers)
+- Social engineering, phishing, or physical attacks
+- Distributed Denial-of-Service (DDoS) against cloud infrastructure
+- Attacks requiring physical access to an unlocked developer workstation
 
 ---
 
-## Security Architecture
+## Security Architecture & Defences
 
-The platform implements defence-in-depth:
+The platform implements multi-layer defense-in-depth:
 
-| Control | Implementation |
-|---------|---------------|
-| Authentication | Google OAuth 2.0, no email/password |
-| Sessions | RedisSessionStore (ioredis), 15-min rotation, HttpOnly + SameSite cookies |
-| Rate Limiting | Redis-backed sliding-window rate limiter |
-| Circuit Breakers | `opossum` for DB and Redis operations |
-| Input Validation | Zod schemas on all external inputs |
-| SQL Injection | Drizzle ORM parameterized queries (no raw SQL) |
-| Secrets | Never committed — scanned by `security.yml` |
-| Dependencies | Weekly Dependabot updates + `npm audit` in CI |
-| Container | Trivy vulnerability scanning in `security.yml` |
-| Runtime | DAST scanning consolidated in `security.yml` |
-| Headers | Helmet middleware on all Express responses |
+| Layer / Control | Implementation |
+|-----------------|----------------|
+| **Authentication** | Google OAuth 2.0 (no plaintext passwords stored) |
+| **Sessions** | `DrizzleSessionStore` (Neon PostgreSQL), 15-minute rotation, HttpOnly + SameSite cookies |
+| **Rate Limiting** | Redis-backed sliding-window rate limiter via `ioredis` |
+| **Circuit Breakers** | `opossum` for external API and database operations |
+| **Input Validation** | Strict Zod v4 schemas on all request payloads |
+| **SQL Injection** | Drizzle ORM parameterized queries (zero raw SQL queries) |
+| **Secret Scanning** | Automated GitHub secret scanning + custom regex patterns |
+| **Supply Chain** | Dependabot automated security alerts + OpenSSF Scorecards + GitHub Dependency Review |
+| **Static Analysis** | GitHub CodeQL (SAST) + Biome strict linting |
+| **Container & DAST** | Trivy container and filesystem scans in CI |
+| **Security Headers** | Helmet middleware + strict Content Security Policy (CSP) with per-request nonces |
 
 Full threat model: [`docs/security/threat-model.md`](./docs/security/threat-model.md)
 
 ---
 
-## Security Tools in CI
-
-- **`security.yml`** — Consolidated pipeline executing Trivy container and filesystem scans, GitHub secret scanning + custom patterns, and `npm audit` dependency audits.
-
----
-
 ## Disclosure Policy
 
-We follow responsible disclosure. Once a fix is deployed, we will:
+We adhere to coordinated responsible disclosure. Once a remediation is deployed, we will:
+1. Credit the security researcher in release notes and security advisories (with permission).
+2. Publish a GitHub Security Advisory (GHSA) and request a CVE identifier if applicable.
+3. Update relevant documentation and regression test suites.
 
-1. Acknowledge the reporter (with permission)
-2. Publish a security advisory on GitHub
-3. Update this document if policies change
+Thank you for helping keep RUN APPAREL's open-source ecosystem secure.
 
-Thank you for helping keep RUN APPAREL's platform secure.

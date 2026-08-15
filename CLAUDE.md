@@ -33,7 +33,7 @@ All work must follow this cycle:
 
 ---
 
-*Last updated: 2026-07-11 | Identity: Agentic Software Factory v4.1.2*
+*Last updated: 2026-08-15 | Identity: Agentic Software Factory v4.1.2*
 
 <!-- code-review-graph MCP tools -->
 ## MCP Tools: code-review-graph

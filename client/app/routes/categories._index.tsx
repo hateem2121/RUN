@@ -5,8 +5,8 @@ export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFal
 
 import { useGSAP } from "@gsap/react";
 import type { Category } from "@shared/index";
-import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
-import { AlertCircle, Eye, Loader2 } from "lucide-react";
+import { HydrationBoundary } from "@tanstack/react-query";
+import { AlertCircle, Eye } from "lucide-react";
 // CHUNK 6: Lazy-load FluidGlass to defer three.js (565KB) from main bundle
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLoaderData } from "react-router";
@@ -15,7 +15,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { headingVariants, Typography } from "@/components/ui/typography";
 import { gsap } from "@/lib/gsap";
-import { apiRequest, batchFetchMediaContent, getQueryClient } from "@/lib/queryClient";
+import { batchFetchMediaContent } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -229,7 +229,7 @@ export default function Component() {
   };
 
   return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
+    <HydrationBoundary state={undefined}>
       <div ref={containerRef} className="bg-card min-h-screen pt-12 pb-6 md:pt-20 md:pb-12">
         {/* Hero Section */}
         <div className="container px-4 md:px-8 mt-0 mb-0 pt-6 pb-6 md:pt-custom-space-289 md:pb-custom-space-290">

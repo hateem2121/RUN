@@ -1,0 +1,37 @@
+name: "📚 Documentation Request"
+description: "Suggest an improvement, clarify an existing SOP, or report a documentation issue"
+title: "docs: "
+labels: ["documentation", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Accurate, comprehensive documentation is a core value of RUN Remix.
+        Thank you for helping us keep our guides and SOPs at production grade!
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Documentation Issue / Gap"
+      description: "Which document needs improvement, or what new guide is needed?"
+      placeholder: "The guide on configuring Drizzle migrations in production needs additional detail on zero-downtime rollouts..."
+    validations:
+      required: true
+
+  - type: input
+    id: doc-path
+    attributes:
+      label: "Relevant Document Path"
+      description: "e.g., `docs/core/architecture.md`, `README.md`, or `wiki/Home.md`"
+      placeholder: "docs/core/architecture.md"
+    validations:
+      required: false
+
+  - type: textarea
+    id: proposed-change
+    attributes:
+      label: "Suggested Improvements / Content"
+      description: "Describe what should be added or updated."
+      placeholder: "Add an explicit code example showing how to run migration gates in CI..."
+    validations:
+      required: true

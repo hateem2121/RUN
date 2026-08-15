@@ -5,14 +5,13 @@ export { RouteErrorBoundary as ErrorBoundary, RouteHydrateFallback as HydrateFal
 
 import { useGSAP } from "@gsap/react";
 import type { Category, Certificate, Fabric, ProductSummary } from "@shared/index";
-import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
+import { HydrationBoundary } from "@tanstack/react-query";
 import gsap from "gsap";
-import { ChevronRight, Loader2 } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useMemo, useRef } from "react";
-import { Link, useLoaderData, useParams } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { Typography } from "@/components/ui/typography";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
 import type { Route } from "./+types/categories.$slug";
 
 export async function loader({ request, params }: Route.LoaderArgs) {
@@ -107,7 +106,7 @@ export default function Component() {
   // No manual error state needed as loader throws 404
 
   return (
-    <HydrationBoundary state={loaderData?.dehydratedState}>
+    <HydrationBoundary state={undefined}>
       <div className="min-h-screen bg-white">
         {/* SEO Meta Tags - Rendered manually since RR7 meta function is static, but we can iterate later */}
         {/* biome-ignore format: Keep inline to prevent React title array warning */}

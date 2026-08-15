@@ -1,155 +1,158 @@
 # RUN Remix — The Agentic Sportswear Factory
 
-**Version:** 4.1.2 | **Port:** 5002 (Exclusively) | **Engine:** Antigravity / gstack | **Last Updated:** August 2026
+**Version:** 4.1.2 | **Port:** 5002 (Exclusively) | **Engine:** Antigravity / gstack | **License:** MIT | **Last Updated:** August 2026
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/hateem2121/RUN)
 [![Node 24+](https://img.shields.io/badge/Node-24%2B-339933?logo=node.js)](https://nodejs.org)
 [![React 19](https://img.shields.io/badge/React-19.2.7-61DAFB?logo=react)](https://react.dev)
 [![TypeScript Strict](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript)](https://www.typescriptlang.org)
 [![Vite 8](https://img.shields.io/badge/Vite-8-646CFF?logo=vite)](https://vite.dev)
 [![Tailwind V4](https://img.shields.io/badge/Tailwind-V4-06B6D4?logo=tailwindcss)](https://tailwindcss.com)
 [![Express 5](https://img.shields.io/badge/Express-5.2.1-000000?logo=express)](https://expressjs.com)
+[![Biome Clean](https://img.shields.io/badge/Linter-Biome_2.5-60A5FA?logo=biome)](https://biomejs.dev)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
 ---
 
-## 🏭 The Agentic Software Factory
+## 🏭 Overview
 
-**RUN Remix** is not just a codebase; it is an **Agentic Software Factory**. Powered by Garry Tan's `gstack` setup and Google Antigravity, it orchestrates a high-performance virtual engineering team specialized in premium B2B sportswear tech.
+**RUN Remix** is an open-source, AI-native B2B sportswear CMS and **Agentic Software Factory**. Engineered for **RUN APPAREL (PVT) LTD** (a subsidiary of Durus Industries, est. 1889), it unifies century-old garment manufacturing craftsmanship with high-velocity agentic software engineering.
 
-We combine **Heritage Craftsmanship** (Durus Industries, est. 1889) with **Advanced Agentic Engineering** to ship production-grade software at 10x velocity.
+It provides a production-grade blueprint for building deterministic, high-performance commerce and manufacturing platforms with real-time 3D garment configuration, WebMCP agentic forms, and strict monorepo boundaries.
 
 ---
 
 ## ⚡ Quick Start
 
-### 1. Developer Induction
+### 1. Launch in Browser (1-Click Dev Container)
+Click [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/hateem2121/RUN) to launch a fully provisioned Node 24 + Biome cloud environment with port 5002 auto-forwarded.
+
+### 2. Local Setup
 
 ```bash
-# Clone the factory
+# Clone the repository
 git clone <repository-url>
-cd RUN-REMIX
+cd RUN
 
-# Provision the environment
+# Install dependencies (Node 24+ required)
 npm install
+
+# Configure environment variables
 cp .env.example .env
-# Fill in DATABASE_URL, Google IDs, etc.
 
-# Verify Tech Integrity
+# Verify system integrity
 npm run verify:tech-integrity
-```
 
-### 2. Run Locally
-
-```bash
-# Start dev server (Client + Server via Turbo)
+# Start development server
 npm run dev
-# → Opens on http://localhost:5002
+# → Application live on http://localhost:5002
 ```
 
-### 3. Pre-Push Checklist
+---
+
+## 📐 Architecture & Data Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        Client (React 19 / Vite 8)                       │
+│  - React Router v8 Leaf Routes (Default Exports + ErrorBoundary)        │
+│  - Tailwind CSS v4 (@theme & @utility tokens)                           │
+│  - 3D Garment Configurator (LazyUnifiedModelViewer + glTF streaming)   │
+│  - GSAP 3.15 + locomotive-scroll Motion Engine                          │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │
+                    import { schemas, types, routes }
+                                     │
+┌────────────────────────────────────▼────────────────────────────────────┐
+│                    Shared Package (@run-remix/shared)                   │
+│  - Drizzle pgTable Schemas & drizzle-zod Validators                     │
+│  - Central Route Manifests & Constant Enums                             │
+│  - Zero client/server runtime dependencies (Boundary Sacred)           │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │
+                    validated data contracts & types
+                                     │
+┌────────────────────────────────────▼────────────────────────────────────┐
+│                        Server (Express 5 / Node 24)                     │
+│  - Thin Controllers (Validation ──► Service Layer ──► neverthrow Match) │
+│  - Database: Neon Serverless PostgreSQL (Drizzle ORM Parameterized)     │
+│  - Sessions: DrizzleSessionStore (Neon PostgreSQL)                      │
+│  - Background Processing: Google Cloud Tasks HTTP Workers               │
+│  - Observability: OpenTelemetry Tracing + Pino Structured Logs          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🛠️ The Agentic Factory (Slash Commands)
+
+RUN Remix is powered by 23+ specialized agent workflows:
+
+| Command | Role | Responsibility |
+|---------|------|----------------|
+| `/office-hours` | **CEO** | Set vision, product goals, and business constraints. |
+| `/plan-ceo-review` | **CEO** | High-level feasibility, user value, and product scope. |
+| `/plan-eng-review` | **Eng Manager** | Architecture, invariants, test matrices, and security. |
+| `/plan-design-review` | **Design Lead** | Visual hierarchy, empty states, and design system fidelity. |
+| `/shape` | **Product Lead** | Interactive UX shaping and design briefs before code. |
+| `/review` | **Senior Reviewer** | Forensic code quality and regression analysis. |
+| `/qa` | **QA Lead** | Automated browser E2E and visual golden verification. |
+| `/ship` | **Release Eng** | Production readiness, security gating, and deployment triggers. |
+| `/retro` | **Team Lead** | Sprint retro and SOP documentation updates. |
+
+---
+
+## 🏗️ Technical Stack & Invariants
+
+| Layer | Technology | Key Invariant |
+|-------|------------|---------------|
+| **Frontend** | React 19.2.7, React Router v8, Vite 8 (Rolldown) | Raw `ref` props (no `forwardRef`). Default exports for leaf routes. |
+| **Styling** | Tailwind CSS v4 | `@utility` layer only. Zero arbitrary pixel classes in JSX. |
+| **Animations** | GSAP 3.15, locomotive-scroll 5.0.1 | No `framer-motion` or `lenis`. |
+| **Backend** | Express 5.2.1, Node 24 | Async-native handlers. No `try/catch` in controllers. |
+| **Database** | Neon Serverless PostgreSQL | Parameterized Drizzle ORM queries only (no raw SQL). |
+| **Sessions** | `DrizzleSessionStore` (Neon) | No `MemoryStore` or deprecated session packages. |
+| **Services** | `neverthrow` ResultAsync | Zero raw throws in services; explicit `ResultAsync<T, E>`. |
+| **Background** | Google Cloud Tasks | Signed token validation via `verifyCloudTaskToken`. |
+| **Resilience** | `opossum` Circuit Breaker | Mandatory wrapping for all external API endpoints. |
+| **Linting** | Biome 2.5 | Biome strictly replaces ESLint and Prettier. |
+| **Port** | 5002 Exclusively | Hardcoded dev and test port (never 3000). |
+
+---
+
+## 📚 Community Standards & Documentation
+
+RUN Remix adheres strictly to [Open Source Guides](https://opensource.guide/) and modern repository health standards:
+
+| Resource | Document | Purpose |
+|----------|----------|---------|
+| **Code of Conduct** | [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) | Contributor Covenant v2.1 community pledge and enforcement. |
+| **Contributing** | [`CONTRIBUTING.md`](./CONTRIBUTING.md) | Developer induction, B.L.A.S.T. methodology, and PR guidelines. |
+| **Governance** | [`GOVERNANCE.md`](./GOVERNANCE.md) | Founder-Led BDFL governance, maintainer ladder, and RFC process. |
+| **Roadmap** | [`ROADMAP.md`](./ROADMAP.md) | Living 2026–2027 product milestones and feature tracks. |
+| **Security Policy** | [`SECURITY.md`](./SECURITY.md) | Vulnerability disclosure, response SLAs, and GHSA reporting. |
+| **Support Channels** | [`SUPPORT.md`](./SUPPORT.md) | GitHub Discussions, bug triage, and enterprise contacts. |
+| **Citation** | [`CITATION.cff`](./CITATION.cff) | Citation File Format (CFF) metadata for academic/industry use. |
+| **Constitution** | [`gemini.md`](./gemini.md) | Ultimate Single Source of Truth (SSOT) for monorepo constraints. |
+| **Sponsorship** | [`.github/FUNDING.yml`](./.github/FUNDING.yml) | GitHub Sponsors and project funding channels. |
+
+---
+
+## 🔍 Pre-Push Quality Verification
+
+Every contribution must pass the full technical integrity gate:
 
 ```bash
 npm run check:apply           # Biome format + lint (auto-fix)
-npm run typecheck             # Must be 0 errors
-npm run verify:tech-integrity # Must exit 0
-npm run test                  # Tests must pass
+npm run typecheck             # Strict TypeScript verification (0 errors)
+npm run verify:tech-integrity # Monorepo integrity suite (all checks exit 0)
+npm run test                  # Vitest unit & integration tests
 ```
 
 ---
 
-## 🛠️ The Team (Slash Commands)
+## 📄 License
 
-The factory is staffed by 23+ specialized agent roles:
+This project is licensed under the [MIT License](./LICENSE) © 2026 **RUN APPAREL (PVT) LTD** & **Durus Industries (est. 1889)**.
 
-| Command | Role | Goal |
-|---------|------|------|
-| `/office-hours` | **CEO** | Set the vision and challenge assumptions. |
-| `/plan-ceo-review` | **CEO** | High-level feasibility and business alignment. |
-| `/plan-eng-review` | **Eng Manager** | Architecture, security, and performance review. |
-| `/plan-design-review` | **Design Lead** | "The Wow" factor and aesthetic consistency. |
-| `/review` | **Senior Reviewer** | Forensic code analysis and refactoring. |
-| `/qa` | **QA Lead** | Real-world browser verification. |
-| `/ship` | **Release Eng** | Final checks and deployment triggers. |
-| `/retro` | **Team Lead** | Learn from the sprint and update SOPs. |
-| `/investigate` | **Specialist** | Solve the most complex "impossible" bugs. |
-| `/devex-review` | **DX Lead** | Developer experience audit — tooling, workflow, onboarding. |
-
----
-
-## 🏗️ Technical Stack
-
-| Layer | Technology | Key Constraint |
-|-------|-----------|----------------|
-| **Frontend** | React Router v8, React 19.2.7, Vite 8 (Rolldown) | NO `forwardRef`. Named exports only. |
-| **Styling** | Tailwind CSS V4 | `@utility` layer only. NO arbitrary JSX values. |
-| **Animations** | GSAP 3.15.0, locomotive-scroll 5.0.1 | NO framer-motion or lenis. |
-| **Backend** | Express 5.2.1, Node 24 | Async-native handlers. NO `try/catch`. |
-| **Database** | Neon Serverless Postgres | HTTP Driver only. |
-| **ORM** | Drizzle 0.45.2, Zod v4 | Parameterized queries. No raw SQL. |
-| **Background** | Google Cloud Tasks | HTTP Workers via `verifyCloudTaskToken`. |
-| **External APIs** | `opossum` Circuit Breaker | Mandatory for all external requests. |
-| **Cache/Session** | DrizzleSessionStore (Neon) / ioredis | NO connect-redis or @upstash/redis. |
-| **Observability** | OTel / Pino | NO Sentry. |
-| **Testing** | Vitest | 80%+ service coverage required. |
-| **Linting** | Biome 2.3.10 | NOT ESLint or Prettier. |
-
----
-
-## 📐 B.L.A.S.T. Protocol
-
-Every task follows the deterministic **B.L.A.S.T.** methodology:
-
-1. **Blueprint**: Define schemas and SOPs in `docs/` before code.
-2. **Link**: Verify APIs and `.env` with atomic scripts.
-3. **Architect**: Build layers (L1 SOP → L2 Route → L3 Service).
-4. **Stylize**: Apply the 5 Dimensions of Design (Skeleton, Skin, Palette, Voice, Soul).
-5. **Trigger**: Deploy via automated CI/CD pipelines.
-
----
-
-## 📚 Documentation
-
-| Resource | Path |
-|----------|------|
-| Constitution | [`gemini.md`](./gemini.md) |
-| Knowledge Base Wiki | [`wiki/Home.md`](./wiki/Home.md) |
-| Visual Architecture | [`wiki/Visual-Architecture.md`](./wiki/Visual-Architecture.md) |
-| Agent Ethos | [`docs/core/ETHOS.md`](./docs/core/ETHOS.md) |
-| Agent Roles | [`docs/core/AGENTS.md`](./docs/core/AGENTS.md) |
-| SOPs | [`docs/core/sops/`](./docs/core/sops/) |
-| Onboarding | [`docs/ONBOARDING.md`](./docs/ONBOARDING.md) |
-| Dev Workflow | [`docs/DEVELOPMENT_WORKFLOW.md`](./docs/DEVELOPMENT_WORKFLOW.md) |
-| Coding Standards | [`docs/CODING_STANDARDS.md`](./docs/CODING_STANDARDS.md) |
-| API Reference | [`docs/api/`](./docs/api/) |
-| Architecture | [`docs/core/architecture.md`](./docs/core/architecture.md) |
-| Security | [`SECURITY.md`](./SECURITY.md) |
-| CSRF Protection | [`docs/security/csrf-protection.md`](./docs/security/csrf-protection.md) |
-| Security Headers | [`docs/security/headers.md`](./docs/security/headers.md) |
-| Disaster Recovery | [`docs/infrastructure/disaster-recovery.md`](./docs/infrastructure/disaster-recovery.md) |
-| Multi-Region Strategy | [`docs/infrastructure/multi-region.md`](./docs/infrastructure/multi-region.md) |
-| Dependency Graph | [`docs/core/dependency-graph.md`](./docs/core/dependency-graph.md) |
-| Contributing | [`CONTRIBUTING.md`](./CONTRIBUTING.md) |
-| Changelog | [`CHANGELOG.md`](./CHANGELOG.md) |
-
----
-
-## 🛡️ Security & Performance
-
-- **Port 5002** is used for ALL services.
-- **100/100 Architecture Health Score** (Verified May 2026).
-- Sub-500ms p95 latency via L1/L2 caching + real-time Web Vitals monitoring.
-- Zero-tolerance for `any` types or unsafe data patterns.
-- Strict module boundaries: deep imports into `@run-remix/shared/schemas/*` are prohibited; use barrel exports.
-- Automated security scanning on every PR + accessibility regression tests.
-
-For vulnerability reporting, see [`SECURITY.md`](./SECURITY.md).
-
-Security tools in use: Trivy, GitHub secret scanning, DAST, and `npm audit` (all consolidated in `security.yml`).
-
----
-
-## License
-
-Copyright © 2026 RUN APPAREL (PVT) LTD / Durus Industries. All rights reserved.
-
-This is proprietary software. Unauthorized use, reproduction, or distribution is prohibited.
-See [`LICENSE`](./LICENSE) for full terms.

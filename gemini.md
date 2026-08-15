@@ -2,7 +2,7 @@
 
 **Project:** RUN APPAREL CMS v4.1.2 (`run-remix`)
 **Agent:** Antigravity (Gemini)
-**Last updated:** July 2026
+**Last updated:** August 2026
 **Status:** Ultimate Single Source of Truth (SSOT)
 **Owner:** M. Hateem Jamshaid — RUN APPAREL (PVT) LTD, Sialkot, Pakistan
 

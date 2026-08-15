@@ -223,31 +223,7 @@ function ManufacturingInner({ loaderData }: ManufacturingInnerProps) {
   const rootData = useRouteLoaderData<{ cspNonce?: string }>("root");
   const nonce = rootData?.cspNonce || undefined;
   const { hero, processes, capabilities, qualities, caseStudies, mediaAssets } = loaderData;
-  const qualityItems = qualities;
 
-  // Calculate real manufacturing stats from database data
-  const annualCapacity = capabilities
-    .filter((c) => c.unit?.toLowerCase().includes("pcs") || c.unit?.toLowerCase().includes("units"))
-    .reduce((sum, c) => sum + (parseFloat(c.capacity || "0") || 0), 0);
-
-  const activeLines = processes.length;
-
-  const derivedStats = [
-    {
-      label: "Annual Capacity",
-      value: annualCapacity > 0 ? annualCapacity / 1000000 : 1.2,
-      suffix: "M+",
-      icon: "TrendingUp",
-    },
-    { label: "Active Lines", value: activeLines || 24, suffix: "", icon: "Cpu" },
-    {
-      label: "QA Checkpoints",
-      value: qualityItems.length * 5 || 100,
-      suffix: "+",
-      icon: "ShieldCheck",
-    },
-    { label: "Lead Time", value: 15, suffix: " Days", icon: "Zap" },
-  ];
   return (
     <>
       <script
@@ -259,22 +235,13 @@ function ManufacturingInner({ loaderData }: ManufacturingInnerProps) {
       <main className="min-h-screen bg-background text-foreground font-helvetica selection:bg-amber-500/30">
         {/* Hero Section */}
         <ManufacturingErrorBoundary>
-          <PublicHeroSection
-            mediaAssets={mediaAssets}
-            hero={hero || undefined}
-          />
+          <PublicHeroSection mediaAssets={mediaAssets} hero={hero || undefined} />
         </ManufacturingErrorBoundary>
 
         {/* Marquee Strip */}
         <MarqueeStrip
-          items={[
-            "CUTTING",
-            "ASSEMBLY",
-            "FINISHING",
-            "QUALITY",
-            "INNOVATION",
-          ]}
-          speed="normal"
+          text="CUTTING · ASSEMBLY · FINISHING · QUALITY · INNOVATION"
+          speed={100}
         />
 
         {/* Blueprint Section */}
@@ -294,7 +261,7 @@ function ManufacturingInner({ loaderData }: ManufacturingInnerProps) {
 
         {/* Quality Section */}
         <ManufacturingErrorBoundary>
-          <PublicQualitySection mediaAssets={mediaAssets} qualities={qualityItems} />
+          <PublicQualitySection mediaAssets={mediaAssets} qualities={qualities} />
         </ManufacturingErrorBoundary>
 
         {/* Case Study Section */}

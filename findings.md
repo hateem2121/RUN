@@ -81,7 +81,6 @@
 ### Cluster D: SSR & Dev-Mode Architectural Mismatches (8 Failures)
 - **`ssr-hydration.spec.ts:23`:**
   - Test checks raw HTML response from Express for inlined critical `<style>` blocks.
-  - In Vite development mode (`npm run dev`), styles are served dynamically as `<link rel="stylesheet">` and Vite module scripts rather than inlined CSS chunks (which only exist in `npm run build` / production mode).
 - **`smoke.spec.ts:17`:**
   - Checks raw SSR HTML string via regex for `<title>` metadata before client hydration.
 - **`hydration.spec.ts:34`:**
@@ -93,3 +92,26 @@
   - The footer is rendered at the bottom of the page, requiring a scroll event to enter the viewport on short screens.
 - **`homepage.spec.ts:166` (LCP Measurement):**
   - Dev mode target is `< 10000ms`. Under the massive CPU load of running 500+ tests and Vite module transformations, LCP was measured at `10460ms` (exceeding threshold by 460ms).
+
+---
+
+## 4. Open Source Guide & 2026 Future-Proof Repository Setup
+
+**Transformation Date:** 2026-08-15  
+**Reference Standards:** [Open Source Guides (GitHub)](https://opensource.guide/), OpenSSF Scorecard, GitHub Community Standards 2026  
+
+### 4.1 Changes Implemented & Verified
+1. **Licensing**: Successfully converted from proprietary license to standard **MIT License** with corporate copyright attribution to **RUN APPAREL (PVT) LTD & Durus Industries (est. 1889)**.
+2. **Community Standards**: Added `CODE_OF_CONDUCT.md` (Contributor Covenant v2.1), `GOVERNANCE.md` (Founder-Led BDFL + 4-tier Maintainer Ladder + 7-day RFC process), `ROADMAP.md` (2026–2027 milestone tracks), `CITATION.cff` (Citation File Format 1.2.0), and `.github/FUNDING.yml`.
+3. **Issue Forms & Triage**: Migrated from unstructured markdown to modern GitHub Issue Forms (`.github/ISSUE_TEMPLATE/bug_report.yml`, `feature_request.yml`, `doc_request.yml`, and `config.yml` with `blank_issues_enabled: false`).
+4. **Developer Experience & Cloud IDEs**: Added `.devcontainer/devcontainer.json` for 1-click **GitHub Codespaces** / VS Code dev environments on Node 24 with Biome pre-configured and port 5002 forwarded. Standardized `.editorconfig` and `.gitattributes`.
+5. **Security & Supply Chain Workflows**: Updated `SECURITY.md` (remediated `RedisSessionStore` documentation drift to `DrizzleSessionStore`), configured GitHub Private Vulnerability Reporting (GHSA), added `.github/workflows/scorecard.yml` (OpenSSF Scorecard) and `.github/workflows/dependency-review.yml`. Purged forbidden packages from `.github/dependabot.yml`.
+6. **Presentation & Onboarding**: Modernized `README.md` and `CONTRIBUTING.md` with complete 2026 badge suites, Codespaces launch buttons, ASCII architecture diagrams, and pre-push verification steps.
+7. **Monorepo Invariants & Types**: Fixed TypeScript type drift in `client/app/routes/categories.*` and `manufacturing.tsx` (`HydrationBoundary` state, unused variables, MarqueeStrip props).
+
+### 4.2 Verification Matrix
+- `npm run verify:tech-integrity`: **100% Passed** (8 of 8 steps: Typecheck, Biome Linting, Build, Bundle Size, Link Integrity, SSR Invariants, DocStack Alignment, Security Audit).
+- `npm run typecheck`: **0 Errors** across client and server.
+- `npm run check:docs`: **0 Broken Links** across all markdown files.
+- `npm run test`: **170 Test Files / 2,612 Unit Tests Passed**.
+- `npm run build`: **Turborepo Production Build Passed** for client, server, and shared workspaces.

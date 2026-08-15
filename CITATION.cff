@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software in research, product design, or academic study, please cite it as below."
+title: "RUN Remix: The Agentic Sportswear Factory & 3D Manufacturing CMS"
+abstract: "An AI-native, high-performance open-source CMS and 3D digital manufacturing platform for sustainable B2B sportswear engineering, built on React 19, Express 5, Vite 8, and Drizzle ORM."
+authors:
+  - family-names: "Jamshaid"
+    given-names: "M. Hateem"
+    affiliation: "RUN APPAREL (PVT) LTD / Durus Industries"
+version: "4.1.2"
+date-released: "2026-08-15"
+license: "MIT"
+repository-code: "https://github.com/hateem2121/RUN"
+keywords:
+  - "b2b-ecommerce"
+  - "manufacturing-cms"
+  - "sportswear"
+  - "3d-configurator"
+  - "react-19"
+  - "express-5"
+  - "agentic-software"
+  - "drizzle-orm"

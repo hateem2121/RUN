@@ -547,8 +547,7 @@ async function seed() {
       },
       {
         name: "Phone Armband",
-        description:
-          'Secure phone carrier - Fits 6.5" phones, sweat-resistant, easy access design',
+        description: 'Secure phone carrier - Fits 6.5" phones, sweat-resistant, easy access design',
         category: "Technology",
         type: "Carrier",
         material: "Neoprene",
@@ -636,11 +635,7 @@ async function seed() {
         urlPath: "/categories/athletic-wear/elite-performance-aero-jersey",
         minimumOrderQuantity: 100,
         leadTime: "3-4 weeks",
-        specifications: [
-          "Aerodynamic contouring",
-          "Laser-cut ventilation",
-          "Sublimation ready",
-        ],
+        specifications: ["Aerodynamic contouring", "Laser-cut ventilation", "Sublimation ready"],
         isActive: true,
         isFeatured: true,
       },
@@ -796,10 +791,7 @@ async function seed() {
       ]);
     }
 
-    const featuredSettings = await db
-      .select()
-      .from(homepageFeaturedProductsSettings)
-      .limit(1);
+    const featuredSettings = await db.select().from(homepageFeaturedProductsSettings).limit(1);
     if (featuredSettings.length === 0) {
       await db.insert(homepageFeaturedProductsSettings).values({
         title: "Featured B2B Collections",
@@ -946,8 +938,7 @@ async function seed() {
     if (sustHeroRows.length === 0) {
       await db.insert(sustainabilityHero).values({
         title: "Sustainability Woven Into Every Thread",
-        subtitle:
-          "Our commitment to ethical manufacturing and environmental stewardship.",
+        subtitle: "Our commitment to ethical manufacturing and environmental stewardship.",
         description:
           "Leading the transition to circular apparel manufacturing through renewable energy, zero liquid discharge, and closed-loop recycling.",
         isActive: true,
@@ -957,8 +948,7 @@ async function seed() {
         .update(sustainabilityHero)
         .set({
           title: "Sustainability Woven Into Every Thread",
-          subtitle:
-            "Our commitment to ethical manufacturing and environmental stewardship.",
+          subtitle: "Our commitment to ethical manufacturing and environmental stewardship.",
           description:
             "Leading the transition to circular apparel manufacturing through renewable energy, zero liquid discharge, and closed-loop recycling.",
           isActive: true,
@@ -1054,8 +1044,7 @@ async function seed() {
     if (techHeroRows.length === 0) {
       await db.insert(technologyHero).values({
         title: "WHERE SCIENCE MEETS FABRIC",
-        subtitle:
-          "Advanced R&D and automated precision sportswear manufacturing.",
+        subtitle: "Advanced R&D and automated precision sportswear manufacturing.",
         description:
           "Integrating smart textiles, aerodynamic modeling, and thermal regulation technologies into B2B apparel production.",
         primaryButtonText: "EXPLORE INNOVATIONS",
@@ -1069,8 +1058,7 @@ async function seed() {
         .update(technologyHero)
         .set({
           title: "WHERE SCIENCE MEETS FABRIC",
-          subtitle:
-            "Advanced R&D and automated precision sportswear manufacturing.",
+          subtitle: "Advanced R&D and automated precision sportswear manufacturing.",
           description:
             "Integrating smart textiles, aerodynamic modeling, and thermal regulation technologies into B2B apparel production.",
           isActive: true,
@@ -1084,8 +1072,7 @@ async function seed() {
         {
           name: "AeroWeave™ Aerodynamic Structure",
           shortDescription: "Turbulent boundary layer reduction fabric structure.",
-          description:
-            "Engineered surface texture reducing drag in high-speed athletic movements.",
+          description: "Engineered surface texture reducing drag in high-speed athletic movements.",
           category: "Textile Engineering",
           status: "Active",
           isActive: true,
@@ -1207,16 +1194,14 @@ async function seed() {
         {
           year: "2015",
           title: "Vertical Integration & Modernization",
-          description:
-            "Full digital supply chain and automated production lines.",
+          description: "Full digital supply chain and automated production lines.",
           isActive: true,
           sortOrder: 2,
         },
         {
           year: "2024",
           title: "Next-Gen Sustainable Performance",
-          description:
-            "Achieved GOTS and Zero Liquid Discharge certification milestones.",
+          description: "Achieved GOTS and Zero Liquid Discharge certification milestones.",
           isActive: true,
           sortOrder: 3,
         },
@@ -1349,10 +1334,7 @@ async function seed() {
       });
     }
 
-    const contactConfigRows = await db
-      .select()
-      .from(contactPageConfigurations)
-      .limit(1);
+    const contactConfigRows = await db.select().from(contactPageConfigurations).limit(1);
     if (contactConfigRows.length === 0) {
       await db.insert(contactPageConfigurations).values({
         title: "Contact RUN APPAREL",
@@ -1409,7 +1391,9 @@ async function seed() {
     console.log(`  ✓ Seeded ${legalData.length} legal policies`);
 
     const elapsed = Date.now() - startTime;
-    console.log(`\n🎉 [Seed Engine] Successfully seeded database in ${elapsed}ms! All B2B fixtures ready.`);
+    console.log(
+      `\n🎉 [Seed Engine] Successfully seeded database in ${elapsed}ms! All B2B fixtures ready.`,
+    );
   } catch (error) {
     console.error("❌ [Seed Engine] Seeding failed:", error);
     process.exit(1);

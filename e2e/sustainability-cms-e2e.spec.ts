@@ -111,7 +111,12 @@ test.describe("Sustainability Admin CMS Tests", () => {
     await page.waitForLoadState("domcontentloaded");
     await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 15000 });
 
-    await expect(page.locator("h1").filter({ hasText: /Eco-System|Sustainability/i }).first()).toBeVisible({ timeout: 20000 });
+    await expect(
+      page
+        .locator("h1")
+        .filter({ hasText: /Eco-System|Sustainability/i })
+        .first(),
+    ).toBeVisible({ timeout: 20000 });
     expect(page.url()).toContain("/admin/sustainability");
   });
 

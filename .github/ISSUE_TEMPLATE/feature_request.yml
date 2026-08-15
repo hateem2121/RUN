@@ -1,0 +1,59 @@
+name: "✨ Feature Request"
+description: "Suggest an idea, enhancement, or new manufacturing CMS capability"
+title: "feat: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an enhancement for RUN Remix!
+        Please describe your proposal clearly so the maintainers and community can review and discuss it.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Problem Statement / User Need"
+      description: "Is your feature request related to a specific manufacturing workflow or developer friction?"
+      placeholder: "As a B2B sportswear brand manager, I need to configure bulk Pantone colorway variants..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "Proposed Solution & Architecture"
+      description: "Describe how you envision this working within the RUN Remix stack (React 19 / Express 5 / Drizzle)."
+      placeholder: "Introduce a new Pantone swatch palette schema in @run-remix/shared and render it in the product configurator..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives Considered"
+      description: "Any alternative solutions or workarounds you've evaluated?"
+      placeholder: "A brief explanation of any other approaches you've considered."
+    validations:
+      required: false
+
+  - type: dropdown
+    id: impact-area
+    attributes:
+      label: "Target Area"
+      options:
+        - "Product Catalog & 3D Configurator"
+        - "Sustainability & ESG Transparency"
+        - "Admin CMS & Editorial Workflows"
+        - "Developer Tooling & Agentic Workflows"
+        - "Performance & SSR Optimization"
+        - "API & Integrations"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: "Willingness to Contribute"
+      options:
+        - label: "I am interested in working on this feature and submitting a pull request."
+          required: false
