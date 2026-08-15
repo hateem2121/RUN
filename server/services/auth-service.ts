@@ -145,6 +145,13 @@ export class AuthService {
       process.exit(1);
     }
 
+    passport.serializeUser((user: Express.User, cb: (err: unknown, id?: Express.User) => void) =>
+      cb(null, user),
+    );
+    passport.deserializeUser((user: SessionUser, cb: (err: unknown, user?: SessionUser) => void) =>
+      cb(null, user),
+    );
+
     if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
       if (process.env.NODE_ENV === "production" && !isTestRunner) {
         logger.error("CRITICAL SECURITY ERROR: Google Auth credentials missing in production.");
@@ -186,13 +193,6 @@ export class AuthService {
           done(null, sessionUser);
         },
       ),
-    );
-
-    passport.serializeUser((user: Express.User, cb: (err: unknown, id?: Express.User) => void) =>
-      cb(null, user),
-    );
-    passport.deserializeUser((user: SessionUser, cb: (err: unknown, user?: SessionUser) => void) =>
-      cb(null, user),
     );
 
     logger.info("[AuthService] ✅ Authentication configured");

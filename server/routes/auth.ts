@@ -22,7 +22,8 @@ router.get("/mock-login", async (req, res) => {
   const isMockEnabled =
     process.env.ENABLE_MOCK_ADMIN === "true" ||
     process.env.NODE_ENV === "test" ||
-    process.env.VITEST === "true";
+    process.env.VITEST === "true" ||
+    process.env.E2E === "true";
 
   if (!isMockEnabled) {
     res.status(404).json({ error: "Not found" });
@@ -52,14 +53,18 @@ router.get("/mock-login", async (req, res) => {
 
   req.session.regenerate((err) => {
     if (err) {
-      logger.error("Session regeneration failed", undefined, err as Error);
+      logger.error(
+        `Session regeneration failed: ${err instanceof Error ? err.stack : String(err)}`,
+      );
       res.status(500).json({ error: "Session regeneration failed" });
       return;
     }
 
     req.login(mockUser, (loginErr) => {
       if (loginErr) {
-        logger.error("Mock login failed", undefined, loginErr as Error);
+        logger.error(
+          `Mock login failed: ${loginErr instanceof Error ? loginErr.stack : String(loginErr)}`,
+        );
         res.status(500).json({ error: "Mock login failed" });
         return;
       }
@@ -67,7 +72,9 @@ router.get("/mock-login", async (req, res) => {
       // Ensure session is saved before redirecting/responding
       req.session.save((saveErr) => {
         if (saveErr) {
-          logger.error("Session save failed", undefined, saveErr as Error);
+          logger.error(
+            `Session save failed: ${saveErr instanceof Error ? saveErr.stack : String(saveErr)}`,
+          );
           res.status(500).json({ error: "Session save failed" });
           return;
         }
