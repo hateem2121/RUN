@@ -108,9 +108,13 @@ export class AuthService {
         saveUninitialized: false,
         cookie: {
           httpOnly: true,
-          secure: process.env.NODE_ENV === "production" ? true : "auto",
-          // SEC-10 EXCEPTION: "lax" is required instead of "strict" to survive Google OAuth redirect
-          sameSite: "strict",
+          secure:
+            process.env.NODE_ENV === "production" &&
+            process.env.E2E !== "true" &&
+            process.env.VITEST !== "true"
+              ? true
+              : "auto",
+          sameSite: "lax",
           maxAge: sessionTtl,
         },
       }),
