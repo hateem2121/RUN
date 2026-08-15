@@ -54,9 +54,10 @@ jobs:
           CLOUD_TASKS_AUDIENCE: "placeholder"
           CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
 
-      - name: "🚀 Start Production Server"
+      - name: "🚀 Start E2E Test Server"
         env:
           PORT: 5002
+          NODE_ENV: "test"
           ENABLE_MOCK_ADMIN: "true"
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url }}
           SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"

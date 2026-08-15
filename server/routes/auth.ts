@@ -20,17 +20,15 @@ router.get(
 // SECURITY: Strict check - mock login ONLY enabled in development/test environments
 // ENABLE_MOCK_ADMIN is IGNORED in production regardless of value
 router.get("/mock-login", async (req, res) => {
-  const isProduction = process.env.NODE_ENV === "production";
+  const isProduction =
+    process.env.NODE_ENV === "production" && process.env.ENABLE_MOCK_ADMIN !== "true";
   const isAllowedEnv =
     process.env.NODE_ENV === "development" ||
     process.env.NODE_ENV === "test" ||
-    process.env.VITEST === "true";
-  const isMockEnabled =
-    process.env.ENABLE_MOCK_ADMIN === "true" ||
-    process.env.NODE_ENV === "test" ||
-    process.env.VITEST === "true";
+    process.env.VITEST === "true" ||
+    process.env.ENABLE_MOCK_ADMIN === "true";
 
-  if (isProduction || !isAllowedEnv || !isMockEnabled) {
+  if (isProduction || !isAllowedEnv) {
     res.status(404).json({ error: "Not found" });
     return;
   }
