@@ -38,19 +38,23 @@ RUN Remix bridges heritage apparel craftsmanship (Durus Industries, est. 1889) w
 ## 🚀 Near-Term Horizon (Q3 2026 – Q4 2026)
 
 ### 1. Open Source Community & Ecosystem
+
 - [ ] **Community Standards**: Full compliance with [Open Source Guides](https://opensource.guide/), GitHub Issue Forms Suite, Code of Conduct, and Governance.
 - [ ] **Developer Experience**: 1-click Dev Containers for GitHub Codespaces & VS Code on Node 24.
 - [ ] **Supply Chain Hardening**: OpenSSF Scorecards, GitHub Dependency Review, and SLSA provenance tagging on all releases.
 
 ### 2. WebMCP & Agentic Form Protocols
+
 - [ ] **Native WebMCP Forms**: Standardize `<form toolname="..." tooldescription="...">` across all public and admin workflows.
 - [ ] **Agentic Event Handlers**: Native `event.nativeEvent.agentInvoked` support and streaming form responses for autonomous agentic pair programmers.
 
 ### 3. Next-Gen 3D Garment Configurator
+
 - [ ] **Lazy 3D Engine**: Enhanced `LazyUnifiedModelViewer` with instant glTF streaming, real-time material shader swaps (nylon, recycled polyester, organic cotton), and AR quicklook.
 - [ ] **Dynamic Colorway Engine**: Real-time Pantone and custom dye PMS preview with instant SVG vector decal mapping.
 
 ### 4. Observability & Telemetry
+
 - [ ] **OpenTelemetry Exporters**: Native OTLP traces, metrics, and structured log shipping to OpenTelemetry collectors.
 - [ ] **Real-Time Core Web Vitals**: In-app performance budget telemetry with automated threshold alerts.
 
@@ -59,10 +63,12 @@ RUN Remix bridges heritage apparel craftsmanship (Durus Industries, est. 1889) w
 ## 🔮 Future Horizon (2027+)
 
 ### 1. Multi-Tenant Manufacturing Exchange
+
 - [ ] **Tenant Isolation**: Secure row-level and schema-level multi-tenancy for global apparel brands and distributed manufacturing facilities.
 - [ ] **Supply Chain EDI Integration**: Standardized ANSI X12 / EDIFACT electronic data interchange connectors for global logistics.
 
 ### 2. AI Fabric Optimization & Pattern Layout
+
 - [ ] **Nesting & Yield Algorithms**: AI-assisted 2D pattern nesting to reduce fabric cutting waste toward 0% scrap.
 - [ ] **Carbon & ESG Tracking**: Automated Product Carbon Footprint (PCF) calculation per garment based on raw material provenance.
 

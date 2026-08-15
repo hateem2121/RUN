@@ -26,6 +26,7 @@ It provides a production-grade blueprint for building deterministic, high-perfor
 ## ⚡ Quick Start
 
 ### 1. Launch in Browser (1-Click Dev Container)
+
 Click [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/hateem2121/RUN) to launch a fully provisioned Node 24 + Biome cloud environment with port 5002 auto-forwarded.
 
 ### 2. Local Setup
@@ -155,4 +156,3 @@ npm run test                  # Vitest unit & integration tests
 ## 📄 License
 
 This project is licensed under the [MIT License](./LICENSE) © 2026 **RUN APPAREL (PVT) LTD** & **Durus Industries (est. 1889)**.
-

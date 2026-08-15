@@ -12,10 +12,12 @@ This gallery contains **12 editorial-quality architectural diagrams** designed u
 ## 1. System Architecture Suite
 
 ### 1.1 C4 Level 1 — System Context
+
 - **Diagram File**: [`wiki/diagrams/architecture-c4.html`](file:///Users/hateemjamshaid/Sites/RUN/wiki/diagrams/architecture-c4.html)
 - **Scope**: Explains the RUN Remix platform boundary, user ingress on port `5002`, and connections to all 6 external services (Google OAuth 2.0, Neon Postgres, Redis, Google Cloud Storage, Cloud Tasks, External B2B APIs via Opossum).
 
 ### 1.2 Express 5 Server Layered Architecture
+
 - **Diagram File**: [`wiki/diagrams/architecture-layers.html`](file:///Users/hateemjamshaid/Sites/RUN/wiki/diagrams/architecture-layers.html)
 - **Scope**: Four-layer vertical execution stack:
   1. *Middleware*: CSRF, RBAC, Rate Limiting, Correlation ID, SSR Cache
@@ -25,10 +27,12 @@ This gallery contains **12 editorial-quality architectural diagrams** designed u
   - Connected to Two-Tier Cache (L1 LRU + L2 Redis), Cloud Tasks worker queue, and Opossum circuit breakers.
 
 ### 1.3 Monorepo Import Boundaries
+
 - **Diagram File**: [`wiki/diagrams/architecture-monorepo.html`](file:///Users/hateemjamshaid/Sites/RUN/wiki/diagrams/architecture-monorepo.html)
 - **Scope**: Triangular workspace isolation contract across `client/`, `server/`, and `shared/` (`@run-remix/shared`). Illustrates allowed barrel imports vs. strictly prohibited cross-workspace direct dependencies.
 
 ### 1.4 Technology Stack Pyramid
+
 - **Diagram File**: [`wiki/diagrams/pyramid-tech-stack.html`](file:///Users/hateemjamshaid/Sites/RUN/wiki/diagrams/pyramid-tech-stack.html)
 - **Scope**: Stepped tapered pyramid of 30+ technologies spanning Infrastructure, Data, Services, Schemas (central integration point), Presentation, and Design.
 
@@ -37,6 +41,7 @@ This gallery contains **12 editorial-quality architectural diagrams** designed u
 ## 2. Execution & Data Flow Suite
 
 ### 2.1 B.L.A.S.T. Execution Protocol
+
 - **Diagram File**: [`wiki/diagrams/flow-blast.html`](file:///Users/hateemjamshaid/Sites/RUN/wiki/diagrams/flow-blast.html)
 - **Scope**: 5-stage sequential engineering methodology:
   - **B** — Blueprint (Blue)
@@ -46,14 +51,17 @@ This gallery contains **12 editorial-quality architectural diagrams** designed u
   - **T** — Trigger (Manufacturing Gold)
 
 ### 2.2 Product Request Lifecycle
+
 - **Diagram File**: [`wiki/diagrams/flow-request-lifecycle.html`](file:///Users/hateemjamshaid/Sites/RUN/wiki/diagrams/flow-request-lifecycle.html)
 - **Scope**: 5-column swimlane illustrating the complete lifecycle of a product query: Browser → React Router v8 Client Loader → Express API → Redis L2 Cache (Hit short-circuit vs Miss) → Neon DB → Redis SETEX write-through → DOM render.
 
 ### 2.3 Google OAuth 2.0 Authentication Flow
+
 - **Diagram File**: [`wiki/diagrams/flow-auth.html`](file:///Users/hateemjamshaid/Sites/RUN/wiki/diagrams/flow-auth.html)
 - **Scope**: 9-step sequence from `/api/login` through Google consent, token exchange, Neon user upsert, Redis sliding session (`sess:{id}`), and secure `connect.sid` cookie issuance.
 
 ### 2.4 Core Data Models (ERD)
+
 - **Diagram File**: [`wiki/diagrams/data-erd.html`](file:///Users/hateemjamshaid/Sites/RUN/wiki/diagrams/data-erd.html)
 - **Scope**: Complete schema relationship model for `users`, `sessions`, `products`, `categories`, `media`, `materials`, `product_relations`, `blog`, `sustainability_metrics`, and `metric_history`.
 
@@ -62,18 +70,22 @@ This gallery contains **12 editorial-quality architectural diagrams** designed u
 ## 3. Security, Operations & Roadmap Suite
 
 ### 3.1 Security Defence-in-Depth
+
 - **Diagram File**: [`wiki/diagrams/security-layers.html`](file:///Users/hateemjamshaid/Sites/RUN/wiki/diagrams/security-layers.html)
 - **Scope**: 6 concentric shells detailing 12 security controls from external Network/Transport through Application, Service, Data, down to the Core Secrets layer.
 
 ### 3.2 CI/CD Canary Deployment Pipeline
+
 - **Diagram File**: [`wiki/diagrams/flow-cicd-canary.html`](file:///Users/hateemjamshaid/Sites/RUN/wiki/diagrams/flow-cicd-canary.html)
 - **Scope**: 3-phase automated deployment pipeline on Google Cloud Build featuring pre-deployment Drizzle DB migrations, canary health checks, 10% → 50% progressive traffic shifting, and full rollout.
 
 ### 3.3 Multi-Region Deployment Strategy
+
 - **Diagram File**: [`wiki/diagrams/infra-multiregion.html`](file:///Users/hateemjamshaid/Sites/RUN/wiki/diagrams/infra-multiregion.html)
 - **Scope**: Geographic multi-region topology on Google Cloud Run (`us-central1`, `europe-west1`, `asia-northeast1`) with global Anycast load balancing and Neon read replication.
 
 ### 3.4 2026 Strategic Roadmap Timeline
+
 - **Diagram File**: [`wiki/diagrams/timeline-roadmap.html`](file:///Users/hateemjamshaid/Sites/RUN/wiki/diagrams/timeline-roadmap.html)
 - **Scope**: Chronological timeline through Q2 Foundation (complete), Q3 Quality & Features (active sprint), and Q4 Scale & Expansion (planned).
 

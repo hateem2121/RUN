@@ -43,6 +43,7 @@ Include in your report:
 ## Scope
 
 ### In Scope
+
 - `server/` — Express 5 API routes, services, middleware, authentication
 - `client/` — React 19 frontend, form handling, CSP nonce protection, data exposure
 - `shared/` — Zod schemas, TypeScript types, route manifests
@@ -51,6 +52,7 @@ Include in your report:
 - Admin panel (`/admin/*`) — RBAC, session integrity, audit logging
 
 ### Out of Scope
+
 - Third-party upstream dependencies (report directly to upstream maintainers)
 - Social engineering, phishing, or physical attacks
 - Distributed Denial-of-Service (DDoS) against cloud infrastructure
@@ -88,4 +90,3 @@ We adhere to coordinated responsible disclosure. Once a remediation is deployed,
 3. Update relevant documentation and regression test suites.
 
 Thank you for helping keep RUN APPAREL's open-source ecosystem secure.
-

@@ -17,6 +17,7 @@ All contributors and maintainers are expected to uphold the [Contributor Covenan
 ## ⚡ Quick Onboarding & Environment Setup
 
 ### Option A: 1-Click Cloud Development (Recommended)
+
 You can launch an instant, pre-configured development environment in your browser using **GitHub Codespaces** or VS Code Dev Containers:
 
 1. Click **Code > Codespaces > Create codespace on main**.
@@ -55,12 +56,15 @@ We follow standard GitHub flow with branch-based pull requests.
 
 1. **Find or Open an Issue:** Check [open issues](https://github.com/hateem2121/RUN/issues). For bugs or features, use the structured [GitHub Issue Forms](./.github/ISSUE_TEMPLATE/).
 2. **Create a Feature Branch:**
+
    ```bash
    git checkout -b feat/3d-pantone-swatches
    # or
    git checkout -b fix/auth-session-rotation
    ```
+
 3. **Follow the B.L.A.S.T. Protocol:**
+
    - **Blueprint:** Map schemas and types before code.
    - **Link:** Verify API contracts and Zod schemas in `@run-remix/shared`.
    - **Architect:** Structure logic cleanly (Routes -> Services with `neverthrow` Results).
@@ -122,4 +126,3 @@ npm run test                  # Vitest unit & integration tests
 Thank you for helping engineer the future of sustainable sportswear technology.
 
 **RUN APPAREL (PVT) LTD** — Sialkot, Pakistan | Subsidiary of Durus Industries (est. 1889)
-

@@ -1,28 +1,28 @@
 # Task Plan
 
 **Date:** 2026-08-15
-**Goal:** Comprehensive Tech Stack & Dependency Freshness Audit & Report
+**Goal:** Investigate & Diagnose CI Failures (Knip Unused Code Check, Markdown Lint, OpenSSF Scorecard)
 
 ## Current Session Plan
-- Inspect root and package-level `package.json` files (`client/package.json`, `server/package.json`, `shared/package.json`).
-- Benchmark all packages against `GEMINI.md` §4 authoritative tech stack reference (React 19.2, Vite 8, Express 5.2, Drizzle 0.45, Tailwind v4, Biome 2.5, TS 6).
-- Audit dependency freshness via `npm outdated` and security via `audit-ci`.
-- Verify forbidden pattern compliance (Zero tolerance for framer-motion, bullmq, sentry, lenis, etc.).
-- Execute all verification gates (`npm run verify:tech-integrity`, `npm run typecheck`, `npm run build`, `npm run test`).
-- Compile and deliver a comprehensive Tech Stack Health & Freshness Report.
+- Inspect CI workflow files in `.github/workflows/` related to Knip, Markdown Lint (docs), and OpenSSF Scorecard.
+- Reproduce Knip and Markdown Lint / Docs checks locally using `npm run check:knip` / `npm run check:docs` / `npx markdownlint-cli2` / etc.
+- Analyze OpenSSF Scorecard workflow configuration, permissions, SARIF upload requirements, and branch settings.
+- Document detailed root causes and recommended remediation steps for each of the 3 failing CI checks.
 
 
 
 ## Current Session Outcome
-- Completed comprehensive tech stack, dependency freshness, and forbidden-pattern audit.
-- Aligned `biome.json` ignores (`!wiki`, `!graphify-out`) and resolved minor lint/formatting differences in `products.tsx`, `manufacturing.tsx`, `e2e/about-and-content.spec.ts`, and `e2e/auth.setup.ts`.
-- Verified 100% full-stack compliance:
-  - `npm run check`: 0 type errors, 0 linter errors across 973 files.
-  - `npm run test`: 170 test files, 2,612 unit tests passed (100%).
-  - `npm run build`: Turborepo production build passed for client, server, and shared workspaces.
-  - `npm run verify:tech-integrity`: All 8 checks passed.
-- Recorded comprehensive audit report in `findings.md`.
+- Successfully diagnosed and remediated all 3 failing GitHub Actions CI checks on `main`:
+  1. **Knip Unused Code Check**: Added `Generate Client Route Types` (`react-router typegen`) to `.github/workflows/code-quality.yml`.
+  2. **OpenSSF Scorecard**: Corrected `ossf/scorecard-action` to official v2.4.1 SHA `f49aabe0b5af0936a0987cfb85d86b75731b0186` in `.github/workflows/scorecard.yml`.
+  3. **Markdown Lint**: Formatted all community and wiki documentation (`SECURITY.md`, `SUPPORT.md`, `GOVERNANCE.md`, `ROADMAP.md`, `README.md`, `CONTRIBUTING.md`, `.github/PULL_REQUEST_TEMPLATE.md`, `wiki/Home.md`, `wiki/Visual-Architecture.md`) to 100% compliance.
+- Verified all quality gates:
+  - `npx markdownlint-cli2 ...`: **0 issues in 0 files** across 193 markdown files.
+  - `npm run check:knip`: **Exit code 0** (clean).
+  - `npm run check`: **0 type errors, 0 linter errors** across 973 files.
+  - `npm run test`: **170 test files, 2,612 unit/integration tests passed (100%)**.
+  - `npm run verify:tech-integrity`: **8/8 checks passed**.
 
 ## Next Steps
-- Deliver the final Tech Stack Freshness & Health Report to the user.
+- All 3 CI check failure causes are remediated and verified locally. Ready for commit/push.
 

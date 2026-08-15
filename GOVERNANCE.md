@@ -16,6 +16,7 @@ RUN Remix is an open-source, AI-native B2B sportswear CMS and Agentic Software F
 ## 2. Roles and Responsibilities
 
 ### 2.1 Project Lead (Benevolent Dictator for Life - BDFL)
+
 - **Current Lead:** M. Hateem Jamshaid (`@hateemjamshaid`) — Business Development Director, RUN APPAREL (PVT) LTD.
 - **Responsibilities:**
   - Sets the overarching strategic roadmap and architectural vision.
@@ -23,6 +24,7 @@ RUN Remix is an open-source, AI-native B2B sportswear CMS and Agentic Software F
   - Grants and revokes Maintainer and Subsystem Owner permissions.
 
 ### 2.2 Core Maintainers
+
 - **Responsibilities:**
   - Active triage, code review, and merging of Pull Requests.
   - Ensuring strict compliance with `gemini.md` (SSOT), Biome linting, and zero-error test suites.
@@ -30,6 +32,7 @@ RUN Remix is an open-source, AI-native B2B sportswear CMS and Agentic Software F
   - Mentoring new contributors and reviewing RFC proposals.
 
 ### 2.3 Subsystem Owners
+
 - **Responsibilities:**
   - Subject-matter experts responsible for specific modules within the monorepo:
     - **Frontend & 3D:** `@run-remix/client`, Tailwind v4, 3D glTF viewers, GSAP animations.
@@ -38,10 +41,12 @@ RUN Remix is an open-source, AI-native B2B sportswear CMS and Agentic Software F
     - **Security & CI/CD:** GitHub Actions workflows, OpenSSF Scorecards, Cloud Build, Docker.
 
 ### 2.4 Reviewers
+
 - **Responsibilities:**
   - Regular contributors with domain expertise who review community pull requests and verify test coverage.
 
 ### 2.5 Contributors
+
 - **Responsibilities:**
   - Any individual who submits code, documentation, bug reports, feature requests, or design improvements adhering to the [Code of Conduct](./CODE_OF_CONDUCT.md) and [Contributing Guide](./CONTRIBUTING.md).
 
@@ -70,11 +75,13 @@ We believe in meritocratic progression based on sustained quality, technical ali
 ```
 
 ### Path to Reviewer
+
 1. Submit at least 5 high-quality merged pull requests (features, bug fixes, or test enhancements).
 2. Demonstrate strong familiarity with the B.L.A.S.T. protocol, TypeScript strict typing, and `gemini.md` constraints.
 3. Nominated by an existing Maintainer and approved by the Project Lead.
 
 ### Path to Core Maintainer
+
 1. Active participation as a Reviewer for at least 3 months.
 2. Consistent technical judgment, adherence to security practices, and empathetic code reviews.
 3. Unanimous approval from existing Core Maintainers and confirmation by the Project Lead.
@@ -84,11 +91,13 @@ We believe in meritocratic progression based on sustained quality, technical ali
 ## 4. Decision-Making & RFC Process
 
 ### 4.1 Daily Decisions (Lazy Consensus)
+
 For bug fixes, documentation updates, dependency bumps, performance optimizations, and non-breaking improvements:
 - Requires review and approval from at least **one Core Maintainer** or **Subsystem Owner**.
 - Automated CI checks (`npm run verify:tech-integrity`, typecheck, lint, tests) must be 100% green.
 
 ### 4.2 Major Architectural Changes (RFC Process)
+
 For changes that impact:
 - Core data contracts in `@run-remix/shared`
 - Breaking API route changes or schema migrations

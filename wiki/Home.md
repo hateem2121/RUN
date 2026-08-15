@@ -9,7 +9,7 @@
 [![Port](https://img.shields.io/badge/Port-5002-orange?style=flat-square)](./Getting-Started)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](https://opensource.org/licenses/MIT)
 
-> **RUN Remix** is the production-grade CMS and B2B e-commerce platform powering RUN APPAREL's premium sustainable sportswear manufacturing business. This wiki serves as the **evergreen knowledge hub** — covering architecture, roadmap, operations, and developer onboarding.
+**RUN Remix** is the production-grade CMS and B2B e-commerce platform powering RUN APPAREL's premium sustainable sportswear manufacturing business. This wiki serves as the **evergreen knowledge hub** — covering architecture, roadmap, operations, and developer onboarding.
 
 > [!NOTE]
 > This wiki supplements the in-repo `docs/` directory. Versioned technical specs live in `docs/`; this wiki covers high-level architecture, roadmaps, operational guides, and cross-cutting concerns that evolve independently of code releases.

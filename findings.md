@@ -175,4 +175,77 @@
 - `npm run build`: **Turborepo production build passed for all 3 workspaces**.
 - `npm run verify:tech-integrity`: **8/8 checks passed**.
 
+---
+
+## 7. Forensic CI Failure Root-Cause Analysis (3 Failing Checks)
+
+**Incident Date:** 2026-08-15  
+**GitHub Actions Run Batch:** `31897756573`, `31897756575`, `31897756562` (Branch: `main`)
+
+### 7.1 Check 1: `Code Quality & Dead Code / Knip Unused Code Check` (Failed in 59s / 1m 4s)
+- **Run ID:** `31897756573`
+- **Failing Step:** `Run Knip Check` (`npm run check:knip`)
+- **Error Signature:**
+  ```
+  Unresolved imports (7)
+  ./+types/blog._index             client/app/routes/blog._index.tsx:2:29            
+  ./+types/blog.$slug              client/app/routes/blog.$slug.tsx:2:29             
+  ./+types/categories.$            client/app/routes/categories.$.tsx:24:29          
+  ./+types/developer.guides.$slug  client/app/routes/developer.guides.$slug.tsx:11:29
+  ./+types/gallery                 client/app/routes/gallery.tsx:1:29                
+  ./+types/privacy                 client/app/routes/privacy.tsx:4:29                
+  ./+types/terms                   client/app/routes/terms.tsx:4:29                  
+  Process completed with exit code 1.
+  ```
+- **Root Cause:**
+  1. React Router v8 generates route types dynamically via `react-router typegen` inside `./+types/` relative to each route file.
+  2. In `.github/workflows/code-quality.yml`, the workflow only executed `npm run build --prefix shared` before invoking `npm run check:knip`. It **did not execute React Router typegen**.
+  3. Consequently, on a pristine CI runner, `./+types/*` did not exist on the filesystem, causing Knip to fail on unresolved imports.
+- **Remediation Blueprint:**
+  - Update `.github/workflows/code-quality.yml` step before Knip to run `npm exec -w @run-remix/client -- react-router typegen` (or add a workspace pre-check command).
+  - Add `./+types/**` (or route type patterns) to `ignoreUnresolved` in `knip.config.ts` as defense-in-depth.
+
+---
+
+### 7.2 Check 2: `Docs Lint / Markdown Lint` (Failed in 7s / 10s)
+- **Run ID:** `31897756575`
+- **Failing Step:** `Run markdownlint` (`DavidAnson/markdownlint-cli2-action`)
+- **Error Signature:**
+  ```
+  ##[error]SECURITY.md:92 MD012/no-multiple-blanks Multiple consecutive blank lines
+  ##[error]SUPPORT.md:2:1 MD009/no-trailing-spaces Trailing spaces
+  ##[error]SUPPORT.md:13 MD012/no-multiple-blanks Multiple consecutive blank lines
+  ##[error]wiki/Home.md:13 MD028/no-blanks-blockquote Blank line inside blockquote
+  ##[error]wiki/Visual-Architecture.md:14 MD022/blanks-around-headings Headings should be surrounded by blank lines
+  (and related headings in GOVERNANCE.md, ROADMAP.md, CONTRIBUTING.md, README.md, PULL_REQUEST_TEMPLATE.md)
+  ```
+- **Root Cause:**
+  1. Commit `5dc09a2` and `513931e` introduced newly standardized open-source governance and documentation files (`SECURITY.md`, `SUPPORT.md`, `GOVERNANCE.md`, `ROADMAP.md`, `wiki/Home.md`, `wiki/Visual-Architecture.md`).
+  2. Several of these files contained Markdown formatting rule violations strictly enforced by `.markdownlint.json`:
+     - **MD009**: Trailing whitespace on blank lines.
+     - **MD012**: Consecutive multiple blank lines (2+ blank lines).
+     - **MD022**: Headings missing blank lines before/after content fences.
+     - **MD028**: Blank line separating blockquotes.
+     - **MD031**: Fenced code blocks missing surrounding blank lines.
+- **Remediation Blueprint:**
+  - Run markdown formatting auto-fixes (`npx markdownlint-cli2 --fix`) across all affected Markdown files, or manually resolve the spacing/heading invariants.
+
+---
+
+### 7.3 Check 3: `OpenSSF Scorecard / Scorecard analysis` (Failed in 4s / 8s)
+- **Run ID:** `31897756562`
+- **Failing Step:** `Set up job`
+- **Error Signature:**
+  ```
+  Scorecard analysis  Set up job
+  ##[error]Unable to resolve action `ossf/scorecard-action@62b2cac7ed8198b15735db49cb1211a130422495`, unable to find version `62b2cac7ed8198b15735db49cb1211a130422495`
+  ```
+- **Root Cause:**
+  1. In `.github/workflows/scorecard.yml` (line 34), the action uses a pinned SHA:
+     `uses: ossf/scorecard-action@62b2cac7ed8198b15735db49cb1211a130422495 # v2.4.1`
+  2. The SHA `62b2cac7ed8198b15735db49cb1211a130422495` is an invalid/hallucinated Git commit SHA that does not exist in the `ossf/scorecard-action` repository.
+  3. When GitHub Actions sets up the runner environment and attempts to fetch this Git ref, the action resolution fails immediately, aborting the workflow in 4 seconds.
+- **Remediation Blueprint:**
+  - Correct the commit SHA in `.github/workflows/scorecard.yml` to the official `ossf/scorecard-action` v2.4.1 commit SHA: `f49aabe0b5af0936a0987cfb85d86b75731b0186` (or `v2.4.1`).
+
 
