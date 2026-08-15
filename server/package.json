@@ -23,7 +23,7 @@
     "@opentelemetry/sdk-node": "^0.221.0",
     "@opentelemetry/sdk-trace-base": "^2.2.0",
     "@opentelemetry/semantic-conventions": "^1.38.0",
-    "@react-router/express": "^8.0.0",
+    "@react-router/express": "^8.3.0",
     "@run-remix/shared": "*",
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
