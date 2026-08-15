@@ -106,15 +106,17 @@ const FloatingDockDesktop = ({
         });
       };
 
-      dockRef.current?.addEventListener("mousemove", handleMouseMove);
-      dockRef.current?.addEventListener("mouseleave", handleMouseLeave);
+      const dockElement = dockRef.current;
+
+      dockElement?.addEventListener("mousemove", handleMouseMove);
+      dockElement?.addEventListener("mouseleave", handleMouseLeave);
 
       return () => {
-        dockRef.current?.removeEventListener("mousemove", handleMouseMove);
-        dockRef.current?.removeEventListener("mouseleave", handleMouseLeave);
+        dockElement?.removeEventListener("mousemove", handleMouseMove);
+        dockElement?.removeEventListener("mouseleave", handleMouseLeave);
       };
     },
-    { scope: dockRef, dependencies: [iconSize] },
+    { scope: dockRef, dependencies: [iconSize], revertOnUpdate: true },
   );
 
   return (

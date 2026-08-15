@@ -2,6 +2,7 @@ import type { HomepageProcessCard } from "@shared/schemas/content/home";
 import { ArrowRight } from "lucide-react";
 import type React from "react";
 import { useRef } from "react";
+import { Link } from "react-router";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { PROCESS_STEPS as FALLBACK_STEPS } from "./constants";
@@ -142,12 +143,12 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
         className="relative flex min-h-screen w-full flex-col overflow-x-hidden md:flex-row md:items-center"
       >
         <div className="absolute top-8 left-8 z-elevated">
-          <h3
+          <h2
             id="process-heading"
             className="rounded-full border border-border bg-surface/20 px-4 py-2 text-sm uppercase tracking-widest backdrop-blur-sm md:text-xl"
           >
             Production Pipeline
-          </h3>
+          </h2>
         </div>
 
         {/* Decorative Drawing SVG - Desktop Only */}
@@ -205,22 +206,22 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
 
                 {/* Content Side */}
                 <div className="relative flex flex-col justify-center">
-                  <h2 className="mb-4 font-bold text-custom-space-149 uppercase leading-custom-misc-155 md:mb-8 md:text-custom-space-150">
+                  <h3 className="mb-4 font-bold text-custom-space-149 uppercase leading-custom-misc-155 md:mb-8 md:text-custom-space-150">
                     {step.title}
-                  </h2>
+                  </h3>
                   <p className="mb-8 max-w-md font-light text-base text-muted-foreground leading-relaxed md:text-xl">
                     {step.description}
                   </p>
-                  <button
-                    type="button"
-                    aria-label={`Proceed to next step: ${step.title}`}
-                    className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-foreground transition-all duration-300 hover:bg-foreground hover:text-background md:h-16 md:w-16"
+                  <Link
+                    to="/manufacturing"
+                    aria-label={`Explore manufacturing pipeline: ${step.title}`}
+                    className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-foreground transition-all duration-300 hover:bg-foreground hover:text-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:h-16 md:w-16"
                   >
                     <ArrowRight
                       aria-hidden="true"
                       className="h-5 w-5 -rotate-45 transition-transform duration-300 group-hover:rotate-0 md:h-6 md:w-6"
                     />
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

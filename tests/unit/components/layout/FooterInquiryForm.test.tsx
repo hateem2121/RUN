@@ -1,5 +1,5 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FooterInquiryForm } from "../../../../client/app/components/layout/FooterInquiryForm";
 
 // Mock GSAP
@@ -7,24 +7,27 @@ vi.mock("gsap", () => ({
   default: {
     timeline: () => ({
       to: vi.fn().mockReturnThis(),
-      call: vi.fn().mockImplementation((cb) => { cb(); return { to: vi.fn() }; }),
+      call: vi.fn().mockImplementation((cb) => {
+        cb();
+        return { to: vi.fn() };
+      }),
     }),
-  }
+  },
 }));
 
 // Mock Magnetic
 vi.mock("../../../../client/app/components/ui/Magnetic", () => ({
-  Magnetic: ({ children }: any) => <div>{children}</div>
+  Magnetic: ({ children }: any) => <div>{children}</div>,
 }));
 
 // Mock Store
 vi.mock("../../../../client/app/stores/useCursorStore", () => ({
-  useCursorStore: () => ({ setCursor: vi.fn(), resetCursor: vi.fn() })
+  useCursorStore: () => ({ setCursor: vi.fn(), resetCursor: vi.fn() }),
 }));
 
 // Mock utils
 vi.mock("../../../../client/app/lib/utils", () => ({
-  cn: (...args: any[]) => args.join(" ")
+  cn: (...args: any[]) => args.join(" "),
 }));
 
 describe("FooterInquiryForm", () => {

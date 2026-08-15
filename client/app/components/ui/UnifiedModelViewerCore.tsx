@@ -86,7 +86,7 @@ export function UnifiedModelViewer({
   const [isModelViewerReady, setIsModelViewerReady] = useState(false);
   const [webglLost, setWebglLost] = useState(false);
   const [shouldLoadModel, setShouldLoadModel] = useState(finalConfig.loading !== "lazy");
-  const [retryTimeouts, setRetryTimeouts] = useState<number[]>([]);
+  const timeoutsRef = useRef<Set<NodeJS.Timeout>>(new Set());
   const [isVisible, setIsVisible] = useState(finalConfig.loading !== "lazy");
 
   const [userActivated, setUserActivated] = useState(
@@ -98,9 +98,28 @@ export function UnifiedModelViewer({
   const [optimizedModelUrl, setOptimizedModelUrl] = useState<string | null>(null);
 
   // Refs
+  const cachedBlobRef = useRef<string | null>(null);
+  const optimizedUrlRef = useRef<string | null>(null);
   const modelViewerRef = useRef<ModelViewerElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
+
+  const clearAllTimeouts = useCallback(() => {
+    for (const timeout of timeoutsRef.current) {
+      clearTimeout(timeout);
+    }
+    timeoutsRef.current.clear();
+  }, []);
+
+  const registerTimeout = useCallback((callback: () => void, delay: number): NodeJS.Timeout => {
+    let timerId: NodeJS.Timeout;
+    timerId = setTimeout(() => {
+      timeoutsRef.current.delete(timerId);
+      callback();
+    }, delay);
+    timeoutsRef.current.add(timerId);
+    return timerId;
+  }, []);
 
   // Error boundary integration (moved after state declarations)
   const handleErrorBoundaryError = useCallback(
@@ -128,11 +147,7 @@ export function UnifiedModelViewer({
         progress: 0,
       }));
 
-      // Clear any retry timeouts - FIXED: retryTimeouts is state, not ref
-      for (const timeout of retryTimeouts) {
-        clearTimeout(timeout);
-      }
-      setRetryTimeouts([]);
+      clearAllTimeouts();
 
       // Reset model viewer if it exists
       if (modelViewerRef.current) {
@@ -141,7 +156,7 @@ export function UnifiedModelViewer({
           modelViewerRef.current.src = "";
 
           // Reset to initial state and reapply src after brief delay
-          setTimeout(() => {
+          registerTimeout(() => {
             if (modelViewerRef.current && asset) {
               const modelUrl = MediaUrlBuilder.buildModelUrlSafe(asset.id, asset);
 
@@ -152,7 +167,7 @@ export function UnifiedModelViewer({
         } catch (_error) {}
       }
     },
-    [retryTimeouts],
+    [clearAllTimeouts, registerTimeout],
   );
 
   // Enhanced GLTF file analysis with compression detection
@@ -231,11 +246,7 @@ export function UnifiedModelViewer({
       return;
     }
 
-    // Clear existing timeouts
-    for (const timeout of retryTimeouts) {
-      clearTimeout(timeout);
-    }
-    setRetryTimeouts([]);
+    clearAllTimeouts();
 
     // Use central error config for retry delay
     const delay = errorConfig.retryDelayBase * 2 ** (nextRetryCount - 1);
@@ -250,7 +261,7 @@ export function UnifiedModelViewer({
     }));
 
     // Schedule retry with exponential backoff
-    const timeout = setTimeout(() => {
+    registerTimeout(() => {
       setLoadingState((prev) => ({
         ...prev,
         errorMessage: undefined,
@@ -267,7 +278,7 @@ export function UnifiedModelViewer({
         modelViewer.removeAttribute("auto-rotate");
 
         // Restore with delay to ensure clean state
-        setTimeout(() => {
+        registerTimeout(() => {
           if (modelViewerRef.current) {
             modelViewerRef.current.src = currentSrc;
             // CRITICAL FIX: Boolean attributes - only set if true, otherwise remove
@@ -286,15 +297,14 @@ export function UnifiedModelViewer({
         }, 200);
       }
     }, delay);
-
-    setRetryTimeouts([timeout as unknown as number]);
   }, [
     loadingState.retryCount,
     errorConfig.maxRetries,
     errorConfig.retryDelayBase,
     finalConfig.autoRotate,
     finalConfig.cameraControls,
-    retryTimeouts,
+    clearAllTimeouts,
+    registerTimeout,
   ]); // Remove unstable dependencies
 
   // Simple WebGL context recovery
@@ -304,7 +314,7 @@ export function UnifiedModelViewer({
         const currentSrc = modelViewerRef.current.src;
         modelViewerRef.current.src = "";
 
-        setTimeout(() => {
+        registerTimeout(() => {
           if (modelViewerRef.current) {
             modelViewerRef.current.src = currentSrc;
             setWebglLost(false);
@@ -314,7 +324,7 @@ export function UnifiedModelViewer({
         handleError(error as Error, "WebGL Recovery");
       }
     }
-  }, [handleError]);
+  }, [handleError, registerTimeout]);
 
   // REMOVED: Data URI compatibility layer that was interfering with @google/model-viewer
   // @google/model-viewer handles embedded textures natively with proper CSP headers
@@ -443,8 +453,39 @@ export function UnifiedModelViewer({
 
   // Enhanced GLTF initialization with intelligent caching
   useEffect(() => {
+    let isMounted = true;
+
+    const safeSetCachedBlob = (newBlobUrl: string | null) => {
+      if (!isMounted) {
+        if (newBlobUrl?.startsWith("blob:")) {
+          URL.revokeObjectURL(newBlobUrl);
+        }
+        return;
+      }
+      if (cachedBlobRef.current?.startsWith("blob:")) {
+        URL.revokeObjectURL(cachedBlobRef.current);
+      }
+      cachedBlobRef.current = newBlobUrl;
+      setCachedModelBlob(newBlobUrl);
+    };
+
+    const safeSetOptimizedUrl = (newUrl: string | null) => {
+      if (!isMounted) {
+        if (newUrl?.startsWith("blob:")) {
+          URL.revokeObjectURL(newUrl);
+        }
+        return;
+      }
+      if (optimizedUrlRef.current?.startsWith("blob:")) {
+        URL.revokeObjectURL(optimizedUrlRef.current);
+      }
+      optimizedUrlRef.current = newUrl;
+      setOptimizedModelUrl(newUrl);
+    };
+
     const initializeModelViewer = async () => {
       try {
+        if (!isMounted) return;
         setLoadingState((prev) => ({ ...prev, status: "initializing" }));
 
         // Attempt to batch fetch GLTF content with caching
@@ -452,19 +493,12 @@ export function UnifiedModelViewer({
         if (asset.id && (fileAnalysis.isGltf || fileAnalysis.isGlb)) {
           try {
             const batchResults = await batchFetchMediaContent([asset.id]);
+            if (!isMounted) return;
             const result = batchResults[0];
 
             if (result?.success && (result.content || result.url)) {
               // Properly handle different content types
               try {
-                // Revoke any existing blob URL to prevent memory leaks
-                if (cachedModelBlob?.startsWith("blob:")) {
-                  URL.revokeObjectURL(cachedModelBlob);
-                }
-                if (optimizedModelUrl?.startsWith("blob:")) {
-                  URL.revokeObjectURL(optimizedModelUrl);
-                }
-
                 if (result.content) {
                   // Check content type - log first 20 chars for debugging
                   if (typeof result.content === "string") {
@@ -472,14 +506,15 @@ export function UnifiedModelViewer({
                       // Data URL - fetch to get binary content
                       const response = await fetch(result.content);
                       const arrayBuffer = await response.arrayBuffer();
+                      if (!isMounted) return;
                       const modelBlob = new Blob([arrayBuffer], {
                         type: fileAnalysis.isGlb ? "model/gltf-binary" : "model/gltf+json",
                       });
                       const blobUrl = URL.createObjectURL(modelBlob);
-                      setCachedModelBlob(blobUrl);
+                      safeSetCachedBlob(blobUrl);
                     } else if (result.content.startsWith("http")) {
                       // Regular URL - use directly without creating blob
-                      setOptimizedModelUrl(result.content);
+                      safeSetOptimizedUrl(result.content);
                     } else {
                       // Assume base64 - decode and create blob with safety
                       try {
@@ -492,7 +527,7 @@ export function UnifiedModelViewer({
                           type: fileAnalysis.isGlb ? "model/gltf-binary" : "model/gltf+json",
                         });
                         const blobUrl = URL.createObjectURL(modelBlob);
-                        setCachedModelBlob(blobUrl);
+                        safeSetCachedBlob(blobUrl);
                       } catch (_base64Error) {
                         // Fall through to network fallback
                       }
@@ -503,13 +538,14 @@ export function UnifiedModelViewer({
                       type: fileAnalysis.isGlb ? "model/gltf-binary" : "model/gltf+json",
                     });
                     const blobUrl = URL.createObjectURL(modelBlob);
-                    setCachedModelBlob(blobUrl);
+                    safeSetCachedBlob(blobUrl);
                   }
                 } else if (result.url) {
                   // Only URL provided - use it directly
-                  setOptimizedModelUrl(result.url);
+                  safeSetOptimizedUrl(result.url);
                 }
 
+                if (!isMounted) return;
                 setLoadingState((prev) => ({
                   ...prev,
                   status: "loading",
@@ -517,24 +553,32 @@ export function UnifiedModelViewer({
                 }));
               } catch (_blobError) {
                 // Clear any partial state and fallback to direct URL loading
-                setCachedModelBlob(null);
-                setOptimizedModelUrl(null);
+                if (isMounted) {
+                  safeSetCachedBlob(null);
+                  safeSetOptimizedUrl(null);
+                }
               }
             }
           } catch (_cacheError) {}
         }
 
         await ensureModelViewerLoaded();
+        if (!isMounted) return;
         setIsModelViewerReady(true);
         setLoadingState((prev) => ({ ...prev, status: "idle" }));
       } catch (error) {
+        if (!isMounted) return;
         handleError(error as Error, "Initialization");
         setIsModelViewerReady(false);
       }
     };
 
     initializeModelViewer();
-  }, [handleError, asset.id, analyzeFile, cachedModelBlob, optimizedModelUrl]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [handleError, asset.id, analyzeFile]);
 
   // Setup model viewer events when ready
   useEffect(() => {
@@ -653,13 +697,8 @@ export function UnifiedModelViewer({
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      // Clear all retry timeouts
-      setRetryTimeouts((current) => {
-        for (const timeout of current) {
-          clearTimeout(timeout);
-        }
-        return [];
-      });
+      // Clear all timeouts
+      clearAllTimeouts();
 
       // Disconnect intersection observer
       if (observerRef.current) {
@@ -667,21 +706,17 @@ export function UnifiedModelViewer({
         observerRef.current = null;
       }
 
-      // Clean up cached GLTF blob URLs on unmount
-      setCachedModelBlob((current) => {
-        if (current?.startsWith("blob:")) {
-          URL.revokeObjectURL(current);
-        }
-        return null;
-      });
-      setOptimizedModelUrl((current) => {
-        if (current?.startsWith("blob:")) {
-          URL.revokeObjectURL(current);
-        }
-        return null;
-      });
+      // Clean up cached GLTF blob URLs on unmount using refs
+      if (cachedBlobRef.current?.startsWith("blob:")) {
+        URL.revokeObjectURL(cachedBlobRef.current);
+        cachedBlobRef.current = null;
+      }
+      if (optimizedUrlRef.current?.startsWith("blob:")) {
+        URL.revokeObjectURL(optimizedUrlRef.current);
+        optimizedUrlRef.current = null;
+      }
     };
-  }, []);
+  }, [clearAllTimeouts]);
 
   // Handle user activation for click-to-load
   const handleActivateModel = useCallback(() => {

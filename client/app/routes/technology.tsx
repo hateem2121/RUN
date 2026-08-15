@@ -1,3 +1,5 @@
+// @ts-expect-error - fontside-effect import
+import "@fontsource/material-symbols-outlined";
 import { RouteErrorBoundary } from "@/components/shared/RouteErrorBoundary";
 import { RouteHydrateFallback } from "@/components/shared/RouteHydrateFallback";
 

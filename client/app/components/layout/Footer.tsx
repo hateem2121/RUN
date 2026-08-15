@@ -188,13 +188,7 @@ export const Footer: React.FC = () => {
                         </a>
                       </li>
                     ))
-                  : ["Instagram", "LinkedIn", "Behance"].map((item) => (
-                      <li key={item}>
-                        <a href="/" className={footerLinkVariants({ display: "inline" })}>
-                          {item}
-                        </a>
-                      </li>
-                    ))}
+                  : null}
             </ul>
           </div>
           <div className="mt-12">

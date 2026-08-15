@@ -2,6 +2,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import type React from "react";
 import { useRef } from "react";
+import { Link } from "react-router";
 import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
@@ -54,13 +55,6 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
   );
 
   const isMobile = useIsMobile();
-
-  const handleCatalogueClick = () => {
-    const catalogueSection = document.getElementById("catalogue");
-    if (catalogueSection) {
-      catalogueSection.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   return (
     <section
@@ -141,15 +135,14 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
         </div>
 
         <div className="mt-24 text-center">
-          <button
-            type="button"
-            onClick={handleCatalogueClick}
-            className="hover:border-primary hover:text-primary border-b border-foreground pb-1 text-sm font-bold tracking-widest uppercase transition-colors"
+          <Link
+            to="/categories"
+            className="hover:border-primary hover:text-primary inline-flex min-h-11 items-center justify-center border-b border-foreground pb-1 text-sm font-bold tracking-widest uppercase transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             onMouseEnter={() => !isMobile && setCursor("button")}
             onMouseLeave={() => resetCursor()}
           >
             View Full Catalogue
-          </button>
+          </Link>
         </div>
       </div>
     </section>

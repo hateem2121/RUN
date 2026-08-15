@@ -154,7 +154,6 @@ export function FooterInquiryForm() {
             type="text"
             name="company"
             autoComplete="organization"
-            aria-label="Company Name"
             disabled={isSubmitting || isSent}
             className={footerInputVariants({ hasError: false })}
             placeholder="ENTER CORPORATION"
@@ -182,7 +181,6 @@ export function FooterInquiryForm() {
             type="email"
             name="email"
             autoComplete="email"
-            aria-label="Email Address"
             required
             disabled={isSubmitting || isSent}
             className={footerInputVariants({ hasError: !!errors.email })}
@@ -211,7 +209,6 @@ export function FooterInquiryForm() {
             id="specs"
             name="specs"
             rows={3}
-            aria-label="Project Specifications"
             disabled={isSubmitting || isSent}
             className={cn(footerInputVariants({ hasError: !!errors.specs }), "resize-none")}
             placeholder="FABRIC / QUANTITY / TIMELINE"

@@ -1,6 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { join } from "node:path";
-import { readJson, extractVersion } from "../../../scripts/utils/verify-docs-versions";
+import { describe, expect, it } from "vitest";
+import { extractVersion, readJson } from "../../../scripts/utils/verify-docs-versions";
 
 describe("verify-docs-versions", () => {
   describe("extractVersion", () => {

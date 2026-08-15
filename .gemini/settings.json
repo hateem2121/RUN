@@ -1,5 +1,16 @@
 {
   "mcpServers": {
+    "graphify": {
+      "command": "/Users/hateemjamshaid/Library/Application Support/pipx/venvs/graphifyy/bin/python",
+      "args": [
+        "-m",
+        "graphify.serve",
+        "graphify-out/graph.json",
+        "--transport",
+        "stdio"
+      ],
+      "cwd": "/Users/hateemjamshaid/Sites/RUN"
+    },
     "code-review-graph": {
       "command": "/Users/hateemjamshaid/Library/Application Support/pipx/venvs/code-review-graph/bin/python",
       "args": [

@@ -182,7 +182,6 @@ export function PublicHeroSection({
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-manufacturing-bg via-manufacturing-bg/80 to-transparent"></div>
             <div className="absolute inset-0 bg-custom-misc-223"></div>
-
           </div>
 
           <div className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col justify-center h-full pb-20 mt-10">

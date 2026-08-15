@@ -1,8 +1,8 @@
 import { spawn } from "node:child_process";
+import { statSync } from "node:fs";
+import { Result, ResultAsync } from "neverthrow";
 import { hideBin } from "yargs/helpers";
 import yargs from "yargs/yargs";
-import { statSync } from "node:fs";
-import { ResultAsync, Result } from "neverthrow";
 import { logger } from "../server/lib/monitoring/logger.js";
 
 /**
@@ -88,7 +88,7 @@ function checkDocsFreshness(): Result<boolean, Error> {
       }
       return true;
     },
-    (err) => err instanceof Error ? err : new Error(String(err))
+    (err) => (err instanceof Error ? err : new Error(String(err))),
   )();
 }
 
@@ -133,7 +133,7 @@ function runCommand(step: {
         resolve(false);
       });
     }),
-    (err) => err instanceof Error ? err : new Error(String(err))
+    (err) => (err instanceof Error ? err : new Error(String(err))),
   );
 }
 
@@ -143,7 +143,7 @@ async function main() {
   for (const step of steps) {
     logger.info(`Running step: ${step.name}...`);
     const result = await runCommand(step);
-    
+
     result.match(
       (passed) => {
         if (!passed) {
@@ -162,20 +162,20 @@ async function main() {
         success = false;
         logger.error(`❌ Step ${step.name} encountered an error:`, error);
         if (argv.ci) process.exit(1);
-      }
+      },
     );
-    
+
     if (!success && argv.ci) break;
   }
 
   // Run native checks
   checkDocsFreshness().match(
     (_fresh) => {
-       // Freshness check passed
+      // Freshness check passed
     },
     (error) => {
-       logger.debug("Failed to check doc freshness, skipping", error);
-    }
+      logger.debug("Failed to check doc freshness, skipping", error);
+    },
   );
 
   if (success) {

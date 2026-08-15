@@ -24,9 +24,8 @@ async function verifyEmail() {
     },
   });
 
-  const result = await ResultAsync.fromPromise(
-    transporter.verify(),
-    (error) => (error instanceof Error ? error : new Error(String(error)))
+  const result = await ResultAsync.fromPromise(transporter.verify(), (error) =>
+    error instanceof Error ? error : new Error(String(error)),
   );
 
   result.match(
@@ -37,7 +36,7 @@ async function verifyEmail() {
     (error) => {
       logger.error("❌ Gmail SMTP connection failed:", error);
       process.exit(1);
-    }
+    },
   );
 }
 

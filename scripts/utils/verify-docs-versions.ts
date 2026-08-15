@@ -10,7 +10,7 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { Result, ok, err } from "neverthrow";
+import { err, ok, Result } from "neverthrow";
 import { logger } from "../../server/lib/monitoring/logger.js";
 
 const ROOT = join(import.meta.dirname, "../..");
@@ -153,7 +153,9 @@ function main(): void {
       let hasErrors = false;
       for (const check of checks) {
         if (!check.match) {
-          logger.error(`❌ Version mismatch for ${check.name}: expected ${check.documented}, found ${check.actual}`);
+          logger.error(
+            `❌ Version mismatch for ${check.name}: expected ${check.documented}, found ${check.actual}`,
+          );
           hasErrors = true;
         } else {
           logger.info(`✅ ${check.name} version matches (${check.actual})`);
@@ -169,7 +171,7 @@ function main(): void {
     (error) => {
       logger.error("❌ Failed to read required configuration files", error);
       process.exit(1);
-    }
+    },
   );
 }
 

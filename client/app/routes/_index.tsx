@@ -4,6 +4,7 @@ import { Hero } from "@/components/homepage/Hero";
 
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 
 // Lazy Load Heavy Components (Below Fold)
@@ -76,6 +77,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 export default function Component({ loaderData }: { loaderData: LoaderData }) {
   const { homepageData } = loaderData;
   const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
 
   // Stable refs for skewable sections to avoid ref callback churn
   const heroRef = useRef<HTMLDivElement>(null);
@@ -89,7 +91,7 @@ export default function Component({ loaderData }: { loaderData: LoaderData }) {
   // This is more robust and avoids type issues with LocomotiveScroll
   useGSAP(
     () => {
-      if (isMobile) return;
+      if (isMobile || prefersReducedMotion) return;
 
       if (heroRef.current) {
         xToHero.current = gsap.quickTo(heroRef.current, "skewY", { duration: 0.4, ease: "power3" });
@@ -124,7 +126,7 @@ export default function Component({ loaderData }: { loaderData: LoaderData }) {
 
       return () => clearTimeout(scrollTimeout);
     },
-    { dependencies: [isMobile], scope: heroRef },
+    { dependencies: [isMobile, prefersReducedMotion], scope: heroRef },
   );
 
   return (

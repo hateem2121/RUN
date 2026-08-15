@@ -148,7 +148,7 @@ export const Stats: React.FC = () => {
             className="mb-4 font-bold text-custom-space-152 uppercase leading-tight md:mb-8 md:text-custom-space-153"
           >
             The Evolution of <br />
-            <span className="animate-gradient bg-300% bg-linear-to-r from-blue-600 to-blue-900 bg-clip-text text-transparent dark:from-blue-500 dark:to-white">
+            <span className="text-primary dark:text-manufacturing-accent">
               Athletic Craftsmanship
             </span>
           </h2>
@@ -160,7 +160,10 @@ export const Stats: React.FC = () => {
       </div>
 
       {/* Right Scrollable Side */}
-      <div ref={rightRef} className="relative z-elevated flex w-full flex-col text-white md:w-1/2">
+      <div
+        ref={rightRef}
+        className="relative z-elevated flex w-full flex-col text-foreground md:w-1/2"
+      >
         {KEY_STATS.map((stat, index) => (
           <div
             key={index}
@@ -169,11 +172,11 @@ export const Stats: React.FC = () => {
             <h3 className="font-bold text-custom-space-155 leading-none tracking-tighter md:text-custom-space-156">
               <ScrambleNumber value={stat.value} />
             </h3>
-            <div className="my-4 h-custom-space-157 w-full origin-left scale-x-100 transform bg-white/30 transition-transform duration-700" />
-            <h4 className="mb-2 font-bold text-xl text-white uppercase md:text-2xl">
+            <div className="my-4 h-custom-space-157 w-full origin-left scale-x-100 transform bg-foreground/20 transition-transform duration-700" />
+            <h4 className="mb-2 font-bold text-xl text-foreground uppercase md:text-2xl">
               {stat.label}
             </h4>
-            <p className="text-white/70 text-sm md:text-base">{stat.description}</p>
+            <p className="text-muted-foreground text-sm md:text-base">{stat.description}</p>
           </div>
         ))}
       </div>

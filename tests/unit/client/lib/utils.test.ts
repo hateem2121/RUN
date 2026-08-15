@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { cn, formatFileSize, sanitizeContent, sanitizeObj } from "../../../../client/app/lib/utils";
 
 describe("utils", () => {
@@ -39,7 +39,7 @@ describe("utils", () => {
         name: "Product [QA-AUTO]",
         description: "A great product [QA-AUTO-456]",
         price: 100,
-        nested: { name: "Inner [QA-AUTO]" }
+        nested: { name: "Inner [QA-AUTO]" },
       };
       const result = sanitizeObj(input);
       expect(result.name).toBe("Product");
@@ -47,7 +47,7 @@ describe("utils", () => {
       expect(result.price).toBe(100);
       expect(result.nested).toEqual({ name: "Inner [QA-AUTO]" });
     });
-    
+
     it("returns the input if falsy", () => {
       expect(sanitizeObj(null as any)).toBeNull();
     });

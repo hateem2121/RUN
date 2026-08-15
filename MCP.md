@@ -2,7 +2,7 @@
 
 **Project:** RUN APPAREL CMS v4.1.2 (`run-remix`)
 **Agent:** Antigravity (Gemini)
-**Last updated:** July 2026
+**Last updated:** August 2026
 **Owner:** M. Hateem Jamshaid — RUN APPAREL (PVT) LTD, Sialkot, Pakistan
 
 > **Hierarchy:** `gemini.md` (SSOT) → `CLAUDE.md` → `MCP.md`
@@ -14,35 +14,67 @@
 
 ## 1. MCP Server Registry
 
-### 1.1 codebase-memory-mcp
+### 1.1 graphify
 
-**Source:** https://github.com/DeusData/codebase-memory-mcp
+**Source:** https://github.com/Graphify-Labs/graphify
 
-**Purpose:** Persistent, cross-session memory of the RUN Remix codebase.
-Eliminates redundant re-reading of 50+ files at the start of every session.
+**Purpose:** Persistent, cross-session knowledge graph of the RUN Remix codebase.
+Eliminates redundant re-reading of 50+ files at the start of every session, and
+answers structural questions — "what breaks if I change `withCircuit()`?" —
+without opening a file.
+
+**Registered in `.gemini/settings.json`** as the `graphify` MCP server, serving
+`graphify-out/graph.json` over stdio. Ten tools: `query_graph`, `get_node`,
+`get_neighbors`, `get_community`, `god_nodes`, `graph_stats`, `shortest_path`,
+`list_prs`, `get_pr_impact`, `triage_prs`.
 
 **Invoke FIRST on session start** — before reading `task_plan.md` or `gemini.md`.
-Query memory for current sprint state, then reconcile with `task_plan.md`.
+Query the graph for the subsystem in scope, then reconcile with `task_plan.md`.
 
-**Mandatory write triggers:**
+**The graph is committed to this repo.** `graphify-out/` is tracked (38 files,
+~13 MB), so a fresh clone gets a working graph immediately — no rebuild needed
+before the server answers. Keep it current rather than letting it drift:
+
+```bash
+graphify update .                # incremental re-extract after changes
+graphify extract . --code-only   # full structural rebuild, AST only, no API key
+```
+
+Because `graph.json` is both generated and tracked, two branches that each
+rebuild it will conflict on a 13 MB file. graphify ships a union merge driver
+for exactly this case (`graphify merge-driver`); it is **not** configured in
+this repo yet.
+
+**Mandatory update triggers:**
 - After any schema change in `shared/schemas/`
 - After any architectural decision (new route, new service, new middleware)
 - After every `/ship` or `/land-and-deploy`
 - End of every session (see Protocol 0 amendment in §3)
 
-**Memory key convention:**
-run-remix::<subsystem>::<topic>
-Examples:
-- `run-remix::auth::session-store`
-- `run-remix::schema::products`
-- `run-remix::cache::ssr-invalidation`
+**Session memory** replaces the old memory-key convention. graphify records
+answered questions and their outcomes rather than free-text keys:
+
+```bash
+graphify save-result --question "..." --answer "..." --outcome useful
+graphify reflect    # rolls outcomes into graphify-out/reflections/LESSONS.md
+```
 
 **Rules:**
-- Never store secrets, PII, session tokens, or env values in memory.
-- If memory is stale (older than 2 sessions for the relevant subsystem),
-  re-read the source file and overwrite the memory key.
-- When the Uncertainty Protocol fires, query memory for prior decisions
-  on the same subsystem BEFORE presenting options to the user.
+- Never store secrets, PII, session tokens, or env values in saved results.
+- If the graph is stale for the subsystem in scope, run `graphify update .` and
+  re-query before trusting the answer. A stale graph answers confidently from
+  the old structure — this is the main failure mode worth knowing about.
+- `graphify extract` refuses to overwrite `graph.json` with a **smaller** graph.
+  If a rebuild reports fewer nodes, investigate before reaching for `--force`.
+- When the Uncertainty Protocol fires, query the graph for existing structure on
+  the same subsystem BEFORE presenting options to the user.
+
+**Verified behaviour (2026-08-01):**
+- MCP handshake over stdio succeeds; server reports `graphify`, protocol `2024-11-05`
+- Current graph: **8,824 nodes / 23,251 links / 411 communities**
+- The server needs the `mcp` extra **pinned below 2.0**. `mcp` 2.x removed
+  `AnyUrl` from `mcp.types` and `graphify-mcp` fails to start with a misleading
+  "mcp not installed" error. Fix: `pipx inject graphifyy "mcp<2" --force`
 
 ---
 
@@ -243,7 +275,7 @@ All patterns must be adapted to this repo's design system before use.
 ## 2. MCP Tool Priority Ladder
 
 When multiple tools could serve the same task, strictly follow this order:
-Priority 1 → codebase-memory-mcp Check memory before reading any file
+Priority 1 → graphify Query the knowledge graph before reading any file
 Priority 2 → context7-mcp Check live docs before writing any code
 Priority 3 → sequential-thinking Structure reasoning before implementing
 Priority 4 → filesystem-mcp All file read/write operations
@@ -260,7 +292,7 @@ unavailable or returns an error.
 ## 3. Protocol 0 Amendment (MCP-Augmented Session Bookends)
 
 **START OF SESSION (updated):**
-1. Query `codebase-memory-mcp` → load current sprint state
+1. Query `graphify` → load current structure of the subsystem in scope
 2. Read `task_plan.md` → reconcile with memory, update with today's goal
 3. Run `cat .claude/skills/gstack/VERSION` → upgrade if needed
 4. Query `context7-mcp` for docs relevant to today's task scope
@@ -269,11 +301,13 @@ unavailable or returns an error.
 1. Write session discoveries to `findings.md`
 2. Run `npm run verify:tech-integrity` → all 8 checks must pass
 3. Update `task_plan.md` with outcome and next steps
-4. Write memory checkpoint to `codebase-memory-mcp`:
-   - Files changed
-   - Architectural decisions made
-   - Forbidden patterns encountered and resolved
-   - Recommended starting point for next session
+4. Refresh the graph and checkpoint what was learned:
+   - `graphify update .` → re-extract the files changed this session
+   - `graphify save-result` → record each question the graph answered, with
+     `--outcome useful|dead_end|corrected` (architectural decisions made,
+     forbidden patterns encountered and resolved)
+   - `graphify reflect` → roll outcomes into `graphify-out/reflections/LESSONS.md`,
+     the recommended starting point for next session
 5. Run `npm run check` and `npm run build` → zero errors
 
 **These bookends are non-negotiable. The MCP amendments do not replace
@@ -281,5 +315,5 @@ the original Protocol 0 — they augment it.**
 
 ---
 
-*MCP.md — Antigravity v4.1.2 · RUN APPAREL (PVT) LTD · July 2026*
+*MCP.md — Antigravity v4.1.2 · RUN APPAREL (PVT) LTD · August 2026*
 *Governed by: `gemini.md` (SSOT) · Supplementary layer only*

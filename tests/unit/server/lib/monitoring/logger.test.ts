@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import pino from "pino";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { logger, serializeError } from "../../../../../server/lib/monitoring/logger";
 
 vi.mock("pino", () => {
@@ -15,7 +15,7 @@ vi.mock("pino", () => {
       err: vi.fn(),
       req: vi.fn(),
       res: vi.fn(),
-    }
+    },
   };
 });
 
@@ -42,7 +42,7 @@ describe("logger", () => {
       logger.debug("Debug msg");
       expect(pinoMock?.debug).toHaveBeenCalled();
     });
-    
+
     it("logs warn messages", () => {
       logger.warn("Warn msg");
       expect(pinoMock?.warn).toHaveBeenCalled();

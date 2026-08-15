@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { PublicHeroSection } from "@/components/public/manufacturing/PublicHeroSection";
 
 // Mock GSAP and OptimizedImage since this is JSDOM
@@ -34,13 +34,11 @@ describe("PublicHeroSection", () => {
     backgroundMediaId: "123",
   };
 
-  const mockMediaAssets = [
-    { id: "123", url: "test.jpg", alt: "Test" },
-  ];
+  const mockMediaAssets = [{ id: "123", url: "test.jpg", alt: "Test" }];
 
   it("renders correctly with hero data", () => {
     render(<PublicHeroSection hero={mockHero as any} mediaAssets={mockMediaAssets as any} />);
-    
+
     expect(screen.getByText(/Test Headline/i)).toBeDefined();
     expect(screen.getByText(/Highlighted/i)).toBeDefined();
     expect(screen.getByText(/Test Subheadline/i)).toBeDefined();
@@ -49,7 +47,7 @@ describe("PublicHeroSection", () => {
 
   it("renders default stats if none provided", () => {
     render(<PublicHeroSection hero={mockHero as any} mediaAssets={mockMediaAssets as any} />);
-    
+
     expect(screen.getByText("Machines")).toBeDefined();
     expect(screen.getByText("Capacity")).toBeDefined();
     expect(screen.getByText("Defects")).toBeDefined();
@@ -63,9 +61,15 @@ describe("PublicHeroSection", () => {
       { label: "Stat3", value: 30, suffix: "z", icon: "test" },
       { label: "Stat4", value: 40, suffix: "w", icon: "test" },
     ];
-    
-    render(<PublicHeroSection hero={mockHero as any} mediaAssets={mockMediaAssets as any} stats={stats} />);
-    
+
+    render(
+      <PublicHeroSection
+        hero={mockHero as any}
+        mediaAssets={mockMediaAssets as any}
+        stats={stats}
+      />,
+    );
+
     expect(screen.getByText("Stat1")).toBeDefined();
     expect(screen.getByText("Stat2")).toBeDefined();
     expect(screen.getByText("Stat3")).toBeDefined();

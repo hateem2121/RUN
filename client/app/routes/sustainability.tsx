@@ -1,3 +1,5 @@
+// @ts-expect-error - fontside-effect import
+import "@fontsource/material-symbols-outlined";
 import type { MediaAsset, SustainabilityBatchResponse } from "@shared/index";
 import type { Certificate } from "@shared/schemas/catalog";
 import type {

@@ -562,8 +562,6 @@
   background-repeat: repeat-x;
 }
 
-
-
 @utility blueprint-corner {
   position: absolute;
   width: 15px;

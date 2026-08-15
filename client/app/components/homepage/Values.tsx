@@ -72,9 +72,7 @@ const ValuesCard: React.FC<ValuesCardProps> = memo(
               <IconComponent
                 className={cn(
                   "h-12 w-12 stroke-1 transition-colors duration-300",
-                  withRipple
-                    ? "text-blue-400"
-                    : "text-muted-foreground/70 group-hover:text-blue-400",
+                  withRipple ? "text-primary" : "text-muted-foreground/70 group-hover:text-primary",
                 )}
               />
             )}

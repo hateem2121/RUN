@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
+import type { InsertCategory, UpsertUser } from "../../../shared/index";
 import { MemoryStorage } from "../../../tests/integration/server/memory-storage";
-import type { InsertCategory, InsertUser, UpsertUser } from "../../../shared/index";
 
 describe("MemoryStorage", () => {
   let storage: MemoryStorage;
@@ -32,7 +32,7 @@ describe("MemoryStorage", () => {
     it("updates an existing user", async () => {
       const user = await storage.upsertUser({ email: "test2@example.com", name: "User 2" });
       const updated = await storage.updateUser(user.id, { name: "Updated User 2" });
-      
+
       expect(updated?.name).toBe("Updated User 2");
       const retrieved = await storage.getUser(user.id);
       expect(retrieved?.name).toBe("Updated User 2");
@@ -87,13 +87,13 @@ describe("MemoryStorage", () => {
     it("handles folders hierarchy", async () => {
       const folder1 = await storage.createFolder({ name: "Root", parentId: null });
       const folder2 = await storage.createFolder({ name: "Child", parentId: folder1.id });
-      
+
       const path1 = await storage.getFolderPath(folder1.id);
       expect(path1).toBe("/Root");
-      
+
       const path2 = await storage.getFolderPath(folder2.id);
       expect(path2).toBe("/Root/Child");
-      
+
       const children = await storage.getFolderChildren(folder1.id);
       expect(children).toHaveLength(1);
       expect(children[0].id).toBe(folder2.id);
@@ -113,7 +113,7 @@ describe("MemoryStorage", () => {
       } as any); // using any for simplicity since some fields might be missing in InsertMediaAsset
 
       expect(asset.id).toBeDefined();
-      
+
       await storage.moveMediaAsset(asset.id, folder.id);
       const moved = await storage.getMediaAsset(asset.id);
       expect(moved?.folderId).toBe(folder.id);
