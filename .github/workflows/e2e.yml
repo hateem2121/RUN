@@ -54,15 +54,17 @@ jobs:
           CLOUD_TASKS_AUDIENCE: "placeholder"
           CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
 
-      - name: "🚀 Start E2E Test Server"
+      - name: "🚀 Start Production Server for E2E"
         env:
           PORT: 5002
-          NODE_ENV: "test"
+          NODE_ENV: "production"
           ENABLE_MOCK_ADMIN: "true"
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url }}
           SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"
           ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only"
           INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
+          CLOUD_TASKS_AUDIENCE: "placeholder"
+          CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
         run: |
           npm run start &
           npx wait-on http://127.0.0.1:5002/api/health --timeout 60000

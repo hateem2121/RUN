@@ -16,19 +16,15 @@ router.get(
   }),
 );
 
-// Mock Login Route (Development & Test Only)
-// SECURITY: Strict check - mock login ONLY enabled in development/test environments
-// ENABLE_MOCK_ADMIN is IGNORED in production regardless of value
+// Mock Login Route (Development, Test, and E2E Only)
+// SECURITY: Strict check - mock login ONLY enabled when ENABLE_MOCK_ADMIN is explicitly "true" or in test environments
 router.get("/mock-login", async (req, res) => {
-  const isProduction =
-    process.env.NODE_ENV === "production" && process.env.ENABLE_MOCK_ADMIN !== "true";
-  const isAllowedEnv =
-    process.env.NODE_ENV === "development" ||
+  const isMockEnabled =
+    process.env.ENABLE_MOCK_ADMIN === "true" ||
     process.env.NODE_ENV === "test" ||
-    process.env.VITEST === "true" ||
-    process.env.ENABLE_MOCK_ADMIN === "true";
+    process.env.VITEST === "true";
 
-  if (isProduction || !isAllowedEnv) {
+  if (!isMockEnabled) {
     res.status(404).json({ error: "Not found" });
     return;
   }
