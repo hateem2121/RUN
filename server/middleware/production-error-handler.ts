@@ -430,12 +430,18 @@ export function productionErrorHandler(
 
 // Unhandled promise rejection handler
 export function setupGlobalErrorHandlers() {
+  const isTestOrE2E =
+    process.env.NODE_ENV === "test" || process.env.VITEST === "true" || process.env.E2E === "true";
   const shouldForceExit =
-    config.app.environment === "production" || process.env.FORCE_EXIT_ON_CRASH === "true";
+    !isTestOrE2E &&
+    (config.app.environment === "production" || process.env.FORCE_EXIT_ON_CRASH === "true");
 
-  process.on("unhandledRejection", (reason, promise) => {
-    logger.error("[CRITICAL] Unhandled Promise Rejection:", reason);
-    logger.error("[CRITICAL] Promise:", promise);
+  process.on("unhandledRejection", (reason) => {
+    logger.error(
+      `[CRITICAL] Unhandled Promise Rejection: ${reason instanceof Error ? reason.stack : String(reason)}`,
+      undefined,
+      reason instanceof Error ? reason : undefined,
+    );
 
     if (shouldForceExit) {
       logger.error("[CRITICAL] Exiting process due to unhandled rejection");
@@ -445,7 +451,11 @@ export function setupGlobalErrorHandlers() {
   });
 
   process.on("uncaughtException", (error) => {
-    logger.error("[CRITICAL] Uncaught Exception:", error);
+    logger.error(
+      `[CRITICAL] Uncaught Exception: ${error instanceof Error ? error.stack : String(error)}`,
+      undefined,
+      error instanceof Error ? error : undefined,
+    );
 
     if (shouldForceExit) {
       logger.error("[CRITICAL] Exiting process due to uncaught exception");

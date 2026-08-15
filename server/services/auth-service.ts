@@ -136,7 +136,11 @@ export class AuthService {
       process.env.VITEST === "true" ||
       process.env.NODE_ENV === "test";
 
-    if (process.env.NODE_ENV === "production" && process.env.ENABLE_MOCK_ADMIN === "true" && !isTestRunner) {
+    if (
+      process.env.NODE_ENV === "production" &&
+      process.env.ENABLE_MOCK_ADMIN === "true" &&
+      !isTestRunner
+    ) {
       logger.error("CRITICAL SECURITY ERROR: ENABLE_MOCK_ADMIN must be false in production.");
       process.exit(1);
     }
