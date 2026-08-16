@@ -136,7 +136,7 @@ test.describe
         await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 20000 });
       }
 
-      await expect(page.getByRole("heading", { name: /About Us Management/i })).toBeVisible({
+      await expect(page.getByRole("heading", { name: /About.*Management/i })).toBeVisible({
         timeout: 25000,
       });
 

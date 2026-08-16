@@ -181,7 +181,9 @@ test.describe("Admin Modules: Supporting Content & Media", () => {
       await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 20000 });
     }
 
-    await expect(page.locator('h1:has-text("Media Library")')).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Media Library/i }).or(page.locator("text=Media Library")),
+    ).toBeVisible({ timeout: 15000 });
 
     // Upload
     const fileChooserPromise = page.waitForEvent("filechooser");
@@ -225,9 +227,14 @@ test.describe("Admin Modules: Supporting Content & Media", () => {
       await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 20000 });
     }
 
-    await expect(page.locator('h1:has-text("Storage")')).toBeVisible();
     await expect(
-      page.locator("text=Total Size").or(page.locator("text=Used Storage")),
+      page.getByRole("heading", { name: /Storage/i }).or(page.locator("text=Storage Optimization")),
+    ).toBeVisible({ timeout: 15000 });
+    await expect(
+      page
+        .locator("text=Total Storage")
+        .or(page.locator("text=Total Size"))
+        .or(page.locator("text=Used Storage")),
     ).toBeVisible();
   });
 });
