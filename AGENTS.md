@@ -73,6 +73,14 @@ When creating or generating unit test files:
 
 6. **JSDOM Animation Stubbing:** When writing DOM-based React tests for components that utilize GSAP (`ScrollTrigger`) or `locomotive-scroll`, you must provide extensive global stubs for `IntersectionObserver`, `window.matchMedia`, and GSAP's matchMedia hooks, as JSDOM does not support layout engines.
 
+7. **Playwright Setup Imports:** When creating or editing Playwright setup files (`*.setup.ts`), always explicitly import `expect` alongside `test as setup` from `@playwright/test` to prevent runtime `ReferenceError: expect is not defined` from breaking dependent test suites.
+
+8. **Vite SSR Worker Throttling:** When running Playwright against a single local Vite SSR development server, cap test workers to 2 (`--workers=2` or `workers: 2`) to prevent simultaneous dynamic import requests (`app/entry.client.tsx`) from causing HMR module graph contention.
+
+9. **Strict-Mode Locator Scoping:** When using `.or()` combinators in Playwright assertions where multiple matching elements might exist (e.g., both breadcrumbs and headings matching the same phrase), always chain `.first()` or scope locators by parent container to avoid strict mode violations.
+
+10. **Smooth-Scroll Element Reachability:** When testing element visibility in layouts using `locomotive-scroll` or custom scroll containers, use `element.scrollIntoViewIfNeeded()` directly rather than `window.scrollTo()`.
+
 ### 6.11 React Router v8 & Vite 8 Resolution Rules (Addendum)
 
 - **CSP Nonce Hydration Mismatch**: In React 19, Chrome hides the `nonce` attribute on `<link>` tags for security, causing a fatal hydration mismatch if the Virtual DOM expects a value. When rendering React Router's `<Links />` component in the root layout or error boundaries, you **MUST** pass an empty string on the client (e.g., `<Links nonce="" />`) to bypass the mismatch and prevent React from crashing the client-side render tree.
