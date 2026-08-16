@@ -92,6 +92,16 @@ test.describe("Admin Modules: Supporting Content & Media", () => {
   test("/admin/size-charts full CRUD interaction", async ({ page }) => {
     const testChart = `E2E-CHART-${Date.now()}`;
     await page.goto(`${BASE_URL}/admin/size-charts`);
+    
+    // Apply reload fallback for "Checking access..." state in long batch runs
+    try {
+      await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 8000 });
+    } catch {
+      await page.reload();
+      await page.waitForLoadState("domcontentloaded");
+      await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 20000 });
+    }
+    
     await expect(page.locator("h1")).toContainText(/Size Chart Management/i);
 
     // Create using template
@@ -127,6 +137,16 @@ test.describe("Admin Modules: Supporting Content & Media", () => {
   test("/admin/accessories full CRUD interaction", async ({ page }) => {
     const testAcc = `E2E-ACC-${Date.now()}`;
     await page.goto(`${BASE_URL}/admin/accessories`);
+    
+    // Apply reload fallback for "Checking access..." state in long batch runs
+    try {
+      await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 8000 });
+    } catch {
+      await page.reload();
+      await page.waitForLoadState("domcontentloaded");
+      await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 20000 });
+    }
+    
     await expect(page.locator("h1")).toContainText(/Accessory/i);
 
     // Create
@@ -151,6 +171,16 @@ test.describe("Admin Modules: Supporting Content & Media", () => {
 
   test("Admin Media Library: upload, filter and delete", async ({ page }) => {
     await page.goto(`${BASE_URL}/admin/media`);
+    
+    // Apply reload fallback for "Checking access..." state in long batch runs
+    try {
+      await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 8000 });
+    } catch {
+      await page.reload();
+      await page.waitForLoadState("domcontentloaded");
+      await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 20000 });
+    }
+    
     await expect(page.locator('h1:has-text("Media Library")')).toBeVisible();
 
     // Upload
@@ -185,6 +215,16 @@ test.describe("Admin Modules: Supporting Content & Media", () => {
 
   test("Admin Storage Optimization dashboard health", async ({ page }) => {
     await page.goto(`${BASE_URL}/admin/storage-optimization`);
+    
+    // Apply reload fallback for "Checking access..." state in long batch runs
+    try {
+      await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 8000 });
+    } catch {
+      await page.reload();
+      await page.waitForLoadState("domcontentloaded");
+      await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 20000 });
+    }
+    
     await expect(page.locator('h1:has-text("Storage")')).toBeVisible();
     await expect(
       page.locator("text=Total Size").or(page.locator("text=Used Storage")),

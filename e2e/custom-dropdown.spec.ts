@@ -18,7 +18,7 @@ test.describe("CustomDropdown Keyboard Accessibility", () => {
     await page.goto(`${BASE_URL}/admin/about`);
 
     // 2. Wait for page header to be visible and hydration to finish
-    await expect(page.getByRole("heading", { name: /About page Management/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /About Us Management/i })).toBeVisible();
     await expect(page.getByText("Loading hero data...")).toBeHidden();
 
     // 3. Switch to the Locations tab
@@ -66,7 +66,7 @@ test.describe("CustomDropdown Keyboard Accessibility", () => {
     await page.goto(`${BASE_URL}/admin/about`);
 
     // 2. Wait for page header to be visible and hydration to finish
-    await expect(page.getByRole("heading", { name: /About page Management/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /About Us Management/i })).toBeVisible();
     await expect(page.getByText("Loading hero data...")).toBeHidden();
 
     // 3. Switch to the Locations tab

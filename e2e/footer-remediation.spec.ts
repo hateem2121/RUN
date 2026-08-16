@@ -12,7 +12,10 @@ test.describe("Footer Remediation Verification", () => {
     // 3. Locate the copyright text which is at the very bottom of the footer
     const copyright = page.getByText("ALL RIGHTS RESERVED");
 
-    // 4. Assert it is visible in the viewport
+    // 4. Ensure footer is scrolled into view before checking viewport
+    await page.locator("footer").scrollIntoViewIfNeeded();
+
+    // 5. Assert it is visible in the viewport
     // Using toBeInViewport() ensures it's not just in the DOM, but actually visible to the user
     await expect(copyright).toBeInViewport();
   });

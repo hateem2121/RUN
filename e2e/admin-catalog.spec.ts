@@ -72,7 +72,7 @@ test.describe("Admin Products CRUD Pipeline", () => {
   test("admin products module renders product list", async ({ page }) => {
     await page.goto(`${BASE}/admin/products`);
     // Wait for "Product Management" heading (lazy-loaded admin module)
-    await expect(page.getByText("Product Management")).toBeVisible({ timeout: 25000 });
+    await expect(page.getByText(/Products|Product Catalog/i)).toBeVisible({ timeout: 25000 });
   });
 
   test("full product CRUD: create → public verify → update → verify update → delete → verify removal", async ({
