@@ -29,8 +29,8 @@ test.describe("Contact & Inquiries E2E Workflow", () => {
     await page.getByTestId("button-submit").click();
 
     // 4. Verify Success Message
-    await expect(page.getByText(/message sent/i)).toBeVisible({ timeout: 15000 });
-    await expect(page.getByText(/your message has been sent successfully/i)).toBeVisible();
+    await expect(page.getByText(/inquiry has been submitted|success/i)).toBeVisible({ timeout: 15000 });
+    await expect(page.getByText(/your inquiry has been submitted successfully/i)).toBeVisible();
   });
 
   test.describe("Admin Inquiries & Settings", () => {

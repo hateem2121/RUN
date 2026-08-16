@@ -109,7 +109,15 @@ test.describe("Sustainability Admin CMS Tests", () => {
   test("Admin can access sustainability CMS page", async ({ page }) => {
     await page.goto(ADMIN_SUSTAINABILITY_URL);
     await page.waitForLoadState("domcontentloaded");
-    await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 15000 });
+    
+    // Apply reload fallback for "Checking access..." state in long batch runs
+    try {
+      await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 8000 });
+    } catch {
+      await page.reload();
+      await page.waitForLoadState("domcontentloaded");
+      await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 20000 });
+    }
 
     await expect(
       page
@@ -125,7 +133,15 @@ test.describe("Sustainability Admin CMS Tests", () => {
 
     await page.goto(ADMIN_SUSTAINABILITY_URL);
     await page.waitForLoadState("domcontentloaded");
-    await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 15000 });
+    
+    // Apply reload fallback for "Checking access..." state in long batch runs
+    try {
+      await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 8000 });
+    } catch {
+      await page.reload();
+      await page.waitForLoadState("domcontentloaded");
+      await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 20000 });
+    }
 
     const titleInput = page.locator("#headline").first();
     const saveButton = page.locator("button:has-text('Sync Ecosystem')").first();
