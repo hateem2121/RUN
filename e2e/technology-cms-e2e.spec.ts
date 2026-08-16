@@ -97,7 +97,7 @@ test.describe
       test("Admin can access technology CMS page", async ({ page }) => {
         await page.goto(ADMIN_TECHNOLOGY_URL);
         await page.waitForLoadState("domcontentloaded");
-        
+
         // Apply reload fallback for "Checking access..." state in long batch runs
         try {
           await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 8000 });
@@ -116,7 +116,7 @@ test.describe
 
         await page.goto(ADMIN_TECHNOLOGY_URL);
         await page.waitForLoadState("domcontentloaded");
-        
+
         // Apply reload fallback for "Checking access..." state in long batch runs
         try {
           await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 8000 });

@@ -320,4 +320,41 @@ In GitHub Actions CI runners, `zizmor-action` operates in **online mode** by pro
 - `npm run check`: **0 type errors, 0 lint errors across 973 files**.
 - `npm run verify:tech-integrity`: **8/8 checks passed**.
 
+---
+
+## 9. Knip Dead Code & CI Biome Lint Failure Remediation Report
+
+**Incident Date:** 2026-08-16  
+**GitHub Actions Run Batch:** `31940898209` (Code Quality / Knip), `31940898168` (CI / Neon Preview / Lint Biome)  
+**Resolution Status:** Remediated & 100% Verified Locally
+
+### 9.1 Issue 1: Knip Unused Code Check (Run `31940898209`)
+- **Root Cause**:
+  1. PR #58 accidentally committed 39 auto-generated TypeScript definition files from React Router typegen (`client/.react-router/types/**`) and corrupted `.gitignore` with markdown backtick wrappers.
+  2. Knip scanned `client/.react-router/types/**` and flagged 10 unused files and 84 unresolved relative imports (`../_index.js`).
+- **Remediation**:
+  1. Untracked all 39 auto-generated files in `client/.react-router/types/` from Git.
+  2. Restored `.gitignore` to properly ignore `.react-router/`, `client/.react-router/`, `.auth/`, `playwright-report/`, and `test-results/`.
+  3. Verified `npm run check:knip` exits with code 0 and zero unresolved imports.
+
+### 9.2 Issue 2: CI / Neon Preview / Lint (Biome) (Run `31940898168`)
+- **Root Cause**:
+  1. `server/lib/db/session-store.ts` was edited with unformatted raw `.then()/.catch()` chains, non-standard return signatures, and an in-memory `Map` fallback, violating the project's `neverthrow` architecture rule (`GEMINI.md` §5.1.1, §5.1.2, §6.5).
+  2. `e2e/technology-cms-e2e.spec.ts`, `e2e/sustainability-cms-e2e.spec.ts`, `e2e/supporting-pages.spec.ts`, and `e2e/auth.setup.ts` had trailing spaces and unaligned indentation.
+  3. Stray files (`playwright-report/index.html`, `test-results/**`, `.auth/user.json`) were committed.
+- **Remediation**:
+  1. Restored `server/lib/db/session-store.ts` to its canonical `neverthrow` `ResultAsync` pattern using Drizzle queries.
+  2. Untracked stray test artifacts and `.auth/user.json`.
+  3. Formatted all E2E spec files using Biome.
+  4. Verified `npm run check` passes with 0 type errors and 0 linter errors across 972 files.
+
+### 9.3 Verification Matrix
+- `npm run check`: **0 type errors, 0 linter errors across 972 files**.
+- `npm run check:knip`: **Exit code 0 (clean)**.
+- `npm run test`: **170 test files / 2,612 unit & integration tests passed (100%)**.
+- `npm run build`: **Turborepo build passed across client, server, and shared**.
+- `npm run verify:tech-integrity`: **8/8 checks passed**.
+- `npm run check:docs`: **0 broken links**.
+
+
 

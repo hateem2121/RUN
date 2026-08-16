@@ -1,28 +1,30 @@
 # Task Plan
 
-**Date:** 2026-08-15
-**Goal:** Investigate & Identify Root Cause of "Workflow Security Lint / Zizmor Static Analysis (push) Failing after 10s"
+**Date:** 2026-08-16
+**Goal:** Plan and resolve failing GitHub Actions CI checks: (1) "Code Quality & Dead Code / Knip Unused Code Check" and (2) "CI / Neon Preview / Lint (Biome)"
 
 ## Current Session Plan
-- Inspect `.github/workflows/workflow-security.yml` and all referenced workflows and dependencies.
-- Reproduce Zizmor static analysis locally using `uvx zizmor .` and analyze rule violations.
-- Determine the exact breakdown of errors, warnings, unpinned action references, credential persistence issues, and CLI exit code behaviors causing the CI failure.
-- Document the comprehensive root cause and remediation recommendations in `findings.md` and report back to the user.
-
-
+- [x] Investigate CI run failures for `Code Quality & Dead Code` (run `31940898209`) and `CI / Neon Preview / Lint (Biome)` (run `31940898168`).
+- [x] Identify root causes: PR #58 accidentally committed generated React Router types, corrupted `.gitignore`, introduced Biome formatting errors, and degraded `server/lib/db/session-store.ts`.
+- [x] Present comprehensive implementation plan to the user and obtain approval before execution.
+- [x] Merge `origin/main`, purge committed type/test artifacts from git tracking, and restore `.gitignore`.
+- [x] Restore `server/lib/db/session-store.ts` to compliant `neverthrow` `ResultAsync` pattern.
+- [x] Run `npx biome check --write` across all modified files.
+- [x] Verify locally: `npm run check:knip`, `npm run check`, `npm run build`, `npm run test`, and `npm run verify:tech-integrity`.
+- [ ] Commit, push to `main`, and verify GitHub Actions CI runs are green.
 
 ## Current Session Outcome
-- Successfully diagnosed, remediated, and verified the root cause for **"Workflow Security Lint / Zizmor Static Analysis"**:
-  1. **Offline Findings**: Pinned all 14 unpinned action SHAs, added `persist-credentials: false` across all `actions/checkout` steps, and configured `cooldown: default-days: 7` in `dependabot.yml`.
-  2. **Online Findings (GHSA-gq52-6phf-x2r6)**: In online runner mode, `zizmor` detected known vulnerability GHSA-gq52-6phf-x2r6 on `tj-actions/branch-names@v8.2.1`. Upgraded to `tj-actions/branch-names@5250492686b253f06fa55861556d1027b067aeb5 # v9.0.2` and aligned version tag comments.
-- Live GitHub Actions run verification on `main`:
-  - **Workflow Security Lint** (`31899569644`): 🟢 **PASSED (100% Success)**
-  - **OpenSSF Scorecard** (`31899569635`): 🟢 **PASSED**
-  - **Docs Lint** (`31899569627`): 🟢 **PASSED**
-  - **Release Drafter** (`31899569630`): 🟢 **PASSED**
-  - **Production Deployment** (`31899569628`): 🟢 **PASSED**
-- All 8 local integrity checks (`verify:tech-integrity`) passed cleanly.
+- Successfully diagnosed, remediated, and verified both CI failures locally:
+  1. **Knip Unused Code Check**: Untracked 39 generated type files in `client/.react-router/types/`, restored clean `.gitignore`, verified `npm run check:knip` exits with code 0.
+  2. **CI / Neon Preview / Lint (Biome)**: Restored `server/lib/db/session-store.ts` to `neverthrow` `ResultAsync` standard, formatted E2E spec files with Biome, verified `npm run check` passes with 0 errors across 972 files.
+- Full verification matrix passed:
+  - `npm run check`: 0 type errors, 0 lint errors.
+  - `npm run check:knip`: Exit code 0 (clean).
+  - `npm run test`: 170/170 test files passed (2,612 tests).
+  - `npm run build`: Turborepo build passed across client, server, and shared.
+  - `npm run verify:tech-integrity`: All 8 checks passed.
+  - `npm run check:docs`: 0 broken links.
 
 ## Next Steps
-- All CI security workflows are clean and green.
-
+- Commit changes and push to `origin/main`.
+- Monitor live GitHub Actions CI workflows.

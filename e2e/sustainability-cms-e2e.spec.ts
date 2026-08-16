@@ -109,7 +109,7 @@ test.describe("Sustainability Admin CMS Tests", () => {
   test("Admin can access sustainability CMS page", async ({ page }) => {
     await page.goto(ADMIN_SUSTAINABILITY_URL);
     await page.waitForLoadState("domcontentloaded");
-    
+
     // Apply reload fallback for "Checking access..." state in long batch runs
     try {
       await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 8000 });
@@ -133,7 +133,7 @@ test.describe("Sustainability Admin CMS Tests", () => {
 
     await page.goto(ADMIN_SUSTAINABILITY_URL);
     await page.waitForLoadState("domcontentloaded");
-    
+
     // Apply reload fallback for "Checking access..." state in long batch runs
     try {
       await expect(page.getByText("Checking access...")).not.toBeVisible({ timeout: 8000 });
