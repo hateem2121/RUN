@@ -26,4 +26,7 @@ startTransition(() => {
       },
     },
   );
+  if (typeof window !== "undefined") {
+    (window as unknown as { __hydrated?: boolean }).__hydrated = true;
+  }
 });

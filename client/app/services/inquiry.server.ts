@@ -24,7 +24,7 @@ async function submitContactInquiry(data: ContactSubmissionData) {
 
   try {
     const port = process.env.PORT || "5002";
-    const base = `http://localhost:${port}`;
+    const base = `http://127.0.0.1:${port}`;
     const response = await fetch(`${base}/api/contact`, {
       method: "POST",
       headers: {
@@ -90,15 +90,20 @@ async function submitContactInquiry(data: ContactSubmissionData) {
 
 // --- Internal ---
 
-// React 19 Server Action Adapter for useActionState
 export async function submitInquiryAction(_request: Request | null, formData: FormData) {
+  const firstName = (formData.get("firstName") as string) || "";
+  const lastName = (formData.get("lastName") as string) || "";
+  const fullName = `${firstName} ${lastName}`.trim();
   const data = {
-    name: (formData.get("name") || formData.get("contactName")) as string,
+    name: (formData.get("name") ||
+      formData.get("contactName") ||
+      fullName ||
+      "Valued Customer") as string,
     email: formData.get("email") as string,
     message: formData.get("message") as string,
     company: (formData.get("company") || formData.get("companyName")) as string,
-    phone: formData.get("phone") as string,
-    country: formData.get("country") as string,
+    phone: (formData.get("phone") || formData.get("contactNumber")) as string,
+    country: (formData.get("country") as string) || "Pakistan",
     preferredPlatform: (formData.get("preferredPlatform") || formData.get("platform")) as string,
     honeypot: formData.get("honeypot") as string,
     recaptchaToken: formData.get("recaptchaToken") as string,

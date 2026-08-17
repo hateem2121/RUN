@@ -1327,7 +1327,7 @@ export class ProductRepository {
 
     try {
       const cached = await unifiedCache.get<Category>(cacheKey, "data");
-      if (cached) {
+      if (cached && cached.slug === slug && !cached.deletedAt) {
         return cached;
       }
     } catch (error) {
@@ -1650,7 +1650,9 @@ export class ProductRepository {
 
   private async invalidateCategoryCache(): Promise<void> {
     try {
-      // Invalidate all product-related cache when categories change as they often affect lists
+      // Invalidate all product and category-related cache when categories change
+      await unifiedCache.clearPattern("^categories:");
+      await unifiedCache.clearPattern("^products:");
       await unifiedCache.clearPattern(InvalidationPatterns.products);
       await unifiedCache.delete(CacheKeys.products.categories());
       await unifiedCache.delete(CacheKeys.products.totalCount());

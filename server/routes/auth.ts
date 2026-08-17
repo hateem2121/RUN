@@ -7,14 +7,30 @@ import type { SessionUser } from "../types/session.js";
 
 const router = Router();
 
-// Login route - starts OAuth flow
-router.get(
-  "/login",
-  authRateLimiter,
+// Login route - starts OAuth flow or forwards to mock-login in test/E2E
+router.get("/login", authRateLimiter, (req, res, next) => {
+  const isMockEnabled =
+    process.env.ENABLE_MOCK_ADMIN === "true" ||
+    process.env.NODE_ENV === "test" ||
+    process.env.VITEST === "true" ||
+    process.env.E2E === "true" ||
+    process.env.PLAYWRIGHT_TEST === "true";
+
+  if (
+    isMockEnabled &&
+    (!process.env.GOOGLE_CLIENT_ID ||
+      process.env.GOOGLE_CLIENT_ID === "mock-client-id" ||
+      process.env.GOOGLE_CLIENT_ID === "dummy-google-client-id")
+  ) {
+    const returnTo = (req.query.returnUrl as string) || (req.query.returnTo as string) || "/admin";
+    res.redirect(`/api/auth/mock-login?returnTo=${encodeURIComponent(returnTo)}`);
+    return;
+  }
+
   passport.authenticate("google", {
     scope: ["profile", "email"],
-  }),
-);
+  })(req, res, next);
+});
 
 // Mock Login Route (Development, Test, and E2E Only)
 // SECURITY: Strict check - mock login ONLY enabled when ENABLE_MOCK_ADMIN is explicitly "true" or in test environments
@@ -79,7 +95,8 @@ router.get("/mock-login", async (req, res) => {
           return;
         }
 
-        const returnTo = (req.query.returnTo as string) || "/admin";
+        const returnTo =
+          (req.query.returnTo as string) || (req.query.returnUrl as string) || "/admin";
         if (req.headers.accept?.includes("application/json")) {
           res.json({ success: true, user: mockUser });
           return;

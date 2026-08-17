@@ -110,3 +110,5 @@ export function InquiryManagement() {
     </div>
   );
 }
+
+export default InquiryManagement;

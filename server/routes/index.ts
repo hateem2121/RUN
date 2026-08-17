@@ -90,7 +90,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // 1. Auth & Worker (Root Level)
   apiRouter.use("/auth", criticalTier, authRouter);
   apiRouter.use("/worker", apiTier, workerRouter);
-  apiRouter.use("/inquiry-admin", criticalTier, inquiryAdminRouter);
+  apiRouter.use(criticalTier, inquiryAdminRouter);
 
   // 1.5 Resources (Public Page Content - Must be before Admin/Core to avoid conflicts)
   apiRouter.use(publicTier, resourcesRouter);

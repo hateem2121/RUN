@@ -111,6 +111,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    (window as unknown as { __hydrated?: boolean }).__hydrated = true;
     setMounted(true);
     reportWebVitals();
 

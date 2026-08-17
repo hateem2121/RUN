@@ -34,12 +34,9 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { contactConfig, locations };
 }
 
-import { submitInquiryAction } from "../services/inquiry.server";
-
 export async function action({ request }: ActionFunctionArgs) {
+  const { submitInquiryAction } = await import("../services/inquiry.server");
   const formData = await request.formData();
-  // Use the shared server action adapter to ensure consistent validation and response format
-  // Pass the request object to allow for manual CSRF validation since this route is excluded from global middleware
   return await submitInquiryAction(request, formData);
 }
 
@@ -48,7 +45,7 @@ type LoaderData = {
   locations: unknown;
 };
 
-import { isRouteErrorResponse, useRouteError } from "react-router";
+import { isRouteErrorResponse, useLoaderData, useRouteError } from "react-router";
 
 export function ErrorBoundary() {
   const error = useRouteError();
@@ -64,8 +61,10 @@ export function ErrorBoundary() {
   );
 }
 
-export default function Component({ loaderData }: { loaderData: LoaderData }) {
-  const { contactConfig } = loaderData;
+export default function Component({ loaderData }: { loaderData?: LoaderData }) {
+  const hookData = useLoaderData<typeof loader>();
+  const effectiveData = loaderData || hookData;
+  const contactConfig = effectiveData?.contactConfig ?? null;
   const isMobile = useIsMobile();
 
   return <ContactContent contactConfig={contactConfig} isMobile={isMobile} />;
@@ -80,19 +79,6 @@ function ContactContent({
   contactConfig: ContactPageConfiguration | null;
   isMobile: boolean;
 }) {
-  if (!contactConfig) {
-    return (
-      <div className="min-h-screen bg-muted/30 pt-32 pb-24 text-foreground">
-        <div className="container mx-auto max-w-7xl p-6 md:p-8 lg:p-12">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-5 relative z-10">
-            <div className="col-span-1 md:col-span-2 lg:col-span-3 h-custom-space-293 bg-card/50 animate-pulse rounded-xl" />
-            <ContactInfoCardsSkeleton />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-muted/30 pt-32 pb-24 text-foreground">
       <div className="container mx-auto max-w-7xl p-6 md:p-8 lg:p-12">

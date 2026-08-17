@@ -102,8 +102,8 @@ const ContactManagement = lazy(() =>
 );
 const MediaTestRunner = () => <PlaceholderModule moduleName="Media Test Runner" />;
 const InquiryManagement = lazy(() =>
-  import("@/components/admin/inquiry-management/index").then((m) => ({
-    default: m.InquiryManagement,
+  import("@/components/admin/inquiry-management").then((m) => ({
+    default: m.default || m.InquiryManagement,
   })),
 );
 const InventoryManagement = ({ moduleName }: { moduleName: string }) => (

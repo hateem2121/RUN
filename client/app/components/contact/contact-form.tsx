@@ -62,7 +62,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
       <div className="card-border-overlay rounded-custom-misc-149" />
 
       <div className="relative z-default">
-        {!showSuccess ? (
+        {!showSuccess && !state?.success ? (
           <div>
             <Typography.H1
               className="mb-8 font-bold text-3xl text-foreground/90 leading-none tracking-tighter sm:text-4xl md:text-5xl lg:text-5xl"
@@ -99,10 +99,11 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
               <div className="pt-2">
                 <Button
                   type="submit"
-                  data-testid="button-submit"
-                  disabled={isPending}
+                  variant="default"
                   size="lg"
-                  className="h-12 w-full bg-primary font-semibold text-primary-foreground shadow-md hover:shadow-lg"
+                  disabled={isPending}
+                  data-testid="button-submit"
+                  className="w-full"
                 >
                   {isPending ? (
                     <>
@@ -123,8 +124,13 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
         ) : (
           <ContactSuccess
             heading={contactConfig?.successHeading || "Message Sent!"}
-            message={contactConfig?.successMessage || "Your message has been sent successfully."}
+            message={
+              contactConfig?.successMessage ||
+              state?.message ||
+              "Your message has been sent successfully."
+            }
             onReset={() => setShowSuccess(false)}
+            onSendAnother={() => setShowSuccess(false)}
           />
         )}
       </div>

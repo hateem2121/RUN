@@ -22,7 +22,7 @@ declare global {
   }
 }
 
-async function submitAction(
+export async function submitAction(
   _prevState: ActionState | null,
   formData: FormData,
 ): Promise<ActionState> {
@@ -33,27 +33,34 @@ async function submitAction(
 
   const csrfToken =
     typeof document !== "undefined"
-      ? document.cookie
-          .split(";")
-          .map((row) => row.trim())
-          .find((row) => row.startsWith("csrf_token="))
-          ?.split("=")[1]
+      ? decodeURIComponent(
+          document.cookie
+            .split(";")
+            .map((row) => row.trim())
+            .find((row) => row.startsWith("csrf_token="))
+            ?.split("=")[1] || "",
+        ) || undefined
       : undefined;
 
   const recaptchaToken =
     (typeof window !== "undefined" && window.grecaptcha?.getResponse?.()) || "";
 
-  const firstName = formData.get("firstName") as string;
-  const lastName = formData.get("lastName") as string;
-  const fullName = `${firstName || ""} ${lastName || ""}`.trim();
+  const firstName = (formData.get("firstName") as string) || "";
+  const lastName = (formData.get("lastName") as string) || "";
+  const fullName =
+    (formData.get("name") as string) || `${firstName} ${lastName}`.trim() || "Valued Customer";
 
   const payload = {
+    csrf_token: csrfToken,
+    csrfToken,
     name: fullName,
-    email: formData.get("email") as string,
-    message: formData.get("message") as string,
-    company: (formData.get("companyName") as string) || undefined,
-    country: formData.get("country") as string,
-    phone: (formData.get("contactNumber") as string) || undefined,
+    email: (formData.get("email") as string) || "",
+    message: (formData.get("message") as string) || "",
+    company:
+      (formData.get("companyName") as string) || (formData.get("company") as string) || undefined,
+    country: (formData.get("country") as string) || "Pakistan",
+    phone:
+      (formData.get("contactNumber") as string) || (formData.get("phone") as string) || undefined,
     preferredPlatform:
       formData.get("platform") === "Other"
         ? (formData.get("otherPlatform") as string) || undefined
@@ -72,7 +79,8 @@ async function submitAction(
     });
     const data = await res.json();
     return data;
-  } catch (_err) {
+  } catch (err) {
+    console.error("[submitAction] catch error:", err);
     return { success: false, error: "Failed to connect to the server." };
   }
 }

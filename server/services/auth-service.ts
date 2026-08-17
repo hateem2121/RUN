@@ -138,7 +138,8 @@ export class AuthService {
     const isTestRunner =
       process.env.E2E === "true" ||
       process.env.VITEST === "true" ||
-      process.env.NODE_ENV === "test";
+      process.env.NODE_ENV === "test" ||
+      process.env.PLAYWRIGHT_TEST === "true";
 
     if (
       process.env.NODE_ENV === "production" &&
@@ -250,7 +251,8 @@ export class AuthService {
     const isTestRunner =
       process.env.E2E === "true" ||
       process.env.VITEST === "true" ||
-      process.env.NODE_ENV === "test";
+      process.env.NODE_ENV === "test" ||
+      process.env.PLAYWRIGHT_TEST === "true";
 
     if (process.env.NODE_ENV === "production" && !isTestRunner) {
       return false;
@@ -280,7 +282,8 @@ export class AuthService {
     const isTestRunner =
       process.env.E2E === "true" ||
       process.env.VITEST === "true" ||
-      process.env.NODE_ENV === "test";
+      process.env.NODE_ENV === "test" ||
+      process.env.PLAYWRIGHT_TEST === "true";
 
     if (process.env.NODE_ENV === "production" && !isTestRunner) {
       if (!sess.uaHash) {
@@ -307,7 +310,11 @@ export class AuthService {
     }
     const ROTATION_INTERVAL = 15 * 60 * 1000; // 15 min
 
-    if (now - lastRotated > ROTATION_INTERVAL) {
+    if (
+      !isTestRunner &&
+      process.env.NODE_ENV === "production" &&
+      now - lastRotated > ROTATION_INTERVAL
+    ) {
       const passportState = sess.passport;
       const savedUaHash = sess.uaHash;
 

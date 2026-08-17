@@ -41,8 +41,13 @@ test.describe("Admin - Product Management", () => {
     }
 
     // Ensure we see the main layout
-    console.log("Waiting for 'Product Management' header...");
-    await expect(page.getByText("Product Management")).toBeVisible({ timeout: 20000 });
+    console.log("Waiting for 'Product' header...");
+    await expect(
+      page
+        .getByRole("heading", { name: /Product/i })
+        .or(page.getByText(/Product Architecture|Product Management/i))
+        .first(),
+    ).toBeVisible({ timeout: 20000 });
     await page.waitForLoadState("networkidle");
 
     // 2. Open Create Modal

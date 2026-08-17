@@ -110,20 +110,30 @@ class ProductService {
             DB_CIRCUIT_OPTIONS,
           );
         } else if (params.category) {
-          const categoryId = parseInt(params.category, 10);
-          products = await withCircuit(
-            "get-products-by-category",
-            () =>
-              retryDbOperation(() =>
-                productRepository.getProductsByCategory(categoryId, limit, offset),
-              ),
-            DB_CIRCUIT_OPTIONS,
-          );
-          totalCount = await withCircuit(
-            "get-products-by-category-count",
-            () => retryDbOperation(() => productRepository.getProductsByCategoryCount(categoryId)),
-            DB_CIRCUIT_OPTIONS,
-          );
+          let categoryId = parseInt(params.category, 10);
+          if (Number.isNaN(categoryId)) {
+            const cat = await productRepository.getCategoryBySlug(params.category);
+            if (cat) {
+              categoryId = cat.id;
+            }
+          }
+
+          if (!Number.isNaN(categoryId)) {
+            products = await withCircuit(
+              "get-products-by-category",
+              () =>
+                retryDbOperation(() =>
+                  productRepository.getProductsByCategory(categoryId, limit, offset),
+                ),
+              DB_CIRCUIT_OPTIONS,
+            );
+            totalCount = await withCircuit(
+              "get-products-by-category-count",
+              () =>
+                retryDbOperation(() => productRepository.getProductsByCategoryCount(categoryId)),
+              DB_CIRCUIT_OPTIONS,
+            );
+          }
         } else if (params.featured === "true") {
           products = await withCircuit(
             "get-featured-products",
