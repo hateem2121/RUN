@@ -92,6 +92,7 @@ export const Footer: React.FC = () => {
         <script
           type="application/ld+json"
           nonce={nonce}
+          suppressHydrationWarning
           // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data is server-controlled, not user input
           dangerouslySetInnerHTML={{
             // Escape </script> sequences to prevent script tag break-out (Node's JSON.stringify

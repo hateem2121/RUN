@@ -17,8 +17,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-const BASE = "http://localhost:5002";
-
 // ─── Seed-data identifiers ───────────────────────────────────────────────────
 const PRODUCT_ID = 49;
 const CATEGORY_SLUG = "athletic-wear";
@@ -60,19 +58,19 @@ async function patchProductUrlPath(
 
 /** Warm up the authenticated session so CSRF cookies are hydrated */
 async function warmSession(page: import("@playwright/test").Page): Promise<void> {
-  await page.goto(`${BASE}/admin/homepage`);
-  await page.waitForLoadState("networkidle");
+  await page.goto("/admin/homepage");
+  await page.waitForLoadState("domcontentloaded");
 }
 
 // ── Phase 1A — /products ──────────────────────────────────────────────────────
 test.describe("/products", () => {
   test("loads HTTP 200", async ({ page }) => {
-    const resp = await page.goto(`${BASE}/products`);
+    const resp = await page.goto("/products");
     expect(resp?.status()).toBe(200);
   });
 
   test("at least one product card renders", async ({ page }) => {
-    await page.goto(`${BASE}/products`);
+    await page.goto("/products");
     await page.waitForLoadState("domcontentloaded");
     // After getProductsSummary fix, SSR + hydration renders product cards
     const cards = page.locator("[data-testid^='product-card-'], a[href*='/categories/']");
@@ -82,7 +80,7 @@ test.describe("/products", () => {
   });
 
   test("each visible product card has content", async ({ page }) => {
-    await page.goto(`${BASE}/products`);
+    await page.goto("/products");
     await page.waitForLoadState("domcontentloaded");
     const cards = page.locator("[data-testid^='product-card-'], a[href*='/categories/']");
     await expect(cards.first()).toBeVisible({ timeout: 15000 });
@@ -93,7 +91,7 @@ test.describe("/products", () => {
   test("no critical console errors on /products", async ({ page }) => {
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
-    await page.goto(`${BASE}/products`);
+    await page.goto("/products");
     await page.waitForLoadState("domcontentloaded");
     const criticalErrors = errors.filter(
       (e) => !e.includes("unsplash") && !e.includes("api/media"),
@@ -103,14 +101,14 @@ test.describe("/products", () => {
 
   test("no horizontal overflow at 375px", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto(`${BASE}/products`);
+    await page.goto("/products");
     await page.waitForLoadState("domcontentloaded");
     const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
     expect(scrollWidth).toBeLessThanOrEqual(380);
   });
 
   test("accessibility: zero critical violations on /products", async ({ page }) => {
-    await page.goto(`${BASE}/products`);
+    await page.goto("/products");
     await page.waitForLoadState("domcontentloaded");
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa"])
@@ -124,12 +122,12 @@ test.describe("/products", () => {
 // ── Phase 1A — /categories ────────────────────────────────────────────────────
 test.describe("/categories", () => {
   test("loads HTTP 200", async ({ page }) => {
-    const resp = await page.goto(`${BASE}/categories`);
+    const resp = await page.goto("/categories");
     expect(resp?.status()).toBe(200);
   });
 
   test("at least one category renders", async ({ page }) => {
-    await page.goto(`${BASE}/categories`);
+    await page.goto("/categories");
     await page.waitForLoadState("domcontentloaded");
     // Categories render as h2 headings (with or without featured content)
     const headings = page.locator("h1, h2");
@@ -139,7 +137,7 @@ test.describe("/categories", () => {
   });
 
   test("page title renders 'Product Categories'", async ({ page }) => {
-    await page.goto(`${BASE}/categories`);
+    await page.goto("/categories");
     await page.waitForLoadState("domcontentloaded");
     await expect(
       page
@@ -151,14 +149,14 @@ test.describe("/categories", () => {
 
   test("no horizontal overflow at 375px", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto(`${BASE}/categories`);
+    await page.goto("/categories");
     await page.waitForLoadState("domcontentloaded");
     const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
     expect(scrollWidth).toBeLessThanOrEqual(380);
   });
 
   test("accessibility: zero critical violations on /categories", async ({ page }) => {
-    await page.goto(`${BASE}/categories`);
+    await page.goto("/categories");
     await page.waitForLoadState("domcontentloaded");
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa"])
@@ -172,12 +170,12 @@ test.describe("/categories", () => {
 // ── Phase 1A — /categories/:slug ─────────────────────────────────────────────
 test.describe("/categories/:slug", () => {
   test("loads HTTP 200 for real slug", async ({ page }) => {
-    const resp = await page.goto(`${BASE}/categories/${CATEGORY_SLUG}`);
+    const resp = await page.goto(`/categories/${CATEGORY_SLUG}`);
     expect(resp?.status()).toBe(200);
   });
 
   test("category title renders on detail page", async ({ page }) => {
-    await page.goto(`${BASE}/categories/${CATEGORY_SLUG}`);
+    await page.goto(`/categories/${CATEGORY_SLUG}`);
     await page.waitForLoadState("domcontentloaded");
     const heading = page.locator("h1, h2").first();
     await expect(heading).toBeVisible({ timeout: 10000 });
@@ -188,7 +186,7 @@ test.describe("/categories/:slug", () => {
   test("link to /categories/:slug/products is present or products listed inline", async ({
     page,
   }) => {
-    await page.goto(`${BASE}/categories/${CATEGORY_SLUG}`);
+    await page.goto(`/categories/${CATEGORY_SLUG}`);
     await page.waitForLoadState("domcontentloaded");
     await expect(page.getByText("Loading category...")).not.toBeVisible({ timeout: 15000 });
 
@@ -205,7 +203,7 @@ test.describe("/categories/:slug", () => {
 
   test("no horizontal overflow at 375px", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto(`${BASE}/categories/${CATEGORY_SLUG}`);
+    await page.goto(`/categories/${CATEGORY_SLUG}`);
     await page.waitForLoadState("domcontentloaded");
     const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
     expect(scrollWidth).toBeLessThanOrEqual(380);
@@ -215,12 +213,12 @@ test.describe("/categories/:slug", () => {
 // ── Phase 1A — /categories/:slug/products ────────────────────────────────────
 test.describe("/categories/:slug/products", () => {
   test("loads HTTP 200", async ({ page }) => {
-    const resp = await page.goto(`${BASE}/categories/${CATEGORY_SLUG}/products`);
+    const resp = await page.goto(`/categories/${CATEGORY_SLUG}/products`);
     expect(resp?.status()).toBe(200);
   });
 
   test("products list renders — at least one product", async ({ page }) => {
-    await page.goto(`${BASE}/categories/${CATEGORY_SLUG}/products`);
+    await page.goto(`/categories/${CATEGORY_SLUG}/products`);
     await page.waitForLoadState("domcontentloaded");
     const productItems = page.locator(
       "[data-testid^='product-card-'], a:has-text('View Details'), a[href*='/categories/athletic-wear/']",
@@ -230,14 +228,14 @@ test.describe("/categories/:slug/products", () => {
 
   test("no horizontal overflow at 375px", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto(`${BASE}/categories/${CATEGORY_SLUG}/products`);
+    await page.goto(`/categories/${CATEGORY_SLUG}/products`);
     await page.waitForLoadState("domcontentloaded");
     const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
     expect(scrollWidth).toBeLessThanOrEqual(380);
   });
 
   test("accessibility: zero critical violations", async ({ page }) => {
-    await page.goto(`${BASE}/categories/${CATEGORY_SLUG}/products`);
+    await page.goto(`/categories/${CATEGORY_SLUG}/products`);
     await page.waitForLoadState("domcontentloaded");
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa"])
@@ -251,12 +249,12 @@ test.describe("/categories/:slug/products", () => {
 // ── Phase 1A — /categories/:category/:product ─────────────────────────────────
 test.describe("/categories/:category/:product", () => {
   test("loads HTTP 200 after urlPath is set on product", async ({ page }) => {
-    const resp = await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
+    const resp = await page.goto(PRODUCT_URL_PATH);
     expect(resp?.status()).toBe(200);
   });
 
   test("product name renders in heading", async ({ page }) => {
-    await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
+    await page.goto(PRODUCT_URL_PATH);
     await page.waitForLoadState("domcontentloaded");
     const heading = page.locator("h1").first();
     await expect(heading).toBeVisible({ timeout: 15000 });
@@ -265,7 +263,7 @@ test.describe("/categories/:category/:product", () => {
   });
 
   test("product description visible", async ({ page }) => {
-    await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
+    await page.goto(PRODUCT_URL_PATH);
     await page.waitForLoadState("domcontentloaded");
     const descriptionEl = page.locator("p").first();
     await expect(descriptionEl).toBeVisible({ timeout: 10000 });
@@ -278,7 +276,7 @@ test.describe("/categories/:category/:product", () => {
         hydrationErrors.push(msg.text());
       }
     });
-    await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
+    await page.goto(PRODUCT_URL_PATH);
     await page.waitForLoadState("domcontentloaded");
     expect(hydrationErrors).toHaveLength(0);
   });
@@ -292,21 +290,21 @@ test.describe("/categories/:category/:product", () => {
         modelErrors.push(msg.text());
       }
     });
-    await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
+    await page.goto(PRODUCT_URL_PATH);
     await page.waitForLoadState("domcontentloaded");
     expect(modelErrors).toHaveLength(0);
   });
 
   test("no horizontal overflow at 375px", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
+    await page.goto(PRODUCT_URL_PATH);
     await page.waitForLoadState("domcontentloaded");
     const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
     expect(scrollWidth).toBeLessThanOrEqual(380);
   });
 
   test("accessibility: zero critical violations", async ({ page }) => {
-    await page.goto(`${BASE}${PRODUCT_URL_PATH}`);
+    await page.goto(PRODUCT_URL_PATH);
     await page.waitForLoadState("domcontentloaded");
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa"])
@@ -322,7 +320,7 @@ test.describe("404 edge cases — graceful errors (no crash)", () => {
   test("/categories/nonexistent-slug returns graceful page (not crash)", async ({ page }) => {
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
-    const resp = await page.goto(`${BASE}/categories/nonexistent-slug-xyz-404`);
+    const resp = await page.goto("/categories/nonexistent-slug-xyz-404");
     const status = resp?.status() ?? 0;
     expect([200, 404]).toContain(status);
     const body = await page.locator("body").innerText();
@@ -333,7 +331,7 @@ test.describe("404 edge cases — graceful errors (no crash)", () => {
   test("/categories/nonexistent/products returns graceful page", async ({ page }) => {
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
-    const resp = await page.goto(`${BASE}/categories/nonexistent-slug-xyz-404/products`);
+    const resp = await page.goto("/categories/nonexistent-slug-xyz-404/products");
     const status = resp?.status() ?? 0;
     expect([200, 404]).toContain(status);
     const body = await page.locator("body").innerText();
@@ -346,7 +344,7 @@ test.describe("404 edge cases — graceful errors (no crash)", () => {
   }) => {
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
-    const resp = await page.goto(`${BASE}/categories/${CATEGORY_SLUG}/definitely-does-not-exist`);
+    const resp = await page.goto(`/categories/${CATEGORY_SLUG}/definitely-does-not-exist`);
     expect(resp).toBeDefined();
     const body = await page.locator("body").innerText();
     expect(body.trim().length).toBeGreaterThan(0);

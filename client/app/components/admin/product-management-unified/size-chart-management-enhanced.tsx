@@ -227,10 +227,12 @@ export function SizeChartManagementEnhanced() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/size-charts"] });
+      getQueryClient().invalidateQueries({
+        predicate: (query) => String(query.queryKey[0]).includes("/api/resources"),
+      });
       toast.success("Success", { description: "Size chart created successfully" });
       resetForm();
     },
-
     onError: (error: Error) => {
       toast.error("Error", { description: error.message });
     },
@@ -241,15 +243,18 @@ export function SizeChartManagementEnhanced() {
       return await apiRequest(`/api/size-charts/${id}`, {
         method: "PUT",
         body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
       });
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/size-charts"] });
+      getQueryClient().invalidateQueries({
+        predicate: (query) => String(query.queryKey[0]).includes("/api/resources"),
+      });
       toast.success("Success", { description: "Size chart updated successfully" });
       setEditingChart(null);
       resetForm();
     },
-
     onError: (error: Error) => {
       toast.error("Error", { description: error.message });
     },
@@ -263,9 +268,11 @@ export function SizeChartManagementEnhanced() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/size-charts"] });
+      getQueryClient().invalidateQueries({
+        predicate: (query) => String(query.queryKey[0]).includes("/api/resources"),
+      });
       toast.success("Success", { description: "Size chart deleted successfully" });
     },
-
     onError: (error: Error) => {
       toast.error("Error", { description: error.message });
     },

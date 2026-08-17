@@ -1,7 +1,5 @@
 import { expect, test } from "@playwright/test";
 
-const BASE_URL = "http://localhost:5002";
-
 test.describe("API Integration: Secondary Pages", () => {
   const publicEndpoints = [
     "/api/navigation-items",
@@ -15,7 +13,7 @@ test.describe("API Integration: Secondary Pages", () => {
 
   for (const endpoint of publicEndpoints) {
     test(`GET ${endpoint} returns 200 and valid JSON`, async ({ request }) => {
-      const response = await request.get(`${BASE_URL}${endpoint}`);
+      const response = await request.get(endpoint);
       expect(response.status()).toBe(200);
       const data = await response.json();
       expect(data).toBeDefined();
@@ -23,7 +21,7 @@ test.describe("API Integration: Secondary Pages", () => {
   }
 
   test("GET /api/media handles pagination", async ({ request }) => {
-    const response = await request.get(`${BASE_URL}/api/media?limit=5&page=1`);
+    const response = await request.get("/api/media?limit=5&page=1");
     expect(response.status()).toBe(200);
     const data = await response.json();
     if (Array.isArray(data)) {
@@ -32,7 +30,7 @@ test.describe("API Integration: Secondary Pages", () => {
   });
 
   test("GET /api/navigation-items has expected structure", async ({ request }) => {
-    const response = await request.get(`${BASE_URL}/api/navigation-items`);
+    const response = await request.get("/api/navigation-items");
     const data = await response.json();
     expect(Array.isArray(data)).toBe(true);
     if (data.length > 0) {

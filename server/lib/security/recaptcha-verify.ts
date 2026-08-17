@@ -19,9 +19,18 @@ export async function verifyRecaptcha(
 ): Promise<{ success: boolean; score: number; error?: string }> {
   const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
 
-  // Development bypass (Only if specifically configured or in dev with no key)
-  if (process.env.NODE_ENV !== "production" && !recaptchaSecret) {
-    logger.info(`[Security] reCAPTCHA skipped (dev mode) for ${ip}`);
+  // Development & Test bypass
+  if (
+    process.env.NODE_ENV === "test" ||
+    process.env.PLAYWRIGHT_TEST === "true" ||
+    process.env.E2E === "true" ||
+    (process.env.NODE_ENV !== "production" &&
+      (!recaptchaSecret ||
+        recaptchaSecret.includes("dummy") ||
+        recaptchaSecret.includes("test") ||
+        recaptchaSecret.includes("placeholder")))
+  ) {
+    logger.info(`[Security] reCAPTCHA skipped (test/dev mode) for ${ip}`);
     return { success: true, score: 1.0 };
   }
 

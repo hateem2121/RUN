@@ -32,7 +32,9 @@
       "!graphify-out",
       "!client/public",
       "!server/migrations",
-      "!**/.turbo"
+      "!**/.turbo",
+      "!**/.agent",
+      "!**/.agents"
     ]
   },
   "formatter": {

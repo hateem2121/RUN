@@ -316,6 +316,9 @@ export function AccessoryManagementEnhanced() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/accessories"] });
+      getQueryClient().invalidateQueries({
+        predicate: (query) => String(query.queryKey[0]).includes("/api/resources"),
+      });
       toast.success("Success", { description: "Accessory created successfully" });
       resetForm();
     },
@@ -334,6 +337,9 @@ export function AccessoryManagementEnhanced() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/accessories"] });
+      getQueryClient().invalidateQueries({
+        predicate: (query) => String(query.queryKey[0]).includes("/api/resources"),
+      });
       toast.success("Success", { description: "Accessory updated successfully" });
       setIsEditDialogOpen(false);
       setEditingAccessory(null);
@@ -352,6 +358,9 @@ export function AccessoryManagementEnhanced() {
     },
     onSuccess: () => {
       getQueryClient().invalidateQueries({ queryKey: ["/api/accessories"] });
+      getQueryClient().invalidateQueries({
+        predicate: (query) => String(query.queryKey[0]).includes("/api/resources"),
+      });
       toast.success("Success", { description: "Accessory deleted successfully" });
     },
     onError: (error: Error) => {

@@ -229,6 +229,7 @@ function ManufacturingInner({ loaderData }: ManufacturingInnerProps) {
       <script
         type="application/ld+json"
         nonce={nonce}
+        suppressHydrationWarning
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data is hardcoded, not user input
         dangerouslySetInnerHTML={{ __html: generateStructuredData() }}
       />

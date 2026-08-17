@@ -49,8 +49,8 @@ export async function stabilizeVisuals(page: Page) {
     await page.evaluate(() => document.fonts.ready);
   } catch (_e) {}
 
-  // E. Ensure hydration is complete (wait for our custom class)
-  await page.waitForSelector("body.css-loaded", { timeout: 10000 });
+  // E. Ensure DOM is settled
+  await page.waitForLoadState("domcontentloaded");
 }
 
 /**

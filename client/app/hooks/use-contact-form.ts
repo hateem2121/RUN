@@ -31,10 +31,14 @@ async function submitAction(
     return { success: true, message: "Message received." };
   }
 
-  const csrfToken = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith("csrf_token="))
-    ?.split("=")[1];
+  const csrfToken =
+    typeof document !== "undefined"
+      ? document.cookie
+          .split(";")
+          .map((row) => row.trim())
+          .find((row) => row.startsWith("csrf_token="))
+          ?.split("=")[1]
+      : undefined;
 
   const recaptchaToken =
     (typeof window !== "undefined" && window.grecaptcha?.getResponse?.()) || "";
@@ -62,7 +66,7 @@ async function submitAction(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(csrfToken ? { "CSRF-Token": csrfToken } : {}),
+        ...(csrfToken ? { "x-csrf-token": csrfToken } : {}),
       },
       body: JSON.stringify(payload),
     });

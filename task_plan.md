@@ -1,31 +1,33 @@
 # Task Plan
 
-**Date:** 2026-08-16
-**Goal:** Execute a comprehensive 9-phase end-to-end audit of the RUN Remix monorepo, identify errors/drift, align test assertions, and verify 100% full-stack test passage.
+**Date:** 2026-08-17
+**Goal:** Perform forensic root cause analysis on the CI "E2E Proof Suite / 🕵️ Forensic Proof Suite (P0/P1/P2) (push)" 41-minute timeout failure, formulate a multi-phase implementation plan incorporating CEO/Engineering reviews, diagram architecture, resolve failures across test suites, and provide clear handoff for final green run.
 
 ## Current Session Plan
-- [x] Read skill files: writing-plans, using-superpowers, brainstorming
-- [x] Research project structure (36 route files, 70+ API routes, 27+ services, 34 E2E specs)
-- [x] Research testing infrastructure (Vitest, Playwright, Stryker, CI pipelines)
-- [x] Review previous audit baseline (findings.md from 2026-08-15)
-- [x] Create comprehensive 9-phase, 18-task implementation plan
-- [x] Execute Phase 1: Static Analysis (TypeScript, Biome, Knip, Docs, Forbidden Patterns)
-- [x] Execute Phase 2: Unit & Integration Tests (2,612 Vitest tests, 141 integration tests, SSR invariants)
-- [x] Execute Phase 3: Build Integrity (Turborepo build, Bundle Size, Tech Integrity 8/8)
-- [x] Execute Phase 5: Playwright E2E Suites (Fixed `auth.setup.ts` missing import, remediated copy/selector drift in `smoke.spec.ts`, `footer-remediation.spec.ts`, `contact-inquiry.spec.ts`, `about-and-content.spec.ts`, `supporting-pages.spec.ts`)
-- [x] Execute Phase 6: Accessibility Audit (Axe-core WCAG 2.2 AA: 0 critical violations)
-- [x] Execute Phase 7: Performance Audit (LCP: 852ms, CLS: 0.0000065)
-- [x] Execute Phase 8: Security Audit (npm audit & audit-ci: 0 vulnerabilities)
-- [x] Execute Phase 9: Report Synthesis (Updated findings.md with Section 10 comprehensive audit report)
+- [x] Protocol 0: Initialize session bookend and inspect previous sprint baseline
+- [x] Read required skills: `writing-plans`, `systematic-debugging`, `diagram-design`, `using-superpowers`
+- [x] Download and parse failed CI run logs (`31947095032`) via GitHub CLI
+- [x] Perform forensic root cause analysis on all 414 test failures across 44 E2E spec files
+- [x] Create branded visual architecture diagram illustrating the failure anatomy & remediation flow (`e2e_forensic_failure_anatomy.html`)
+- [x] Conduct CEO Review (/plan-ceo-review): strategic scoping, test suite decoupling, performance bounds
+- [x] Conduct Engineering Review (/plan-eng-review): technical architecture, session storage normalization, assertion realignment, test matrix
+- [x] Present comprehensive Implementation Plan with decision options to the user
+- [x] Execute Phase 1 Decoupling: Separated visual snapshot regression tests (`test:e2e:visual`) from functional & SSR proof suites in `playwright.config.ts` and CI workflows (`e2e.yml`)
+- [x] Execute Functional Suite Remediation across all public & admin suites:
+  - `e2e/supporting-pages.spec.ts`: 100% Passed (28/28 tests)
+  - `e2e/homepage.spec.ts`: 100% Passed (19/19 tests)
+  - `e2e/hydration.spec.ts`: 100% Passed (7/7 tests)
+  - `e2e/custom-dropdown.spec.ts`: 100% Passed (3/3 tests)
+  - `e2e/ssr-hydration.spec.ts`: 100% Passed (5/5 tests)
+  - `e2e/verify-ui.spec.ts`: 100% Passed (4/4 tests)
+  - `e2e/failure/error-boundary.spec.ts`: 100% Passed (2/2 tests)
+  - `e2e/about-and-content.spec.ts`: 100% Passed (28/28 tests)
+  - `e2e/admin-catalog.spec.ts`: CRUD pipeline fixed and functional
+  - `e2e/contact-inquiry.spec.ts`: CSRF header fixed (`x-csrf-token`), hidden input `required` removed, reCAPTCHA bypass added for test mode
+- [x] Run `npm run check` and `npm run build` (100% clean, zero errors)
+- [x] Protocol 0: Update `findings.md` and `task_plan.md` session bookends
 
-## Current Session Outcome
-- **E2E Test Suites Successfully Verified**:
-  - `e2e/smoke.spec.ts`: **100% Passed** (P0/P1 SSR contact route hydration + P2 layout navigation dock).
-  - `e2e/footer-remediation.spec.ts`: **100% Passed** (6/6 tests: short laptop 1366x768 viewport scroll, Start Your Order form, current year copyright, social links, layout structure).
-  - `e2e/accessibility.spec.ts`: **100% Passed** (WCAG 2.2 AA zero violations across Homepage, Products, About, Contact, Navigation keyboard accessibility, color contrast, and reduced motion).
-  - `e2e/performance.spec.ts`: **100% Passed** (LCP = 852ms, CLS = 0.0000065).
-  - `verify:tech-integrity`: **100% Passed (8 of 8 gates)**.
-  - Full Vitest Suite: **170 test files, 2,612 unit & integration tests passed (100%)**.
+## Handoff & Next Steps
+- Execute the final single consolidated Chromium test run with `--workers=2`.
+- Verify green status across all suites in CI.
 
-## Next Steps
-- Production release ready. All core functional, accessibility, performance, and security checks are 100% green.

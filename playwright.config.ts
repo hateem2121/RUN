@@ -23,7 +23,7 @@ export default defineConfig({
   snapshotPathTemplate: "{snapshotDir}/{testFilePath}/{arg}{ext}",
   use: {
     actionTimeout: 8000,
-    baseURL: process.env.E2E_BASE_URL || "http://localhost:5002",
+    baseURL: process.env.E2E_BASE_URL || process.env.BASE_URL || "http://127.0.0.1:5002",
     trace: "retain-on-failure",
     video: "retain-on-failure",
     screenshot: "only-on-failure",
@@ -44,6 +44,36 @@ export default defineConfig({
     },
     {
       name: "chromium",
+      testIgnore: [
+        "**/forensic-audit.spec.ts",
+        "**/forensic-execution.spec.ts",
+        "**/homepage-visual.spec.ts",
+        "**/interaction-refs.spec.ts",
+        "**/regression-verification.spec.ts",
+        "**/release-verification.spec.ts",
+        "**/visual-regression-audit.spec.ts",
+        "**/visual-tokens.spec.ts",
+        "**/visual/**",
+      ],
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: ".auth/user.json",
+      },
+      dependencies: ["setup"],
+    },
+    {
+      name: "visual",
+      testMatch: [
+        "**/forensic-audit.spec.ts",
+        "**/forensic-execution.spec.ts",
+        "**/homepage-visual.spec.ts",
+        "**/interaction-refs.spec.ts",
+        "**/regression-verification.spec.ts",
+        "**/release-verification.spec.ts",
+        "**/visual-regression-audit.spec.ts",
+        "**/visual-tokens.spec.ts",
+        "**/visual/**",
+      ],
       use: {
         ...devices["Desktop Chrome"],
         storageState: ".auth/user.json",

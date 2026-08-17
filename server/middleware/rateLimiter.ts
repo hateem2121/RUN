@@ -63,6 +63,8 @@ export class RateLimiter {
       if (
         (process.env.NODE_ENV === "test" && process.env.ENABLE_RATE_LIMIT_IN_TESTS !== "true") ||
         (process.env.E2E === "true" && process.env.ENABLE_RATE_LIMIT_IN_TESTS !== "true") ||
+        (process.env.PLAYWRIGHT_TEST === "true" &&
+          process.env.ENABLE_RATE_LIMIT_IN_TESTS !== "true") ||
         process.env.NODE_ENV === "development"
       ) {
         return next();

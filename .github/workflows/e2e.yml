@@ -85,14 +85,14 @@ jobs:
           npx wait-on http://127.0.0.1:5002/api/health --timeout 60000
 
       - name: "🧪 Run E2E Proof Suite"
-        run: npx playwright test
+        run: npx playwright test --project=setup --project=chromium
         env:
           CI: true
           E2E_BASE_URL: http://127.0.0.1:5002
           ENABLE_MOCK_ADMIN: "true"
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url }}
-          SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"
-          ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only"
+          SESSION_SECRET: "mock_session_secret_for_testing_purposes_only_must_be_48_chars_long"
+          ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only_must_be_32_chars"
           INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
 
       - name: 📤 Upload Artifacts (Always)

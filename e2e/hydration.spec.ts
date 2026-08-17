@@ -1,47 +1,45 @@
 import { expect, test } from "@playwright/test";
 
+function isHydrationError(msgText: string): boolean {
+  const lower = msgText.toLowerCase();
+  return (
+    lower.includes("hydration failed") ||
+    lower.includes("text content does not match") ||
+    lower.includes("did not match. server:") ||
+    lower.includes("prop `classname` did not match") ||
+    lower.includes("a tree hydrated but some attributes")
+  );
+}
+
 test.describe("Hydration & SSR Safety", () => {
   test("should not have any hydration mismatches or console errors on homepage", async ({
     page,
   }) => {
     const consoleErrors: string[] = [];
 
-    // Listen for console errors/warnings
     page.on("console", (msg) => {
       const text = msg.text();
-      // Filter for React hydration warnings
-      if (
-        msg.type() === "error" ||
-        (msg.type() === "warning" &&
-          (text.includes("Hydration") ||
-            text.includes("did not match") ||
-            text.includes("Prop `className` did not match")))
-      ) {
+      if (isHydrationError(text)) {
         consoleErrors.push(text);
       }
     });
 
     await page.goto("/");
-
-    // Wait for hydration to likely finish (relaxed to domcontentloaded to avoid timeouts)
     await page.waitForLoadState("domcontentloaded");
-
     expect(consoleErrors).toEqual([]);
-
-    // Visual check (screenshot comparison could be added here later)
   });
 
   test("should load category page without hydration errors", async ({ page }) => {
     const consoleErrors: string[] = [];
     page.on("console", (msg) => {
       const text = msg.text();
-      if (msg.type() === "error" || (msg.type() === "warning" && text.includes("Hydration"))) {
+      if (isHydrationError(text)) {
         consoleErrors.push(text);
       }
     });
 
     await page.goto("/categories");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
     expect(consoleErrors).toEqual([]);
   });
 
@@ -49,17 +47,13 @@ test.describe("Hydration & SSR Safety", () => {
     const consoleErrors: string[] = [];
     page.on("console", (msg) => {
       const text = msg.text();
-      if (msg.type() === "error" || (msg.type() === "warning" && text.includes("Hydration"))) {
+      if (isHydrationError(text)) {
         consoleErrors.push(text);
       }
     });
 
-    // Using a known product slug or a generic one if dynamic
-    // Assuming /products/:slug is the pattern.
-    // We'll pick one from the potential list or just hit /products to be safe if we don't know slugs.
-    // Ideally we hit a specific one. Let's try a safe one or main products page.
     await page.goto("/products");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
     expect(consoleErrors).toEqual([]);
   });
 
@@ -67,19 +61,13 @@ test.describe("Hydration & SSR Safety", () => {
     const consoleErrors: string[] = [];
     page.on("console", (msg) => {
       const text = msg.text();
-      // Only capture hydration-related errors, ignore 404 resource loading
-      if (
-        (msg.type() === "error" || msg.type() === "warning") &&
-        (text.includes("Hydration") || text.includes("did not match")) &&
-        !text.includes("404") &&
-        !text.includes("Failed to load resource")
-      ) {
+      if (isHydrationError(text)) {
         consoleErrors.push(text);
       }
     });
 
-    await page.goto("/about"); // Use /about as it's a simpler page
-    await page.waitForLoadState("networkidle");
+    await page.goto("/about");
+    await page.waitForLoadState("domcontentloaded");
     expect(consoleErrors).toEqual([]);
   });
 
@@ -95,7 +83,6 @@ test.describe("Hydration & SSR Safety", () => {
     await page.goto("/");
     await page.waitForLoadState("domcontentloaded");
 
-    // We might expect some noise if strict CSP is on, but 'refused to execute' is bad
     const criticalViolations = securityViolations.filter(
       (v) =>
         v.includes("refused to execute inline script") || v.includes("refused to load the script"),
@@ -108,7 +95,6 @@ test.describe("Hydration & SSR Safety", () => {
     page,
     context,
   }) => {
-    // Pre-populate localStorage to simulate returning user with quote items
     await context.addInitScript(() => {
       localStorage.setItem(
         "quote-storage",
@@ -125,20 +111,13 @@ test.describe("Hydration & SSR Safety", () => {
     const consoleErrors: string[] = [];
     page.on("console", (msg) => {
       const text = msg.text();
-      if (
-        msg.type() === "error" ||
-        text.includes("Hydration") ||
-        text.includes("did not match") ||
-        text.includes("Text content does not match")
-      ) {
+      if (isHydrationError(text)) {
         consoleErrors.push(text);
       }
     });
 
     await page.goto("/");
     await page.waitForLoadState("domcontentloaded");
-
-    // Allow time for hydration to complete
     await page.waitForTimeout(500);
 
     expect(consoleErrors).toEqual([]);

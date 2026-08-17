@@ -438,7 +438,7 @@ test.describe("Manufacturing Admin CMS Tests", () => {
         const restoreTitle = originalTitle || "PRECISION AT SCALE";
         const csrfCookie = await page.context().cookies();
         const csrfToken = csrfCookie.find((c) => c.name === "csrf_token")?.value || "";
-        const response = await page.request.patch("http://localhost:5002/api/manufacturing-hero", {
+        const response = await page.request.patch("/api/manufacturing-hero", {
           headers: {
             "Content-Type": "application/json",
             "x-csrf-token": csrfToken,

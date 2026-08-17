@@ -128,7 +128,6 @@ export function ContactFields({
               name="country"
               id="hidden-country"
               value={selectedCountry?.name || ""}
-              required
             />
             <CustomSelect
               id="country-select"

@@ -28,6 +28,7 @@
     "test:coverage": "vitest run --coverage",
     "test:coverage:ci": "vitest run --coverage --reporter=json --outputFile=test-results.json",
     "test:e2e": "playwright test",
+    "test:e2e:visual": "playwright test --project=visual",
     "test:integration": "vitest run tests/integration",
     "test:mutation": "npx stryker run",
     "lint": "biome check .",
