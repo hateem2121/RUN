@@ -112,25 +112,22 @@ We put on our detective hats 🕵️ and found **4 big mystery clues**:
 ### 🗺️ Diagram 3: Detective Mystery Map (The 4 Root Causes)
 
 ```mermaid
-mindmap
-  root((💥 The 41-Minute Freeze\n414 Failures))
-    (📸 Clue 1: Missing Photo Album)
-      Camera robots wanted to compare photos against a golden album
-      The album was missing in CI
-      365 tests failed and retried 3 times each
-      Wasted 30 full minutes!
-    (🔒 Clue 2: Secret Password Mismatch)
-      Robot sent badge labeled 'CSRF-Token'
-      Security guard only accepted 'x-csrf-token'
-      Guard slammed the door with 403 Forbidden!
-    (👻 Clue 3: The Invisible Box Trap)
-      Country dropdown had an invisible input with 'required'
-      Google Chrome cannot focus invisible boxes
-      Chrome silently blocked the submit button!
-    (🚦 Clue 4: Robot Traffic Jam)
-      3 robot workers tried to rush the server at once
-      The local Vite compiler got confused
-      Dynamic imports of entry.client.tsx timed out
+flowchart TD
+    classDef root fill:#fee2e2,stroke:#dc2626,stroke-width:3px,color:#991b1b;
+    classDef clue fill:#fff7ed,stroke:#f97316,stroke-width:2px,color:#9a3412;
+    classDef detail fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#334155;
+
+    Root["💥 The 41-Minute Freeze (414 Failures)"]:::root
+
+    Root --> C1["📸 Clue 1: Missing Photo Album"]:::clue
+    Root --> C2["🔒 Clue 2: Password Mismatch"]:::clue
+    Root --> C3["👻 Clue 3: Invisible Box Trap"]:::clue
+    Root --> C4["🚦 Clue 4: Robot Traffic Jam"]:::clue
+
+    C1 --> D1["Camera bots had no baseline photos to compare against.<br/>365 tests failed and retried 3 times each for 30 minutes!"]:::detail
+    C2 --> D2["Robot sent 'CSRF-Token', but server guard wanted 'x-csrf-token'.<br/>Guard slammed door with 403 Forbidden!"]:::detail
+    C3 --> D3["Hidden country dropdown input had required attribute.<br/>Chrome cannot focus hidden inputs and silently blocked submit!"]:::detail
+    C4 --> D4["3 test workers flooded the Vite SSR server at once,<br/>causing dynamic module imports to time out!"]:::detail
 ```
 
 ---
@@ -222,24 +219,31 @@ flowchart LR
 Every single core test room has been verified and is **100% Green**:
 
 ```mermaid
-gantt
-    title RUN APPAREL E2E Test Suite Execution Times (<3 Minutes Total)
-    dateFormat X
-    axisFormat %s sec
+flowchart TB
+    classDef suite fill:#eff6ff,stroke:#2563eb,stroke-width:2px,color:#1e3a8a;
+    classDef time fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d;
+    classDef total fill:#fef3c7,stroke:#f59e0b,stroke-width:3px,color:#78350f;
 
-    section Public Showroom
-    Homepage Proofs (19 tests)          :done, 0, 18
-    Supporting Pages (28 tests)        :done, 18, 42
-    Contact & Inquiries (4 tests)       :done, 42, 60
+    subgraph Showroom["Public Showroom Proofs"]
+        S1["Homepage Proofs (19 tests)"]:::suite --> T1["⚡ 18 seconds"]:::time
+        S2["Supporting Pages (28 tests)"]:::suite --> T2["⚡ 24 seconds"]:::time
+        S3["Contact & Inquiries (4 tests)"]:::suite --> T3["⚡ 18 seconds"]:::time
+    end
 
-    section Engine & SSR
-    Hydration & React 19 (7 tests)      :done, 60, 75
-    SSR Hydration Integrity (5 tests)   :done, 75, 88
-    Error Boundaries (2 tests)          :done, 88, 96
+    subgraph Engine["Engine & SSR Proofs"]
+        E1["Hydration & React 19 (7 tests)"]:::suite --> T4["⚡ 15 seconds"]:::time
+        E2["SSR Integrity (5 tests)"]:::suite --> T5["⚡ 13 seconds"]:::time
+        E3["Error Boundaries (2 tests)"]:::suite --> T6["⚡ 8 seconds"]:::time
+    end
 
-    section Admin Back Office
-    About CMS Management (28 tests)     :done, 96, 130
-    Catalog & Categories CRUD (6 tests) :done, 130, 155
+    subgraph Admin["Admin Back Office Proofs"]
+        A1["About CMS Management (28 tests)"]:::suite --> T7["⚡ 34 seconds"]:::time
+        A2["Catalog & Categories (6 tests)"]:::suite --> T8["⚡ 25 seconds"]:::time
+    end
+
+    Showroom --> Total["🏆 TOTAL SUITE RUNTIME: UNDER 3 MINUTES!"]:::total
+    Engine --> Total
+    Admin --> Total
 ```
 
 ### 📋 Detailed Test Room Matrix
