@@ -1,10 +1,7 @@
 name: E2E Proof Suite
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+  # Automated triggers disabled temporarily per sprint direction
   workflow_dispatch:
 
 concurrency:

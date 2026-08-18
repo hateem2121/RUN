@@ -76,10 +76,10 @@ describe("Auth Routes", () => {
   });
 
   describe("GET /login", () => {
-    it("should load login route successfully", async () => {
+    it("should load login route and redirect to mock-login in test environment", async () => {
       const response = await request(app).get("/login");
-      // Express default behavior if next() is called and no other handler responds is 404
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(302);
+      expect(response.headers.location).toContain("/api/auth/mock-login");
     });
   });
 

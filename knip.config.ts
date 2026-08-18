@@ -3,8 +3,7 @@ import type { KnipConfig } from "knip";
 const config: KnipConfig = {
   workspaces: {
     client: {
-      entry: ["client/app/root.tsx"],
-      project: ["client/app/**/*.{ts,tsx}"],
+      entry: [],
     },
     server: {
       entry: ["server.ts", "db.ts", "routes/**/*.ts", "services/**/*.ts"],
@@ -28,8 +27,6 @@ const config: KnipConfig = {
     "ops/load-testing/**",
     "playwright-script.mjs",
     "server/scripts/benchmark-queries.ts",
-    // Admin components - actively used but dynamically referenced
-    "client/app/components/admin/**",
   ],
   ignoreDependencies: [
     "ts-morph",
@@ -41,12 +38,6 @@ const config: KnipConfig = {
   ignoreBinaries: ["tsx", "pkill", "lhci", "wait-on", "react-router"],
   ignoreUnresolved: ["./database-metrics-tracker.js"],
   ignoreExportsUsedInFile: true,
-  // Allow unused exports in test files and admin components
-  rules: {
-    "unused-files": "off",
-    "unused-dependencies": "warn",
-    "unused-exports": "warn",
-  },
 };
 
 export default config;

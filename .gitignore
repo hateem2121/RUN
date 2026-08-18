@@ -1,39 +1,64 @@
-*.pyc
-__pycache__/
+# Logs and temp files
 *.log
 *.tmp
 *.swp
+lint_output.txt
+tsc_output.txt
+*.tsbuildinfo
+.turbo/
+playwright-report/
+test-results/
+.react-router/
+client/.react-router/
 .env
 .env.local
+*.env.*
+
+# Editors
 .vscode/
 .idea/
+
+# Dependencies
 node_modules/
-venv/
 .venv/
+venv/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
 dist/
 build/
 target/
 .gradle/
-.mypy_cache/
-.pytest_cache/
-coverage/
-htmlcov/
-*.env.*
+
+# System files
 .DS_Store
 Thumbs.db
+
+# Compiled files
+*.pyc
+*.class
+*.o
 *.exe
 *.dll
 *.so
 *.a
+*.obj
 *.out
-*.class
-*.tar
-*.gz
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Compressed files
 *.zip
-*.rar
-*.7z
+*.gz
+*.tar
+*.tgz
 *.bz2
 *.xz
+*.7z
+*.rar
 *.zst
 *.lz4
 *.lzh
@@ -48,3 +73,57 @@ Thumbs.db
 *.tar.bz2
 *.tar.xz
 *.tar.zst
+
+# Compiled utility outputs
+utils/**/*.js
+utils/**/*.d.ts
+utils/**/*.d.ts.map
+
+# Legacy worktrees
+legacy/worktrees/
+
+# IDE/tool-specific
+.kilocodemodes
+.config/
+.context/
+.auth/
+
+# Protocol 0 session files (not project documentation)
+task_plan.md
+findings.md
+findings/
+
+# Log output directories
+logs/
+
+# One-off debug artifacts
+test-bind.ts
+shell_metadata.csv
+FULL_SYSTEM_CONTEXT.json
+
+# E2E visual regression snapshots (regenerable)
+tests/e2e/**/*.png
+e2e/__snapshots__/
+.gstack/
+.claude/skills/gstack/
+
+# Self-hosted GitHub Actions runner
+.github/runner/
+
+# Scratch directory for temporary scripts
+scratch/
+
+# Agent session artefacts (Phase 3 audit additions — 2026-07-08)
+.stryker-tmp/
+ORIGINAL_REQUEST.md
+knip.txt
+test-results.json
+test-e2e-output.log
+e2e-console-logs.txt
+full_test_output.txt
+test_output.txt
+server.log
+check.log
+# Added by code-review-graph
+.code-review-graph/
+.agents/

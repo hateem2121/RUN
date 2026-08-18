@@ -17,15 +17,14 @@ import Inspect from "vite-plugin-inspect";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Trigger restart
+// Tigger restart
 export default defineConfig((env) => {
   const { command: _command, isSsrBuild } = env;
   console.warn("[VITE-CONFIG-ARGS]", JSON.stringify(env));
   return {
     plugins: [
       reactRouter(),
-      // Only include tailwindcss plugin when not in CI to avoid native binding issues
-      !process.env.CI && tailwindcss(),
+      tailwindcss(),
       // PHASE 1: Asset compression (Gzip/Brotli)
       viteCompression({
         algorithm: "brotliCompress",

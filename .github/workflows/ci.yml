@@ -31,6 +31,25 @@ jobs:
         id: branch_name
         uses: tj-actions/branch-names@5250492686b253f06fa55861556d1027b067aeb5 # v9.0.2
 
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      db: ${{ steps.filter.outputs.db }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        id: filter
+        with:
+          filters: |
+            db:
+              - 'server/db/**'
+              - 'shared/schemas/**'
+              - 'drizzle/**'
+              - 'server/scripts/migrate.ts'
+
   verify_port:
     name: Verify Port (Strict 5002)
     if: github.event.action != 'closed'
@@ -45,7 +64,7 @@ jobs:
           cache: "npm"
       - run: npm ci
       - name: Verify Port 5002 Compliance
-        run: npm run verify-port || true
+        run: npm run verify-port
 
   build_shared:
     name: Build Shared Package
@@ -61,8 +80,9 @@ jobs:
           cache: "npm"
       - run: npm ci
       - name: Build Shared
-        run: npm run build --prefix shared || true
+        run: npm run build --prefix shared
 
+  # Parallel quality checks for faster feedback
   lint:
     name: Lint (Biome)
     needs: build_shared
@@ -78,13 +98,11 @@ jobs:
           cache: "npm"
       - run: npm ci
       - name: Build Shared Declarations
-        run: npm run build --prefix shared || true
+        run: npm run build --prefix shared
       - name: Build Server Declarations
-        run: npx tsc -b server/tsconfig.json || true
+        run: npx tsc -b server/tsconfig.json
       - name: Run Biome Check
-        run: npm run check || true
-        env:
-          CI: "true"
+        run: npm run check
 
   typecheck:
     name: Type Check (TSC)
@@ -101,12 +119,10 @@ jobs:
           cache: "npm"
       - run: npm ci
       - name: Build Shared Declarations
-        run: npm run build --prefix shared || true
+        run: npm run build --prefix shared
       - name: Build Server Declarations
-        run: npx tsc -b server/tsconfig.json || true
-      - run: npm run typecheck || true
-        env:
-          CI: "true"
+        run: npx tsc -b server/tsconfig.json
+      - run: npm run typecheck
 
   test:
     name: Test & Verify
@@ -138,17 +154,17 @@ jobs:
 
       - run: npm ci
       - name: Build Shared Locally
-        run: npm run build --prefix shared || true
+        run: npm run build --prefix shared
       - name: Push Database Schema
-        continue-on-error: true
-        run: npm run db:push || true
+        continue-on-error: ${{ steps.create_neon_branch.outcome == 'failure' }}
+        run: npm run db:push
         env:
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url || secrets.DATABASE_URL_PREVIEW }}
           CLOUD_TASKS_AUDIENCE: "placeholder"
           CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
 
       - name: Run Tests with Coverage
-        run: npx vitest run --coverage || true
+        run: npx vitest run --coverage
         env:
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url || secrets.DATABASE_URL_PREVIEW }}
           CLOUD_TASKS_AUDIENCE: "placeholder"
@@ -156,6 +172,14 @@ jobs:
           SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"
           ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only"
           INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
+
+      - name: Check Coverage Thresholds
+        run: |
+          COVERAGE=$(cat coverage/coverage-summary.json | jq '.total.lines.pct')
+          if (( $(echo "$COVERAGE < 40" | bc -l) )); then
+            echo "Coverage $COVERAGE% is below 40% threshold"
+            exit 1
+          fi
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -165,9 +189,51 @@ jobs:
           path: coverage/
           retention-days: 7
 
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4.6.0
+        if: always()
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
+          verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  build:
+    name: Build
+    needs: [lint, typecheck, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24"
+          cache: "npm"
+      - run: npm ci
+      - name: Cache Turbo
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: node_modules/.cache/turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ runner.os }}-
+      - name: Build
+        run: npm run build
+        env:
+          DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
+          CLOUD_TASKS_AUDIENCE: "placeholder"
+          CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
+
+      - name: Check Bundle Size
+        run: npm run check:bundle
+
+
+
   delete_neon_branch:
     name: Delete Neon Branch
-    needs: [setup]
+    needs: [setup, changes]
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
     steps:
@@ -180,7 +246,7 @@ jobs:
 
   lighthouse:
     name: Lighthouse CI
-    needs: [test]
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
@@ -192,7 +258,7 @@ jobs:
           cache: "npm"
       - run: npm ci
       - name: Build application
-        run: npm run build || true
+        run: npm run build
         env:
           DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
       - name: Run Lighthouse CI
