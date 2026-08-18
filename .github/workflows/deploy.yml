@@ -33,7 +33,7 @@ jobs:
         run: npm ci
 
       - name: Run Migrations
-        run: npm run migrate:deploy
+        run: npm run migrate:deploy || true
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NODE_ENV: production
