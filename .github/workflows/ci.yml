@@ -103,6 +103,8 @@ jobs:
         run: npx tsc -b server/tsconfig.json
       - name: Run Biome Check
         run: npm run check
+        env:
+          CI: "true"
 
   typecheck:
     name: Type Check (TSC)
@@ -123,6 +125,8 @@ jobs:
       - name: Build Server Declarations
         run: npx tsc -b server/tsconfig.json
       - run: npm run typecheck
+        env:
+          CI: "true"
 
   test:
     name: Test & Verify
