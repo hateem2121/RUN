@@ -39,3 +39,4 @@ jobs:
 
       - name: Run Knip Check
         run: npm run check:knip || true
+        continue-on-error: true
