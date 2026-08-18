@@ -20,7 +20,7 @@ This document follows the **RUN APPAREL Editorial Design System** (`diagram-desi
 
 ## 🌟 Chapter 1: The Giant Clothing Factory (What is RUN APPAREL?)
 
-Imagine you own the coolest athletic sportswear factory in the world: **RUN APPAREL** (located in Sialkot, Pakistan). 
+Imagine you own the coolest athletic sportswear factory in the world: **RUN APPAREL** (located in Sialkot, Pakistan).
 
 You manufacture super high-tech soccer jerseys, basketball shorts, and eco-friendly hoodies for sports teams across the globe.
 
@@ -60,11 +60,12 @@ flowchart TB
 
 ## 🤖 Chapter 2: The Army of 591 Robot Inspectors
 
-Every time a programmer writes new code to make the website faster or prettier, we don't just guess if it works. 
+Every time a programmer writes new code to make the website faster or prettier, we don't just guess if it works.
 
 We wake up an army of **591 Robot Inspectors** (called *Playwright Automated Tests*).
 
-### 🔍 How the Robot Inspectors Work:
+### 🔍 How the Robot Inspectors Work
+
 - **📸 Camera Bot (Visual):** Takes pictures of the screen to check if colors, fonts, and borders match the master design album.
 - **📝 Typing Bot (Forms):** Types names, emails, and custom jersey requests into the contact box and clicks **Submit**.
 - **🔑 Manager Bot (Admin):** Logs in with secret security keys to add new fabric types, edit company history, and test delete buttons.
@@ -103,7 +104,7 @@ sequenceDiagram
 
 ## 🚨 Chapter 3: The 41-Minute Great Freeze (What Broke?)
 
-A few days ago, the robot test machine started **failing** and getting stuck! 
+A few days ago, the robot test machine started **failing** and getting stuck!
 
 Instead of taking **3 quick minutes**, the robot inspectors spent **41 long minutes** running in circles until the timer forced them to stop, and **414 tests broke**!
 
@@ -162,18 +163,22 @@ stateDiagram-v2
 Here is exactly how each broken puzzle piece was engineered into a clean, bulletproof solution:
 
 ### 🧩 Fix 1: The Photo Album vs Speedy Proofs
+
 - **Before:** All 591 tests ran together. 365 visual comparison tests had no baseline photos, causing 30 minutes of retry loops.
 - **After:** We separated visual snapshot tests (`test:e2e:visual`) into a dedicated suite. The core functional, SSR, and Admin proof suites now finish in **under 3 minutes**!
 
 ### 🧩 Fix 2: The Security Badge Mismatch (CSRF Token)
+
 - **Before:** `use-contact-form.ts` sent `headers: { "CSRF-Token": token }`. The server guard (`server/middleware/csrf.ts`) rejected it with `403 CSRF_TOKEN_MISSING`.
 - **After:** Updated the client hook to send `"x-csrf-token": token` with whitespace-safe cookie parsing (`document.cookie.split(";").map(...)`).
 
 ### 🧩 Fix 3: The Invisible Country Trap
+
 - **Before:** `<input type="hidden" name="country" required />`. In HTML5, browsers cannot focus hidden inputs to show error bubbles, so Chrome silently aborted form submission.
 - **After:** Removed `required` from the hidden input. Form validation is cleanly handled by React state and Zod schemas on the server.
 
 ### 🧩 Fix 4: The Robot Traffic Jam (Worker Throttling)
+
 - **Before:** Running 3 or more workers on a single local dev server caused module contention when fetching `app/entry.client.tsx`.
 - **After:** Capped test execution to 2 workers (`--workers=2`) per Rule 8 in `AGENTS.md`, guaranteeing smooth, conflict-free Vite SSR compilation.
 
