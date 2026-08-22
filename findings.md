@@ -8,37 +8,44 @@
 
 ## 1. Latest Resolutions (2026-08-22) — Branch Cleanup & CI Suite Hardening
 
-1. **Repository Branch & PR Purge:**
-   - Closed open Dependabot PRs `#78`, `#80`, `#81` with automated remote branch deletion.
-   - Pruned stale tracking branches via `git remote prune origin`, removing 10 defunct remote branches.
-   - Deleted stale local branch `fix/memory-leaks-and-hydration`.
-   - Verified single canonical branch `main` locally and remotely on GitHub origin (`hateem2121/RUN`).
+1. **Repository Branch & PR Purge (Single `main` Branch):**
+   - Closed all 8 open Dependabot PRs (`#82` through `#89`) with automated remote branch deletion:
+     - `#89` (`dependabot/npm_and_yarn/web-vitals-5.3.0`)
+     - `#88` (`dependabot/npm_and_yarn/radix-ui/react-tabs-1.1.21`)
+     - `#87` (`dependabot/npm_and_yarn/tabler/icons-react-3.46.0`)
+     - `#86` (`dependabot/npm_and_yarn/testing-defd8f9ab9`)
+     - `#85` (`dependabot/npm_and_yarn/dev-tools-6c59644ad5`)
+     - `#84` (`dependabot/github_actions/github/codeql-action/init-4.37.7`)
+     - `#83` (`dependabot/github_actions/actions/dependency-review-action-5.0.0`)
+     - `#82` (`dependabot/github_actions/actions/cache-6.1.0`)
+   - Pruned stale tracking branches via `git remote prune origin`.
+   - Verified that `git ls-remote --heads origin` and `gh pr list` confirm strictly `refs/heads/main` remains and 0 PRs are open.
 
-2. **Secret Scanning (Gitleaks) Fix:**
-   - **Root Cause:** The `gitleaks/gitleaks-action` v2/v3 wrapper enforced organization license checks (`GITLEAKS_LICENSE`), failing CI runs in GitHub Organizations.
-   - **Resolution:** Replaced the action with direct standalone binary installation of the open-source Gitleaks CLI (`v8.24.0`) in `.github/workflows/security.yml`. All secret scanning runs now pass in ~22s without organization licensing blockers.
+2. **Dependabot PR Spam Prevention (`open-pull-requests-limit: 0`):**
+   - Configured `.github/dependabot.yml` with `open-pull-requests-limit: 0` across `npm`, `github-actions`, and `docker` ecosystems to permanently prevent automated Dependabot branch and PR generation.
 
-3. **Knip Typegen & Dependency Resolution:**
-   - Added `"typegen": "react-router typegen"` to `client/package.json` to ensure deterministic route typing before running Knip.
-   - Hoisted runtime server dependencies to root `package.json` and synchronized `knip.config.ts` `ignoreDependencies`, eliminating `ERR_MODULE_NOT_FOUND` during Lighthouse CI container boots and passing Knip with 0 errors.
+3. **Workflow Optimization & De-duplication:**
+   - Streamlined `.github/workflows/security.yml` by removing redundant `codeql` and `dependency-review` jobs already handled by standalone workflows (`codeql.yml` and `dependency-review.yml`).
+   - Retained standalone open-source Gitleaks CLI v8.24.0 binary runner and npm/audit-ci production configuration audit in `security.yml`.
 
-4. **Workflow Security & Docs Linter Hardening:**
-   - Corrected `neondatabase/create-branch-action` version comment pin (`# v6.4.0`) to satisfy Zizmor AST analyzer.
-   - Excluded `.superpowers/` and plan files from strict markdown lint in `.github/workflows/docs.yml`.
+4. **100% Green GitHub Actions Verification on `main` (Commit `fad8cdb`):**
+   - CI / Neon Preview: 🟢 **SUCCESS** (Run `32558968721`)
+   - Code Quality & Dead Code (Knip): 🟢 **SUCCESS** (Run `32558968715`)
+   - Security Scanning (Gitleaks, Audit): 🟢 **SUCCESS** (Run `32558968724`)
+   - CodeQL Advanced (JS/TS + Actions): 🟢 **SUCCESS** (Run `32558968742`)
+   - Workflow Security Lint (Zizmor): 🟢 **SUCCESS** (Run `32558968745`)
+   - Docs Lint (Markdownlint): 🟢 **SUCCESS** (Run `32558968720`)
+   - OpenSSF Scorecard: 🟢 **SUCCESS** (Run `32558968746`)
+   - Release Drafter: 🟢 **SUCCESS** (Run `32558968744`)
+   - Production Deployment: 🟢 **SUCCESS** (Run `32558968741`)
 
-5. **Dependabot Core Framework Ignore Rules:**
-   - Added ignore patterns in `.github/dependabot.yml` for core monorepo frameworks (`react`, `react-dom`, `@react-router/*`, `express`, `drizzle-orm`, `vite`, `typescript`) to prevent weekly breaking PR spam.
-
-6. **100% Green GitHub Actions Verification:**
-   - CI / Neon Preview: 🟢 **SUCCESS**
-   - Code Quality & Dead Code: 🟢 **SUCCESS**
-   - Security Scanning: 🟢 **SUCCESS**
-   - CodeQL Advanced: 🟢 **SUCCESS**
-   - Workflow Security Lint: 🟢 **SUCCESS**
-   - Docs Lint: 🟢 **SUCCESS**
-   - OpenSSF Scorecard: 🟢 **SUCCESS**
-   - Release Drafter: 🟢 **SUCCESS**
-   - Production Deployment: 🟢 **SUCCESS**
+5. **Local Monorepo Integrity Suite:**
+   - `npm run check`: 0 errors across 971 files (TypeScript + Biome).
+   - `npm run check:knip`: Exit code 0 (0 unused exports/dependencies).
+   - `npm run check:docs`: 0 broken links across 55 docs.
+   - `npm run test`: 170 test suites / 2,612 unit tests passed (100%).
+   - `npm run build`: Turborepo build passed for client, server, and shared.
+   - `npm run verify:tech-integrity`: All 8/8 checks passed with 100% integrity.
 
 ---
 
