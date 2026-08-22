@@ -183,6 +183,10 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 | `runs-on: [self-hosted, macOS]` | `runs-on: ubuntu-latest` | Critical |
 | `github.event_name == 'pull_request'` restricting core CI jobs | Ensure core CI jobs also run on `push` to `main` | High |
 | Duplicating security/docs checks inside `ci.yml` | Dedicated pipelines (e.g. `security.yml`, `docs.yml`) | High |
+| `gitleaks/gitleaks-action` in GitHub Org workflows | Standalone Gitleaks CLI binary runner | Critical |
+| Unhoisted server dependencies with root `dist/` | Hoist runtime server dependencies to root `package.json` | High |
+| Action SHA pins with mismatched comment tags (e.g. `# 6.4.0`) | Action SHA pins matching exact Git ref tag (e.g. `# v6.4.0`) | Medium |
+| Dependabot auto-PRs for core frameworks | Ignore rules in `.github/dependabot.yml` for React, Vite, Express, Drizzle | Medium |
 
 ### 5.1.1 Exceptions to `noExplicitAny`
 
@@ -205,6 +209,12 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 ### 5.1.4 `neverthrow` Fallback Resilience
 
 - **Mandatory `.orElse()`**: When implementing fallback logic (e.g., returning default content when a database query fails), NEVER use `try/catch` inside `ResultAsync.fromPromise()`. You must chain `.orElse()` directly onto the `ResultAsync` execution to handle the failure case safely and maintain the `ResultAsync<T, E>` contract.
+
+### 5.1.5 CI/CD & Security Workflow Invariants
+
+- **Gitleaks in GitHub Organizations**: NEVER use `gitleaks/gitleaks-action` in organization repositories. Install the standalone open-source Gitleaks CLI binary directly (`curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.24.0/gitleaks_8.24.0_linux_x64.tar.gz | tar -xz && ./gitleaks detect --verbose --redact`).
+- **Zizmor Version Pin Tagging**: When pinning GitHub Action commit SHAs, the trailing inline comment MUST exactly match the upstream Git tag including the `v` prefix (e.g. `uses: neondatabase/create-branch-action@<sha> # v6.4.0`).
+- **Server External Module Hoisting**: Because `server/package.json` bundles the backend into root `dist/` with `--packages=external` and the production Dockerfile copies only root `package.json` in Stage 2, all server runtime packages must be declared in root `package.json` `dependencies`. Add them to `knip.config.ts` `ignoreDependencies` to avoid unused dependency false positives.
 
 ### 5.2 Forbidden by Architecture
 
