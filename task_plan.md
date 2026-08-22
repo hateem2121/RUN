@@ -1,43 +1,31 @@
 # Task Plan
 
 **Date:** 2026-08-22
-**Goal:** Clean up excessive branches and PRs, configure Dependabot ignore rules for core frameworks, and repair failing GitHub Actions CI checks (Gitleaks org licensing, Knip typegen resolution, Neon cleanup resilience).
+**Goal:** Clean up excessive branches on GitHub so that only `main` remains, configure Dependabot to prevent automated branch spam, and audit/optimize GitHub Actions workflows and checks.
 
 ## Current Session Plan
 - [x] Protocol 0: Read `task_plan.md` and `findings.md`
-- [x] Interview & align with user via `/grill-me` on cleanup and CI fix strategy
-- [x] Pull and sync `main` with latest remote commits
-- [x] Branch Cleanup:
-  - [x] Close open Dependabot PRs (#78, #80, #81)
-  - [x] Delete remote Dependabot branches on GitHub
-  - [x] Prune stale remote tracking branches locally (`git remote prune origin`)
-  - [x] Delete stale local branch (`fix/memory-leaks-and-hydration`)
-- [x] CI / Workflow Remediation:
-  - [x] Replace `gitleaks-action` in `.github/workflows/security.yml` with standalone open-source Gitleaks binary runner (bypasses organization license gate)
-  - [x] Add `continue-on-error: true` to `delete_neon_branch` step in `.github/workflows/ci.yml`
-  - [x] Fix action hash pin tag comment for `neondatabase/create-branch-action` (`# v6.4.0`) to satisfy Zizmor security audit
-  - [x] Ensure deterministic client typegen and hoist server runtime dependencies in root `package.json` for Docker & CI
-  - [x] Update `.github/dependabot.yml` ignore rules to exclude core framework dependencies (`react*`, `@react-router/*`, `express*`, `drizzle-orm*`, `vite*`, `typescript`) from automated PR spam
-- [x] Local & Monorepo Verification:
-  - [x] `npm run check` (TypeScript + Biome across 971 files, 0 errors)
-  - [x] `npm run check:knip` (0 unused exports/deps, exit 0)
-  - [x] `npm run check:docs` (0 dead links, exit 0)
-  - [x] `npm run test` (170 test suites, 2,612 unit tests passed)
-  - [x] `npm run build` (Turborepo client, server, and shared build)
-  - [x] `npm run verify:tech-integrity` (All 8 checks pass 100%)
-- [x] Commit & push to `main`
-- [x] Monitor GitHub Actions check runs to verify all CI pipelines pass 100% green:
-  - [x] CI / Neon Preview: 🟢 SUCCESS
-  - [x] Code Quality & Dead Code: 🟢 SUCCESS
-  - [x] Security Scanning: 🟢 SUCCESS
-  - [x] CodeQL Advanced: 🟢 SUCCESS
-  - [x] Workflow Security Lint: 🟢 SUCCESS
-  - [x] Docs Lint: 🟢 SUCCESS
-  - [x] OpenSSF Scorecard: 🟢 SUCCESS
-  - [x] Release Drafter: 🟢 SUCCESS
-  - [x] Production Deployment: 🟢 SUCCESS
-- [x] Update `findings.md` and `task_plan.md` session outcome
+- [x] Inspect remote branches, open PRs, and GitHub Actions status
+- [ ] User Approval on Plan
+- [ ] Branch Cleanup:
+  - [ ] Close open Dependabot PRs (#82, #83, #84, #85, #86, #87, #88, #89) with `--delete-branch`
+  - [ ] Delete any remaining remote branches on `origin`
+  - [ ] Run `git remote prune origin` locally
+  - [ ] Verify `git ls-remote --heads origin` shows strictly `main`
+- [ ] Dependabot & Workflow Configuration:
+  - [ ] Update `.github/dependabot.yml` to set `open-pull-requests-limit: 0`
+  - [ ] Optimize `.github/workflows/security.yml` to remove redundant duplicate jobs (`codeql`, `dependency-review`) handled by dedicated workflows
+- [ ] Monorepo Integrity & Quality Checks:
+  - [ ] `npm run check` (Biome + Typecheck)
+  - [ ] `npm run check:knip` (Knip unused exports)
+  - [ ] `npm run check:docs` (Documentation link check)
+  - [ ] `npm run test` (Unit test suite)
+  - [ ] `npm run build` (Turborepo build)
+  - [ ] `npm run verify:tech-integrity` (All 8 checks)
+- [ ] Commit & push to `main`
+- [ ] Monitor GitHub Actions CI runs on `main` to verify 100% green status across all pipelines
+- [ ] Protocol 0: Update `findings.md` and `task_plan.md` session outcome
 
 ## Session Outcome & Next Steps
-- **Outcome:** Clean single-branch state achieved (`main`). All open Dependabot PRs/branches closed and remote tracking pruned. All 9 GitHub Actions CI workflows are 100% green on `main`.
-- **Next Step:** Ready for feature development or subsequent production releases.
+- **Outcome:** In progress (Awaiting user approval on plan).
+- **Next Step:** Execute branch cleanup and workflow optimization upon user approval.
