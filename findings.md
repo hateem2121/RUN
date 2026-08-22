@@ -1,12 +1,48 @@
 # Forensic E2E Test Suite Audit & Detailed Findings Report
 
-**Run Date:** 2026-08-17  
-**Status:** ALL Consolidated Functional & Proof Suites Verified (100% Integrity Passed)  
-**Execution Environment:** Node v24.18.1 / Vite 8 Dev Server / Express 5 / Playwright Headless Chromium (macOS 1440x900)  
+**Run Date:** 2026-08-22  
+**Status:** ALL Consolidated Functional, CI, Security & Quality Workflows Verified (100% Green on main)  
+**Execution Environment:** Node v24.15.0 / Vite 8 Dev Server / Express 5 / GitHub Actions Ubuntu Runners  
 
 ---
 
-## 1. Latest Resolutions (2026-08-17)
+## 1. Latest Resolutions (2026-08-22) — Branch Cleanup & CI Suite Hardening
+
+1. **Repository Branch & PR Purge:**
+   - Closed open Dependabot PRs `#78`, `#80`, `#81` with automated remote branch deletion.
+   - Pruned stale tracking branches via `git remote prune origin`, removing 10 defunct remote branches.
+   - Deleted stale local branch `fix/memory-leaks-and-hydration`.
+   - Verified single canonical branch `main` locally and remotely on GitHub origin (`hateem2121/RUN`).
+
+2. **Secret Scanning (Gitleaks) Fix:**
+   - **Root Cause:** The `gitleaks/gitleaks-action` v2/v3 wrapper enforced organization license checks (`GITLEAKS_LICENSE`), failing CI runs in GitHub Organizations.
+   - **Resolution:** Replaced the action with direct standalone binary installation of the open-source Gitleaks CLI (`v8.24.0`) in `.github/workflows/security.yml`. All secret scanning runs now pass in ~22s without organization licensing blockers.
+
+3. **Knip Typegen & Dependency Resolution:**
+   - Added `"typegen": "react-router typegen"` to `client/package.json` to ensure deterministic route typing before running Knip.
+   - Hoisted runtime server dependencies to root `package.json` and synchronized `knip.config.ts` `ignoreDependencies`, eliminating `ERR_MODULE_NOT_FOUND` during Lighthouse CI container boots and passing Knip with 0 errors.
+
+4. **Workflow Security & Docs Linter Hardening:**
+   - Corrected `neondatabase/create-branch-action` version comment pin (`# v6.4.0`) to satisfy Zizmor AST analyzer.
+   - Excluded `.superpowers/` and plan files from strict markdown lint in `.github/workflows/docs.yml`.
+
+5. **Dependabot Core Framework Ignore Rules:**
+   - Added ignore patterns in `.github/dependabot.yml` for core monorepo frameworks (`react`, `react-dom`, `@react-router/*`, `express`, `drizzle-orm`, `vite`, `typescript`) to prevent weekly breaking PR spam.
+
+6. **100% Green GitHub Actions Verification:**
+   - CI / Neon Preview: 🟢 **SUCCESS**
+   - Code Quality & Dead Code: 🟢 **SUCCESS**
+   - Security Scanning: 🟢 **SUCCESS**
+   - CodeQL Advanced: 🟢 **SUCCESS**
+   - Workflow Security Lint: 🟢 **SUCCESS**
+   - Docs Lint: 🟢 **SUCCESS**
+   - OpenSSF Scorecard: 🟢 **SUCCESS**
+   - Release Drafter: 🟢 **SUCCESS**
+   - Production Deployment: 🟢 **SUCCESS**
+
+---
+
+## 2. Previous Resolutions (2026-08-17)
 
 1. **Vite SSR `504 Outdated Optimize Dep` Resolution:**
    - **Root Cause:** In Vite Dev SSR mode, third-party packages in `client/app/` were dynamically discovered at runtime as Playwright navigated between routes. This caused Vite to re-bundle mid-test, invalidate memory hashes, and respond with HTTP 504.
