@@ -10,6 +10,7 @@ vi.mock("../../../../../server/services/inquiry-service.js", () => ({
 
 vi.mock("../../../../../server/middleware/rateLimiter.js", () => ({
   writeRateLimiter: vi.fn((_req: any, _res: any, next: any) => next()),
+  createRateLimiter: vi.fn(() => (_req: any, _res: any, next: any) => next()),
 }));
 
 import express from "express";

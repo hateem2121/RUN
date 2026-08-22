@@ -2,10 +2,12 @@ import { addInquiryLogSchema, type InsertInquiry, insertInquirySchema } from "@r
 import express from "express";
 import { ValidationError } from "../../lib/errors.js";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
+import { criticalTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
 import { inquiryService } from "../../services/inquiry-service.js";
 
 const router = express.Router();
+router.use(criticalTier);
 
 // SE-A01-01 FIX: Enforce admin RBAC on all inquiry management routes
 router.use("/admin/inquiries", authService.requireAdmin);

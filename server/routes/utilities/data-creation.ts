@@ -3,6 +3,7 @@
 
 import type { Express } from "express";
 import { logger } from "../../lib/monitoring/logger.js";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
 import {
   accessoryRepository,
@@ -14,6 +15,7 @@ export function registerDataCreationRoutes(app: Express): void {
   // prettier-ignore
   app.post(
     "/api/data-creation/create-all-business-data",
+    apiTier,
     authService.requireAdmin,
     async (_req, res) => {
       logger.debug("[Data Creation] 🚀 Creating all 47 structured business items...");

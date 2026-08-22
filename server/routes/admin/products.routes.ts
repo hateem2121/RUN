@@ -8,11 +8,13 @@ import { type RequestHandler, Router } from "express";
 import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
 import { removeUndefined, validateIdParam } from "../../lib/utilities/core-utils.js";
+import { criticalTier } from "../../middleware/rate-limit-tiers.js";
 import { getAuditContext } from "../../middleware/request-context.js";
 import { adminService } from "../../services/admin/index.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
+router.use(criticalTier);
 type ProductsQuery = z.infer<typeof adminProductsQuerySchema>;
 
 /**

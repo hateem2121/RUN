@@ -2,10 +2,12 @@ import { insertBlogCategorySchema, insertBlogPostSchema } from "@run-remix/share
 import { Router } from "express";
 import { validateRequest } from "zod-express-middleware";
 import { removeUndefined, validateIdParam } from "../../lib/utilities/core-utils.js";
+import { criticalTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
 import { blogService } from "../../services/blog.service.js";
 
 const router = Router();
+router.use(criticalTier);
 
 // ============================================================================
 // BLOG CATEGORIES

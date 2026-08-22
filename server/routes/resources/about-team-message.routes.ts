@@ -1,4 +1,5 @@
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
+import { publicTier } from "../../middleware/rate-limit-tiers.js";
 
 /**
  * ABOUT TEAM MESSAGE RESOURCE ROUTER
@@ -15,6 +16,7 @@ import { aboutService } from "../../services/about.service.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
+router.use(publicTier);
 
 /**
  * GET /api/v1/about-team-message

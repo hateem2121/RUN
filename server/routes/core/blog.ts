@@ -1,8 +1,10 @@
 import { Router } from "express";
 import { ValidationError } from "../../lib/errors.js";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 import { blogService } from "../../services/blog.service.js";
 
 const router = Router();
+router.use(apiTier);
 
 // GET /api/blog - List active published blog posts
 router.get("/blog", async (req, res) => {

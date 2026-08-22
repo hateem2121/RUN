@@ -2,6 +2,7 @@ import { categoryReorderSchema } from "@run-remix/shared";
 import { Router } from "express";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { normalizeSlug } from "../../lib/utilities/slug-utils.js";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 import { createRateLimiter } from "../../middleware/rateLimiter.js";
 import { authService } from "../../services/auth-service.js";
 import { categoryService } from "../../services/category.service.js";
@@ -13,6 +14,7 @@ const writeRateLimiter = createRateLimiter({
 });
 
 const router = Router();
+router.use(apiTier);
 
 // GET /api/categories - List all categories with optional pagination
 router.get("/categories", async (req, res) => {

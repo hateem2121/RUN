@@ -1,4 +1,5 @@
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 
 /**
  * CERTIFICATES ROUTER MODULE
@@ -16,6 +17,7 @@ import { authService } from "../../services/auth-service.js";
 import { miscRepository } from "../../services/repositories/index.js";
 
 const router = Router();
+router.use(apiTier);
 
 // GET /api/certificates - List all certificates
 router.get("/certificates", async (_req, res) => {

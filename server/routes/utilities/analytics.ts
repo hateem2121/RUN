@@ -3,10 +3,12 @@ import { Result } from "neverthrow";
 import { z } from "zod";
 import { isRedisEnabled, redis } from "../../lib/cache/upstash-client.js";
 import { logger } from "../../lib/monitoring/logger.js";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 import { writeRateLimiter } from "../../middleware/rateLimiter.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
+router.use(apiTier);
 
 const WebVitalSchema = z.object({
   name: z.string(),

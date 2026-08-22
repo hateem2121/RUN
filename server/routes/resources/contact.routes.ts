@@ -8,12 +8,13 @@ import { validateRequest } from "zod-express-middleware";
 import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { criticalTier } from "../../middleware/rate-limit-tiers.js";
+import { criticalTier, publicTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
 import { contactService } from "../../services/contact.service.js";
 import { inquiryService } from "../../services/inquiry-service.js";
 
 const router = express.Router();
+router.use(publicTier);
 
 // Cache TTL constants
 const CACHE_TTL_NAVIGATION = 7200; // 120 minutes

@@ -1,3 +1,4 @@
+import { publicTier } from "../../middleware/rate-limit-tiers.js";
 /**
  * HOMEPAGE BATCH ROUTES MODULE
  * Page-specific aggregated data endpoint for Homepage
@@ -20,6 +21,7 @@ import { shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { homepageRepository, productRepository } from "../../services/repositories/index.js";
 
 const router = Router();
+router.use(publicTier);
 
 /**
  * CHUNK 5: Homepage Batch API - Optimized with two-tier cache + stale-while-revalidate

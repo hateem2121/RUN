@@ -2,10 +2,12 @@ import { insertLegalPolicySchema } from "@run-remix/shared";
 import { Router } from "express";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
 import { legalService } from "../../services/legal.service.js";
 
 const router = Router();
+router.use(apiTier);
 
 // GET /api/legal-policies - Get a legal policy by slug or list active policies
 router.get("/legal-policies", async (req, res) => {

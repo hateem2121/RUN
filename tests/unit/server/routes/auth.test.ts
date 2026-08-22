@@ -23,6 +23,7 @@ vi.mock("../../../../server/lib/monitoring/logger", () => ({
 
 vi.mock("../../../../server/middleware/rateLimiter", () => ({
   authRateLimiter: (_req: any, _res: any, next: any) => next(),
+  createRateLimiter: () => (_req: any, _res: any, next: any) => next(),
 }));
 
 vi.mock("../../../../server/services/auth-service", () => ({

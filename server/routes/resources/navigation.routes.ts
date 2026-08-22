@@ -6,6 +6,7 @@ import {
 import { Router } from "express";
 import { ValidationError } from "../../lib/errors.js";
 import { shouldBypassCache } from "../../lib/utilities/core-utils.js";
+import { publicTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
 import { NavigationService } from "../../services/navigation-service.js";
 
@@ -17,6 +18,7 @@ import { NavigationService } from "../../services/navigation-service.js";
  * Aligned with "Thin Controller" pattern.
  */
 const router = Router();
+router.use(publicTier);
 
 /**
  * GET /navigation-items

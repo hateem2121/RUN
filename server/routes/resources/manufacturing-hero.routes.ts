@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
+import { publicTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
 import { manufacturingService } from "../../services/manufacturing.service.js";
 import { validateManufacturingHeroPartial } from "../../validation/manufacturing.js";
@@ -12,6 +13,7 @@ import { validateManufacturingHeroPartial } from "../../validation/manufacturing
  * Refactored to "Thin Controller" pattern: delegates business logic to manufacturingService.
  */
 const router = Router();
+router.use(publicTier);
 
 // GET /api/manufacturing-hero
 router.get("/manufacturing-hero", async (_req, res) => {

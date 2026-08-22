@@ -1,10 +1,12 @@
 import { insertServiceSchema, serviceReorderSchema } from "@run-remix/shared";
 import { Router } from "express";
 import { removeUndefined, validateIdParam } from "../../lib/utilities/core-utils.js";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
 import { servicesService } from "../../services/services.service.js";
 
 const router = Router();
+router.use(apiTier);
 
 // GET /api/services - List active services
 router.get("/services", async (_req, res) => {

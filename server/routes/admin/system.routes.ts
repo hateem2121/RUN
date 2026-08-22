@@ -15,6 +15,7 @@ import { adminService } from "../../services/admin/index.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
+router.use(criticalTier);
 
 /**
  * GET /api/admin/system/test

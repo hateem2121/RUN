@@ -2,12 +2,14 @@ import { type InsertCategory, insertCategorySchema } from "@run-remix/shared";
 import { Router } from "express";
 import { validateRequest } from "zod-express-middleware";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
+import { criticalTier } from "../../middleware/rate-limit-tiers.js";
 import { getAuditContext } from "../../middleware/request-context.js";
 import { adminService } from "../../services/admin/index.js";
 import { authService } from "../../services/auth-service.js";
 import { categoryService } from "../../services/category.service.js";
 
 const router = Router();
+router.use(criticalTier);
 
 /**
  * GET /api/admin/categories

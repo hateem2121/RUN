@@ -2,6 +2,7 @@ import { insertTechnologyCtaSchema } from "@run-remix/shared";
 import { Router } from "express";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
+import { publicTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
 import { technologyService } from "../../services/technology.service.js";
 
@@ -12,6 +13,7 @@ import { technologyService } from "../../services/technology.service.js";
  * Refactored to "Thin Controller" pattern: delegates business logic to technologyService.
  */
 const router = Router();
+router.use(publicTier);
 
 router.get("/", async (_req, res) => {
   const result = await technologyService.getCta();

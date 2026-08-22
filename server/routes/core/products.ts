@@ -1,4 +1,5 @@
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 
 /**
  * PRODUCTS ROUTER MODULE
@@ -25,6 +26,7 @@ const writeRateLimiter = createRateLimiter({
 });
 
 const router = Router();
+router.use(apiTier);
 
 // OpenAPI Registration
 registry.registerPath({

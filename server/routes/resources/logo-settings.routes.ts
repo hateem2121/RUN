@@ -2,6 +2,7 @@ import { insertLogoAnimationSettingsSchema } from "@run-remix/shared";
 import { Router } from "express";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
+import { publicTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
 import { homepageService } from "../../services/homepage.service.js";
 
@@ -12,6 +13,7 @@ import { homepageService } from "../../services/homepage.service.js";
  * Refactored to "Thin Controller" pattern: delegates business logic to homepageService.
  */
 const router = Router();
+router.use(publicTier);
 
 // GET /api/logo-animation-settings
 router.get("/logo-animation-settings", async (_req, res) => {

@@ -2,6 +2,7 @@ import { insertSustainabilityGoalSchema, reorderGoalsSchema } from "@run-remix/s
 import { Router } from "express";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined, shouldBypassCache } from "../../lib/utilities/core-utils.js";
+import { publicTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
 import { sustainabilityService } from "../../services/sustainability.service.js";
 
@@ -12,6 +13,7 @@ import { sustainabilityService } from "../../services/sustainability.service.js"
  * Refactored to "Thin Controller" pattern: delegates business logic to sustainabilityService.
  */
 const router = Router();
+router.use(publicTier);
 
 router.get("/", async (req, res) => {
   const result = await sustainabilityService.getGoals(shouldBypassCache(req));

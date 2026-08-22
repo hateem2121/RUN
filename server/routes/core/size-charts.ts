@@ -1,4 +1,5 @@
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 
 /**
  * SIZE CHARTS ROUTER MODULE
@@ -14,6 +15,7 @@ import { authService } from "../../services/auth-service.js";
 import { miscRepository } from "../../services/repositories/index.js";
 
 const router = Router();
+router.use(apiTier);
 
 // GET /api/size-charts - List all size charts
 router.get("/size-charts", async (_req, res) => {

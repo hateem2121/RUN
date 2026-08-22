@@ -16,6 +16,7 @@ import { alertManager } from "../../lib/monitoring/alert-manager.js";
 import { errorAggregator } from "../../lib/monitoring/error-aggregator.js";
 import { httpMetricsTracker } from "../../lib/monitoring/http-metrics.js";
 import { logger } from "../../lib/monitoring/logger.js";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
 import { systemService } from "../../services/system.service.js";
 import {
@@ -63,7 +64,7 @@ export function registerMetricsRoutes(app: Express): void {
    * GET /api/metrics
    * Returns comprehensive system metrics including cache, database, and performance data
    */
-  app.get("/api/metrics", authService.requireAdmin, (_req, res) => {
+  app.get("/api/metrics", apiTier, authService.requireAdmin, (_req, res) => {
     const startTime = performance.now();
 
     // PRODUCTION OPTIMIZATION: Gather metrics from all systems including batch cache
@@ -237,7 +238,7 @@ export function registerMetricsRoutes(app: Express): void {
    * GET /api/metrics/database
    * Returns detailed database performance metrics including connection pool status
    */
-  app.get("/api/metrics/database", authService.requireAdmin, (_req, res) => {
+  app.get("/api/metrics/database", apiTier, authService.requireAdmin, (_req, res) => {
     const legacyMetrics = queryPerformanceMonitor.getMetrics();
     const performanceStats = queryPerformanceMonitor.getPerformanceStats();
     const performanceReport = queryPerformanceMonitor.generatePerformanceReport();
@@ -258,7 +259,7 @@ export function registerMetricsRoutes(app: Express): void {
    * GET /api/metrics/system
    * Returns system-level metrics (CPU, memory, OS)
    */
-  app.get("/api/metrics/system", authService.requireAdmin, (_req, res) => {
+  app.get("/api/metrics/system", apiTier, authService.requireAdmin, (_req, res) => {
     const memUsage = process.memoryUsage();
     const systemMem = {
       total: os.totalmem(),
@@ -305,7 +306,7 @@ export function registerMetricsRoutes(app: Express): void {
   });
 
   // PHASE 2: GC metrics endpoint
-  app.get("/api/metrics/gc", authService.requireAdmin, (_req, res) => {
+  app.get("/api/metrics/gc", apiTier, authService.requireAdmin, (_req, res) => {
     const gcMetrics = alertManager.getGCMetrics();
     const thresholds = alertManager.getThresholds();
     const gcThreshold = thresholds.gcPause.thresholdMs;
@@ -323,7 +324,7 @@ export function registerMetricsRoutes(app: Express): void {
    * GET /api/metrics/http
    * Returns detailed HTTP request/response metrics
    */
-  app.get("/api/metrics/http", authService.requireAdmin, (_req, res) => {
+  app.get("/api/metrics/http", apiTier, authService.requireAdmin, (_req, res) => {
     const stats = httpMetricsTracker.getStats();
     const statusCategories = httpMetricsTracker.getStatusCodeCategories();
     const healthy = httpMetricsTracker.isHealthy();
@@ -341,7 +342,7 @@ export function registerMetricsRoutes(app: Express): void {
    * GET /api/metrics/errors/test
    * Test endpoint to trigger sample errors for testing error aggregation
    */
-  app.get("/api/metrics/errors/test", authService.requireAdmin, (_req, _res) => {
+  app.get("/api/metrics/errors/test", apiTier, authService.requireAdmin, (_req, _res) => {
     const testError = new Error("Test error for aggregation demo") as Error & {
       status: number;
     };
@@ -355,6 +356,7 @@ export function registerMetricsRoutes(app: Express): void {
    */
   app.get(
     "/api/metrics/errors",
+    apiTier,
     authService.requireAdmin,
     validateRequest({ query: MetricsErrorsQuerySchema }),
     (req, res) => {
@@ -392,6 +394,7 @@ export function registerMetricsRoutes(app: Express): void {
    */
   app.get(
     "/api/metrics/alerts",
+    apiTier,
     authService.requireAdmin,
     validateRequest({ query: MetricsAlertsQuerySchema }),
     (req, res) => {
@@ -422,7 +425,7 @@ export function registerMetricsRoutes(app: Express): void {
    * Update alert thresholds (runtime configuration) with validation
    */
   // prettier-ignore
-  app.put("/api/metrics/alerts/thresholds", authService.requireAdmin, (req, res) => {
+  app.put("/api/metrics/alerts/thresholds", apiTier, authService.requireAdmin, (req, res) => {
     // Validate request body
     const validation = alertThresholdsUpdateSchema.safeParse(req.body);
 

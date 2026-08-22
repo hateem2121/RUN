@@ -1,9 +1,11 @@
 import { Router } from "express";
 import { removeUndefined, validateIdParam } from "../../lib/utilities/core-utils.js";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
 import { miscService } from "../../services/misc.service.js";
 
 const router = Router();
+router.use(apiTier);
 
 // FIBERS ROUTES
 router.get("/fibers", async (_req, res) => {

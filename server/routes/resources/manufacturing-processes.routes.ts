@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined, shouldBypassCache } from "../../lib/utilities/core-utils.js";
+import { publicTier } from "../../middleware/rate-limit-tiers.js";
 import { authService } from "../../services/auth-service.js";
 import { manufacturingService } from "../../services/manufacturing.service.js";
 import {
@@ -17,6 +18,7 @@ import {
  * Enforces RFC 9110/9457 compliance via native Express 5 error propagation.
  */
 const router = Router();
+router.use(publicTier);
 
 router.get("/", async (req, res) => {
   const result = await manufacturingService.getProcesses(shouldBypassCache(req));

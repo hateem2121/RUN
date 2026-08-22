@@ -2,10 +2,12 @@ import { createInquirySchema } from "@run-remix/shared";
 import { Router } from "express";
 import { validateRequest } from "zod-express-middleware";
 import { logger } from "../../lib/monitoring/logger.js";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 import { writeRateLimiter } from "../../middleware/rateLimiter.js";
 import { inquiryService } from "../../services/inquiry-service.js";
 
 const router = Router();
+router.use(apiTier);
 
 /**
  * POST /api/inquiries

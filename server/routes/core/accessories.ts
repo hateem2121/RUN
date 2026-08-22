@@ -1,4 +1,5 @@
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 
 /**
  * ACCESSORIES ROUTER MODULE
@@ -14,6 +15,7 @@ import { authService } from "../../services/auth-service.js";
 import { accessoryRepository } from "../../services/repositories/accessory-repository.js";
 
 const router = Router();
+router.use(apiTier);
 
 // GET /api/accessories - List accessories with pagination and filters
 router.get("/accessories", async (req, res) => {

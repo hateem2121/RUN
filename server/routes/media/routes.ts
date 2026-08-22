@@ -3,6 +3,7 @@ import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { env } from "../../lib/env.js";
+import { uploadTier } from "../../middleware/rate-limit-tiers.js";
 import { createRateLimiter } from "../../middleware/rateLimiter.js";
 import { authService } from "../../services/auth-service.js";
 import {
@@ -56,6 +57,7 @@ import {
 import { createErrorResponse } from "./utils.js";
 
 const router: Router = express.Router();
+router.use(uploadTier);
 
 import { logger } from "../../lib/monitoring/logger.js";
 
