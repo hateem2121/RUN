@@ -343,58 +343,80 @@ const ScrollExpandMedia = ({
                 style={mediaStyle}
               >
                 {mediaType === "video" ? (
-                  mediaSrc.includes("youtube.com") ? (
-                    <div className="pointer-events-none relative h-full w-full">
-                      <iframe
-                        width="100%"
-                        height="100%"
-                        title={title ? `Video of ${title}` : "Brand introduction video"}
-                        src={
-                          mediaSrc.includes("embed")
-                            ? mediaSrc +
-                              (mediaSrc.includes("?") ? "&" : "?") +
-                              "autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&disablekb=1&modestbranding=1"
-                            : mediaSrc.replace("watch?v=", "embed/") +
-                              "?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&disablekb=1&modestbranding=1&playlist=" +
-                              mediaSrc.split("v=")[1]
+                  (() => {
+                    let isYouTube = false;
+                    let embedSrc = mediaSrc;
+                    try {
+                      const url = new URL(mediaSrc, "https://www.youtube.com");
+                      if (
+                        url.hostname === "www.youtube.com" ||
+                        url.hostname === "youtube.com" ||
+                        url.hostname === "youtu.be"
+                      ) {
+                        isYouTube = true;
+                        let videoId = "";
+                        if (url.hostname === "youtu.be") {
+                          videoId = url.pathname.replace(/^\//, "");
+                        } else if (url.pathname.includes("/embed/")) {
+                          videoId = url.pathname.split("/embed/")[1]?.split("/")[0] || "";
+                        } else {
+                          videoId = url.searchParams.get("v") || "";
                         }
-                        className="h-full w-full rounded-xl border-0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                      <div
-                        className="absolute inset-0 z-elevated"
-                        style={{ pointerEvents: "none" }}
-                      ></div>
-
-                      <div className="absolute inset-0 rounded-xl bg-black/40" />
-                    </div>
-                  ) : (
-                    <div className="pointer-events-none relative h-full w-full">
-                      <video
-                        src={mediaSrc}
-                        poster={posterSrc}
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        preload="auto"
-                        aria-label={
-                          title ? `Video demonstration of ${title}` : "Brand background video"
+                        if (videoId) {
+                          embedSrc = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&disablekb=1&modestbranding=1&playlist=${encodeURIComponent(videoId)}`;
                         }
-                        className="h-full w-full rounded-xl object-cover"
-                        controls={false}
-                        disablePictureInPicture
-                        disableRemotePlayback
-                      />
-                      <div
-                        className="absolute inset-0 z-elevated"
-                        style={{ pointerEvents: "none" }}
-                      ></div>
+                      }
+                    } catch {
+                      isYouTube = false;
+                    }
 
-                      <div className="absolute inset-0 rounded-xl bg-black/40" />
-                    </div>
-                  )
+                    if (isYouTube) {
+                      return (
+                        <div className="pointer-events-none relative h-full w-full">
+                          <iframe
+                            width="100%"
+                            height="100%"
+                            title={title ? `Video of ${title}` : "Brand introduction video"}
+                            src={embedSrc}
+                            className="h-full w-full rounded-xl border-0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                          <div
+                            className="absolute inset-0 z-elevated"
+                            style={{ pointerEvents: "none" }}
+                          ></div>
+                          <div className="absolute inset-0 rounded-xl bg-black/40" />
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div className="pointer-events-none relative h-full w-full">
+                        <video
+                          src={mediaSrc}
+                          poster={posterSrc}
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          preload="auto"
+                          aria-label={
+                            title ? `Video demonstration of ${title}` : "Brand background video"
+                          }
+                          className="h-full w-full rounded-xl object-cover"
+                          controls={false}
+                          disablePictureInPicture
+                          disableRemotePlayback
+                        />
+                        <div
+                          className="absolute inset-0 z-elevated"
+                          style={{ pointerEvents: "none" }}
+                        ></div>
+                        <div className="absolute inset-0 rounded-xl bg-black/40" />
+                      </div>
+                    );
+                  })()
                 ) : mediaSrc ? (
                   <div className="relative h-full w-full">
                     <OptimizedImage

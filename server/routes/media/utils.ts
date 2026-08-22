@@ -100,8 +100,9 @@ export function slugifyFilename(filename: string): string {
     .trim() // Remove leading/trailing whitespace
     .replace(/[^\w\s-]/g, "") // Remove special characters (keep alphanumeric, spaces, hyphens)
     .replace(/[\s_]+/g, "-") // Replace spaces and underscores with hyphens
-    .replace(/-+/g, "-") // Replace multiple consecutive hyphens with single hyphen
-    .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+    .replace(/-{2,}/g, "-") // Replace multiple consecutive hyphens with single hyphen
+    .replace(/^-+/, "") // Remove leading hyphens
+    .replace(/-+$/, ""); // Remove trailing hyphens
 
   // If slug is empty after processing, use a fallback
   if (!slug) {

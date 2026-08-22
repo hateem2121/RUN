@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import DOMPurify from "isomorphic-dompurify";
 
 /**
  * SANITIZATION MIDDLEWARE
@@ -18,16 +19,44 @@ function sanitizeValue(value: unknown, path: string): unknown {
     const isRichTextField = RICH_TEXT_PATHS.some((keyword) => path.toLowerCase().includes(keyword));
 
     if (isRichTextField) {
-      // For rich text, only remove dangerous tags but preserve formatting
-      // This is a simplified approach - production should use DOMPurify
-      return value
-        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
-        .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, "")
-        .replace(/on\w+="[^"]*"/g, ""); // Remove inline event handlers
+      // For rich text, use DOMPurify to strip dangerous tags and handlers while preserving safe formatting
+      return DOMPurify.sanitize(value, {
+        ALLOWED_TAGS: [
+          "p",
+          "br",
+          "b",
+          "i",
+          "em",
+          "strong",
+          "a",
+          "ul",
+          "ol",
+          "li",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6",
+          "blockquote",
+          "code",
+          "pre",
+          "span",
+          "div",
+          "table",
+          "thead",
+          "tbody",
+          "tr",
+          "th",
+          "td",
+          "img",
+        ],
+        ALLOWED_ATTR: ["href", "src", "alt", "title", "class", "target", "rel"],
+      });
     }
 
-    // Standard field sanitization - remove all HTML tags
-    return value.replace(/[<>]/g, "");
+    // Standard field sanitization - remove all HTML tags completely
+    return DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
   }
 
   if (Array.isArray(value)) {

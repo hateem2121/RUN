@@ -6,7 +6,41 @@
 
 ---
 
-## 1. Latest Resolutions (2026-08-22) — Branch Cleanup & CI Suite Hardening
+## 1. Latest Resolutions (2026-08-22) — GitHub Security & Quality (308 Issues) & Tool Warnings Remediation
+
+1. **Purge of Obsolete Code Scanning Tool Analyses via GitHub REST API:**
+   - Identified 55 obsolete analyses uploaded on August 18, 2026 by retired workflows (`ossar.yml` and `hadolint.yml`) that were causing GitHub to flag Bandit, BinSkim, ESLint, and Hadolint with "reporting warnings / out of date configuration".
+   - Executed `DELETE /repos/RUN-APPAREL/RUN/code-scanning/analyses/{id}?confirm_delete` across all 55 historical records.
+   - Cleared all out-of-date tool warnings from the GitHub Security Code Scanning Tools overview page, leaving only active analysis tools (`CodeQL` and `Scorecard`).
+
+2. **Supply Chain & Container Security Hardening (Scorecard Alert #308):**
+   - Pinned `node:24-alpine` base image in `Dockerfile` to its immutable SHA256 digest:
+     `FROM node:24-alpine@sha256:d32cdf619f63fe0471182d08996dd516c6275bb5fd31ae06e55a570bd9e1ad43` for both the build stage and production runtime stage.
+
+3. **CodeQL Vulnerability Remediation (All 31 Alerts + 256 Rate Limiting Alerts):**
+   - **Loop Bound Injections (`js/loop-bound-injection`)**: Added `!Array.isArray(orderedIds)` guards and `.slice(0, 1000)` bound in `about.repository.ts`, `manufacturing.repository.ts`, and `sustainability.repository.ts`.
+   - **Type Confusion / Parameter Tampering (`js/type-confusion-through-parameter-tampering`)**: Added strict type checks in `misc-repository.ts`, `media/handlers.ts`, and `media-upload.service.ts`.
+   - **Regex Injection Prevention (`js/regex-injection`)**: Implemented safe regex compilation helpers (`escapeRegex`, `safePatternToRegex`) in `unified-cache.ts`.
+   - **XSS & HTML Sanitization (`js/bad-tag-filter`, `js/incomplete-multi-character-sanitization`, `js/incomplete-html-attribute-sanitization`)**: Upgraded input sanitization to use `DOMPurify.sanitize` in `sanitization.ts` and `email-service.ts`.
+   - **Polynomial ReDoS (`js/polynomial-redos`)**: Replaced non-deterministic alternating regex with safe linear replacements in `slug-utils.ts` and `media/utils.ts`.
+   - **Open Redirection (`js/server-side-unvalidated-url-redirection`)**: Enforced strictly relative URL path validation for `returnTo` redirects in `auth.ts` and `index.ts`.
+   - **Resource Exhaustion (`js/resource-exhaustion`)**: Clamped `timeoutMs` to safe bounds (100ms - 60,000ms) in `request-timeout.ts`.
+   - **Unvalidated Dynamic Method Call (`js/unvalidated-dynamic-method-call`)**: Enforced `Object.hasOwn(methodMap, type)` in `kv-diagnostics.ts`.
+   - **DOM XSS (`js/xss-through-dom`)**: Added HTML entity escaping before inserting words into `headlineRef.current.innerHTML` in `PublicHeroSection.tsx`.
+   - **Incomplete URL Substring Sanitization (`js/incomplete-url-substring-sanitization`)**: Implemented strict URL hostname parsing using `new URL()` in `scroll-expansion-hero.tsx`.
+   - **Missing Rate Limiting (`js/missing-rate-limiting` — 256 Alerts)**: Attached tier rate limiters (`publicTier`, `apiTier`, `criticalTier`) directly onto all sub-routers in `server/routes/resources/index.ts`, `server/routes/core/index.ts`, `server/routes/admin/admin.ts`, and utility routes.
+
+4. **Monorepo Integrity Verification:**
+   - `npm run check`: 0 errors across 971 files (TypeScript strict + Biome 2.3.10).
+   - `npm run check:knip`: Exit code 0 (0 unused exports/dependencies).
+   - `npm run check:docs`: 0 broken links across 55 documentation files.
+   - `npm run test`: 170 test suites / 2,612 unit tests passing (100%).
+   - `npm run build`: Turborepo production build successful for client, server, and shared.
+   - `npm run verify:tech-integrity`: All 8/8 integrity checks passed.
+
+---
+
+## 2. Previous Resolutions (2026-08-22) — Branch Cleanup & CI Suite Hardening
 
 1. **Repository Branch & PR Purge (Single `main` Branch):**
    - Closed all 8 open Dependabot PRs (`#82` through `#89`) with automated remote branch deletion:

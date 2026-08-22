@@ -188,12 +188,16 @@ class AboutRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderAboutTimelineEntries(orderedIds);
     }
+    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+      return;
+    }
     await unifiedCache.del("about:timeline");
     await unifiedCache.del("about:batch");
+    const safeIds = orderedIds.slice(0, 1000);
     // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     await db.transaction(async (tx: any) => {
-      for (let i = 0; i < orderedIds.length; i++) {
-        const id = orderedIds[i] as number;
+      for (let i = 0; i < safeIds.length; i++) {
+        const id = safeIds[i] as number;
         await tx
           .update(aboutTimelineEntries)
           .set({ sortOrder: i + 1 })
@@ -293,11 +297,15 @@ class AboutRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderAboutMapLocations(orderedIds);
     }
+    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+      return;
+    }
     await unifiedCache.del("about:batch");
+    const safeIds = orderedIds.slice(0, 1000);
     // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     await db.transaction(async (tx: any) => {
-      for (let i = 0; i < orderedIds.length; i++) {
-        const id = orderedIds[i] as number;
+      for (let i = 0; i < safeIds.length; i++) {
+        const id = safeIds[i] as number;
         await tx
           .update(aboutMapLocations)
           .set({ sortOrder: i + 1 })
@@ -398,11 +406,15 @@ class AboutRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderAboutSections(orderedIds);
     }
+    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+      return;
+    }
     await unifiedCache.del("about:batch");
+    const safeIds = orderedIds.slice(0, 1000);
     // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     await db.transaction(async (tx: any) => {
-      for (let i = 0; i < orderedIds.length; i++) {
-        const id = orderedIds[i] as number;
+      for (let i = 0; i < safeIds.length; i++) {
+        const id = safeIds[i] as number;
         await tx
           .update(aboutSections)
           .set({ sortOrder: i + 1 })
@@ -504,12 +516,16 @@ class AboutRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderAboutStatistics(orderedIds);
     }
+    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+      return;
+    }
     await unifiedCache.del("about:statistics");
     await unifiedCache.del("about:batch");
+    const safeIds = orderedIds.slice(0, 1000);
     // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     await db.transaction(async (tx: any) => {
-      for (let i = 0; i < orderedIds.length; i++) {
-        const id = orderedIds[i] as number;
+      for (let i = 0; i < safeIds.length; i++) {
+        const id = safeIds[i] as number;
         await tx
           .update(aboutStatistics)
           .set({ sortOrder: i + 1 })

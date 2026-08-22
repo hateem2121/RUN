@@ -162,16 +162,20 @@ class SustainabilityRepository {
   }
 
   async reorderSustainabilityGoals(orderedIds: number[]): Promise<void> {
+    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+      return;
+    }
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderSustainabilityGoals(orderedIds);
     }
+    const safeIds = orderedIds.slice(0, 1000);
     // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     await db.transaction(async (tx: any) => {
-      for (let i = 0; i < orderedIds.length; i++) {
+      for (let i = 0; i < safeIds.length; i++) {
         await tx
           .update(sustainabilityGoals)
           .set({ sortOrder: i + 1, updatedAt: new Date() })
-          .where(eq(sustainabilityGoals.id, orderedIds[i] as number));
+          .where(eq(sustainabilityGoals.id, safeIds[i] as number));
       }
     });
     await emitCacheInvalidation("sustainability:goals", "update");
@@ -288,16 +292,20 @@ class SustainabilityRepository {
   }
 
   async reorderSustainabilityMetrics(orderedIds: number[]): Promise<void> {
+    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+      return;
+    }
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderSustainabilityMetrics(orderedIds);
     }
+    const safeIds = orderedIds.slice(0, 1000);
     // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     await db.transaction(async (tx: any) => {
-      for (let i = 0; i < orderedIds.length; i++) {
+      for (let i = 0; i < safeIds.length; i++) {
         await tx
           .update(sustainabilityMetrics)
           .set({ sortOrder: i + 1, updatedAt: new Date() })
-          .where(eq(sustainabilityMetrics.id, orderedIds[i] as number));
+          .where(eq(sustainabilityMetrics.id, safeIds[i] as number));
       }
     });
     await emitCacheInvalidation("sustainability:metrics", "update");
@@ -400,16 +408,20 @@ class SustainabilityRepository {
   }
 
   async reorderSustainabilityInitiatives(orderedIds: number[]): Promise<void> {
+    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+      return;
+    }
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderSustainabilityInitiatives(orderedIds);
     }
+    const safeIds = orderedIds.slice(0, 1000);
     // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     await db.transaction(async (tx: any) => {
-      for (let i = 0; i < orderedIds.length; i++) {
+      for (let i = 0; i < safeIds.length; i++) {
         await tx
           .update(sustainabilityInitiatives)
           .set({ sortOrder: i + 1, updatedAt: new Date() })
-          .where(eq(sustainabilityInitiatives.id, orderedIds[i] as number));
+          .where(eq(sustainabilityInitiatives.id, safeIds[i] as number));
       }
     });
     await emitCacheInvalidation("sustainability:initiatives", "update");

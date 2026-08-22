@@ -16,7 +16,7 @@
  * normalizeSlug("Sports Gear") // "sports-gear"
  */
 export function normalizeSlug(slug: string): string {
-  if (!slug) {
+  if (typeof slug !== "string" || !slug) {
     return "";
   }
 
@@ -26,8 +26,9 @@ export function normalizeSlug(slug: string): string {
     .replace(/\s+/g, "-") // Replace spaces with hyphens
     .replace(/_/g, "-") // Replace underscores with hyphens
     .replace(/[^a-z0-9-]/g, "") // Remove non-alphanumeric except hyphens
-    .replace(/-+/g, "-") // Replace multiple hyphens with single
-    .replace(/^-+|-+$/g, ""); // Trim hyphens from start/end
+    .replace(/-{2,}/g, "-") // Replace multiple hyphens with single
+    .replace(/^-+/, "") // Trim hyphens from start
+    .replace(/-+$/, ""); // Trim hyphens from end
 }
 
 /**

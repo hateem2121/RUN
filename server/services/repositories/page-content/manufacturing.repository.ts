@@ -152,17 +152,21 @@ class ManufacturingRepository {
   }
 
   async reorderManufacturingCapabilities(orderedIds: number[]): Promise<void> {
+    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+      return;
+    }
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderManufacturingCapabilities(orderedIds);
     }
     await CacheOperations.invalidateManufacturing();
+    const safeIds = orderedIds.slice(0, 1000);
     // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     await db.transaction(async (tx: any) => {
-      for (let i = 0; i < orderedIds.length; i++) {
+      for (let i = 0; i < safeIds.length; i++) {
         await tx
           .update(manufacturingCapabilities)
           .set({ sortOrder: i + 1 })
-          .where(eq(manufacturingCapabilities.id, orderedIds[i] as number));
+          .where(eq(manufacturingCapabilities.id, safeIds[i] as number));
       }
     });
     await CacheOperations.invalidateManufacturing();
@@ -247,17 +251,21 @@ class ManufacturingRepository {
   }
 
   async reorderManufacturingProcesses(orderedIds: number[]): Promise<void> {
+    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+      return;
+    }
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderManufacturingProcesses(orderedIds);
     }
     await CacheOperations.invalidateManufacturing();
+    const safeIds = orderedIds.slice(0, 1000);
     // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     await db.transaction(async (tx: any) => {
-      for (let i = 0; i < orderedIds.length; i++) {
+      for (let i = 0; i < safeIds.length; i++) {
         await tx
           .update(manufacturingProcesses)
           .set({ sortOrder: i + 1 })
-          .where(eq(manufacturingProcesses.id, orderedIds[i] as number));
+          .where(eq(manufacturingProcesses.id, safeIds[i] as number));
       }
     });
     await CacheOperations.invalidateManufacturing();
@@ -342,17 +350,21 @@ class ManufacturingRepository {
   }
 
   async reorderManufacturingQualities(orderedIds: number[]): Promise<void> {
+    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+      return;
+    }
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderManufacturingQualities(orderedIds);
     }
     await CacheOperations.invalidateManufacturing();
+    const safeIds = orderedIds.slice(0, 1000);
     // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     await db.transaction(async (tx: any) => {
-      for (let i = 0; i < orderedIds.length; i++) {
+      for (let i = 0; i < safeIds.length; i++) {
         await tx
           .update(manufacturingQualities)
           .set({ sortOrder: i + 1 })
-          .where(eq(manufacturingQualities.id, orderedIds[i] as number));
+          .where(eq(manufacturingQualities.id, safeIds[i] as number));
       }
     });
     await CacheOperations.invalidateManufacturing();
@@ -443,17 +455,21 @@ class ManufacturingRepository {
   }
 
   async reorderManufacturingCaseStudies(orderedIds: number[]): Promise<void> {
+    if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+      return;
+    }
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().reorderManufacturingCaseStudies(orderedIds);
     }
     await unifiedCache.invalidate(CacheKeys.manufacturing.caseStudies());
+    const safeIds = orderedIds.slice(0, 1000);
     // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     await db.transaction(async (tx: any) => {
-      for (let i = 0; i < orderedIds.length; i++) {
+      for (let i = 0; i < safeIds.length; i++) {
         await tx
           .update(manufacturingCaseStudies)
           .set({ sortOrder: i + 1 })
-          .where(eq(manufacturingCaseStudies.id, orderedIds[i] as number));
+          .where(eq(manufacturingCaseStudies.id, safeIds[i] as number));
       }
     });
     await CacheOperations.invalidateManufacturing();

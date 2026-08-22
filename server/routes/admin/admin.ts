@@ -4,6 +4,7 @@
  */
 
 import { Router } from "express";
+import { criticalTier } from "../../middleware/rate-limit-tiers.js";
 import blogRouter from "./blog.routes.js";
 import categoriesRouter from "./categories.routes.js";
 import contentRouter from "./content.routes.js";
@@ -12,6 +13,7 @@ import productsRouter from "./products.routes.js";
 import systemRouter from "./system.routes.js";
 
 const router = Router();
+router.use(criticalTier);
 
 /**
  * MOUNT SUB-ROUTERS

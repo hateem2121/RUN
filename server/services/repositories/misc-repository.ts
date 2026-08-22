@@ -1481,18 +1481,19 @@ export class MiscRepository {
     if (filters.source && filters.source !== "all") {
       conditions.push(eq(inquiries.source, filters.source));
     }
-    if (filters.search) {
-      if (filters.search.includes("@")) {
+    if (typeof filters.search === "string" && filters.search.trim()) {
+      const searchTerm = filters.search.trim();
+      if (searchTerm.includes("@")) {
         // Search by email blind index for precision/security
-        conditions.push(eq(inquiries.emailIndex, getBlindIndex(filters.search)));
+        conditions.push(eq(inquiries.emailIndex, getBlindIndex(searchTerm)));
       } else {
         // Fallback or warning: like search on encrypted fields is limited
         conditions.push(
           or(
             // Note: these will effectively only match non-encrypted legacy data or Fail
-            like(inquiries.name, `%${filters.search}%`),
-            like(inquiries.email, `%${filters.search}%`),
-            like(inquiries.message, `%${filters.search}%`),
+            like(inquiries.name, `%${searchTerm}%`),
+            like(inquiries.email, `%${searchTerm}%`),
+            like(inquiries.message, `%${searchTerm}%`),
           ),
         );
       }

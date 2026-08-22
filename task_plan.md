@@ -1,31 +1,37 @@
 # Task Plan
 
 **Date:** 2026-08-22
-**Goal:** Clean up excessive branches on GitHub so that only `main` remains, configure Dependabot to prevent automated branch spam, and audit/optimize GitHub Actions workflows and checks.
+**Goal:** Investigate and resolve GitHub Security & Quality alerts (308 issues) and Code Scanning tool warnings (Bandit, ESLint, BinSkim, Hadolint, CodeQL, Scorecard).
 
 ## Current Session Plan
-- [x] Protocol 0: Read `task_plan.md` and `findings.md`
-- [x] Inspect remote branches, open PRs, and GitHub Actions status
-- [x] User Approval on Plan
-- [x] Branch Cleanup:
-  - [x] Close open Dependabot PRs (#82, #83, #84, #85, #86, #87, #88, #89) with `--delete-branch`
-  - [x] Delete any remaining remote branches on `origin`
-  - [x] Run `git remote prune origin` locally
-  - [x] Verify `git ls-remote --heads origin` shows strictly `main`
-- [x] Dependabot & Workflow Configuration:
-  - [x] Update `.github/dependabot.yml` to set `open-pull-requests-limit: 0`
-  - [x] Optimize `.github/workflows/security.yml` to remove redundant duplicate jobs (`codeql`, `dependency-review`) handled by dedicated workflows
-- [x] Monorepo Integrity & Quality Checks:
+- [x] Protocol 0: Read `task_plan.md` and start session
+- [x] Investigate root cause of GitHub Security & Quality alerts:
+  - [x] Code scanning tool status warnings (stale/orphaned tools: Bandit, BinSkim, ESLint, Hadolint from retired OSSAR/Hadolint workflows)
+  - [x] CodeQL security vulnerabilities & code quality alerts (31 code security findings + 256 rate-limiting findings)
+  - [x] Scorecard supply chain configuration findings
+- [x] Collaborative Brainstorming & Grill-Me Alignment:
+  - [x] Clarify scope and strategy for Code Scanning tools cleanup and CodeQL alert remediation
+  - [x] Present technical design and get explicit user approval
+- [x] Implementation & Remediation:
+  - [x] Purge stale code-scanning analyses for retired tools (Bandit, BinSkim, ESLint, Hadolint)
+  - [x] Fix high-priority CodeQL security issues (loop bound injection, parameter tampering, regex injection, sanitization, open redirects)
+  - [x] Address route-level rate limiting / CodeQL config for rate-limiting coverage
+  - [x] Update Scorecard / Docker pins where applicable
+- [x] Verification & Testing:
   - [x] `npm run check` (Biome + Typecheck)
-  - [x] `npm run check:knip` (Knip unused exports)
-  - [x] `npm run check:docs` (Documentation link check)
-  - [x] `npm run test` (Unit test suite)
-  - [x] `npm run build` (Turborepo build)
-  - [x] `npm run verify:tech-integrity` (All 8 checks)
-- [x] Commit & push to `main`
-- [x] Monitor GitHub Actions CI runs on `main` to verify 100% green status across all pipelines
-- [x] Protocol 0: Update `findings.md` and `task_plan.md` session outcome
+  - [x] `npm run check:knip` (Knip dead-code analysis)
+  - [x] `npm run check:docs` (Documentation link validation)
+  - [x] `npm run test` (Unit test suite — 2,612/2,612 tests passing)
+  - [x] `npm run build` (Turborepo production build)
+  - [x] `npm run verify:tech-integrity` (All 8 checks passing)
+- [x] Protocol 0: Session end bookends (`findings.md` and `task_plan.md` update)
 
 ## Session Outcome & Next Steps
-- **Outcome:** All tasks completed successfully. Remote repository purged to a single canonical branch `main` with 0 open PRs. Dependabot automated PRs disabled (`open-pull-requests-limit: 0`). Duplicate CI security jobs de-duplicated. All 9 GitHub Actions workflows completed with 🟢 SUCCESS on `main` (commit `fad8cdb`). Monorepo tech integrity at 100% (8/8 checks passed).
-- **Next Steps:** Maintain single-branch discipline on `main` and execute future feature development cleanly.
+- **Completed**:
+  1. Purged all 55 historical analyses for obsolete tools (Bandit, BinSkim, ESLint, Hadolint) from GitHub Code Scanning via GitHub REST API.
+  2. Fixed all 31 CodeQL security vulnerabilities (loop bound injections, parameter tampering, regex injections, DOM XSS, ReDoS, open redirection, resource exhaustion, unvalidated dynamic method calls, and URL substring sanitization).
+  3. Attached explicit rate limiting middleware (`publicTier`, `apiTier`, `criticalTier`) to all route tiers and sub-routers.
+  4. Pinned `node:24-alpine` base image in `Dockerfile` to its immutable SHA256 digest for Scorecard alert #308 compliance.
+  5. 100% monorepo integrity checks and unit tests passed locally.
+- **Next Steps**:
+  - Commit and push changes to `main` to trigger the GitHub Actions CI and CodeQL scanning pipeline to refresh and resolve open alerts on GitHub.

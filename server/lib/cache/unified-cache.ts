@@ -32,6 +32,38 @@ const COMPRESSION_THRESHOLD = 1024;
 // OpenTelemetry tracer for cache operations
 const tracer = trace.getTracer("unified-cache", "1.0.0");
 
+function escapeRegex(str: string): string {
+  return str.replace(/[.+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function safePatternToRegex(pattern: string): RegExp | null {
+  if (typeof pattern !== "string" || !pattern) return null;
+  const isExplicitRegex =
+    pattern.startsWith("^") ||
+    pattern.includes(".*") ||
+    pattern.includes("(") ||
+    pattern.includes("|");
+  if (isExplicitRegex) {
+    if (/^[a-zA-Z0-9_:|^$()*?.+\-[\]]+$/.test(pattern)) {
+      try {
+        return new RegExp(pattern);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
+  if (pattern.includes("*")) {
+    const escaped = escapeRegex(pattern).replace(/\\\*/g, ".*");
+    try {
+      return new RegExp(`^${escaped}$`);
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
 class DummyCacheProvider {
   async get(_key: string) {
     return null;
@@ -267,16 +299,7 @@ export class UnifiedCache {
    */
   async invalidate(pattern: string): Promise<void> {
     // 1. Clear L1 Memory Cache immediately for the CURRENT instance
-    const isRegex =
-      pattern.startsWith("^") ||
-      pattern.includes(".*") ||
-      pattern.includes("(") ||
-      pattern.includes("|");
-    const regex = isRegex
-      ? new RegExp(pattern)
-      : pattern.includes("*")
-        ? new RegExp(pattern.replace(/\*/g, ".*"))
-        : null;
+    const regex = safePatternToRegex(pattern);
 
     logger.debug(`[UnifiedCache] Invalidating L1 pattern: ${pattern}. Compiled regex: ${regex}`);
     let deletedCount = 0;
@@ -371,11 +394,7 @@ export class UnifiedCache {
       pattern.includes(".*") ||
       pattern.includes("(") ||
       pattern.includes("|");
-    const regex = isRegex
-      ? new RegExp(pattern)
-      : pattern.includes("*")
-        ? new RegExp(pattern.replace(/\*/g, ".*"))
-        : null;
+    const regex = safePatternToRegex(pattern);
 
     // 1. Clear L1 Memory Cache
     for (const key of this.memoryCache.keys()) {

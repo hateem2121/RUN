@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 import accessoriesRouter from "./accessories.js";
 import blogRouter from "./blog.js";
 import categoriesRouter from "./categories.js";
@@ -13,6 +14,7 @@ import servicesRouter from "./services.js";
 import sizeChartsRouter from "./size-charts.js";
 
 const router = Router();
+router.use(apiTier);
 
 router.use("/health", healthRouter);
 router.use(inquiriesRouter);

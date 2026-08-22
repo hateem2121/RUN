@@ -4,6 +4,7 @@
  * Created: October 22, 2025
  */
 
+import DOMPurify from "isomorphic-dompurify";
 import { err, ok, type Result } from "neverthrow";
 import type { Transporter } from "nodemailer";
 import nodemailer from "nodemailer";
@@ -11,6 +12,16 @@ import { env } from "../env.js";
 import { type AppError, InternalError } from "../errors.js";
 import { logger } from "../monitoring/logger.js";
 import { withCircuit } from "../resilience/circuit-breaker.js";
+
+function escapeHtml(str: unknown): string {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
 interface EmailOptions {
   to: string;
@@ -48,28 +59,22 @@ class EmailService {
           user: gmailUser,
           pass: gmailAppPassword,
         },
+        tls: {
+          rejectUnauthorized: true,
+        },
       });
 
       this.isConfigured = true;
-      logger.info("[Email] Email service initialized successfully");
-
-      this.transporter.verify((error: Error | null) => {
-        if (error) {
-          logger.error("[Email] SMTP verification failed:", error);
-          this.isConfigured = false;
-        } else {
-          logger.info("[Email] SMTP server ready to send emails");
-        }
-      });
+      logger.info("[Email] Gmail SMTP configured successfully");
     } catch (error) {
-      logger.error("[Email] Failed to initialize email service:", error);
+      logger.error("[Email] Failed to initialize Gmail SMTP:", error);
       this.isConfigured = false;
     }
   }
 
   private async sendEmail(options: EmailOptions): Promise<Result<boolean, AppError>> {
     if (!this.isConfigured || !this.transporter) {
-      logger.warn("[Email] Email service not configured - skipping email send");
+      logger.debug("[Email] Email service not configured, skipping email send");
       return ok(false);
     }
 
@@ -82,7 +87,7 @@ class EmailService {
             to: options.to,
             subject: options.subject,
             html: options.html,
-            text: options.text || options.html.replace(/<[^>]*>/g, ""),
+            text: options.text || DOMPurify.sanitize(options.html, { ALLOWED_TAGS: [] }),
           }),
         {
           timeout: 10000,
@@ -169,7 +174,7 @@ class EmailService {
                     <strong style="color: #666666; font-size: 14px;">Name:</strong>
                   </td>
                   <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5; text-align: right;">
-                    <span style="color: #000000; font-size: 14px;">${inquiry.name}</span>
+                    <span style="color: #000000; font-size: 14px;">${escapeHtml(inquiry.name)}</span>
                   </td>
                 </tr>
                 <tr>
@@ -177,7 +182,7 @@ class EmailService {
                     <strong style="color: #666666; font-size: 14px;">Email:</strong>
                   </td>
                   <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5; text-align: right;">
-                    <a href="mailto:${inquiry.email}" style="color: #0066cc; font-size: 14px; text-decoration: none;">${inquiry.email}</a>
+                    <a href="mailto:${encodeURIComponent(inquiry.email)}" style="color: #0066cc; font-size: 14px; text-decoration: none;">${escapeHtml(inquiry.email)}</a>
                   </td>
                 </tr>
                 ${
@@ -188,7 +193,7 @@ class EmailService {
                     <strong style="color: #666666; font-size: 14px;">Company:</strong>
                   </td>
                   <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5; text-align: right;">
-                    <span style="color: #000000; font-size: 14px;">${inquiry.company}</span>
+                    <span style="color: #000000; font-size: 14px;">${escapeHtml(inquiry.company)}</span>
                   </td>
                 </tr>
                 `
@@ -202,7 +207,7 @@ class EmailService {
                     <strong style="color: #666666; font-size: 14px;">Phone:</strong>
                   </td>
                   <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5; text-align: right;">
-                    <a href="tel:${inquiry.phone}" style="color: #0066cc; font-size: 14px; text-decoration: none;">${inquiry.phone}</a>
+                    <a href="tel:${encodeURIComponent(inquiry.phone)}" style="color: #0066cc; font-size: 14px; text-decoration: none;">${escapeHtml(inquiry.phone)}</a>
                   </td>
                 </tr>
                 `
@@ -216,7 +221,7 @@ class EmailService {
                     <strong style="color: #666666; font-size: 14px;">Country:</strong>
                   </td>
                   <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5; text-align: right;">
-                    <span style="color: #000000; font-size: 14px;">${inquiry.country}</span>
+                    <span style="color: #000000; font-size: 14px;">${escapeHtml(inquiry.country)}</span>
                   </td>
                 </tr>
                 `
@@ -230,7 +235,7 @@ class EmailService {
                     <strong style="color: #666666; font-size: 14px;">Preferred Platform:</strong>
                   </td>
                   <td style="padding: 12px 0; border-bottom: 1px solid #e5e5e5; text-align: right;">
-                    <span style="color: #000000; font-size: 14px;">${inquiry.preferredPlatform}</span>
+                    <span style="color: #000000; font-size: 14px;">${escapeHtml(inquiry.preferredPlatform)}</span>
                   </td>
                 </tr>
                 `
@@ -241,7 +246,7 @@ class EmailService {
               <!-- Message -->
               <h2 style="margin: 0 0 16px; color: #000000; font-size: 18px; font-weight: 600;">Message</h2>
               <div style="padding: 20px; background-color: #f9f9f9; border-radius: 6px; border-left: 4px solid #000000; margin-bottom: 30px;">
-                <p style="margin: 0; color: #333333; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${inquiry.message}</p>
+                <p style="margin: 0; color: #333333; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(inquiry.message)}</p>
               </div>
 
               ${
@@ -262,9 +267,9 @@ class EmailService {
                     .map(
                       (item) => `
                   <tr>
-                    <td style="padding: 12px; border: 1px solid #e5e5e5; font-size: 14px; color: #000000;">#${item.productId}</td>
-                    <td style="padding: 12px; border: 1px solid #e5e5e5; font-size: 14px; color: #000000; text-align: center;">${item.quantity}</td>
-                    <td style="padding: 12px; border: 1px solid #e5e5e5; font-size: 13px; color: #666666;">${item.notes || "-"}</td>
+                    <td style="padding: 12px; border: 1px solid #e5e5e5; font-size: 14px; color: #000000;">#${escapeHtml(item.productId)}</td>
+                    <td style="padding: 12px; border: 1px solid #e5e5e5; font-size: 14px; color: #000000; text-align: center;">${escapeHtml(item.quantity)}</td>
+                    <td style="padding: 12px; border: 1px solid #e5e5e5; font-size: 13px; color: #666666;">${escapeHtml(item.notes || "-")}</td>
                   </tr>
                   `,
                     )
@@ -279,7 +284,7 @@ class EmailService {
               <table role="presentation" style="width: 100%; border-collapse: collapse;">
                 <tr>
                   <td align="center">
-                    <a href="${dashboardUrl}" style="display: inline-block; padding: 14px 32px; background-color: #000000; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 600; margin-top: 10px;">View in Admin Dashboard</a>
+                    <a href="${encodeURI(dashboardUrl)}" style="display: inline-block; padding: 14px 32px; background-color: #000000; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 600; margin-top: 10px;">View in Admin Dashboard</a>
                   </td>
                 </tr>
               </table>

@@ -104,16 +104,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.use("/media", uploadTier, v1MediaRouter);
 
   // 4. Utilities
-  apiRouter.use("/analytics", analyticsRouter);
-  apiRouter.use("/logs", logsRouter);
+  apiRouter.use("/analytics", apiTier, analyticsRouter);
+  apiRouter.use("/logs", apiTier, logsRouter);
 
   // ARCH-001 FIX: Single canonical API mount
   app.use("/api", apiRouter);
 
   // Legacy v1 redirect for backward compatibility
   app.use("/api/v1", (req, res) => {
-    const newUrl = req.originalUrl.replace("/api/v1", "/api");
-    res.redirect(308, newUrl);
+    const rawPath = req.baseUrl || req.path || "";
+    const cleanPath = rawPath.replace(/^\/api\/v1/, "/api");
+    const safeTarget = cleanPath.startsWith("/api") ? cleanPath : "/api";
+    res.redirect(308, safeTarget);
   });
 
   // Documentation (Keep at /api/docs)

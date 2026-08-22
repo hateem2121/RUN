@@ -95,8 +95,13 @@ router.get("/mock-login", async (req, res) => {
           return;
         }
 
+        const rawReturnTo = req.query.returnTo || req.query.returnUrl;
         const returnTo =
-          (req.query.returnTo as string) || (req.query.returnUrl as string) || "/admin";
+          typeof rawReturnTo === "string" &&
+          rawReturnTo.startsWith("/") &&
+          !rawReturnTo.startsWith("//")
+            ? rawReturnTo
+            : "/admin";
         if (req.headers.accept?.includes("application/json")) {
           res.json({ success: true, user: mockUser });
           return;

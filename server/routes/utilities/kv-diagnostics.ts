@@ -156,13 +156,13 @@ export function registerKVDiagnosticsRoutes(app: Express): void {
       contactPageConfiguration: () => miscRepository.getContactPageConfiguration(),
     };
 
-    const method = methodMap[type];
-    if (!method) {
+    if (!Object.hasOwn(methodMap, type) || typeof methodMap[type] !== "function") {
       throw new ValidationError(
         `Unknown type: ${type}. Available types: ${Object.keys(methodMap).join(", ")}`,
       );
     }
 
+    const method = methodMap[type];
     const data = await method();
 
     return res.json({

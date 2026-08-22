@@ -16,12 +16,13 @@ export function withTimeout<T>(
   timeoutMs: number = 10000,
   operation: string = "Operation",
 ): Promise<T> {
+  const safeTimeoutMs = Math.min(Math.max(Number(timeoutMs) || 10000, 100), 60000);
   let timeoutHandle: NodeJS.Timeout;
 
   const timeoutPromise = new Promise<T>((_, reject) => {
     timeoutHandle = setTimeout(
-      () => reject(new Error(`${operation} timed out after ${timeoutMs}ms`)),
-      timeoutMs,
+      () => reject(new Error(`${operation} timed out after ${safeTimeoutMs}ms`)),
+      safeTimeoutMs,
     );
   });
 

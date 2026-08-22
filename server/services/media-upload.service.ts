@@ -110,6 +110,14 @@ class MediaUploadService {
       AppError
     >
   > {
+    if (
+      typeof uploadId !== "string" ||
+      !Number.isInteger(chunkNumber) ||
+      !Buffer.isBuffer(buffer)
+    ) {
+      return err(new BadRequestError("Invalid chunk upload parameters"));
+    }
+
     const session = this.sessions.get(uploadId);
     if (!session) {
       return err(new NotFoundError("Upload session not found or expired"));

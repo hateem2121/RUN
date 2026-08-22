@@ -33,14 +33,23 @@ export function PublicHeroSection({
       if (!hero || !headlineRef.current) return;
 
       // Split headline into words for staggered animation
+      const escapeHtml = (str: string) =>
+        str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+
       const words = headlineRef.current.innerText.split(" ");
       headlineRef.current.innerHTML = words
         .map((word) => {
           const isHighlighted = word.startsWith("**") && word.endsWith("**");
           const cleanWord = isHighlighted ? word.slice(2, -2) : word;
+          const safeWord = escapeHtml(cleanWord);
           return `<span class="inline-block overflow-hidden pb-2 pr-4"><span class="word inline-block ${
             isHighlighted ? "text-custom-misc-218 relative" : ""
-          }">${cleanWord}${
+          }">${safeWord}${
             isHighlighted
               ? '<span class="absolute -top-2 -right-4 w-3 h-3 bg-custom-misc-219 rotate-45 animate-pulse shadow-custom-misc-220"></span>'
               : ""

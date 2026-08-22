@@ -19,6 +19,7 @@
  */
 
 import { Router } from "express";
+import { publicTier } from "../../middleware/rate-limit-tiers.js";
 // About Page Resources
 import aboutHeroRouter from "./about-hero.routes.js";
 import aboutLocationsRouter from "./about-locations.routes.js";
@@ -38,7 +39,6 @@ import manufacturingHeroRouter from "./manufacturing-hero.routes.js";
 // Manufacturing Page Resources
 import manufacturingProcessesRouter from "./manufacturing-processes.routes.js";
 import manufacturingQualitiesRouter from "./manufacturing-qualities.routes.js";
-
 import navigationRouter from "./navigation.routes.js";
 import pageContentRouter from "./page-content-routes.js";
 import resourceBatchRouter from "./resource-batch.routes.js";
@@ -57,6 +57,7 @@ import technologyResearchRouter from "./technology-research.routes.js";
 import technologyRoadmapRouter from "./technology-roadmap.routes.js";
 
 const router = Router();
+router.use(publicTier);
 
 // ============================================================================
 // HOMEPAGE PAGE RESOURCES (relocated from modules/ on October 15, 2025)

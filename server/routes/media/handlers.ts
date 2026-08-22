@@ -160,11 +160,20 @@ export async function uploadChunk(req: Request, res: Response) {
   const { uploadId, chunkNumber } = req.body;
   const file = req.file;
 
-  if (!file) {
-    throw new BadRequestError("No file provided");
+  if (typeof uploadId !== "string" || !uploadId.trim()) {
+    throw new BadRequestError("Valid uploadId is required");
   }
 
-  const result = await mediaService.uploadChunk(uploadId, parseInt(chunkNumber, 10), file.buffer);
+  const parsedChunkNumber = Number.parseInt(String(chunkNumber), 10);
+  if (!Number.isInteger(parsedChunkNumber) || parsedChunkNumber < 0) {
+    throw new BadRequestError("Valid chunkNumber integer is required");
+  }
+
+  if (!file || !Buffer.isBuffer(file.buffer)) {
+    throw new BadRequestError("No file buffer provided");
+  }
+
+  const result = await mediaService.uploadChunk(uploadId.trim(), parsedChunkNumber, file.buffer);
 
   return result.match(
     (data) => res.status(201).json(createSuccessResponse(data)),
