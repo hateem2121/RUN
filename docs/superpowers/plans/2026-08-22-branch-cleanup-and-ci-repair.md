@@ -10,7 +10,7 @@
 
 ---
 
-### Task 1: Branch and Pull Request Cleanup
+## Task 1: Branch and Pull Request Cleanup
 
 **Files:**
 - Local git repository
@@ -30,7 +30,7 @@ Run: `git pull origin main`
 
 ---
 
-### Task 2: CI Workflow Hardening & Gitleaks Repair
+## Task 2: CI Workflow Hardening & Gitleaks Repair
 
 **Files:**
 - Modify: `.github/workflows/security.yml`
@@ -39,6 +39,7 @@ Run: `git pull origin main`
 
 - [ ] **Step 1: Update `.github/workflows/security.yml`**
 Replace `gitleaks-action` with the open-source Gitleaks standalone binary:
+
 ```yaml
       - name: Install & Run Gitleaks
         run: |
@@ -54,7 +55,7 @@ Add ignore rules for core framework dependencies (`react`, `react-dom`, `@react-
 
 ---
 
-### Task 3: Monorepo Verification & Deployment to Main
+## Task 3: Monorepo Verification & Deployment to Main
 
 **Files:**
 - Whole monorepo
@@ -79,3 +80,4 @@ Run: `npm run verify:tech-integrity`
 
 - [ ] **Step 7: Commit, push to `main`, and monitor CI check runs**
 Run: `git push origin main` and `gh run list --branch main`
+

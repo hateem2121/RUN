@@ -40,6 +40,7 @@ jobs:
             !.code-review-graph/**
             !graphify-out/**
             !docs/audit/**
+            !docs/superpowers/**
             !findings.md
             !task_plan.md
             !playwright-report/**
