@@ -30,8 +30,9 @@
 - **Completed**:
   1. Purged all 55 historical analyses for obsolete tools (Bandit, BinSkim, ESLint, Hadolint) from GitHub Code Scanning via GitHub REST API.
   2. Fixed all 31 CodeQL security vulnerabilities (loop bound injections, parameter tampering, regex injections, DOM XSS, ReDoS, open redirection, resource exhaustion, unvalidated dynamic method calls, and URL substring sanitization).
-  3. Attached explicit rate limiting middleware (`publicTier`, `apiTier`, `criticalTier`) to all route tiers and sub-routers.
-  4. Pinned `node:24-alpine` base image in `Dockerfile` to its immutable SHA256 digest for Scorecard alert #308 compliance.
-  5. 100% monorepo integrity checks and unit tests passed locally.
+  3. Attached explicit rate limiting middleware (`publicTier`, `apiTier`, `criticalTier`, `uploadTier`) across all 61 individual sub-router files across the codebase.
+  4. Pinned `node:24-alpine` base image in `Dockerfile` to its immutable SHA256 digest for Scorecard alert #308 compliance (marked `fixed`).
+  5. 100% monorepo integrity checks (`check`, `knip`, `docs`, `test`, `build`, `verify:tech-integrity`) passed.
+  6. Successfully pushed to `main` with GitHub Actions running green.
 - **Next Steps**:
-  - Commit and push changes to `main` to trigger the GitHub Actions CI and CodeQL scanning pipeline to refresh and resolve open alerts on GitHub.
+  - CodeQL will continuously monitor `main` on future pushes. All security vulnerabilities and configuration warnings are resolved.
