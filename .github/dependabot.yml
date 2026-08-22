@@ -58,6 +58,18 @@ updates:
       # Ignore major version updates (review manually)
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+      # Ignore automated bumps for core framework & runtime stack
+      - dependency-name: "react"
+      - dependency-name: "react-dom"
+      - dependency-name: "react-is"
+      - dependency-name: "@react-router/*"
+      - dependency-name: "react-router"
+      - dependency-name: "express"
+      - dependency-name: "drizzle-orm"
+      - dependency-name: "typescript"
+      - dependency-name: "vite"
+      - dependency-name: "@vitejs/*"
+      - dependency-name: "@biomejs/*"
 
   # GitHub Actions
   - package-ecosystem: "github-actions"

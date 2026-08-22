@@ -1,26 +1,32 @@
 # Task Plan
 
-**Date:** 2026-08-18
-**Goal:** Investigate failing GitHub Actions checks, restore package-lock.json and canonical workflow definitions, exclude E2E suite temporarily, and sync directly to main.
+**Date:** 2026-08-22
+**Goal:** Clean up excessive branches and PRs, configure Dependabot ignore rules for core frameworks, and repair failing GitHub Actions CI checks (Gitleaks org licensing, Knip typegen resolution, Neon cleanup resilience).
 
 ## Current Session Plan
 - [x] Protocol 0: Read `task_plan.md` and `findings.md`
-- [x] Investigate GitHub Actions workflow files and recent runs (identified 3 root cause clusters across 9 checks)
-- [x] Restore `package-lock.json` and canonical workflow files with pinned action SHAs
-- [x] Purge unwanted bot-generated workflows (`static.yml`, `lintr.yml`, `ossar.yml`, `hadolint.yml`)
-- [x] Exclude E2E proof suite from push/PR automated triggers (manual `workflow_dispatch` only) per user direction
-- [x] Fix duplicate InquiryManagement export to satisfy Knip
-- [x] Exclude `.agents/` directory from `markdown-link-check`
-- [x] Update `auth.test.ts` to assert 302 redirect for `/api/auth/login` in test mode
-- [x] Run full verification suite:
-  - [x] `npm run check` (0 type errors, 0 linter errors across 971 files)
-  - [x] `npm run check:knip` (0 unused exports/deps, exit 0)
-  - [x] `npm run check:docs` (0 dead links, exit 0)
-  - [x] `npm run test` (170/170 test files, 2,612 unit tests passed)
-  - [x] `npm run build` (Turborepo client, server, and shared build succeeded)
-  - [x] `npm run verify:tech-integrity` (8/8 checks passed 100%)
-- [x] Commit and sync directly into `main` branch to trigger GitHub Actions verification
+- [x] Interview & align with user via `/grill-me` on cleanup and CI fix strategy
+- [ ] Pull and sync `main` with latest remote commits
+- [ ] Branch Cleanup:
+  - [ ] Close open Dependabot PRs (#78, #80, #81)
+  - [ ] Delete remote Dependabot branches on GitHub
+  - [ ] Prune stale remote tracking branches locally (`git remote prune origin`)
+  - [ ] Delete stale local branch (`fix/memory-leaks-and-hydration`)
+- [ ] CI / Workflow Remediation:
+  - [ ] Replace `gitleaks-action` in `.github/workflows/security.yml` with standalone open-source Gitleaks binary runner
+  - [ ] Add `continue-on-error: true` to `delete_neon_branch` step in `.github/workflows/ci.yml`
+  - [ ] Ensure deterministic client typegen in `.github/workflows/code-quality.yml` and root dependency resolution
+  - [ ] Update `.github/dependabot.yml` ignore rules to exclude core framework dependencies (`react*`, `@react-router/*`, `express*`, `drizzle-orm*`, `vite*`, `typescript`) from automated updates
+- [ ] Local & Monorepo Verification:
+  - [ ] `npm run check` (TypeScript + Biome)
+  - [ ] `npm run check:knip`
+  - [ ] `npm run check:docs`
+  - [ ] `npm run test` (170 test suites, 2,612 unit tests)
+  - [ ] `npm run build` (Turborepo client, server, and shared build)
+  - [ ] `npm run verify:tech-integrity` (All 8 checks pass 100%)
+- [ ] Commit & push to `main`
+- [ ] Monitor GitHub Actions check runs to verify all CI pipelines pass 100% green
+- [ ] Update `findings.md` and `task_plan.md` session outcome
 
 ## Session Outcome & Next Steps
-- **Outcome:** Clean, canonical monorepo state synchronized to `main`. All CI workflow triggers, action pins, and lockfiles restored.
-- **Next Step:** Monitor GitHub Actions check runs on `main` to confirm all pipelines pass green.
+- **Outcome:** In progress.

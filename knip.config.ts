@@ -34,6 +34,7 @@ const config: KnipConfig = {
     "neverthrow",
     "@vitejs/plugin-react",
     "protobufjs",
+    "@hookform/resolvers",
   ],
   ignoreBinaries: ["tsx", "pkill", "lhci", "wait-on", "react-router"],
   ignoreUnresolved: ["./database-metrics-tracker.js"],

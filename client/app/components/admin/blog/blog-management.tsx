@@ -15,6 +15,7 @@ import { ResultAsync } from "neverthrow"; // Requested to use neverthrow
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import type { z } from "zod";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -187,29 +188,32 @@ export function BlogManagement() {
     },
   });
 
-  const form = useForm({
-    resolver: zodResolver(insertBlogPostSchema),
+  const blogFormSchema = insertBlogPostSchema.omit({ authorId: true });
+  type BlogFormValues = z.infer<typeof blogFormSchema>;
+
+  const form = useForm<BlogFormValues>({
+    resolver: zodResolver(blogFormSchema),
     defaultValues: {
       title: "",
       content: "",
-      status: "draft" as const,
-      categoryId: undefined as number | undefined,
+      status: "draft",
+      categoryId: null,
       excerpt: "",
-      featuredImageId: undefined as number | undefined,
+      featuredImageId: null,
       slug: "",
       metaTitle: "",
       metaDescription: "",
       canonicalUrl: "",
       ogImage: "",
       keywords: "",
-    },
+    } as unknown as BlogFormValues,
   });
 
-  const onSubmit = async (values: InsertBlogPost) => {
+  const onSubmit = async (values: BlogFormValues) => {
     if (editingPost) {
-      updateMutation.mutate({ id: editingPost.id, values });
+      updateMutation.mutate({ id: editingPost.id, values: values as unknown as InsertBlogPost });
     } else {
-      createMutation.mutate(values);
+      createMutation.mutate(values as unknown as InsertBlogPost);
     }
   };
 
@@ -219,16 +223,16 @@ export function BlogManagement() {
       title: post.title,
       content: post.content,
       status: post.status as "draft" | "published" | "archived",
-      categoryId: post.categoryId ?? undefined,
+      categoryId: post.categoryId ?? null,
       excerpt: post.excerpt || "",
-      featuredImageId: post.featuredImageId ?? undefined,
+      featuredImageId: post.featuredImageId ?? null,
       slug: post.slug,
       metaTitle: post.metaTitle || "",
       metaDescription: post.metaDescription || "",
       canonicalUrl: post.canonicalUrl || "",
       ogImage: post.ogImage || "",
       keywords: post.keywords || "",
-    });
+    } as unknown as BlogFormValues);
     setIsModalOpen(true);
   };
 
@@ -374,7 +378,12 @@ export function BlogManagement() {
             <DialogTitle>{editingPost ? "Edit Blog Post" : "Create New Blog Post"}</DialogTitle>
           </DialogHeader>
           <Form {...form}>
-            <form action={() => form.handleSubmit(onSubmit)()} className="space-y-4">
+            <form
+              action={() => {
+                void form.handleSubmit(onSubmit)();
+              }}
+              className="space-y-4"
+            >
               <Tabs defaultValue="content" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="content">Content</TabsTrigger>
