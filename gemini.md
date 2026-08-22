@@ -215,6 +215,9 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 - **Gitleaks in GitHub Organizations**: NEVER use `gitleaks/gitleaks-action` in organization repositories. Install the standalone open-source Gitleaks CLI binary directly (`curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.24.0/gitleaks_8.24.0_linux_x64.tar.gz | tar -xz && ./gitleaks detect --verbose --redact`).
 - **Zizmor Version Pin Tagging**: When pinning GitHub Action commit SHAs, the trailing inline comment MUST exactly match the upstream Git tag including the `v` prefix (e.g. `uses: neondatabase/create-branch-action@<sha> # v6.4.0`).
 - **Server External Module Hoisting**: Because `server/package.json` bundles the backend into root `dist/` with `--packages=external` and the production Dockerfile copies only root `package.json` in Stage 2, all server runtime packages must be declared in root `package.json` `dependencies`. Add them to `knip.config.ts` `ignoreDependencies` to avoid unused dependency false positives.
+- **Single-Branch & Dependabot Discipline**: The repository strictly enforces a single canonical `main` branch. Automated Dependabot pull request and branch creation must remain disabled (`open-pull-requests-limit: 0` across all package ecosystems in `.github/dependabot.yml`) to prevent remote branch accumulation.
+- **CI/CD Job De-duplication**: NEVER duplicate analysis or scanning jobs across separate workflow files (e.g., do not define `codeql` or `dependency-review` jobs inside `security.yml` when dedicated standalone workflows `codeql.yml` and `dependency-review.yml` are already active).
+- **Remote Branch & PR Verification Invariant**: When verifying CI/CD pipelines or repository health, always verify `git ls-remote --heads origin` and `gh pr list` to guarantee no orphan branches or unintended PRs exist.
 
 ### 5.2 Forbidden by Architecture
 
