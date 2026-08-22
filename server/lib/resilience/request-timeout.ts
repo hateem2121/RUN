@@ -16,15 +16,10 @@ export function withTimeout<T>(
   timeoutMs: number = 10000,
   operation: string = "Operation",
 ): Promise<T> {
-  let delay = Number(timeoutMs);
-  if (!Number.isFinite(delay) || delay <= 0) {
-    delay = 10000;
-  }
-  if (delay > 60000) {
-    delay = 60000;
-  }
-  if (delay < 100) {
-    delay = 100;
+  let delay = 10000;
+  const parsed = Number(timeoutMs);
+  if (Number.isFinite(parsed) && parsed >= 100 && parsed <= 60000) {
+    delay = parsed;
   }
 
   let timeoutHandle: NodeJS.Timeout;
