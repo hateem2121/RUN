@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 5th-Grader Visual GitHub Health & 6-Chapter Illustrated Wiki Suite
+
+- **Dual-Layer Visual Architecture**: You can now explore the entire repository through vibrant 5th-grader real-world analogies, ASCII storefront wireframes, and Mermaid flowcharts, paired with high-precision enterprise engineering spec cards.
+- **Illustrated 6-Chapter GitHub Wiki**: You can now follow the complete journey of athletic sportswear from Sialkot organic cotton farming to real-time 3D WebGL digital twins via a structured 6-chapter visual knowledge base in `docs/wiki/` (The Garment Journey, How the Website Works, Meet the Robot Helpers, Green Planet Lab, How to Play & Contribute, and the "Oops!" First-Aid FAQ).
+- **Comprehensive Community Health & Governance Overhaul**: You can now easily contribute, report bugs, review security policies, and cite academic 3D manufacturing research with completely redesigned community documents (`README.md`, `LICENSE`, `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `SECURITY.md`, `SUPPORT.md`, `CITATION.cff`, `CITATION.md`, `GOVERNANCE.md`).
+- **GitHub UI & Operations Guides**: You can now navigate and understand all GitHub UI surfaces through dedicated beginner-friendly guides covering About metadata, Stars/Watchers/Forks, Activity & Organization Audit Logs, and Emergency Red Button reporting in `docs/github-guide/`.
+
 ### GitHub Security & Quality Hardening & Supply Chain Protection
 
 - **Supply Chain Vulnerability Elimination**: You can now build and deploy with verified supply chain integrity following the pinning of `python-dotenv>=1.2.2` (resolving CVE-2026-28684 / PYSEC-2026-2270) and conversion of bootstrap scripts to deterministic `npm ci`.
@@ -22,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **AI-Powered Natural Language Semantic Search (`pgvector`)**: You can now search technical fabrics, performance garments, and sport specifications using natural language (e.g. *"breathable moisture-wicking summer jersey"* or *"heavyweight thermal fleece"*). Features include deterministic 384D normalized vector embeddings, sub-millisecond HNSW cosine distance indexing on Neon PostgreSQL 17.11, instant match percentage badges (e.g. `98.5% Match`), and debounced category filter pills (`<SemanticSearchBar />`).
 - **Database Index Storage Reclamation**: You can now benefit from reduced database write latency and lower disk footprint following the removal of 4 redundant duplicate index pairs on Neon PostgreSQL (~1.2 MB reclaimed), with `@run-remix/shared` Drizzle schemas 100% aligned.
-- **Master Database Forensic Audit Suite**: You can now inspect full infrastructure telemetry, live performance metrics (99.66% buffer cache hit rate, 0 deadlocks), instant disaster recovery drill proofs (<1.2s RTO, 0 bytes RPO), synthetic concurrency stress benchmarks (69.0 QPS @ 40 workers), and cryptographic Shannon entropy audits (3.91–3.94 bits/char) in [`DATABASE_FORENSIC_MASTER_REPORT.md`](docs/DATABASE_FORENSIC_MASTER_REPORT.md).
+- **Master Database Forensic Audit Suite**: You can now inspect full infrastructure telemetry, live performance metrics (99.66% buffer cache hit rate, 0 deadlocks), instant disaster recovery drill proofs (<1.2s RTO, 0 bytes RPO), synthetic concurrency stress benchmarks (69.0 QPS @ 40 workers), and cryptographic Shannon entropy audits (3.91–3.94 bits/char) in `DATABASE_FORENSIC_MASTER_REPORT.md`.
 
 ### Monorepo Clutter & Artifact Clean-Sweep
 

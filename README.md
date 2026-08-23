@@ -1,9 +1,8 @@
-# RUN Remix — The Agentic Sportswear Factory
+# RUN Remix — The Magical 3D Sportswear Factory
 
-**Version:** 4.1.2 | **Port:** 5002 (Exclusively) | **Engine:** Antigravity / gstack | **License:** MIT | **Last Updated:** August 2026
+**Version:** 4.1.2 | **Port:** 5002 (Exclusively) | **Engine:** Antigravity AI & React 19 | **License:** MIT | **Heritage:** Durus Industries (Est. 1889)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/hateem2121/RUN)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Node 24+](https://img.shields.io/badge/Node-24%2B-339933?logo=node.js)](https://nodejs.org)
 [![React 19](https://img.shields.io/badge/React-19.2.7-61DAFB?logo=react)](https://react.dev)
 [![TypeScript Strict](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript)](https://www.typescriptlang.org)
@@ -16,144 +15,184 @@
 
 ---
 
-## 🏭 Overview
+## 📖 Welcome to the Digital Sportswear Factory
 
-**RUN Remix** is an open-source, AI-native B2B sportswear CMS and **Agentic Software Factory**. Engineered for **RUN APPAREL (PVT) LTD** (a subsidiary of Durus Industries, est. 1889), it unifies century-old garment manufacturing craftsmanship with high-velocity agentic software engineering.
+Imagine walking into a magical workshop where giant looms spin soft cotton into high-performance athletic jerseys, while friendly robots help design custom 3D team uniforms in real time.
 
-It provides a production-grade blueprint for building deterministic, high-performance commerce and manufacturing platforms with real-time 3D garment configuration, WebMCP agentic forms, and strict monorepo boundaries.
+That is **RUN Remix**! It is an open-source, AI-native digital manufacturing platform created for **RUN APPAREL (PVT) LTD** (a sustainable sportswear manufacturer based in Sialkot, Pakistan, carrying on a family textile heritage dating back to **1889** with Durus Industries).
 
----
+This software connects the physical garment factory — with its solar-powered sewing machines, recycled water dyeing tubs, and master tailors — to the digital world so athletic brands across the globe can design, customize, and order high-performance sportswear with zero waste.
 
-## ⚡ Quick Start
-
-### 1. Launch in Browser (1-Click Dev Container)
-
-Click [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/hateem2121/RUN) to launch a fully provisioned Node 24 + Biome cloud environment with port 5002 auto-forwarded.
-
-### 2. Local Setup
-
-```bash
-# Clone the repository
-git clone <repository-url>
-cd RUN
-
-# Install dependencies (Node 24+ required)
-npm install
-
-# Configure environment variables
-cp .env.example .env
-
-# Verify system integrity
-npm run verify:tech-integrity
-
-# Start development server
-npm run dev
-# → Application live on http://localhost:5002
+```
+                  THE RUN REMIX FACTORY AT A GLANCE
+  
+   🧵 PHYSICAL CRAFT                         💻 DIGITAL MAGIC
+  ┌─────────────────────────┐               ┌─────────────────────────┐
+  │ • Sialkot Heritage 1889 │               │ • React 19 Frontend     │
+  │ • 100,000+ Units/Month  │  ◄─────────►  │ • 3D Garment Config     │
+  │ • 80% Solar Powered     │               │ • Express 5 API Server  │
+  │ • 85% Recycled Water    │               │ • Neon Serverless SQL   │
+  └─────────────────────────┘               └─────────────────────────┘
 ```
 
 ---
 
-## 📐 Architecture & Data Flow
+## 🪞 What Does the Website Look Like
+
+When you turn on the server, you are greeted by an industrial, high-contrast storefront featuring an interactive 3D digital showroom:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                        Client (React 19 / Vite 8)                       │
-│  - React Router v8 Leaf Routes (Default Exports + ErrorBoundary)        │
-│  - Tailwind CSS v4 (@theme & @utility tokens)                           │
-│  - 3D Garment Configurator (LazyUnifiedModelViewer + glTF streaming)   │
-│  - GSAP 3.15 + locomotive-scroll Motion Engine                          │
-└────────────────────────────────────┬────────────────────────────────────┘
-                                     │
-                    import { schemas, types, routes }
-                                     │
-┌────────────────────────────────────▼────────────────────────────────────┐
-│                    Shared Package (@run-remix/shared)                   │
-│  - Drizzle pgTable Schemas & drizzle-zod Validators                     │
-│  - Central Route Manifests & Constant Enums                             │
-│  - Zero client/server runtime dependencies (Boundary Sacred)           │
-└────────────────────────────────────┬────────────────────────────────────┘
-                                     │
-                    validated data contracts & types
-                                     │
-┌────────────────────────────────────▼────────────────────────────────────┐
-│                        Server (Express 5 / Node 24)                     │
-│  - Thin Controllers (Validation ──► Service Layer ──► neverthrow Match) │
-│  - Database: Neon Serverless PostgreSQL (Drizzle ORM Parameterized)     │
-│  - Sessions: DrizzleSessionStore (Neon PostgreSQL)                      │
-│  - Background Processing: Google Cloud Tasks HTTP Workers               │
-│  - Observability: OpenTelemetry Tracing + Pino Structured Logs          │
+│ [ RUN APPAREL ]    Products   Fabrics   Sustainability   About   [Quote]│
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   ENGINEERING HIGH-PERFORMANCE                                          │
+│   ATHLETIC SPORTSWEAR                                                   │
+│                                                                         │
+│   ┌─────────────────────────┐        ┌──────────────────────────────┐   │
+│   │                         │        │  ⚡ 3D DIGITAL TWIN VIEWER   │   │
+│   │   [ Explore Catalog ]   │        │                              │   │
+│   │                         │        │      /$$$$$$  /$$            │   │
+│   │   [ Fabric Library ]    │        │     | $$__  $$| $$           │   │
+│   │                         │        │     | $$  \__/| $$  /$$$$$$  │   │
+│   │   [ Sustainability ]    │        │     |  $$$$$$ | $$ /$$__  $$ │   │
+│   │                         │        │      \____  $$| $$| $$  \ $$ │   │
+│   │   • 80% Solar Powered   │        │      /$$  \ $$| $$| $$  | $$ │   │
+│   │   • Zero Toxic Dyes     │        │     |  $$$$$$/| $$|  $$$$$$$ │   │
+│   │   • Fast 4-Week Delivery│        │      \______/ |__/ \_______/ │   │
+│   └─────────────────────────┘        │      [ Rotate ]  [ Zoom ]    │   │
+│                                      └──────────────────────────────┘   │
+├─────────────────────────────────────────────────────────────────────────┤
+│ 🏆 Certified by SMETA (Sedex) • GOTS Organic • OEKO-TEX 100 • ISO 9001  │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🛠️ The Agentic Factory (Slash Commands)
+## 🏗️ How the System Fits Together
 
-RUN Remix is powered by 23+ specialized agent workflows:
+Think of RUN Remix like a giant LEGO project organized into **3 color-coded trays**:
 
-| Command | Role | Responsibility |
-|---------|------|----------------|
-| `/office-hours` | **CEO** | Set vision, product goals, and business constraints. |
-| `/plan-ceo-review` | **CEO** | High-level feasibility, user value, and product scope. |
-| `/plan-eng-review` | **Eng Manager** | Architecture, invariants, test matrices, and security. |
-| `/plan-design-review` | **Design Lead** | Visual hierarchy, empty states, and design system fidelity. |
-| `/shape` | **Product Lead** | Interactive UX shaping and design briefs before code. |
-| `/review` | **Senior Reviewer** | Forensic code quality and regression analysis. |
-| `/qa` | **QA Lead** | Automated browser E2E and visual golden verification. |
-| `/ship` | **Release Eng** | Production readiness, security gating, and deployment triggers. |
-| `/retro` | **Team Lead** | Sprint retro and SOP documentation updates. |
+```mermaid
+flowchart TD
+    subgraph ClientTray ["🏬 Tray 1: The Storefront (client/)"]
+        UI["React 19 User Interface"]
+        Viewer["3D Garment Configurator"]
+        Motion["GSAP Smooth Motion Engine"]
+    end
 
----
+    subgraph SharedTray ["📖 Tray 2: The Universal Rulebook (shared/)"]
+        Rules["Zod Data Checkers"]
+        Types["TypeScript Shapes"]
+        Routes["Catalog Route Maps"]
+    end
 
-## 🏗️ Technical Stack & Invariants
+    subgraph ServerTray ["🧑‍🍳 Tray 3: The Factory Kitchen (server/)"]
+        API["Express 5 Web Server"]
+        Services["Manufacturing Business Logic"]
+        Database[("Neon Serverless Postgres")]
+    end
 
-| Layer | Technology | Key Invariant |
-|-------|------------|---------------|
-| **Frontend** | React 19.2.7, React Router v8, Vite 8 (Rolldown) | Raw `ref` props (no `forwardRef`). Default exports for leaf routes. |
-| **Styling** | Tailwind CSS v4 | `@utility` layer only. Zero arbitrary pixel classes in JSX. |
-| **Animations** | GSAP 3.15, locomotive-scroll 5.0.1 | No `framer-motion` or `lenis`. |
-| **Backend** | Express 5.2.1, Node 24 | Async-native handlers. No `try/catch` in controllers. |
-| **Database** | Neon Serverless PostgreSQL | Parameterized Drizzle ORM queries only (no raw SQL). |
-| **Sessions** | `DrizzleSessionStore` (Neon) | No `MemoryStore` or deprecated session packages. |
-| **Services** | `neverthrow` ResultAsync | Zero raw throws in services; explicit `ResultAsync<T, E>`. |
-| **Background** | Google Cloud Tasks | Signed token validation via `verifyCloudTaskToken`. |
-| **Resilience** | `opossum` Circuit Breaker | Mandatory wrapping for all external API endpoints. |
-| **Linting** | Biome 2.5 | Biome strictly replaces ESLint and Prettier. |
-| **Port** | 5002 Exclusively | Hardcoded dev and test port (never 3000). |
-
----
-
-## 📚 Community Standards & Documentation
-
-RUN Remix adheres strictly to [Open Source Guides](https://opensource.guide/) and modern repository health standards:
-
-| Resource | Document | Purpose |
-|----------|----------|---------|
-| **Code of Conduct** | [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) | Contributor Covenant v2.1 community pledge and enforcement. |
-| **Contributing** | [`CONTRIBUTING.md`](./CONTRIBUTING.md) | Developer induction, B.L.A.S.T. methodology, and PR guidelines. |
-| **Governance** | [`GOVERNANCE.md`](./GOVERNANCE.md) | Founder-Led BDFL governance, maintainer ladder, and RFC process. |
-| **Roadmap** | [`ROADMAP.md`](./ROADMAP.md) | Living 2026–2027 product milestones and feature tracks. |
-| **Security Policy** | [`SECURITY.md`](./SECURITY.md) | Vulnerability disclosure, response SLAs, and GHSA reporting. |
-| **Support Channels** | [`SUPPORT.md`](./SUPPORT.md) | GitHub Discussions, bug triage, and enterprise contacts. |
-| **Citation** | [`CITATION.cff`](./CITATION.cff) | Citation File Format (CFF) metadata for academic/industry use. |
-| **Constitution** | [`gemini.md`](./gemini.md) | Ultimate Single Source of Truth (SSOT) for monorepo constraints. |
-| **Sponsorship** | [`.github/FUNDING.yml`](./.github/FUNDING.yml) | GitHub Sponsors and project funding channels. |
-
----
-
-## 🔍 Pre-Push Quality Verification
-
-Every contribution must pass the full technical integrity gate:
-
-```bash
-npm run check:apply           # Biome format + lint (auto-fix)
-npm run typecheck             # Strict TypeScript verification (0 errors)
-npm run verify:tech-integrity # Monorepo integrity suite (all checks exit 0)
-npm run test                  # Vitest unit & integration tests
+    ClientTray <-->|"Validated Data"| SharedTray
+    SharedTray <-->|"Safe Contracts"| ServerTray
 ```
 
+### The 3 Big Building Trays
+
+1. **Tray 1: The Storefront (`client/`)** — The colorful window display and dressing room where visitors browse products, zoom into fabric stitches, and spin 3D jerseys. Built with **React 19**, **Vite 8**, and **Tailwind CSS v4**.
+2. **Tray 2: The Universal Rulebook (`shared/`)** — The shared dictionary that makes sure the storefront and the kitchen speak the exact same language. Written with **Zod** and **TypeScript**.
+3. **Tray 3: The Factory Kitchen (`server/`)** — The quiet powerhouse where orders are checked, calculations are run, and information is safely stored in **Neon Serverless PostgreSQL** database.
+
 ---
 
-## 📄 License
+## 🤖 Meet the Robot Assistant Crew
 
-This project is licensed under the [MIT License](./LICENSE) © 2026 **RUN APPAREL (PVT) LTD** & **Durus Industries (est. 1889)**.
+RUN Remix uses specialized AI agent assistants to build, check, and polish every feature before it reaches real athletes:
+
+| Robot Assistant | Persona | What They Do |
+|-----------------|---------|--------------|
+| `/office-hours` | 👔 **The Big Boss (CEO)** | Sets big goals, listens to customer ideas, and guides company vision. |
+| `/plan-ceo-review` | 🎯 **The Product Strategist** | Checks if a new feature makes sense for players and coaches. |
+| `/plan-eng-review` | 📐 **The Master Builder (Lead Eng)** | Inspects blueprints, data pipes, and safety locks so nothing breaks. |
+| `/plan-design-review` | 🎨 **The Creative Director (Design Lead)** | Makes sure screens look gorgeous, easy to tap, and fun to look at. |
+| `/grill-me` | 🎙️ **The Friendly Interviewer** | Asks questions one by one until everyone is on the exact same page. |
+| `/writing-plans` | 📝 **The Scribe** | Writes step-by-step checklists so work gets done without mistakes. |
+| `/qa` | 🔍 **The Quality Inspector** | Tests the website in real browsers to make sure every button works. |
+
+---
+
+## ⚡ Quick Start: Turn On the Factory in 3 Steps
+
+Want to run the factory on your own computer? It only takes a couple of minutes!
+
+### Step 1: Download the Blueprints
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd RUN
+```
+
+### Step 2: Open the Tool Box
+
+Make sure you have [Node.js v24+](https://nodejs.org) installed on your computer.
+
+```bash
+# Install all required building blocks
+npm install
+
+# Create your settings file
+cp .env.example .env
+```
+
+### Step 3: Push the Green Start Button
+
+```bash
+# Verify all safety checks pass
+npm run verify:tech-integrity
+
+# Start the live development factory
+npm run dev
+```
+
+Now open your web browser and navigate to **`http://localhost:5002`** (the factory always runs on port 5002)!
+
+---
+
+## 🌿 Sustainable & Green Manufacturing
+
+RUN APPAREL believes that making great sportswear shouldn't harm our planet:
+
+- ☀️ **80% Solar Powered:** Over 1,200 rooftop solar panels power the factory floor.
+- 💧 **Zero Liquid Discharge:** 85% of dyehouse water is purified and recycled on-site.
+- 🌿 **Organic & Recycled Fibers:** GOTS-certified organic cotton and GRS-certified recycled polyester.
+- 🤝 **Fair & Safe Workplace:** SMETA 4-pillar certified social audits guaranteeing fair living wages and safe working conditions.
+
+---
+
+## 📚 Explore the Community & Documentation
+
+Here are all the friendly guides to help you explore and contribute to RUN Remix:
+
+| Document | What You Will Learn |
+|----------|---------------------|
+| [📜 **Playground License**](./LICENSE) | The friendly MIT rule: share freely, create awesome things, keep the credit tag. |
+| [💖 **Code of Conduct**](./CODE_OF_CONDUCT.md) | How we treat each other with kindness, respect, and great sportsmanship. |
+| [🧱 **How to Contribute**](./CONTRIBUTING.md) | Step-by-step guide to building a new Lego brick and submitting your first Pull Request. |
+| [🛡️ **Security Policy**](./SECURITY.md) | How our safety watchdogs protect customer data and how to report bugs safely. |
+| [💬 **Support & Clubhouse**](./SUPPORT.md) | Where to ask questions, chat with the maintainers, or inquire about B2B apparel. |
+| [🎓 **Cite This Project**](./CITATION.cff) | How to give credit to RUN Remix in school projects, papers, or 3D research. |
+| [🧭 **The Illustrated Wiki**](./docs/wiki/Home.md) | A complete 6-chapter visual storybook exploring every corner of the factory. |
+| [🔭 **GitHub UI Guide**](./docs/github-guide/README.md) | Explains Stars, Watchers, Forks, Activity logs, and how GitHub works. |
+
+---
+
+## 🏢 Commercial Inquiries & Factory Visits
+
+RUN Remix is maintained by the engineering and manufacturing teams at **RUN APPAREL (PVT) LTD**:
+
+- **Headquarters:** 13 Km Daska Road, Sialkot, Punjab, Pakistan
+- **Lead Maintainer:** M. Hateem Jamshaid (Business Development Director)
+- **Official Email:** `hateem@runapparel.com`
+- **WhatsApp Support:** `+92-336-1777313`
+- **Website:** [wear-run.com](https://wear-run.com)

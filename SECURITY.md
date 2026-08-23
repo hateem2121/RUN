@@ -1,92 +1,94 @@
-# Security Policy
+# Security Policy & Safe Guard Dog
 
-## Supported Versions
-
-| Version | Supported |
-|---------|-----------|
-| 4.x (current) | Yes |
-| < 4.0 | No |
+**Project:** RUN Remix (`run-remix`)  
+**Maintained by:** RUN APPAREL (PVT) LTD / Durus Industries  
+**Security Lead:** M. Hateem Jamshaid (`hateem@runapparel.com`)  
 
 ---
 
-## Reporting a Vulnerability
+## 🐕 The Town Watch & Safe Guard Dog
 
-**Do not open a public GitHub issue for security vulnerabilities.**
+Think of cybersecurity like having a trusty, vigilant guard dog stationed at the factory gates.
 
-### Private Disclosure (Preferred)
+We take the safety of our customers, our manufacturing blueprints, and our web application very seriously. If you find a broken lock, a loose fence board, or a secret trapdoor (a security vulnerability) in our system, we want to hear about it right away so we can fix it before any bad actors notice!
 
-Use [GitHub's private vulnerability reporting](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability) directly in this repository.
-
-### Email Disclosure
-
-If private reporting is unavailable, send a detailed PGP/encrypted report to the maintainer:  
-**M. Hateem Jamshaid** (`hateem@runapparel.com`) — Business Development Director, RUN APPAREL (PVT) LTD.
-
-Include in your report:
-- Vulnerability description (e.g., OWASP category / CWE ID)
-- Affected component, route, or file path
-- Step-by-step reproduction instructions or proof-of-concept
-- Potential impact assessment
-- Proposed remediation or patch (if available)
-
-### Response SLA
-
-| Severity | Acknowledgment | Target Patch |
-|----------|---------------|-------------|
-| Critical | 24 hours | 7 days |
-| High | 48 hours | 14 days |
-| Medium | 5 business days | 30 days |
-| Low | 10 business days | Next release |
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   HOW TO SAFELY REPORT A SECURITY HOLE                 │
+├───────────────────────────────────┬────────────────────────────────────┤
+│  ✅ DO THIS (Responsible Alert):  │  ❌ NEVER DO THIS (Dangerous):     │
+├───────────────────────────────────┼────────────────────────────────────┤
+│  • Tell us privately through      │  • Post about the bug in public    │
+│    GitHub Private Advisories      │    issues or social media          │
+│  • Email hateem@runapparel.com    │  • Try to delete or steal real     │
+│  • Give us time to patch the hole │    customer data                   │
+│  • Share steps to reproduce it    │  • Attack server hosting infrastructure│
+└───────────────────────────────────┴────────────────────────────────────┘
+```
 
 ---
 
-## Scope
+## 🚨 How Responsible Disclosure Works
 
-### In Scope
-
-- `server/` — Express 5 API routes, services, middleware, authentication
-- `client/` — React 19 frontend, form handling, CSP nonce protection, data exposure
-- `shared/` — Zod schemas, TypeScript types, route manifests
-- Authentication & Sessions — Google OAuth 2.0 flow, `DrizzleSessionStore` (Neon PostgreSQL)
-- Database access — Parameterized Drizzle ORM queries
-- Admin panel (`/admin/*`) — RBAC, session integrity, audit logging
-
-### Out of Scope
-
-- Third-party upstream dependencies (report directly to upstream maintainers)
-- Social engineering, phishing, or physical attacks
-- Distributed Denial-of-Service (DDoS) against cloud infrastructure
-- Attacks requiring physical access to an unlocked developer workstation
+```mermaid
+flowchart TD
+    Find["1. You discover a security hole or vulnerability"] --> Private["2. Submit private report via GitHub Security Advisories or email"]
+    Private --> Ack["3. We acknowledge your report within 24–48 hours"]
+    Ack --> Patch["4. Our security engineers craft and test a patch"]
+    Patch --> Deploy["5. Patch deployed to production servers"]
+    Deploy --> Thanks["6. Public acknowledgment & heartfelt thank-you!"]
+```
 
 ---
 
-## Security Architecture & Defences
+## 📬 How to Report Privately
 
-The platform implements multi-layer defense-in-depth:
+### Option A: GitHub Private Vulnerability Reporting (Recommended)
 
-| Layer / Control | Implementation |
-|-----------------|----------------|
-| **Authentication** | Google OAuth 2.0 (no plaintext passwords stored) |
-| **Sessions** | `DrizzleSessionStore` (Neon PostgreSQL), 15-minute rotation, HttpOnly + SameSite cookies |
-| **Rate Limiting** | Redis-backed sliding-window rate limiter via `ioredis` |
-| **Circuit Breakers** | `opossum` for external API and database operations |
-| **Input Validation** | Strict Zod v4 schemas on all request payloads |
-| **SQL Injection** | Drizzle ORM parameterized queries (zero raw SQL queries) |
-| **Secret Scanning** | Automated GitHub secret scanning + custom regex patterns |
-| **Supply Chain** | Dependabot automated security alerts + OpenSSF Scorecards + GitHub Dependency Review |
-| **Static Analysis** | GitHub CodeQL (SAST) + Biome strict linting |
-| **Container & DAST** | Trivy container and filesystem scans in CI |
-| **Security Headers** | Helmet middleware + strict Content Security Policy (CSP) with per-request nonces |
+1. Click on the **Security** tab at the top of the repository.
+2. Click **Report a vulnerability** under the Advisories menu.
+3. Fill in the description, steps to reproduce, and severity estimate.
 
-Full threat model: [`docs/security/threat-model.md`](./docs/security/threat-model.md)
+### Option B: Direct Confidential Email
+
+If private advisory reporting is not available, send a confidential email directly to our security officer:
+
+📧 **Contact:** M. Hateem Jamshaid (`hateem@runapparel.com`)  
+📍 **Subject:** `[SECURITY DISCLOSURE] Vulnerability in RUN Remix`
+
+Please include:
+- A clear description of the issue
+- The affected URL, route, or file path
+- Step-by-step instructions or sample payload showing how it happens
+- Suggested fix or patch if you have one
 
 ---
 
-## Disclosure Policy
+## ⏱️ Response Times (Our Promise to You)
 
-We adhere to coordinated responsible disclosure. Once a remediation is deployed, we will:
-1. Credit the security researcher in release notes and security advisories (with permission).
-2. Publish a GitHub Security Advisory (GHSA) and request a CVE identifier if applicable.
-3. Update relevant documentation and regression test suites.
+| Severity | What It Means | Acknowledgment | Target Fix Time |
+|----------|---------------|----------------|-----------------|
+| 🔴 **Critical** | Anyone can access private data or break the server | Within 24 hours | Within 7 days |
+| 🟠 **High** | Important feature broken or bypasses security checks | Within 48 hours | Within 14 days |
+| 🟡 **Medium** | Minor leak or specific edge-case weakness | Within 5 days | Within 30 days |
+| 🟢 **Low** | Small improvement or theoretical concern | Within 10 days | Next release |
 
-Thank you for helping keep RUN APPAREL's open-source ecosystem secure.
+---
+
+## 🎯 What Is In Scope
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        SECURITY AUDIT BOUNDARIES                       │
+├───────────────────────────────────┬────────────────────────────────────┤
+│  🎯 IN SCOPE (We Want Reports):   │  🚫 OUT OF SCOPE:                  │
+├───────────────────────────────────┼────────────────────────────────────┤
+│  • Server APIs (server/)          │  • Third-party cloud providers     │
+│  • Authentication & OAuth cookies │  • DDoS or network flood attacks   │
+│  • Database queries & injection   │  • Phishing or social engineering  │
+│  • Admin panel access controls    │  • Physical access to computers    │
+│  • Client data exposure (client/) │  • Outdated browser vulnerabilities│
+└───────────────────────────────────┴────────────────────────────────────┘
+```
+
+Thank you for helping us keep the sportswear factory safe for everyone!

@@ -1,6 +1,29 @@
-MIT License
+# The MIT License (MIT)
 
-Copyright (c) 2026 RUN APPAREL (PVT) LTD & Durus Industries (est. 1889)
+> **🎈 The 5th-Grader Playground Rule:**  
+> Think of this software like a giant bucket of building blocks on a friendly school playground.  
+> You are free to take these blocks, build whatever cool castle or spaceship you want, share it with your friends, or even sell things made with it!  
+> All we ask is that you leave our name tag on the bucket so people know who made the original blocks.
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   WHAT YOU CAN & CANNOT DO WITH THIS CODE              │
+├───────────────────────────────────┬────────────────────────────────────┤
+│  ✅ YOU ARE FREE TO:              │  ❌ WHAT YOU CANNOT DO:            │
+├───────────────────────────────────┼────────────────────────────────────┤
+│  • Use it for school or fun       │  • Remove our copyright tag        │
+│  • Use it for a real business     │  • Blame us if something goes      │
+│  • Change the code any way you like│    wrong (the software comes with  │
+│  • Share copies with your friends │    no warranty or guarantee)       │
+│  • Combine it with other projects │                                    │
+└───────────────────────────────────┴────────────────────────────────────┘
+```
+
+---
+
+## Official Legal Text
+
+Copyright (c) 2026 RUN APPAREL (PVT) LTD / M. Hateem Jamshaid
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,4 +42,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-

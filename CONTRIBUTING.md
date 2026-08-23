@@ -1,128 +1,131 @@
 # Contributing to RUN Remix
 
-Welcome to **RUN Remix**! We are delighted you're interested in contributing to the open-source **Agentic Sportswear Factory**.
+Welcome to the **RUN Remix** community! We are excited that you want to help make our digital sportswear factory even better.
 
-RUN Remix powers digital manufacturing and custom 3D sportswear technology for **RUN APPAREL (PVT) LTD** (a subsidiary of Durus Industries, est. 1889). We maintain a 100% B2B, premium sustainable manufacturing identity. Our software must reflect the same flawless precision, performance, and deterministic reliability as our physical sportswear.
-
-The single source of truth for architectural constraints is [`gemini.md`](./gemini.md).
+Whether you found a typo, want to fix a bug, or have a brilliant idea for a new 3D jersey design, this guide will walk you through every step in plain English.
 
 ---
 
-## 📜 Code of Conduct
+## 🧱 How to Build a Lego Brick for the Factory
 
-All contributors and maintainers are expected to uphold the [Contributor Covenant v2.1](./CODE_OF_CONDUCT.md). Please report any unacceptable behavior to `hateem@runapparel.com`.
+Think of contributing to RUN Remix like building a custom Lego brick and bringing it to the master building table:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   THE 5-STEP CONTRIBUTOR COMIC STRIP                   │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│   [ 1. Fork Blueprint ] ──► [ 2. Open Workbench ] ──► [ 3. Build Brick]│
+│     Click "Fork" to make      Install tools with         Add your code │
+│     your personal copy        `npm install`              or fixes      │
+│                                                                        │
+│                                      │                                 │
+│                                      ▼                                 │
+│                                                                        │
+│   [ 5. Master Review ]  ◄── [ 4. Test Safety ]                         │
+│     Open a Pull Request       Run safety tests with                    │
+│     for high-fives & merge    `npm run verify:tech-integrity`          │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## ⚡ Quick Onboarding & Environment Setup
+## 🛠️ Step-by-Step Instructions
 
-### Option A: 1-Click Cloud Development (Recommended)
+```mermaid
+flowchart TD
+    Fork["1. Fork repo on GitHub"] --> Clone["2. Clone locally on your computer"]
+    Clone --> Branch["3. Create a branch: git checkout -b my-new-feature"]
+    Branch --> Code["4. Write your changes & make things awesome"]
+    Code --> Test["5. Run safety check: npm run verify:tech-integrity"]
+    Test --> Push["6. Push to your fork: git push origin my-new-feature"]
+    Push --> PR["7. Open a Pull Request on GitHub"]
+    PR --> Review["8. Robot checks & friendly human review"]
+    Review --> Merge["🎉 Merged into main branch!"]
+```
 
-You can launch an instant, pre-configured development environment in your browser using **GitHub Codespaces** or VS Code Dev Containers:
+### Step 1: Make Your Own Copy (Fork)
 
-1. Click **Code > Codespaces > Create codespace on main**.
-2. The Dev Container automatically provisions Node 24, installs dependencies, configures Biome, forwards port **5002**, and executes integrity checks.
+Click the **Fork** button at the top right of the GitHub page. This gives you your very own copy of the factory blueprints to experiment with safely.
 
-### Option B: Local Machine Setup
+### Step 2: Download to Your Computer
 
-**Prerequisites:**
-- **Node.js:** `v24.0.0` or newer (`node --version`)
-- **npm:** `v10.9.2` or newer
-- **Git**
+Open your computer's terminal (or VS Code) and run:
 
 ```bash
-# 1. Fork the repository on GitHub, then clone your fork
-git clone https://github.com/<your-username>/RUN.git
+# Download your personal copy
+git clone <repository-url>
 cd RUN
 
-# 2. Install monorepo dependencies
+# Install all the building blocks (requires Node.js 24+)
 npm install
 
-# 3. Configure environment variables
+# Copy the example settings
 cp .env.example .env
+```
 
-# 4. Verify system integrity
-npm run verify:tech-integrity
+### Step 3: Create a Clean Branch
 
-# 5. Launch development server (Starts on port 5002)
+Always create a new branch so your work stays organized:
+
+```bash
+git checkout -b feature/my-awesome-improvement
+```
+
+### Step 4: Start the Dev Server & Make Changes
+
+```bash
+# Start the factory on port 5002
 npm run dev
 ```
 
----
+Visit **`http://localhost:5002`** in your web browser. You will see your changes update instantly on the screen!
 
-## 🛠️ Contribution Workflow
+### Step 5: Run the Safety Inspection
 
-We follow standard GitHub flow with branch-based pull requests.
-
-1. **Find or Open an Issue:** Check [open issues](https://github.com/hateem2121/RUN/issues). For bugs or features, use the structured [GitHub Issue Forms](./.github/ISSUE_TEMPLATE/).
-2. **Create a Feature Branch:**
-
-   ```bash
-   git checkout -b feat/3d-pantone-swatches
-   # or
-   git checkout -b fix/auth-session-rotation
-   ```
-
-3. **Follow the B.L.A.S.T. Protocol:**
-
-   - **Blueprint:** Map schemas and types before code.
-   - **Link:** Verify API contracts and Zod schemas in `@run-remix/shared`.
-   - **Architect:** Structure logic cleanly (Routes -> Services with `neverthrow` Results).
-   - **Stylize:** Use Tailwind v4 `@theme` design tokens and GSAP animations.
-   - **Trigger:** Verify against test suites and CI checks.
-
----
-
-## 🛡️ Core Technical Invariants
-
-| Rule / Subsystem | Strict Requirement |
-|------------------|--------------------|
-| **Dev Port** | **5002 exclusively**. Never 3000, 8080, or arbitrary ports. |
-| **Monorepo Boundaries** | Import shared schemas only via barrel exports (`@shared/index` or `@run-remix/shared`). Never use deep schema paths. |
-| **React 19** | Raw `ref` props (never `forwardRef`). Named exports for components; default exports for leaf route files. |
-| **Express 5** | Route handlers are thin controllers. No `try/catch` in routes. Never raw `throw` in `server/services/`. Return `neverthrow` `ResultAsync`. |
-| **Database & Sessions** | Parameterized Drizzle ORM queries only (no raw SQL). Session store uses `DrizzleSessionStore` (Neon PostgreSQL). |
-| **CSS & Design** | Tailwind CSS v4 `@theme` tokens only. No arbitrary pixel classes in JSX (`w-[342px]` is forbidden). |
-| **3D Viewer** | `LazyUnifiedModelViewer` only. Never `@react-three/fiber`, `drei`, or raw `useGLTF`. |
-| **Motion** | `gsap` + `ScrollTrigger` and `locomotive-scroll`. Never `framer-motion` or `lenis`. |
-| **Linting & Types** | Biome 2.5 (`npm run check:apply`) and TypeScript 6 strict mode (0 errors, no `any`). |
-
----
-
-## 📝 Commit Message Conventions
-
-We follow [Conventional Commits](https://www.conventionalcommits.org/):
-
-```
-feat(products): add 3D Pantone swatch configurator
-fix(session): stabilize DrizzleSessionStore touch interval
-docs(governance): clarify RFC submission process
-refactor(server): wrap external tax service with opossum circuit breaker
-test(e2e): add visual regression coverage for mobile viewports
-```
-
----
-
-## 🔍 Pre-PR Verification Checklist
-
-Before submitting your Pull Request, execute the verification suite:
+Before sending your work for review, run our automated safety inspectors to make sure no wires got crossed:
 
 ```bash
-npm run check:apply           # Biome format & lint auto-fix
-npm run typecheck             # Strict TypeScript verification (0 errors)
-npm run verify:tech-integrity # Monorepo integrity suite (all checks exit 0)
-npm run test                  # Vitest unit & integration tests
+# Runs TypeScript, Biome linter, Knip dead-code checks, and doc link checkers
+npm run verify:tech-integrity
 ```
+
+If the terminal turns green with 8/8 checks passed, you are ready for the grand finale!
+
+### Step 6: Open a Pull Request (PR)
+
+1. Save and push your changes:
+
+   ```bash
+   git add .
+   git commit -m "Add my awesome improvement"
+   git push origin feature/my-awesome-improvement
+   ```
+
+2. Visit the repository on GitHub and click the big green **Compare & pull request** button.
+3. Fill out the friendly checklist in the [Pull Request Template](./.github/PULL_REQUEST_TEMPLATE.md).
+4. Our friendly team will review your work, offer helpful tips, and merge your code!
 
 ---
 
-## 👥 Governance & Community
+## 🧭 Important Factory Golden Rules
 
-- **Governance Model:** Detailed in [`GOVERNANCE.md`](./GOVERNANCE.md).
-- **Roadmap:** High-level milestones tracked in [`ROADMAP.md`](./ROADMAP.md).
-- **Security:** Private vulnerability reports must follow [`SECURITY.md`](./SECURITY.md).
-- **Discussions:** General questions and architecture ideas belong in GitHub Discussions (`<repository-url>/discussions`).
+To keep the factory running smoothly and safely, all contributors follow these 5 golden rules:
 
-Thank you for helping engineer the future of sustainable sportswear technology.
+| Golden Rule | What It Means | Why It Matters |
+|-------------|---------------|----------------|
+| 🔌 **Port 5002 Only** | Never change the port to 3000 or use dynamic fallbacks. | Prevents port collisions with other local dev servers. |
+| 🛡️ **No Raw Throws** | Backend services return safe `neverthrow` results. | Keeps the server from crashing when unexpected input arrives. |
+| 🪟 **SSR Cleanliness** | Never touch `window` or `document` during initial module load. | Ensures super-fast page rendering on servers and mobile devices. |
+| 🧱 **Shared Boundaries** | Data schemas live in `@run-remix/shared`. | Guarantees the frontend and backend always agree on data shapes. |
+| 🎨 **Tailwind Tokens** | Use `@theme` tokens in `theme.css` (no arbitrary bracket values). | Maintains visual polish and consistent brand typography. |
 
-**RUN APPAREL (PVT) LTD** — Sialkot, Pakistan | Subsidiary of Durus Industries (est. 1889)
+---
+
+## ❓ Need Help
+
+If you ever get stuck or have questions:
+- Open a friendly discussion in **GitHub Discussions** (`<repository-url>/discussions`).
+- Check our [Support Guide](./SUPPORT.md) or [Illustrated Wiki](./docs/wiki/Home.md).
+- Read the [Troubleshooting Runbook](./docs/TROUBLESHOOTING.md).
