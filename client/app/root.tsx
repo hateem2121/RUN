@@ -16,7 +16,7 @@ import {
   useRouteLoaderData,
 } from "react-router";
 import { Toaster } from "sonner";
-import { FloatingDockHeader } from "@/components/navigation/floating-dock-header";
+import { CeilingNotchNavbar } from "@/components/navigation/ceiling-notch-navbar";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { BackToTop } from "@/components/ui/back-to-top";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
@@ -197,7 +197,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <HydrationBoundary state={loaderData?.dehydratedState}>
                 <ScrollProvider>
                   <SkipLink targetId="main-content" />
-                  <FloatingDockHeader />
+                  <CeilingNotchNavbar />
                   {children}
                   {mounted && (
                     <Toaster position="bottom-right" richColors expand={true} theme="system" />

@@ -20,14 +20,14 @@ Investigate the global layout shell that wraps every public page. Bugs here affe
 ## Context
 
 **Source Files**:
-- `client/app/root.tsx` — Root: FloatingDockHeader, ScrollProvider
+- `client/app/root.tsx` — Root: CeilingNotchNavbar, ScrollProvider
 - `client/app/routes/_public.tsx` — Public shell: Footer, QuoteOverlay
 
 ### CMS API Endpoints (Load on Every Public Page)
 
 | Endpoint | Purpose |
 |----------|---------|
-| `GET /api/navigation-items` | Hierarchical items for FloatingDockHeader |
+| `GET /api/navigation-items` | Hierarchical items for navigation |
 | `GET /api/navigation-settings` | Styling (glassmorphism, colors) |
 | `GET /api/footer` | Dynamic footer menu structure |
 
@@ -64,7 +64,7 @@ All three crawl agents run in **parallel**. Synthesizer runs after all complete 
 
 ## Investigation Axes
 
-### 1. FloatingDockHeader (Navigation)
+### 1. CeilingNotchNavbar (Navigation)
 
 - [ ] Header renders on `/`, `/manufacturing`, `/about` — all consistent
 - [ ] Navigation items from `/api/navigation-items` (not hardcoded)

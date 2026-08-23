@@ -680,6 +680,43 @@ Enhanced `scripts/verify-production-db.ts` with:
 - Exact row count bounds assertions across all 19 database tables.
 - Passed 100% with zero errors in CI and local verification.
 
+---
 
+## 15. Supaste-Style Top Ceiling Notch Navbar Migration (August 2026)
 
+**Run Date:** 2026-08-23  
+**Status:** **100% EXECUTED, TESTED & VERIFIED**  
+**Lead Engineer:** Antigravity (Gemini 3.7 Flash)  
 
+### 15.1 Architecture & Geometry
+- **Top Ceiling Dock**: Positioned fixed at `top: 0`, centered via `left: 50%; -translate-x-1/2`, with `border-bottom-left-radius: 18px; border-bottom-right-radius: 18px;` and `z-dock` (1100).
+- **Geometric SVG Concave Ear Fillets**: Left and right mirrored fillet cutouts (`M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z`) attached to the viewport ceiling on both sides of the navbar.
+- **Obsidian Black Theme Style**: Pitch black (`#000000`) across both light and dark modes with high-contrast text and a white pill CTA button (`Request Quote`).
+- **Desktop Navigation**: `[Brand: RUN APPAREL (PVT) LTD]` → `[Products]` `[Fabrics]` `[Sustainability]` `[Technology]` `[About]` → `[Theme Toggle]` `[Request Quote CTA]`.
+- **Mobile Dropdown Card**: On small viewports (< 1024px), the hamburger toggle smoothly expands downward into an obsidian card with all links, contact details, and the "Request Quote / RFQ" trigger.
+- **Interactive RFQ Integration**: Tapping "Request Quote" opens the `InquiryDrawer` directly via `useQuoteStore.openDrawer()`.
+
+### 15.2 Dead Code & Context Elimination
+- Purged all 12 obsolete legacy navigation files, tests, and documentation:
+  - `client/app/components/navigation/floating-dock-header.tsx`
+  - `client/app/components/navigation/floating-dock-navbar-README.md`
+  - `client/app/components/navigation/floating-dock-skeleton.tsx`
+  - `client/app/components/navigation/navigation-icon.tsx`
+  - `client/app/components/navigation/responsive-navigation.tsx`
+  - `client/app/components/navigation/staggered-menu.tsx`
+  - `client/app/components/ui/floating-dock.tsx`
+  - `client/app/components/ui/theme-toggle.tsx`
+  - `client/app/hooks/use-focus-trap.ts`
+  - `client/app/hooks/use-navigation.ts`
+  - `tests/unit/client/components/navigation/floating-dock-header.test.tsx`
+  - `tests/unit/client/components/ui/floating-dock-adversarial.test.tsx`
+- Updated all markdown documentation (`docs/investigative-prompts/06-manufacturing.md`, `docs/investigative-prompts/22-global-shell.md`), stylesheets (`client/app/styles/print.css`), and E2E suites (`e2e/cross-engine-and-media.spec.ts`, `e2e/viewport-stress.spec.ts`).
+- Root layout (`client/app/root.tsx`) directly imports and renders `CeilingNotchNavbar`.
+- Verified Knip report: 0 unused files, 0 unused exports, 0 duplicate exports.
+
+### 15.3 Automated Verification Results
+- `tests/unit/client/components/navigation/ceiling-notch-navbar.test.tsx`: **100% PASSED** (4/4 tests).
+- `npx vitest run`: **100% PASSED** (170/170 test suites, 2,614/2,614 tests passing).
+- `npm run check`: **100% PASSED** (0 errors across 978 files).
+- `npm run build`: **100% PASSED** (3/3 Turborepo packages).
+- `npm run verify:tech-integrity`: **100% PASSED** (All 8/8 checks passing).

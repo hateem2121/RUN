@@ -88,6 +88,8 @@ When creating or generating unit test files:
 
 13. **WCAG 2.2 Scroll-Padding Invariant:** All scroll containers with sticky floating headers MUST declare `scroll-padding-top: 5rem` to guarantee keyboard focus is never obscured (SC 2.4.11). All interactive touch targets MUST satisfy `≥ 24×24px` (SC 2.5.8).
 
+14. **Complete Component Replacement & Dead Context Clean-Sweep:** When replacing a foundational layout component, NEVER leave deprecated wrapper adapters, obsolete sub-components, dead hooks, legacy test files, or component-specific READMEs in the repository. Purge all replaced files, update all prompt guides and stylesheets, mount the new component directly into `root.tsx`, and run `npm run check:knip` to assert 0 unused files or exports.
+
 ### 6.11 React Router v8 & Vite 8 Resolution Rules (Addendum)
 
 - **CSP Nonce Hydration Mismatch**: In React 19, Chrome hides the `nonce` attribute on `<link>` tags for security, causing a fatal hydration mismatch if the Virtual DOM expects a value. When rendering React Router's `<Links />` component in the root layout or error boundaries, you **MUST** pass an empty string on the client (e.g., `<Links nonce="" />`) to bypass the mismatch and prevent React from crashing the client-side render tree.

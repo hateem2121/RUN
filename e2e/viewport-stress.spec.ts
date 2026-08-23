@@ -66,14 +66,14 @@ test.describe("Domain 1 — Extreme Viewports, Zoom & Aspect Ratio Stress", () =
   test.describe("Ultra-Wide 4K Screens (2560px & 3840px)", () => {
     test.use({ viewport: { width: 3840, height: 2160 } });
 
-    test("Layout preserves max-width bounds and floating dock centering on 4K", async ({
+    test("Layout preserves max-width bounds and ceiling notch navbar centering on 4K", async ({
       page,
     }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
 
       const layoutMetrics = await page.evaluate(() => {
-        const dock = document.querySelector("header, [data-floating-dock], nav");
+        const dock = document.querySelector("header, nav");
         const main = document.querySelector("main");
         const mainWidth = main ? main.getBoundingClientRect().width : 0;
         const dockRect = dock ? dock.getBoundingClientRect() : null;

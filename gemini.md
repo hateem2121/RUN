@@ -252,6 +252,15 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 
 - **No Non-Interactive TabIndex**: Presentation scroll containers and galleries must use semantic `<section aria-label="...">` elements without `tabIndex={0}` or `role="region"` to prevent confusing keyboard navigation flow and satisfy Biome accessibility rules (`lint/a11y/noNoninteractiveTabindex` and `lint/a11y/useSemanticElements`).
 
+### 5.1.11 Complete Component Replacement & Dead Context Clean-Sweep Invariant
+
+- **Zero Legacy Residuals**: When replacing a foundational UI layout component (such as the navigation header or footer shell), NEVER leave deprecated wrapper adapters, obsolete sub-components, dead hooks, legacy test files, or component-specific READMEs in the repository.
+- **Mandatory Clean Sweep Checklist**:
+  1. Purge all replaced `.tsx`, `.ts`, `.test.tsx`, and `.md` files.
+  2. Update all investigative prompt guides, stylesheets (e.g., `print.css`), and E2E test selectors.
+  3. Mount the new component directly into `root.tsx` or its parent layout.
+  4. Run `npm run check:knip` to assert 0 unused files, 0 unused exports, and 0 duplicate exports before concluding the task.
+
 ### 5.2 Forbidden by Architecture
 
 - **Never access the database directly from a route handler.** All DB access through `server/services/`.

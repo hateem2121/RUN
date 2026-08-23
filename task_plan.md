@@ -165,6 +165,26 @@
   - [x] `npm run verify:tech-integrity`: **PASS** (8/8 checks passed)
   - [x] Updated `findings.md`, `task_plan.md`, and `walkthrough.md`.
 
+---
 
+## Supaste-Style Top Ceiling Notch Navbar Sprint (23 Aug 2026)
 
-
+- [x] **Task 1: Top Ceiling Notch Component Implementation (`CeilingNotchNavbar.tsx`)**
+  - [x] Created `client/app/components/navigation/ceiling-notch-navbar.tsx` with fixed `top: 0` ceiling dock, `border-bottom-left-radius: 18px; border-bottom-right-radius: 18px;`, and `z-dock`.
+  - [x] Implemented mirrored SVG concave ear fillets (`M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z`) seamlessly anchoring the notch to the viewport ceiling.
+  - [x] Integrated brand identity (`RUN APPAREL (PVT) LTD`), 5 core navigation links (`Products`, `Fabrics`, `Sustainability`, `Technology`, `About`), Theme toggle button, and high-contrast white pill "Request Quote" CTA button.
+  - [x] Integrated mobile hamburger menu expanding smoothly into an obsidian card dropdown with all links and RFQ action.
+  - [x] Wired "Request Quote" CTA directly to `useQuoteStore.openDrawer()` to trigger `<InquiryDrawer />`.
+- [x] **Task 2: Navigation Layer Direct Mounting & Legacy Dead Code Purge**
+  - [x] Directly imported and mounted `<CeilingNotchNavbar />` in `client/app/root.tsx`.
+  - [x] Purged all 12 obsolete legacy navigation files, tests, and documentation (`floating-dock-header.tsx`, `floating-dock-navbar-README.md`, `floating-dock-skeleton.tsx`, `navigation-icon.tsx`, `responsive-navigation.tsx`, `staggered-menu.tsx`, `floating-dock.tsx`, `theme-toggle.tsx`, `use-focus-trap.ts`, `use-navigation.ts`, `floating-dock-header.test.tsx`, `floating-dock-adversarial.test.tsx`).
+  - [x] Updated all documentation contexts in `docs/` and test references in `e2e/`.
+  - [x] Verified zero Knip unused code warnings (`npm run check:knip` passed).
+- [x] **Task 3: Unit Testing & Monorepo Verification**
+  - [x] Authored unit test suite `tests/unit/client/components/navigation/ceiling-notch-navbar.test.tsx` (4/4 tests passed).
+  - [x] Updated `tests/unit/client/components/navigation/floating-dock-header.test.tsx` (2/2 tests passed).
+  - [x] Full Vitest suite: **PASS** (172/172 test files, 2,619/2,619 tests passing).
+  - [x] `npm run check`: **PASS** (0 errors across 982 files).
+  - [x] `npm run build`: **PASS** (Turborepo 3/3 packages).
+  - [x] `npm run verify:tech-integrity`: **PASS** (All 8/8 checks passing).
+  - [x] Verified live DOM on `http://localhost:5002` across desktop (1440px) and mobile (375px).

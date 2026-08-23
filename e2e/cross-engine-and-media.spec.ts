@@ -52,12 +52,12 @@ test.describe("Domains 4, 5, 6 & 7 — Motion, Cross-Engine, 3D Fallbacks & Prin
   });
 
   test.describe("Domain 5: Cross-Browser & Multi-Engine Parity", () => {
-    test("Floating dock header renders backdrop blur and fixed positioning", async ({ page }) => {
+    test("Ceiling notch navbar renders backdrop blur and fixed positioning", async ({ page }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
 
       const dockComputedStyle = await page.evaluate(() => {
-        const header = document.querySelector("header, [data-floating-dock], nav");
+        const header = document.querySelector("header, nav");
         if (!header) return null;
         const style = window.getComputedStyle(header);
         return {
@@ -101,7 +101,7 @@ test.describe("Domains 4, 5, 6 & 7 — Motion, Cross-Engine, 3D Fallbacks & Prin
       await page.waitForTimeout(400);
 
       const printVisibility = await page.evaluate(() => {
-        const header = document.querySelector("header, [data-floating-dock]");
+        const header = document.querySelector("header, nav");
         const footer = document.querySelector("footer");
         const main = document.querySelector("main");
 

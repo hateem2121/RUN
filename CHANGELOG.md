@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### CI/CD & Automation Suite
+### UI & Navigation
+
+- **Top Ceiling Notch Navbar**: You can now navigate the website through a unified, obsidian-black ceiling notch header modeled after modern brutalist desktop docks. Features include geometric SVG concave ear fillets anchored to the browser ceiling, high-contrast B2B links, inline theme toggle, instant RFQ inquiry modal opening, and an expanding mobile card dropdown.
+- **Legacy Navigation Clean-Sweep**: Completely purged 12 obsolete navigation components, documentation files, and legacy test harnesses, guaranteeing zero dead code in the production bundle.
+
 
 - **Workflow Security Static Analysis**: Integrated `zizmor` security scanning (`.github/workflows/workflow-security.yml`) to continuously audit GitHub Actions workflows for template injection, unpinned versions, and privilege escalation vulnerabilities.
 - **Automated Semantic B2B Changelogs**: Configured Release Drafter (`.github/workflows/release-drafter.yml` and `.github/release-drafter.yml`) to automatically produce categorized release notes from labeled pull requests.

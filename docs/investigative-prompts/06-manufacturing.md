@@ -25,7 +25,7 @@ Conduct a comprehensive deep investigation of `/manufacturing` and all five CMS 
 |------|------|
 | `client/app/routes/manufacturing.tsx` | Page component — **no React Router loader**, all data client-side |
 | `client/app/routes/_public.tsx` | Public shell (Footer + QuoteOverlay) |
-| `client/app/root.tsx` | Root layout (FloatingDockHeader + ScrollProvider) |
+| `client/app/root.tsx` | Root layout (CeilingNotchNavbar + ScrollProvider) |
 | `server/routes/resources/manufacturing-*.routes.js` | CMS API handlers (`.js` — not `.ts`) |
 | `@run-remix/shared` | Shared types and API constants |
 
