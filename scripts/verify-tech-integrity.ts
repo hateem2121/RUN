@@ -57,6 +57,12 @@ const steps = [
     critical: true,
   },
   {
+    name: "Markdown Lint",
+    command: "npm",
+    args: ["run", "check:md"],
+    critical: true,
+  },
+  {
     name: "Dead Code Check",
     command: "npx",
     args: ["knip", "--no-exit-code"],

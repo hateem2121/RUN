@@ -63,7 +63,7 @@ const config: KnipConfig = {
     "zod",
     "zod-express-middleware",
   ],
-  ignoreBinaries: ["tsx", "pkill", "lhci", "wait-on", "react-router"],
+  ignoreBinaries: ["tsx", "pkill", "lhci", "wait-on", "react-router", "markdownlint-cli2"],
   ignoreUnresolved: ["./database-metrics-tracker.js"],
   ignoreExportsUsedInFile: true,
 };

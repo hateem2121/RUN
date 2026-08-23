@@ -27,6 +27,10 @@
 - **Link Checking:** `npm run check:docs` runs rigorously in CI. To prevent pipeline failures:
   - Do not hyperlink private repository URLs (use `<repository-url>` or plain text).
   - Do not hyperlink local files with line-number fragments (e.g., `[file.ts](file.ts:10)`). Use inline code ticks instead.
+- **Markdown Formatting Standards (markdownlint):** All markdown files must adhere to standard markdownlint rules (`npm run check:md`):
+  - **No Double Blanks (MD012):** Never leave consecutive blank lines.
+  - **Blanks Around Headings (MD022):** All headings must have exactly one blank line above and below.
+  - **No Trailing Heading Punctuation (MD026):** Never end heading titles with colons (`:`), periods, or semicolons.
 - **Mermaid Diagram Compatibility:** When creating diagrams in Markdown or artifacts, ONLY use supported Mermaid headers: `flowchart TD` / `flowchart LR`, `graph TD` / `graph LR`, `stateDiagram-v2`, `sequenceDiagram`, `classDiagram`, `erDiagram`, or `xychart-beta`. NEVER use `gantt`, `timeline`, or other unsupported diagram types that cause client-side rendering failures.
 
 ## Browser Viewports
