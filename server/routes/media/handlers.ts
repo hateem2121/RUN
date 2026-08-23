@@ -247,6 +247,9 @@ export async function uploadGltfPackage(_req: Request, res: Response) {
 
 export async function uploadChunkRaw(req: Request, res: Response) {
   const { "x-upload-id": uploadId, "x-chunk-index": chunkIndex } = req.headers;
+  if (!Buffer.isBuffer(req.body)) {
+    throw new BadRequestError("Expected raw binary buffer in request body");
+  }
   const result = await mediaService.uploadChunkRaw(
     String(uploadId),
     parseInt(String(chunkIndex), 10),

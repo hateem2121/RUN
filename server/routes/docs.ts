@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { env } from "../lib/env.js";
+import { publicTier } from "../middleware/rate-limit-tiers.js";
 
 const router = Router();
+
+router.use(publicTier);
 
 router.get("/", (_req, res) => {
   if (env.NODE_ENV === "production") {

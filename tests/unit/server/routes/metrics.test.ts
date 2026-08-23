@@ -111,16 +111,15 @@ describe("Metrics Routes", () => {
     expect(response.status).toBe(401);
   });
 
-  it("should return metrics with correct secret in query", async () => {
+  it("should reject metrics requests with secret in query parameter (CWE-598 hardening)", async () => {
     const response = await request(app).get("/?key=test-secret");
-    expect(response.status).toBe(200);
-    expect(response.header["content-type"]).toContain("text/plain");
-    expect(response.text).toBe("mock-metrics-data");
+    expect(response.status).toBe(401);
   });
 
   it("should return metrics with correct secret in header", async () => {
     const response = await request(app).get("/").set("x-metrics-key", "test-secret");
     expect(response.status).toBe(200);
+    expect(response.header["content-type"]).toContain("text/plain");
     expect(response.text).toBe("mock-metrics-data");
   });
 });

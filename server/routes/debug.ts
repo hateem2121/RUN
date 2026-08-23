@@ -2,9 +2,13 @@ import crypto from "node:crypto";
 import { Router } from "express";
 import { env } from "../lib/env.js";
 import { logger } from "../lib/monitoring/logger.js";
+import { criticalTier } from "../middleware/rate-limit-tiers.js";
 import { systemService } from "../services/system.service.js";
 
 const router = Router();
+
+// Apply strict rate limiting to debug endpoints
+router.use(criticalTier);
 
 // SAFETY HEAD: Double-check env vars in case of logic error in index.ts
 router.use((req, res, next) => {

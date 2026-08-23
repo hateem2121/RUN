@@ -11,6 +11,7 @@
 [![Tailwind V4](https://img.shields.io/badge/Tailwind-V4-06B6D4?logo=tailwindcss)](https://tailwindcss.com)
 [![Express 5](https://img.shields.io/badge/Express-5.2.1-000000?logo=express)](https://expressjs.com)
 [![Biome Clean](https://img.shields.io/badge/Linter-Biome_2.5-60A5FA?logo=biome)](https://biomejs.dev)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/hateem2121/RUN/badge)](https://scorecard.dev/viewer/?site=github.com/hateem2121/RUN)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
 ---

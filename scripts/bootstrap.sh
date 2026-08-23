@@ -8,7 +8,7 @@ echo "🚀 Bootstrapping RUN App Development Environment..."
 
 # 1. Install Dependencies
 echo "📦 Installing dependencies..."
-npm install
+npm ci
 
 # 2. Environment Configuration
 if [ ! -f .env ]; then

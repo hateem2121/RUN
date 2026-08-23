@@ -11,9 +11,11 @@ import { UnifiedCache } from "../lib/cache/unified-cache.js";
 import { errorAggregator } from "../lib/monitoring/error-aggregator.js";
 import { httpMetricsTracker } from "../lib/monitoring/http-metrics.js";
 import { logger } from "../lib/monitoring/logger.js";
+import { apiTier } from "../middleware/rate-limit-tiers.js";
 import { metricsService } from "../services/metrics.service.js";
 
 const router = Router();
+router.use(apiTier);
 let defaultMetricsRegistered = false;
 
 // 1. HTTP Request Metrics
@@ -82,7 +84,8 @@ router.get("/", async (req, res) => {
     env.METRICS_SECRET ||
     env.HEALTH_CHECK_SECRET ||
     (env.NODE_ENV === "production" ? undefined : "dev-metrics-key");
-  const providedSecret = req.headers["x-metrics-key"] || req.query.key;
+  const providedSecret =
+    req.headers["x-metrics-key"] || req.headers.authorization?.replace(/^Bearer\s+/i, "");
 
   if (!secret) {
     logger.error(

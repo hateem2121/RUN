@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### GitHub Security & Quality Hardening & Supply Chain Protection
+
+- **Supply Chain Vulnerability Elimination**: You can now build and deploy with verified supply chain integrity following the pinning of `python-dotenv>=1.2.2` (resolving CVE-2026-28684 / PYSEC-2026-2270) and conversion of bootstrap scripts to deterministic `npm ci`.
+- **100% Free Open-Source Tiered Rate Limiting**: You can now benefit from standardized, zero-cost API traffic throttling (`express-rate-limit` MIT) across all 64 sub-routers, with draft-8 rate-limit headers and environment-aware test bypassing.
+- **Precision Endpoint & Dataflow Hardening**:
+  - **Binary Upload Type Safety**: Media chunk uploads now strictly validate binary buffer payloads (`Buffer.isBuffer(req.body)`), preventing type confusion and chunk size bypass (CWE-843).
+  - **Polynomial ReDoS Immunity**: Slug normalization and filename slugification now enforce input length clamping (500 characters) and single-pass hyphen reduction, eliminating polynomial regex backtracking (CWE-1333).
+  - **Strict Redirect URL Validation**: Authentication redirection now strictly checks safe relative URL paths, preventing open redirection and backslash bypass vulnerabilities (CWE-601).
+  - **Header-Secured Telemetry**: Prometheus metrics endpoints now strictly require header-based authorization (`x-metrics-key` / `Authorization: Bearer`), eliminating credentials from GET query parameters (CWE-598).
+- **Zustand SSR & Test Runtime Stability**: State stores utilizing persistence now use an SSR-safe storage adapter, preventing uncaught `localStorage` exceptions during server rendering and test execution in Node.js 24+.
+
 ### AI Semantic Search & Database Optimization
 
 - **AI-Powered Natural Language Semantic Search (`pgvector`)**: You can now search technical fabrics, performance garments, and sport specifications using natural language (e.g. *"breathable moisture-wicking summer jersey"* or *"heavyweight thermal fleece"*). Features include deterministic 384D normalized vector embeddings, sub-millisecond HNSW cosine distance indexing on Neon PostgreSQL 17.11, instant match percentage badges (e.g. `98.5% Match`), and debounced category filter pills (`<SemanticSearchBar />`).

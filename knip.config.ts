@@ -49,6 +49,7 @@ const config: KnipConfig = {
     "@opentelemetry/semantic-conventions",
     "@react-router/express",
     "compression",
+    "express-rate-limit",
     "express-session",
     "express-static-gzip",
     "ffprobe-static",

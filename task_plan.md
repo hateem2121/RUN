@@ -1,8 +1,40 @@
 # Task Plan — RUN APPAREL CMS (v4.1.2) — Monorepo Architecture & Codebase Exploration
 
 **Date:** 2026-08-23  
-**Goal:** Perform an exhaustive, ultra-deep Neon Lakebase PostgreSQL audit across all infrastructure, branches, compute, schema, indexes, queries, egress, storage, vacuum/bloat, replication, and security, presenting findings as an intuitive, highly visual 5th-grader-friendly master report.  
-**Auditor/Engineer Role:** Antigravity — Full-Stack Architect & Systems Auditor  
+**Goal:** Perform an exhaustive, deep forensic investigation of all 317+ GitHub Security & Quality alerts (CodeQL, OpenSSF Scorecard, Dependabot, Secret Scanning) across the RUN monorepo, categorize root causes, evaluate actual exploitability vs false positives, and formulate an actionable 100/100 remediation plan.  
+**Auditor/Engineer Role:** Antigravity — Full-Stack Security Architect & Systems Auditor  
+
+---
+
+## Active Sprint Plan — GitHub Security & Quality 317-Alert Forensic Investigation & Complete Remediation (2026-08-23)
+
+- [x] **Protocol 0: Session Initialization** (Checked `task_plan.md`, verified dev server on port 5002, authenticated GitHub CLI)
+- [x] **Phase 1: Full Inventory & Alert Ingestion**
+  - [x] Fetched and exported all open & historical alerts across CodeQL, OpenSSF Scorecard, Dependabot, and Secret Scanning
+  - [x] Classified all alerts by Tool, Rule ID, CWE, Severity, Directory, and Component (345 historical, 304 open)
+- [x] **Phase 2: Deep Forensic Analysis by Threat Vector**
+  - [x] **Vector 1: Missing Rate Limiting (`js/missing-rate-limiting`) — 256 active alerts** (Static AST dataflow vs centralized Express rate limiting architecture)
+  - [x] **Vector 2: Type Confusion Through Parameter Tampering (`js/type-confusion-through-parameter-tampering`) — 2 active alerts** (Untyped `req.body` in `uploadChunkRaw` reaching `buffer.length` in `media-upload.service.ts`)
+  - [x] **Vector 3: Regex & ReDoS Vulnerabilities (`js/polynomial-redos`) — 2 active alerts** (Unconstrained repeated hyphen backtracking in `slugifyFilename` and `normalizeSlug`)
+  - [x] **Vector 4: Server-Side URL Redirect (`js/server-side-unvalidated-url-redirection`) — 1 active alert** (`mock-login` returnTo validation in `auth.ts`)
+  - [x] **Vector 5: Sensitive GET Query (`js/sensitive-get-query`) — 1 active alert** (`req.query.key` in `metrics.ts`)
+  - [x] **Vector 6: OpenSSF Scorecard & Supply Chain Integrity — 6 alerts** (PYSEC-2026-2270 in `requirements.txt`, unpinned npm in `bootstrap.sh`, branch protection, code review, fuzzing, CII)
+  - [x] **Vector 7: Stale Orphaned Analyses from Retired `security.yml:codeql` — 36 alerts** (Identified 5 stale analysis runs IDs `1656614277`, `1656609018`, `1656596416`, `1656594461`, `1656591178`)
+  - [x] **Vector 8: Dependabot Status** (0 open, 137 resolved)
+  - [x] **Vector 9: Secret Scanning Status** (0 open, 0 leaks)
+- [x] **Phase 3: Root-Cause Synthesis, Plan & Execution (/grill-me + /writing-plans)**
+  - [x] Authored [`docs/superpowers/plans/2026-08-23-github-security-and-quality-remediation.md`](file:///Users/hateemjamshaid/Sites/RUN/docs/superpowers/plans/2026-08-23-github-security-and-quality-remediation.md)
+  - [x] **Task 1 (Supply Chain):** Pinned `python-dotenv>=1.2.2` in `requirements.txt`, switched `bootstrap.sh` to `npm ci`, added OpenSSF badge to `README.md`.
+  - [x] **Task 2 (Precision Fixes):** Guarded `uploadChunkRaw` Buffer, clamped `normalizeSlug` / `slugifyFilename` (500 chars + single-pass regex), hardened `mock-login` returnTo regex, removed `req.query.key` from `metrics.ts`.
+  - [x] **Task 3 (Rate Limiting):** Migrated `rate-limit-tiers.ts` to 100% free open-source `express-rate-limit` (MIT) with draft-8 headers.
+  - [x] **Task 4 (Stale Purge):** Deleted 5 obsolete `security.yml:codeql` analysis runs via GitHub REST API, clearing 36 ghost alerts immediately.
+- [x] **Phase 4: Monorepo Integrity & Protocol 0 Bookends**
+  - [x] `npm run check`: 🟢 **PASS** (0 TypeScript errors, 0 Biome linter errors across 984 files)
+  - [x] `npm run build`: 🟢 **PASS** (Turborepo 3/3 packages built in Full Turbo)
+  - [x] `npm run test`: 🟢 **PASS** (180/180 test files, 2,642/2,642 tests passing)
+  - [x] `npm run check:knip`: 🟢 **PASS** (0 unused files/exports)
+  - [x] `npm run verify:tech-integrity`: 🟢 **PASS** (All 8 monorepo tech-integrity checks passing)
+  - [x] Updated `findings.md`, `task_plan.md`, and `walkthrough.md`.
 
 ---
 

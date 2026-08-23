@@ -24,6 +24,36 @@ export interface QuoteStore {
   closeDrawer: () => void;
 }
 
+const safeStorage = {
+  getItem: (name: string): string | null => {
+    try {
+      return typeof window !== "undefined" && window.localStorage
+        ? window.localStorage.getItem(name)
+        : null;
+    } catch {
+      return null;
+    }
+  },
+  setItem: (name: string, value: string): void => {
+    try {
+      if (typeof window !== "undefined" && window.localStorage) {
+        window.localStorage.setItem(name, value);
+      }
+    } catch {
+      // Ignore storage errors in SSR or restricted environments
+    }
+  },
+  removeItem: (name: string): void => {
+    try {
+      if (typeof window !== "undefined" && window.localStorage) {
+        window.localStorage.removeItem(name);
+      }
+    } catch {
+      // Ignore
+    }
+  },
+};
+
 export const useQuoteStore = create<QuoteStore>()(
   persist(
     (set, get) => ({
@@ -31,14 +61,15 @@ export const useQuoteStore = create<QuoteStore>()(
 
       addToQuote: (item) =>
         set((state) => {
-          const existingItem = state.items.find((i) => i.id === item.id);
+          const existingItemIndex = state.items.findIndex((i) => i.id === item.id);
+          const existingItem = existingItemIndex > -1 ? state.items[existingItemIndex] : undefined;
           if (existingItem) {
-            // If already in quote, just update quantity (not exceeding logical limits if any, but unrestricted for B2B)
-            return {
-              items: state.items.map((i) =>
-                i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i,
-              ),
+            const newItems = [...state.items];
+            newItems[existingItemIndex] = {
+              ...existingItem,
+              quantity: existingItem.quantity + item.quantity,
             };
+            return { items: newItems };
           }
           return { items: [...state.items, item] };
         }),
@@ -67,8 +98,8 @@ export const useQuoteStore = create<QuoteStore>()(
       closeDrawer: () => set({ isDrawerOpen: false }),
     }),
     {
-      name: "quote-storage", // name of the item in the storage (must be unique)
-      storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' is used
+      name: "quote-storage",
+      storage: createJSONStorage(() => safeStorage),
     },
   ),
 );

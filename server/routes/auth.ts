@@ -101,7 +101,9 @@ router.get("/mock-login", async (req, res) => {
         const returnTo =
           typeof rawReturnTo === "string" &&
           rawReturnTo.startsWith("/") &&
-          !rawReturnTo.startsWith("//")
+          !rawReturnTo.startsWith("//") &&
+          !rawReturnTo.includes("\\") &&
+          /^\/[a-zA-Z0-9_\-/?=&%#.]*$/.test(rawReturnTo)
             ? rawReturnTo
             : "/admin";
         if (req.headers.accept?.includes("application/json")) {

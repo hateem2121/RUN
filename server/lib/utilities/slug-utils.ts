@@ -20,15 +20,15 @@ export function normalizeSlug(slug: string): string {
     return "";
   }
 
-  return slug
+  const bounded = slug.length > 500 ? slug.slice(0, 500) : slug;
+
+  return bounded
     .toLowerCase()
     .trim()
-    .replace(/\s+/g, "-") // Replace spaces with hyphens
-    .replace(/_/g, "-") // Replace underscores with hyphens
+    .replace(/[\s_]+/g, "-") // Replace whitespace and underscores with hyphens
     .replace(/[^a-z0-9-]/g, "") // Remove non-alphanumeric except hyphens
-    .replace(/-{2,}/g, "-") // Replace multiple hyphens with single
-    .replace(/^-+/, "") // Trim hyphens from start
-    .replace(/-+$/, ""); // Trim hyphens from end
+    .replace(/-+/g, "-") // Collapse consecutive hyphens in single pass
+    .replace(/^-|-$/g, ""); // Trim hyphens from both ends in single pass
 }
 
 /**
