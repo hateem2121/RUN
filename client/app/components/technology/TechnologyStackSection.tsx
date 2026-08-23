@@ -1,9 +1,11 @@
 import type { MediaAsset } from "@shared/index";
 import type { EquipmentVM, InnovationVM } from "@shared/viewmodels";
+import { ArrowUpRight, Cog, FlaskConical } from "lucide-react";
 import React from "react";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
+import { resolveIcon } from "@/utils/icon-resolver";
 
 type FilterTab = "all" | "innovations" | "equipment";
 
@@ -120,7 +122,7 @@ export function TechnologyStackSection({
     <section ref={sectionRef} className={cn("py-32 px-6 relative max-w-7xl mx-auto", className)}>
       {/* HUD micro-copy — top-right */}
       <div className="absolute top-8 right-6 hidden md:block">
-        <span className="micro-copy border border-slate-100 dark:border-custom-color-319/30 px-3 py-1 bg-white/50 dark:bg-custom-color-320/5 backdrop-blur dark:text-custom-color-321">
+        <span className="micro-copy border border-slate-100 dark:border-[#00D4FF]/30 px-3 py-1 bg-white/50 dark:bg-[#00D4FF]/5 backdrop-blur dark:text-[#00D4FF]">
           ENCRYPTION: AES-256 SECURED
         </span>
       </div>
@@ -130,7 +132,7 @@ export function TechnologyStackSection({
         <h2 className="text-5xl md:text-6xl font-neue-stance font-bold text-black dark:text-white uppercase tracking-tight mb-6">
           Technology Stack
         </h2>
-        <div className="w-16 h-1 bg-custom-color-322 dark:bg-custom-color-323 mx-auto shadow-sm dark:shadow-custom-misc-339"></div>
+        <div className="w-16 h-1 bg-[#0047AB] dark:bg-[#00D4FF] mx-auto shadow-sm dark:shadow-[0_0_10px_rgba(0,212,255,0.5)]"></div>
       </div>
 
       {/* Centered filter pill bar — Stitch style (no counts) */}
@@ -142,10 +144,10 @@ export function TechnologyStackSection({
               type="button"
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "px-10 py-3 rounded-full text-custom-space-252 font-bold uppercase tracking-widest transition-all duration-300",
+                "px-10 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300",
                 activeTab === tab.id
-                  ? "bg-custom-color-324 dark:bg-custom-color-325 text-white dark:text-black shadow-custom-misc-340 dark:shadow-custom-misc-341"
-                  : "text-slate-500 dark:text-slate-400 hover:text-custom-color-326 dark:hover:text-white dark:hover:bg-white/5",
+                  ? "bg-[#0047AB] dark:bg-[#00D4FF] text-white dark:text-black shadow-[0_0_15px_rgba(0,71,171,0.5)] dark:shadow-[0_0_15px_rgba(0,212,255,0.5)]"
+                  : "text-slate-500 dark:text-slate-400 hover:text-[#0047AB] dark:hover:text-white dark:hover:bg-white/5",
               )}
             >
               {tab.label}
@@ -164,7 +166,7 @@ export function TechnologyStackSection({
           <div className="lg:col-span-2 lab-card group flex flex-col md:flex-row bg-white dark:bg-white/[0.04] dark:backdrop-blur-xl border border-transparent dark:border-white/[0.08] shadow-lg dark:shadow-none overflow-hidden rounded-xl">
             <div className="scan-line"></div>
             {/* Image/Video half */}
-            <div className="w-full md:w-1/2 bg-slate-50 dark:bg-black relative overflow-hidden min-h-custom-space-253">
+            <div className="w-full md:w-1/2 bg-slate-50 dark:bg-black relative overflow-hidden min-h-[300px]">
               {featured.videoId && getMediaUrl(featured.videoId) ? (
                 <video
                   src={getMediaUrl(featured.videoId) || undefined}
@@ -187,9 +189,7 @@ export function TechnologyStackSection({
                 <>
                   <div className="absolute inset-0 bg-grid-arctic dark:bg-grid-tech opacity-40 dark:opacity-20"></div>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-8xl text-custom-color-329 dark:text-custom-color-330 opacity-10">
-                      science
-                    </span>
+                    <FlaskConical className="size-24 text-[#0047AB] dark:text-[#00D4FF] opacity-10" />
                   </div>
                 </>
               )}
@@ -201,14 +201,14 @@ export function TechnologyStackSection({
               <h3 className="text-4xl font-neue-stance font-bold text-black dark:text-white uppercase tracking-tight leading-none mb-6">
                 {featured.name}
               </h3>
-              <p className="text-sm text-slate-500 dark:text-custom-color-331 leading-relaxed mb-10 font-light font-helvetica">
+              <p className="text-sm text-slate-500 dark:text-[#E3DFD6] leading-relaxed mb-10 font-light font-helvetica">
                 {featured.shortDescription || featured.description}
               </p>
               <div className="grid grid-cols-2 gap-8 border-t border-slate-100 dark:border-white/10 pt-8 mt-auto">
                 <div>
                   <span className="micro-copy block mb-1">Airflow</span>
                   <span
-                    className="text-2xl text-custom-color-332 dark:text-custom-color-333 font-bold font-mono stat-countup"
+                    className="text-2xl text-[#0047AB] dark:text-[#00D4FF] font-bold font-mono stat-countup"
                     data-target="98"
                     data-suffix="%"
                   >
@@ -218,7 +218,7 @@ export function TechnologyStackSection({
                 <div>
                   <span className="micro-copy block mb-1">Weight</span>
                   <span
-                    className="text-2xl text-custom-color-334 dark:text-custom-color-335 font-bold font-mono stat-countup"
+                    className="text-2xl text-[#0047AB] dark:text-[#00D4FF] font-bold font-mono stat-countup"
                     data-target="15"
                     data-prefix="-"
                     data-suffix="g"
@@ -227,9 +227,8 @@ export function TechnologyStackSection({
                   </span>
                 </div>
               </div>
-              <div className="mt-8 flex items-center gap-2 text-custom-color-336 dark:text-custom-color-337 font-bold text-custom-space-254 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity dark:drop-shadow-custom-misc-342">
-                View Details{" "}
-                <span className="material-symbols-outlined text-sm">arrow_outward</span>
+              <div className="mt-8 flex items-center gap-2 text-[#0047AB] dark:text-[#00D4FF] font-bold text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity dark:drop-shadow-[0_0_5px_rgba(0,212,255,0.8)]">
+                View Details <ArrowUpRight className="size-3.5" />
               </div>
             </div>
           </div>
@@ -246,20 +245,21 @@ export function TechnologyStackSection({
               <div>
                 <div className="flex justify-between items-start mb-6">
                   <span className="tech-badge">Innovation</span>
-                  <span className="material-symbols-outlined text-slate-300 dark:text-slate-500 group-hover:text-custom-color-338 dark:group-hover:text-custom-color-339 transition-colors">
-                    {innovation.iconName || "science"}
-                  </span>
+                  {React.createElement(resolveIcon(innovation.iconName || "science"), {
+                    className:
+                      "size-5 text-slate-300 dark:text-slate-500 group-hover:text-[#0047AB] dark:group-hover:text-[#00D4FF] transition-colors",
+                  })}
                 </div>
                 <h4 className="text-2xl font-bold text-black dark:text-white uppercase font-neue-stance tracking-tight mb-4">
                   {innovation.name}
                 </h4>
-                <p className="text-xs text-slate-500 dark:text-custom-color-340 leading-relaxed font-light font-helvetica">
+                <p className="text-xs text-slate-500 dark:text-[#E3DFD6] leading-relaxed font-light font-helvetica">
                   {innovation.shortDescription || innovation.description}
                 </p>
               </div>
               <div className="border-t border-slate-100 dark:border-white/10 pt-6 mt-8 flex justify-between items-end">
-                <span className="micro-copy dark:text-custom-color-341">{innovation.category}</span>
-                <span className="text-sm text-custom-color-342 dark:text-custom-color-343 font-bold font-mono">
+                <span className="micro-copy dark:text-[#68869A]">{innovation.category}</span>
+                <span className="text-sm text-[#0047AB] dark:text-[#00D4FF] font-bold font-mono">
                   {innovation.status}
                 </span>
               </div>
@@ -278,20 +278,18 @@ export function TechnologyStackSection({
                   <span className="tech-badge !text-slate-500 !bg-slate-50 !border-slate-100 dark:!text-slate-400 dark:!bg-white/5 dark:!border-white/10">
                     Equipment
                   </span>
-                  <span className="material-symbols-outlined text-slate-300 dark:text-slate-500 group-hover:text-custom-color-346 dark:group-hover:text-custom-color-347 transition-colors">
-                    precision_manufacturing
-                  </span>
+                  <Cog className="size-5 text-slate-300 dark:text-slate-500 group-hover:text-[#0047AB] dark:group-hover:text-[#00D4FF] transition-colors" />
                 </div>
                 <h4 className="text-2xl font-bold text-black dark:text-white uppercase font-neue-stance tracking-tight mb-4">
                   {equip.name}
                 </h4>
-                <p className="text-xs text-slate-500 dark:text-custom-color-348 leading-relaxed font-light font-helvetica">
+                <p className="text-xs text-slate-500 dark:text-[#E3DFD6] leading-relaxed font-light font-helvetica">
                   {equip.brand}
                   {equip.model && ` / ${equip.model}`}
                 </p>
               </div>
               <div className="border-t border-slate-100 dark:border-white/10 pt-6 mt-8 flex justify-between items-end">
-                <span className="micro-copy dark:text-custom-color-349">Capacity</span>
+                <span className="micro-copy dark:text-[#68869A]">Capacity</span>
                 <span className="text-sm text-black dark:text-white font-bold font-mono">
                   {equip.capacity || `${equip.quantity}/HR`}
                 </span>

@@ -289,7 +289,7 @@ export function AboutTimelineTab() {
       </CardContent>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-custom-space-4">
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>{editingEntry ? "Edit Timeline Event" : "Add Timeline Event"}</DialogTitle>
           </DialogHeader>
@@ -331,7 +331,7 @@ export function AboutTimelineTab() {
                   name="description"
                   defaultValue={editingEntry?.description || ""}
                   placeholder="Event details"
-                  className="col-span-3 min-h-custom-space-5"
+                  className="col-span-3 min-h-[100px]"
                 />
               </div>
 

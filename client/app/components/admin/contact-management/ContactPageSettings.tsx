@@ -182,7 +182,7 @@ export function ContactPageSettings() {
       {/* Header */}
       <div className="flex items-start justify-between mb-8">
         <div className="flex items-center gap-4">
-          <div className="size-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shadow-custom-misc-16">
+          <div className="size-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.1)]">
             <Mail className="h-6 w-6 text-blue-400" />
           </div>
           <div>
@@ -224,7 +224,7 @@ export function ContactPageSettings() {
             onClick={form.handleSubmit(onSubmit, onInvalid)}
             disabled={!isDirty || saveMutation.isPending}
             data-testid="button-save"
-            className="h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 shadow-custom-misc-17 font-bold uppercase tracking-widest text-xxs outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border-0 transition-all active:scale-95"
+            className="h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 shadow-md shadow-blue-500/20 font-bold uppercase tracking-widest text-xxs outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 border-0 transition-all active:scale-95"
           >
             {saveMutation.isPending ? (
               <>
@@ -630,7 +630,7 @@ export function ContactPageSettings() {
       </form>
 
       {/* Fixed Bottom Actions */}
-      <div className="sticky bottom-6 rounded-2xl border border-white/10 bg-surface-black/80 backdrop-blur-xl p-4 shadow-custom-misc-18 z-20">
+      <div className="sticky bottom-6 rounded-2xl border border-white/10 bg-surface-black/80 backdrop-blur-xl p-4 shadow-[0_8px_32px_rgba(0,0,0,0.5)] z-20">
         <div className="mx-auto flex max-w-4xl items-center justify-between">
           <div className="text-admin-muted text-sm font-medium">
             {isDirty ? "You have unsaved changes" : "All changes saved"}
@@ -647,7 +647,7 @@ export function ContactPageSettings() {
             <Button
               onClick={form.handleSubmit(onSubmit, onInvalid)}
               disabled={!isDirty || saveMutation.isPending}
-              className="h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 shadow-custom-misc-19 font-bold uppercase tracking-widest text-xxs outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border-0 transition-all active:scale-95"
+              className="h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 shadow-md shadow-blue-500/20 font-bold uppercase tracking-widest text-xxs outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 border-0 transition-all active:scale-95"
             >
               {saveMutation.isPending ? "Saving..." : "Save All Changes"}
             </Button>

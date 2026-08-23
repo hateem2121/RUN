@@ -435,7 +435,10 @@ test.describe("Manufacturing Admin CMS Tests", () => {
     } finally {
       // RESTORATION — use direct API call for reliability
       try {
-        const restoreTitle = originalTitle || "PRECISION AT SCALE";
+        const restoreTitle =
+          originalTitle && !originalTitle.includes("[QA-AUTO")
+            ? originalTitle
+            : "PRECISION AT SCALE";
         const csrfCookie = await page.context().cookies();
         const csrfToken = csrfCookie.find((c) => c.name === "csrf_token")?.value || "";
         const response = await page.request.patch("/api/manufacturing-hero", {

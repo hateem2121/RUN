@@ -165,7 +165,7 @@ export function InquiryDetails({ inquiryId, onUpdate }: InquiryDetailsProps) {
                 <span className="text-xxs text-admin-muted ml-1">Priority</span>
                 <select
                   title="Priority"
-                  className="w-full bg-surface-black border-white/10 rounded-md text-xs px-3 py-2 outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full bg-surface-black border-white/10 rounded-md text-xs px-3 py-2 outline-hidden focus:ring-1 focus:ring-primary"
                   value={inquiry.priority}
                   onChange={(e) =>
                     onUpdate({ priority: e.target.value as "low" | "medium" | "high" | "urgent" })
@@ -181,7 +181,7 @@ export function InquiryDetails({ inquiryId, onUpdate }: InquiryDetailsProps) {
                 <span className="text-xxs text-admin-muted ml-1">Assign User</span>
                 <select
                   title="Assign User"
-                  className="w-full bg-surface-black border-white/10 rounded-md text-xs px-3 py-2 outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full bg-surface-black border-white/10 rounded-md text-xs px-3 py-2 outline-hidden focus:ring-1 focus:ring-primary"
                   value={inquiry.assignedTo || ""}
                   onChange={(e) => onUpdate({ assignedTo: e.target.value })}
                 >

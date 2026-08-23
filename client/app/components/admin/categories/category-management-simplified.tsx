@@ -163,7 +163,7 @@ export function CategoryManagementSimplified() {
           </Button>
           <Button
             onClick={openCreateDialog}
-            className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border-0"
+            className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 border-0"
           >
             <Plus className="mr-2 h-4 w-4" />
             New Category
@@ -195,7 +195,7 @@ export function CategoryManagementSimplified() {
               onChange={(e) =>
                 updateUIState({ filterStatus: e.target.value as "all" | "active" | "inactive" })
               }
-              className="rounded-xl border border-white/10 bg-surface-black text-white px-3 py-2 h-11 focus:ring-blue-500/50 outline-none"
+              className="rounded-xl border border-white/10 bg-surface-black text-white px-3 py-2 h-11 focus:ring-blue-500/50 outline-hidden"
             >
               <option value="all">All Categories</option>
               <option value="active">Active Only</option>
@@ -207,7 +207,7 @@ export function CategoryManagementSimplified() {
                 checked={uiState.showDeletedCategories}
                 onCheckedChange={(checked) => updateUIState({ showDeletedCategories: checked })}
                 data-testid="toggle-deleted-categories"
-                className="data-custom-misc-15:bg-blue-500"
+                className="data-[state=checked]:bg-blue-500"
               />
               <Label
                 htmlFor="show-deleted"

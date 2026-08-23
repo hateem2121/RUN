@@ -67,7 +67,7 @@ export function InquiryCRMLogs({ inquiry }: InquiryCRMLogsProps) {
           <div className="grid grid-cols-2 gap-3">
             <select
               title="Action Type"
-              className="bg-surface-black border-white/10 rounded-md text-xs px-3 py-2 outline-none focus:ring-1 focus:ring-primary h-9"
+              className="bg-surface-black border-white/10 rounded-md text-xs px-3 py-2 outline-hidden focus:ring-1 focus:ring-primary h-9"
               value={action}
               onChange={(e) => setAction(e.target.value)}
             >
@@ -89,18 +89,18 @@ export function InquiryCRMLogs({ inquiry }: InquiryCRMLogsProps) {
           </div>
           <Textarea
             placeholder="What happened during this interaction?"
-            className="min-h-custom-space-30 text-sm bg-transparent border-white/10"
+            className="min-h-[100px] text-sm bg-transparent border-white/10"
             value={note}
             onChange={(e) => setNote(e.target.value)}
           />
         </form>
       )}
 
-      <div className="space-y-4 max-h-custom-space-31 overflow-y-auto pr-2 custom-scrollbar">
+      <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
         {inquiry.crmLogs && inquiry.crmLogs.length > 0 ? (
           inquiry.crmLogs.map((log, index) => (
             <div key={index} className="relative pl-6 pb-6 last:pb-0 border-l border-white/10">
-              <div className="absolute left-custom-space-32 top-0 h-2.5 w-2.5 rounded-full bg-primary" />
+              <div className="absolute left-[-5px] top-0 h-2.5 w-2.5 rounded-full bg-primary" />
               <div className="flex flex-col gap-1">
                 <div className="flex items-center justify-between text-xxs text-admin-muted font-medium">
                   <div className="flex items-center gap-1.5">

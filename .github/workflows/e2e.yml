@@ -37,6 +37,10 @@ jobs:
       - name: 🔨 Build Application
         run: npm run build
 
+      - name: Get branch expiration date
+        id: get_expiration_date
+        run: echo "EXPIRES_AT=$(date -u -d '+24 hours' +'%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u -v+24h +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
+
       - name: Create Neon Branch
         id: create_neon_branch
         continue-on-error: true
@@ -45,6 +49,7 @@ jobs:
           project_id: ${{ secrets.NEON_PROJECT_ID }}
           branch_name: preview/e2e-${{ github.sha }}
           api_key: ${{ secrets.NEON_API_KEY }}
+          expires_at: ${{ env.EXPIRES_AT }}
 
       - name: Push Database Schema
         continue-on-error: true
@@ -53,7 +58,7 @@ jobs:
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url }}
           SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"
           ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only"
-          INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
+          INITIAL_ADMIN_EMAIL: "hateem@wear-run.com"
           CLOUD_TASKS_AUDIENCE: "placeholder"
           CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
 
@@ -63,7 +68,7 @@ jobs:
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url }}
           SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"
           ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only"
-          INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
+          INITIAL_ADMIN_EMAIL: "hateem@wear-run.com"
 
       - name: "🚀 Start Production Server for E2E"
         env:
@@ -74,7 +79,7 @@ jobs:
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url }}
           SESSION_SECRET: "mock_session_secret_for_testing_purposes_only_must_be_48_chars_long"
           ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only_must_be_32_chars"
-          INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
+          INITIAL_ADMIN_EMAIL: "hateem@wear-run.com"
           CLOUD_TASKS_AUDIENCE: "placeholder"
           CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
         run: |
@@ -90,7 +95,7 @@ jobs:
           DATABASE_URL: ${{ steps.create_neon_branch.outputs.db_url }}
           SESSION_SECRET: "mock_session_secret_for_testing_purposes_only_must_be_48_chars_long"
           ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only_must_be_32_chars"
-          INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
+          INITIAL_ADMIN_EMAIL: "hateem@wear-run.com"
 
       - name: 📤 Upload Artifacts (Always)
         if: always()
@@ -101,3 +106,12 @@ jobs:
             e2e/artifacts/
             playwright-report/
           retention-days: 14
+
+      - name: 🧹 Cleanup Neon Preview Branch
+        if: always() && steps.create_neon_branch.outputs.branch_id != ''
+        continue-on-error: true
+        run: |
+          curl -s -X DELETE \
+            "https://console.neon.tech/api/v2/projects/${{ secrets.NEON_PROJECT_ID }}/branches/${{ steps.create_neon_branch.outputs.branch_id }}" \
+            -H "Authorization: Bearer ${{ secrets.NEON_API_KEY }}" \
+            -H "Accept: application/json"

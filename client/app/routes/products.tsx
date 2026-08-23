@@ -377,7 +377,10 @@ export default function Component() {
   const selectedCategoryObj = categories.find((c) => c.id.toString() === selectedCategory);
 
   return (
-    <main id="main-content" className="min-h-screen bg-muted/30 pt-production-header">
+    <main
+      id="main-content"
+      className="min-h-screen bg-muted/30 pt-production-header overflow-x-hidden"
+    >
       <GlobalErrorBoundary>
         <Suspense fallback={<ProductsLoader />}>
           {/* SEO Component */}

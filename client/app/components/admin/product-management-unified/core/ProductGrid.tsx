@@ -349,7 +349,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
         <Button
           data-testid="new-product-button"
           onClick={onProductCreate}
-          className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border-0"
+          className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 border-0"
         >
           <Plus className="mr-2 h-4 w-4" />
           New Product
@@ -485,7 +485,7 @@ export function ProductGrid({ onProductSelect, onProductEdit, onProductCreate }:
 
         {/* Active Filters */}
         {(searchQuery || categoryFilter !== "all" || statusFilter !== "all") && (
-          <div className="flex flex-wrap gap-2 px-6 pb-6 pt-0 mt-custom-space-58">
+          <div className="flex flex-wrap gap-2 px-6 pb-6 pt-0 mt-[-16px]">
             {searchQuery && (
               <Badge
                 variant="outline"

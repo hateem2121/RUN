@@ -9,26 +9,22 @@ export default function Component() {
     {
       label: "Getting Started",
       href: "/developer",
-      icon: <IconBook className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Authentication",
       href: "/developer/guides/authentication",
-      icon: (
-        <IconTerminal2 className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
+      icon: <IconTerminal2 className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Webhooks",
       href: "/developer/guides/webhooks",
-      icon: (
-        <IconWebhook className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
+      icon: <IconWebhook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Playground",
       href: "/developer/playground",
-      icon: <IconCode className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: <IconCode className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
   ];
   const [open, setOpen] = useState(false);
@@ -53,7 +49,7 @@ export default function Component() {
       </Sidebar>
       <main
         id="main-content"
-        className="flex-1 overflow-y-auto bg-white dark:bg-neutral-900 p-4 md:p-10 outline-none"
+        className="flex-1 overflow-y-auto bg-white dark:bg-neutral-900 p-4 md:p-10 outline-hidden"
       >
         <div className="max-w-4xl mx-auto">
           <Outlet />

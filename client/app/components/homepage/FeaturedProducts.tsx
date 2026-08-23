@@ -66,7 +66,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
         <div className="mb-16 flex items-end justify-between border-b border-foreground/10 pb-8">
           <h2
             id="featured-products-heading"
-            className="text-custom-space-136 leading-custom-misc-150 font-bold uppercase md:text-custom-space-137"
+            className="text-[12vw] leading-[0.9] font-bold uppercase md:text-[5vw]"
           >
             {settings?.title || "Archive"} <br /> 24/25
           </h2>

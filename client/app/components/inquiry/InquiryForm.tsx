@@ -32,7 +32,7 @@ export function InquiryForm({ form, onFormSubmit }: InquiryFormProps) {
                   placeholder="e.g. John Doe"
                 />
               </FormControl>
-              <FormMessage className="text-custom-space-158 uppercase tracking-tighter" />
+              <FormMessage className="text-[10px] uppercase tracking-tighter" />
             </FormItem>
           )}
         />
@@ -52,7 +52,7 @@ export function InquiryForm({ form, onFormSubmit }: InquiryFormProps) {
                   placeholder="e.g. Acme Corp"
                 />
               </FormControl>
-              <FormMessage className="text-custom-space-159 uppercase tracking-tighter" />
+              <FormMessage className="text-[10px] uppercase tracking-tighter" />
             </FormItem>
           )}
         />
@@ -73,7 +73,7 @@ export function InquiryForm({ form, onFormSubmit }: InquiryFormProps) {
                   placeholder="john@company.com"
                 />
               </FormControl>
-              <FormMessage className="text-custom-space-160 uppercase tracking-tighter" />
+              <FormMessage className="text-[10px] uppercase tracking-tighter" />
             </FormItem>
           )}
         />
@@ -94,7 +94,7 @@ export function InquiryForm({ form, onFormSubmit }: InquiryFormProps) {
                   placeholder="Describe your production needs, fabric preferences, or specific timeline requirements..."
                 />
               </FormControl>
-              <FormMessage className="text-custom-space-161 uppercase tracking-tighter" />
+              <FormMessage className="text-[10px] uppercase tracking-tighter" />
             </FormItem>
           )}
         />

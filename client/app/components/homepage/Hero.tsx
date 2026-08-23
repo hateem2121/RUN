@@ -121,8 +121,8 @@ export const Hero: React.FC = () => {
       </div>
 
       {/* Hero Content */}
-      <div className="z-elevated pointer-events-none absolute inset-0 flex items-center justify-center md:pt-0 pt-24">
-        <div className="flex flex-col items-center justify-center px-4 text-center mb-20 md:mb-0">
+      <div className="z-elevated pointer-events-none absolute inset-0 flex items-center justify-center pt-28 md:pt-32 pb-12">
+        <div className="flex flex-col items-center justify-center px-4 text-center mb-12 md:mb-0">
           <h1
             ref={textContainerRef}
             className="flex flex-col items-center justify-center perspective-1000"
@@ -130,7 +130,7 @@ export const Hero: React.FC = () => {
             {heroLines.map((line: string, i: number) => (
               <span
                 key={i}
-                className="hero-line block my-0 md:-my-2 overflow-visible py-2 text-foreground font-bold tracking-tighter leading-custom-misc-151 md:leading-custom-misc-152 text-custom-space-138 sm:text-custom-space-139 md:text-custom-space-140 lg:text-custom-space-141 xl:text-custom-space-142"
+                className="hero-line block my-0 md:-my-2 overflow-visible py-2 text-foreground font-bold tracking-tighter text-display-xl uppercase font-neue-stance"
               >
                 {line}
               </span>
@@ -139,7 +139,7 @@ export const Hero: React.FC = () => {
 
           {/* CMS Subtitle */}
           {heroData?.subtitle && (
-            <p className="hero-subtitle mt-6 max-w-xl text-muted-foreground text-base md:text-lg leading-relaxed tracking-wide">
+            <p className="hero-subtitle mt-6 md:mt-8 max-w-xl text-muted-foreground text-base md:text-lg leading-relaxed tracking-wide">
               {heroData.subtitle}
             </p>
           )}
@@ -162,7 +162,7 @@ export const Hero: React.FC = () => {
         className="z-sticky pointer-events-auto absolute right-8 bottom-8 hidden md:block"
         aria-hidden="true"
       >
-        <div className="relative h-24 w-24 animate-custom-misc-153">
+        <div className="relative h-24 w-24 animate-[spin_10s_linear_infinite]">
           <svg viewBox="0 0 100 100" className="h-full w-full fill-black dark:fill-white">
             <title>Scroll Down</title>
             <path

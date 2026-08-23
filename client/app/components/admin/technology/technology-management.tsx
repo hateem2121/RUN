@@ -57,7 +57,7 @@ export function TechnologyManagement() {
       {/* Premium Sticky Header AI-Standard */}
       <div className="z-10 sticky top-0 -mx-6 mb-6 flex items-center justify-between border-b border-white/5 bg-black/60 px-6 py-5 backdrop-blur-xl">
         <div className="flex items-center gap-4">
-          <div className="size-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shadow-custom-misc-144">
+          <div className="size-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shadow-[0_0_20px_rgba(0,212,255,0.1)]">
             <Cpu className="h-6 w-6 text-cyan-400" />
           </div>
           <div>
@@ -76,7 +76,7 @@ export function TechnologyManagement() {
             <input
               type="text"
               placeholder="Search tech stack..."
-              className="bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-cyan-500/50 w-64 transition-all"
+              className="bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:outline-hidden focus:ring-1 focus:ring-cyan-500/50 w-64 transition-all"
             />
           </div>
           <div className="flex items-center gap-3">
@@ -114,7 +114,7 @@ export function TechnologyManagement() {
               value={tab.id}
               className={cn(
                 "flex-1 flex flex-col sm:flex-row items-center justify-center gap-2 py-3 px-4 text-xxs sm:text-xs font-bold uppercase tracking-widest transition-all rounded-xl",
-                "data-custom-misc-145:bg-cyan-600 data-custom-misc-146:text-white data-custom-misc-147:shadow-custom-misc-148",
+                "data-[state=active]:bg-cyan-600 data-[state=active]:text-white data-[state=active]:shadow-[0_0_20px_rgba(8,145,178,0.3)]",
                 "text-admin-muted hover:text-white hover:bg-white/5",
               )}
             >
@@ -125,27 +125,36 @@ export function TechnologyManagement() {
         </TabsList>
 
         <div className="mt-8">
-          <TabsContent value="hero" className="mt-0 focus-visible:outline-none outline-none">
+          <TabsContent value="hero" className="mt-0 focus-visible:outline-hidden outline-hidden">
             <TechnologyHeroManagement />
           </TabsContent>
 
-          <TabsContent value="innovations" className="mt-0 focus-visible:outline-none outline-none">
+          <TabsContent
+            value="innovations"
+            className="mt-0 focus-visible:outline-hidden outline-hidden"
+          >
             <TechnologyInnovationManagement />
           </TabsContent>
 
-          <TabsContent value="equipment" className="mt-0 focus-visible:outline-none outline-none">
+          <TabsContent
+            value="equipment"
+            className="mt-0 focus-visible:outline-hidden outline-hidden"
+          >
             <TechnologyEquipmentManagement />
           </TabsContent>
 
-          <TabsContent value="research" className="mt-0 focus-visible:outline-none outline-none">
+          <TabsContent
+            value="research"
+            className="mt-0 focus-visible:outline-hidden outline-hidden"
+          >
             <TechnologyResearchManagement />
           </TabsContent>
 
-          <TabsContent value="roadmap" className="mt-0 focus-visible:outline-none outline-none">
+          <TabsContent value="roadmap" className="mt-0 focus-visible:outline-hidden outline-hidden">
             <TechnologyRoadmapManagement />
           </TabsContent>
 
-          <TabsContent value="cta" className="mt-0 focus-visible:outline-none outline-none">
+          <TabsContent value="cta" className="mt-0 focus-visible:outline-hidden outline-hidden">
             <TechnologyCtaManagement />
           </TabsContent>
         </div>

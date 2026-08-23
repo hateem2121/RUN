@@ -262,7 +262,7 @@ export default function Component() {
     <HydrationBoundary state={loaderData?.dehydratedState}>
       <div className="min-h-screen bg-linear-to-b from-muted/30 to-background">
         {/* Hero Section */}
-        <section className="px-4 pt-24 pb-12">
+        <section className="px-4 pt-28 md:pt-32 pb-12">
           <div className="mx-auto max-w-7xl">
             <div ref={heroRef} className="mb-8 text-center">
               <Typography.H1 className="mb-4 font-bold text-4xl text-foreground md:text-5xl">

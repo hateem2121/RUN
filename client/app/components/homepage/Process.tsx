@@ -153,7 +153,7 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
 
         {/* Decorative Drawing SVG - Desktop Only */}
         <div
-          className="pointer-events-none absolute top-1/2 left-0 z-base hidden h-custom-space-146 w-full -translate-y-1/2 opacity-30 md:block"
+          className="pointer-events-none absolute top-1/2 left-0 z-base hidden h-[300px] w-full -translate-y-1/2 opacity-30 md:block"
           aria-hidden="true"
         >
           <svg className="h-full w-full" viewBox="0 0 1000 200" preserveAspectRatio="none">
@@ -177,7 +177,7 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
           {steps.map((step, index) => (
             <div
               key={index}
-              className="process-card relative z-default flex min-h-loading-center w-full flex-shrink-0 items-center justify-center border-border border-b p-4 md:h-full md:min-h-0 md:w-screen md:border-r md:border-b-0 md:p-12"
+              className="process-card relative z-default flex min-h-loading-center w-full shrink-0 items-center justify-center border-border border-b p-4 md:h-full md:min-h-0 md:w-screen md:border-r md:border-b-0 md:p-12"
             >
               <div className="grid w-full max-w-6xl grid-cols-1 gap-8 overflow-hidden rounded-xl border border-border/50 bg-surface/80 p-6 backdrop-blur-md content-container md:grid-cols-2 md:gap-12 md:p-12">
                 {/* Image Side */}
@@ -199,14 +199,14 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
                   <div className="absolute inset-0 bg-surface/20 transition-all duration-500 group-hover:bg-transparent" />
 
                   {/* Big Number Overlay */}
-                  <span className="absolute top-0 left-0 p-4 font-bold text-custom-space-147 text-foreground leading-none opacity-50 mix-blend-overlay md:text-custom-space-148">
+                  <span className="absolute top-0 left-0 p-4 font-bold text-[15vw] text-foreground leading-none opacity-50 mix-blend-overlay md:text-[8vw]">
                     {step.id}
                   </span>
                 </div>
 
                 {/* Content Side */}
                 <div className="relative flex flex-col justify-center">
-                  <h3 className="mb-4 font-bold text-custom-space-149 uppercase leading-custom-misc-155 md:mb-8 md:text-custom-space-150">
+                  <h3 className="mb-4 font-bold text-[10vw] uppercase leading-[0.9] md:mb-8 md:text-[4vw]">
                     {step.title}
                   </h3>
                   <p className="mb-8 max-w-md font-light text-base text-muted-foreground leading-relaxed md:text-xl">

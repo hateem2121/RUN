@@ -120,7 +120,7 @@ export default function Component() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-custom-space-302">Measurement</TableHead>
+              <TableHead className="w-[150px]">Measurement</TableHead>
               {sizes.map((size) => (
                 <TableHead key={size} className="text-center">
                   {size}

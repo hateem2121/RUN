@@ -463,7 +463,7 @@ export function MediaViewerModal() {
 
           <div className="flex min-h-0 flex-1 overflow-hidden pt-4">
             {/* Media display */}
-            <div className="mr-4 flex max-h-full max-w-custom-misc-64 flex-1 items-center justify-center rounded-lg bg-white/[0.03]">
+            <div className="mr-4 flex max-h-full max-w-[calc(100%-17rem)] flex-1 items-center justify-center rounded-lg bg-white/[0.03]">
               {selectedAsset && (
                 <div className="flex h-full w-full items-center justify-center">
                   <UnifiedMediaTheater

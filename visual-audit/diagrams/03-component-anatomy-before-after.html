@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Component Anatomy — Broken vs Fixed Wireframes</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --paper: #f8fafc;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --accent-red: #ef4444;
+    --accent-green: #10b981;
+    --accent-blue: #3b82f6;
+    --card-bg: #ffffff;
+    --border: #e2e8f0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Geist', sans-serif;
+    background-color: var(--paper);
+    color: var(--ink);
+    padding: 2.5rem 1.5rem;
+    line-height: 1.6;
+  }
+  .container { max-width: 1040px; margin: 0 auto; }
+  .eyebrow {
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent-blue);
+    margin-bottom: 0.5rem;
+  }
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.75rem;
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    color: var(--ink);
+  }
+  .lead {
+    font-size: 1.125rem;
+    color: var(--muted);
+    max-width: 760px;
+    margin-bottom: 2.5rem;
+  }
+  .section-block {
+    margin-bottom: 3rem;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .wireframe-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  @media (max-width: 768px) { .wireframe-grid { grid-template-columns: 1fr; } }
+  .wireframe-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+  }
+  .wireframe-card.bad {
+    border: 2px solid #fca5a5;
+    background: #fffafa;
+  }
+  .wireframe-card.good {
+    border: 2px solid #86efac;
+    background: #f0fdf4;
+  }
+  .badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .badge.bad { background: #fee2e2; color: #991b1b; }
+  .badge.good { background: #dcfce7; color: #166534; }
+  
+  /* Mock UI styles */
+  .mock-viewport {
+    background: #f1f5f9;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    margin-top: 1.5rem;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .mock-switch-track {
+    width: 48px;
+    height: 26px;
+    background: #cbd5e1;
+    border-radius: 999px;
+    padding: 3px;
+    display: inline-block;
+  }
+  .mock-switch-thumb {
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 999px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="eyebrow">Visual Side-by-Side • Component Anatomy</div>
+  <h1>What's Broken vs. What It's Supposed to Look Like</h1>
+  <p class="lead">
+    Four real-world examples comparing how the website currently renders against how it was originally designed.
+  </p>
+
+  <!-- Issue 1: Hero H1 Headline -->
+  <div class="section-block">
+    <div class="section-title">1. Homepage Hero Headline</div>
+    <div class="wireframe-grid">
+      <div class="wireframe-card bad">
+        <span class="badge bad">🔴 Currently Live</span>
+        <h4 style="color: #991b1b;">Broken by Phantom Classes + DB Test String</h4>
+        <div class="mock-viewport">
+          <p style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">
+            TEST-UI-SYNC-1786957328937
+          </p>
+          <p style="font-size: 13px; color: #64748b; max-width: 320px;">
+            Engineering high-performance athletic apparel with precision...
+          </p>
+        </div>
+        <p style="font-size: 0.85rem; color: #991b1b; margin-top: 0.75rem;">
+          ❌ Title is only 16px (same size as body text!) and shows raw database test junk.
+        </p>
+      </div>
+
+      <div class="wireframe-card good">
+        <span class="badge good">🟢 Intended Design</span>
+        <h4 style="color: #166534;">Fixed with Fluid Clamp + Clean Headline</h4>
+        <div class="mock-viewport">
+          <p style="font-size: 32px; font-weight: 900; line-height: 1.05; letter-spacing: -0.04em; color: #0f172a; text-transform: uppercase; margin-bottom: 0.5rem;">
+            CRAFTING EXCELLENCE<br/>IN EVERY THREAD
+          </p>
+          <p style="font-size: 13px; color: #64748b; max-width: 320px;">
+            Engineering high-performance athletic apparel with precision...
+          </p>
+        </div>
+        <p style="font-size: 0.85rem; color: #166534; margin-top: 0.75rem;">
+          ✓ Bold, grand architectural typography filling the screen as a luxury hero.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Issue 2: Button Icons -->
+  <div class="section-block">
+    <div class="section-title">2. Missing Icon Fonts vs. Lucide Icons</div>
+    <div class="wireframe-grid">
+      <div class="wireframe-card bad">
+        <span class="badge bad">🔴 Currently Live</span>
+        <h4 style="color: #991b1b;">Literal Text String Leak</h4>
+        <div class="mock-viewport">
+          <div style="display: inline-flex; align-items: center; gap: 8px; background: #0047ab; color: white; padding: 12px 24px; border-radius: 4px; font-weight: 700; font-size: 13px;">
+            EXPLORE INNOVATIONS <span style="font-size: 11px; background: #002d6b; padding: 2px 4px; border-radius: 2px;">ARROW_DOWNWARD</span>
+          </div>
+        </div>
+        <p style="font-size: 0.85rem; color: #991b1b; margin-top: 0.75rem;">
+          ❌ Prints the plain text word "ARROW_DOWNWARD" because Material Symbols font is missing.
+        </p>
+      </div>
+
+      <div class="wireframe-card good">
+        <span class="badge good">🟢 Intended Design</span>
+        <h4 style="color: #166534;">Clean Lucide SVG Icon</h4>
+        <div class="mock-viewport">
+          <div style="display: inline-flex; align-items: center; gap: 8px; background: #0047ab; color: white; padding: 12px 24px; border-radius: 4px; font-weight: 700; font-size: 13px;">
+            EXPLORE INNOVATIONS 
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <polyline points="19 12 12 19 5 12"></polyline>
+            </svg>
+          </div>
+        </div>
+        <p style="font-size: 0.85rem; color: #166534; margin-top: 0.75rem;">
+          ✓ Sharp vector arrow renders instantly on all devices without font dependencies.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Issue 3: Product Cards Alignment -->
+  <div class="section-block">
+    <div class="section-title">3. Product Card Grid Alignment</div>
+    <div class="wireframe-grid">
+      <div class="wireframe-card bad">
+        <span class="badge bad">🔴 Currently Live</span>
+        <h4 style="color: #991b1b;">Jagged, Unequal Heights</h4>
+        <div class="mock-viewport" style="flex-direction: row; gap: 12px; align-items: flex-start;">
+          <div style="background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px; width: 140px; text-align: left;">
+            <div style="background: #e2e8f0; height: 70px; border-radius: 4px; margin-bottom: 6px;"></div>
+            <p style="font-size: 11px; font-weight: 700;">SHORT TITLE</p>
+            <div style="background: #3b82f6; color: white; font-size: 9px; padding: 4px; text-align: center; margin-top: 20px; border-radius: 3px;">QUOTE</div>
+          </div>
+          <div style="background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px; width: 140px; text-align: left;">
+            <div style="background: #e2e8f0; height: 70px; border-radius: 4px; margin-bottom: 6px;"></div>
+            <p style="font-size: 11px; font-weight: 700;">PRO LONG TITLE WITH 3 LINES OF TEXT</p>
+            <div style="background: #3b82f6; color: white; font-size: 9px; padding: 4px; text-align: center; margin-top: 6px; border-radius: 3px;">QUOTE</div>
+          </div>
+        </div>
+        <p style="font-size: 0.85rem; color: #991b1b; margin-top: 0.75rem;">
+          ❌ Buttons don't line up horizontally because cards lack <code>flex-col h-full</code> and <code>mt-auto</code>.
+        </p>
+      </div>
+
+      <div class="wireframe-card good">
+        <span class="badge good">🟢 Intended Design</span>
+        <h4 style="color: #166534;">Pinned Equal-Height Grid</h4>
+        <div class="mock-viewport" style="flex-direction: row; gap: 12px; align-items: stretch;">
+          <div style="background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px; width: 140px; text-align: left; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="background: #e2e8f0; height: 70px; border-radius: 4px; margin-bottom: 6px;"></div>
+              <p style="font-size: 11px; font-weight: 700;">SHORT TITLE</p>
+            </div>
+            <div style="background: #3b82f6; color: white; font-size: 9px; padding: 4px; text-align: center; margin-top: auto; border-radius: 3px;">QUOTE</div>
+          </div>
+          <div style="background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px; width: 140px; text-align: left; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="background: #e2e8f0; height: 70px; border-radius: 4px; margin-bottom: 6px;"></div>
+              <p style="font-size: 11px; font-weight: 700;">PRO LONG TITLE WITH 3 LINES OF TEXT</p>
+            </div>
+            <div style="background: #3b82f6; color: white; font-size: 9px; padding: 4px; text-align: center; margin-top: auto; border-radius: 3px;">QUOTE</div>
+          </div>
+        </div>
+        <p style="font-size: 0.85rem; color: #166534; margin-top: 0.75rem;">
+          ✓ All buttons are perfectly pinned to the bottom in a razor-sharp straight horizontal line.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

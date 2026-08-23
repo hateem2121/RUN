@@ -368,7 +368,7 @@ function useDeviceCapabilities() {
     if (!hasIntersected) {
       return React.createElement("div", {
         ref: containerRef,
-        className: "min-h-custom-space-280",
+        className: "min-h-[200px]",
       });
     }
 

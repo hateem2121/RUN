@@ -24,8 +24,8 @@ WHERE label ILIKE '%Contact%' OR label ILIKE '%Support%';
 
 -- 2. Update Homepage Hero for Premium Feel
 UPDATE homepage_hero
-SET title = 'Next-Generation Sportswear Manufacturing',
-    subtitle = 'Engineering high-performance athletic apparel with precision, sustainability, and ethical excellence since 1889.',
+SET title = 'ENGINEERING HIGH-PERFORMANCE ATHLETIC APPAREL',
+    subtitle = 'Sustainable, high-performance, ethically manufactured sportswear engineered with biomechanical precision since 1889.',
     cta_text = 'EXPLORE OUR CAPABILITIES'
 WHERE is_active = true;
 
@@ -33,7 +33,7 @@ WHERE is_active = true;
 UPDATE about_hero
 SET title = 'A Legacy of Excellence in Apparel Engineering',
     subtitle = 'From heritage craftsmanship to modern innovation, we define the future of B2B sportswear.',
-    description = 'Based in Faisalabad, RUN APPAREL (PVT) LTD operates one of the most advanced vertical manufacturing facilities in the region, serving global performance brands with speed and scale.'
+    description = 'Based in Sialkot, Pakistan, RUN APPAREL (PVT) LTD (a division of Durus Industries, est. 1889) operates state-of-the-art manufacturing facilities powered by 80% solar energy, delivering 100,000+ units monthly to global athletic brands.'
 WHERE is_active = true;
 
 -- 4. Clean up Product Placeholders

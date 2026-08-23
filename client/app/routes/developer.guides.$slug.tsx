@@ -170,7 +170,7 @@ function verify(payload, signature, secret) {
                 className="p-3 rounded-lg border bg-card flex items-center justify-between"
               >
                 <code className="text-xs text-blue-600 dark:text-blue-400">{event}</code>
-                <Badge variant="outline" className="text-custom-space-294">
+                <Badge variant="outline" className="text-[10px]">
                   Active
                 </Badge>
               </div>
@@ -196,7 +196,7 @@ function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2",
         variant === "outline"
           ? "border text-foreground"
           : "border-transparent bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100",

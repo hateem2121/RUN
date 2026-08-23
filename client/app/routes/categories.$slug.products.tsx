@@ -280,10 +280,7 @@ export default function CategoryProductsPage() {
 
                 {/* Sort */}
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger
-                    className="w-full sm:w-custom-space-288"
-                    aria-label="Sort products"
-                  >
+                  <SelectTrigger className="w-full sm:w-[150px]" aria-label="Sort products">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

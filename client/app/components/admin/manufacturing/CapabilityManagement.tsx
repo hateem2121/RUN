@@ -135,7 +135,7 @@ function SortableCapabilityItem({
           <GripVertical className="h-5 w-5" />
         </div>
 
-        <div className="size-12 rounded-xl bg-brand-manufacturing/10 border border-brand-manufacturing/20 flex items-center justify-center flex-shrink-0">
+        <div className="size-12 rounded-xl bg-brand-manufacturing/10 border border-brand-manufacturing/20 flex items-center justify-center shrink-0">
           <IconComponent className="size-6 text-brand-manufacturing" />
         </div>
 
@@ -519,7 +519,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
           </Button>
         </div>
 
-        <div className="min-h-custom-space-36">
+        <div className="min-h-[400px]">
           {capabilitiesLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="flex space-x-2">
@@ -599,7 +599,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
             </div>
 
             <Form {...form}>
-              <form action={formAction} className="flex-1 overflow-y-auto max-h-custom-space-37">
+              <form action={formAction} className="flex-1 overflow-y-auto max-h-[70vh]">
                 <div className="p-8 space-y-8">
                   <div
                     className={cn("grid gap-10", showPreview ? "lg:grid-cols-2" : "grid-cols-1")}
@@ -619,7 +619,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                                 <FormControl>
                                   <Input
                                     {...field}
-                                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-7/50 placeholder:text-white/20"
+                                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 placeholder:text-white/20"
                                     placeholder="e.g., Advanced Fabric Bonding"
                                   />
                                 </FormControl>
@@ -640,7 +640,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                                 </FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                   <FormControl>
-                                    <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-custom-space-38 focus:ring-custom-color-8/50">
+                                    <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-[50px] focus:ring-[#D4A853]/50">
                                       <SelectValue />
                                     </SelectTrigger>
                                   </FormControl>
@@ -678,7 +678,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                                   <Input
                                     {...field}
                                     value={field.value || ""}
-                                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-9/50 placeholder:text-white/20"
+                                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 placeholder:text-white/20"
                                     placeholder="e.g., 100,000 units/year"
                                   />
                                 </FormControl>
@@ -701,7 +701,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                                   <Input
                                     {...field}
                                     value={field.value || ""}
-                                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-10/50 placeholder:text-white/20"
+                                    className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 placeholder:text-white/20"
                                     placeholder="e.g., Technical Teamwear"
                                   />
                                 </FormControl>
@@ -726,7 +726,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                                 <Textarea
                                   {...field}
                                   value={field.value || ""}
-                                  className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-39 focus:ring-custom-color-11/50 placeholder:text-white/20 resize-none"
+                                  className="bg-white/5 border-white/10 text-white rounded-xl min-h-[120px] focus:ring-[#D4A853]/50 placeholder:text-white/20 resize-none"
                                   placeholder="Detail this technical capability..."
                                 />
                               </FormControl>
@@ -747,7 +747,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                                 name={field.name}
                                 checked={field.value ?? true}
                                 onCheckedChange={field.onChange}
-                                className="data-custom-misc-47:bg-brand-manufacturing"
+                                className="data-[state=checked]:bg-brand-manufacturing"
                               />
                             </FormControl>
                             <FormLabel className="text-xs font-bold text-slate-300 uppercase tracking-wider cursor-pointer mt-0">
@@ -796,7 +796,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                                   label: e.target.value,
                                 })
                               }
-                              className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-custom-color-12/50"
+                              className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-[#D4A853]/50"
                             />
                             <Input
                               placeholder="Value (e.g., ISO-9001)"
@@ -807,7 +807,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                                   value: e.target.value,
                                 })
                               }
-                              className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-custom-color-13/50"
+                              className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-[#D4A853]/50"
                             />
                             <Button
                               type="button"
@@ -847,7 +847,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                               placeholder="Add equipment (e.g., CNC Laser Cutter)"
                               value={newEquipment}
                               onChange={(e) => setNewEquipment(e.target.value)}
-                              className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-custom-color-14/50"
+                              className="bg-white/5 border-white/10 text-white rounded-xl h-11 focus:ring-[#D4A853]/50"
                             />
                             <Button
                               type="button"
@@ -931,7 +931,7 @@ export function CapabilityManagement({ mediaAssets = [] }: CapabilityManagementP
                   <Button
                     type="submit"
                     disabled={isPending}
-                    className="bg-primary hover:bg-primary/90 text-white rounded-xl px-8 py-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all outline-none ring-0 border-0"
+                    className="bg-primary hover:bg-primary/90 text-white rounded-xl px-8 py-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all outline-hidden ring-0 border-0"
                   >
                     {isPending
                       ? "Syncing..."

@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@reference "./theme.css";
+
 /* =========================
      Performance Utilities
      Migrated from performance-optimizations.css
@@ -62,11 +65,9 @@
   padding: calc(var(--card-width) / 8);
 }
 
-@media (prefers-color-scheme: dark) {
-  .glow-content {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(17, 24, 39, 0.7);
-  }
+:where(.dark, .dark *) .glow-content {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(17, 24, 39, 0.7);
 }
 
 .glow-content * {

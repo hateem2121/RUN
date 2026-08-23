@@ -113,7 +113,7 @@ export function AnimatedCardWrapper({
   return (
     <div
       ref={ref}
-      className={`${className}${enableHover ? " hover:scale-custom-misc-361 hover:-translate-y-0.5" : ""} transition-transform duration-200 ease-out active:scale-custom-misc-362`}
+      className={`${className}${enableHover ? " hover:scale-[1.02] hover:-translate-y-0.5" : ""} transition-transform duration-200 ease-out active:scale-[0.98]`}
       style={{ willChange: "transform, opacity" }}
     >
       {children}

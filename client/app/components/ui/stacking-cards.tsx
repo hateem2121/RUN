@@ -161,7 +161,7 @@ function Card({
               <div className="flex shrink-0 items-center gap-2 text-muted-foreground dark:text-white/80">
                 <button
                   type="button"
-                  className="cursor-pointer rounded-sm text-sm underline transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="cursor-pointer rounded-sm text-sm underline transition-colors hover:text-white focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                   aria-label={`Learn more about our ${title} capabilities`}
                 >
                   Learn more about our capabilities

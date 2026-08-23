@@ -177,7 +177,7 @@ export function TechnologyHeroManagement({
               <Button
                 onClick={handleHeroSubmit}
                 disabled={!hasChanges || updateHeroMutation.isPending}
-                className="h-11 bg-cyan-600 hover:bg-cyan-700 text-white px-8 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-cyan-500/20 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 border-0"
+                className="h-11 bg-cyan-600 hover:bg-cyan-700 text-white px-8 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-cyan-500/20 active:scale-95 transition-all outline-hidden focus-visible:ring-2 focus-visible:ring-cyan-500 border-0"
               >
                 {updateHeroMutation.isPending ? (
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white" />
@@ -236,7 +236,7 @@ export function TechnologyHeroManagement({
                   id="description"
                   value={heroData.description}
                   onChange={(e) => handleInputChange({ description: e.target.value })}
-                  className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-113 focus:ring-cyan-500/50 placeholder:text-white/20 resize-none"
+                  className="bg-white/5 border-white/10 text-white rounded-xl min-h-[120px] focus:ring-cyan-500/50 placeholder:text-white/20 resize-none"
                   placeholder="Detail the technological impact and mission parameters..."
                   rows={4}
                 />
@@ -354,7 +354,7 @@ export function TechnologyHeroManagement({
                   <div
                     className={cn(
                       "size-2 rounded-full",
-                      heroData.isActive ? "bg-cyan-500 animate-pulse" : "bg-custom-color-160",
+                      heroData.isActive ? "bg-cyan-500 animate-pulse" : "bg-[#68869A]",
                     )}
                   />
                   <Label
@@ -368,7 +368,7 @@ export function TechnologyHeroManagement({
                   id="isActive"
                   checked={heroData.isActive}
                   onCheckedChange={(checked) => handleInputChange({ isActive: checked })}
-                  className="data-custom-misc-121:bg-cyan-600"
+                  className="data-[state=checked]:bg-cyan-600"
                 />
               </div>
             </div>
@@ -381,7 +381,7 @@ export function TechnologyHeroManagement({
                     Mobile Viewport Simulation
                   </span>
                 </div>
-                <div className="aspect-custom-misc-122 max-w-custom-space-114 mx-auto rounded-huge border-custom-space-115 border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5">
+                <div className="aspect-[9/16] max-w-[300px] mx-auto rounded-huge border-[8px] border-white/10 bg-black overflow-hidden relative shadow-2xl ring-1 ring-white/5">
                   <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 z-10" />
                   <div className="absolute inset-0 z-0 bg-cyan-900/20 animate-pulse" />
                   {selectedBackgroundMedia?.type === "image" && (

@@ -321,7 +321,7 @@ function MediaLibraryMainContent({
           {/* Mobile/Tablet modal overlay with proper accessibility */}
           <button
             type="button"
-            className="fixed inset-0 z-modal-nested bg-black/50 lg:hidden border-none outline-none"
+            className="fixed inset-0 z-modal-nested bg-black/50 lg:hidden border-none outline-hidden"
             onClick={() => updateState("showFiltersPanel", false)}
             aria-label="Close filters panel"
           >
@@ -330,7 +330,7 @@ function MediaLibraryMainContent({
               aria-modal="true"
               aria-labelledby="filters-panel-title"
               tabIndex={-1}
-              className="fixed inset-y-0 left-0 w-80 max-w-md bg-custom-color-30 shadow-xl sm:max-w-lg border-r border-white/5"
+              className="fixed inset-y-0 left-0 w-80 max-w-md bg-[#121212] shadow-xl sm:max-w-lg border-r border-white/5"
               onClick={(e) => e.stopPropagation()}
               onKeyDown={(e) => e.stopPropagation()}
             >

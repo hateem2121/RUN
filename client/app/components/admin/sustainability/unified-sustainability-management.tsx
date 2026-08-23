@@ -85,7 +85,7 @@ const SortableMetricItem = memo(function SortableMetricItem({
           <GripVertical className="h-5 w-5" />
         </button>
 
-        <div className="size-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+        <div className="size-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
           <IconComponent className="size-5 text-emerald-400" />
         </div>
 
@@ -161,7 +161,7 @@ const SortableInitiativeItem = memo(function SortableInitiativeItem({
           <GripVertical className="h-5 w-5" />
         </button>
 
-        <div className="size-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+        <div className="size-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
           <Leaf className="size-6 text-emerald-400" />
         </div>
 
@@ -237,7 +237,7 @@ const SortableGoalItem = memo(function SortableGoalItem({
           <GripVertical className="h-5 w-5" />
         </button>
 
-        <div className="size-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+        <div className="size-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
           <Target className="size-6 text-emerald-400" />
         </div>
 
@@ -270,8 +270,8 @@ const SortableGoalItem = memo(function SortableGoalItem({
                 className={cn(
                   "h-full transition-all duration-1000",
                   progressPercentage >= 100
-                    ? "bg-emerald-500 shadow-custom-misc-87"
-                    : "bg-emerald-500/70 shadow-custom-misc-88",
+                    ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                    : "bg-emerald-500/70 shadow-[0_0_8px_rgba(16,185,129,0.3)]",
                 )}
                 style={{ width: `${Math.min(progressPercentage, 100)}%` }}
               />
@@ -560,7 +560,7 @@ export function UnifiedSustainabilityManagement() {
           <Button
             onClick={handleSave}
             disabled={!hasUnsavedChanges || updateMutation.isPending}
-            className="h-11 bg-emerald-600 hover:bg-emerald-700 text-white px-8 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-emerald-500/20 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 border-0"
+            className="h-11 bg-emerald-600 hover:bg-emerald-700 text-white px-8 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-emerald-500/20 active:scale-95 transition-all outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500 border-0"
           >
             {updateMutation.isPending ? (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white" />
@@ -589,7 +589,7 @@ export function UnifiedSustainabilityManagement() {
               <TabsTrigger
                 key={tab.id}
                 value={tab.id}
-                className="flex-1 py-3 text-xxs uppercase font-bold tracking-widest data-custom-misc-89:bg-emerald-600 data-custom-misc-90:text-white transition-all rounded-xl"
+                className="flex-1 py-3 text-xxs uppercase font-bold tracking-widest data-[state=active]:bg-emerald-600 data-[state=active]:text-white transition-all rounded-xl"
               >
                 {tab.label}
               </TabsTrigger>

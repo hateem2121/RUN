@@ -84,9 +84,7 @@ export function ProductManagementUnified(_props: ProductManagementUnifiedProps) 
       >
         <div className="flex gap-6">
           {/* Main Product Grid */}
-          <div
-            className={`transition-all duration-300 ${showDetailsPanel ? "w-custom-space-55" : "w-full"}`}
-          >
+          <div className={`transition-all duration-300 ${showDetailsPanel ? "w-[40%]" : "w-full"}`}>
             <ProductErrorBoundary>
               <ProductGrid
                 onProductSelect={handleProductSelect}
@@ -98,7 +96,7 @@ export function ProductManagementUnified(_props: ProductManagementUnifiedProps) 
 
           {/* Details Panel */}
           {showDetailsPanel && selectedProduct && (
-            <div className="border-border w-custom-space-56 border-l pl-6">
+            <div className="border-border w-[60%] border-l pl-6">
               <Suspense fallback={<ModuleLoader />}>
                 <ProductDetailsPanel
                   product={selectedProduct}

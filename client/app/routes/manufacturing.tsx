@@ -233,7 +233,7 @@ function ManufacturingInner({ loaderData }: ManufacturingInnerProps) {
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data is hardcoded, not user input
         dangerouslySetInnerHTML={{ __html: generateStructuredData() }}
       />
-      <main className="min-h-screen bg-background text-foreground font-helvetica selection:bg-amber-500/30">
+      <main className="min-h-screen bg-background text-foreground font-helvetica selection:bg-amber-500/30 overflow-x-hidden w-full max-w-full">
         {/* Hero Section */}
         <ManufacturingErrorBoundary>
           <PublicHeroSection mediaAssets={mediaAssets} hero={hero || undefined} />

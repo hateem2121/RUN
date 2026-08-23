@@ -36,7 +36,7 @@ export function CertificationsTabContent({
   };
 
   return (
-    <TabsContent value="certifications" className="outline-none">
+    <TabsContent value="certifications" className="outline-hidden">
       <Card className="glass-premium p-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
@@ -84,7 +84,7 @@ export function CertificationsTabContent({
                   key={certificate.id}
                   onClick={() => toggleCertificate(certificate.id!)}
                   className={cn(
-                    "group relative cursor-pointer overflow-hidden rounded-2xl border transition-all duration-300 w-full text-left bg-transparent p-0 focus:outline-none focus:ring-2 focus:ring-emerald-500/50",
+                    "group relative cursor-pointer overflow-hidden rounded-2xl border transition-all duration-300 w-full text-left bg-transparent p-0 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/50",
                     isSelected
                       ? "bg-emerald-500/10 border-emerald-500/40 shadow-emerald-glow py-6 px-5"
                       : "bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/10 py-6 px-5",
@@ -104,7 +104,7 @@ export function CertificationsTabContent({
                     </div>
                     {isSelected && (
                       <div className="size-6 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/40 animate-in zoom-in duration-300">
-                        <Check className="h-3.5 w-3.5 stroke-custom-misc-75" />
+                        <Check className="h-3.5 w-3.5 stroke-[3]" />
                       </div>
                     )}
                   </div>
@@ -124,7 +124,7 @@ export function CertificationsTabContent({
                           ? new Date(certificate.issueDate).getFullYear()
                           : "N/A"}
                       </span>
-                      <span className="size-1 rounded-full bg-custom-color-52/30" />
+                      <span className="size-1 rounded-full bg-[#68869A]/30" />
                       <span className="text-xxs font-bold text-admin-muted uppercase tracking-widest">
                         Valid until{" "}
                         {certificate.expiryDate
@@ -149,7 +149,7 @@ export function CertificationsTabContent({
               <Award className="h-8 w-8 text-admin-muted/40" />
             </div>
             <h3 className="text-white font-bold mb-1">No Compliance Records Found</h3>
-            <p className="text-admin-muted text-sm max-w-custom-space-70">
+            <p className="text-admin-muted text-sm max-w-[280px]">
               Validation certificates must be initialised in the central Registry first.
             </p>
           </div>

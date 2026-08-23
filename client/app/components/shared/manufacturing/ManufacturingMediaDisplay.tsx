@@ -101,7 +101,7 @@ interface ManufacturingMediaDisplayProps {
           title="No Media"
           description="Content not configured"
           icon={ImageOff}
-          className="min-h-custom-misc-239 border-none bg-transparent p-4"
+          className="min-h-[auto] border-none bg-transparent p-4"
         />
       </div>
     );

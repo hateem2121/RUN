@@ -18,7 +18,7 @@ import { FooterInquiryForm } from "./FooterInquiryForm";
  */
 // Footer link variants for consistent styling
 const footerLinkVariants = cva(
-  "text-muted-foreground hover:text-primary origin-left transition-all duration-300 hover:scale-105 focus-visible:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+  "text-muted-foreground hover:text-primary origin-left transition-all duration-300 hover:scale-105 focus-visible:text-primary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
   {
     variants: {
       size: { default: "text-lg", sm: "text-sm", base: "text-base" },
@@ -85,7 +85,7 @@ export const Footer: React.FC = () => {
   return (
     <footer
       ref={footerRef}
-      className="bg-background text-foreground relative w-full isolate overflow-hidden px-4 pt-32 pb-0 md:px-8 min-h-custom-space-163 flex flex-col justify-between content-auto"
+      className="bg-background text-foreground relative w-full isolate overflow-hidden px-4 pt-32 pb-0 md:px-8 min-h-[600px] flex flex-col justify-between content-auto"
     >
       {/* SEO ENHANCEMENT: Render JSON-LD Structured Data */}
       {footerConfig?.structuredData && (
@@ -280,7 +280,7 @@ export const Footer: React.FC = () => {
                     <span className="text-foreground text-xs font-bold tracking-tighter uppercase">
                       {cert.name}
                     </span>
-                    <span className="text-muted-foreground text-custom-space-164 tracking-widest uppercase">
+                    <span className="text-muted-foreground text-[10px] tracking-widest uppercase">
                       {cert.issuingOrganization}
                     </span>
                   </div>
@@ -309,7 +309,7 @@ export const Footer: React.FC = () => {
             RIGHTS RESERVED.
           </p>
           {footerConfig?.brandSubtext && (
-            <p className="text-muted-foreground/50 font-mono text-custom-space-165 tracking-widest uppercase">
+            <p className="text-muted-foreground/50 font-mono text-[10px] tracking-widest uppercase">
               {footerConfig.brandSubtext}
             </p>
           )}
@@ -318,7 +318,7 @@ export const Footer: React.FC = () => {
 
       {/* Massive Parallax Logotype */}
       <div
-        className="z-elevated relative w-full text-center overflow-hidden translate-y-custom-space-166"
+        className="z-elevated relative w-full text-center overflow-hidden translate-y-[13%]"
         aria-hidden="true"
       >
         <div

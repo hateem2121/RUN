@@ -104,7 +104,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
   };
 
   return (
-    <TabsContent value="process-cards" className="mt-0 focus-visible:outline-none outline-none">
+    <TabsContent value="process-cards" className="mt-0 focus-visible:outline-hidden outline-hidden">
       <div className="space-y-6">
         <GlassCard className="p-8">
           <div className="mb-8 flex items-center justify-between">
@@ -124,7 +124,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                 setNewCard({ ...newCard, step: cards.length + 1 });
                 setIsCreateOpen(true);
               }}
-              className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border-0"
+              className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 border-0"
             >
               <Plus className="mr-2 h-4 w-4" /> Add Phase
             </Button>
@@ -182,7 +182,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                         />
                       </div>
 
-                      <div className="aspect-custom-misc-38 relative bg-black/50 overflow-hidden flex items-center justify-center border-b border-white/5">
+                      <div className="aspect-[16/10] relative bg-black/50 overflow-hidden flex items-center justify-center border-b border-white/5">
                         {imageUrl ? (
                           <img
                             src={imageUrl}
@@ -296,7 +296,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                   id="description"
                   value={newCard.description || ""}
                   onChange={(e) => setNewCard({ ...newCard, description: e.target.value })}
-                  className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-26 focus:ring-blue-500/50 resize-none"
+                  className="bg-white/5 border-white/10 text-white rounded-xl min-h-[100px] focus:ring-blue-500/50 resize-none"
                 />
               </div>
 
@@ -416,7 +416,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                     onChange={(e) =>
                       setEditingCard({ ...editingCard, description: e.target.value })
                     }
-                    className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-27 focus:ring-blue-500/50 resize-none"
+                    className="bg-white/5 border-white/10 text-white rounded-xl min-h-[100px] focus:ring-blue-500/50 resize-none"
                   />
                 </div>
 
@@ -472,7 +472,7 @@ export function HomepageProcessCardsTab({ cards }: HomepageProcessCardsTabProps)
                     onCheckedChange={(checked) =>
                       setEditingCard({ ...editingCard, isActive: checked })
                     }
-                    className="data-custom-misc-39:bg-blue-500"
+                    className="data-[state=checked]:bg-blue-500"
                   />
                   <div className="grid gap-1.5 leading-none">
                     <Label

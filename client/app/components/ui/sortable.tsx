@@ -432,7 +432,7 @@ const SortableItem = ({
           {
             "touch-none select-none": asHandle,
             "cursor-default": context.flatCursor,
-            "data-custom-misc-455:cursor-grabbing": !context.flatCursor,
+            "data-[dragging]:cursor-grabbing": !context.flatCursor,
             "cursor-grab": !isDragging && asHandle && !context.flatCursor,
             "opacity-50": isDragging,
             "pointer-events-none opacity-50": disabled,
@@ -487,7 +487,7 @@ const SortableItemHandle = ({
       ref={composedRef}
       className={cn(
         "select-none disabled:pointer-events-none disabled:opacity-50",
-        context.flatCursor ? "cursor-default" : "cursor-grab data-custom-misc-456:cursor-grabbing",
+        context.flatCursor ? "cursor-default" : "cursor-grab data-[dragging]:cursor-grabbing",
         className,
       )}
       disabled={isDisabled}

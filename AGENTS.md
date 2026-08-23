@@ -27,6 +27,7 @@
 - **Link Checking:** `npm run check:docs` runs rigorously in CI. To prevent pipeline failures:
   - Do not hyperlink private repository URLs (use `<repository-url>` or plain text).
   - Do not hyperlink local files with line-number fragments (e.g., `[file.ts](file.ts:10)`). Use inline code ticks instead.
+- **Mermaid Diagram Compatibility:** When creating diagrams in Markdown or artifacts, ONLY use supported Mermaid headers: `flowchart TD` / `flowchart LR`, `graph TD` / `graph LR`, `stateDiagram-v2`, `sequenceDiagram`, `classDiagram`, `erDiagram`, or `xychart-beta`. NEVER use `gantt`, `timeline`, or other unsupported diagram types that cause client-side rendering failures.
 
 ## Browser Viewports
 
@@ -80,6 +81,12 @@ When creating or generating unit test files:
 9. **Strict-Mode Locator Scoping:** When using `.or()` combinators in Playwright assertions where multiple matching elements might exist (e.g., both breadcrumbs and headings matching the same phrase), always chain `.first()` or scope locators by parent container to avoid strict mode violations.
 
 10. **Smooth-Scroll Element Reachability:** When testing element visibility in layouts using `locomotive-scroll` or custom scroll containers, use `element.scrollIntoViewIfNeeded()` directly rather than `window.scrollTo()`.
+
+11. **Admin Visual Capture Authentication:** Screenshot capture harnesses and visual regression tests targeting `/admin/*` routes MUST route through `/api/auth/mock-login?returnTo=${encodeURIComponent(route)}` and wait for DOM stabilization (`Checking access...` removed) before taking snapshots.
+
+12. **Fluid Typography Mobile Clamp Bounds:** Any fluid display typography token registered under `@theme` (e.g. `--text-display-xl`) consumed by uppercase brutalist headings MUST clamp the mobile minimum bound to `≤ 2.125rem` (34px) to prevent long words from clipping on 375px viewports.
+
+13. **WCAG 2.2 Scroll-Padding Invariant:** All scroll containers with sticky floating headers MUST declare `scroll-padding-top: 5rem` to guarantee keyboard focus is never obscured (SC 2.4.11). All interactive touch targets MUST satisfy `≥ 24×24px` (SC 2.5.8).
 
 ### 6.11 React Router v8 & Vite 8 Resolution Rules (Addendum)
 

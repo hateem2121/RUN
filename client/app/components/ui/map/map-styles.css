@@ -1,4 +1,6 @@
-/* @import "../../../styles/theme.css"; */
+@reference "tailwindcss";
+@reference "../../../styles/theme.css";
+
 /* Theme variables are available globally via index.css */
 
 @layer components {

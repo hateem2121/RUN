@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@reference "./theme.css";
+
 /* Map Popup Enhancements - Variables handled in theme.css base layer */
 .leaflet-popup-content-wrapper {
   background-color: var(--color-map-popup-bg);
@@ -44,7 +47,7 @@ model-viewer .ar-button:hover {
 }
 
 model-viewer .hotspot {
-  @apply bg-primary block h-5 w-5 cursor-pointer rounded-full border-2 border-white shadow-sm transition-transform outline-none;
+  @apply bg-primary block h-5 w-5 cursor-pointer rounded-full border-2 border-white shadow-sm transition-transform outline-hidden;
 }
 
 model-viewer .hotspot:focus-visible {

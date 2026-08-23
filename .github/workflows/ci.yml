@@ -135,7 +135,7 @@ jobs:
 
       - name: Get branch expiration date
         id: get_expiration_date
-        run: echo "EXPIRES_AT=$(date -u -v+24h +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
+        run: echo "EXPIRES_AT=$(date -u -d '+24 hours' +'%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u -v+24h +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
 
       - name: Create Neon Branch
         id: create_neon_branch
@@ -171,7 +171,7 @@ jobs:
           CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL: "placeholder@example.com"
           SESSION_SECRET: "mock_session_secret_for_testing_purposes_only"
           ENCRYPTION_KEY: "mock_encryption_key_for_testing_purposes_only"
-          INITIAL_ADMIN_EMAIL: "admin@runapparel.com"
+          INITIAL_ADMIN_EMAIL: "hateem@wear-run.com"
 
       - name: Check Coverage Thresholds
         run: |

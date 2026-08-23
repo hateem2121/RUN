@@ -1,5 +1,16 @@
 import { Link } from "react-router";
 
+export function meta() {
+  return [
+    { title: "Seasonal Collections | RUN APPAREL — Premium B2B Manufacturing" },
+    {
+      name: "description",
+      content:
+        "Explore RUN APPAREL seasonal collections: Apex Performance, Eco-Active Sustainable Blend, and Heritage Fieldwear series engineered in Sialkot, Pakistan.",
+    },
+  ];
+}
+
 export default function Component() {
   const collections = [
     {
@@ -36,7 +47,7 @@ export default function Component() {
           <p className="text-brand-lime font-mono text-xs tracking-widest uppercase mb-2">
             RUN CATALOGUE
           </p>
-          <h1 className="text-custom-space-291 leading-custom-misc-476 font-bold uppercase md:text-custom-space-292 tracking-tighter">
+          <h1 className="text-[10vw] leading-[0.9] font-bold uppercase md:text-[5vw] tracking-tighter">
             SEASONAL COLLECTIONS
           </h1>
         </div>

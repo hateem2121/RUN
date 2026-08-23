@@ -23,7 +23,7 @@ interface RoadmapKanbanBoardProps {
 
 const COLUMNS = [
   { id: "planned", title: "Strategic Pipeline", color: "text-admin-muted" },
-  { id: "active", title: "Active Execution", color: "text-custom-color-60" },
+  { id: "active", title: "Active Execution", color: "text-[#00D4FF]" },
   { id: "validated", title: "Validated Innovation", color: "text-emerald-400" },
   { id: "complete", title: "Mission Complete", color: "text-brand-manufacturing" },
 ];

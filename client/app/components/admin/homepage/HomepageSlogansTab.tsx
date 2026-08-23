@@ -70,7 +70,7 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
   };
 
   return (
-    <TabsContent value="slogans" className="mt-0 focus-visible:outline-none outline-none">
+    <TabsContent value="slogans" className="mt-0 focus-visible:outline-hidden outline-hidden">
       <div className="space-y-6">
         <GlassCard className="p-8">
           <div className="mb-8 flex items-center justify-between">
@@ -242,7 +242,7 @@ export function HomepageSlogansTab({ slogans }: HomepageSlogansTabProps) {
                     onCheckedChange={(checked) =>
                       setEditingSlogan({ ...editingSlogan, isActive: checked })
                     }
-                    className="data-custom-misc-41:bg-blue-500"
+                    className="data-[state=checked]:bg-blue-500"
                   />
                   <div className="grid gap-1.5 leading-none">
                     <Label

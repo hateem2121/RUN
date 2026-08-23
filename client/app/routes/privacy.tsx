@@ -48,7 +48,7 @@ function PrivacyPolicyPageContent({ policy }: { policy: LegalPolicyData | null }
     : "February 2026";
 
   return (
-    <main id="main-content" className="container-centered py-32 outline-none">
+    <main id="main-content" className="container-centered py-32 outline-hidden">
       <h1 className="mb-8 text-4xl font-bold font-neue-stance tracking-tighter uppercase sm:text-5xl md:text-6xl">
         {title}
       </h1>

@@ -61,7 +61,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
   };
 
   return (
-    <TabsContent value="featured" className="mt-0 focus-visible:outline-none outline-none">
+    <TabsContent value="featured" className="mt-0 focus-visible:outline-hidden outline-hidden">
       <div className="space-y-6">
         <GlassCard className="p-8">
           <div className="mb-8 flex items-center justify-between">
@@ -81,7 +81,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
             <Button
               onClick={handleSave}
               disabled={!isDirty || updateFeaturedSettings.isPending}
-              className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border-0"
+              className="h-11 bg-blue-600 hover:bg-blue-700 text-white px-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 border-0"
             >
               {updateFeaturedSettings.isPending ? (
                 "Deploying Configuration..."
@@ -101,7 +101,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
                   id="isEnabled"
                   checked={formData.isEnabled ?? true}
                   onCheckedChange={(checked) => handleChange("isEnabled", checked)}
-                  className="data-custom-misc-34:bg-blue-500"
+                  className="data-[state=checked]:bg-blue-500"
                 />
                 <div className="grid gap-1.5 leading-none">
                   <Label
@@ -199,7 +199,7 @@ export function HomepageFeaturedTab({ settings }: HomepageFeaturedTabProps) {
                       id="autoSelect"
                       checked={formData.autoSelect ?? true}
                       onCheckedChange={(checked) => handleChange("autoSelect", checked)}
-                      className="data-custom-misc-35:bg-blue-500"
+                      className="data-[state=checked]:bg-blue-500"
                     />
                     <div className="grid gap-1.5 leading-none">
                       <Label

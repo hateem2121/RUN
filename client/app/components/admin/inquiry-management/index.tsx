@@ -71,7 +71,7 @@ export function InquiryManagement() {
             className={cn(
               "flex items-center px-4 py-2 rounded-md text-xs font-bold transition-all duration-200",
               statusFilter === tab.id
-                ? "bg-primary/20 text-primary border border-primary/20 shadow-custom-misc-46"
+                ? "bg-primary/20 text-primary border border-primary/20 shadow-[0_0_15px_-3px_rgba(0,212,255,0.2)]"
                 : "text-admin-muted hover:text-white hover:bg-white/5 border border-transparent",
             )}
           >
@@ -84,7 +84,7 @@ export function InquiryManagement() {
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <Card className="col-span-1 lg:col-span-2 overflow-hidden border-border/40 bg-background/50 backdrop-blur-sm">
           {isLoading ? (
-            <div className="flex h-custom-space-35 items-center justify-center">
+            <div className="flex h-[400px] items-center justify-center">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : (

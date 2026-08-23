@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@reference "./theme.css";
+
 /* TipTap Editor Styles */
 .ProseMirror {
   outline: none;
@@ -19,21 +22,21 @@
   font-size: 1.875rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: var(--color-white);
+  color: var(--color-foreground);
 }
 
 .ProseMirror h2 {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1.25rem;
-  color: var(--color-white);
+  color: var(--color-foreground);
 }
 
 .ProseMirror h3 {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: var(--color-white);
+  color: var(--color-foreground);
 }
 
 .ProseMirror blockquote {
@@ -84,4 +87,14 @@
   height: auto;
   border-radius: 0.75rem;
   margin: 2rem 0;
+}
+
+.ProseMirror ::selection {
+  background: var(--color-technology-accent, #00d4ff);
+  color: #000000;
+}
+
+.ProseMirror-selectednode {
+  outline: 2px solid var(--color-technology-accent, #00d4ff);
+  border-radius: 0.5rem;
 }

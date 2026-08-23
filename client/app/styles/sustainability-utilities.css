@@ -1,3 +1,6 @@
+@reference "tailwindcss";
+@reference "./theme.css";
+
 /* =========================================
    Sustainability Page: Stitch Design System
    ========================================= */

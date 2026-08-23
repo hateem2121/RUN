@@ -172,19 +172,19 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* Skip to content link for accessibility */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-custom-misc-12 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-white focus:outline-hidden focus:ring-2 focus:ring-primary focus:ring-offset-2"
       >
         Skip to main content
       </a>
 
       {/* Sidebar */}
       <aside
-        className={`flex flex-shrink-0 flex-col border-r border-white/10 bg-admin-surface transition-custom-misc-13 duration-200 ease-in-out ${
+        className={`flex shrink-0 flex-col border-r border-white/10 bg-admin-surface transition-[width] duration-200 ease-in-out ${
           sidebarOpen ? "w-sidebar-expanded" : "w-sidebar-collapsed"
         }`}
       >
         {/* Sidebar Header — Logo + Toggle */}
-        <div className="flex h-14 flex-shrink-0 items-center border-b border-white/10 px-4">
+        <div className="flex h-14 shrink-0 items-center border-b border-white/10 px-4">
           {sidebarOpen ? (
             <div className="flex w-full items-center justify-between">
               <h1 className="text-sm font-bold uppercase tracking-widest text-white">
@@ -219,7 +219,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         </nav>
 
         {/* User Footer */}
-        <div className="flex-shrink-0 border-t border-white/10 bg-surface-black/50 p-4">
+        <div className="shrink-0 border-t border-white/10 bg-surface-black/50 p-4">
           {sidebarOpen ? (
             <div className="group flex cursor-pointer items-center justify-between rounded-md p-2 transition-colors hover:bg-white/[0.05]">
               <div className="flex items-center gap-3">
@@ -262,7 +262,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       {/* Main Area */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Top Header Bar */}
-        <header className="flex h-14 flex-shrink-0 items-center justify-between border-b border-white/10 bg-surface-black px-6">
+        <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/10 bg-surface-black px-6">
           {/* Left: Breadcrumb */}
           <div className="flex flex-1 items-center">
             <AdminBreadcrumb />
@@ -330,7 +330,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         </header>
 
         {/* Page Content */}
-        <main id="main-content" className="flex-1 overflow-y-auto p-8 outline-none">
+        <main id="main-content" className="flex-1 overflow-y-auto p-8 outline-hidden">
           <div className="mx-auto w-full max-w-7xl text-base">{children}</div>
         </main>
       </div>

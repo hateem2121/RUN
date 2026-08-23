@@ -57,61 +57,61 @@ export function ManufacturingManagement() {
           <TabsList className="bg-white/5 border border-white/10 p-1 h-12 rounded-xl grid w-full grid-cols-5 lg:max-w-3xl overflow-hidden mb-8">
             <TabsTrigger
               value="hero"
-              className="rounded-lg data-custom-misc-54:bg-brand-manufacturing data-custom-misc-55:text-black text-admin-muted transition-all font-medium"
+              className="rounded-lg data-[state=active]:bg-brand-manufacturing data-[state=active]:text-black text-admin-muted transition-all font-medium"
             >
               Hero
             </TabsTrigger>
             <TabsTrigger
               value="processes"
-              className="rounded-lg data-custom-misc-56:bg-brand-manufacturing data-custom-misc-57:text-black text-admin-muted transition-all font-medium"
+              className="rounded-lg data-[state=active]:bg-brand-manufacturing data-[state=active]:text-black text-admin-muted transition-all font-medium"
             >
               Processes
             </TabsTrigger>
             <TabsTrigger
               value="capabilities"
-              className="rounded-lg data-custom-misc-58:bg-brand-manufacturing data-custom-misc-59:text-black text-admin-muted transition-all font-medium"
+              className="rounded-lg data-[state=active]:bg-brand-manufacturing data-[state=active]:text-black text-admin-muted transition-all font-medium"
             >
               Capabilities
             </TabsTrigger>
             <TabsTrigger
               value="quality"
-              className="rounded-lg data-custom-misc-60:bg-brand-manufacturing data-custom-misc-61:text-black text-admin-muted transition-all font-medium"
+              className="rounded-lg data-[state=active]:bg-brand-manufacturing data-[state=active]:text-black text-admin-muted transition-all font-medium"
             >
               Quality
             </TabsTrigger>
             <TabsTrigger
               value="cases"
-              className="rounded-lg data-custom-misc-62:bg-brand-manufacturing data-custom-misc-63:text-black text-admin-muted transition-all font-medium"
+              className="rounded-lg data-[state=active]:bg-brand-manufacturing data-[state=active]:text-black text-admin-muted transition-all font-medium"
             >
               Stories
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="hero" className="outline-none focus-visible:ring-0">
+          <TabsContent value="hero" className="outline-hidden focus-visible:ring-0">
             <ErrorBoundary componentName="Hero Management">
               <HeroManagement mediaAssets={mediaAssets} />
             </ErrorBoundary>
           </TabsContent>
 
-          <TabsContent value="processes" className="outline-none focus-visible:ring-0">
+          <TabsContent value="processes" className="outline-hidden focus-visible:ring-0">
             <ErrorBoundary componentName="Process Management">
               <ProcessManagement mediaAssets={mediaAssets} />
             </ErrorBoundary>
           </TabsContent>
 
-          <TabsContent value="capabilities" className="outline-none focus-visible:ring-0">
+          <TabsContent value="capabilities" className="outline-hidden focus-visible:ring-0">
             <ErrorBoundary componentName="Capability Management">
               <CapabilityManagement mediaAssets={mediaAssets} />
             </ErrorBoundary>
           </TabsContent>
 
-          <TabsContent value="quality" className="outline-none focus-visible:ring-0">
+          <TabsContent value="quality" className="outline-hidden focus-visible:ring-0">
             <ErrorBoundary componentName="Quality Standards Management">
               <QualityManagement mediaAssets={mediaAssets} />
             </ErrorBoundary>
           </TabsContent>
 
-          <TabsContent value="cases" className="outline-none focus-visible:ring-0">
+          <TabsContent value="cases" className="outline-hidden focus-visible:ring-0">
             <ErrorBoundary componentName="Case Study Management">
               <CaseStudyManagement mediaAssets={mediaAssets} />
             </ErrorBoundary>

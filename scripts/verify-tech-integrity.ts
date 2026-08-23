@@ -75,6 +75,12 @@ const steps = [
     args: ["run", "verify:docs-versions"],
     critical: true,
   },
+  {
+    name: "Seed Sanitization Check",
+    command: "npm",
+    args: ["run", "verify:clean-seed"],
+    critical: true,
+  },
 ];
 
 function checkDocsFreshness(): Result<boolean, Error> {

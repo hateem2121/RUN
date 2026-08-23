@@ -185,7 +185,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                             id="hero-active"
                             checked={field.value ?? true}
                             onCheckedChange={field.onChange}
-                            className="data-custom-misc-49:bg-brand-manufacturing"
+                            className="data-[state=checked]:bg-brand-manufacturing"
                           />
                         </FormControl>
                         <Label
@@ -213,7 +213,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                         <Input
                           {...field}
                           value={field.value ?? ""}
-                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-15/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                           placeholder="e.g., Leading the Way in Precision Sportswear"
                         />
                       </FormControl>
@@ -234,7 +234,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                         <Input
                           {...field}
                           value={field.value ?? ""}
-                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-16/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                           placeholder="Enter subheadline"
                         />
                       </FormControl>
@@ -257,7 +257,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                         <Input
                           {...field}
                           value={field.value ?? ""}
-                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-17/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                           placeholder="e.g., Explore Our Facilities"
                         />
                       </FormControl>
@@ -278,7 +278,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                         <Input
                           {...field}
                           value={field.value ?? ""}
-                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-18/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                          className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                           placeholder="e.g., /contact"
                         />
                       </FormControl>
@@ -309,7 +309,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                           <Input
                             {...field}
                             value={field.value ?? ""}
-                            className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-19/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                            className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                             placeholder="e.g., Experience Precision Manufacturing"
                           />
                         </FormControl>
@@ -330,7 +330,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                           <Input
                             {...field}
                             value={field.value ?? ""}
-                            className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-20/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                            className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                             placeholder="Enter conversion description"
                           />
                         </FormControl>
@@ -351,7 +351,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                           <Input
                             {...field}
                             value={field.value ?? ""}
-                            className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-21/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                            className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                             placeholder="e.g., Start Your Project"
                           />
                         </FormControl>
@@ -372,7 +372,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                           <Input
                             {...field}
                             value={field.value ?? ""}
-                            className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-custom-color-22/50 focus-visible:ring-offset-0 placeholder:text-white/20"
+                            className="bg-white/5 border-white/10 text-white rounded-xl py-6 focus:ring-[#D4A853]/50 focus-visible:ring-offset-0 placeholder:text-white/20"
                             placeholder="e.g., /contact"
                           />
                         </FormControl>
@@ -389,7 +389,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                     Background Asset
                   </Label>
                   <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all group">
-                    <div className="size-16 rounded-lg bg-black/40 border border-white/5 flex items-center justify-center overflow-hidden flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                    <div className="size-16 rounded-lg bg-black/40 border border-white/5 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform duration-300">
                       {finalSelectedBackground?.url ? (
                         <img
                           src={finalSelectedBackground.url}
@@ -440,7 +440,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                     Hero Video Overlay
                   </Label>
                   <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all group">
-                    <div className="size-16 rounded-lg bg-black/40 border border-white/5 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+                    <div className="size-16 rounded-lg bg-black/40 border border-white/5 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-300">
                       <Play
                         className={cn(
                           "w-6 h-6",
@@ -486,7 +486,7 @@ export function HeroManagement({ mediaAssets }: HeroManagementProps) {
                 <Button
                   type="submit"
                   disabled={isPending}
-                  className="bg-primary hover:bg-primary/90 text-white px-10 py-7 rounded-xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-custom-misc-50 group"
+                  className="bg-primary hover:bg-primary/90 text-white px-10 py-7 rounded-xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98] group"
                 >
                   {isPending ? (
                     "Applying Changes..."

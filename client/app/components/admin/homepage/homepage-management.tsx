@@ -38,7 +38,7 @@ export function HomepageManagement() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-custom-space-29 items-center justify-center rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl">
+      <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl">
         <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
       </div>
     );
@@ -66,7 +66,7 @@ export function HomepageManagement() {
             <input
               type="text"
               placeholder="Search content..."
-              className="bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-blue-500/50 w-64 transition-all"
+              className="bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:outline-hidden focus:ring-1 focus:ring-blue-500/50 w-64 transition-all"
             />
           </div>
           <div className="flex items-center gap-3">
@@ -102,7 +102,7 @@ export function HomepageManagement() {
               value={tab.id}
               className={cn(
                 "flex-1 flex flex-col sm:flex-row items-center justify-center gap-2 py-3 px-4 text-xxs sm:text-xs font-bold uppercase tracking-widest transition-all rounded-xl",
-                "data-custom-misc-42:bg-blue-600 data-custom-misc-43:text-white data-custom-misc-44:shadow-custom-misc-45",
+                "data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-[0_0_20px_rgba(37,99,235,0.3)]",
                 "text-admin-muted hover:text-white hover:bg-white/5",
               )}
             >

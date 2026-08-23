@@ -114,7 +114,7 @@ function SortableQualityItem({
           <GripVertical className="h-5 w-5" />
         </div>
 
-        <div className="size-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+        <div className="size-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
           <IconComponent className="size-6 text-emerald-400" />
         </div>
 
@@ -474,7 +474,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
           </Button>
         </div>
 
-        <div className="min-h-custom-space-49">
+        <div className="min-h-[400px]">
           {qualityLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="flex space-x-2">
@@ -553,7 +553,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
               </div>
             </div>
 
-            <form action={formAction} className="flex-1 overflow-y-auto max-h-custom-space-50">
+            <form action={formAction} className="flex-1 overflow-y-auto max-h-[70vh]">
               <div className="p-8 space-y-8">
                 <div className={cn("grid gap-10", showPreview ? "lg:grid-cols-2" : "grid-cols-1")}>
                   <div className="space-y-8">
@@ -591,7 +591,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                           value={qualityForm.icon || "CheckCircle2"}
                           onValueChange={(value) => setQualityForm({ ...qualityForm, icon: value })}
                         >
-                          <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-custom-space-51 focus:ring-emerald-500/50">
+                          <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-[50px] focus:ring-emerald-500/50">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent className="bg-surface-black border-white/10 text-white">
@@ -671,7 +671,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                             description: e.target.value,
                           })
                         }
-                        className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-52 focus:ring-emerald-500/50 placeholder:text-white/20 resize-none"
+                        className="bg-white/5 border-white/10 text-white rounded-xl min-h-[120px] focus:ring-emerald-500/50 placeholder:text-white/20 resize-none"
                         placeholder="Specify explicit quality benchmarks..."
                       />
                     </div>
@@ -684,7 +684,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                         onCheckedChange={(checked) =>
                           setQualityForm({ ...qualityForm, isActive: checked })
                         }
-                        className="data-custom-misc-53:bg-emerald-500"
+                        className="data-[state=checked]:bg-emerald-500"
                       />
                       <Label
                         htmlFor="quality-active"
@@ -705,7 +705,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                               key={index}
                               className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10"
                             >
-                              <div className="size-2 rounded-full bg-emerald-500/30 ring-4 ring-emerald-500/5 flex-shrink-0" />
+                              <div className="size-2 rounded-full bg-emerald-500/30 ring-4 ring-emerald-500/5 shrink-0" />
                               <div className="flex-1 text-sm text-white/70">{checkpoint}</div>
                               <button
                                 type="button"
@@ -847,7 +847,7 @@ export function QualityManagement({ mediaAssets }: QualityManagementProps) {
                 <Button
                   type="submit"
                   disabled={isPending}
-                  className="bg-primary hover:bg-primary/90 text-white rounded-xl px-8 py-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all outline-none ring-0 border-0"
+                  className="bg-primary hover:bg-primary/90 text-white rounded-xl px-8 py-6 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all outline-hidden ring-0 border-0"
                 >
                   {isPending
                     ? "Syncing..."

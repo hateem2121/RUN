@@ -119,7 +119,7 @@ export const Stats: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="relative flex min-h-screen w-full flex-col border-border border-t bg-background md:min-h-custom-space-151 md:flex-row content-auto dark"
+      className="relative flex min-h-screen w-full flex-col border-border border-t bg-background md:min-h-[150vh] md:flex-row content-auto dark"
       aria-labelledby="stats-heading"
     >
       {/* Sticky Background Image */}
@@ -145,7 +145,7 @@ export const Stats: React.FC = () => {
         <div className="relative z-elevated flex flex-col justify-center pt-12 md:pt-0">
           <h2
             id="stats-heading"
-            className="mb-4 font-bold text-custom-space-152 uppercase leading-tight md:mb-8 md:text-custom-space-153"
+            className="mb-4 font-bold text-[10vw] uppercase leading-tight md:mb-8 md:text-[4vw]"
           >
             The Evolution of <br />
             <span className="text-primary dark:text-manufacturing-accent">
@@ -167,12 +167,12 @@ export const Stats: React.FC = () => {
         {KEY_STATS.map((stat, index) => (
           <div
             key={index}
-            className="stat-item flex h-custom-space-154 flex-col justify-center border-border border-b bg-surface/10 p-6 backdrop-blur-sm last:border-b-0 md:h-loading-content md:p-16"
+            className="stat-item flex h-[40vh] flex-col justify-center border-border border-b bg-surface/10 p-6 backdrop-blur-sm last:border-b-0 md:h-loading-content md:p-16"
           >
-            <h3 className="font-bold text-custom-space-155 leading-none tracking-tighter md:text-custom-space-156">
+            <h3 className="font-bold text-[20vw] leading-none tracking-tighter md:text-[12vw]">
               <ScrambleNumber value={stat.value} />
             </h3>
-            <div className="my-4 h-custom-space-157 w-full origin-left scale-x-100 transform bg-foreground/20 transition-transform duration-700" />
+            <div className="my-4 h-px w-full origin-left scale-x-100 transform bg-foreground/20 transition-transform duration-700" />
             <h4 className="mb-2 font-bold text-xl text-foreground uppercase md:text-2xl">
               {stat.label}
             </h4>

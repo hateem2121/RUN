@@ -295,7 +295,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
           </Button>
         </div>
 
-        <div className="min-h-custom-space-40">
+        <div className="min-h-[400px]">
           {caseStudiesLoading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <div className="flex space-x-2">
@@ -356,7 +356,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
               </DialogDescription>
             </div>
 
-            <form action={formAction} className="flex-1 overflow-y-auto max-h-custom-space-41">
+            <form action={formAction} className="flex-1 overflow-y-auto max-h-[70vh]">
               <div className="p-8 space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -411,7 +411,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
                     name="quote"
                     value={caseStudyData.quote}
                     onChange={(e) => setCaseStudyData({ ...caseStudyData, quote: e.target.value })}
-                    className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-42"
+                    className="bg-white/5 border-white/10 text-white rounded-xl min-h-[80px]"
                     placeholder="Their manufacturing speed changed our seasonal rollout..."
                     required
                   />
@@ -441,7 +441,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
                     onChange={(e) =>
                       setCaseStudyData({ ...caseStudyData, description: e.target.value })
                     }
-                    className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-43"
+                    className="bg-white/5 border-white/10 text-white rounded-xl min-h-[120px]"
                     placeholder="Dive deeper into the technical challenges and solutions..."
                     required
                   />
@@ -455,7 +455,7 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
                     onCheckedChange={(checked) =>
                       setCaseStudyData({ ...caseStudyData, isActive: checked })
                     }
-                    className="data-custom-misc-48:bg-brand-manufacturing"
+                    className="data-[state=checked]:bg-brand-manufacturing"
                   />
                   <Label
                     htmlFor="case-active"

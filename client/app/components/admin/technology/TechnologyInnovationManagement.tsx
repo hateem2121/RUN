@@ -112,7 +112,7 @@ function SortableInnovationItem({
       className={cn(
         "group relative flex items-center gap-4 p-4 rounded-xl transition-all duration-300",
         "border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/10",
-        isSelected && "bg-cyan-500/10 border-cyan-500/30 scale-custom-misc-123 z-10",
+        isSelected && "bg-cyan-500/10 border-cyan-500/30 scale-[1.02] z-10",
         isDragging && "opacity-50 z-20 shadow-2xl",
       )}
       onClick={() => onSelect(innovation)}
@@ -128,7 +128,7 @@ function SortableInnovationItem({
         type="button"
         {...attributes}
         {...listeners}
-        className="cursor-move p-1 text-admin-muted hover:text-cyan-400 transition-colors bg-transparent border-0 outline-none focus:ring-2 focus:ring-cyan-500/50 rounded"
+        className="cursor-move p-1 text-admin-muted hover:text-cyan-400 transition-colors bg-transparent border-0 outline-hidden focus:ring-2 focus:ring-cyan-500/50 rounded"
         onClick={(e) => e.stopPropagation()}
         aria-label="Drag to reorder innovation"
       >
@@ -139,7 +139,7 @@ function SortableInnovationItem({
         <div className="flex items-center gap-2 mb-1">
           <Badge
             variant="outline"
-            className="text-custom-space-116 uppercase tracking-tighter bg-cyan-500/5 text-cyan-400 border-cyan-500/20 py-0 h-4"
+            className="text-[9px] uppercase tracking-tighter bg-cyan-500/5 text-cyan-400 border-cyan-500/20 py-0 h-4"
           >
             {innovation.category}
           </Badge>
@@ -380,7 +380,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-custom-misc-124 gap-8 h-custom-misc-125 min-h-custom-space-117">
+    <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-8 h-[calc(100vh-280px)] min-h-[600px]">
       {/* Left Pane - List */}
       <div className="flex flex-col gap-6 h-full overflow-hidden">
         <Card variant="glass-premium" className="shrink-0">
@@ -394,7 +394,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
               </div>
               <Button
                 onClick={handleAddNew}
-                className="h-9 px-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold uppercase text-custom-space-118 tracking-widest border-0"
+                className="h-9 px-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold uppercase text-[9px] tracking-widest border-0"
                 title="Integrate Innovation"
               >
                 <Plus className="mr-1 h-3 w-3" />
@@ -484,7 +484,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                   <Button
                     onClick={handleSubmit}
                     disabled={!hasChanges || createMutation.isPending || updateMutation.isPending}
-                    className="h-11 bg-cyan-600 hover:bg-cyan-700 text-white px-8 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-cyan-500/20 active:scale-95 transition-all outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 border-0"
+                    className="h-11 bg-cyan-600 hover:bg-cyan-700 text-white px-8 font-bold uppercase text-xxs tracking-widest shadow-lg shadow-cyan-500/20 active:scale-95 transition-all outline-hidden focus-visible:ring-2 focus-visible:ring-cyan-500 border-0"
                   >
                     {createMutation.isPending || updateMutation.isPending ? (
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white mr-2" />
@@ -539,7 +539,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                           <SelectTrigger className="bg-white/5 border-white/10 text-white rounded-xl h-11 shadow-none">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className="bg-custom-color-161 border-white/10 text-white">
+                          <SelectContent className="bg-[#121212] border-white/10 text-white">
                             {innovationCategories.map((cat) => (
                               <SelectItem
                                 key={cat}
@@ -581,7 +581,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                         id="description"
                         value={innovationForm.description}
                         onChange={(e) => handleInputChange({ description: e.target.value })}
-                        className="bg-white/5 border-white/10 text-white rounded-xl min-h-custom-space-119 focus:ring-cyan-500/50 placeholder:text-white/20 resize-none"
+                        className="bg-white/5 border-white/10 text-white rounded-xl min-h-[140px] focus:ring-cyan-500/50 placeholder:text-white/20 resize-none"
                         placeholder="Detail the mechanism of action, material composition, and performance metrics..."
                       />
                     </div>
@@ -652,7 +652,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                               onCheckedChange={(checked) =>
                                 handleInputChange({ isActive: checked })
                               }
-                              className="data-custom-misc-126:bg-cyan-600"
+                              className="data-[state=checked]:bg-cyan-600"
                             />
                           </div>
                         </div>
@@ -705,7 +705,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
-                    <div className="space-y-2 max-h-custom-space-120 overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
                       {innovationForm.benefits.map((benefit, idx) => (
                         <div
                           key={idx}
@@ -753,7 +753,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                         />
                       </div>
                       <Button
-                        className="w-full bg-white/5 border border-white/10 text-cyan-400 text-custom-space-121 uppercase font-bold tracking-widest h-9"
+                        className="w-full bg-white/5 border border-white/10 text-cyan-400 text-[9px] uppercase font-bold tracking-widest h-9"
                         onClick={() => {
                           if (newDetailKey && newDetailValue) {
                             handleInputChange({
@@ -778,7 +778,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                           className="flex items-center justify-between p-3 rounded-xl bg-cyan-500/5 border border-cyan-500/10 group"
                         >
                           <div>
-                            <span className="text-custom-space-122 font-bold text-cyan-400 uppercase tracking-widest block mb-0.5">
+                            <span className="text-[9px] font-bold text-cyan-400 uppercase tracking-widest block mb-0.5">
                               {key}
                             </span>
                             <span className="text-sm font-bold text-white">{value}</span>
@@ -812,7 +812,7 @@ export function TechnologyInnovationManagement({ isLoading = false }: { isLoadin
                 <Zap className="size-10 text-cyan-500/40" />
               </div>
               <h3 className="text-lg font-bold text-white uppercase tracking-tight">System Idle</h3>
-              <p className="text-sm text-admin-muted max-w-custom-space-123 mx-auto">
+              <p className="text-sm text-admin-muted max-w-[300px] mx-auto">
                 Select a technological breakthrough from the index to begin technical
                 synchronization.
               </p>
