@@ -239,6 +239,19 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 - **WCAG 2.2 Target Size Minimum (SC 2.5.8)**: All interactive buttons, table checkboxes, modal close icons, and pagination controls MUST meet the minimum 24×24px bounding box or have adequate spacing.
 - **Biome Lowercase CSS Hex Invariant**: All hex color codes in `.css` stylesheets MUST be lowercase (e.g., `#00d4ff`, `#ffffff`) to satisfy Biome 2.5 formatting rules.
 
+### 5.1.8 Master Seeding Idempotency, Clean-Sweep & Duplicate-Zero Invariant
+
+- **FK-Safe Clean Sweep Mandatory**: Master production seeders (`scripts/seed-production-master.ts`) MUST execute explicit `DELETE` cascades across all junction tables (`fabric_compositions`, `product_relations`), test tables (`blog_posts`), catalog tables (`products` → `categories` → `certificates` → `fabrics` → `fibers`), stale sessions, and singleton CMS tables before inserting canonical fixtures. NEVER rely solely on "insert-if-not-exists" or upsert loops, as they allow deleted or renamed test/legacy fixtures (`E2E-*`, `TEST-*`) to persist silently in production.
+- **Automated Duplicate & Artifact Verification**: Database verification scripts (`verify-production-db.ts`) MUST execute SQL duplicate detection (`GROUP BY name/slug HAVING COUNT(*) > 1`), artifact pattern scanning (`LIKE 'E2E-%'`, `'TEST-%'`, `'Product % (Parent)'`), and exact row count assertions across all tables.
+
+### 5.1.9 Biome CSS Print Stylesheet Invariant
+
+- **Print Stylesheet Override**: Print stylesheets (`**/print.css`) are exempt from Biome's `lint/complexity/noImportantStyles` rule via `biome.json` overrides, as `!important` is required to override screen media cascade rules for physical documents.
+
+### 5.1.10 Accessible Semantic Region & TabIndex Invariant
+
+- **No Non-Interactive TabIndex**: Presentation scroll containers and galleries must use semantic `<section aria-label="...">` elements without `tabIndex={0}` or `role="region"` to prevent confusing keyboard navigation flow and satisfy Biome accessibility rules (`lint/a11y/noNoninteractiveTabindex` and `lint/a11y/useSemanticElements`).
+
 ### 5.2 Forbidden by Architecture
 
 - **Never access the database directly from a route handler.** All DB access through `server/services/`.
