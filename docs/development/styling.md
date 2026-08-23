@@ -25,6 +25,7 @@ client/app/
 │   ├── @import "./styles/overrides.css"; # Third-party component overrides (Leaflet, model-viewer)
 │   ├── @import "./styles/animations.css";# Keyframes and animation utilities
 │   ├── @import "./styles/manufacturing-utilities.css"; # Manufacturing domain styles
+│   ├── @import "./styles/print.css";     # B2B spec sheet and document export print styles
 │   ├── @import "./components/ui/map/map-styles.css";   # Interactive map styles
 │   └── @import "./styles/sustainability-utilities.css";# Sustainability domain styles
 │

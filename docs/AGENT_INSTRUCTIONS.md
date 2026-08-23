@@ -16,7 +16,6 @@ this file. Do NOT duplicate rules from `gemini.md` here.
 
 **Supplementary files:**
 - [`AGENTS.md`](../AGENTS.md) — Active development rules and hard constraints
-- [`CLAUDE.md`](../CLAUDE.md) — Claude Code-specific identity and workflow (Claude sessions only)
 
 ---
 

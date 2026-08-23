@@ -64,16 +64,16 @@ test.describe("Domain 3 — WCAG 2.2 AA/AAA Accessibility & Contrast Forensics",
   test.describe("Public Routes — Axe-Core WCAG 2.2 AA Scans (Light & Dark)", () => {
     for (const route of PUBLIC_ROUTES) {
       test(`Axe scan: ${route} [Light Mode]`, async ({ page }) => {
-        await page.goto(route);
-        await page.waitForLoadState("networkidle");
+        await page.goto(route, { waitUntil: "domcontentloaded" });
+        await page.waitForTimeout(500);
         await page.evaluate(async () => {
-          for (let i = 0; i < document.body.scrollHeight; i += 400) {
+          for (let i = 0; i < document.body.scrollHeight; i += 500) {
             window.scrollTo(0, i);
-            await new Promise((r) => setTimeout(r, 15));
+            await new Promise((r) => setTimeout(r, 10));
           }
           window.scrollTo(0, 0);
         });
-        await page.waitForTimeout(400);
+        await page.waitForTimeout(300);
 
         const results = await new AxeBuilder({ page })
           .withTags(["wcag2a", "wcag2aa", "wcag22aa"])
@@ -96,10 +96,9 @@ test.describe("Domain 3 — WCAG 2.2 AA/AAA Accessibility & Contrast Forensics",
 
       test(`Axe scan: ${route} [Dark Mode]`, async ({ page }) => {
         await page.emulateMedia({ colorScheme: "dark" });
-        await page.goto(route);
-        await page.waitForLoadState("networkidle");
+        await page.goto(route, { waitUntil: "domcontentloaded" });
         await page.evaluate(() => document.documentElement.classList.add("dark"));
-        await page.waitForTimeout(400);
+        await page.waitForTimeout(500);
 
         const results = await new AxeBuilder({ page })
           .withTags(["wcag2a", "wcag2aa", "wcag22aa"])

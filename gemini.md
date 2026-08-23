@@ -261,6 +261,25 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
   3. Mount the new component directly into `root.tsx` or its parent layout.
   4. Run `npm run check:knip` to assert 0 unused files, 0 unused exports, and 0 duplicate exports before concluding the task.
 
+### 5.1.12 Keyboard-Accessible Scroll Containers (WCAG SC 2.1.1 / 2.1.3)
+
+- **Scroll Container Focus Invariant**: Any container declaring `overflow-x-auto`, `overflow-y-auto`, or `overflow: auto` that contains non-focusable child elements MUST declare `tabIndex={0}`, `role="region"`, an informative `aria-label="..."`, and focus visible styling (e.g. `focus-visible:ring-1 focus-visible:ring-manufacturing-accent`) to guarantee keyboard users in Safari/WebKit can focus and scroll through content.
+
+### 5.1.13 Route Document Metadata Invariant (WCAG SC 2.4.2)
+
+- **Document Title Invariant**: Every React Router v8 route module under `client/app/routes/` MUST export a `meta` function returning an array containing `{ title: "..." }` and `{ name: "description", content: "..." }` to satisfy WCAG 2.4.2 Level A and prevent `document-title` accessibility failures.
+
+### 5.1.14 Brutalist Heading Word Breaking Invariant
+
+- **Heading Word Break Invariant**: All heading and display typography components rendered via `headingVariants` in `client/app/components/ui/typography.tsx` MUST include `break-words` (`overflow-wrap: break-word`) to prevent unbroken technical serial numbers, order codes, or compound words from overflowing container boundaries.
+
+### 5.1.15 Monorepo Clutter Prevention & Git Hygiene Invariant
+
+- **Zero Root Scratch Clutter**: Temporary debug or one-off test scripts (`test-*.cjs`, `test-*.mjs`, `playwright-script.mjs`) MUST NOT be committed to the root directory. All tests belong inside `tests/` or `e2e/`.
+- **Git Ignore Safeguards**: Large visual regression capture directories (`visual-audit/`), code analysis graph dumps (`graphify-out/`), and temporary agent briefing directories (`.agents/`) MUST remain strictly ignored in `.gitignore`.
+- **Knip Ignore Pruning**: Whenever scratch scripts or debug files are removed, their corresponding entries in `knip.config.ts` `ignore` list MUST be pruned immediately.
+- **Documentation Link Integrity**: Whenever legacy files or deprecated markdown files are removed, run `npm run check:docs` to ensure zero dangling markdown references exist.
+
 ### 5.2 Forbidden by Architecture
 
 - **Never access the database directly from a route handler.** All DB access through `server/services/`.

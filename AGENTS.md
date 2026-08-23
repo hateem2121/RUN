@@ -90,6 +90,16 @@ When creating or generating unit test files:
 
 14. **Complete Component Replacement & Dead Context Clean-Sweep:** When replacing a foundational layout component, NEVER leave deprecated wrapper adapters, obsolete sub-components, dead hooks, legacy test files, or component-specific READMEs in the repository. Purge all replaced files, update all prompt guides and stylesheets, mount the new component directly into `root.tsx`, and run `npm run check:knip` to assert 0 unused files or exports.
 
+15. **Keyboard-Accessible Scroll Containers (WCAG SC 2.1.1 / 2.1.3):** Any container declaring `overflow-x-auto`, `overflow-y-auto`, or `overflow: auto` that contains non-focusable child elements MUST declare `tabIndex={0}`, `role="region"`, an informative `aria-label="..."`, and focus visible styling (e.g. `focus-visible:ring-1 focus-visible:ring-manufacturing-accent`) to guarantee keyboard users in Safari/WebKit can focus and scroll through content.
+
+16. **Route Document Metadata Invariant (WCAG SC 2.4.2):** Every React Router v8 route module under `client/app/routes/` MUST export a `meta` function returning an array containing `{ title: "..." }` and `{ name: "description", content: "..." }` to satisfy WCAG 2.4.2 Level A and prevent `document-title` accessibility failures.
+
+17. **Brutalist Heading Word Breaking Invariant:** All heading and display typography components rendered via `headingVariants` in `client/app/components/ui/typography.tsx` MUST include `break-words` (`overflow-wrap: break-word`) to prevent unbroken technical serial numbers, order codes, or compound words from overflowing container boundaries.
+
+18. **Dedicated Test Project Partitioning & SSR Worker Throttling:** Playwright configuration MUST define dedicated project partitions (`a11y`, `stress`, `cross-engine`, `visual`) with `workers: 2` (or `workers: 1` during deep SSR sweeps) and `fullyParallel: false` to prevent Vite development server HMR module contention during batch test runs.
+
+19. **Monorepo Clutter Prevention & Git Hygiene:** Never commit temporary debug scripts (`test-*.cjs`, `test-*.mjs`, `playwright-script.mjs`) or test log dumps (`*.log`, `*.txt`) to the repository root. Ensure visual captures (`visual-audit/`) and graph caches (`graphify-out/`) remain ignored in `.gitignore`, and prune `knip.config.ts` ignore rules whenever scratch files are deleted. Always run `npm run check:docs` after removing deprecated documentation.
+
 ### 6.11 React Router v8 & Vite 8 Resolution Rules (Addendum)
 
 - **CSP Nonce Hydration Mismatch**: In React 19, Chrome hides the `nonce` attribute on `<link>` tags for security, causing a fatal hydration mismatch if the Virtual DOM expects a value. When rendering React Router's `<Links />` component in the root layout or error boundaries, you **MUST** pass an empty string on the client (e.g., `<Links nonce="" />`) to bypass the mismatch and prevent React from crashing the client-side render tree.

@@ -127,3 +127,5 @@ check.log
 # Added by code-review-graph
 .code-review-graph/
 .agents/
+graphify-out/
+visual-audit/

@@ -19,13 +19,11 @@ const config: KnipConfig = {
     ".lintstagedrc.cjs",
     ".gemini/**",
     "scripts/**",
-    "test-*.{cjs,mjs,js}",
     "server/lib/cache/redis-client.ts",
     "client/app/components/admin/product-management-unified/shared/hooks/**",
     "client/app/components/admin/shared/**",
     "client/app/components/ui/map/hooks/**",
     "ops/load-testing/**",
-    "playwright-script.mjs",
     "server/scripts/benchmark-queries.ts",
   ],
   ignoreDependencies: [

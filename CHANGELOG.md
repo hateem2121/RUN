@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Monorepo Clutter & Artifact Clean-Sweep
+
+- **Decluttered & Lightweight Repository**: You can now develop in a lightweight, high-performance monorepo freed of over 750+ obsolete test logs, temporary scratch scripts, expired robot memory dumps, and heavy visual mockups (~218 MB disk space recovered).
+- **Hardened Git Clutter Guards**: Git ignore rules now actively guard against accidental tracking of visual audit captures (`visual-audit/`) and graph cache dumps (`graphify-out/`), guaranteeing long-term repository health and fast clone speeds.
+- **Strict Single Source of Truth Alignment**: All AI agent documentation and developer onboarding workflows have been consolidated under `gemini.md` and `AGENTS.md`, permanently eliminating legacy cross-agent configuration conflicts.
+
+### Accessibility, Stress-Testing & Cross-Engine Parity
+
+- **Advanced 7-Domain Test Suite**: You can now run comprehensive, automated end-to-end verification across 7 critical domains with dedicated Playwright project commands:
+  - `npm run test:e2e:a11y` — Automated Axe-core WCAG 2.2 AA/AAA scans across all 42 public and admin routes in both Light and Dark modes, SC 2.4.11 Focus Not Obscured, SC 2.5.8 Touch Target Size ($\ge 24\times24\text{px}$), and Windows High Contrast Mode (`forced-colors: active`).
+  - `npm run test:e2e:stress` — Extreme viewport stress tests (320px compact mobile to 3840px 4K), 200% OS font scaling, landscape orientation scrollability, Zod form validation error handling, 0-row empty states, 200-character unbroken string safety, and Fast 3G layout shift benchmarking (CLS = `0.000`).
+  - `npm run test:e2e:cross-engine` — GSAP rapid and reverse scrubbing resilience, `prefers-reduced-motion` compliance, WebKit backdrop-filter parity, WebGL 3D fallback posters, and B2B print spec layouts.
+- **Industrial-Grade B2B Print Architecture**: You can now print and export clean B2B garment spec sheets, size charts, and certificates via `@media print` stylesheets (`client/app/styles/print.css`) that automatically strip floating navigation docks, footers, and dark themes while preventing awkward page breaks across table rows and cards.
+- **Accessible Horizontal Scroll Regions**: You can now navigate horizontal manufacturing timelines and factory galleries using full keyboard controls (`tabIndex={0}`, `role="region"`, explicit `aria-label`, and high-contrast focus rings).
+- **Brutalist Headline Word Wrapping**: Headings and display titles now wrap safely (`break-words`) even when rendering unusually long technical codes or unbroken compound words.
+
 ### UI & Navigation
 
 - **Top Ceiling Notch Navbar**: You can now navigate the website through a unified, obsidian-black ceiling notch header modeled after modern brutalist desktop docks. Features include geometric SVG concave ear fillets anchored to the browser ceiling, high-contrast B2B links, inline theme toggle, instant RFQ inquiry modal opening, and an expanding mobile card dropdown.

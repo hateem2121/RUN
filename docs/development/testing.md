@@ -57,11 +57,16 @@ E2E tests verify the full system behavior from the user's perspective.
 ### Running E2E Tests
 
 ```bash
-# Terminal 1: Start server
+# Terminal 1: Start dev server
 npm run dev
 
-# Terminal 2: Run tests
+# Terminal 2: Run all E2E tests
 npm run test:e2e
+
+# Run dedicated domain suites:
+npm run test:e2e:a11y         # WCAG 2.2 AA/AAA, SC 2.4.11, SC 2.5.8 across 42 routes
+npm run test:e2e:stress       # 320px–4K viewports, 200% zoom, Zod errors, 3G CLS
+npm run test:e2e:cross-engine # Motion, WebKit/Gecko parity, 3D fallbacks, @media print
 ```
 
 ---

@@ -1,8 +1,51 @@
 # Task Plan — RUN APPAREL CMS (v4.1.2) — Advanced 7-Domain Visual, Accessibility & Stress-Testing Suite
 
 **Date:** 2026-08-23  
-**Goal:** Execute comprehensive 7-domain visual, accessibility, and stress-testing forensics (extreme viewports 320px–4K, dynamic state boundaries, WCAG 2.2 AA/AAA Axe scans, GSAP motion dynamics, cross-engine WebKit/Gecko rendering, 3D WebGL fallbacks, and @media print spec sheets) using an autonomous multi-agent hierarchy, harden test harnesses in Playwright, and enforce zero-defect monorepo integrity.  
+**Goal:** Execute comprehensive 7-domain visual, accessibility, and stress-testing forensics (extreme viewports 320px–4K, dynamic state boundaries, WCAG 2.2 AA/AAA Axe scans, GSAP motion dynamics, cross-engine WebKit/Gecko rendering, 3D WebGL fallbacks, and @media print spec sheets), harden test harnesses in Playwright, and enforce zero-defect monorepo integrity.  
 **Auditor/Engineer Role:** Antigravity — Principal Front-End Architect, Performance Lead & Design Systems Auditor  
+
+---
+
+## Active Sprint Plan — Advanced 7-Domain Visual, Accessibility & Stress-Testing Suite (2026-08-23)
+
+- [x] **Protocol 0: Session Initialization** (Checked `task_plan.md`, verified dev server on port 5002)
+- [x] **Architecture & Design Specification:**
+  - [x] Conducted `/grill-me` design interview across test execution architecture, WCAG 2.2 threshold, dynamic state simulation, multi-agent hierarchy, and print styling
+  - [x] Authored [`docs/superpowers/specs/2026-08-23-visual-a11y-stress-testing-design.md`](file:///Users/hateemjamshaid/Sites/RUN/docs/superpowers/specs/2026-08-23-visual-a11y-stress-testing-design.md)
+  - [x] Passed `/plan-ceo-review`, `/plan-eng-review`, and `/plan-design-review`
+  - [x] Created approved `implementation_plan.md`
+- [x] **WP1: Multi-Engine Test Harness & Playwright Projects Configuration**
+  - [x] Configured dedicated test projects in `playwright.config.ts`: `a11y`, `stress`, `cross-engine`, `visual`
+  - [x] Set `workers: 2` and `fullyParallel: false` to prevent Vite SSR HMR contention
+  - [x] Added `test:e2e:a11y`, `test:e2e:stress`, `test:e2e:cross-engine` npm scripts in `package.json`
+- [x] **WP2: Domain 3 — WCAG 2.2 AA/AAA & A11y Forensics Suite**
+  - [x] Created `e2e/a11y-wcag22.spec.ts` covering all 42 routes (Public + Admin in Light & Dark modes)
+  - [x] Tested SC 2.4.11 Focus Not Obscured (`scroll-padding-top: 5rem`)
+  - [x] Tested SC 2.5.8 Target Size Minimum ($\ge 24\times24\text{px}$)
+  - [x] Tested Windows High Contrast (`forced-colors: active`)
+  - [x] Verified: 82/82 tests passed cleanly
+- [x] **WP3: Domain 1 — Extreme Viewports & Zoom Stress Suite**
+  - [x] Created `e2e/viewport-stress.spec.ts` testing 320px compact viewports, 4K (3840px), 200% font zoom, and landscape orientations
+  - [x] Standardized fluid typography mobile clamp bounds on `PublicHeroSection.tsx` (`text-display-xl`)
+  - [x] Added `overflow-x-hidden w-full max-w-full` on `manufacturing.tsx` and `products.tsx`
+  - [x] Verified: 20/20 tests passed cleanly in `test:e2e:stress`
+- [x] **WP4: Domain 2 — Dynamic States, Zod Errors, Empty States & 3G CLS Suite**
+  - [x] Created `e2e/state-boundaries.spec.ts` testing Zod form validation errors, 0-row empty states, 200-char string overflow, and 3G CLS
+  - [x] Added `break-words` to `headingVariants` in `typography.tsx` to prevent unbroken code layout blowout
+  - [x] Measured Fast 3G CLS = `0.000` (target < 0.05)
+- [x] **WP5: Domains 4, 5, 6 & 7 — Motion, Cross-Engine, 3D Fallbacks & @media print Suite**
+  - [x] Created `client/app/styles/print.css` with industrial B2B spec sheet rules and page-break avoidance (`break-inside-avoid`)
+  - [x] Created `e2e/cross-engine-and-media.spec.ts` testing GSAP rapid/reverse scrubbing, reduced motion, WebKit backdrop-filter, and WebGL context loss
+  - [x] Verified: 6/6 tests passed cleanly in `test:e2e:cross-engine`
+- [x] **WP6: Code Remediations & Accessibility Hardening**
+  - [x] Added `meta()` export to `collections.tsx` to resolve `document-title` (WCAG 2.4.2)
+  - [x] Added `tabIndex={0}`, `role="region"`, `aria-label="..."`, and focus rings to horizontal scroll containers in `ProductionBlueprint.tsx` and `FactoryGallery.tsx` (WCAG 2.1.1/2.1.3)
+- [x] **WP7: Protocol 0 Verification & Monorepo Integrity Gates**
+  - [x] `npm run verify:clean-seed`: 🟢 **PASS** (0 test artifacts in database)
+  - [x] `npm run check`: 🟢 **PASS** (0 type errors, 0 lints across 965 files)
+  - [x] `npm run build`: 🟢 **PASS** (Turborepo client, server, and shared built in Full Turbo)
+  - [x] `npm run verify:tech-integrity`: 🟢 **PASS** (All 8 checks passed)
+  - [x] Documented all findings in `findings.md`
 
 ---
 
@@ -188,3 +231,35 @@
   - [x] `npm run build`: **PASS** (Turborepo 3/3 packages).
   - [x] `npm run verify:tech-integrity`: **PASS** (All 8/8 checks passing).
   - [x] Verified live DOM on `http://localhost:5002` across desktop (1440px) and mobile (375px).
+
+---
+
+## Repository Clutter & Legacy Artifact Clean-Sweep Sprint (23 Aug 2026)
+
+- [x] **Task 1: Comprehensive Monorepo Inventory & Forensic Clutter Audit**
+  - [x] Scanned all 6,020 items across the monorepo, categorizing files into 6 distinct zones.
+  - [x] Created visual diagrams, pie charts, and 5th-grader friendly ELI5 inventory report in `implementation_plan.md`.
+- [x] **Task 2: Interactive Strategic Alignment Interview (/grill-me)**
+  - [x] Confirmed Full Deep Clean approach for logs, scratch files, and old agent dumps.
+  - [x] Confirmed complete deletion of `docs/stitch-screens/` (91 files) and purge of `visual-audit/captures/` (261 files).
+  - [x] Confirmed complete purge of `docs/investigative-prompts/` (27 files) and `wiki/` (17 files).
+  - [x] Confirmed complete purge of past sprint markdown files and obsolete migration scripts.
+- [x] **Task 3: Execution of the 750+ File Clean-Sweep Purge**
+  - [x] Executed `git rm` across 470 git-tracked files and deleted 280+ untracked temporary files and folders.
+  - [x] Purged stale log dumps: `ci_fail.log`, `ci_log.txt`, `e2e_fail.log`, `sec_fail.log`, `test_output.txt`, `lint_output.txt`, `tsc_output.txt`, `test-results.json`, `e2e-console-logs.txt`.
+  - [x] Purged root scratch scripts: `test-auth.cjs`, `test-console.mjs`, `test-nonce.mjs`, `playwright-script.mjs`.
+  - [x] Purged old agent/graph memory dumps: `.agents/`, `graphify-out/`, `.context/`, `.impeccable/`, `.gbrain/`.
+  - [x] Purged heavy media/mockups: `visual-audit/`, `docs/stitch-screens/`, `artifacts/`.
+  - [x] Purged stale sprint docs: `CLAUDE.md`, `INVESTIGATION_PLAN.md`, `VISUAL_CONSISTENCY_REPORT.md`, `SECURITY_REMEDIATION_PLAN.md`, `testing-findings.md`, `scratch-guides.md`, `ORIGINAL_REQUEST.md`.
+  - [x] Purged obsolete doc directories: `docs/investigative-prompts/`, `wiki/`.
+  - [x] Purged obsolete migration scripts: `scripts/migrate-neverthrow.ts`, `scripts/migrate-repos.ts`, `scripts/auto-fix.mjs`, `scripts/auto-fix-ignore.mjs`, `scripts/capture-visual-matrix.ts`, `scripts/run-migration.ts`.
+- [x] **Task 4: Tooling & Git Hygiene Hardening**
+  - [x] Updated `.gitignore` with `visual-audit/` and `graphify-out/`.
+  - [x] Cleaned `knip.config.ts` ignore list.
+- [x] **Task 5: Post-Purge Monorepo Verification & Protocol 0 Bookends**
+  - [x] `npm run check`: **PASS** (0 errors across 965 files).
+  - [x] `npm run build`: **PASS** (Turborepo 3/3 packages in 42ms >>> FULL TURBO).
+  - [x] `npm run check:knip`: **PASS** (0 unused files/exports).
+  - [x] `npm run test`: **PASS** (170/170 test suites, 2,614/2,614 tests passing).
+  - [x] `npm run verify:tech-integrity`: **PASS** (8/8 checks passed).
+  - [x] Updated `findings.md`, `task_plan.md`, and `walkthrough.md`.
