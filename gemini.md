@@ -280,6 +280,13 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 - **Knip Ignore Pruning**: Whenever scratch scripts or debug files are removed, their corresponding entries in `knip.config.ts` `ignore` list MUST be pruned immediately.
 - **Documentation Link Integrity**: Whenever legacy files or deprecated markdown files are removed, run `npm run check:docs` to ensure zero dangling markdown references exist.
 
+### 5.1.16 Markdown Formatting Standards (markdownlint: MD012, MD022, MD026)
+
+- **No Double Blanks (MD012)**: Never leave multiple consecutive blank lines in any markdown file or documentation.
+- **Blanks Around Headings (MD022)**: All markdown headings (`#`, `##`, `###`, `####`) MUST be surrounded by exactly one blank line above and below.
+- **No Trailing Heading Punctuation (MD026)**: Never end heading titles with trailing punctuation marks (such as colons `:`, periods `.`, semicolons, or commas).
+- **Mandatory Pre-Commit Markdown Verification**: Run `npm run check:md` (or `npm run verify:tech-integrity`) before pushing any markdown documents to guarantee zero CI `Docs Lint` pipeline failures.
+
 ### 5.2 Forbidden by Architecture
 
 - **Never access the database directly from a route handler.** All DB access through `server/services/`.
