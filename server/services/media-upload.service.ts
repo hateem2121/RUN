@@ -127,10 +127,11 @@ class MediaUploadService {
 
     // SECURITY [MD-119]: Explicitly validate chunk size against session config
     // Prevents memory pressure attacks from oversized chunks
-    if (buffer.length > session.chunkSize * 1.05) {
+    const chunkByteLength = Buffer.isBuffer(buffer) ? buffer.byteLength : 0;
+    if (chunkByteLength > session.chunkSize * 1.05) {
       return err(
         new BadRequestError(
-          `Chunk size ${buffer.length} exceeds session limit of ${session.chunkSize}`,
+          `Chunk size ${chunkByteLength} exceeds session limit of ${session.chunkSize}`,
         ),
       );
     }
