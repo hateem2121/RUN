@@ -16,3 +16,8 @@ This rule governs how AI coding agents leverage Neon Serverless Postgres, Branch
 ## 2. Slash Command Parity
 - Every workspace skill registered in `.agent/skills/<name>/SKILL.md` MUST have a matching slash command workflow in `.agent/workflows/<name>.md`.
 - Workflows provide instant on-demand invocation via `/<command>` in the Antigravity IDE and CLI.
+
+## 3. Clean-Sweep Seeding & Zero-Duplicate Discipline
+- When seeding or migrating a primary/production Neon branch, never use partial upsert loops that leave stale rows untouched.
+- Clean all child, junction, and catalog tables in FK-safe order (`products` → `categories` → `certificates` → `fabrics` → `fibers`) before provisioning canonical fixtures.
+- Always run automated duplicate checks (`SELECT name, COUNT(*) FROM ... GROUP BY name HAVING COUNT(*) > 1`) and verify exact row count bounds before declaring a database ready.
