@@ -4,6 +4,7 @@
 export * from "./api/common.js";
 export * from "./api/inquiry.js";
 export * from "./api/navigation.js";
+export * from "./api/search.js";
 export * from "./blog.js";
 export * from "./catalog.js";
 export * from "./categories.js";
@@ -30,5 +31,6 @@ export * from "./sessions.js";
 export * from "./system.js";
 // Export domains
 export * from "./users.js";
+export * from "./vector.js";
 export * from "./webhooks.js";
 export * from "./worker-payloads.js";

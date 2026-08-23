@@ -36,7 +36,7 @@ export async function setupMiddleware(app: Express) {
             "'self'",
             `'nonce-${nonce}'`,
             "'wasm-unsafe-eval'",
-            "'unsafe-eval'",
+            ...(process.env.NODE_ENV !== "production" ? ["'unsafe-eval'"] : []),
             "*.google.com",
             "*.gstatic.com",
           ],

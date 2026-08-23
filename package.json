@@ -50,6 +50,8 @@
     "build:ssr": "npm run --workspace=@run-remix/server build:ssr",
     "verify:ssr": "vitest run tests/unit/ssr/invariants.test.ts",
     "verify:clean-seed": "tsx scripts/verify-clean-seed.ts",
+    "verify:egress": "tsx scripts/validators/verify-query-egress.ts",
+    "neon:snapshot": "tsx scripts/neon/pre-migration-snapshot.ts",
     "verify:tech-integrity": "tsx scripts/verify-tech-integrity.ts",
     "verify:docs-versions": "tsx scripts/utils/verify-docs-versions.ts",
     "verify:docs-structure": "tsx scripts/validators/verify-docs-structure.ts",

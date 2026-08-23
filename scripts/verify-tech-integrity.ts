@@ -87,6 +87,12 @@ const steps = [
     args: ["run", "verify:clean-seed"],
     critical: true,
   },
+  {
+    name: "Query Egress Audit",
+    command: "tsx",
+    args: ["scripts/validators/verify-query-egress.ts"],
+    critical: true,
+  },
 ];
 
 function checkDocsFreshness(): Result<boolean, Error> {

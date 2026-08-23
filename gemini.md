@@ -287,6 +287,15 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 - **No Trailing Heading Punctuation (MD026)**: Never end heading titles with trailing punctuation marks (such as colons `:`, periods `.`, semicolons, or commas).
 - **Mandatory Pre-Commit Markdown Verification**: Run `npm run check:md` (or `npm run verify:tech-integrity`) before pushing any markdown documents to guarantee zero CI `Docs Lint` pipeline failures.
 
+### 5.1.17 Drizzle pgvector & Vector Column Invariant
+
+- **Vector Column Mapping**: All vector columns mapped via Drizzle ORM `customType` (`shared/schemas/vector.ts`) must specify `data: number[]` with default 384 dimensions and L2-normalized bounds.
+- **Zod Insert Schema Annotation**: All Zod insert schemas created via `createInsertSchema` consuming tables with vector columns MUST explicitly declare `embedding: z.array(z.number()).nullish()` to prevent type inference degradation to `unknown`.
+
+### 5.1.18 Redundant Duplicate Index Prevention Invariant
+
+- **Zero Duplicate Index Declarations**: Never declare a secondary non-unique `index("...")` on columns that are already indexed by a `uniqueIndex("...")` or `primaryKey()`. PostgreSQL automatically creates a unique B-Tree index for unique constraints. Duplicate non-unique indexes waste disk space and slow down write operations.
+
 ### 5.2 Forbidden by Architecture
 
 - **Never access the database directly from a route handler.** All DB access through `server/services/`.

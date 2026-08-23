@@ -10,6 +10,7 @@ import inquiriesRouter from "./inquiries.js";
 import legalRouter from "./legal.js";
 import materialsRouter from "./materials.js";
 import productsRouter from "./products.js";
+import searchRouter from "./search.js";
 import servicesRouter from "./services.js";
 import sizeChartsRouter from "./size-charts.js";
 
@@ -17,6 +18,7 @@ const router = Router();
 router.use(apiTier);
 
 router.use("/health", healthRouter);
+router.use(searchRouter);
 router.use(inquiriesRouter);
 router.use(categoriesRouter);
 router.use(productsRouter);

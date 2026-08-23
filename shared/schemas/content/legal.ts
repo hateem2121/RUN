@@ -1,4 +1,4 @@
-import { boolean, index, serial, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
+import { boolean, serial, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { pgTable } from "../common.js";
 
@@ -24,10 +24,7 @@ export const legalPolicies = pgTable(
       .notNull()
       .$onUpdate(() => new Date()),
   },
-  (table) => [
-    index("legal_policies_slug_idx").on(table.slug),
-    uniqueIndex("legal_policies_slug_unique_active").on(table.slug),
-  ],
+  (table) => [uniqueIndex("legal_policies_slug_unique_active").on(table.slug)],
 );
 
 export const insertLegalPolicySchema = createInsertSchema(legalPolicies);

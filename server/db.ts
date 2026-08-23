@@ -48,6 +48,8 @@ const metrics = {
   totalQueryTimeMs: 0,
   peakConcurrentQueries: 0,
   currentConcurrentQueries: 0,
+  activeCheckedOutClients: 0,
+  leakedClientsCount: 0,
   lastHealthCheckAt: new Date(),
   connectionPooling: database.url.includes("-pooler") ? "enabled" : "disabled",
 };
@@ -241,6 +243,8 @@ export const getPoolMetrics = () => ({
   averageQueryTime: metrics.totalQueries > 0 ? metrics.totalQueryTimeMs / metrics.totalQueries : 0,
   peakConcurrentQueries: metrics.peakConcurrentQueries,
   currentConcurrentQueries: metrics.currentConcurrentQueries,
+  activeCheckedOutClients: metrics.activeCheckedOutClients,
+  leakedClientsCount: metrics.leakedClientsCount,
   lastHealthCheckAt: metrics.lastHealthCheckAt,
   connectionPooling: metrics.connectionPooling,
 });

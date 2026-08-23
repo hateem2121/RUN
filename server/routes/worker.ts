@@ -35,6 +35,15 @@ const verifyWorkerAuth = async (
       res.status(403).json({ error: "Unauthorized" });
       return;
     }
+  } else {
+    // In dev / test, if WORKER_SECRET is configured, validate authorization
+    const secret = process.env.WORKER_SECRET;
+    const authHeader = req.header("Authorization");
+    if (secret && authHeader && authHeader !== `Bearer ${secret}`) {
+      logger.warn(`[Worker] Invalid dev worker token: ${req.path}`);
+      res.status(403).json({ error: "Unauthorized" });
+      return;
+    }
   }
   next();
 };

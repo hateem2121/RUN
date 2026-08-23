@@ -17,6 +17,7 @@ import { categories } from "./categories.js";
 import { pgTable } from "./common.js";
 import { fabrics } from "./materials.js";
 import { mediaAssets } from "./media.js";
+import { vector } from "./vector.js";
 
 // Schemas for JSONB columns
 const ProductTechnicalSpecsSchema = z.record(
@@ -156,6 +157,9 @@ export const products = pgTable(
     // Status
     isActive: boolean().default(true),
     isFeatured: boolean().default(false),
+
+    // pgvector semantic embedding (384-dimensional)
+    embedding: vector({ dimensions: 384 }),
 
     createdAt: timestamp({
       mode: "date",
@@ -343,6 +347,7 @@ export const insertProductSchema = createInsertSchema(products, {
   accessoryIds: z.array(z.number()).optional(),
   relatedProductIds: z.array(z.number()).optional(),
   customizationOptions: z.array(z.string()).optional(),
+  embedding: z.array(z.number()).nullish(),
 });
 
 export const hardDeleteSchema = z.object({

@@ -13,6 +13,7 @@ import {
 import { z } from "zod";
 import { pgTable } from "./common.js";
 import { mediaAssets } from "./media.js";
+import { vector } from "./vector.js";
 
 export interface FiberComposition {
   fiberId: number | null;
@@ -103,6 +104,9 @@ export const fabrics = pgTable(
     }), // Visual swatch media
     keyApplications: jsonb().$type<string[]>(), // Key applications/uses for this fabric
 
+    // pgvector semantic embedding (384-dimensional)
+    embedding: vector({ dimensions: 384 }),
+
     isActive: boolean().default(true),
     createdAt: timestamp({
       mode: "date",
@@ -187,6 +191,7 @@ export const selectFiberSchema = createSelectSchema(fibers);
 export const insertFabricSchema = createInsertSchema(fabrics, {
   name: (s) => s.min(1),
   sustainabilityScore: z.union([z.number().int(), z.string()]).optional(),
+  embedding: z.array(z.number()).nullish(),
 }).extend({
   /**
    * @deprecated Use `compositions` array instead for structured fiber composition data
