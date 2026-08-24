@@ -13,7 +13,7 @@
   - [x] Evaluated all CodeQL Code Scanning alerts: 0 open on `main` (all 300+ historical alerts fixed).
   - [x] Evaluated all OpenSSF Scorecard alerts: 6 active alerts identified (#347, #328, #313, #312, #311, #290).
   - [x] Evaluated Dependabot: 0 open vulnerabilities (137 resolved).
-  - [x] Evaluated Secret Scanning: 0 open leaks (push protection active).
+  - [x] Evaluated Secret Scanning: 13 historical generic test fixture alerts (#1–#13) resolved as `used_in_tests` with comments (0 open leaks repo-wide).
   - [x] Evaluated GitHub Code Scanning analysis categories: 5 active SARIF categories with 0 errors and 0 warnings.
 - [x] **Phase 2: Remediation & Security Hardening**
   - [x] Hardened `.github/workflows/wiki-sync.yml` with least-privilege token permissions (`contents: read` at top level, `contents: write` scoped to job level) and pinned checkout SHA (`# v7.0.1`).

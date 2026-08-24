@@ -17,7 +17,10 @@
   - `#328 (TokenPermissionsID)`: Documented and resolved (Release Drafter release creation requirement).
   - `#311 (CodeReviewID)`, `#312 (CIIBestPracticesID)`, `#313 (FuzzingID)`: Formally documented and resolved for single-maintainer open source architecture with 180 test suites.
 - **Dependabot Security Alerts:** **0 Open** (137/137 resolved, zero open supply chain vulnerabilities).
-- **Secret Scanning Alerts:** **0 Open** (0 leaks detected, push protection & non-provider patterns active).
+- **Secret Scanning Alerts:** **0 Open** (All 13 historical test fixture alerts #1–#13 resolved as `used_in_tests` with comments; 0 open leaks, push protection & non-provider generic patterns active).
+  - `#1 (http_bearer_authentication_header)`: Resolved (`.claude/...` test dummy token; `.claude/` purged).
+  - `#2–#3, #5–#13 (postgres/mysql connection URLs)`: Resolved (`.claude/...` synthetic test URLs; `.claude/` purged).
+  - `#4 (postgres_connection_string)`: Resolved (`tests/setup.ts` mock local test harness connection string).
 - **SARIF Analysis Pipelines:** 5 active categories on `main` (`CodeQL javascript-typescript`, `CodeQL actions`, `Scorecard branch-protection`, `Scorecard local`, `Scorecard online-scm`) — **0 errors, 0 warnings**.
 
 ---
