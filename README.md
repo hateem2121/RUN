@@ -10,8 +10,10 @@
 [![Tailwind V4](https://img.shields.io/badge/Tailwind-V4-06B6D4?logo=tailwindcss)](https://tailwindcss.com)
 [![Express 5](https://img.shields.io/badge/Express-5.2.1-000000?logo=express)](https://expressjs.com)
 [![Biome Clean](https://img.shields.io/badge/Linter-Biome_2.5-60A5FA?logo=biome)](https://biomejs.dev)
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/hateem2121/RUN/badge)](https://scorecard.dev/viewer/?site=github.com/hateem2121/RUN)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/RUN-APPAREL/RUN/badge)](https://scorecard.dev/viewer/?site=github.com/RUN-APPAREL/RUN)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+
+> 📚 **How to Read This Project:** Every document has two layers — a fun, easy-to-read story on top (marked with emojis and colorful headers) and the official technical or legal text underneath. Read whichever layer speaks to you!
 
 ---
 
@@ -34,6 +36,20 @@ This software connects the physical garment factory — with its solar-powered s
   │ • 85% Recycled Water    │               │ • Neon Serverless SQL   │
   └─────────────────────────┘               └─────────────────────────┘
 ```
+
+---
+
+## 🕰️ From Thread to Code — Our Heritage Timeline
+
+```mermaid
+flowchart LR
+    D["🏭 Durus Industries\nEst. 1889\nSialkot, Punjab"] --> R["👟 RUN APPAREL\nPVT LTD\nModern Factory"] --> DIG["💻 RUN Remix\nDigital Platform\nv4.1.2"]
+    style D fill:#f9f3e3,stroke:#8b7355
+    style R fill:#e3f9e8,stroke:#2d8b4e
+    style DIG fill:#e3e8f9,stroke:#4e5d8b
+```
+
+For over **137 years**, our family has been turning raw thread into world-class sportswear. What started as a humble textile workshop in British-era Sialkot has grown into a modern, AI-powered digital manufacturing platform.
 
 ---
 
@@ -181,9 +197,9 @@ Here are all the friendly guides to help you explore and contribute to RUN Remix
 | [🧱 **How to Contribute**](./CONTRIBUTING.md) | Step-by-step guide to building a new Lego brick and submitting your first Pull Request. |
 | [🛡️ **Security Policy**](./SECURITY.md) | How our safety watchdogs protect customer data and how to report bugs safely. |
 | [💬 **Support & Clubhouse**](./SUPPORT.md) | Where to ask questions, chat with the maintainers, or inquire about B2B apparel. |
-| [🎓 **Cite This Project**](./CITATION.cff) | How to give credit to RUN Remix in school projects, papers, or 3D research. |
+| [🎓 **Cite This Project**](./CITATION.md) | How to give credit to RUN Remix in school projects, papers, or 3D research. |
 | [🧭 **The Illustrated Wiki**](./docs/wiki/Home.md) | A complete 6-chapter visual storybook exploring every corner of the factory. |
-| [🔭 **GitHub UI Guide**](./docs/github-guide/README.md) | Explains Stars, Watchers, Forks, Activity logs, and how GitHub works. |
+| [🔭 **GitHub UI & Operations Guide**](./docs/github-guide/README.md) | A complete 10-chapter visual guide explaining Packages, Actions, Artifacts, Projects, Releases, Deployments & Pulse. |
 
 ---
 

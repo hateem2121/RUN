@@ -14,7 +14,7 @@ Ensure your local environment matches the production runtime precisely.
 
 ```bash
 # 1. Clone & Setup
-git clone https://github.com/hateem2121/RUN.git
+git clone https://github.com/RUN-APPAREL/RUN.git
 cd RUN
 npm ci
 

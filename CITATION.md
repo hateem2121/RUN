@@ -19,14 +19,14 @@ If you use RUN Remix in your school project, research paper, 3D graphics demonst
 │  APA:                                                                  │
 │  Jamshaid, M. H. (2026). RUN Remix: The Agentic Sportswear Factory     │
 │  & 3D Digital Manufacturing CMS (v4.1.2) [Computer software].         │
-│  https://github.com/hateem2121/RUN                                     │
+│  https://github.com/RUN-APPAREL/RUN                                     │
 │                                                                        │
 │  BibTeX:                                                               │
 │  @software{run_remix_2026,                                             │
 │    author = {Jamshaid, M. Hateem},                                     │
 │    title = {RUN Remix: The Agentic Sportswear Factory},                │
 │    year = {2026},                                                      │
-│    url = {https://github.com/hateem2121/RUN},                          │
+│    url = {https://github.com/RUN-APPAREL/RUN},                          │
 │    version = {4.1.2}                                                   │
 │  }                                                                     │
 └────────────────────────────────────────────────────────────────────────┘
@@ -50,3 +50,20 @@ On the main page of this GitHub repository, look at the right sidebar under **Ab
 ```
 
 When you click that button, GitHub reads our machine-friendly [`CITATION.cff`](./CITATION.cff) file and formats the citation for you automatically!
+
+---
+
+## 🤔 When Should You Cite
+
+Not sure if you need to cite us? Follow this friendly flowchart:
+
+```mermaid
+flowchart TD
+    Start["🤔 Am I using RUN Remix?"] --> Q1{"Using the code in your project?"}
+    Q1 --> |"Yes"| Cite["📝 Please cite us!"]
+    Q1 --> |"No"| Q2{"Writing about it in a paper or report?"}
+    Q2 --> |"Yes"| Cite
+    Q2 --> |"No"| Q3{"Just browsing or learning?"}
+    Q3 --> |"Yes"| Star["⭐ Give us a Star instead!"]
+    Q3 --> |"No"| Star
+```

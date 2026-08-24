@@ -1,82 +1,116 @@
-# Product & Engineering Roadmap
+# 🗺️ RUN Remix Product Roadmap
 
-**Project:** RUN Remix (`run-remix`) — The Agentic Sportswear Factory  
-**Owner:** RUN APPAREL (PVT) LTD / Durus Industries  
-**Horizon:** 2026 – 2027  
-**Status:** Active Living Document  
+**Project:** RUN Remix (`run-remix`)
+**Maintained by:** RUN APPAREL (PVT) LTD / Durus Industries
+**Last Updated:** August 2026
 
 ---
 
 ## 🎯 Vision
 
-RUN Remix bridges heritage apparel craftsmanship (Durus Industries, est. 1889) with cutting-edge agentic software engineering. Our goal is to provide the world's most performant, deterministic, and future-proof open-source CMS platform for premium B2B sportswear manufacturing and custom apparel configuration.
+RUN Remix aims to become the world's most accessible open-source platform for B2B sportswear manufacturing — connecting physical factory floors with digital 3D design tools, AI-powered workflows, and sustainable supply chain transparency.
 
 ---
 
-## 🗺️ Roadmap Tracks
+## 🛤️ The Road Ahead
+
+```mermaid
+flowchart LR
+    P1["🔧 Phase 1\nFoundation Polish\nQ3 2026"] --> P2["🎮 Phase 2\n3D Configurator v2\nQ4 2026"]
+    P2 --> P3["🏢 Phase 3\nEnterprise Features\nQ1 2027"]
+    P3 --> P4["🌍 Phase 4\nGlobal Scale\nQ2 2027"]
+    style P1 fill:#e8f5e9,stroke:#2e7d32
+    style P2 fill:#e3f2fd,stroke:#1565c0
+    style P3 fill:#fff3e0,stroke:#e65100
+    style P4 fill:#fce4ec,stroke:#c62828
+```
+
+---
+
+## 🔧 Phase 1 — Foundation Polish (Q3 2026)
+
+> **Theme:** Make everything rock-solid and beautifully documented
 
 ```
-┌─────────────────────────┐     ┌─────────────────────────┐     ┌─────────────────────────┐
-│   Phase 1: Foundation   │ ──► │     Phase 2: Scale      │ ──► │  Phase 3: Intelligence  │
-│   (v4.0 - v4.1 — DONE)  │     │   (Q3 2026 - Q4 2026)   │     │      (2027 Horizon)     │
-└─────────────────────────┘     └─────────────────────────┘     └─────────────────────────┘
+ Progress: ████████████████████░░░░ 85%
 ```
 
----
-
-## ✅ Completed Milestones (v4.0 – v4.1.2)
-
-- [x] **Full-Stack Modernization**: React 19.2.7 + React Router v8 + Vite 8 (Rolldown) + Express 5.2.1.
-- [x] **Database & ORM**: Neon Serverless PostgreSQL with Drizzle ORM 0.45.2 and Zod v4 validation.
-- [x] **Deterministic Architecture**: Zero-tolerance rulebook (`gemini.md`), `neverthrow` Result patterns, strict monorepo module boundaries.
-- [x] **Styling & Motion**: Tailwind CSS v4 `@theme` / `@utility` engine with GSAP 3.15 and locomotive-scroll.
-- [x] **Cloud & Infrastructure**: Automated Google Cloud Build, GKE deployments, and Cloud Tasks background workers.
-- [x] **Forensic Quality**: 100/100 Architecture Health Score, 590+ E2E automated tests, Biome linting, and automated SSR hydration integrity checks.
+| Status | Feature | Description |
+|--------|---------|-------------|
+| ✅ Done | Community Health Files | All GitHub community docs refreshed with visual diagrams |
+| ✅ Done | Security Hardening | Rate limiting, CSP headers, supply chain protection |
+| ✅ Done | Accessibility Audit | WCAG 2.2 AA compliance across all public routes |
+| ✅ Done | Semantic Search | AI-powered natural language product search (pgvector) |
+| 🚧 In Progress | E2E Test Suite | Full 7-domain Playwright verification suite |
+| 📋 Planned | Performance Optimization | Sub-2s LCP on mobile, image lazy loading |
 
 ---
 
-## 🚀 Near-Term Horizon (Q3 2026 – Q4 2026)
+## 🎮 Phase 2 — 3D Configurator v2 (Q4 2026)
 
-### 1. Open Source Community & Ecosystem
+> **Theme:** Next-generation interactive garment visualization
 
-- [ ] **Community Standards**: Full compliance with [Open Source Guides](https://opensource.guide/), GitHub Issue Forms Suite, Code of Conduct, and Governance.
-- [ ] **Developer Experience**: 1-click Dev Containers for GitHub Codespaces & VS Code on Node 24.
-- [ ] **Supply Chain Hardening**: OpenSSF Scorecards, GitHub Dependency Review, and SLSA provenance tagging on all releases.
+```
+ Progress: ░░░░░░░░░░░░░░░░░░░░░░░░ 0%
+```
 
-### 2. WebMCP & Agentic Form Protocols
-
-- [ ] **Native WebMCP Forms**: Standardize `<form toolname="..." tooldescription="...">` across all public and admin workflows.
-- [ ] **Agentic Event Handlers**: Native `event.nativeEvent.agentInvoked` support and streaming form responses for autonomous agentic pair programmers.
-
-### 3. Next-Gen 3D Garment Configurator
-
-- [ ] **Lazy 3D Engine**: Enhanced `LazyUnifiedModelViewer` with instant glTF streaming, real-time material shader swaps (nylon, recycled polyester, organic cotton), and AR quicklook.
-- [ ] **Dynamic Colorway Engine**: Real-time Pantone and custom dye PMS preview with instant SVG vector decal mapping.
-
-### 4. Observability & Telemetry
-
-- [ ] **OpenTelemetry Exporters**: Native OTLP traces, metrics, and structured log shipping to OpenTelemetry collectors.
-- [ ] **Real-Time Core Web Vitals**: In-app performance budget telemetry with automated threshold alerts.
+| Status | Feature | Description |
+|--------|---------|-------------|
+| 📋 Planned | Real-time Fabric Preview | See how fabrics drape and move on 3D models |
+| 📋 Planned | Color Customization | Pantone swatch palette for team color matching |
+| 📋 Planned | Size Visualization | See how garments look across different body sizes |
+| 💡 Exploring | AR Try-On | Augmented reality preview on mobile devices |
 
 ---
 
-## 🔮 Future Horizon (2027+)
+## 🏢 Phase 3 — Enterprise Features (Q1 2027)
 
-### 1. Multi-Tenant Manufacturing Exchange
+> **Theme:** Tools for large-scale B2B manufacturing partners
 
-- [ ] **Tenant Isolation**: Secure row-level and schema-level multi-tenancy for global apparel brands and distributed manufacturing facilities.
-- [ ] **Supply Chain EDI Integration**: Standardized ANSI X12 / EDIFACT electronic data interchange connectors for global logistics.
+```
+ Progress: ░░░░░░░░░░░░░░░░░░░░░░░░ 0%
+```
 
-### 2. AI Fabric Optimization & Pattern Layout
-
-- [ ] **Nesting & Yield Algorithms**: AI-assisted 2D pattern nesting to reduce fabric cutting waste toward 0% scrap.
-- [ ] **Carbon & ESG Tracking**: Automated Product Carbon Footprint (PCF) calculation per garment based on raw material provenance.
+| Status | Feature | Description |
+|--------|---------|-------------|
+| 📋 Planned | Multi-tenant Dashboard | Brand-specific portals with order tracking |
+| 📋 Planned | Automated RFQ Pipeline | Request-for-quote workflow with approval chains |
+| 📋 Planned | Supply Chain Transparency | Real-time sustainability metrics dashboard |
+| 💡 Exploring | EDI Integration | Electronic data interchange with enterprise systems |
 
 ---
 
-## 💡 Submitting Roadmap Proposals
+## 🌍 Phase 4 — Global Scale (Q2 2027)
 
-Have an idea for the roadmap?
-1. Check existing proposals and discussions on GitHub Discussions.
-2. Submit a feature proposal using the [Feature Request Issue Form](./.github/ISSUE_TEMPLATE/feature_request.yml).
-3. For major architectural proposals, follow the RFC process outlined in [`GOVERNANCE.md`](./GOVERNANCE.md).
+> **Theme:** Serving athletic brands worldwide
+
+```
+ Progress: ░░░░░░░░░░░░░░░░░░░░░░░░ 0%
+```
+
+| Status | Feature | Description |
+|--------|---------|-------------|
+| 💡 Exploring | Multi-language Support | i18n for Arabic, Urdu, Chinese, Spanish |
+| 💡 Exploring | CDN Media Delivery | Global edge caching for 3D assets |
+| 💡 Exploring | Mobile App | React Native companion app for factory floor |
+
+---
+
+## 📊 Status Legend
+
+| Icon | Meaning |
+|------|----------|
+| ✅ Done | Shipped and available in the current release |
+| 🚧 In Progress | Actively being worked on right now |
+| 📋 Planned | Confirmed for the roadmap, work has not started yet |
+| 💡 Exploring | Idea under consideration — may or may not happen |
+
+---
+
+## 💬 Have Suggestions?
+
+We love hearing ideas from the community! If you have thoughts about what should be on our roadmap:
+
+- Open a [💡 Feature Request](https://github.com/RUN-APPAREL/RUN/issues/new?template=feature_request.yml)
+- Start a discussion (`<repository-url>/discussions`)
+- Email us at `hateem@runapparel.com`

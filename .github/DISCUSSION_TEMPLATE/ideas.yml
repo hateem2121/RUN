@@ -1,0 +1,37 @@
+title: "[Idea] "
+labels:
+  - "enhancement"
+  - "discussion"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        💡 **Got a bright idea?** We love hearing new suggestions!
+        Whether it is a new fabric type for the catalog, a cool animation, or a better way to organize the admin panel — share it here!
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: "What is your idea?"
+      description: "Describe your idea in simple words. Pretend you are explaining it to a friend who has never seen the project."
+      placeholder: "I think it would be really cool if we could..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: "Why would this help?"
+      description: "Who benefits from this idea? Athletes? Brand managers? Developers?"
+      placeholder: "This would help because..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: sketches
+    attributes:
+      label: "Any sketches, screenshots, or examples?"
+      description: "If you have any pictures, links to other websites, or rough drawings — paste them here!"
+      placeholder: "(Optional) Drag and drop images or paste links here..."
+    validations:
+      required: false

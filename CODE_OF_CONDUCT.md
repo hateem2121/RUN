@@ -44,6 +44,23 @@ flowchart TD
 
 ---
 
+## 🪜 The Kindness Ladder — How to Level Up
+
+```mermaid
+flowchart LR
+    New["🌱 New Friend\nJust arrived!"] --> Helper["🤝 Helpful Teammate\nAnswers questions"]
+    Helper --> Builder["🧱 Trusted Builder\nSubmits great PRs"]
+    Builder --> Captain["👑 Community Captain\nReviews & mentors"]
+    style New fill:#e8f5e9,stroke:#2e7d32
+    style Helper fill:#e3f2fd,stroke:#1565c0
+    style Builder fill:#fff3e0,stroke:#e65100
+    style Captain fill:#fce4ec,stroke:#c62828
+```
+
+Everyone starts as a **New Friend** and can climb the ladder by being kind, helpful, and contributing great work!
+
+---
+
 ## 📜 Official Contributor Covenant Pledge
 
 ### Our Pledge
@@ -85,3 +102,18 @@ report it privately by emailing:
 📧 **Community Safety Lead:** M. Hateem Jamshaid (`hateem@runapparel.com`)
 
 All reports will be treated with confidentiality, care, and fairness.
+
+---
+
+## 🃏 Quick Reference Pocket Card
+
+```
+┌──────────────────────────────────────────────┐
+│        CODE OF CONDUCT POCKET CARD           │
+├──────────────────────────────────────────────┤
+│  ✅ Be kind    ✅ Listen    ✅ Help others   │
+│  ✅ Say sorry  ✅ Celebrate ✅ Be patient    │
+│  ❌ No bullying ❌ No spam  ❌ No meanness   │
+│  📧 Report: hateem@runapparel.com            │
+└──────────────────────────────────────────────┘
+```

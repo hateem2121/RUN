@@ -45,7 +45,7 @@ flowchart LR
 ### 1. The Public Activity Stream
 
 - **What it shows:** Every code change, branch merge, and release published to the world.
-- **Where to see it:** Click on [Activity](https://github.com/hateem2121/RUN/activity) in the repository menu or right sidebar.
+- **Where to see it:** Click on [Activity](https://github.com/RUN-APPAREL/RUN/activity) in the repository menu or right sidebar.
 - **Why it matters:** It lets community members see that the project is actively alive, well-maintained, and constantly improving.
 
 ### 2. The Organization Audit Log

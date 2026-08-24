@@ -6,8 +6,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for reporting a bug! Please fill out the form below with as much detail as possible.
-        Before submitting, please check [open issues](https://github.com/hateem2121/RUN/issues) to avoid duplicates.
+        Thank you for reporting a bug! 🐛 Please fill out the form below so our friendly repair team can fix it quickly.
+        Before submitting, please check [open issues](https://github.com/RUN-APPAREL/RUN/issues) to make sure someone else has not already reported the same thing.
 
   - type: textarea
     id: description

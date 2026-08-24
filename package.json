@@ -6,6 +6,15 @@
   },
   "packageManager": "npm@10.9.2",
   "private": true,
+  "description": "RUN Remix — An AI-native digital manufacturing platform for sustainable B2B sportswear, built on React 19, Express 5, and Vite 8.",
+  "homepage": "https://github.com/RUN-APPAREL/RUN",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RUN-APPAREL/RUN.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RUN-APPAREL/RUN/issues"
+  },
   "type": "module",
   "workspaces": [
     "client",

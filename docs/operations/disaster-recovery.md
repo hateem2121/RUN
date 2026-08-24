@@ -276,7 +276,7 @@ gcloud run services update-traffic run-remix-api \
   --region=asia-southeast1
 
 # 4. If rollback fails, redeploy from source
-git clone https://github.com/hateem2121/RUN.git
+git clone https://github.com/RUN-APPAREL/RUN.git
 cd RUN
 git checkout production
 npm ci

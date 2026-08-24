@@ -45,6 +45,23 @@ flowchart TD
     Review --> Merge["🎉 Merged into main branch!"]
 ```
 
+### 🗺️ Your First Contribution Map
+
+Not sure where to start? Follow this map:
+
+```mermaid
+flowchart TD
+    Start["🤔 I want to help!"] --> Q1{"What did you find?"}
+    Q1 --> |"A typo or small mistake"| Fix["✏️ Fix it directly in a PR!"]
+    Q1 --> |"A broken button or crash"| Bug["🐛 Open a Bug Report first"]
+    Q1 --> |"A cool new idea"| Idea["💡 Start a Discussion"]
+    Q1 --> |"Confusing documentation"| Doc["📚 Open a Doc Request"]
+    Fix --> PR["🎉 Open a Pull Request!"]
+    Bug --> PR
+    Idea --> PR
+    Doc --> PR
+```
+
 ### Step 1: Make Your Own Copy (Fork)
 
 Click the **Fork** button at the top right of the GitHub page. This gives you your very own copy of the factory blueprints to experiment with safely.
@@ -120,6 +137,27 @@ To keep the factory running smoothly and safely, all contributors follow these 5
 | 🪟 **SSR Cleanliness** | Never touch `window` or `document` during initial module load. | Ensures super-fast page rendering on servers and mobile devices. |
 | 🧱 **Shared Boundaries** | Data schemas live in `@run-remix/shared`. | Guarantees the frontend and backend always agree on data shapes. |
 | 🎨 **Tailwind Tokens** | Use `@theme` tokens in `theme.css` (no arbitrary bracket values). | Maintains visual polish and consistent brand typography. |
+
+---
+
+## 🎮 Difficulty Levels for Contributors
+
+Just like in a video game, contributions come in different difficulty levels:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   CONTRIBUTION DIFFICULTY LEVELS                       │
+├────────┬──────────────────────────────────┬────────────────────────────┤
+│ Level  │  Type of Contribution            │  Time Estimate             │
+├────────┼──────────────────────────────────┼────────────────────────────┤
+│ 🟢 Easy │  Fix a typo, update a doc page  │  15 minutes                │
+│ 🟡 Medium│ Fix a small bug, add a test    │  1–2 hours                 │
+│ 🟠 Hard │  Add a new component or feature │  3–8 hours                 │
+│ 🔴 Expert│ Architecture or security change │  1–3 days (needs discussion)│
+└────────┴──────────────────────────────────┴────────────────────────────┘
+```
+
+Look for issues labeled `good first issue` 🏷️ — those are hand-picked for newcomers!
 
 ---
 

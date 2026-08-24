@@ -51,6 +51,27 @@ flowchart TD
     Contributors --> Community
 ```
 
+### 🪜 How to Level Up in the Community
+
+```mermaid
+flowchart LR
+    Explorer["🌟 Explorer\nOpen issues, give stars"] --> Contributor["🧩 Contributor\nSubmit PRs, fix bugs"]
+    Contributor --> Trusted["🛠️ Trusted Contributor\n6+ months, consistent quality"]
+    Trusted --> Maintainer["👑 Core Maintainer\nReview PRs, manage releases"]
+    style Explorer fill:#e8f5e9,stroke:#2e7d32
+    style Contributor fill:#e3f2fd,stroke:#1565c0
+    style Trusted fill:#fff3e0,stroke:#e65100
+    style Maintainer fill:#fce4ec,stroke:#c62828
+```
+
+**How to climb the ladder:**
+
+| From | To | What You Need |
+|------|-----|---------------|
+| 🌟 Explorer | 🧩 Contributor | Submit your first merged Pull Request |
+| 🧩 Contributor | 🛠️ Trusted | 6+ months of consistent, high-quality contributions |
+| 🛠️ Trusted | 👑 Maintainer | Invitation from the Project Lead after demonstrated expertise |
+
 ### 1. Project Lead (Lead Maintainer)
 
 - **Current Lead:** M. Hateem Jamshaid (`hateem@runapparel.com`)

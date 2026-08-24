@@ -12,6 +12,22 @@ Think of cybersecurity like having a trusty, vigilant guard dog stationed at the
 
 We take the safety of our customers, our manufacturing blueprints, and our web application very seriously. If you find a broken lock, a loose fence board, or a secret trapdoor (a security vulnerability) in our system, we want to hear about it right away so we can fix it before any bad actors notice!
 
+### 🛡️ Security Shield Layers
+
+Our factory has multiple layers of protection, just like a medieval castle with walls, a moat, and guards:
+
+```mermaid
+flowchart TD
+    Browser["🌐 Your Browser"] --> CSP["🧱 CSP Security Headers"]
+    CSP --> Auth["🔑 Auth Cookies (httpOnly)"]
+    Auth --> Rate["⏱️ Rate Limiters"]
+    Rate --> Zod["✅ Zod Data Validation"]
+    Zod --> Service["🏭 Business Logic (neverthrow)"]
+    Service --> DB["🗄️ Neon PostgreSQL"]
+    style Browser fill:#e3f2fd,stroke:#1565c0
+    style DB fill:#e8f5e9,stroke:#2e7d32
+```
+
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                   HOW TO SAFELY REPORT A SECURITY HOLE                 │
@@ -72,6 +88,16 @@ Please include:
 | 🟠 **High** | Important feature broken or bypasses security checks | Within 48 hours | Within 14 days |
 | 🟡 **Medium** | Minor leak or specific edge-case weakness | Within 5 days | Within 30 days |
 | 🟢 **Low** | Small improvement or theoretical concern | Within 10 days | Next release |
+
+---
+
+## 📦 Supported Versions
+
+| Version | Supported | Notes |
+|---------|-----------|-------|
+| 4.1.x   | ✅ Active | Current release — receives all security patches |
+| 4.0.x   | ⚠️ Limited | Critical security fixes only |
+| 3.x and below | ❌ End of Life | Please upgrade to 4.1.x |
 
 ---
 

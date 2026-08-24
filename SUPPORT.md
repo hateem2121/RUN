@@ -39,6 +39,19 @@ flowchart TD
 
 ---
 
+## ⏱️ When to Expect a Response
+
+Our team is small but mighty! Here is roughly how fast we respond:
+
+| Channel | Response Time | Best For |
+|---------|--------------|----------|
+| 🐛 GitHub Issues | 1–3 business days | Bug reports and feature requests |
+| 💬 GitHub Discussions | 2–5 business days | Questions and community chat |
+| 📧 Email (hateem@runapparel.com) | 1–2 business days | Private or business inquiries |
+| 📱 WhatsApp (+92-336-1777313) | Same day (business hours PKT) | Urgent B2B manufacturing inquiries |
+
+---
+
 ## 💬 Community Channels
 
 ### 1. GitHub Community Discussions

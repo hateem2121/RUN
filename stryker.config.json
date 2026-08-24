@@ -21,7 +21,7 @@
   "incremental": true,
   "incrementalFile": ".stryker-tmp/incremental.json",
   "dashboard": {
-    "project": "github.com/hateem2121/RUN",
+    "project": "github.com/RUN-APPAREL/RUN",
     "version": "main",
     "reportType": "full"
   },

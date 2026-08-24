@@ -19,11 +19,22 @@
 └───────────────────────────────────┴────────────────────────────────────┘
 ```
 
+```mermaid
+flowchart TD
+    Code["📦 RUN Remix Code"] --> Use["✅ Use it for anything"]
+    Code --> Change["✅ Change it however you like"]
+    Code --> Share["✅ Share copies freely"]
+    Code --> Sell["✅ Build and sell products"]
+    Code --> Credit["📛 Just keep our name tag"]
+    style Code fill:#e3e8f9,stroke:#4e5d8b
+    style Credit fill:#fff3cd,stroke:#8b7355
+```
+
 ---
 
 ## Official Legal Text
 
-Copyright (c) 2026 RUN APPAREL (PVT) LTD / M. Hateem Jamshaid
+Copyright (c) 2024–2026 RUN APPAREL (PVT) LTD / M. Hateem Jamshaid
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

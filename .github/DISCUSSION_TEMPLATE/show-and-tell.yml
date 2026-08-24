@@ -1,0 +1,36 @@
+title: "[Show & Tell] "
+labels:
+  - "show-and-tell"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        🎉 **Show off what you built!** We love seeing creative things people make with RUN Remix.
+        Whether it is a school project, a modified theme, a cool integration, or anything else — share it here!
+
+  - type: textarea
+    id: built
+    attributes:
+      label: "What did you build or create?"
+      description: "Tell us about your project in simple words."
+      placeholder: "I built a..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "Screenshots, videos, or links"
+      description: "Show us! Drag and drop images, paste video links, or share a live URL."
+      placeholder: "(Drag images here or paste links...)"
+    validations:
+      required: false
+
+  - type: textarea
+    id: learned
+    attributes:
+      label: "What did you learn?"
+      description: "Any tips, tricks, or lessons learned that might help other builders?"
+      placeholder: "One thing I learned was..."
+    validations:
+      required: false

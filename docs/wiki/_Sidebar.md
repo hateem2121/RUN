@@ -15,5 +15,6 @@
 - [📜 MIT License](../../LICENSE)
 - [💖 Code of Conduct](../../CODE_OF_CONDUCT.md)
 - [🛡️ Security Policy](../../SECURITY.md)
+- [🔭 GitHub Operations & UI Guide](../github-guide/README.md)
 - 💬 Community Discussions (`<repository-url>/discussions`)
 - [🌐 Official Website](https://wear-run.com)

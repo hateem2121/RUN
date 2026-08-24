@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+> 📚 **How to read this:** Each version tells you what changed, like a diary for the software. The newest entries are at the top!
+
+---
+
+## 🗺️ Version Timeline
+
+```mermaid
+flowchart LR
+    V3["v3.0.0\nMar 2026\nAgentic Factory"] --> V401["v4.0.1\nApr 2026\nSecurity + Fixes"] --> V41["v4.1.0\nMay 2026\nAccessibility"] --> V412["v4.1.2\nJun 2026\nCurrent Release"]
+    style V3 fill:#f9f3e3,stroke:#8b7355
+    style V401 fill:#e3f9e8,stroke:#2d8b4e
+    style V41 fill:#e3f2fd,stroke:#1565c0
+    style V412 fill:#e8f5e9,stroke:#2e7d32
+```
+
+### 📖 What the Categories Mean
+
+| Category | Emoji | What It Means in Simple Words |
+|----------|-------|-------------------------------|
+| **Added** | ✨ | Brand new toys in the toy box |
+| **Changed** | 🔧 | We improved something that already existed |
+| **Fixed** | 🐛 | We squashed a pesky bug |
+| **Removed** | 🗑️ | We cleaned out something no longer needed |
+| **Security** | 🛡️ | We made the factory safer from bad actors |
+
+---
+
 ## [Unreleased]
 
 ### 5th-Grader Visual GitHub Health & 6-Chapter Illustrated Wiki Suite
@@ -12,7 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Dual-Layer Visual Architecture**: You can now explore the entire repository through vibrant 5th-grader real-world analogies, ASCII storefront wireframes, and Mermaid flowcharts, paired with high-precision enterprise engineering spec cards.
 - **Illustrated 6-Chapter GitHub Wiki**: You can now follow the complete journey of athletic sportswear from Sialkot organic cotton farming to real-time 3D WebGL digital twins via a structured 6-chapter visual knowledge base in `docs/wiki/` (The Garment Journey, How the Website Works, Meet the Robot Helpers, Green Planet Lab, How to Play & Contribute, and the "Oops!" First-Aid FAQ).
 - **Comprehensive Community Health & Governance Overhaul**: You can now easily contribute, report bugs, review security policies, and cite academic 3D manufacturing research with completely redesigned community documents (`README.md`, `LICENSE`, `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `SECURITY.md`, `SUPPORT.md`, `CITATION.cff`, `CITATION.md`, `GOVERNANCE.md`).
-- **GitHub UI & Operations Guides**: You can now navigate and understand all GitHub UI surfaces through dedicated beginner-friendly guides covering About metadata, Stars/Watchers/Forks, Activity & Organization Audit Logs, and Emergency Red Button reporting in `docs/github-guide/`.
+- **10-Chapter GitHub UI & Operations Grand Tour**: You can now navigate and understand all GitHub UI surfaces through dedicated beginner-friendly visual guides covering About metadata, Stars/Watchers/Forks, Activity & Organization Audit Logs, Emergency Red Button reporting, Deployments & GitHub Pages, Packages & Registries (`ghcr.io`), Actions & Build Artifacts, Projects & Kanban Boards, Releases & Git Tags, and Insights/Pulse graphs in `docs/github-guide/`.
+- **Discussion Forms & Automated Sync**: You can now submit structured ideas, Q&A, and project showcases via GitHub Discussion templates (`.github/DISCUSSION_TEMPLATE/`), track future releases on `ROADMAP.md`, and enjoy automated wiki publishing via `.github/workflows/wiki-sync.yml`.
 
 ### GitHub Security & Quality Hardening & Supply Chain Protection
 

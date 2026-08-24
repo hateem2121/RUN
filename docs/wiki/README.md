@@ -24,11 +24,13 @@ By keeping the Wiki in the main Git repository under `docs/wiki/`, all documenta
 
 ## 🚀 How to Synchronize with GitHub Wiki
 
-To push these pages to the live GitHub Wiki repository:
+> **💡 Good news!** Wiki syncing is now automated via a GitHub Action (`.github/workflows/wiki-sync.yml`). Every time you push changes to `docs/wiki/` on the `main` branch, the wiki updates automatically!
+
+If you ever need to sync manually, here are the steps:
 
 ```bash
 # 1. Clone the GitHub Wiki git repository
-git clone https://github.com/hateem2121/RUN.wiki.git /tmp/run-wiki
+git clone https://github.com/RUN-APPAREL/RUN.wiki.git /tmp/run-wiki
 
 # 2. Copy the formatted wiki files
 cp docs/wiki/*.md /tmp/run-wiki/
