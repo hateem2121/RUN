@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Checkout main repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Checkout wiki repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -28,6 +30,7 @@ jobs:
           repository: RUN-APPAREL/RUN.wiki
           path: wiki
           token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
 
       - name: Sync wiki source files
         run: |

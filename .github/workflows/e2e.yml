@@ -110,8 +110,12 @@ jobs:
       - name: 🧹 Cleanup Neon Preview Branch
         if: always() && steps.create_neon_branch.outputs.branch_id != ''
         continue-on-error: true
+        env:
+          NEON_PROJECT_ID: ${{ secrets.NEON_PROJECT_ID }}
+          BRANCH_ID: ${{ steps.create_neon_branch.outputs.branch_id }}
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
         run: |
           curl -s -X DELETE \
-            "https://console.neon.tech/api/v2/projects/${{ secrets.NEON_PROJECT_ID }}/branches/${{ steps.create_neon_branch.outputs.branch_id }}" \
-            -H "Authorization: Bearer ${{ secrets.NEON_API_KEY }}" \
+            "https://console.neon.tech/api/v2/projects/${NEON_PROJECT_ID}/branches/${BRANCH_ID}" \
+            -H "Authorization: Bearer ${NEON_API_KEY}" \
             -H "Accept: application/json"
