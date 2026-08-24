@@ -278,7 +278,8 @@ Violating any rule below is a **Critical** finding. Halt and correct immediately
 - **Zero Root Scratch Clutter**: Temporary debug or one-off test scripts (`test-*.cjs`, `test-*.mjs`, `playwright-script.mjs`) MUST NOT be committed to the root directory. All tests belong inside `tests/` or `e2e/`.
 - **Git Ignore Safeguards**: Large visual regression capture directories (`visual-audit/`), code analysis graph dumps (`graphify-out/`), and temporary agent briefing directories (`.agents/`) MUST remain strictly ignored in `.gitignore`.
 - **Knip Ignore Pruning**: Whenever scratch scripts or debug files are removed, their corresponding entries in `knip.config.ts` `ignore` list MUST be pruned immediately.
-- **Documentation Link Integrity**: Whenever legacy files or deprecated markdown files are removed, run `npm run check:docs` to ensure zero dangling markdown references exist.
+- **Documentation Link Integrity**: Whenever legacy files or deprecated markdown files are removed, run `npm run check:docs` to ensure zero dangling markdown references exist. Always use `<repository-url>` or plain text for private or uninitialized discussion links.
+- **Workspace Tooling Invariant**: Never attach `ArtifactMetadata` when writing project workspace files (`write_to_file`); `ArtifactMetadata` is reserved exclusively for conversation brain artifacts.
 
 ### 5.1.16 Markdown Formatting Standards (markdownlint: MD012, MD022, MD026)
 

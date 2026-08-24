@@ -25,8 +25,9 @@
 
 - **Identity:** All generated documentation, SOPs, and code comments must reflect RUN APPAREL (PVT) LTD's "100% B2B, premium sustainable manufacturing identity."
 - **Link Checking:** `npm run check:docs` runs rigorously in CI. To prevent pipeline failures:
-  - Do not hyperlink private repository URLs (use `<repository-url>` or plain text).
+  - Do not hyperlink private repository URLs or uninitialized discussion links (use `<repository-url>` or plain text).
   - Do not hyperlink local files with line-number fragments (e.g., `[file.ts](file.ts:10)`). Use inline code ticks instead.
+  - Never attach `ArtifactMetadata` when writing project workspace files (reserved exclusively for conversation-level artifacts).
 - **Markdown Formatting Standards (markdownlint):** All markdown files must adhere to standard markdownlint rules (`npm run check:md`):
   - **No Double Blanks (MD012):** Never leave consecutive blank lines.
   - **Blanks Around Headings (MD022):** All headings must have exactly one blank line above and below.
