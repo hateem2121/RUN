@@ -18,6 +18,7 @@ const config: KnipConfig = {
     "e2e/**",
     ".lintstagedrc.cjs",
     ".gemini/**",
+    ".agent/**",
     "scripts/**",
     "server/lib/cache/redis-client.ts",
     "client/app/components/admin/product-management-unified/shared/hooks/**",

@@ -1,19 +1,13 @@
 ---
-description: Guide and best practices for Neon Lakebase Postgres (connection methods, pooling, autoscaling, migrations, scale-to-zero, restore).
+description: Guides and best practices for working with Lakebase Postgres, the database behind Neon. Covers setup, connection methods and drivers, pooled vs direct connections, branching, schema migrations, autoscaling, scale-to-zero, instant restore, read replicas, connection pooling, IP allow lists, and logical replication. Use when users ask about "Lakebase Postgres", "Neon setup", "connect to Neon", "Neon project", "DATABASE_URL", "serverless Postgres", "Neon CLI", "neon", "Neon MCP", "Neon Auth", "@neondatabase/serverless", "@neondatabase/neon-js", "scale to zero", "Neon autoscaling", "Neon read replica", "Neon connection pooling", or "schema migrations".
 ---
 
-# /neon-postgres
+# /neon-postgres - Project: RUN Workflow
 
-**Description:** Guides and best practices for working with Lakebase Postgres, the database behind Neon. Covers connection methods and drivers, pooled vs direct connections, schema migrations, autoscaling, scale-to-zero, instant restore, read replicas, and connection pooling.
+Execute the `neon-postgres` procedure:
 
-**Usage:** `/neon-postgres [subcommand or query]`
+> **Skill Definition**: `/Users/hateemjamshaid/Sites/RUN/.agent/skills/neon-postgres/SKILL.md`
 
-## Agent Instructions
-
-When the user invokes `/neon-postgres` or `/postgres`:
-1. Read `.agent/skills/neon-postgres/SKILL.md` for Lakebase Postgres specifications and best practices.
-2. Use `mcp-server-neon` tools (`describe_project`, `get_database_tables`, `describe_table_schema`, `run_sql`, `run_sql_transaction`, `list_slow_queries`, `inspect_database`) to manage and inspect the database.
-3. Enforce the repository's database architectural rules:
-   - Neon serverless connection string patterns
-   - Connection pooling with PgBouncer
-   - Cold-start minimization and Drizzle ORM schema conventions
+1. Read and strictly follow the `neon-postgres` instructions in `SKILL.md`.
+2. Follow all hard-gates, checklists, and verification invariants defined in the skill.
+3. Announce skill invocation and execute the workflow step-by-step.

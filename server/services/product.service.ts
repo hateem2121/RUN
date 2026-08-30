@@ -52,22 +52,8 @@ class ProductService {
     const limit = Math.min(params.limit || 20, 100);
     const offset = (page - 1) * limit;
 
-    return new ResultAsync(
-      (async (): Promise<
-        Result<
-          {
-            data: ProductSummary[];
-            pagination: {
-              page: number;
-              limit: number;
-              total: number;
-              pages: number;
-              hasMore: boolean;
-            };
-          },
-          AppError
-        >
-      > => {
+    return ResultAsync.fromPromise(
+      (async () => {
         let products: ProductSummary[] = [];
         let totalCount = 0;
 
@@ -157,7 +143,7 @@ class ProductService {
 
         const totalPages = Math.ceil(totalCount / limit);
 
-        return ok({
+        return {
           data: products,
           pagination: {
             page,
@@ -166,11 +152,12 @@ class ProductService {
             pages: totalPages,
             hasMore: page < totalPages,
           },
-        });
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        return err(new DatabaseError("Failed to list products", { cause: error }));
-      }),
+        };
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError("Failed to list products", { cause: error });
+      },
     );
   }
 

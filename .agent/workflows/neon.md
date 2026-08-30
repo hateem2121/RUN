@@ -1,23 +1,13 @@
 ---
-description: Start here for Neon architecture, cloud backend primitives, CLI/MCP setup, and skill routing across Postgres, Auth, Data API, Storage, Functions, and AI Gateway.
+description: Overview of Neon, a complete set of cloud backend primitives for apps and agents, spanning Lakebase Postgres, Auth, the Data API, Object Storage, Compute Functions, and the AI Gateway. Start here to route to the right Neon skill, set up the CLI or MCP server, and follow the branch-first workflow. Use when "Neon" or "Lakebase Postgres" is mentioned, or when any of its individual capabilities are the trigger: "object storage" or "S3", "buckets", "serverless functions", "AI gateway", "call an LLM", "logs", "branch logs", "query logs", "log export", "Loki", "Grafana", "observability", "telemetry", "postgres", "database", or "backend".
 ---
 
-# /neon
+# /neon - Project: RUN Workflow
 
-**Description:** Overview and router for Neon cloud backend primitives. Guides routing to specific Neon skills, CLI and MCP server configuration, and branch-first development workflows.
+Execute the `neon` procedure:
 
-**Usage:** `/neon [task]`
+> **Skill Definition**: `/Users/hateemjamshaid/Sites/RUN/.agent/skills/neon/SKILL.md`
 
-## Agent Instructions
-
-When the user invokes `/neon`:
-1. Read `.agent/skills/neon/SKILL.md` to understand the full capabilities and architectural primitives.
-2. Route to the appropriate specialized sub-skill or workflow:
-   - For database management, connections, and pooling: `/neon-postgres` (`.agent/skills/neon-postgres/SKILL.md`)
-   - For branching workflows, migration testing, or PR previews: `/neon-postgres-branches` (`.agent/skills/neon-postgres-branches/SKILL.md`)
-   - For instant disposable databases without credentials: `/claimable-postgres` (`.agent/skills/claimable-postgres/SKILL.md`)
-   - For LLM routing, AI chat, and model proxying: `/neon-ai-gateway` (`.agent/skills/neon-ai-gateway/SKILL.md`)
-   - For serverless background workloads, SSE, and APIs: `/neon-functions` (`.agent/skills/neon-functions/SKILL.md`)
-   - For S3-compatible file/blob storage: `/neon-object-storage` (`.agent/skills/neon-object-storage/SKILL.md`)
-   - For data transfer and query cost reduction: `/neon-postgres-egress-optimizer` (`.agent/skills/neon-postgres-egress-optimizer/SKILL.md`)
-3. Utilize available `mcp-server-neon` tools or Neon CLI commands to inspect and interact with the Neon project.
+1. Read and strictly follow the `neon` instructions in `SKILL.md`.
+2. Follow all hard-gates, checklists, and verification invariants defined in the skill.
+3. Announce skill invocation and execute the workflow step-by-step.

@@ -1,16 +1,13 @@
 ---
-description: Provision instant temporary Postgres databases via Claimable Postgres (neon.new) with no signup or credit card for testing and prototyping.
+description: Provision instant temporary Postgres databases via Claimable Postgres by Neon (neon.new) with no login, signup, or credit card. Supports REST API, CLI, and SDK. Use when users ask for a quick Postgres environment, a throwaway DATABASE_URL for prototyping/tests, or "just give me a DB now". Triggers include: "quick postgres", "temporary postgres", "no signup database", "no credit card database", "instant DATABASE_URL", "npx neon-new", "neon.new", "neon.new API", "claimable postgres API".
 ---
 
-# /claimable-postgres
+# /claimable-postgres - Project: RUN Workflow
 
-**Description:** Provision instant temporary Postgres databases via Claimable Postgres by Neon (neon.new) with no login, signup, or credit card. Supports REST API, CLI, and SDK.
+Execute the `claimable-postgres` procedure:
 
-**Usage:** `/claimable-postgres [create | claim | status]`
+> **Skill Definition**: `/Users/hateemjamshaid/Sites/RUN/.agent/skills/claimable-postgres/SKILL.md`
 
-## Agent Instructions
-
-When the user invokes `/claimable-postgres` or `/neon-new`:
-1. Read `.agent/skills/claimable-postgres/SKILL.md` to review the Claimable Postgres API and CLI flows.
-2. If requested to create a quick database, generate an instant throwaway PostgreSQL instance using `npx neon-new` or the Claimable Postgres REST API.
-3. Return the generated `DATABASE_URL` and claim link to the user.
+1. Read and strictly follow the `claimable-postgres` instructions in `SKILL.md`.
+2. Follow all hard-gates, checklists, and verification invariants defined in the skill.
+3. Announce skill invocation and execute the workflow step-by-step.

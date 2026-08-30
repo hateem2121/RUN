@@ -1,17 +1,13 @@
 ---
-description: Triggers the native Antigravity impeccable design skill for UI polishing, UX critique, and design scaffolding.
+description: Use when the user wants to design, redesign, shape, critique, audit, polish, clarify, distill, harden, optimize, adapt, animate, colorize, extract, or otherwise improve a frontend interface. Covers websites, landing pages, dashboards, product UI, app shells, components, forms, settings, onboarding, and empty states. Handles UX review, visual hierarchy, information architecture, cognitive load, accessibility, performance, responsive behavior, theming, anti-patterns, typography, fonts, spacing, layout, alignment, color, motion, micro-interactions, UX copy, error states, edge cases, i18n, and reusable design systems or tokens. Also use for bland designs that need to become bolder or more delightful, loud designs that should become quieter, live browser iteration on UI elements, or ambitious visual effects that should feel technically extraordinary. Not for backend-only or non-UI tasks.
 ---
 
-# /impeccable
+# /impeccable - Project: RUN Workflow
 
-**Description:** Triggers the native Antigravity `impeccable` design skill. Use this command to initiate design reviews, UI polishing, UX critique, or initial design scaffolding (e.g. `init`).
+Execute the `impeccable` procedure:
 
-**Usage:** `/impeccable <subcommand>` (e.g. `/impeccable init`, `/impeccable audit`, `/impeccable polish`)
+> **Skill Definition**: `/Users/hateemjamshaid/Sites/RUN/.agent/skills/impeccable/SKILL.md`
 
-## Agent Instructions
-
-When the user invokes `/impeccable`, follow these steps:
-1. Recognize that `impeccable` is a loaded Antigravity skill located in `.gemini/config/skills/impeccable/`.
-2. Follow the setup procedures explicitly listed in `.gemini/config/skills/impeccable/SKILL.md` (e.g., executing the `context.mjs` script via `node`).
-3. Pass the user's subcommand exactly as intended to the impeccable routines to execute design tasks like `audit`, `polish`, or `init`.
-4. Ensure you honor the Antigravity `RUN` project active development rules while executing design edits.
+1. Read and strictly follow the `impeccable` instructions in `SKILL.md`.
+2. Follow all hard-gates, checklists, and verification invariants defined in the skill.
+3. Announce skill invocation and execute the workflow step-by-step.

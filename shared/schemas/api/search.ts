@@ -15,11 +15,11 @@ export const SemanticSearchResultItemSchema = z.object({
   name: z.string(),
   slug: z.string(),
   type: z.enum(["product", "fabric"]),
-  description: z.string().nullable().optional(),
+  description: z.string().nullish(),
   similarityScore: z.number().min(0).max(1),
   matchPercentage: z.number().min(0).max(100),
-  categoryName: z.string().nullable().optional(),
-  technicalSummary: z.string().nullable().optional(),
+  categoryName: z.string().nullish(),
+  technicalSummary: z.string().nullish(),
 });
 
 export type SemanticSearchResultItem = z.infer<typeof SemanticSearchResultItemSchema>;

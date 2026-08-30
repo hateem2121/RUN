@@ -55,28 +55,6 @@ async function submitContactInquiry(data: ContactSubmissionData) {
   QuoteSubmissionSchema.parse(data);
 
   try {
-    // 2. Logic: Log to DB (Still Mocked)
-    // console.log("[Quote Request Received]", {
-    //   timestamp: new Date().toISOString(),
-    //   ...validated,
-    // });
-
-    // 3. Mock Email Send
-    // console.log(`[Email Mock] Sending quote confirmation to ${validated.contact.email}`);
-
-    // In the future: Insert into inquiries table (needs schema migration for items)
-    /*
-     await db.insert(inquiries).values({
-        name: validated.contact.name,
-        email: validated.contact.email,
-        message: `Quote Request for ${validated.items.length} items.\n\nDescription: ${validated.contact.projectDescription}`,
-        company: validated.contact.company,
-        phone: validated.contact.phone,
-        source: "quote-drawer",
-        status: "new"
-     });
-     */
-
     return {
       success: true,
       message: "Quote request received successfully",

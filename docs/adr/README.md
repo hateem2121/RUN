@@ -25,6 +25,12 @@ An Architecture Decision Record captures an important architectural decision alo
 | [0013](0013-error-handling-architecture.md) | Error Handling Architecture | Accepted | 2026-01-12 |
 | [0014](0014-observability-pipeline.md) | Observability Pipeline | Accepted | 2026-01-12 |
 | [0015](0015-react-router-7.md) | React Router 7 Adoption | Accepted | 2026-01-07 |
+| [0016](0016-admin-parity-pattern.md) | Admin Route Parity Pattern | Accepted | 2026-02-15 |
+| [0017](0017-gsap-animation.md) | GSAP Animation Library over Framer Motion | Accepted | 2026-04-04 |
+| [0018](0018-cloud-tasks-over-pgboss.md) | Google Cloud Tasks and HTTP Workers over PG-Boss | Accepted | 2026-08-25 |
+| [0019](0019-zod-v4-nullish-standard.md) | Zod v4 Nullish Standard over Chained Modifiers | Accepted | 2026-08-25 |
+| [0020](0020-neverthrow-resultasync-from-promise.md) | Direct neverthrow ResultAsync.fromPromise in Service Layer | Accepted | 2026-08-25 |
+| [0021](0021-keyboard-accessible-scroll-regions.md) | Keyboard-Accessible Scroll Regions and WCAG 2.1.1 Invariants | Accepted | 2026-08-25 |
 
 ## Creating New ADRs
 

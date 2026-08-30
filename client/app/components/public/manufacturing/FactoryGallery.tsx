@@ -120,6 +120,8 @@ export function FactoryGallery() {
         {/* Gallery Slider */}
         <section
           ref={scrollRef}
+          tabIndex={0}
+          role="region"
           aria-label="Factory facilities live photo gallery"
           className="overflow-x-auto pb-12 pl-6 md:pl-[calc((100vw-1280px)/2)] pr-6 flex items-end gap-6 snap-x snap-mandatory h-[650px] scrollbar-hide no-scrollbar relative z-10 focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-manufacturing-accent"
         >

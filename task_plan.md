@@ -1,8 +1,139 @@
-# Task Plan — RUN APPAREL CMS (v4.1.2) — GitHub Security & Quality Resolution
+# Task Plan — RUN APPAREL CMS (v4.1.2) — Monorepo & Global Antigravity Tooling
 
-**Date:** 2026-08-24  
-**Goal:** Forensically audit, verify, and resolve all items across GitHub Security & Quality (Code Scanning, OpenSSF Scorecard, Dependabot, Secret Scanning, Branch Protection, and Actions Token Permissions) to achieve a 100% zero-alert security status.  
-**Auditor/Engineer Role:** Antigravity — Principal Security Architect & Systems Auditor  
+**Date:** 2026-08-25  
+**Goal:** Comprehensive Monorepo Code Review, Quality & Architecture Audit across all layers (Client, Server, Shared, Database, CI/CD, Security, Performance, Simplicity) with multi-perspective reviews (CEO, Engineering, Design), 11-Finding Remediation Sprint, and 100/100 Perfection Score.  
+**Auditor/Engineer Role:** Antigravity — Principal Systems Architect & Senior Code Reviewer  
+
+---
+
+## Active Sprint Plan — Comprehensive Monorepo Code Review & Quality Audit (2026-08-25)
+
+- [x] **Protocol 0: Session Initialization & Strategic Alignment (/grill-me + /using-superpowers + /brainstorming)**
+  - [x] Executed `/grill-me` alignment interview to determine audit scope, depth, dimensions, and report requirements.
+  - [x] Formulated multi-perspective review matrix (CEO / Executive, Principal Engineering, Design & UX).
+  - [x] Authored formal Design Spec & Implementation Plan in [`implementation_plan.md`](file:///Users/hateemjamshaid/.gemini/antigravity/brain/0a87179b-d575-4252-bebe-2809cdd5ac3d/implementation_plan.md).
+- [x] **Phase 1: Multi-Axis Codebase Reconnaissance & Knowledge Graph Analysis**
+  - [x] Static AST analysis, complexity profiling, and dependency graph mapping.
+  - [x] Dead code, orphaned exports, and architectural drift scan (`knip`, TypeScript, Biome).
+- [x] **Phase 2: Deep 5-Axis Domain Audits**
+  - [x] Domain 1: Correctness & Invariant Enforcement (Type safety, Zod contracts, React 19 / Vite 8 SSR, Drizzle ORM).
+  - [x] Domain 2: Readability, Code Simplification & Complexity Reduction (Over-abstractions, duplicate branches, structural remedies).
+  - [x] Domain 3: Architecture & Module Boundaries (Server service layer, Client routes/components, Shared schemas, Database layer).
+  - [x] Domain 4: Security, Auth & Vulnerability Hardening (OWASP Top 10, CWE checks, Rate limiting, Secrets, CSP).
+  - [x] Domain 5: Performance, Egress & Efficiency (Query saturation, L1 caching, SSR streaming, bundle footprint, CWV).
+- [x] **Phase 3: Multi-Perspective Strategic Reviews**
+  - [x] `/plan-ceo-review`: Business alignment, sustainability B2B positioning, ROI, operational risk, delivery velocity.
+  - [x] `/plan-eng-review`: System reliability, technical debt, test coverage integrity, fault tolerance, scalability.
+  - [x] `/plan-design-review`: Brutalist UI design system, WCAG 2.2 AAA accessibility, fluid typography, dark mode, responsive layout.
+- [x] **Phase 4: Synthesis & Deliverable Generation**
+  - [x] Conduct deep forensic multi-axis code review across Client, Server, Shared, DB, and CI layers <!-- id: 10 -->
+  - [x] Run full automated health check suite (`verify:tech-integrity`, `check`, `check:md`, `check:docs`, `vitest`) <!-- id: 11 -->
+  - [x] Formulate concrete before/after code restructuring recipes for all surfaced findings <!-- id: 12 -->
+  - [x] Conduct live Neon PostgreSQL MCP database inspection & discover legacy `pgboss` schema <!-- id: 13 -->
+  - [x] Author comprehensive 5th-grader ELI5 visual master report [`CODE_REVIEW_AND_QUALITY_REPORT.md`](file:///Users/hateemjamshaid/Sites/RUN/CODE_REVIEW_AND_QUALITY_REPORT.md) with Mermaid charts, ASCII wireframes, and tri-perspective analyses <!-- id: 14 -->
+  - [x] Publish brain conversation artifacts and update `findings.md` and `walkthrough.md` <!-- id: 15 -->
+- [x] **Phase 5: Further Advanced Runtime, Load, Mutation & Stress Investigations**
+  - [x] Live Chrome DevTools Lighthouse audit: Accessibility 100/100, SEO 100/100, Agentic 100/100, Best Practices 96/100 <!-- id: 16 -->
+  - [x] Playwright A11y multi-route scan: 83/83 passed (100%), resolved WCAG 2.1.1 Finding F-11 <!-- id: 17 -->
+  - [x] Neon PostgreSQL query benchmark: `getProductsSummary` 3.81ms, `getAccessories` 3.09ms <!-- id: 18 -->
+  - [x] WebGL 3D GPU memory & context loss recovery profile: Dynamic LOD and 200ms context recovery verified <!-- id: 19 -->
+  - [x] Stryker mutation testing & Litmus chaos assessment: 83 files instrumented with 8,675 mutants <!-- id: 20 -->
+- [x] **Phase 6: Full 11-Finding Remediation Sprint to 100/100 Perfection (/executing-plans)**
+  - [x] Task 1 (F-02): Added `".agent/**"` to `knip.config.ts` ignore list.
+  - [x] Task 2 (F-03): Upgraded `shared/schemas/api/search.ts` to `.nullish()`.
+  - [x] Task 3 (F-04): Refactored `server/services/product.service.ts` to `ResultAsync.fromPromise`.
+  - [x] Task 4 (F-05): Cleaned `SENTRY_*` keys and dead script tags in `client/app/root.tsx`.
+  - [x] Task 5 (F-06, F-07, F-08): Added `meta`, `@theme` tokens, and stable `key={link.href}` to `client/app/routes/developer.tsx`.
+  - [x] Task 6 (F-09): Removed dead commented code in `client/app/services/inquiry.server.ts`.
+  - [x] Task 7 (F-11): Added `tabIndex={0}` and `role="region"` with a11y focus styling to `/manufacturing` and `/sustainability` scroll containers.
+  - [x] Task 8 (F-01): Set `hookTimeout: 60000` in `vitest.config.ts`.
+  - [x] Task 9 (F-10): Dropped orphaned `pgboss` schema tables in live Neon database.
+- [x] **Phase 7: Protocol 0 Bookends & Final Monorepo Verification**
+  - [x] Executed `npm run check` (0 TypeScript / 0 Biome errors across 984 files).
+  - [x] Executed `npm run check:knip` (0 unused files / 0 unused exports).
+  - [x] Executed `npm run check:md` (0 markdownlint issues across 184 files).
+  - [x] Executed `npm run check:docs` (100% valid hyperlinks).
+  - [x] Executed `npm run verify:tech-integrity` (All 8 checks 100% PASS).
+  - [x] Updated `findings.md`, `task_plan.md`, and master report [`CODE_REVIEW_AND_QUALITY_REPORT.md`](file:///Users/hateemjamshaid/Sites/RUN/CODE_REVIEW_AND_QUALITY_REPORT.md).
+- [x] **Phase 8: Release Documentation, ADRs & Knowledge Persistence (/document-release + /documentation-and-adrs + /api-documenter + /source-driven-development + /learn)**
+  - [x] Authored [`docs/release/v4.1.2-release-notes.md`](file:///Users/hateemjamshaid/Sites/RUN/docs/release/v4.1.2-release-notes.md) with 100/100 scorecard, 11-finding remediation matrix, empirical investigation results, and upgrade guide.
+  - [x] Authored 4 new Architecture Decision Records: [ADR 0018](file:///Users/hateemjamshaid/Sites/RUN/docs/adr/0018-cloud-tasks-over-pgboss.md), [ADR 0019](file:///Users/hateemjamshaid/Sites/RUN/docs/adr/0019-zod-v4-nullish-standard.md), [ADR 0020](file:///Users/hateemjamshaid/Sites/RUN/docs/adr/0020-neverthrow-resultasync-from-promise.md), and [ADR 0021](file:///Users/hateemjamshaid/Sites/RUN/docs/adr/0021-keyboard-accessible-scroll-regions.md).
+  - [x] Updated ADR Index in [`docs/adr/README.md`](file:///Users/hateemjamshaid/Sites/RUN/docs/adr/README.md) indexing ADRs 0001 through 0021.
+  - [x] Grounded all framework implementations in official source docs (React 19, React Router v8, Express 5, Zod v4, Neon Serverless).
+  - [x] Formulated learning proposal in [`learning_proposal.md`](file:///Users/hateemjamshaid/.gemini/antigravity/brain/0a87179b-d575-4252-bebe-2809cdd5ac3d/learning_proposal.md) and persisted 5 new architectural invariants (`5.1.19` - `5.1.23`) into [`GEMINI.md`](file:///Users/hateemjamshaid/Sites/RUN/GEMINI.md) and [`AGENTS.md`](file:///Users/hateemjamshaid/Sites/RUN/AGENTS.md).
+- [x] **Phase 9: Context Engineering & Agent Rules Token Optimization (2026-08-30)**
+  - [x] Researched 2026 state-of-the-art context engineering & prompt token budgeting principles (Anthropic, Google, OpenAI).
+  - [x] Optimized [`gemini.md`](file:///Users/hateemjamshaid/Sites/RUN/gemini.md) from 1,156 lines (68KB) down to ~180 high-density lines (~75% reduction), eliminating internal contradictions, removing legacy `gstack` bash scripts, and consolidating all 24 architectural invariants into structured markdown tables.
+  - [x] Streamlined [`AGENTS.md`](file:///Users/hateemjamshaid/Sites/RUN/AGENTS.md) from 166 lines down to ~65 lines (~60% reduction), deduplicating repetitive cross-file rules while preserving 100% of the active development guardrails.
+  - [x] Synchronized [`docs/AGENT_INSTRUCTIONS.md`](file:///Users/hateemjamshaid/Sites/RUN/docs/AGENT_INSTRUCTIONS.md) and [`docs/core/AGENTS.md`](file:///Users/hateemjamshaid/Sites/RUN/docs/core/AGENTS.md).
+  - [x] Executed full verification: `npm run check:md` (0 errors), `npm run check:docs` (100% valid links), `npm run check` (0 errors across 984 files), `npm run verify:tech-integrity` (all 8 gates passed).
+
+---
+
+## Active Sprint Plan — Comprehensive Skills to Slash Commands Audit & Unification (2026-08-24)
+
+- [x] **Protocol 0: Session Initialization & Strategic Alignment (/grill-me + /using-superpowers + /writing-plans)**
+  - [x] Evaluated current state of all skills (30 total across 7 sources) and workflows across 4 discovery directories.
+  - [x] Conducted `/grill-me` alignment interview: confirmed 3-way atomic mirroring, strict 1:1 full names, 100% plugin/builtin coverage, code-review-graph integration, and workspace clean-sweep.
+  - [x] Authored comprehensive design spec and implementation plan in [`implementation_plan.md`](file:///Users/hateemjamshaid/.gemini/antigravity/brain/51c32832-a580-42c9-a35e-318665380512/implementation_plan.md).
+- [x] **Phase 1: Workflow Directory Architecture & Canonical Synchronization**
+  - [x] Implemented 3-way atomic mirroring across `~/.gemini/config/workflows`, `~/.gemini/antigravity/workflows`, and `~/.gemini/antigravity/global_workflows`.
+  - [x] Cleaned up obsolete/stale legacy workflow files (`brainstorm.md`, `debug.md`, `execute-plan.md`, `parallel-agents.md`, `plan.md`, `qa.md`, `review.md`, `tauri-build.md`, `tdd.md`, `vector-audit.md`, `verify.md`, `zero-egress.md`).
+- [x] **Phase 2: Comprehensive Skill-to-Workflow Mapping & Plugin Registration**
+  - [x] Registered `code-review-graph` (v2.3.7) global plugin and authoring [`SKILL.md`](file:///Users/hateemjamshaid/.gemini/config/plugins/code-review-graph/skills/code-review-graph/SKILL.md) and [`plugin.json`](file:///Users/hateemjamshaid/.gemini/config/plugins/code-review-graph/plugin.json).
+  - [x] Superpowers Plugin (14 skills): Mapped strict 1:1 full-name `/` workflows.
+  - [x] Chrome DevTools Plugin (5 skills): Created dedicated `/` workflows.
+  - [x] Diagram Design & SDK Plugins (2 skills): Created dedicated `/` workflows.
+  - [x] Modern Web Guidance Plugin (2 skills): Created dedicated `/` workflows.
+  - [x] Antigravity Built-in Skills (3 skills): Created dedicated `/` workflows.
+  - [x] Cleaned up 19 obsolete experimental visual sprint workflows from `RUN/.agent/workflows/`.
+- [x] **Phase 3: Universal Master Sync Engine**
+  - [x] Engineered `~/.gemini/config/scripts/sync-antigravity-skills.mjs` and executable runner `~/.gemini/config/scripts/sync-antigravity-skills.sh`.
+  - [x] Provided multi-source discovery, robust multiline YAML parser, 3-way directory mirroring, and automated stale file pruning.
+- [x] **Phase 4: Monorepo Verification & Protocol 0 Bookends**
+  - [x] `npm run verify:tech-integrity`: 🟢 **PASS** (All 8 checks passed).
+  - [x] `npm run check:docs`: 🟢 **PASS** (100% valid hyperlinks).
+  - [x] `npm run check:md`: 🟢 **PASS** (0 markdownlint issues across 183 files).
+  - [x] `npm run check`: 🟢 **PASS** (0 TypeScript errors, 0 Biome linter errors across 984 files).
+  - [x] Updated `findings.md`, `task_plan.md`, and authored `walkthrough.md`.
+
+---
+
+## Active Sprint Plan — Global Superpowers Skills & Slash Commands Integration (2026-08-24)
+
+- [x] **Protocol 0: Session Initialization & Strategic Alignment (/grill-me + /using-superpowers + /writing-plans)**
+  - [x] Conducted `/grill-me` alignment interview: confirmed full-name slash command convention, universal project-agnostic workflows, and automated sync script.
+  - [x] Authored design spec [`docs/superpowers/specs/2026-08-24-global-superpowers-installation-design.md`](docs/superpowers/specs/2026-08-24-global-superpowers-installation-design.md).
+  - [x] Authored implementation plan [`docs/superpowers/plans/2026-08-24-global-superpowers-installation.md`](docs/superpowers/plans/2026-08-24-global-superpowers-installation.md).
+- [x] **Task 1: Verify & Sync Upstream Superpowers Repository**
+  - [x] Synchronized `https://github.com/obra/superpowers.git` at `~/.gemini/config/plugins/superpowers/` on `main` branch (v6.3.0).
+  - [x] Validated presence of all 14 skills in `skills/` and verified `plugin.json` and `gemini-extension.json`.
+- [x] **Task 2: Automated Synchronization Engine (`sync-superpowers.sh`)**
+  - [x] Created `~/.gemini/config/scripts/sync-superpowers.mjs` and executable bash wrapper `~/.gemini/config/scripts/sync-superpowers.sh`.
+  - [x] Engineered automated git pull, legacy workflow cleanup, frontmatter parser, and workflow markdown generator.
+- [x] **Task 3: Universal Project-Agnostic Global Slash Command Workflows**
+  - [x] Purged legacy project-specific test files (hardcoded `pnpm` / `Tauri` / `QR modules` references).
+  - [x] Generated all 14 dedicated full-name global workflows in `~/.gemini/config/workflows/`:
+    - `/brainstorming` (`brainstorming.md`)
+    - `/dispatching-parallel-agents` (`dispatching-parallel-agents.md`)
+    - `/executing-plans` (`executing-plans.md`)
+    - `/finishing-a-development-branch` (`finishing-a-development-branch.md`)
+    - `/receiving-code-review` (`receiving-code-review.md`)
+    - `/requesting-code-review` (`requesting-code-review.md`)
+    - `/subagent-driven-development` (`subagent-driven-development.md`)
+    - `/systematic-debugging` (`systematic-debugging.md`)
+    - `/test-driven-development` (`test-driven-development.md`)
+    - `/using-git-worktrees` (`using-git-worktrees.md`)
+    - `/using-superpowers` (`using-superpowers.md`)
+    - `/verification-before-completion` (`verification-before-completion.md`)
+    - `/writing-plans` (`writing-plans.md`)
+    - `/writing-skills` (`writing-skills.md`)
+  - [x] Preserved general utilities (`/diagram`, `/export-diagram`, `/import-mermaid`, `/deep-think`, `/a11y-audit`).
+- [x] **Task 4: Verification & Protocol 0 Bookends**
+  - [x] `npm run check:docs`: 🟢 **PASS** (100% hyperlinks valid).
+  - [x] `npm run check:md`: 🟢 **PASS** (0 markdownlint issues).
+  - [x] `npm run verify:tech-integrity`: 🟢 **PASS** (All 8 checks passed).
+  - [x] Updated `findings.md`, `task_plan.md`, and created `walkthrough.md`.
 
 ---
 

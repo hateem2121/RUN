@@ -1,16 +1,13 @@
 ---
-description: Diagnose and fix excessive Postgres egress, query overfetching, SELECT * anti-patterns, and database transfer costs.
+description: Diagnose and fix excessive Postgres egress (network data transfer) in a codebase. Use when a user mentions high database bills, unexpected data transfer costs, network transfer charges, egress spikes, "why is my Neon bill so high", "database costs jumped", SELECT * optimization, query overfetching, reduce Neon costs, optimize database usage, or wants to reduce data sent from their database to their application. Also use when reviewing query patterns for cost efficiency, even if the user doesn't explicitly mention egress or data transfer.
 ---
 
-# /neon-postgres-egress-optimizer
+# /neon-postgres-egress-optimizer - Project: RUN Workflow
 
-**Description:** Diagnose and fix excessive Postgres egress (network data transfer) in a codebase. Optimizes query overfetching, SELECT * clauses, pagination, and data serialization.
+Execute the `neon-postgres-egress-optimizer` procedure:
 
-**Usage:** `/neon-postgres-egress-optimizer [audit | fix | analyze]`
+> **Skill Definition**: `/Users/hateemjamshaid/Sites/RUN/.agent/skills/neon-postgres-egress-optimizer/SKILL.md`
 
-## Agent Instructions
-
-When the user invokes `/neon-postgres-egress-optimizer` or `/neon-egress`:
-1. Read `.agent/skills/neon-postgres-egress-optimizer/SKILL.md` for egress diagnostics and optimization procedures.
-2. Audit queries in `server/services/` and database repositories for overfetching, missing projections, unindexed scans, or unbounded transfers.
-3. Optimize queries with strict column selection, efficient pagination, and stream buffering.
+1. Read and strictly follow the `neon-postgres-egress-optimizer` instructions in `SKILL.md`.
+2. Follow all hard-gates, checklists, and verification invariants defined in the skill.
+3. Announce skill invocation and execute the workflow step-by-step.

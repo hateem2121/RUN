@@ -1,29 +1,13 @@
 ---
-name: review-changes
 description: Perform a structured code review using change detection and impact
 ---
 
-## Review Changes
+# /review-changes - Project: RUN Workflow
 
-Perform a thorough, risk-aware code review using the knowledge graph.
+Execute the `review-changes` procedure:
 
-### Steps
+> **Skill Definition**: `/Users/hateemjamshaid/Sites/RUN/.agent/skills/review-changes/SKILL.md`
 
-1. Run `detect_changes_tool` to get risk-scored change analysis.
-2. Run `get_affected_flows_tool` to find impacted execution paths.
-3. For each high-risk function, run `query_graph_tool` with pattern="tests_for" to check test coverage.
-4. Run `get_impact_radius_tool` to understand the blast radius.
-5. For any untested changes, suggest specific test cases.
-
-### Output Format
-
-Provide findings grouped by risk level (high/medium/low) with:
-- What changed and why it matters
-- Test coverage status
-- Suggested improvements
-- Overall merge recommendation
-
-## Token Efficiency Rules
-- ALWAYS start with `get_minimal_context(task="<your task>")` before any other graph tool.
-- Use `detail_level="minimal"` on all calls. Only escalate to "standard" when minimal is insufficient.
-- Target: complete any review/debug/refactor task in ≤5 tool calls and ≤800 total output tokens.
+1. Read and strictly follow the `review-changes` instructions in `SKILL.md`.
+2. Follow all hard-gates, checklists, and verification invariants defined in the skill.
+3. Announce skill invocation and execute the workflow step-by-step.

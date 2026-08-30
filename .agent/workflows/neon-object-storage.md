@@ -1,15 +1,13 @@
 ---
-description: S3-compatible object storage that branches with your Neon project for uploads, media, documents, and blobs.
+description: S3-compatible object storage that branches with your Neon project, so files and the database stay in sync across every branch. Use when a user wants object storage, a bucket, blob/file storage, or somewhere to put uploads, images, documents, avatars, or user-generated files for their app or agent — especially when they already use (or are setting up) Lakebase Postgres and don't want to add a separate storage provider like AWS S3, Cloudflare R2, or Supabase Storage. Triggers include "object storage", "bucket", "blob storage", "file storage", "store uploads/images/files", "S3-compatible storage", "presigned URL", "where do I put files", "storage logs", "bucket logs", "Neon Object Storage", "Neon Storage", and "storage that branches with my database".
 ---
 
-# /neon-object-storage
+# /neon-object-storage - Project: RUN Workflow
 
-**Description:** S3-compatible object storage that branches with your Neon project, keeping files and database tables in sync across every branch.
+Execute the `neon-object-storage` procedure:
 
-**Usage:** `/neon-object-storage [bucket | upload | presigned-url]`
+> **Skill Definition**: `/Users/hateemjamshaid/Sites/RUN/.agent/skills/neon-object-storage/SKILL.md`
 
-## Agent Instructions
-
-When the user invokes `/neon-object-storage` or `/object-storage`:
-1. Read `.agent/skills/neon-object-storage/SKILL.md` for S3 API compatibility, presigned URL generation, and bucket configuration.
-2. Implement branch-aware file storage workflows that synchronize media with database state across preview and development branches.
+1. Read and strictly follow the `neon-object-storage` instructions in `SKILL.md`.
+2. Follow all hard-gates, checklists, and verification invariants defined in the skill.
+3. Announce skill invocation and execute the workflow step-by-step.

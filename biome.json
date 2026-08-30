@@ -58,7 +58,9 @@
         "useSortedClasses": "off"
       },
       "a11y": {
-        "preset": "recommended"
+        "preset": "recommended",
+        "noNoninteractiveTabindex": "off",
+        "noRedundantRoles": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "warn"

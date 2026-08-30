@@ -174,6 +174,8 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
         {/* Horizontal Scroll Area */}
         <section
           ref={scrollContainerRef}
+          tabIndex={0}
+          role="region"
           aria-label="Production blueprint timeline process sequence"
           className="overflow-x-auto pb-16 pl-6 md:pl-[calc((100vw-1280px)/2)] pr-6 relative z-10 w-full scrollbar-hide no-scrollbar flex focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-manufacturing-accent"
         >

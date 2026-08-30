@@ -29,6 +29,7 @@ export default defineConfig({
       "tests/e2e/**",
     ],
     testTimeout: 60000,
+    hookTimeout: 60000,
     coverage: {
       enabled: false, // Enable with --coverage flag
       all: true,

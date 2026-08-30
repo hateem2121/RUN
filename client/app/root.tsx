@@ -91,13 +91,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
     console.error("[RootLoader] Error prefetching data:", error);
   }
 
-  const ENV = {
-    SENTRY_DSN: process.env.SENTRY_DSN,
-    SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT || process.env.NODE_ENV || "development",
-    SENTRY_RELEASE: process.env.SENTRY_RELEASE || process.env.GIT_SHA || "dev",
-  };
-
-  return { cspNonce, dehydratedState: dehydrate(queryClient), ENV };
+  return { cspNonce, dehydratedState: dehydrate(queryClient) };
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -176,15 +170,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* Pass empty string to Links to bypass React 19 hydration mismatch on Chrome */}
         {/* Chrome hides the nonce on <link> tags, returning "", which crashes hydration if VDOM is different */}
         <Links nonce="" />
-        {/* Inject window.ENV for client-side configuration */}
-        <script
-          nonce={nonce}
-          suppressHydrationWarning
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: safe injection of server-side environment parameters
-          dangerouslySetInnerHTML={{
-            __html: `window.ENV = ${JSON.stringify(loaderData?.ENV || {})};`,
-          }}
-        />
       </head>
 
       <body

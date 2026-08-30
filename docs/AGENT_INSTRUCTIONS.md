@@ -1,8 +1,8 @@
 # Agent Instructions
 
-**For:** AI Coding Agents (Antigravity, Claude Code, etc.)
-**Version:** 4.1.2 (Protocol 0 Aligned)
-**Last Updated:** July 2026
+**For:** AI Coding Agents (Antigravity, Claude Code, etc.)  
+**Version:** 4.1.2 (Protocol 0 Aligned)  
+**Last Updated:** August 2026  
 
 ---
 
@@ -10,12 +10,10 @@
 
 **Primary Source of Truth (SSOT):** [`gemini.md`](../gemini.md)
 
-All agents working on this codebase MUST strictly adhere to the rules defined in
-`gemini.md`. That document takes precedence over all other documentation, including
-this file. Do NOT duplicate rules from `gemini.md` here.
+All agents working on this codebase MUST strictly adhere to the rules defined in `gemini.md`. That document takes precedence over all other documentation, including this file. Do NOT duplicate rules from `gemini.md` here.
 
 **Supplementary files:**
-- [`AGENTS.md`](../AGENTS.md) — Active development rules and hard constraints
+- [`AGENTS.md`](../AGENTS.md) — Active development rules, testing guardrails, and environment invariants.
 
 ---
 
@@ -31,8 +29,8 @@ cat AGENTS.md
 # 3. Check current sprint state
 cat task_plan.md
 
-# 4. Verify port compliance
-npm run verify-port
+# 4. Verify tech integrity & port compliance
+npm run verify:tech-integrity
 
 # 5. Start dev server (port 5002 — always)
 npm run dev
@@ -43,18 +41,16 @@ npm run dev
 ## 📋 Cross-Reference Guide
 
 | Agent Concern | Where to Look |
-|---------------|---------------|
-| Tech stack, versions, forbidden patterns | `gemini.md` §4–§5 |
-| Architecture, monorepo structure, import rules | `gemini.md` §6 |
-| Session start/end protocol (Protocol 0) | `gemini.md` §1 |
-| Uncertainty / ambiguity handling | `gemini.md` §2 |
-| B.L.A.S.T. execution order | `gemini.md` §3 |
-| Port 5002 compliance | `gemini.md` §4, `AGENTS.md`, `npm run verify-port` |
-| Route creation (public + admin pairs) | `gemini.md` §9, `shared/route-manifest.ts` |
-| Security checklist | `gemini.md` §15 |
-| CI/CD pipeline rules | `gemini.md` §16 |
-| gstack slash commands | `gemini.md` §8 |
-| Tech integrity verification | `gemini.md` §7, `npm run verify:tech-integrity` |
+| :--- | :--- |
+| **Tech Stack, Versions & Invariants** | `gemini.md` §1 |
+| **Forbidden Patterns & Zero Tolerance** | `gemini.md` §2.1 |
+| **Tooling & System Invariants** | `gemini.md` §2.2 |
+| **Architecture & Service Patterns** | `gemini.md` §3 |
+| **Protocol 0 Verification (8 Gates)** | `gemini.md` §4, `npm run verify:tech-integrity` |
+| **Knowledge Graph & MCP Tools** | `gemini.md` §5 |
+| **Testing & Playwright Guardrails** | `AGENTS.md` §2 |
+| **WCAG 2.2 Accessibility Standards** | `AGENTS.md` §2 |
+| **Markdown & Git Hygiene** | `AGENTS.md` §3 |
 
 ---
 
