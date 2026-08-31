@@ -4,7 +4,6 @@ import { z } from "zod";
 import { isRedisEnabled, redis } from "../../lib/cache/upstash-client.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { apiTier } from "../../middleware/rate-limit-tiers.js";
-import { writeRateLimiter } from "../../middleware/rateLimiter.js";
 import { authService } from "../../services/auth-service.js";
 
 const router = Router();
@@ -20,12 +19,8 @@ const WebVitalSchema = z.object({
 /** Core Web Vital metric names tracked by the client */
 const VITAL_METRIC_NAMES = ["LCP", "CLS", "INP", "FCP", "TTFB"] as const;
 
-/**
- * POST /api/analytics/vitals
- * Receives Core Web Vitals from the client
- * PC-602: Stores vitals in Redis for persistence and analysis
- */
-router.post("/vitals", writeRateLimiter, (req, res) => {
+// Core Web Vitals beacon: receives telemetry from client browsers
+router.post("/vitals", (req, res) => {
   // Respond immediately to the client
   res.status(202).end();
 

@@ -26,6 +26,7 @@ const config: KnipConfig = {
     "client/app/components/ui/map/hooks/**",
     "ops/load-testing/**",
     "server/scripts/benchmark-queries.ts",
+    "client/public/**",
   ],
   ignoreDependencies: [
     "ts-morph",

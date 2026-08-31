@@ -17,6 +17,7 @@ import rateLimit from "express-rate-limit";
 
 const shouldSkipRateLimiting = (_req: Request): boolean => {
   return (
+    process.env.NODE_ENV === "development" ||
     (process.env.NODE_ENV === "test" && process.env.ENABLE_RATE_LIMIT_IN_TESTS !== "true") ||
     (process.env.E2E === "true" && process.env.ENABLE_RATE_LIMIT_IN_TESTS !== "true") ||
     (process.env.PLAYWRIGHT_TEST === "true" && process.env.ENABLE_RATE_LIMIT_IN_TESTS !== "true")

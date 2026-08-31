@@ -28,11 +28,29 @@ class MediaContentService {
           DB_CIRCUIT_OPTIONS,
         );
 
-        if (!asset?.storagePath) {
+        if (!asset) {
+          return err(new NotFoundError(`Media asset ${id} not found`));
+        }
+
+        // Direct return for local static URLs (starts with /)
+        if (asset.url?.startsWith("/")) {
+          if (variant && asset.imageVariants?.[variant]?.startsWith("/")) {
+            return ok(asset.imageVariants[variant]!);
+          }
+          return ok(asset.url);
+        }
+
+        if (!asset.storagePath) {
           return err(new NotFoundError(`Media asset ${id} not found`));
         }
 
         let pathToServe = asset.storagePath;
+
+        // Local static path handling
+        if (pathToServe.startsWith("/") || pathToServe.startsWith("images/")) {
+          const localUrl = pathToServe.startsWith("/") ? pathToServe : `/${pathToServe}`;
+          return ok(localUrl);
+        }
 
         // PHASE 2 REMEDIATION (PC-402): Support specific image variants
         if (asset.type === "image" && variant && asset.imageVariants?.[variant]) {
@@ -86,6 +104,20 @@ class MediaContentService {
 
         if (!asset) {
           return err(new NotFoundError(`Media asset ${id} not found`));
+        }
+
+        // Direct return for local static URLs
+        if (asset.thumbnailUrl?.startsWith("/")) {
+          return ok(asset.thumbnailUrl);
+        }
+        if (asset.url?.startsWith("/")) {
+          return ok(asset.url);
+        }
+        if (asset.storagePath?.startsWith("/") || asset.storagePath?.startsWith("images/")) {
+          const localUrl = asset.storagePath.startsWith("/")
+            ? asset.storagePath
+            : `/${asset.storagePath}`;
+          return ok(localUrl);
         }
 
         let pathToServe: string | null = null;

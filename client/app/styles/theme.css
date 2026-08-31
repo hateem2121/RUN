@@ -301,6 +301,7 @@
   --radius-xl: calc(var(--radius) + 4px);
 
   --spacing-container: 1280px;
+  --spacing-container-2xl: 1600px;
   --container-2xl: 1600px;
   --max-width-search-modal: 640px;
   --width-sidebar: 240px;
@@ -397,27 +398,27 @@
   --color-map-popup-border: var(--color-border);
   --color-map-popup-text: var(--color-foreground);
 
-  /* Z-Index Layers (v4 convention: --z-index-*) */
-  --z-index-behind: -1;
-  --z-index-base: 0;
-  --z-index-default: 1;
-  --z-index-elevated: 10;
-  --z-index-dropdown: 1000;
-  --z-index-sticky: 1050;
-  --z-index-dock: 1100; /* Must be > Leaflet controls (1000) */
-  --z-index-modal-backdrop: 1200;
-  --z-index-modal: 1300;
-  --z-index-modal-nested: 1350;
-  --z-index-modal-nested-2: 1360;
-  --z-index-modal-nested-3: 1370;
-  --z-index-modal-overlay-1: 1210;
-  --z-index-modal-overlay-2: 1220;
-  --z-index-modal-overlay-3: 1230;
-  --z-index-popover: 1400;
-  --z-index-tooltip: 1450;
-  --z-index-toast: 1500;
-  --z-index-cursor: 1600;
-  --z-index-max: 9999;
+  /* Z-Index Layers (v4 convention: --z-*) */
+  --z-behind: -1;
+  --z-base: 0;
+  --z-default: 1;
+  --z-elevated: 10;
+  --z-dropdown: 1000;
+  --z-sticky: 1050;
+  --z-dock: 1100; /* Must be > Leaflet controls (1000) */
+  --z-modal-backdrop: 1200;
+  --z-modal: 1300;
+  --z-modal-nested: 1350;
+  --z-modal-nested-2: 1360;
+  --z-modal-nested-3: 1370;
+  --z-modal-overlay-1: 1210;
+  --z-modal-overlay-2: 1220;
+  --z-modal-overlay-3: 1230;
+  --z-popover: 1400;
+  --z-tooltip: 1450;
+  --z-toast: 1500;
+  --z-cursor: 1600;
+  --z-max: 9999;
 
   /* Glass Effects */
   --glass-premium: linear-gradient(135deg, var(--glass-bg-start), var(--glass-bg-end));
@@ -542,7 +543,12 @@
   --animate-spin-slow: spin 20s linear infinite;
 
   /* Custom Backgrounds */
-  --background-image-hero-conic: conic-gradient(from 0deg at 50% 50%, #3b82f6, #1d4ed8, #000000);
+  --background-image-hero-conic: conic-gradient(
+    from 0deg at 50% 50%,
+    var(--hero-conic-start),
+    var(--hero-conic-mid),
+    var(--hero-conic-end)
+  );
   --background-image-hero-dots: radial-gradient(circle, #ffffff 1px, transparent 1px);
   --background-image-radial-primary-glow: radial-gradient(
     circle at 50% 50%,
@@ -683,4 +689,75 @@
 }
 @utility shadow-sustainability-card {
   box-shadow: var(--shadow-sustainability-card);
+}
+
+@utility stroke-text {
+  -webkit-text-stroke: 1.5px var(--color-foreground);
+  color: transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (forced-colors: active) {
+  .stroke-text {
+    -webkit-text-stroke: 0px;
+    color: CanvasText;
+  }
+}
+
+@media print {
+  /* Hide screen interactive UI when printing or saving B2B spec sheet as PDF */
+  header,
+  nav,
+  .cursor-dot,
+  .cursor-follower,
+  button,
+  [role="dialog"] {
+    display: none;
+  }
+
+  /* Reset backgrounds for clean black on white paper printing */
+  html,
+  body,
+  main,
+  footer {
+    background-color: #ffffff;
+    color: #000000;
+  }
+
+  /* Prevent page breaks across process cards */
+  article,
+  section,
+  .rounded-2xl,
+  .rounded-xl {
+    break-inside: avoid;
+  }
+
+  /* Force solid typography */
+  .stroke-text {
+    -webkit-text-stroke: 0px;
+    color: #000000;
+  }
+}
+
+@utility opacity-subtle {
+  opacity: 0.06;
+}
+
+@utility opacity-muted-decoration {
+  opacity: 0.15;
+}
+
+@utility bg-footer-grid {
+  background-size: 30px 30px;
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-foreground) 10%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-foreground) 10%, transparent) 1px,
+      transparent 1px
+    );
 }

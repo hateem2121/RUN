@@ -28,5 +28,10 @@ startTransition(() => {
   );
   if (typeof window !== "undefined") {
     (window as unknown as { __hydrated?: boolean }).__hydrated = true;
+    if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch(() => {});
+      });
+    }
   }
 });

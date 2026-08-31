@@ -1,7 +1,6 @@
 import { HydrationBoundary, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
-// @ts-expect-error
-import "@fontsource-variable/inter";
+import "@fontsource-variable/inter/index.css";
 import interWoff2 from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
 import { HelmetProvider } from "react-helmet-async";
 import {
@@ -20,7 +19,7 @@ import { CeilingNotchNavbar } from "@/components/navigation/ceiling-notch-navbar
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { BackToTop } from "@/components/ui/back-to-top";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
-import { getQueryClient } from "@/lib/queryClient";
+import { getQueryClient, queryKeys } from "@/lib/queryClient";
 import "@/index.css";
 import { useEffect } from "react";
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
@@ -31,8 +30,35 @@ import { ScrollProvider } from "./hooks/use-scroll";
 // Load CSP nonce from server context
 export const links: LinksFunction = () => [
   {
+    rel: "icon",
+    type: "image/svg+xml",
+    href: "/favicon-dark.svg",
+    media: "(prefers-color-scheme: dark)",
+  },
+  {
+    rel: "icon",
+    type: "image/svg+xml",
+    href: "/favicon-light.svg",
+    media: "(prefers-color-scheme: light)",
+  },
+  {
+    rel: "icon",
+    href: "/favicon.ico",
+  },
+  {
+    rel: "manifest",
+    href: "/site.webmanifest",
+  },
+  {
     rel: "preload",
     href: interWoff2,
+    as: "font",
+    type: "font/woff2",
+    crossOrigin: "anonymous",
+  },
+  {
+    rel: "preload",
+    href: "/fonts/NeueStance-Bold.woff2",
     as: "font",
     type: "font/woff2",
     crossOrigin: "anonymous",
@@ -83,7 +109,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
 
     // Prefetch homepage batch data (Critical for Hero LCP)
     await queryClient.prefetchQuery({
-      queryKey: ["homepage", "batch"],
+      queryKey: queryKeys.homepage.batch(),
       queryFn: () =>
         fetch(`${baseUrl}${API_ROUTES.CONTENT.HOMEPAGE_BATCH}`).then((res) => res.json()),
     });

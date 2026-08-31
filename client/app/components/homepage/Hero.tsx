@@ -1,23 +1,41 @@
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
-import { useHomepageData } from "@/hooks/use-homepage-data";
+import { useEffect, useId, useRef, useState } from "react";
+import { Link } from "react-router";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { HERO_TEXT as FALLBACK_HERO_TEXT } from "./constants";
+import type { HomepageHero } from "./types";
+
+interface HeroProps {
+  heroData?: HomepageHero | null | undefined;
+}
 
 // Shader definitions moved outside component for performance
-export const Hero: React.FC = () => {
+export const Hero: React.FC<HeroProps> = ({ heroData: propsHeroData }) => {
+  const scrollCurveId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const [isInView, setIsInView] = useState(false);
+  const hasAnimatedIntro = useRef(false);
 
-  const { data: homepageData } = useHomepageData();
-  const heroData = homepageData?.hero?.result;
+  const heroData = propsHeroData;
 
-  // Split title by | or use fallback
+  // Split title by | or intelligently chunk long titles if no delimiter is provided
   const heroLines = heroData?.title
-    ? heroData.title.split("|").map((t: string) => t.trim())
+    ? heroData.title.includes("|")
+      ? heroData.title.split("|").map((t: string) => t.trim())
+      : heroData.title.length > 25
+        ? [
+            heroData.title.slice(
+              0,
+              heroData.title.lastIndexOf(" ", Math.ceil(heroData.title.length / 2)),
+            ),
+            heroData.title.slice(
+              heroData.title.lastIndexOf(" ", Math.ceil(heroData.title.length / 2)) + 1,
+            ),
+          ]
+        : [heroData.title]
     : FALLBACK_HERO_TEXT;
 
   // Performance: Detect if Hero is in view
@@ -45,10 +63,11 @@ export const Hero: React.FC = () => {
 
       const scope = textContainerRef.current;
 
-      // Intro Animation
+      // One-Shot Intro Animation
       const titles = scope.querySelectorAll(".hero-line");
 
-      if (titles.length > 0) {
+      if (titles.length > 0 && !hasAnimatedIntro.current) {
+        hasAnimatedIntro.current = true;
         if (prefersReducedMotion) {
           gsap.set(titles, { y: 0, opacity: 1, scale: 1 });
         } else {
@@ -64,8 +83,8 @@ export const Hero: React.FC = () => {
               y: "0%",
               scale: 1,
               rotateX: 0,
-              duration: 1.8,
-              stagger: 0.1,
+              duration: 1.6,
+              stagger: 0.08,
               ease: "power3.out",
               force3D: true,
             },
@@ -74,14 +93,13 @@ export const Hero: React.FC = () => {
       }
 
       // Optimized Mouse Parallax Logic
-      const lines = scope.querySelectorAll(".hero-line");
-      if (lines.length > 0) {
-        const lineSetters = Array.from(lines).map((line, i) => {
+      if (titles.length > 0 && !prefersReducedMotion) {
+        const lineSetters = Array.from(titles).map((line, i) => {
           gsap.set(line, { x: 0, y: 0 });
           return {
             x: gsap.quickTo(line, "x", { duration: 1, ease: "power2.out" }),
             y: gsap.quickTo(line, "y", { duration: 1, ease: "power2.out" }),
-            speed: (i + 1) * 20,
+            speed: (i + 1) * 15,
           };
         });
 
@@ -98,25 +116,32 @@ export const Hero: React.FC = () => {
         };
 
         if (window.innerWidth > 768) {
-          window.addEventListener("mousemove", handleMouseMove);
-          return () => window.removeEventListener("mousemove", handleMouseMove);
+          window.addEventListener("mousemove", handleMouseMove, { passive: true });
         }
-        return () => {};
+
+        return () => {
+          window.removeEventListener("mousemove", handleMouseMove);
+        };
       }
+
       return () => {};
     },
     { dependencies: [isInView, prefersReducedMotion], scope: textContainerRef },
   );
 
   return (
-    <section ref={containerRef} className="bg-background relative h-screen w-full overflow-hidden">
+    <section
+      ref={containerRef}
+      className="bg-background relative h-screen h-[100dvh] w-full overflow-hidden"
+      aria-label="Hero Introduction"
+    >
       {/* 
         CSS Gradient Background 
         Replaces the R3F Canvas with a performant CSS animation.
         Uses a mesh-like gradient effect.
       */}
       <div className="absolute inset-0 z-base overflow-hidden bg-background">
-        <div className="bg-hero-conic absolute -inset-1/2 opacity-40 blur-hero-conic animate-spin-slow" />
+        <div className="bg-hero-conic absolute -inset-1/2 opacity-40 blur-hero-conic animate-spin-slow motion-reduce:animate-none" />
         <div className="bg-hero-dots absolute inset-0 opacity-30 bg-hero-dots-size" />
       </div>
 
@@ -130,7 +155,7 @@ export const Hero: React.FC = () => {
             {heroLines.map((line: string, i: number) => (
               <span
                 key={i}
-                className="hero-line block my-0 md:-my-2 overflow-visible py-2 text-foreground font-bold tracking-tighter text-display-xl uppercase font-neue-stance"
+                className="hero-line block my-0 md:-my-2 max-w-full overflow-visible py-2 text-foreground font-bold tracking-tighter text-display-xl uppercase font-neue-stance break-words text-center"
               >
                 {line}
               </span>
@@ -146,13 +171,13 @@ export const Hero: React.FC = () => {
 
           {/* CMS CTA Button */}
           {heroData?.ctaText && heroData?.ctaLink && (
-            <a
-              href={heroData.ctaLink}
-              className="pointer-events-auto hero-cta mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-accent/10 px-8 py-3 text-sm font-bold tracking-widest text-foreground uppercase backdrop-blur-sm transition-all duration-300 hover:bg-accent/20 hover:border-accent/40"
+            <Link
+              to={heroData.ctaLink}
+              className="pointer-events-auto hero-cta mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-accent/10 px-8 py-3 text-sm font-bold tracking-widest text-foreground uppercase backdrop-blur-sm transition-all duration-300 hover:bg-accent/20 hover:border-accent/40 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
             >
               {heroData.ctaText}
               <span aria-hidden="true">→</span>
-            </a>
+            </Link>
           )}
         </div>
       </div>
@@ -162,16 +187,16 @@ export const Hero: React.FC = () => {
         className="z-sticky pointer-events-auto absolute right-8 bottom-8 hidden md:block"
         aria-hidden="true"
       >
-        <div className="relative h-24 w-24 animate-[spin_10s_linear_infinite]">
+        <div className="relative h-24 w-24 animate-[spin_10s_linear_infinite] motion-reduce:animate-none">
           <svg viewBox="0 0 100 100" className="h-full w-full fill-black dark:fill-white">
             <title>Scroll Down</title>
             <path
-              id="curve"
+              id={scrollCurveId}
               d="M 50 50 m -37 0 a 37 37 0 1 1 74 0 a 37 37 0 1 1 -74 0"
               fill="transparent"
             />
             <text className="text-sm font-bold tracking-widest uppercase">
-              <textPath href="#curve">Scroll Down • Scroll Down •</textPath>
+              <textPath href={`#${scrollCurveId}`}>Scroll Down • Scroll Down •</textPath>
             </text>
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">

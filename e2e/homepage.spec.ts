@@ -217,6 +217,7 @@ test.describe("Admin Homepage (/admin/homepage)", () => {
     // 1. Get current title (to restore after test)
     const heroRes = await page.request.get("/api/homepage-hero");
     expect(heroRes.ok()).toBe(true);
+    const heroData = await heroRes.json();
     const rawTitle = heroData.title ?? "";
     const originalTitle: string =
       rawTitle && !rawTitle.startsWith("TEST-")

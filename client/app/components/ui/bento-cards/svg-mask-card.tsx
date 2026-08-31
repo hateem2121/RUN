@@ -296,7 +296,9 @@ export const SvgMaskCard = memo(function SvgMaskCard({
           src={actualContentMediaUrl}
           alt={title || "Category content"}
           className="h-auto min-h-300 w-full max-h-600 object-cover"
-          onError={handleContentError}
+          onError={(e) => {
+            e.currentTarget.src = "/images/placeholders/category-placeholder.webp";
+          }}
         />
       )}
 

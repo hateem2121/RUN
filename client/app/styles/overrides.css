@@ -158,3 +158,36 @@ html.technology-page header span.rounded-full {
   content-visibility: auto;
   contain-intrinsic-size: auto 500px;
 }
+
+/* =========================================
+   Sonner Toast WCAG 2.2 AAA Contrast Calibration
+   Ensures error/destructive toasts exceed 7.0:1 contrast
+   ========================================= */
+html body [data-sonner-toast][data-type="error"] {
+  background-color: #fef2f2;
+  color: #7f1d1d;
+  border-color: #fecaca;
+}
+
+html body [data-sonner-toast][data-type="error"] [data-title] {
+  color: #7f1d1d;
+  font-weight: 600;
+}
+
+html body [data-sonner-toast][data-type="error"] [data-description] {
+  color: #991b1b;
+}
+
+html.dark body [data-sonner-toast][data-type="error"] {
+  background-color: #450a0a;
+  color: #fecaca;
+  border-color: #7f1d1d;
+}
+
+html.dark body [data-sonner-toast][data-type="error"] [data-title] {
+  color: #fee2e2;
+}
+
+html.dark body [data-sonner-toast][data-type="error"] [data-description] {
+  color: #fca5a5;
+}

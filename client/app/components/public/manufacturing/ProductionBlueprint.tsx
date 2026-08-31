@@ -62,8 +62,7 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
       title: "Sourcing",
       id: "MAT-SRC-V1",
       icon: "settings",
-      fallbackImg:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuAF4WKIdwKo98NdEfObT09sdNBLC-klCKK3kvoEOLWkCVEu3iD6BydqGU4bchU38D188A5me9f3NnP56SPP2WVNmyim31t-_yEI5Mjf-kKrUWyWM_aR9BVnOyiBYR2ZZagACJxAFqcCLb6IF8hVmRyuIhYoY-VlpkTG1gUuDkkJaM91tIcFcYHVqIO9MxWf5U_fxExNzcaIAcSxEpl26NT5Z6FVGSunmHV-GCurTd8osUY6kuZHFdlAr2rm7K-SIwYKUtS0x0B2LwQ",
+      fallbackImg: "/images/manufacturing/process-sourcing.webp",
       subtitle: "Phase One [Initiation]",
       desc: "Procurement of high-performance technical fabrics from certified global partners. Carbon footprint analysis performed on every batch.",
     },
@@ -71,8 +70,7 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
       title: "Digital CAD",
       id: "CAD-OPT-X9",
       icon: "memory",
-      fallbackImg:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuBz2kl-YSpRjaZ3UBYwhFMtfXbUveJ_Lc5AcQsXaqCZxtYFvSlXyb7b2hmSXHxq8Iu6QAwX6QPHwEInP0khko8-gLWp6y4si7Sh4rzWty72Rxd7L9puSVFiuM2kz4zRsERJl8LE9rqK2h91vYeqgV0mDR9IocpzEto4Uj4mGFYreW4rdmA3MBQTQJVT8iFhur8VhcmLtTtnLevBihcsfLeMKboT17JEXdjAD1Q9s5MHwBnhu7mgg5ixROVo3LtDv7mn4CMRaJKXANg",
+      fallbackImg: "/images/manufacturing/process-digital-cad.webp",
       subtitle: "Phase Two [Computation]",
       desc: "AI-assisted pattern making to maximize fabric utilization and fit precision. Generative design algorithms reduce waste by 18%.",
     },
@@ -80,8 +78,7 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
       title: "Laser Cutting",
       id: "LSR-CUT-04",
       icon: "timeline",
-      fallbackImg:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuBpfzfBrLypdt1gV090zWKQHhV5eZIArUeVVTQ3-SJt3RjKc91elzRFkP9y7B8kV6mxfLPikQCl9LAkNmPPbq1Qd394q3og06iPPRaXcGjZ7gwEY2k_jb2k6NKx5izZe6ICx-8SbMHWDpq-h48QxH5WaebqxZM5OAMpVgsxZUTQDuXLcrZlr47XD6BR4 ExO2uGZk-Z7kHYn1wjSGYwOJr0mXliYvp95E9fgYSgJRYbgLU2SFBgy4yxc4nlFUXzzUbMWqTKIK4iA5y0",
+      fallbackImg: "/images/manufacturing/process-laser-cutting.webp",
       subtitle: "Phase Three [Fabrication]",
       desc: "Automated high-speed laser cutting for sealed edges and micron-level accuracy. Zero-contact cutting preserves fabric integrity.",
     },
@@ -89,8 +86,7 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
       title: "Assembly",
       id: "ULT-BND-S2",
       icon: "precision_manufacturing",
-      fallbackImg:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuBSbQxWzMLW3rKCeT-K6lxQWsVtQGBhyWXSfDQ-D0IWwOcd9QWVzyfnBxSduxBAhficXFeGaWeo0dp6z5HAE1rtF6NAUeC5wulLbAnO-qL0BWlAwFKNJJR5oZ39qBA4aTX3o_NFwOjshlM2bZdLm_FQHlbofrvUYci3Do51CbibVth7STyQUrujC1-7FsbH5gRtdf-fHr0oyEhrflGAqGv2yzxgCz-g5TvfKckEJwEpd3mVisTwXxi_1ocLchnyJJ2G3dzriXbpZPI",
+      fallbackImg: "/images/manufacturing/process-assembly.webp",
       subtitle: "Phase Four [Construction]",
       desc: "Ultrasonic bonding and flatlock stitching for seamless, chafe-free construction. Robotic arms assist in complex curvilinear seams.",
     },
@@ -98,8 +94,7 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
       title: "Finishing",
       id: "QC-FIN-99",
       icon: "verified_user",
-      fallbackImg:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuAbXYG3LxM4pJfU0wiQZ_O2Re3P19g4ghMDn7D4EXNqOCeJIB0SNxOMJRvLxdLaoAXRmhGmqy_FogK-U8iXFojAs-ZmYkHNNvw0hnC9mn0MVTmdeoZpbDKL1jRo87tmez0NlKPYrASWZC4X8tUVjsYr7Rq-TmPoHkDZxgn2rw0z77iqUyZpKiJBT4OVS8a8IL19KCK5EiTsc5IIPo7wauvKMmO1xCPm6DMY5kforeq-BdSLr__4maBRjl6lnHoZCMQ6YFfjyTXrAyE",
+      fallbackImg: "/images/manufacturing/process-finishing.webp",
       subtitle: "Phase Five [Verification]",
       desc: "Rigorous QC checks, steam finishing, and sustainable packaging protocols. Final product scanned against digital twin for variance.",
     },
@@ -265,6 +260,9 @@ export function ProductionBlueprint({ mediaAssets, processes }: ProductionBluepr
                             : "opacity-40 grayscale contrast-125 group-hover:grayscale-0 group-hover:opacity-60",
                         )}
                         src={phase.fallbackImg}
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/placeholders/product-placeholder.webp";
+                        }}
                         loading="lazy"
                         decoding="async"
                       />

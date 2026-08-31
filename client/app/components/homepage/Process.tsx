@@ -4,7 +4,7 @@ import type React from "react";
 import { useRef } from "react";
 import { Link } from "react-router";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
-import { gsap, useGSAP } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { PROCESS_STEPS as FALLBACK_STEPS } from "./constants";
 
 interface ProcessProps {
@@ -50,45 +50,59 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 768px)", () => {
-        // Calculate exact scroll distance needed for 1:1 mapping
-        const totalWidth = triggerEl.offsetWidth * (sections.length - 1);
+        const updateWidths = () => {
+          if (!triggerEl) return;
+          const w = triggerEl.offsetWidth;
+          sections.forEach((s) => {
+            gsap.set(s, { width: w });
+          });
+          if (sectionRef.current) {
+            gsap.set(sectionRef.current, { width: w * sections.length });
+          }
+        };
+        updateWidths();
+        ScrollTrigger.addEventListener("refreshInit", updateWidths);
+
+        // Calculate exact scroll distance dynamically on refresh
+        const stepDuration = 1 / Math.max(1, sections.length - 1);
 
         const tl = gsap.timeline({
           scrollTrigger: {
+            id: "process-pin",
             trigger: triggerEl,
             pin: true,
             scrub: 1,
-            end: () => `+=${totalWidth}`,
+            end: () => `+=${triggerEl.offsetWidth * Math.max(1, sections.length - 1)}`,
             invalidateOnRefresh: true,
             anticipatePin: 1,
           },
         });
 
-        // Horizontal Scroll
+        // Horizontal Scroll: Exact step translation
         tl.to(
-          sections,
+          sectionRef.current,
           {
-            xPercent: -100 * (sections.length - 1),
+            xPercent: (-100 * (sections.length - 1)) / sections.length,
             ease: "none",
           },
           0,
         );
 
-        // Advanced Horizontal Parallax: Shift images inside their containers
-        // as the sections scroll horizontally to create a premium depth effect.
+        // Advanced Horizontal Parallax: Scoped to active fractional window
         sections.forEach((section, i) => {
           const img = section.querySelector("img");
           if (img) {
-            // Give images an extra 20% width via CSS if we shift them, but the containers
-            // are hidden overflow. We scale them up to prevent empty edges during parallax.
-            gsap.set(img, { scale: 1.2 });
+            gsap.set(img, { scale: 1.15 });
 
-            tl.fromTo(
-              img,
-              { xPercent: i === 0 ? 0 : -15 },
-              { xPercent: i === sections.length - 1 ? 0 : 15, ease: "none" },
-              0,
-            );
+            if (i > 0) {
+              const startTime = (i - 1) * stepDuration;
+              tl.fromTo(
+                img,
+                { xPercent: -12 },
+                { xPercent: 12, ease: "none", duration: stepDuration },
+                startTime,
+              );
+            }
           }
         });
 
@@ -103,6 +117,10 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
             0,
           );
         }
+
+        return () => {
+          ScrollTrigger.removeEventListener("refreshInit", updateWidths);
+        };
       });
 
       mm.add("(max-width: 767px)", () => {
@@ -133,9 +151,22 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
     { dependencies: [steps, prefersReducedMotion], scope: triggerRef },
   );
 
+  const handleCardFocus = (index: number) => {
+    if (window.innerWidth >= 768 && triggerRef.current) {
+      const scrollTrigger =
+        ScrollTrigger.getById("process-pin") ||
+        ScrollTrigger.getAll().find((st) => st.trigger === triggerRef.current);
+      if (scrollTrigger?.start && scrollTrigger?.end) {
+        const totalDist = scrollTrigger.end - scrollTrigger.start;
+        const targetScroll = scrollTrigger.start + (index / (steps.length - 1)) * totalDist;
+        window.scrollTo({ top: targetScroll, behavior: "smooth" });
+      }
+    }
+  };
+
   return (
     <section
-      className="overflow-hidden bg-background text-foreground content-auto"
+      className="overflow-hidden bg-background text-foreground"
       aria-labelledby="process-heading"
     >
       <div
@@ -153,7 +184,7 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
 
         {/* Decorative Drawing SVG - Desktop Only */}
         <div
-          className="pointer-events-none absolute top-1/2 left-0 z-base hidden h-[300px] w-full -translate-y-1/2 opacity-30 md:block"
+          className="pointer-events-none absolute top-1/2 left-0 z-base hidden h-72 w-full -translate-y-1/2 opacity-30 md:block"
           aria-hidden="true"
         >
           <svg className="h-full w-full" viewBox="0 0 1000 200" preserveAspectRatio="none">
@@ -169,44 +200,57 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
           </svg>
         </div>
 
-        {/* Container */}
+        {/* Track Container */}
         <div
-          className="flex h-auto w-full flex-col pt-24 md:h-full md:flex-row md:pt-0"
+          className="flex h-auto w-full flex-col pt-24 md:h-full md:w-max md:flex-row md:pt-0"
           ref={sectionRef}
         >
           {steps.map((step, index) => (
             <div
-              key={index}
-              className="process-card relative z-default flex min-h-loading-center w-full shrink-0 items-center justify-center border-border border-b p-4 md:h-full md:min-h-0 md:w-screen md:border-r md:border-b-0 md:p-12"
+              key={step.id || index}
+              className="process-card relative z-default flex min-h-loading-center w-full shrink-0 items-center justify-center border-border border-b p-4 md:h-full md:min-h-0 md:w-full md:shrink-0 md:border-r md:border-b-0 md:p-12"
             >
               <div className="grid w-full max-w-6xl grid-cols-1 gap-8 overflow-hidden rounded-xl border border-border/50 bg-surface/80 p-6 backdrop-blur-md content-container md:grid-cols-2 md:gap-12 md:p-12">
                 {/* Image Side */}
                 <div className="group relative aspect-square overflow-hidden rounded-lg md:aspect-auto md:h-full">
                   <img
                     src={
-                      ("image" in step ? step.image : undefined) ||
+                      ("imageUrl" in step && (step as { imageUrl?: string }).imageUrl
+                        ? (step as { imageUrl?: string }).imageUrl
+                        : undefined) ||
+                      ("image" in step && (step as { image?: string }).image
+                        ? (step as { image?: string }).image
+                        : undefined) ||
                       ("imageId" in step && step.imageId
                         ? `/api/media/${step.imageId}/content`
                         : undefined) ||
                       FALLBACK_STEPS[index % FALLBACK_STEPS.length]?.image ||
-                      ""
+                      "/images/placeholders/machinery-placeholder.webp"
                     }
                     alt={step.title}
                     loading="lazy"
                     decoding="async"
+                    onError={(e) => {
+                      const img = e.currentTarget;
+                      img.onerror = null;
+                      img.src = "/images/placeholders/machinery-placeholder.webp";
+                    }}
                     className="h-full w-full object-cover grayscale transition-transform duration-700 ease-out group-hover:scale-110 group-hover:grayscale-0"
                   />
                   <div className="absolute inset-0 bg-surface/20 transition-all duration-500 group-hover:bg-transparent" />
 
-                  {/* Big Number Overlay */}
-                  <span className="absolute top-0 left-0 p-4 font-bold text-[15vw] text-foreground leading-none opacity-50 mix-blend-overlay md:text-[8vw]">
-                    {step.id}
+                  {/* Formatted 01 Step Number Overlay */}
+                  <span
+                    className="absolute top-0 left-0 p-4 font-bold text-9xl text-foreground leading-none opacity-50 mix-blend-overlay md:text-8xl"
+                    aria-hidden="true"
+                  >
+                    {String(index + 1).padStart(2, "0")}
                   </span>
                 </div>
 
                 {/* Content Side */}
                 <div className="relative flex flex-col justify-center">
-                  <h3 className="mb-4 font-bold text-[10vw] uppercase leading-[0.9] md:mb-8 md:text-[4vw]">
+                  <h3 className="mb-4 font-bold text-display-xl uppercase leading-[0.9] md:mb-8 md:text-4xl">
                     {step.title}
                   </h3>
                   <p className="mb-8 max-w-md font-light text-base text-muted-foreground leading-relaxed md:text-xl">
@@ -214,6 +258,7 @@ export const Process: React.FC<ProcessProps> = ({ data }) => {
                   </p>
                   <Link
                     to="/manufacturing"
+                    onFocus={() => handleCardFocus(index)}
                     aria-label={`Explore manufacturing pipeline: ${step.title}`}
                     className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-foreground transition-all duration-300 hover:bg-foreground hover:text-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:h-16 md:w-16"
                   >

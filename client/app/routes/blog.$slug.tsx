@@ -57,7 +57,7 @@ export default function Component({ loaderData }: Route.ComponentProps) {
         </div>
 
         {/* Post Header */}
-        <header className="mb-12 border-b border-foreground/10 pb-8">
+        <header className="mb-8 border-b border-foreground/10 pb-8">
           <div className="flex items-center gap-4 text-muted-foreground font-mono text-xs mb-4">
             <span>{dateStr}</span>
             <span>·</span>
@@ -70,6 +70,23 @@ export default function Component({ loaderData }: Route.ComponentProps) {
             <p className="text-xl text-muted-foreground leading-relaxed italic">{post.excerpt}</p>
           )}
         </header>
+
+        {/* Hero Featured Image */}
+        <div className="aspect-video w-full rounded-2xl overflow-hidden bg-muted/20 mb-12 border border-foreground/10 relative">
+          <img
+            src={
+              post.featuredImageId
+                ? `/api/media/${post.featuredImageId}/content`
+                : post.ogImage || "/images/placeholders/blog-placeholder.webp"
+            }
+            alt={post.title}
+            loading="eager"
+            onError={(e) => {
+              e.currentTarget.src = "/images/placeholders/blog-placeholder.webp";
+            }}
+            className="h-full w-full object-cover"
+          />
+        </div>
 
         {/* Post Content */}
         <div

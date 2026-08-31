@@ -1,8 +1,7 @@
-import { lazy, Suspense, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { isRouteErrorResponse, useRouteError } from "react-router";
 import { Hero } from "@/components/homepage/Hero";
 
-import { CustomCursor } from "@/components/ui/CustomCursor";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
@@ -56,7 +55,9 @@ export function meta({ data }: { data: LoaderData | undefined }) {
       content: "Premium sportswear manufacturing with 135+ years of heritage craftsmanship.",
     },
     { property: "og:type", content: "website" },
+    { property: "og:url", content: "https://wear-run.com/" },
     { name: "twitter:card", content: "summary_large_image" },
+    { tagName: "link", rel: "canonical", href: "https://wear-run.com/" },
   ];
 }
 
@@ -79,6 +80,19 @@ export default function Component({ loaderData }: { loaderData: LoaderData }) {
   const isMobile = useIsMobile();
   const prefersReducedMotion = useReducedMotion();
 
+  // Page Visibility Sleep: pause GSAP ticker when tab is inactive to preserve 100% idle battery and GPU
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        gsap.ticker.sleep();
+      } else {
+        gsap.ticker.wake();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
+
   // Stable refs for skewable sections to avoid ref callback churn
   const heroRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -88,7 +102,6 @@ export default function Component({ loaderData }: { loaderData: LoaderData }) {
   const xToContent = useRef<((val: number) => void) | null>(null);
 
   // Use ScrollTrigger for the kinetic skew effect instead of direct scroll instance events
-  // This is more robust and avoids type issues with LocomotiveScroll
   useGSAP(
     () => {
       if (isMobile || prefersReducedMotion) return;
@@ -107,10 +120,9 @@ export default function Component({ loaderData }: { loaderData: LoaderData }) {
 
       ScrollTrigger.create({
         onUpdate: (self) => {
-          // self.getVelocity() returns pixels per second
-          // We convert it to a small skew angle
+          // Clamped to ±1.5 degrees with calibrated velocity multiplier
           const velocity = self.getVelocity();
-          const targetSkew = Math.min(Math.max(velocity * 0.005, -5), 5);
+          const targetSkew = Math.min(Math.max(velocity * 0.001, -1.5), 1.5);
 
           xToHero.current?.(targetSkew);
           xToContent.current?.(targetSkew);
@@ -124,70 +136,82 @@ export default function Component({ loaderData }: { loaderData: LoaderData }) {
         },
       });
 
-      return () => clearTimeout(scrollTimeout);
+      return () => {
+        clearTimeout(scrollTimeout);
+        if (heroRef.current) gsap.set(heroRef.current, { skewY: 0, clearProps: "transform" });
+        if (contentRef.current) gsap.set(contentRef.current, { skewY: 0, clearProps: "transform" });
+      };
     },
     { dependencies: [isMobile, prefersReducedMotion], scope: heroRef },
   );
 
   return (
-    <>
-      <CustomCursor />
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="w-full bg-background-alt focus-visible:outline-hidden overflow-x-clip"
+    >
+      {/* Hero Section - Static to minimize FCP/LCP */}
+      <div ref={heroRef} className="origin-top will-change-transform">
+        <Hero heroData={homepageData?.hero?.result} />
+      </div>
 
-      <main id="main-content" className="w-full bg-background-alt">
-        {/* Hero Section - Static to minimize FCP/LCP */}
-        <div ref={heroRef} className="origin-top will-change-transform">
-          <Hero />
-        </div>
+      {/* Slogans Ticker: CMS-driven scrolling slogans */}
+      <Suspense fallback={<div className="h-20 w-full bg-background" />}>
+        <Slogans data={homepageData?.slogans?.result} />
+      </Suspense>
 
-        {/* Slogans Ticker: CMS-driven scrolling slogans */}
-        {homepageData?.slogans?.result && homepageData.slogans.result.length > 0 && (
-          <Suspense fallback={null}>
-            <Slogans data={homepageData.slogans.result} />
-          </Suspense>
-        )}
+      {/* Stats Section: High height impact (150vh) */}
+      <Suspense
+        fallback={<div className="min-h-screen md:min-h-[150vh] bg-background animate-pulse" />}
+      >
+        <Stats />
+      </Suspense>
 
-        {/* Stats Section: High height impact (150vh) */}
-        <Suspense fallback={<div className="min-h-150vh bg-background animate-pulse" />}>
-          <Stats />
+      {/* Content Section: Mid-page components */}
+      <div ref={contentRef} className="origin-top transform-gpu will-change-transform">
+        <Suspense fallback={<div className="min-h-96 bg-background animate-pulse" />}>
+          <Categories data={homepageData?.categories?.result} />
         </Suspense>
 
-        {/* Content Section: Mid-page components */}
-        <div ref={contentRef} className="origin-top transform-gpu will-change-transform">
-          {homepageData?.categories?.result && homepageData.categories.result.length > 0 && (
-            <Suspense fallback={<div className="min-h-80vh bg-background animate-pulse" />}>
-              <Categories data={homepageData.categories.result} />
-            </Suspense>
-          )}
-
-          {homepageData?.products?.result && homepageData.products.result.length > 0 && (
-            <Suspense fallback={<div className="min-h-screen bg-background-alt animate-pulse" />}>
-              <FeaturedProducts
-                products={homepageData.products.result}
-                settings={homepageData.featuredProductsSettings?.result}
-              />
-            </Suspense>
-          )}
-
-          <Suspense fallback={<div className="min-h-60vh bg-background-alt animate-pulse" />}>
-            <Values />
-          </Suspense>
-        </div>
-
-        {/* CMS Narrative Sections */}
-        {homepageData?.sections?.result && homepageData.sections.result.length > 0 && (
-          <Suspense fallback={null}>
-            <Sections data={homepageData.sections.result} />
+        {homepageData?.products?.result && homepageData.products.result.length > 0 && (
+          <Suspense
+            fallback={
+              <div className="min-h-screen lg:min-h-[950px] bg-background-alt animate-pulse" />
+            }
+          >
+            <FeaturedProducts
+              products={homepageData.products.result}
+              settings={homepageData.featuredProductsSettings?.result}
+            />
           </Suspense>
         )}
 
-        {/* Process Section: Viewport pinning needs static context */}
-        {homepageData?.processCards?.result && homepageData.processCards.result.length > 0 && (
-          <Suspense fallback={<div className="min-h-screen bg-background animate-pulse" />}>
-            <Process data={homepageData.processCards.result} />
-          </Suspense>
-        )}
-      </main>
-    </>
+        <Suspense
+          fallback={
+            <div className="min-h-screen md:min-h-[850px] bg-background-alt animate-pulse" />
+          }
+        >
+          <Values />
+        </Suspense>
+      </div>
+
+      {/* CMS Narrative Sections */}
+      {homepageData?.sections?.result && homepageData.sections.result.length > 0 && (
+        <Suspense
+          fallback={<div className="min-h-screen md:min-h-[600px] bg-background animate-pulse" />}
+        >
+          <Sections data={homepageData.sections.result} />
+        </Suspense>
+      )}
+
+      {/* Process Section: Viewport pinning needs static context */}
+      {homepageData?.processCards?.result && homepageData.processCards.result.length > 0 && (
+        <Suspense fallback={<div className="min-h-screen bg-background animate-pulse" />}>
+          <Process data={homepageData.processCards.result} />
+        </Suspense>
+      )}
+    </main>
   );
 }
 

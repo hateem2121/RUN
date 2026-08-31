@@ -29,9 +29,7 @@ export const ExpandableCard = memo(function ExpandableCard({
   cardId = "expandable-card",
 }: ExpandableCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [hasError, setHasError] = useState(false);
   const [isMediaLoading, setIsMediaLoading] = useState(true);
-  const [, setMediaLoadError] = useState(false);
 
   const cardRef = useRef<HTMLButtonElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -135,56 +133,26 @@ export const ExpandableCard = memo(function ExpandableCard({
           aria-label={`Expand ${title} details`}
         >
           {/* Background Image */}
-          {mediaUrl && !hasError && (
-            <div
-              ref={bgImageRef}
-              className="absolute inset-0 transition-transform duration-700 hover:scale-[1.15]"
-            >
-              {isMediaLoading && (
-                <div className="center-flex absolute inset-0 bg-linear-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">
-                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-surface-emphasis border-t-blue-500"></div>
-                </div>
-              )}
-              <img
-                src={mediaUrl}
-                alt={title}
-                className="h-full w-full object-cover"
-                onLoad={() => setIsMediaLoading(false)}
-                onError={() => {
-                  setHasError(true);
-                  setIsMediaLoading(false);
-                  setMediaLoadError(true);
-                }}
-              />
-            </div>
-          )}
-
-          {/* Fallback for missing/error media */}
-          {(!mediaUrl || hasError) && (
-            <div className="center-flex absolute inset-0 bg-linear-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">
-              <div className="text-center text-text-muted dark:text-muted-foreground">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-muted dark:bg-muted">
-                  <svg
-                    className="h-8 w-8"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                </div>
-                <p className="text-sm">
-                  {hasError ? "Failed to load media" : "No media available"}
-                </p>
+          <div
+            ref={bgImageRef}
+            className="absolute inset-0 transition-transform duration-700 hover:scale-[1.15]"
+          >
+            {isMediaLoading && (
+              <div className="center-flex absolute inset-0 bg-linear-to-br from-luxury-gray-50 to-luxury-gray-100 dark:from-muted dark:to-background">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-surface-emphasis border-t-blue-500"></div>
               </div>
-            </div>
-          )}
+            )}
+            <img
+              src={mediaUrl || "/images/placeholders/category-placeholder.webp"}
+              alt={title}
+              className="h-full w-full object-cover"
+              onLoad={() => setIsMediaLoading(false)}
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholders/category-placeholder.webp";
+                setIsMediaLoading(false);
+              }}
+            />
+          </div>
 
           {/* Liquid Glass Effects */}
           <div className="absolute top-0 right-0 left-0 h-px bg-linear-to-r from-transparent via-white/30 to-transparent" />
@@ -220,16 +188,17 @@ export const ExpandableCard = memo(function ExpandableCard({
               aria-label="Close expanded view"
             >
               {/* Background */}
-              {mediaUrl && (
-                <div className="absolute inset-0">
-                  <img
-                    src={mediaUrl}
-                    alt={title}
-                    loading="lazy"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              )}
+              <div className="absolute inset-0">
+                <img
+                  src={mediaUrl || "/images/placeholders/category-placeholder.webp"}
+                  alt={title}
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/placeholders/category-placeholder.webp";
+                  }}
+                  className="h-full w-full object-cover"
+                />
+              </div>
 
               {/* Close Button */}
               <button

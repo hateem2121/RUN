@@ -38,22 +38,22 @@ export function MediaPickerModal({
     return [
       {
         id: "1",
-        url: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400",
-        filename: "tshirt_white_v1.jpg",
+        url: "/images/products/pro-sublimated-soccer-match-kit.webp",
+        filename: "pro-sublimated-soccer-match-kit.webp",
         type: "image",
         size: "1.2 MB",
       },
       {
         id: "2",
-        url: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400",
-        filename: "denim_wash_04.png",
+        url: "/images/products/aero-team-cycling-jersey-bib-set.webp",
+        filename: "aero-team-cycling-jersey-bib-set.webp",
         type: "image",
         size: "845 KB",
       },
       {
         id: "3",
-        url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",
-        filename: "sport_sneaker_red.jpg",
+        url: "/images/products/heavyweight-french-terry-hoodie.webp",
+        filename: "heavyweight-french-terry-hoodie.webp",
         type: "image",
         size: "2.4 MB",
       },

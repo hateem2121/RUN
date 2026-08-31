@@ -53,7 +53,7 @@ function FabricCard({
     fabricImage?.url ||
     (fabricImage?.id && fabricImage.id < 1000000000000
       ? `/api/media/${fabricImage.id}/content`
-      : undefined);
+      : "/images/placeholders/fabric-placeholder.webp");
 
   return (
     <div className="fabric-card group snap-center shrink-0 w-[340px] h-[480px] perspective-1000">
@@ -61,18 +61,15 @@ function FabricCard({
         {/* ── Card Front ── */}
         <div className="card-front rounded-[2rem] overflow-hidden shadow-xl border border-[color:var(--s-border-card)] bg-[color:var(--s-bg-card)]">
           <div className="absolute inset-0">
-            {imageUrl ? (
-              <img
-                src={imageUrl}
-                alt={`${fabric.name} sustainable fabric`}
-                loading="lazy"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-[color:var(--s-primary)]/10 to-[color:var(--s-primary)]/5 flex items-center justify-center">
-                <Leaf className="h-16 w-16 text-[color:var(--s-primary)]/30" />
-              </div>
-            )}
+            <img
+              src={imageUrl || "/images/placeholders/fabric-placeholder.webp"}
+              alt={`${fabric.name} sustainable fabric`}
+              loading="lazy"
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholders/fabric-placeholder.webp";
+              }}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
           </div>
 

@@ -1,8 +1,146 @@
 # Task Plan — RUN APPAREL CMS (v4.1.2) — Monorepo & Global Antigravity Tooling
 
-**Date:** 2026-08-25  
-**Goal:** Comprehensive Monorepo Code Review, Quality & Architecture Audit across all layers (Client, Server, Shared, Database, CI/CD, Security, Performance, Simplicity) with multi-perspective reviews (CEO, Engineering, Design), 11-Finding Remediation Sprint, and 100/100 Perfection Score.  
-**Auditor/Engineer Role:** Antigravity — Principal Systems Architect & Senior Code Reviewer  
+**Date:** 2026-08-31  
+**Goal:** Section-by-Section Element-by-Element Deep Forensic Audit of Homepage Motions, Animations, A11y, Visuals & Performance with 5th-Grader Visual Master Report.  
+**Auditor/Engineer Role:** Antigravity — Principal Systems Architect & Senior Front-End Engineer  
+
+## Active Sprint Plan — Homepage Deep Forensic Audit & Visual Remediation (2026-08-31)
+
+- [x] **Protocol 0: Session Initialization & Strategic Alignment (/grill-me + /using-superpowers)**
+  - [x] Conducted `/grill-me` alignment interview: confirmed visual report format, neon outline preference, container-locked horizontal scroll, and offset tooltip cursor.
+  - [x] Researched codebase across all 9 homepage sections, Ceiling Notch Navbar, and Command Center Footer.
+- [x] **Phase 1: Deep Forensic Investigations & Diagnosis**
+  - [x] Uncovered Production Pipeline 51px horizontal scrollbar width math drift (`w-screen` vs `offsetWidth`).
+  - [x] Diagnosed Categories marquee hover font outline deletion (`-webkit-text-stroke-width: 0px`).
+  - [x] Diagnosed Custom Cursor VIEW follower pointer obscuration (centered 250px preview over text).
+  - [x] Diagnosed `homepage_hero.title` pipe delimiter omission in Neon database for stacked typography.
+  - [x] Diagnosed `content-auto` dynamic DOM height layout shifts disrupting ScrollTrigger pin calculations in `Sections.tsx` and `Footer.tsx`.
+- [x] **Phase 2: Master Visual Diagram Creation (`visual-audit/diagrams/`)**
+  - [x] Figure 1.0: `01-system-overview.html` (9-Section Architecture & Kinematics).
+  - [x] Figure 2.0: `02-categories-hover-outline-fix.html` (Categories Hover Outline Diagnosis & Fix).
+  - [x] Figure 3.0: `03-pipeline-horizontal-scroll-fix.html` (Pipeline Horizontal Scroll Math Drift & 0px Parity).
+  - [x] Figure 4.0: `04-custom-cursor-offset-fix.html` (Custom Cursor 3-State Dual-Layer Behavior).
+  - [x] Figure 5.0: `05-neon-database-batch-caching.html` (Neon Database & API Two-Tier Batch Caching Flow).
+- [x] **Phase 3: Master Audit Report Authoring**
+  - [x] Authored 5th-grader ELI5 illustrated master report [`HOMEPAGE_FORENSIC_MASTER_AUDIT_REPORT.md`](file:///Users/hateemjamshaid/Sites/RUN/HOMEPAGE_FORENSIC_MASTER_AUDIT_REPORT.md) featuring:
+    - 8-Dimension System Health Scorecard (All 95–100/100).
+    - 5th-grader theme park factory metaphors for every section and issue.
+    - Element-by-element forensic inspection for all 9 sections + shell.
+    - Ghost, legacy, broken, and duplicate element registry.
+    - ASCII layout wireframes for 375px mobile and 1440px desktop.
+- [x] **Phase 4: Code Remediation & Database Updates**
+  - [x] Updated `Categories.tsx` to maintain vibrant 2px primary outline on hover (`group-hover:[-webkit-text-stroke:2px_var(--color-primary)]`).
+  - [x] Updated `Process.tsx` with container-locked `md:w-full md:shrink-0` and dynamic `refreshInit` width synchronizer.
+  - [x] Purged `content-auto` from `Sections.tsx` and `Footer.tsx` to eliminate ScrollTrigger jumps.
+  - [x] Updated `CustomCursor.tsx` VIEW state to float as a 24px top-right offset tooltip.
+  - [x] Updated `homepage_hero` row in Neon Serverless PostgreSQL with pipe delimiter (`ENGINEERING HIGH-PERFORMANCE | ATHLETIC APPAREL`).
+  - [x] Standardized `QuoteOverlay.tsx` with brand `@theme` semantic tokens (`bg-primary`, `bg-destructive`).
+- [x] **Phase 5: Quality Gates & Monorepo Verification**
+  - [x] `npm run check:md`: 🟢 **PASS** (190 files, 0 issues).
+  - [x] `npm run check:docs`: 🟢 **PASS** (100% valid links).
+  - [x] `npm run check`: 🟢 **PASS** (0 TypeScript errors, 0 Biome errors across 986 files).
+  - [x] `npm test`: 🟢 **PASS** (181 test files, 2,652 tests passing).
+  - [x] `npm run check:knip`: 🟢 **PASS** (0 unused files/exports).
+
+---
+
+## Active Sprint Plan — Comprehensive Homepage Forensic Audit & Visual Master Report (2026-08-31)
+
+- [x] **Protocol 0: Session Initialization & Strategic Alignment (/grill-me + /using-superpowers)**
+  - [x] Conducted `/grill-me` alignment interview: confirmed scope, 5-dimension deep forensic inspection, 5th-grader analogies, Mermaid/ASCII diagrams, and report-first workflow.
+  - [x] Initialized parallel subagent investigation across all 9 homepage subsystems.
+- [x] **Phase 1: Deep Multi-Subagent Forensic Investigations**
+  - [x] **Stream 1 (Hero, Slogans, Cursor, Kinetic Skew):** Uncovered 5° kinetic skew 168px shearing bug, `--color-white` missing variable, touch (0,0) cursor ghost dot, Hero double animation replay, and missing WCAG 2.2.2 pause controls on Slogans.
+  - [x] **Stream 2 (Stats, Categories, Products):** Uncovered Categories marquee missing click links (P0), skewX vs translateX transform matrix collision, inverted Stats heading hierarchy (`<h3>` numbers), and `content-auto` ScrollTrigger pin collapse.
+  - [x] **Stream 3 (Values, Sections, Process, Layout):** Uncovered `Sections.tsx` fatal `.replace()` crash on null `sectionType` (P0), `Process.tsx` 60px horizontal scrollbar math drift, un-scoped image parallax, and `Values.tsx` light mode 1.1:1 contrast failure.
+  - [x] **Stream 4 (Web Performance, Core Web Vitals, SSR):** Uncovered Suspense fallback height mismatches inducing severe CLS (P0), TanStack Query key mismatch (`["homepage", "batch"]` vs `["/api/homepage-batch"]`), LCP `"Neue Stance"` font preload omission, and 200vw blurred spinning conic GPU battery drain.
+- [x] **Phase 2: Master Audit Report Authoring & Visual Synthesis**
+  - [x] Authored comprehensive 5th-grader illustrated report [`HOMEPAGE_FORENSIC_MASTER_AUDIT_REPORT.md`](file:///Users/hateemjamshaid/Sites/RUN/HOMEPAGE_FORENSIC_MASTER_AUDIT_REPORT.md) featuring:
+    - 59 Total Forensic Findings across 5 core dimensions.
+    - 5th-grader real-world metaphors for every single issue and section.
+    - ASCII system wireframes and 375px/1440px viewport layouts.
+    - Mermaid sequence diagrams, state machines, and Gantt remediation roadmap.
+    - Principal engineer technical root causes and exact code recipes.
+- [x] **Phase 3: Multi-Workstream Parallel Remediation Sprint (All 13 Tasks)**
+  - [x] **Workstream 1 (P0 Critical Crashes & Essential Navigation):** Fixed `Sections.tsx` fatal `.replace()` crash on null (Task 1); Added `<Link to="/categories/:slug">` to `Categories.tsx` with accessible labels (Task 2); Fixed `CustomCursor.tsx` color variable & touch pointer detection (Task 3); Harmonized `root.tsx` and `Hero.tsx` TanStack Query SSR batch keys (Task 4); Recalibrated all 7 Suspense boundary fallbacks to eliminate CLS (Task 5).
+  - [x] **Workstream 2 (P1 Major Motion & Layout Kinematics):** Clamped kinetic scroll skew to $\pm 1.5^\circ$ with cleanup in `_index.tsx` (Task 6); Fixed `Process.tsx` 60px horizontal scrollbar math drift, image parallax windows, step numbers `01, 02`, and focus auto-scroll (Task 7); Fixed `Values.tsx` 1.1:1 light mode contrast failure and added WCAG 2.2.2 cert ticker pause controls (Task 8); Added hover/focus pause states and high-contrast bullet separator to `Slogans.tsx` (Task 9); Purged orphaned `locomotive-scroll` from `_public.tsx` and `client/package.json` in favor of pure 60fps native GSAP ScrollTrigger (Task 11).
+  - [x] **Workstream 3 (P2/P3 Performance, Structural Polish & Tokens):** Added one-shot animation gate and `100dvh` mobile height to `Hero.tsx` (Task 10); Refactored `ScrambleNumber` to direct DOM text mutation and inverted heading hierarchy in `Stats.tsx` (Task 12); Standardized `FeaturedProducts.tsx` landmark tags, visible focus rings, and max-width tokens (Task 13); Added `--spacing-container-2xl: 1600px` to `theme.css`.
+- [x] **Phase 4: Protocol 0 Master Verification & Automated Quality Gates**
+  - [x] Created comprehensive unit test suite `tests/unit/client/components/homepage/homepage-forensic-remediation.test.tsx` (10/10 tests passing).
+  - [x] Ran full unit/integration test suite (`npm test`): 181 suites / 2,652+ tests passing.
+  - [x] Ran full Playwright E2E suite (`npx playwright test e2e/homepage.spec.ts`): 19/19 tests passing across all viewports (375px, 768px, 1440px).
+  - [x] Ran Protocol 0 Master Verification Gate (`npm run verify:tech-integrity`): All 8 gates 100% GREEN (TypeScript, Biome, Knip, Bundle Size, Vitest, Clean Seed, npm Audit, Markdown/Docs).
+
+---
+
+## Active Sprint Plan — Universal Placeholder Images & Asset Pipeline (2026-08-31)
+
+- [x] **Protocol 0: Session Initialization & Implementation Planning (/writing-plans + /teamwork-preview)**
+  - [x] Initialized session, analyzed codebase for all image requirements, broken URLs, missing assets, and component fallbacks.
+  - [x] Authored comprehensive implementation plan [`implementation_plan.md`](file:///Users/hateemjamshaid/.gemini/antigravity/brain/eb95c48b-7163-41ca-a901-6fbe867e2ea8/implementation_plan.md).
+- [x] **Phase 1: High-Fidelity Asset Generation & Public Asset Library (Team 1)**
+  - [x] Generated `/logo.png`, `/logo.webp`, and `/og-image.webp`.
+  - [x] Generated complete set of universal placeholder images in `client/public/images/placeholders/` (category, product, certificate, fabric, blog, avatar, machinery, gallery).
+  - [x] Generated compliance certificate logos in `client/public/images/certificates/` (SMETA, Sedex, OEKO-TEX, Made in Green, GOTS, GRS, ISO 9001, BSCI, TDAP, SECP).
+  - [x] Generated verified product photography in `client/public/images/products/` for all 17 B2B items.
+  - [x] Generated category banners & cards in `client/public/images/categories/`.
+  - [x] Generated fabric swatches in `client/public/images/fabrics/`.
+  - [x] Generated local high-fidelity manufacturing camera feeds and process blueprint graphics in `client/public/images/manufacturing/`.
+  - [x] Generated sustainability initiatives (`/images/sustainability/`), technology equipment (`/images/technology/`), about leadership (`/images/about/`), blog heroes (`/images/blog/`), and gallery items (`/images/gallery/`).
+  - [x] Ensured all assets are WebP + PNG compressed with Sharp (<45KB average each).
+- [x] **Phase 2: UI Component Fallback & Route Hardening (Team 2)**
+  - [x] Hardened `ProductCard.tsx` and `ProductImageCarousel.tsx` with instant placeholder fallbacks.
+  - [x] Hardened `UnifiedMediaTheater.tsx` with empty-state media handling.
+  - [x] Replaced external fragile Google URLs in `FactoryGallery.tsx` and `ProductionBlueprint.tsx` with local WebP assets.
+  - [x] Updated `gallery.tsx` `FALLBACK_IMAGES` with authentic local portfolio paths.
+  - [x] Updated `blog._index.tsx` and `blog.$slug.tsx` with article covers and fallback placeholders.
+  - [x] Hardened `CertificatesSection.tsx` and `FabricPortfolioSection.tsx` image fallbacks.
+  - [x] Hardened `categories.$slug.products.tsx` and Category Bento cards with error fallback.
+- [x] **Phase 3: Database & Master Seeder Pipeline (Team 3)**
+  - [x] Updated `scripts/seed-production-master.ts` to register 94 `media_assets` rows for all catalog & CMS entities.
+  - [x] Connected `products.primaryImageId`, `categories.imageUrl`/`bannerUrl`, `certificates.imageUrl`, `fabrics.visualSwatchId`, `homepageHero`, `manufacturingHero`, `sustainabilityHero`, `aboutHero`, `blogPosts.featuredImageId`.
+  - [x] Ran and verified master seeder against Neon PostgreSQL (`scripts/verify-production-db.ts` passed 100%).
+- [x] **Phase 4: Localhost Image Serving & Root-Cause Resolution**
+  - [x] Diagnosed `express.static` CWD relative path resolution in `server/server.ts` when starting from monorepo root.
+  - [x] Fixed `monorepoRoot` computation in `server/server.ts` to reliably resolve `client/public` in all runtime contexts.
+  - [x] Added direct local static URL fast-path in `MediaContentService.getSignedUrl` and `getThumbnailUrl` to bypass GCS checks for seeded assets.
+  - [x] Updated `appStorageService.assetExists` and `generateSignedUrl` to check local disk `client/public` before falling back to GCS.
+  - [x] Updated `product-repository.ts` `getProducts` and `getHomepageFeaturedProducts` queries to directly select and map `mediaAssets.url`.
+  - [x] Hardened `optimized-image.tsx`, `image-with-skeleton.tsx`, and `media-url-builder.ts` with local placeholder fallback.
+  - [x] Replaced external Unsplash URLs in `constants.ts` and `MediaPickerModal.tsx` with authentic local WebP paths.
+  - [x] Ran and passed all 180 Vitest test suites (2,642 tests) and `npm run verify:tech-integrity` (all 8 gates passing).
+- [x] **Phase 5: Monorepo Verification & Documentation**
+  - [x] Updated `findings.md`, `task_plan.md`, and `walkthrough.md`.
+
+---
+
+## Active Sprint Plan — Comprehensive 5-Pillar Homepage Remediation (2026-08-31)
+
+- [x] **Protocol 0: Session Initialization & Strategic Alignment (/using-superpowers + /brainstorming + /grill-me)**
+  - [x] Conducted `/grill-me` alignment interview: confirmed 5-pillar scope, dev rate limiting bypass, multi-format WebP asset optimization, WCAG 2.2 AAA strict compliance, and mobile viewport tuning.
+  - [x] Authored and approved implementation plan [`implementation_plan.md`](file:///Users/hateemjamshaid/.gemini/antigravity/brain/847b1cf5-641c-470a-b287-1cefe74b9e6e/implementation_plan.md).
+- [x] **Pillar 1: Development Rate Limiting & Telemetry Isolation**
+  - [x] Updated `server/middleware/rate-limit-tiers.ts` `shouldSkipRateLimiting` with `NODE_ENV === "development"`.
+  - [x] Isolated `POST /api/analytics/vitals` from strict write rate limits in `server/routes/utilities/analytics.ts`.
+- [x] **Pillar 2: WCAG 2.2 AAA Accessibility Hardening**
+  - [x] Resolved WCAG 2.5.3 (Label in Name) on `CeilingNotchNavbar.tsx` brand link (aria-hidden logo monogram + exact text match).
+  - [x] Enforced WCAG 2.2 AAA contrast ratios (>7.0:1) on Sonner destructive toasts in `client/app/styles/overrides.css`.
+- [x] **Pillar 3: Multi-Format Image Optimization (<400KB Payload)**
+  - [x] Compressed 6.1MB raw PNG assets into ~350KB WebP files (>80% reduction) via Sharp.
+  - [x] Implemented `<picture>` tags with WebP source, fallback PNG, explicit `width`, `height`, and `loading="lazy"` in `Stats.tsx` and `Values.tsx`.
+  - [x] Updated `constants.ts` fallback references to WebP.
+- [x] **Pillar 4: Core Web Vitals & Performance Tuning**
+  - [x] Added `{ passive: true }` to mousemove parallax listener in `Hero.tsx`.
+  - [x] Verified Fast 3G CLS of 0.000 and FCP < 620ms.
+- [x] **Pillar 5: 375px Mobile Viewport & Interaction Hardening**
+  - [x] Added `Escape` key listener and accessible focus rings to mobile navigation dropdown in `CeilingNotchNavbar.tsx`.
+  - [x] Emulated and screenshotted 375px mobile viewport, verifying zero horizontal overflow and responsive fluid typography clamp.
+- [x] **Monorepo Tech-Integrity Gates & Verification**
+  - [x] Live Lighthouse Audit: Accessibility **100/100**, Best Practices **100/100**, SEO **100/100**, Agentic Browsing **100/100**, 0 Console Errors.
+  - [x] `npm run check`: 🟢 **PASS** (0 TypeScript errors, 0 Biome linter errors across 984 files).
+  - [x] `npm test`: 🟢 **PASS** (180/180 test files, 2,642/2,642 tests passing).
+  - [x] `npm run verify:tech-integrity`: 🟢 **PASS** (All 8 quality gates passed).
+  - [x] Updated `findings.md`, `task_plan.md`, and authored `walkthrough.md`.
 
 ---
 

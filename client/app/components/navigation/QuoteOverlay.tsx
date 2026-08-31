@@ -26,7 +26,7 @@ export function QuoteOverlay() {
       <button
         type="button"
         onClick={openDrawer}
-        className="group center-flex fixed right-6 bottom-6 z-dock rounded-full bg-blue-600 p-4 text-white shadow-2xl transition-transform hover:scale-105 hover:bg-blue-700 active:scale-95"
+        className="group center-flex fixed right-6 bottom-6 z-dock rounded-full bg-primary p-4 text-primary-foreground shadow-2xl transition-transform hover:scale-105 hover:bg-primary/90 active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       >
         <div className="relative">
           <svg
@@ -45,7 +45,7 @@ export function QuoteOverlay() {
             <polyline points="17 8 12 3 7 8" />
             <line x1="12" y1="3" x2="12" y2="15" />
           </svg>
-          <span className="absolute -top-3 -right-3 flex h-5 w-5 items-center justify-center rounded-full border-2 border-blue-600 bg-red-500 font-bold text-white text-xs">
+          <span className="absolute -top-3 -right-3 flex h-5 w-5 items-center justify-center rounded-full border-2 border-primary bg-destructive font-bold text-destructive-foreground text-xs">
             {count}
           </span>
         </div>

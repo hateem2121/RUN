@@ -180,6 +180,7 @@ export class ProductRepository {
         .select({
           product: PRODUCT_SUMMARY_COLUMNS,
           imageVariants: mediaAssets.imageVariants,
+          mediaAssetUrl: mediaAssets.url,
         })
         .from(products)
         .leftJoin(mediaAssets, eq(products.primaryImageId, mediaAssets.id))
@@ -191,9 +192,11 @@ export class ProductRepository {
       // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
       return rows.map((row: any) => ({
         ...row.product,
-        imageUrl: row.product.primaryImageId
-          ? `/api/media/${row.product.primaryImageId}/content`
-          : undefined,
+        imageUrl:
+          row.mediaAssetUrl ||
+          (row.product.primaryImageId
+            ? `/api/media/${row.product.primaryImageId}/content`
+            : undefined),
         imageVariants: row.imageVariants,
       }));
     }, "getProducts");
@@ -297,6 +300,7 @@ export class ProductRepository {
         .select({
           product: PRODUCT_SUMMARY_COLUMNS,
           imageVariants: mediaAssets.imageVariants,
+          mediaAssetUrl: mediaAssets.url,
         })
         .from(products)
         .leftJoin(mediaAssets, eq(products.primaryImageId, mediaAssets.id))
@@ -307,9 +311,11 @@ export class ProductRepository {
       // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
       return rows.map((row: any) => ({
         ...row.product,
-        imageUrl: row.product.primaryImageId
-          ? `/api/media/${row.product.primaryImageId}/content`
-          : undefined,
+        imageUrl:
+          row.mediaAssetUrl ||
+          (row.product.primaryImageId
+            ? `/api/media/${row.product.primaryImageId}/content`
+            : undefined),
         imageVariants: row.imageVariants,
       }));
     }, "getHomepageFeaturedProducts");
@@ -1267,6 +1273,8 @@ export class ProductRepository {
       if (offset !== undefined) {
         query = query.offset(offset) as typeof query;
       }
+    } else {
+      query = query.limit(50) as typeof query;
     }
 
     const result = (await query) as Category[];

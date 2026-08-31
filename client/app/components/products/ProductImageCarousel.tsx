@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, LayoutGrid, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
@@ -48,8 +48,17 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   const showVideo = hasVideo && currentImageIndex === 0;
   const imageIndex = hasVideo ? currentImageIndex - 1 : currentImageIndex;
 
-  const getMediaUrl = (mediaId: number) => {
-    return getOptimizedUrl?.(mediaId) || MediaUrlBuilder.buildUrlSafe(mediaId);
+  const getMediaUrl = (item?: MediaItem | null) => {
+    if (!item) return "/images/placeholders/product-placeholder.webp";
+    if (item.url) return item.url;
+    if (item.id && item.id > 0) {
+      return (
+        getOptimizedUrl?.(item.id) ||
+        MediaUrlBuilder.buildUrlSafe(item.id) ||
+        "/images/placeholders/product-placeholder.webp"
+      );
+    }
+    return "/images/placeholders/product-placeholder.webp";
   };
 
   const setNavTimeout = () => {
@@ -132,8 +141,13 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
   if (totalItems === 0) {
     return (
-      <div className="flex h-full w-full items-center justify-center text-muted-foreground/50">
-        <LayoutGrid className="h-12 w-12" />
+      <div className="relative h-full w-full bg-muted/20">
+        <img
+          src="/images/placeholders/product-placeholder.webp"
+          alt={productName || "Product placeholder"}
+          className="h-full w-full object-cover opacity-80"
+          loading="lazy"
+        />
       </div>
     );
   }
@@ -148,7 +162,7 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
       {showVideo && primaryVideo ? (
         <div className="relative h-full w-full">
           <video
-            src={getMediaUrl(primaryVideo.id)}
+            src={getMediaUrl(primaryVideo)}
             className="h-full w-full object-cover"
             muted
             loop
@@ -172,25 +186,27 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
                 </div>
               )}
             <img
-              src={getMediaUrl(images[imageIndex]?.id || 0)}
+              src={
+                failedImages.has(images[imageIndex]?.id || 0)
+                  ? "/images/placeholders/product-placeholder.webp"
+                  : getMediaUrl(images[imageIndex])
+              }
               alt={productName}
               className={cn(
                 "h-full w-full object-cover transition-all duration-300",
                 loadedImages.has(images[imageIndex]?.id || 0)
                   ? "opacity-100 group-hover:scale-105"
                   : failedImages.has(images[imageIndex]?.id || 0)
-                    ? "opacity-50 grayscale"
+                    ? "opacity-80"
                     : "opacity-0",
               )}
               onLoad={() => handleImageLoad(images[imageIndex]?.id || 0)}
-              onError={() => handleImageError(images[imageIndex]?.id || 0)}
+              onError={(e) => {
+                handleImageError(images[imageIndex]?.id || 0);
+                e.currentTarget.src = "/images/placeholders/product-placeholder.webp";
+              }}
               onLoadStart={() => handleImageLoadStart(images[imageIndex]?.id || 0)}
             />
-            {failedImages.has(images[imageIndex]?.id || 0) && (
-              <div className="absolute inset-0 flex items-center justify-center bg-muted/20">
-                <LayoutGrid className="h-8 w-8 text-muted-foreground/30" />
-              </div>
-            )}
           </div>
         )
       )}

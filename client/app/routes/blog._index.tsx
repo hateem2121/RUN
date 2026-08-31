@@ -25,6 +25,8 @@ interface BlogPost {
   slug: string;
   excerpt: string | null;
   content: string;
+  featuredImageId?: number | null;
+  ogImage?: string | null;
   publishedAt: string | null;
   createdAt: string;
 }
@@ -56,8 +58,21 @@ export default function Component({ loaderData }: Route.ComponentProps) {
             {activePosts[0] && (
               <div className="mb-16 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center bg-muted/10 rounded-2xl overflow-hidden p-6 border border-foreground/5">
                 <div className="aspect-video bg-muted/20 rounded-xl overflow-hidden relative">
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-                  <div className="absolute bottom-6 left-6">
+                  <img
+                    src={
+                      activePosts[0].featuredImageId
+                        ? `/api/media/${activePosts[0].featuredImageId}/content`
+                        : activePosts[0].ogImage || "/images/placeholders/blog-placeholder.webp"
+                    }
+                    alt={activePosts[0].title}
+                    loading="eager"
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/placeholders/blog-placeholder.webp";
+                    }}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute bottom-6 left-6 z-10">
                     <span className="bg-brand-lime text-black font-mono text-xs font-bold px-3 py-1 rounded-full">
                       LATEST RELEASE
                     </span>
@@ -107,8 +122,23 @@ export default function Component({ loaderData }: Route.ComponentProps) {
                   return (
                     <article
                       key={post.id}
-                      className="group flex flex-col justify-between border-t border-foreground/10 pt-6"
+                      className="group flex flex-col justify-between border border-foreground/10 rounded-2xl overflow-hidden bg-muted/5 p-4 hover:border-foreground/20 transition-all"
                     >
+                      <div className="aspect-video w-full rounded-xl overflow-hidden bg-muted/20 relative mb-4">
+                        <img
+                          src={
+                            post.featuredImageId
+                              ? `/api/media/${post.featuredImageId}/content`
+                              : post.ogImage || "/images/placeholders/blog-placeholder.webp"
+                          }
+                          alt={post.title}
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.src = "/images/placeholders/blog-placeholder.webp";
+                          }}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
                       <div className="flex flex-col gap-4">
                         <div className="flex items-center justify-between text-muted-foreground font-mono text-xs">
                           <span>JOURNAL</span>
@@ -119,7 +149,7 @@ export default function Component({ loaderData }: Route.ComponentProps) {
                             {post.title}
                           </h3>
                         </Link>
-                        <p className="text-muted-foreground text-sm leading-relaxed">
+                        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
                           {post.excerpt || `${post.content.substring(0, 100)}...`}
                         </p>
                       </div>

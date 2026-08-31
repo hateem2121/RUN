@@ -21,12 +21,18 @@ function HexNode({ certificate }: { certificate: Certificate }) {
               src={certificate.imageUrl}
               alt={certificate.name}
               loading="lazy"
+              onError={(e) => {
+                e.currentTarget.src = "/images/placeholders/certificate-placeholder.webp";
+              }}
               className="max-h-16 max-w-[100px] object-contain transition-transform group-hover:scale-110 duration-300"
             />
           ) : (
-            <span className="text-xl md:text-2xl font-bold text-[color:var(--s-text-head)] text-center leading-tight">
-              {certificate.name}
-            </span>
+            <img
+              src="/images/placeholders/certificate-placeholder.webp"
+              alt={certificate.name}
+              loading="lazy"
+              className="max-h-16 max-w-[100px] object-contain transition-transform group-hover:scale-110 duration-300"
+            />
           )}
           <div className="flex items-center gap-1 bg-[color:var(--s-primary)]/10 px-2 py-0.5 rounded-full mt-2">
             <CheckCircle className="h-3.5 w-3.5 text-[color:var(--s-primary)]" />

@@ -17,6 +17,7 @@ import {
   type InsertLogoAnimationSettings,
   type LogoAnimationSettings,
   logoAnimationSettings,
+  mediaAssets,
 } from "@run-remix/shared";
 import { asc, eq } from "drizzle-orm";
 import { err, ok, type Result } from "neverthrow";
@@ -48,6 +49,7 @@ class HomepageRepository {
     }
 
     const startTime = performance.now();
+    // TODO: Replace SELECT * with explicit columns to reduce egress
     const [hero] = await db
       .select()
       .from(homepageHero)
@@ -122,13 +124,14 @@ class HomepageRepository {
     const cached = await unifiedCache.get<HomepageSlogan[]>(cacheKey, "data");
     if (cached) return cached;
 
+    // TODO: Replace SELECT * with explicit columns to reduce egress
     const slogans = await db
       .select()
       .from(homepageSlogans)
       .where(eq(homepageSlogans.isActive, true))
       .orderBy(asc(homepageSlogans.sortOrder));
 
-    await unifiedCache.set(cacheKey, slogans, HOMEPAGE_CACHE_TTL / 1000, "data");
+    await unifiedCache.set(cacheKey, slogans, HOMEPAGE_CACHE_TTL, "data");
     return slogans;
   }
 
@@ -221,6 +224,7 @@ class HomepageRepository {
         title: homepageProcessCards.title,
         description: homepageProcessCards.description,
         imageId: homepageProcessCards.imageId,
+        imageUrl: mediaAssets.url,
         iconName: homepageProcessCards.iconName,
         icon: homepageProcessCards.icon,
         iconMediaId: homepageProcessCards.iconMediaId,
@@ -233,6 +237,7 @@ class HomepageRepository {
         createdAt: homepageProcessCards.createdAt,
       })
       .from(homepageProcessCards)
+      .leftJoin(mediaAssets, eq(homepageProcessCards.imageId, mediaAssets.id))
       .$dynamic();
 
     if (!includeInactive) {
@@ -241,7 +246,7 @@ class HomepageRepository {
 
     const result = await query.orderBy(asc(homepageProcessCards.sortOrder)).limit(100);
 
-    await unifiedCache.set(cacheKey, result, HOMEPAGE_CACHE_TTL / 1000, "data");
+    await unifiedCache.set(cacheKey, result, HOMEPAGE_CACHE_TTL, "data");
     return result as HomepageProcessCard[];
   }
 
@@ -318,13 +323,14 @@ class HomepageRepository {
     const cached = await unifiedCache.get<HomepageSection[]>(cacheKey, "data");
     if (cached) return cached;
 
+    // TODO: Replace SELECT * with explicit columns to reduce egress
     let query = db.select().from(homepageSections).$dynamic();
     if (!includeInactive) {
       query = query.where(eq(homepageSections.isActive, true));
     }
 
     const sections = await query.orderBy(asc(homepageSections.sortOrder));
-    await unifiedCache.set(cacheKey, sections, HOMEPAGE_CACHE_TTL / 1000, "data");
+    await unifiedCache.set(cacheKey, sections, HOMEPAGE_CACHE_TTL, "data");
     return sections;
   }
 
@@ -416,7 +422,11 @@ class HomepageRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getLogoAnimationSettings();
     }
-    const [settings] = await db.select().from(logoAnimationSettings).limit(1);
+    const [settings] = await db
+      .select()
+      .from(logoAnimationSettings)
+      .orderBy(asc(logoAnimationSettings.id))
+      .limit(1);
     return settings ?? undefined;
   }
 
@@ -459,10 +469,14 @@ class HomepageRepository {
     const cached = await unifiedCache.get<HomepageFeaturedProductsSettings>(cacheKey, "data");
     if (cached) return cached;
 
-    const [settings] = await db.select().from(homepageFeaturedProductsSettings).limit(1);
+    const [settings] = await db
+      .select()
+      .from(homepageFeaturedProductsSettings)
+      .orderBy(asc(homepageFeaturedProductsSettings.id))
+      .limit(1);
 
     if (settings) {
-      await unifiedCache.set(cacheKey, settings, HOMEPAGE_CACHE_TTL / 1000, "data");
+      await unifiedCache.set(cacheKey, settings, HOMEPAGE_CACHE_TTL, "data");
     }
 
     // Return default settings if none exist

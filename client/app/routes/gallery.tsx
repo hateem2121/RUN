@@ -32,12 +32,42 @@ interface MediaAssetData {
 }
 
 const FALLBACK_IMAGES = [
-  { id: -1, title: "Precision Knitting", category: "Manufacturing", url: "" },
-  { id: -2, title: "Zero-Waste Pattern Cuts", category: "Design", url: "" },
-  { id: -3, title: "Pro Performance Fitting", category: "E-Sportswear", url: "" },
-  { id: -4, title: "Aerodynamic Seam Sealing", category: "Innovation", url: "" },
-  { id: -5, title: "Certified Organic Cotton Blending", category: "Sustainability", url: "" },
-  { id: -6, title: "High-Visibility Teamwear Printing", category: "Product", url: "" },
+  {
+    id: -1,
+    title: "Precision Knitting",
+    category: "Manufacturing",
+    url: "/images/gallery/precision-knitting.webp",
+  },
+  {
+    id: -2,
+    title: "Zero-Waste Pattern Cuts",
+    category: "Design",
+    url: "/images/gallery/pattern-cuts.webp",
+  },
+  {
+    id: -3,
+    title: "Pro Performance Fitting",
+    category: "E-Sportswear",
+    url: "/images/gallery/performance-fitting.webp",
+  },
+  {
+    id: -4,
+    title: "Aerodynamic Seam Sealing",
+    category: "Innovation",
+    url: "/images/gallery/seam-sealing.webp",
+  },
+  {
+    id: -5,
+    title: "Certified Organic Cotton Blending",
+    category: "Sustainability",
+    url: "/images/gallery/cotton-blending.webp",
+  },
+  {
+    id: -6,
+    title: "High-Visibility Teamwear Printing",
+    category: "Product",
+    url: "/images/gallery/teamwear-printing.webp",
+  },
 ];
 
 export default function Component({ loaderData }: Route.ComponentProps) {
@@ -74,22 +104,15 @@ export default function Component({ loaderData }: Route.ComponentProps) {
               className="group relative aspect-square overflow-hidden bg-muted/20 rounded-2xl border border-foreground/5"
             >
               {/* Image Source (uses content URL if seeded, otherwise render geometric abstract background) */}
-              {img.url ? (
-                <img
-                  src={img.url}
-                  alt={img.title}
-                  loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              ) : (
-                <div
-                  className="absolute inset-0 z-0 pointer-events-none opacity-20"
-                  style={{
-                    background:
-                      "radial-gradient(circle at 70% 30%, var(--color-brand-lime) 0%, transparent 60%)",
-                  }}
-                />
-              )}
+              <img
+                src={img.url || "/images/placeholders/product-placeholder.webp"}
+                alt={img.title}
+                loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholders/product-placeholder.webp";
+                }}
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
 
               {/* Overlay Content */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-85 transition-opacity duration-300 group-hover:opacity-95" />

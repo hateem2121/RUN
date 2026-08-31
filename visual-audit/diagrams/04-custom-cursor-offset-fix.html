@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Cursor — Dual-Layer Offset Tooltip Architecture</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #0b0d11;
+      --paper-card: #131720;
+      --ink: #f0f4f8;
+      --muted: #8b9bb4;
+      --accent: #eb6c36;
+      --accent-lime: #a3e635;
+      --accent-blue: #38bdf8;
+      --border: #222938;
+      --red: #f43f5e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Geist', sans-serif;
+      padding: 2.5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header {
+      max-width: 1000px;
+      width: 100%;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+    }
+    p.desc {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .diagram-box {
+      background: var(--paper-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      max-width: 1000px;
+      width: 100%;
+      overflow-x: auto;
+    }
+    svg { width: 100%; height: auto; display: block; }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+      max-width: 1000px;
+      width: 100%;
+      margin-top: 1.5rem;
+    }
+    .card {
+      background: var(--paper-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="eyebrow">RUN APPAREL FORENSIC AUDIT — FIGURE 4.0</div>
+    <h1>Custom Cursor Engine: 3-State Dual-Layer Kinetic Behavior</h1>
+    <p class="desc">Illustrating DEFAULT pointer tracking, BUTTON magnetic scaling, and VIEW state offset tooltip positioning.</p>
+  </div>
+
+  <div class="diagram-box">
+    <svg viewBox="0 0 960 360" role="img" aria-labelledby="cur-title cur-desc">
+      <title id="cur-title">Custom Cursor State Machine</title>
+      <desc id="cur-desc">Three states of the custom cursor: DEFAULT with 16px circle, BUTTON with 80px exclusion circle, and VIEW with 250px offset tooltip image.</desc>
+
+      <!-- State 1: DEFAULT -->
+      <rect x="40" y="40" width="270" height="280" rx="8" fill="#111622" stroke="#222938"/>
+      <rect x="60" y="60" width="80" height="20" rx="4" fill="#38bdf8" fill-opacity="0.15"/>
+      <text x="100" y="74" fill="#38bdf8" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" text-anchor="middle">STATE 1: DEFAULT</text>
+      
+      <!-- Visual Cursor Dot & Ring -->
+      <circle cx="175" cy="160" r="4" fill="#ffffff"/>
+      <circle cx="175" cy="160" r="12" fill="none" stroke="#ffffff" stroke-width="1.2"/>
+      
+      <text x="175" y="220" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="12" font-weight="600" text-anchor="middle">Standard Browsing</text>
+      <text x="175" y="240" fill="#8b9bb4" font-family="'Geist Mono', monospace" font-size="9" text-anchor="middle">Dot: 8px • Ring: 16px</text>
+      <text x="175" y="260" fill="#8b9bb4" font-family="'Geist Mono', monospace" font-size="9" text-anchor="middle">mix-blend-mode: difference</text>
+
+
+      <!-- State 2: BUTTON -->
+      <rect x="345" y="40" width="270" height="280" rx="8" fill="#111622" stroke="#222938"/>
+      <rect x="365" y="60" width="80" height="20" rx="4" fill="#a3e635" fill-opacity="0.15"/>
+      <text x="405" y="74" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" text-anchor="middle">STATE 2: BUTTON</text>
+      
+      <!-- Visual Magnetic Disc -->
+      <circle cx="480" cy="160" r="40" fill="#eb6c36" fill-opacity="0.25" stroke="#eb6c36" stroke-width="1.5"/>
+      <circle cx="480" cy="160" r="2" fill="#eb6c36"/>
+      
+      <text x="480" y="220" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="12" font-weight="600" text-anchor="middle">Interactive Links / CTAs</text>
+      <text x="480" y="240" fill="#8b9bb4" font-family="'Geist Mono', monospace" font-size="9" text-anchor="middle">Expanded Disc: 80px</text>
+      <text x="480" y="260" fill="#8b9bb4" font-family="'Geist Mono', monospace" font-size="9" text-anchor="middle">mix-blend-mode: exclusion</text>
+
+
+      <!-- State 3: VIEW (Offset Tooltip) -->
+      <rect x="650" y="40" width="270" height="280" rx="8" fill="#111622" stroke="#a3e635" stroke-width="1.2"/>
+      <rect x="670" y="60" width="90" height="20" rx="4" fill="#a3e635" fill-opacity="0.15"/>
+      <text x="715" y="74" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="9" font-weight="700" text-anchor="middle">STATE 3: VIEW (FIX)</text>
+      
+      <!-- Mouse pointer -->
+      <circle cx="720" cy="180" r="4" fill="#a3e635"/>
+      <!-- Offset Tooltip Card -->
+      <rect x="745" y="125" width="130" height="95" rx="6" fill="#1e293b" stroke="#a3e635" stroke-width="1.2"/>
+      <text x="810" y="165" fill="#ffffff" font-family="'Geist', sans-serif" font-size="10" font-weight="700" text-anchor="middle">Image Preview</text>
+      <text x="810" y="185" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="8" text-anchor="middle">24px Offset Floating</text>
+      
+      <text x="785" y="240" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="12" font-weight="600" text-anchor="middle">Product / Category Hover</text>
+      <text x="785" y="260" fill="#8b9bb4" font-family="'Geist Mono', monospace" font-size="9" text-anchor="middle">Text Under Pointer Stays 100% Clear</text>
+    </svg>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <h3 style="color:#38bdf8">QuickTo Physics</h3>
+      <p>Uses GSAP <code>quickTo</code> with power3 easing for the follower and power2 for the inner dot, delivering zero-lag responsiveness.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:#a3e635">Touch Detection</h3>
+      <p>Instantly deactivates on touch devices via <code>pointer: coarse</code> matchMedia queries to protect native mobile ergonomics.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:#eb6c36">Scroll Sync</h3>
+      <p>Listens to passive window scroll events to keep the follower perfectly synchronized during rapid mousewheel flicking.</p>
+    </div>
+  </div>
+</body>
+</html>

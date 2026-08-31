@@ -32,7 +32,6 @@ export const FlipCard = memo(function FlipCard({
       ? features
       : ["Premium Quality", "Advanced Technology", "Sustainable Materials", "Custom Solutions"];
   const [isFlipped, setIsFlipped] = useState(false);
-  const [hasError, setHasError] = useState(false);
 
   return (
     <EnhancedBentoCardErrorBoundary showTechnicalDetails={false}>
@@ -67,40 +66,16 @@ export const FlipCard = memo(function FlipCard({
               >
                 <div className="relative h-full overflow-hidden bg-linear-to-b from-surface-subtle to-white dark:from-zinc-900 dark:to-zinc-950">
                   {/* Media Background */}
-                  {mediaUrl && !hasError ? (
-                    <div className="absolute inset-0">
-                      <img
-                        src={mediaUrl}
-                        alt={cardTitle}
-                        className="h-full w-full object-cover"
-                        onError={() => setHasError(true)}
-                      />
-                    </div>
-                  ) : (
-                    <div className="absolute inset-0 flex items-start justify-center pt-24">
-                      <div className="relative flex h-widget-track w-widget-track items-center justify-center">
-                        {[...Array(10)].map((_, i) => (
-                          <div
-                            key={i}
-                            className={cn(
-                              "absolute h-particle w-particle",
-                              "rounded-full",
-                              "bg-linear-to-br from-orange-400 to-orange-600",
-                              "animate-particle-scale",
-                              "opacity-0",
-                              "shadow-glow-orange",
-                              "group-hover:animate-particle-scale-fast",
-                            )}
-                            style={{
-                              animationDelay: `${i * 0.3}s`,
-                              left: `${(i * 17) % 100}px`, // Deterministic: (index * prime) % max
-                              top: `${(i * 23) % 50}px`, // Deterministic: (index * prime) % max
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  <div className="absolute inset-0">
+                    <img
+                      src={mediaUrl || "/images/placeholders/category-placeholder.webp"}
+                      alt={cardTitle}
+                      className="h-full w-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/placeholders/category-placeholder.webp";
+                      }}
+                    />
+                  </div>
                 </div>
 
                 <div className="absolute right-0 bottom-0 left-0 p-5">

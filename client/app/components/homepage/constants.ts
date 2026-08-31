@@ -24,27 +24,27 @@ export const CATEGORIES: CategoryItem[] = [
   {
     id: "1",
     name: "Team Wear",
-    image: "/images/homepage/hero-1.png",
+    image: "/images/homepage/hero-1.webp",
   },
   {
     id: "2",
     name: "Active Wear",
-    image: "/images/homepage/hero-2.png",
+    image: "/images/homepage/hero-2.webp",
   },
   {
     id: "3",
     name: "Casual Wear",
-    image: "/images/homepage/values-1.png",
+    image: "/images/homepage/values-1.webp",
   },
   {
     id: "4",
     name: "Outer Wear",
-    image: "/images/homepage/hero-1.png",
+    image: "/images/homepage/hero-1.webp",
   },
   {
     id: "5",
     name: "Tech Accessories",
-    image: "/images/homepage/hero-2.png",
+    image: "/images/homepage/hero-2.webp",
   },
 ];
 
@@ -53,25 +53,25 @@ export const PROCESS_STEPS: ProcessStep[] = [
     id: "01",
     title: "Inquiry & R&D",
     description: "Material sourcing and technical feasibility analysis.",
-    image: "/images/homepage/hero-2.png",
+    image: "/images/homepage/hero-2.webp",
   },
   {
     id: "02",
     title: "Prototyping",
     description: "Rapid sampling and fit testing with 3D visualization.",
-    image: "/images/homepage/hero-1.png",
+    image: "/images/homepage/hero-1.webp",
   },
   {
     id: "03",
     title: "Production",
     description: "Scaled manufacturing with real-time quality control.",
-    image: "/images/homepage/stats-bg.png",
+    image: "/images/homepage/stats-bg.webp",
   },
   {
     id: "04",
     title: "Logistics",
     description: "Global distribution and supply chain management.",
-    image: "/images/homepage/hero-2.png",
+    image: "/images/homepage/hero-2.webp",
   },
 ];
 
@@ -88,23 +88,20 @@ export const FEATURED_PRODUCTS: ProductItem[] = [
     name: "Aero-Tech Shell",
     category: "Performance Outerwear",
     price: "MOQ 500",
-    image:
-      "https://images.unsplash.com/photo-1544022613-e87ca75a784a?q=80&w=1000&auto=format&fit=crop",
+    image: "/images/products/aero-tech-shell.webp",
   },
   {
     id: "P02",
-    name: "Carbon Knit Runner",
-    category: "Footwear / Proto",
+    name: "Seamless Compression Tight",
+    category: "Active Wear",
     price: "MOQ 1000",
-    image:
-      "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?q=80&w=1000&auto=format&fit=crop",
+    image: "/images/products/seamless-compression-tight.webp",
   },
   {
     id: "P03",
     name: "Hydro-Dri Base Layer",
     category: "Active Wear",
     price: "MOQ 2000",
-    image:
-      "https://images.unsplash.com/photo-1518459031867-a89b944bffe4?q=80&w=1000&auto=format&fit=crop",
+    image: "/images/products/hydro-dri-base.webp",
   },
 ];

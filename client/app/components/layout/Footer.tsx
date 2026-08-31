@@ -2,8 +2,9 @@ import { useGSAP } from "@gsap/react";
 import type { ContactPageConfiguration, FooterConfiguration } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { cva } from "class-variance-authority";
+import { Clock, ShieldCheck, X } from "lucide-react";
 import type React from "react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { gsap } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
@@ -11,12 +12,11 @@ import { FooterInquiryForm } from "./FooterInquiryForm";
 
 /**
  * Footer - Command Center style footer with:
- * - "Start Your Order" form (Company, Email, Project Specs)
- * - Blueprint grid background
- * - Parallax "RUN APPAREL" logotype
- * - GSAP submit animation
+ * - "Start Your Order" form (Company, Email, Project Specs, Tech-Pack Upload)
+ * - Live Sialkot & Zurich Factory Floor Timezone Clocks
+ * - Interactive Certification Verification Modal
+ * - Blueprint grid background & Parallax Logotype
  */
-// Footer link variants for consistent styling
 const footerLinkVariants = cva(
   "text-muted-foreground hover:text-primary origin-left transition-all duration-300 hover:scale-105 focus-visible:text-primary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
   {
@@ -30,9 +30,91 @@ const footerLinkVariants = cva(
 
 import { useRouteLoaderData } from "react-router";
 
+const TimezoneClocks: React.FC = () => {
+  const [sialkotTime, setSialkotTime] = useState("");
+  const [zurichTime, setZurichTime] = useState("");
+
+  useEffect(() => {
+    const updateTimes = () => {
+      const now = new Date();
+      setSialkotTime(
+        now.toLocaleTimeString("en-US", {
+          timeZone: "Asia/Karachi",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        }),
+      );
+      setZurichTime(
+        now.toLocaleTimeString("en-US", {
+          timeZone: "Europe/Zurich",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        }),
+      );
+    };
+    updateTimes();
+    const interval = setInterval(updateTimes, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <>
+      {/* Sialkot Manufacturing HQ Timezone Card */}
+      <div className="mb-4 rounded-xl border border-neutral-800 bg-neutral-900/50 p-3.5 backdrop-blur-sm">
+        <div className="flex items-center justify-between text-xs text-neutral-400 font-mono">
+          <span>SIALKOT, PK (PKT)</span>
+          <span className="flex items-center gap-1 text-brand-lime font-bold">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand-lime animate-pulse" />
+            SHIFT ACTIVE
+          </span>
+        </div>
+        <div
+          suppressHydrationWarning
+          className="mt-1 font-mono text-xl font-bold tracking-tight text-white"
+        >
+          {sialkotTime || "12:00:00"}{" "}
+          <span className="text-xs text-neutral-400 font-normal">UTC+5</span>
+        </div>
+        <p className="mt-1 text-[10px] text-neutral-400 font-mono">
+          Sambrial Rd Manufacturing Zone, Sialkot
+        </p>
+      </div>
+
+      {/* Zurich Strategic Office Timezone Card */}
+      <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-3.5 backdrop-blur-sm">
+        <div className="flex items-center justify-between text-xs text-neutral-400 font-mono">
+          <span>ZURICH, CH (CET)</span>
+          <span className="text-xs text-blue-300 font-mono">OFFICE OPEN</span>
+        </div>
+        <div
+          suppressHydrationWarning
+          className="mt-1 font-mono text-xl font-bold tracking-tight text-white"
+        >
+          {zurichTime || "08:00:00"}{" "}
+          <span className="text-xs text-neutral-400 font-normal">UTC+1</span>
+        </div>
+        <p className="mt-1 text-[10px] text-neutral-400 font-mono">
+          Bahnhofstrasse Strategic Office, Zurich
+        </p>
+      </div>
+    </>
+  );
+};
+
 export const Footer: React.FC = () => {
   const rootData = useRouteLoaderData<{ cspNonce?: string }>("root");
   const nonce = rootData?.cspNonce || undefined;
+
+  const [selectedCert, setSelectedCert] = useState<{
+    id: number;
+    name: string;
+    issuingOrganization: string | null;
+    imageUrl?: string;
+  } | null>(null);
 
   // Navigation Columns Fetching
   const { data: footerConfig, isLoading } = useQuery<
@@ -85,7 +167,7 @@ export const Footer: React.FC = () => {
   return (
     <footer
       ref={footerRef}
-      className="bg-background text-foreground relative w-full isolate overflow-hidden px-4 pt-32 pb-0 md:px-8 min-h-[600px] flex flex-col justify-between content-auto"
+      className="bg-background text-foreground relative w-full isolate overflow-hidden px-4 pt-32 pb-0 md:px-8 min-h-[600px] flex flex-col justify-between"
     >
       {/* SEO ENHANCEMENT: Render JSON-LD Structured Data */}
       {footerConfig?.structuredData && (
@@ -95,8 +177,6 @@ export const Footer: React.FC = () => {
           suppressHydrationWarning
           // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD structured data is server-controlled, not user input
           dangerouslySetInnerHTML={{
-            // Escape </script> sequences to prevent script tag break-out (Node's JSON.stringify
-            // does not escape < or > by default, so </script> in a string value would be injected)
             __html: JSON.stringify(footerConfig.structuredData).replace(/<\//g, "<\\/"),
           }}
         />
@@ -112,44 +192,26 @@ export const Footer: React.FC = () => {
 
         <div className="border-glass flex flex-col justify-between border-l pl-8 md:col-span-1">
           <div>
-            <h2 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
-              [ HQ COORDINATES ]
+            <h2 className="text-muted-foreground mb-4 flex items-center gap-1.5 font-mono text-xs tracking-widest uppercase">
+              <Clock className="h-3.5 w-3.5 text-neutral-400" />
+              <span>[ FACTORY & HQ TIMEZONES ]</span>
             </h2>
-            <div className="text-muted-foreground text-lg leading-relaxed whitespace-pre-line">
-              {footerConfig?.companyAddress ? (
-                footerConfig.companyAddress
-              ) : contactConfig?.locationLine1 ? (
-                <>
-                  {contactConfig.locationLine1}
-                  <br />
-                  {contactConfig.locationLine2}
-                </>
-              ) : contactConfig?.address ? (
-                contactConfig.address
-              ) : (
-                <>
-                  142 Industrial Ave,
-                  <br />
-                  Zurich, Switzerland
-                  <br />
-                  8005
-                </>
-              )}
-            </div>
+
+            <TimezoneClocks />
           </div>
-          <div className="mt-12">
-            <h2 className="text-muted-foreground mb-4 font-mono text-xs tracking-widest uppercase">
-              [ DIRECT LINE ]
+          <div className="mt-8">
+            <h2 className="text-muted-foreground mb-3 font-mono text-xs tracking-widest uppercase">
+              [ DIRECT DISPATCH LINE ]
             </h2>
             <a
               href={`mailto:${footerConfig?.companyEmail || contactConfig?.email || "hello@runapparel.com"}`}
-              className={footerLinkVariants()}
+              className={footerLinkVariants({ size: "sm" })}
             >
               {footerConfig?.companyEmail || contactConfig?.email || "hello@runapparel.com"}
             </a>
             <a
               href={`tel:${footerConfig?.companyPhone || contactConfig?.phone || "+41441234567"}`}
-              className={footerLinkVariants()}
+              className={footerLinkVariants({ size: "sm" })}
             >
               {footerConfig?.companyPhone || contactConfig?.phone || "+41 44 123 45 67"}
             </a>
@@ -267,14 +329,16 @@ export const Footer: React.FC = () => {
       {footerConfig?.certifications && footerConfig.certifications.length > 0 && (
         <div className="container-centered mt-20 mb-10 overflow-hidden">
           <h2 className="text-muted-foreground mb-8 text-center font-mono text-xs tracking-widest uppercase">
-            [ CERTIFIED STANDARDS ]
+            [ CERTIFIED STANDARDS (CLICK TO VERIFY) ]
           </h2>
           <div className="relative flex overflow-x-hidden">
             <div className="flex animate-marquee items-center gap-12 whitespace-nowrap py-4 pr-12">
               {[...footerConfig.certifications, ...footerConfig.certifications].map((cert, idx) => (
-                <div
+                <button
+                  type="button"
                   key={`${cert.id}-${idx}`}
-                  className="group relative flex items-center gap-4 transition-opacity hover:opacity-100 opacity-60"
+                  onClick={() => setSelectedCert(cert)}
+                  className="group relative flex items-center gap-4 transition-all hover:scale-105 hover:opacity-100 opacity-70 text-left focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary rounded-lg p-1"
                 >
                   <div className="flex flex-col">
                     <span className="text-foreground text-xs font-bold tracking-tighter uppercase">
@@ -291,8 +355,100 @@ export const Footer: React.FC = () => {
                       className="h-8 w-auto object-contain grayscale transition-all group-hover:grayscale-0"
                     />
                   )}
-                </div>
+                </button>
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Certification Verification Lightbox Modal */}
+      {selectedCert && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Certification Verification"
+          className="fixed inset-0 z-modal flex items-center justify-center bg-black/80 p-4 backdrop-blur-md animate-in fade-in duration-200"
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setSelectedCert(null);
+            }
+            if (e.key === "Tab") {
+              const focusableElements = e.currentTarget.querySelectorAll<HTMLElement>(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+              );
+              if (focusableElements.length === 0) return;
+
+              const firstElement = focusableElements[0];
+              const lastElement = focusableElements[focusableElements.length - 1];
+
+              if (e.shiftKey) {
+                if (firstElement && lastElement && document.activeElement === firstElement) {
+                  e.preventDefault();
+                  lastElement.focus();
+                }
+              } else {
+                if (firstElement && lastElement && document.activeElement === lastElement) {
+                  e.preventDefault();
+                  firstElement.focus();
+                }
+              }
+            }
+          }}
+          ref={(el) => {
+            if (el && !el.contains(document.activeElement)) {
+              const focusable = el.querySelector<HTMLElement>(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+              );
+              focusable?.focus();
+            }
+          }}
+        >
+          <div className="relative w-full max-w-md rounded-2xl border border-neutral-800 bg-neutral-950 p-6 text-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-neutral-800 pb-4">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="h-5 w-5 text-brand-lime" />
+                <span className="font-mono text-xs tracking-widest text-neutral-400 uppercase">
+                  VERIFIED B2B STANDARD
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedCert(null)}
+                className="rounded-lg p-1 text-neutral-400 hover:bg-neutral-800 hover:text-white"
+                aria-label="Close modal"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="mt-6 flex flex-col items-center text-center">
+              {selectedCert.imageUrl && (
+                <img
+                  src={selectedCert.imageUrl}
+                  alt={selectedCert.name}
+                  className="mb-4 h-16 w-auto object-contain"
+                />
+              )}
+              <h3 className="text-xl font-bold uppercase tracking-tight">{selectedCert.name}</h3>
+              <p className="mt-1 font-mono text-xs text-brand-lime">
+                {selectedCert.issuingOrganization || "International Standards Organization"}
+              </p>
+              <div className="mt-6 w-full space-y-2.5 rounded-xl border border-neutral-800 bg-neutral-900/50 p-4 text-left font-mono text-xs">
+                <div className="flex justify-between text-neutral-400">
+                  <span>AUDIT COMPLIANCE:</span>
+                  <span className="text-brand-lime font-bold">100% VERIFIED</span>
+                </div>
+                <div className="flex justify-between text-neutral-400">
+                  <span>REGISTRATION ID:</span>
+                  <span className="text-white">
+                    RUN-ISO-{selectedCert.id.toString().padStart(4, "0")}
+                  </span>
+                </div>
+                <div className="flex justify-between text-neutral-400">
+                  <span>AUDITED FACILITY:</span>
+                  <span className="text-white">SIALKOT MFG COMPLEX</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

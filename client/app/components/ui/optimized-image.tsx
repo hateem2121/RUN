@@ -30,7 +30,7 @@ const DirectImage = ({
   imageClassName,
   aspectRatio = "aspect-3/4",
   objectFit = "cover",
-  fallbackSrc = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+  fallbackSrc = "/images/placeholders/product-placeholder.webp",
   onLoad,
   onError,
   priority = false, // Destructured: not included in HTML props

@@ -134,10 +134,7 @@ export class MediaUrlBuilder {
     if (import.meta.env.DEV) {
     }
 
-    return (
-      fallback ||
-      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMDAgNzBDMTA1LjUyMyA3MCAxMTAgNzQuNDc3IDExMCA4MEM4NTUuNDc3IDgwIDUwIDg0LjQ3NyA1MCA5MEw1MCA5MEM1MCA5NS41MjMgNTQuNDc3IDEwMCA2MCAxMDBIMTQwQzE0NS1MjMgMTAwIDE1MCA5NS41MjMgMTUwIDkwVjkwQzE1MCA4NC40NzcgMTQ1LjUyMyA4MCAxNDAgODBIMTAwWiIgZmlsbD0iIzlDQTNBRiIvPgo8Y2lyY2xlIGN4PSI3NSIgY3k9IjgwIiByPSI1IiBmaWxsPSIjNjM3MEZGIi8+Cjwvc3ZnPgo="
-    );
+    return fallback || "/images/placeholders/product-placeholder.webp";
   }
 
   /**

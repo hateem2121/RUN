@@ -139,8 +139,8 @@ export default function CategoryProductsPage() {
     fallbackUrl,
     alt,
   }: {
-    mediaId?: number;
-    fallbackUrl?: string;
+    mediaId?: number | undefined;
+    fallbackUrl?: string | undefined;
     alt: string;
   }) => {
     const { urls } = useOptimizedMedia(mediaId || 0, {
@@ -149,7 +149,11 @@ export default function CategoryProductsPage() {
       format: "webp",
     });
 
-    const optimizedSrc = urls?.large || urls?.medium || fallbackUrl;
+    const optimizedSrc =
+      urls?.large ||
+      urls?.medium ||
+      fallbackUrl ||
+      "/images/placeholders/category-placeholder.webp";
     return (
       <img
         src={optimizedSrc}
@@ -157,13 +161,16 @@ export default function CategoryProductsPage() {
         loading="eager"
         fetchPriority="high"
         className="h-full w-full object-cover"
+        onError={(e) => {
+          e.currentTarget.src = "/images/placeholders/category-placeholder.webp";
+        }}
       />
     );
   };
 
   if (!category) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="center-flex min-h-screen">
         <div className="text-center">
           <Typography.H2 className="mb-2 font-bold text-2xl">Category Not Found</Typography.H2>
           <Typography.P className="mb-4 text-muted-foreground">
@@ -179,27 +186,29 @@ export default function CategoryProductsPage() {
     <HydrationBoundary state={undefined}>
       <div className="min-h-screen bg-muted/30">
         {/* Hero Section */}
-        {category.bannerUrl && (
-          <div className="relative h-64 overflow-hidden md:h-80">
-            <OptimizedCategoryBanner
-              mediaId={parseInt(category.bannerUrl, 10)}
-              fallbackUrl={category.bannerUrl}
-              alt={category.name}
-            />
-            <div className="center-flex absolute inset-0 bg-black/40">
-              <div className="text-center text-white">
-                <Typography.H1 className="mb-2 font-bold text-4xl md:text-5xl">
-                  {category.name}
-                </Typography.H1>
-                {category.description && (
-                  <Typography.P className="mx-auto max-w-2xl text-lg">
-                    {category.description}
-                  </Typography.P>
-                )}
-              </div>
+        <div className="relative h-64 overflow-hidden md:h-80 bg-muted">
+          <OptimizedCategoryBanner
+            mediaId={category.primaryImageId ?? undefined}
+            fallbackUrl={
+              category.bannerUrl ||
+              category.imageUrl ||
+              "/images/placeholders/category-placeholder.webp"
+            }
+            alt={category.name}
+          />
+          <div className="center-flex absolute inset-0 bg-black/50">
+            <div className="text-center text-white p-4">
+              <Typography.H1 className="mb-2 font-bold text-4xl md:text-5xl font-neue-stance uppercase tracking-tight">
+                {category.name}
+              </Typography.H1>
+              {category.description && (
+                <Typography.P className="mx-auto max-w-2xl text-lg text-white/90">
+                  {category.description}
+                </Typography.P>
+              )}
             </div>
           </div>
-        )}
+        </div>
 
         {/* Breadcrumb */}
         <div className="border-b bg-white pt-20">
@@ -229,17 +238,21 @@ export default function CategoryProductsPage() {
                     <Card className="group cursor-pointer transition-shadow-sm hover:shadow-md">
                       <div className="flex items-center justify-between p-4">
                         <div className="flex items-center gap-3">
-                          {subcat.imageUrl && (
-                            <img
-                              src={
-                                getOptimizedMediaUrl(parseInt(subcat.imageUrl, 10)) ||
-                                subcat.imageUrl
-                              }
-                              alt={subcat.name}
-                              loading="lazy"
-                              className="h-12 w-12 rounded-lg object-cover"
-                            />
-                          )}
+                          <img
+                            src={
+                              (subcat.imageUrl &&
+                                getOptimizedMediaUrl(parseInt(subcat.imageUrl, 10))) ||
+                              subcat.imageUrl ||
+                              "/images/placeholders/category-placeholder.webp"
+                            }
+                            alt={subcat.name}
+                            loading="lazy"
+                            onError={(e) => {
+                              e.currentTarget.src =
+                                "/images/placeholders/category-placeholder.webp";
+                            }}
+                            className="h-12 w-12 rounded-lg object-cover bg-muted"
+                          />
                           <div>
                             <Typography.H3 className="font-medium">{subcat.name}</Typography.H3>
                             <Typography.P className="text-muted-foreground text-sm">

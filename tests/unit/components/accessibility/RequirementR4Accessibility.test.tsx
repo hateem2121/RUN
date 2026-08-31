@@ -33,6 +33,12 @@ vi.mock("@/lib/gsap", () => ({
     to: vi.fn(),
     quickTo: vi.fn().mockReturnValue(vi.fn()),
   },
+  useGSAP: vi.fn((_cb: any) => {}),
+  ScrollTrigger: {
+    create: vi.fn(),
+    getById: vi.fn(),
+    getAll: vi.fn(() => []),
+  },
 }));
 
 // Mock react-router

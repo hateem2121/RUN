@@ -5,6 +5,8 @@
  * Uses @google-cloud/storage SDK
  */
 
+import fs from "node:fs";
+import path from "node:path";
 import { Storage } from "@google-cloud/storage";
 import { logger, serializeError } from "../monitoring/logger.js";
 import { EXTERNAL_API_CIRCUIT_OPTIONS, withCircuit } from "../resilience/circuit-breaker.js";
@@ -236,9 +238,25 @@ class AppStorageService {
   }
 
   /**
-   * Check if asset exists in GCS
+   * Check if asset exists in storage or local public folder
    */
   async assetExists(key: string): Promise<boolean> {
+    const isCwdServer = process.cwd().endsWith("server");
+    const monorepoRoot = isCwdServer ? path.resolve(process.cwd(), "..") : process.cwd();
+    const cleanKey = key.replace(/^\//, "");
+    const localFile = path.resolve(monorepoRoot, "client/public", cleanKey);
+    try {
+      if (fs.existsSync(localFile)) {
+        return true;
+      }
+    } catch {
+      // Continue to GCS check
+    }
+
+    if (!this.bucketName) {
+      return false;
+    }
+
     return this.withTimeoutAndRetry(async () => {
       try {
         const bucket = this.storage.bucket(this.bucketName);
@@ -314,9 +332,21 @@ class AppStorageService {
     ttlSeconds: number = 300,
     method: "GET" | "PUT" | "DELETE" | "HEAD" = "GET",
   ): Promise<string> {
+    const isCwdServer = process.cwd().endsWith("server");
+    const monorepoRoot = isCwdServer ? path.resolve(process.cwd(), "..") : process.cwd();
+    const cleanKey = key.replace(/^\//, "");
+    const localFile = path.resolve(monorepoRoot, "client/public", cleanKey);
+
+    if (fs.existsSync(localFile)) {
+      return `/${cleanKey}`;
+    }
+
     return this.withTimeoutAndRetry(
       async () => {
         try {
+          if (!this.bucketName) {
+            return `/${cleanKey}`;
+          }
           const bucket = this.storage.bucket(this.bucketName);
           const file = bucket.file(key);
 
@@ -335,21 +365,7 @@ class AppStorageService {
             errorMessage.includes("Service account") ||
             !this.bucketName
           ) {
-            if (process.env.NODE_ENV !== "production") {
-              const fs = await import("node:fs/promises");
-              const path = await import("node:path");
-              const publicPath = path.join(process.cwd(), "public", key);
-
-              try {
-                await fs.access(publicPath);
-                return `/${key}`;
-              } catch (_fsError) {
-                // Not in public/ either
-              }
-            }
-
-            const fallbackUrl = `https://storage.googleapis.com/${this.bucketName || "run-dev-assets"}/${key}`;
-            return fallbackUrl;
+            return `/${cleanKey}`;
           }
           throw error;
         }

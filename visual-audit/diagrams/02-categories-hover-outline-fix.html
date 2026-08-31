@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Categories Ticker — Hover Outline Forensic Diagnosis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #0b0d11;
+      --paper-card: #131720;
+      --ink: #f0f4f8;
+      --muted: #8b9bb4;
+      --accent: #eb6c36;
+      --accent-lime: #a3e635;
+      --accent-blue: #38bdf8;
+      --border: #222938;
+      --red: #f43f5e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Geist', sans-serif;
+      padding: 2.5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header {
+      max-width: 1000px;
+      width: 100%;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+    }
+    p.desc {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .diagram-box {
+      background: var(--paper-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      max-width: 1000px;
+      width: 100%;
+      overflow-x: auto;
+    }
+    svg { width: 100%; height: auto; display: block; }
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      max-width: 1000px;
+      width: 100%;
+      margin-top: 1.5rem;
+    }
+    .comp-card {
+      background: var(--paper-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    .comp-card.bad { border-color: rgba(244, 63, 94, 0.4); }
+    .comp-card.good { border-color: rgba(163, 230, 53, 0.4); }
+    .comp-card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .code-box {
+      background: #080a0f;
+      border: 1px solid #1a2233;
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      overflow-x: auto;
+      margin-bottom: 0.75rem;
+    }
+    .code-box .highlight-red { color: #f43f5e; font-weight: bold; }
+    .code-box .highlight-green { color: #a3e635; font-weight: bold; }
+    p.explanation { font-size: 0.85rem; color: var(--muted); line-height: 1.4; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="eyebrow">RUN APPAREL FORENSIC AUDIT — FIGURE 2.0</div>
+    <h1>Categories Ticker: Hover Font Outline Elimination vs High-Contrast Neon Outline</h1>
+    <p class="desc">Diagnosing why category titles disappear under hover and providing the production fix that locks in a vibrant brand outline with offset preview follower.</p>
+  </div>
+
+  <div class="diagram-box">
+    <svg viewBox="0 0 960 380" role="img" aria-labelledby="cat-title cat-desc">
+      <title id="cat-title">Categories Ticker Hover Comparison</title>
+      <desc id="cat-desc">Visual comparison showing how removing stroke-width on hover hides the text behind the cursor preview, while keeping a vibrant neon outline preserves readability.</desc>
+
+      <!-- Before State (Flawed) -->
+      <rect x="40" y="30" width="420" height="320" rx="8" fill="#111622" stroke="#f43f5e" stroke-width="1.2"/>
+      <rect x="60" y="50" width="80" height="22" rx="4" fill="#f43f5e" fill-opacity="0.15"/>
+      <text x="100" y="65" fill="#f43f5e" font-family="'Geist Mono', monospace" font-size="10" font-weight="700" text-anchor="middle">❌ CURRENT BUG</text>
+
+      <!-- Text State 1: Before Hover -->
+      <text x="60" y="110" fill="none" stroke="#f0f4f8" stroke-width="1.5" font-family="'Geist', sans-serif" font-size="28" font-weight="800" letter-spacing="-0.03em">CASUAL WEAR ●</text>
+      <text x="60" y="135" fill="#8b9bb4" font-family="'Geist Mono', monospace" font-size="9">Resting: -webkit-text-stroke 1.5px (Transparent Fill)</text>
+
+      <!-- Text State 2: Upon Hover (Bug) -->
+      <rect x="60" y="160" width="380" height="170" rx="6" fill="#0c1017" stroke="#222938"/>
+      <text x="75" y="185" fill="#8b9bb4" font-family="'Geist Mono', monospace" font-size="9">MOUSE HOVERS OVER ELEMENT:</text>
+      
+      <!-- Text becomes solid fill, losing outline -->
+      <text x="75" y="240" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="28" font-weight="800" letter-spacing="-0.03em">CASUAL WEAR ●</text>
+      
+      <!-- Massive 250px cursor bubble covers text -->
+      <circle cx="210" cy="235" r="75" fill="#38bdf8" fill-opacity="0.35" stroke="#38bdf8" stroke-dasharray="3,3"/>
+      <rect x="155" y="185" width="110" height="100" rx="4" fill="#1e293b" fill-opacity="0.8"/>
+      <text x="210" y="240" fill="#ffffff" font-family="'Geist Mono', monospace" font-size="9" text-anchor="middle">250px Preview</text>
+      <text x="75" y="315" fill="#f43f5e" font-family="'Geist Mono', monospace" font-size="9">⚠️ Stroke eliminated (0px) + image covers text = UNREADABLE</text>
+
+
+      <!-- After State (Remediated) -->
+      <rect x="500" y="30" width="420" height="320" rx="8" fill="#111622" stroke="#a3e635" stroke-width="1.2"/>
+      <rect x="520" y="50" width="100" height="22" rx="4" fill="#a3e635" fill-opacity="0.15"/>
+      <text x="570" y="65" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="10" font-weight="700" text-anchor="middle">✅ PRODUCTION FIX</text>
+
+      <!-- Text State 1: Before Hover -->
+      <text x="520" y="110" fill="none" stroke="#f0f4f8" stroke-width="1.5" font-family="'Geist', sans-serif" font-size="28" font-weight="800" letter-spacing="-0.03em">CASUAL WEAR ●</text>
+      <text x="520" y="135" fill="#8b9bb4" font-family="'Geist Mono', monospace" font-size="9">Resting: -webkit-text-stroke 1.5px (Transparent Fill)</text>
+
+      <!-- Text State 2: Upon Hover (Fixed) -->
+      <rect x="520" y="160" width="380" height="170" rx="6" fill="#0c1017" stroke="#222938"/>
+      <text x="535" y="185" fill="#8b9bb4" font-family="'Geist Mono', monospace" font-size="9">MOUSE HOVERS OVER ELEMENT:</text>
+      
+      <!-- Text keeps razor-sharp neon outline + subtle glow -->
+      <text x="535" y="240" fill="#a3e635" fill-opacity="0.15" stroke="#a3e635" stroke-width="2" font-family="'Geist', sans-serif" font-size="28" font-weight="800" letter-spacing="-0.03em">CASUAL WEAR ●</text>
+      
+      <!-- Offset cursor follower floats 24px top-right -->
+      <rect x="740" y="175" width="110" height="85" rx="8" fill="#1e293b" stroke="#a3e635" stroke-width="1.5"/>
+      <text x="795" y="222" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="8" text-anchor="middle">Offset Tooltip</text>
+      <path d="M 680 230 Q 710 200 735 205" stroke="#a3e635" stroke-width="1" stroke-dasharray="2,2"/>
+      
+      <text x="535" y="315" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="9">✨ Vibrant 2px outline retained + preview offset = 100% VISIBLE</text>
+    </svg>
+  </div>
+
+  <div class="comparison-grid">
+    <div class="comp-card bad">
+      <h3><span style="color:#f43f5e">❌</span> Root Cause in Code</h3>
+      <div class="code-box">
+// Categories.tsx:58<br>
+"stroke-text block text-display-xl font-bold uppercase",<br>
+<span class="highlight-red">"group-hover:text-foreground group-hover:[-webkit-text-stroke-width:0px]"</span>
+      </div>
+      <p class="explanation">Setting text-stroke-width to 0px completely deletes the outline border, leaving a flat fill that easily washes out against the cursor backdrop.</p>
+    </div>
+
+    <div class="comp-card good">
+      <h3><span style="color:#a3e635">✅</span> Remediated Implementation</h3>
+      <div class="code-box">
+// Categories.tsx (Remediated)<br>
+"stroke-text block text-display-xl font-bold uppercase",<br>
+<span class="highlight-green">"group-hover:[-webkit-text-stroke:2px_var(--color-primary)] group-hover:text-primary/10"</span>
+      </div>
+      <p class="explanation">Maintains a bold 2px primary neon outline with a subtle translucent fill tint. The outline is never deleted and stays sharp in both dark and light modes.</p>
+    </div>
+  </div>
+</body>
+</html>

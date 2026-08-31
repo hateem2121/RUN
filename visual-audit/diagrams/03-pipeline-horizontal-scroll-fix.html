@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Production Pipeline — Horizontal Scroll Math Drift Forensic Analysis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #0b0d11;
+      --paper-card: #131720;
+      --ink: #f0f4f8;
+      --muted: #8b9bb4;
+      --accent: #eb6c36;
+      --accent-lime: #a3e635;
+      --accent-blue: #38bdf8;
+      --border: #222938;
+      --red: #f43f5e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Geist', sans-serif;
+      padding: 2.5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header {
+      max-width: 1000px;
+      width: 100%;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+    }
+    p.desc {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .diagram-box {
+      background: var(--paper-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      max-width: 1000px;
+      width: 100%;
+      overflow-x: auto;
+    }
+    svg { width: 100%; height: auto; display: block; }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      max-width: 1000px;
+      width: 100%;
+      margin-top: 1.5rem;
+    }
+    .card {
+      background: var(--paper-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .code-box {
+      background: #080a0f;
+      border: 1px solid #1a2233;
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="eyebrow">RUN APPAREL FORENSIC AUDIT — FIGURE 3.0</div>
+    <h1>Production Pipeline: Horizontal Track Math Drift vs Container-Locked Kinematics</h1>
+    <p class="desc">Forensic breakdown of how 100vw vs 100% width calculations caused cumulative drift and pushed the 4th pipeline stage out of alignment.</p>
+  </div>
+
+  <div class="diagram-box">
+    <svg viewBox="0 0 960 420" role="img" aria-labelledby="proc-title proc-desc">
+      <title id="proc-title">Pipeline Horizontal Scroll Math Drift</title>
+      <desc id="proc-desc">Diagram showing how w-screen (1440px) vs offsetWidth (1423px) accumulates 51px drift across 4 cards and how locking card width to container width fixes it.</desc>
+
+      <!-- Flawed Viewport Model -->
+      <text x="40" y="35" fill="#f43f5e" font-family="'Geist Mono', monospace" font-size="11" font-weight="700">❌ CURRENT DRIFT: w-screen (100vw = 1440px) vs triggerEl.offsetWidth (100% = 1423px)</text>
+      
+      <!-- Track 1 Background (Drift) -->
+      <rect x="40" y="55" width="880" height="130" rx="6" fill="#101520" stroke="#f43f5e" stroke-dasharray="2,2"/>
+      
+      <!-- Card 1 -->
+      <rect x="50" y="70" width="205" height="100" rx="4" fill="#1a2234" stroke="#38bdf8"/>
+      <text x="65" y="95" fill="#38bdf8" font-family="'Geist Mono', monospace" font-size="10" font-weight="700">STAGE 01</text>
+      <text x="65" y="115" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="11" font-weight="600">Sourcing</text>
+      <text x="65" y="145" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="9">Drift: +0px</text>
+
+      <!-- Card 2 -->
+      <rect x="260" y="70" width="205" height="100" rx="4" fill="#1a2234" stroke="#38bdf8"/>
+      <text x="275" y="95" fill="#38bdf8" font-family="'Geist Mono', monospace" font-size="10" font-weight="700">STAGE 02</text>
+      <text x="275" y="115" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="11" font-weight="600">3D Patterning</text>
+      <text x="275" y="145" fill="#f59e0b" font-family="'Geist Mono', monospace" font-size="9">Drift: +17px</text>
+
+      <!-- Card 3 -->
+      <rect x="470" y="70" width="205" height="100" rx="4" fill="#1a2234" stroke="#38bdf8"/>
+      <text x="485" y="95" fill="#38bdf8" font-family="'Geist Mono', monospace" font-size="10" font-weight="700">STAGE 03</text>
+      <text x="485" y="115" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="11" font-weight="600">Bonding</text>
+      <text x="485" y="145" fill="#f97316" font-family="'Geist Mono', monospace" font-size="9">Drift: +34px</text>
+
+      <!-- Card 4 (Overflowed & Clipped) -->
+      <rect x="680" y="70" width="205" height="100" rx="4" fill="#2d151c" stroke="#f43f5e" stroke-width="1.5"/>
+      <text x="695" y="95" fill="#f43f5e" font-family="'Geist Mono', monospace" font-size="10" font-weight="700">STAGE 04 (CLIPPED)</text>
+      <text x="695" y="115" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="11" font-weight="600">Quality AQL 1.5</text>
+      <text x="695" y="145" fill="#f43f5e" font-family="'Geist Mono', monospace" font-size="9">Cumulative Drift: +51px ⚠️</text>
+
+      <!-- Clipped Zone Marker -->
+      <line x1="840" y1="55" x2="840" y2="185" stroke="#f43f5e" stroke-width="2" stroke-dasharray="4,4"/>
+      <text x="845" y="68" fill="#f43f5e" font-family="'Geist Mono', monospace" font-size="8">VIEWPORT EDGE</text>
+
+
+      <!-- Remediated Viewport Model -->
+      <text x="40" y="230" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="11" font-weight="700">✅ PRODUCTION FIX: Container-Locked Exact Parity (100% of triggerEl width)</text>
+      
+      <!-- Track 2 Background (Locked) -->
+      <rect x="40" y="250" width="880" height="130" rx="6" fill="#101520" stroke="#a3e635" stroke-width="1.2"/>
+      
+      <!-- Card 1 Fixed -->
+      <rect x="50" y="265" width="200" height="100" rx="4" fill="#152019" stroke="#a3e635"/>
+      <text x="65" y="290" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="10" font-weight="700">STAGE 01</text>
+      <text x="65" y="310" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="11" font-weight="600">Sourcing</text>
+      <text x="65" y="340" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="9">Offset: 0.00%</text>
+
+      <!-- Card 2 Fixed -->
+      <rect x="255" y="265" width="200" height="100" rx="4" fill="#152019" stroke="#a3e635"/>
+      <text x="270" y="290" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="10" font-weight="700">STAGE 02</text>
+      <text x="270" y="310" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="11" font-weight="600">3D Patterning</text>
+      <text x="270" y="340" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="9">Offset: 33.33%</text>
+
+      <!-- Card 3 Fixed -->
+      <rect x="460" y="265" width="200" height="100" rx="4" fill="#152019" stroke="#a3e635"/>
+      <text x="475" y="290" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="10" font-weight="700">STAGE 03</text>
+      <text x="475" y="310" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="11" font-weight="600">Bonding</text>
+      <text x="475" y="340" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="9">Offset: 66.66%</text>
+
+      <!-- Card 4 Fixed -->
+      <rect x="665" y="265" width="200" height="100" rx="4" fill="#152019" stroke="#a3e635"/>
+      <text x="680" y="290" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="10" font-weight="700">STAGE 04 (PERFECT)</text>
+      <text x="680" y="310" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="11" font-weight="600">Quality AQL 1.5</text>
+      <text x="680" y="340" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="9">Offset: 100.0% — 0px Drift ✨</text>
+    </svg>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <h3 style="color:#f43f5e">The Scrollbar Width Phenomenon</h3>
+      <p>In CSS, <code>100vw</code> includes the 15-17px browser vertical scrollbar. But the page container width is <code>100%</code> (excluding scrollbar). Multiplying by 4 cards produces 51px of drift that pushes Card 4 off-screen.</p>
+      <div class="code-box">
+// Flawed math in Process.tsx:194<br>
+className="... md:w-screen md:p-12"
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="color:#a3e635">The Container-Locked Formula</h3>
+      <p>Replacing <code>md:w-screen</code> with exact container sync: <code>width: triggerEl.offsetWidth</code> guarantees 100% geometric parity from Stage 01 to Stage 04 on every resolution.</p>
+      <div class="code-box">
+// Remediated math in Process.tsx<br>
+className="... md:w-full md:shrink-0 md:p-12"
+      </div>
+    </div>
+  </div>
+</body>
+</html>

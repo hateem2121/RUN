@@ -31,56 +31,56 @@ export function FactoryGallery() {
       title: "Main Assembly",
       subtitle: "Sector 04",
       camMsg: "Cam 01 • Floor A",
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC2n18iVqGoufFvJFKPuEL20VfE1U1wyvSpDtCr3yffzJjgunoyuS1tj14wj9Ezvg7DLmajnfJcofAaGXDm0-XeR0tEolcCuBkWEA6ErETI-P9R8WM8yDKDqRvAaR_Ii0TUWR5KzdmssukbVNNssmaN8lvC5a1YfS3yJGDd5-j_ISfdN752uaTyvDRa_EtNboGw9gAVoQ8SkYPjwuuhd0UcqT2K2cCPerj7M2h0Y7IT6dKE3PAtdOjChY8-TRdkOrGKYVWm0Ry_cis",
+      img: "/images/manufacturing/factory-floor-cam1.webp",
       h: "h-[600px]",
     },
     {
       title: "Textile Audit",
       subtitle: "Micro Inspection",
       camMsg: "Cam 02 • Detail",
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCKk0UjiS1IFhcvopcCQI_fufULGOhNl9cA07UoogcPLYmkoc51-cZfUexrGnb23Z80jDdJDXYonCnntVGIvqE2nL-LVaab33PRJxXXxz2X8uYW1TUzFuieziS3G7n8rEXWzDwN1mZcbka7kSzDqYeola64LrFVAdXz2jH3fyeKCxqvF3HkXNFd0soCUz4L1FGpT0FQLQM3eHMoLo3OKj-oSoLT269492rkStFFWplJ-ju1UuZywi-YF_EBxRTiYOqA8bw4CLnI_5E",
+      img: "/images/manufacturing/factory-floor-cam2.webp",
       h: "h-[540px]",
     },
     {
       title: "Expert Craft",
       subtitle: "Technician Level 4",
       camMsg: "Cam 03 • Staff",
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBvEqIaLJR9F-3IvW5xGdtMkVi9B-3kK_nfNhG_zDOE55XM-KjlMFmUxypZPqjOy2FXM-C49uZNhTWnrIM2AQrVtv6QIQ49WCI20jQ_oeYHGaiLMsOrw2hvZstE4gOMPdIlZpT2_6YMJ7Fdq70GciCwtwpneA0IWVGm_YXAfUyHJdZrcOoFTWW4du5hQxr0HJPKlr0q8YTY0jwWUvk8yd-m1h9Czp02-ofAHTHJ0jgSXuw9zGHTAOkNf0ec1Xf7zA_GhKxEbJ4IaB8",
+      img: "/images/manufacturing/factory-floor-cam3.webp",
       h: "h-[600px]",
     },
     {
       title: "Automated Loom",
       subtitle: "Sector 02",
       camMsg: "Cam 04 • Machine",
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBOL2PIqcRGBO2TgfVf1iQdoEmLIWktgqCAjhzuUj4IVhN8xprZaaTgcbaLX27E-ww0FaHcNjrzuvj0KZx52Dzndj1BYlRgZimO7eeG9Mj05br1deVh8zCNTY_CYO-t0KlKdQE-uwYWxUaJl5rl74jsJ4GguKyOpc6PrSTsyUO9CJmkWtpbN9cMiFHilR0_37a_vxOnOKe0aTHKP-ai_TgxibtD7pXildES8NGVWknLagjK5GCMtBps0yfAF0BGWIaCI2-jjISa0JA",
+      img: "/images/manufacturing/factory-floor-cam4.webp",
       h: "h-[540px]",
     },
     {
       title: "Thread Supply",
       subtitle: "Inventory Control",
       camMsg: "Cam 05 • Material",
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuB5zUjvs1-poD4u6dLowI6hv-BpKDbdW3XhOeYEVUbKTb79ar-kW_JXrABl1SdDjaglxPccdf1bUkmgtnOyGCa65kj_Ug8T6hpXBIc0SR8Y_RYmreEps81Kaf18BzhjC_l8wobAM2tRh0VfNrqKMev0weEt2hl7Xoa5ezICqzi-t7hgW0136ly2ex5yXV3AjYqG6mdI844aWwSVRnRTzMJBg5j6yzqfxrGIQT4vjsoUv3qElFPto1fkRnJuSRXz43R6hxbQIlGWh3Q",
+      img: "/images/manufacturing/factory-floor-cam5.webp",
       h: "h-[600px]",
     },
     {
       title: "Floor Overview",
       subtitle: "All Sectors",
       camMsg: "Cam 06 • Overview",
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBPmyeBGxLULjFgKrR2yT9URZkwGhc3fAWRf_7A5hdtQP-huDEa62pSGKo3TyE_EQ-U8r1QbGlkpuuU9LlrznJBn5emPZtnvKrJI4wIqLtzJatFpByG3Kc4Wr0ZyxaNwK3MtnX7yKSpYxAK71tMIFEx8RsMTPDAPAhlCH-eeDhkQX7stSFUCWOyK7EpxEooRLsTzfp7ovZ5Kjq_2gfzJunsof35utMoJifE8x4pOLeiXy1riL-Z6wCEHLz3w5dv4zJJvE5kGPQbakQ",
+      img: "/images/manufacturing/factory-floor-cam6.webp",
       h: "h-[540px]",
     },
     {
       title: "Final Prep",
       subtitle: "Shipping Dock",
       camMsg: "Cam 07 • Packaging",
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAbXYG3LxM4pJfU0wiQZ_O2Re3P19g4ghMDn7D4EXNqOCeJIB0SNxOMJRvLxdLaoAXRmhGmqy_FogK-U8iXFojAs-ZmYkHNNvw0hnC9mn0MVTmdeoZpbDKL1jRo87tmez0NlKPYrASWZC4X8tUVjsYr7Rq-TmPoHkDZxgn2rw0z77iqUyZpKiJBT4OVS8a8IL19KCK5EiTsc5IIPo7wauvKMmO1xCPm6DMY5kforeq-BdSLr__4maBRjl6lnHoZCMQ6YFfjyTXrAyE",
+      img: "/images/manufacturing/factory-floor-cam7.webp",
       h: "h-[600px]",
     },
     {
       title: "Facility View",
       subtitle: "Main Entrance",
       camMsg: "Cam 08 • Exterior",
-      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAtNGvbhTJVoxjoTyyBn0N9sS6O35fJ_9_P01val3Qk3jSLYkk-MVbo1ftuCvb4ukMUISy8ZAYtRUOT6P1aWdTgCyaH1zEm2XKRRuh9kiXPFGpu1t6d8DNUzSFJu_U3xOmoG78TBTzXcMNFFmeCPFzdw4vuVbQ7BN53DctWGGloTApOMEONfEQBi3EzLdoKfUUiXGkexXRD6nRRvdR4ar2PiJifRSzwvBZGCbIggtEeKFtXxEKrh_6Ve0F9Ggnzv8edEHH_9Go_diQ",
+      img: "/images/manufacturing/factory-floor-cam8.webp",
       h: "h-[540px]",
     },
   ];
@@ -140,6 +140,9 @@ export function FactoryGallery() {
                 alt={item.title}
                 className="w-full h-full object-cover grayscale opacity-60 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-105"
                 src={item.img}
+                onError={(e) => {
+                  e.currentTarget.src = "/images/placeholders/product-placeholder.webp";
+                }}
                 loading="lazy"
                 decoding="async"
               />

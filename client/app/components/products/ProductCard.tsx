@@ -53,9 +53,22 @@ export const ProductCard = ({
       name: product.name,
       quantity: product.moq || 100,
       minOrderQuantity: product.moq || 100,
-      imageUrl: product.imageUrl,
+      imageUrl: product.imageUrl || "/images/placeholders/product-placeholder.webp",
     });
   };
+
+  const imageMedia = product.media?.filter((m) => m.type === "image") || [];
+  const primaryVideoMedia = product.media?.find((m) => m.type === "video") ?? null;
+  const carouselImages =
+    imageMedia.length > 0
+      ? imageMedia
+      : [
+          {
+            id: 0,
+            url: product.imageUrl || "/images/placeholders/product-placeholder.webp",
+            type: "image" as const,
+          },
+        ];
 
   return (
     <Card
@@ -75,8 +88,8 @@ export const ProductCard = ({
         >
           {isIntersecting ? (
             <ProductImageCarousel
-              images={product.media.filter((m) => m.type === "image")}
-              primaryVideo={product.media.find((m) => m.type === "video") ?? null}
+              images={carouselImages}
+              primaryVideo={primaryVideoMedia}
               productName={product.name}
               viewMode={viewMode}
             />

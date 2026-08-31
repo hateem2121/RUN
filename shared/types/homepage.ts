@@ -9,7 +9,7 @@ import type {
   HomepageProcessCard,
   HomepageSection,
   HomepageSlogan,
-} from "../schemas/content/home";
+} from "../schemas/content/home.js";
 
 /**
  * Sustainability section data structure
@@ -55,11 +55,15 @@ import type { ImageVariants } from "../schemas/media.js";
  * Visitor-facing product item (simplified for marquee/grid)
  */
 export interface ProductItem {
-  id: string;
+  id: string | number;
   name: string;
   category: string;
-  price: string;
-  image: string;
+  price?: string;
+  image?: string;
+  imageUrl?: string;
+  primaryImageId?: number | null;
+  urlPath?: string;
+  moq?: number;
   imageVariants?: ImageVariants | null | undefined;
 }
 
@@ -67,9 +71,11 @@ export interface ProductItem {
  * Visitor-facing category item
  */
 export interface CategoryItem {
-  id: string;
+  id: string | number;
   name: string;
-  image: string;
+  image?: string;
+  imageUrl?: string;
+  slug?: string;
 }
 
 /**
@@ -92,6 +98,7 @@ export type HeroData = {
   ctaLink: string;
 };
 
+export type { HomepageHero };
 export type HomepageSloganItem = HomepageSlogan;
 export type HomepageSectionItem = HomepageSection;
 export type HomepageFeaturedSettings = HomepageFeaturedProductsSettings;

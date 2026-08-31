@@ -20,17 +20,7 @@ interface ValuesCardProps {
 }
 
 const ValuesCard: React.FC<ValuesCardProps> = memo(
-  ({
-    title,
-    subtitle,
-    icon: Icon,
-    colSpan = "col-span-1",
-    withRipple = false, // Kept in prop interface but unused
-    isMobile,
-    setCursor,
-    resetCursor,
-    image,
-  }) => {
+  ({ title, subtitle, icon: Icon, colSpan = "col-span-1", withRipple = false, image }) => {
     const IconComponent = Icon;
 
     return (
@@ -40,28 +30,25 @@ const ValuesCard: React.FC<ValuesCardProps> = memo(
           "scroll-reveal group relative flex min-h-value-card flex-col justify-between overflow-hidden border-border p-0 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl motion-reduce:transform-none",
         )}
         variant="glass-premium"
-        onMouseEnter={() => !isMobile && setCursor("button")}
-        onMouseLeave={() => resetCursor()}
       >
         {/* Background Image Layer */}
         <div className="absolute inset-0 z-base">
           <ImageWithSkeleton
             src={image}
             alt={title}
-            crossOrigin="anonymous"
+            width={800}
+            height={600}
+            loading="lazy"
             decoding="async"
             className="h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-70 group-hover:grayscale-0"
             containerClassName="h-full w-full"
           />
         </div>
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 z-base bg-linear-to-t from-surface-dark via-surface-dark/40 to-transparent dark:from-black dark:via-black/40" />
+        {/* High-Contrast Gradient Overlay */}
+        <div className="absolute inset-0 z-base bg-linear-to-t from-black/90 via-black/50 to-black/20" />
 
-        {/* 
-        Hover Ripple Effect Replacement 
-        Simple CSS radial gradient overlay on hover instead of WebGL 
-      */}
+        {/* Hover Ripple Effect */}
         {withRipple && (
           <div className="absolute inset-0 z-base bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.3)_0%,transparent_70%)] opacity-0 transition-opacity duration-700 pointer-events-none group-hover:opacity-30" />
         )}
@@ -70,18 +57,17 @@ const ValuesCard: React.FC<ValuesCardProps> = memo(
           <div className="flex w-full justify-end">
             {IconComponent && (
               <IconComponent
+                aria-hidden="true"
                 className={cn(
                   "h-12 w-12 stroke-1 transition-colors duration-300",
-                  withRipple ? "text-primary" : "text-muted-foreground/70 group-hover:text-primary",
+                  withRipple ? "text-primary" : "text-white/70 group-hover:text-primary",
                 )}
               />
             )}
           </div>
           <div>
-            <h3 className="mb-2 font-bold text-2xl text-foreground uppercase">{title}</h3>
-            <p className="text-muted-foreground/70 transition-colors group-hover:text-foreground/80">
-              {subtitle}
-            </p>
+            <h3 className="mb-2 font-bold text-2xl text-white uppercase tracking-tight">{title}</h3>
+            <p className="text-white/80 leading-relaxed font-light text-base">{subtitle}</p>
           </div>
         </CardContent>
       </Card>
@@ -95,7 +81,7 @@ export const Values: React.FC = () => {
 
   return (
     <section
-      className="w-full bg-background-alt px-4 py-32 md:px-8 content-auto"
+      className="w-full bg-background-alt px-4 py-32 md:px-8"
       aria-labelledby="values-heading"
     >
       <div className="mx-auto max-w-container-2xl">
@@ -115,7 +101,7 @@ export const Values: React.FC = () => {
             isMobile={!!isMobile}
             setCursor={setCursor}
             resetCursor={resetCursor}
-            image="/images/homepage/values-1.png"
+            image="/images/homepage/values-1.webp"
           />
           <ValuesCard
             title="Eco-Forward"
@@ -125,7 +111,7 @@ export const Values: React.FC = () => {
             isMobile={!!isMobile}
             setCursor={setCursor}
             resetCursor={resetCursor}
-            image="/images/homepage/values-2.png"
+            image="/images/homepage/values-2.webp"
           />
           <ValuesCard
             title="Global Reach"
@@ -134,7 +120,7 @@ export const Values: React.FC = () => {
             isMobile={!!isMobile}
             setCursor={setCursor}
             resetCursor={resetCursor}
-            image="/images/homepage/values-3.png"
+            image="/images/homepage/values-3.webp"
           />
           <ValuesCard
             title="Rapid Prototyping"
@@ -144,25 +130,27 @@ export const Values: React.FC = () => {
             isMobile={!!isMobile}
             setCursor={setCursor}
             resetCursor={resetCursor}
-            image="/images/homepage/values-4.png"
+            image="/images/homepage/values-4.webp"
           />
         </div>
 
-        {/* Scrolling Ticker */}
-        <div
-          className="mt-24 w-full overflow-hidden border-foreground border-y py-6"
-          aria-hidden="true"
+        {/* Scrolling Cert Ticker with WCAG Pause */}
+        <section
+          className="mt-24 w-full overflow-hidden border-foreground border-y py-6 motion-reduce:overflow-x-auto"
+          aria-label="Quality and Environmental Certifications"
+          tabIndex={0}
+          role="region"
         >
-          <div className="flex animate-marquee whitespace-nowrap motion-reduce:animate-none">
-            {Array(10)
+          <div className="flex animate-marquee whitespace-nowrap hover:[animation-play-state:paused] focus-within:[animation-play-state:paused] motion-reduce:animate-none">
+            {Array(8)
               .fill("GOTS CERTIFIED • OEKO-TEX STANDARD 100 • FAIR TRADE • ISO 9001 • ")
               .map((text, i) => (
-                <span key={i} className="mx-4 font-mono text-xl">
+                <span key={i} className="mx-4 font-mono text-xl text-foreground font-medium">
                   {text}
                 </span>
               ))}
           </div>
-        </div>
+        </section>
       </div>
     </section>
   );

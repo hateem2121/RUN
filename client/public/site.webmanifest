@@ -1,0 +1,23 @@
+{
+  "name": "RUN APPAREL - B2B Sportswear Manufacturing",
+  "short_name": "RUN APPAREL",
+  "description": "High-performance B2B sportswear manufacturing with precision engineering since 1889.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/favicon-dark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any"
+    }
+  ]
+}

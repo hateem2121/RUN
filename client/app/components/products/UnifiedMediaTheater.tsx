@@ -477,14 +477,24 @@ export function UnifiedMediaTheater({
     return (
       <div
         className={cn(
-          "center-flex bg-background rounded-lg",
+          "relative overflow-hidden rounded-lg border border-border/40 bg-muted/20",
           isMobile ? "aspect-4/3" : "aspect-square",
           className,
         )}
       >
-        <div className="text-muted-foreground/70 text-center">
-          <Layers className="mx-auto mb-2 h-16 w-16" />
-          <p>No media available</p>
+        <img
+          src="/images/placeholders/product-placeholder.webp"
+          alt={productName || "Product placeholder"}
+          className="h-full w-full object-cover opacity-80"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 flex flex-col items-center justify-end bg-gradient-to-t from-black/70 via-black/20 to-transparent p-6 text-white text-center">
+          <span className="font-mono text-xs uppercase tracking-widest text-white/80">
+            RUN APPAREL
+          </span>
+          <p className="mt-1 font-heading text-lg uppercase font-semibold text-white">
+            {productName}
+          </p>
         </div>
       </div>
     );

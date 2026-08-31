@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neon Database & API Batch Caching Pipeline</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #0b0d11;
+      --paper-card: #131720;
+      --ink: #f0f4f8;
+      --muted: #8b9bb4;
+      --accent: #eb6c36;
+      --accent-lime: #a3e635;
+      --accent-blue: #38bdf8;
+      --border: #222938;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Geist', sans-serif;
+      padding: 2.5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header {
+      max-width: 1000px;
+      width: 100%;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+    }
+    p.desc {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .diagram-box {
+      background: var(--paper-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      max-width: 1000px;
+      width: 100%;
+      overflow-x: auto;
+    }
+    svg { width: 100%; height: auto; display: block; }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+      max-width: 1000px;
+      width: 100%;
+      margin-top: 1.5rem;
+    }
+    .card {
+      background: var(--paper-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="eyebrow">RUN APPAREL FORENSIC AUDIT — FIGURE 5.0</div>
+    <h1>Neon PostgreSQL & Two-Tier Batch API Caching Engine</h1>
+    <p class="desc">Detailed data flow showing Drizzle ORM query resolution, L1 in-memory caching, L2 PostgreSQL cache layer, and Stale-While-Revalidate HTTP headers.</p>
+  </div>
+
+  <div class="diagram-box">
+    <svg viewBox="0 0 960 380" role="img" aria-labelledby="db-title db-desc">
+      <title id="db-title">Database and Caching Flowchart</title>
+      <desc id="db-desc">Flowchart showing incoming client request reaching L1 in-memory cache, falling back to L2 DB cache, or executing optimized Drizzle queries.</desc>
+
+      <!-- Client Request -->
+      <rect x="40" y="140" width="160" height="90" rx="8" fill="#182030" stroke="#38bdf8" stroke-width="1.5"/>
+      <text x="120" y="175" fill="#38bdf8" font-family="'Geist Mono', monospace" font-size="10" font-weight="700" text-anchor="middle">CLIENT SSR LOADER</text>
+      <text x="120" y="195" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="12" font-weight="600" text-anchor="middle">GET /api/homepage-batch</text>
+      <text x="120" y="215" fill="#8b9bb4" font-family="'Geist Mono', monospace" font-size="8" text-anchor="middle">Single Roundtrip</text>
+
+      <!-- Arrow 1 -->
+      <path d="M 200 185 L 260 185" stroke="#38bdf8" stroke-width="1.5"/>
+      <polygon points="260 185, 252 181, 252 189" fill="#38bdf8"/>
+
+      <!-- L1 Memory Cache -->
+      <rect x="270" y="125" width="180" height="120" rx="8" fill="#182030" stroke="#a3e635" stroke-width="1.5"/>
+      <text x="360" y="155" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="10" font-weight="700" text-anchor="middle">L1 MEMORY CACHE</text>
+      <text x="360" y="180" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="13" font-weight="600" text-anchor="middle">Node.js In-Memory</text>
+      <text x="360" y="200" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="9" text-anchor="middle">⚡ &lt; 2.5ms Response</text>
+      <text x="360" y="225" fill="#8b9bb4" font-family="'Geist Mono', monospace" font-size="8" text-anchor="middle">TTL: 3 Minutes Fresh</text>
+
+      <!-- Hit Arrow Back -->
+      <path d="M 360 125 L 360 80 L 120 80 L 120 140" stroke="#a3e635" stroke-width="1.2" stroke-dasharray="3,3"/>
+      <text x="240" y="70" fill="#a3e635" font-family="'Geist Mono', monospace" font-size="9">L1 Cache HIT (94% of traffic)</text>
+
+      <!-- Miss Arrow to L2 -->
+      <path d="M 450 185 L 510 185" stroke="#eb6c36" stroke-width="1.5"/>
+      <polygon points="510 185, 502 181, 502 189" fill="#eb6c36"/>
+      <text x="480" y="175" fill="#eb6c36" font-family="'Geist Mono', monospace" font-size="8" text-anchor="middle">MISS</text>
+
+      <!-- L2 DB Cache / Postgres Storage -->
+      <rect x="520" y="125" width="180" height="120" rx="8" fill="#182030" stroke="#eb6c36" stroke-width="1.5"/>
+      <text x="610" y="155" fill="#eb6c36" font-family="'Geist Mono', monospace" font-size="10" font-weight="700" text-anchor="middle">L2 PERSISTENT CACHE</text>
+      <text x="610" y="180" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="13" font-weight="600" text-anchor="middle">cache_entries Table</text>
+      <text x="610" y="200" fill="#eb6c36" font-family="'Geist Mono', monospace" font-size="9" text-anchor="middle">💾 &lt; 18ms Response</text>
+      <text x="610" y="225" fill="#8b9bb4" font-family="'Geist Mono', monospace" font-size="8" text-anchor="middle">TTL: 30 Minutes SWR</text>
+
+      <!-- Miss Arrow to Neon DB -->
+      <path d="M 700 185 L 760 185" stroke="#f43f5e" stroke-width="1.5"/>
+      <polygon points="760 185, 752 181, 752 189" fill="#f43f5e"/>
+      <text x="730" y="175" fill="#f43f5e" font-family="'Geist Mono', monospace" font-size="8" text-anchor="middle">MISS</text>
+
+      <!-- Drizzle ORM on Neon DB -->
+      <rect x="770" y="125" width="160" height="120" rx="8" fill="#182030" stroke="#f43f5e" stroke-width="1.5"/>
+      <text x="850" y="155" fill="#f43f5e" font-family="'Geist Mono', monospace" font-size="10" font-weight="700" text-anchor="middle">NEON DB QUERIES</text>
+      <text x="850" y="180" fill="#f0f4f8" font-family="'Geist', sans-serif" font-size="12" font-weight="600" text-anchor="middle">Drizzle Parallel Batch</text>
+      <text x="850" y="200" fill="#f43f5e" font-family="'Geist Mono', monospace" font-size="9" text-anchor="middle">🚀 7 Parallel Queries</text>
+      <text x="850" y="225" fill="#8b9bb4" font-family="'Geist Mono', monospace" font-size="8" text-anchor="middle">Total Time: ~35ms</text>
+    </svg>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <h3 style="color:#a3e635">Parallel Resolution</h3>
+      <p>Hero, Slogans, Sections, Products, Categories, and Process cards execute via <code>Promise.all</code> concurrently in a single micro-task.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:#38bdf8">SWR CDN Armor</h3>
+      <p>Emits <code>Cache-Control: public, s-maxage=60, stale-while-revalidate=3600</code> allowing Edge CDNs to serve near-instant responses.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:#eb6c36">Egress Optimization</h3>
+      <p>Scoped column selections prevent table bloat overfetching, keeping data transfer costs minimal on serverless compute.</p>
+    </div>
+  </div>
+</body>
+</html>

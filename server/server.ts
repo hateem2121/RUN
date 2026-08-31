@@ -32,12 +32,13 @@ export const serverReady: Promise<void> = (async () => {
     // 2. Create HTTP Server (Required for Vite HMR / SSR)
     const httpServer = createServer(app);
 
-    // 2.5. Serve Static Assets (Dev) - Bypass all middleware for performance/stability
-    if (process.env.NODE_ENV !== "production") {
-      // Fixes ERR_EMPTY_RESPONSE for fonts/icons by serving them before any other logic
-      // Note: process.cwd() is the 'server' directory, so we need to go up one level
-      app.use(express.static(path.resolve(process.cwd(), "../client/public")));
-    }
+    const isCwdServer = process.cwd().endsWith("server");
+    const monorepoRoot = isCwdServer ? path.resolve(process.cwd(), "..") : process.cwd();
+    const clientPublicPath = path.resolve(monorepoRoot, "client/public");
+    const clientBuildPath = path.resolve(monorepoRoot, "client/build/client");
+
+    // 2.5. Serve Static Assets - Bypass all middleware for performance/stability
+    app.use(express.static(clientPublicPath));
 
     // 3. Setup Global Middleware (now async for Passport/session init)
     await setupMiddleware(app);
@@ -70,8 +71,6 @@ export const serverReady: Promise<void> = (async () => {
       process.env.NODE_ENV === "production" ||
       process.env.SKIP_VITE_DEV_SERVER === "true"
     ) {
-      const staticPath = path.resolve(process.cwd(), "../client/build/client");
-
       // PC-106: Block source map files from being served publicly.
       // Source maps are uploaded to Sentry during build but must not be accessible to end users.
       app.use((req, _res, next) => {
@@ -86,15 +85,15 @@ export const serverReady: Promise<void> = (async () => {
       // This ensures that our compressed build artifacts (.br, .gz) are actually utilized.
       app.use(
         "/",
-        expressStaticGzip(staticPath, {
+        expressStaticGzip(clientBuildPath, {
           enableBrotli: true,
           orderPreference: ["br", "gz"],
           index: false,
         }),
       );
       // Fallback for uncompressed assets
-      app.use("/", express.static(staticPath, { index: false }));
-      logger.info(`[Production] Serving compressed static assets from: ${staticPath}`);
+      app.use("/", express.static(clientBuildPath, { index: false }));
+      logger.info(`[Production] Serving compressed static assets from: ${clientBuildPath}`);
     }
 
     // 5. Setup Routes & SSR (Async - continues while server is listening)

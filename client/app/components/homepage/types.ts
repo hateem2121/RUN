@@ -1,9 +1,10 @@
 import type {
   CategoryItem,
   HomepageFeaturedSettings,
+  HomepageHero,
   ProcessStep,
   ProductItem,
-} from "@shared/types/homepage";
+} from "@run-remix/shared";
 
 /** @public */ export const CursorVariant = {
   DEFAULT: "DEFAULT",
@@ -31,4 +32,4 @@ export interface Partner {
 }
 
 // Re-export common types from shared for convenience in existing components
-export type { CategoryItem, HomepageFeaturedSettings, ProcessStep, ProductItem };
+export type { CategoryItem, HomepageFeaturedSettings, HomepageHero, ProcessStep, ProductItem };

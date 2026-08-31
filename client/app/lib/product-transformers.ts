@@ -87,7 +87,7 @@ function transformProduct(product: ProductSummary, context: TransformContext): T
   const primaryImageUrl = product.primaryImageId
     ? context.mediaContentMap.get(product.primaryImageId) ||
       `/api/media/${product.primaryImageId}/content`
-    : "https://placehold.co/600x800?text=No+Image";
+    : "/images/placeholders/product-placeholder.webp";
 
   // Get hover image (use first imageId if available)
   let hoverImageUrl: string | undefined;

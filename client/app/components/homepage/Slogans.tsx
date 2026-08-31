@@ -31,13 +31,15 @@ export const Slogans: React.FC<SlogansProps> = ({ data }) => {
 
   return (
     <section
-      className="w-full overflow-hidden border-y border-foreground/10 bg-background py-6"
-      aria-label="Brand Slogans"
+      className="w-full overflow-hidden border-y border-foreground/10 bg-background py-6 focus-visible:ring-1 focus-visible:ring-primary"
+      role="region"
+      tabIndex={0}
+      aria-label="Brand Philosophy Slogans"
     >
       <div
         className={cn(
           "flex animate-marquee whitespace-nowrap",
-          "motion-reduce:[animation-play-state:paused]",
+          "hover:[animation-play-state:paused] focus-within:[animation-play-state:paused] motion-reduce:[animation-play-state:paused] motion-reduce:animate-none",
         )}
       >
         {/* Repeat 4x for seamless marquee */}
@@ -48,12 +50,16 @@ export const Slogans: React.FC<SlogansProps> = ({ data }) => {
                 key={`${loop}-${slogan.id}`}
                 className={cn(
                   "mx-8 font-bold text-xl tracking-widest uppercase md:mx-16 md:text-2xl",
-                  !slogan.color && "text-foreground/70",
+                  !slogan.color && "text-foreground/80",
                 )}
+                // CMS-driven color override — inline style required as color is dynamic from database
                 style={slogan.color ? { color: slogan.color } : undefined}
               >
                 {slogan.text}
-                <span className="text-brand-lime mx-4 inline-block text-sm" aria-hidden="true">
+                <span
+                  className="text-primary dark:text-brand-lime mx-4 inline-block text-sm"
+                  aria-hidden="true"
+                >
                   ●
                 </span>
               </span>

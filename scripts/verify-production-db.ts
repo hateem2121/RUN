@@ -3,16 +3,18 @@
  *
  * Asserts:
  * 1. Database connectivity & single primary branch health.
- * 2. Zero transient / mock data rows in sanitized tables.
- * 3. Exact 5 Core B2B Apparel Categories populated (zero duplicates).
+ * 2. Zero transient / mock data rows in sanitized tables (inquiries, subscribers, audit logs, errors).
+ * 3. Exact 5 Core B2B Apparel Categories populated and linked to primary media assets.
  * 4. Active Super Admin (hateem@wear-run.com) configured.
- * 5. Exact 11 B2B Products populated with technical specifications & MOQs (zero duplicates, zero test artifacts).
- * 6. Exact 6 Technical Fabrics and 5 Certified Fibers populated (zero duplicates).
- * 7. Exact 10 Backed Compliance Certifications verified.
- * 8. Zero duplicate rows in singleton CMS tables (homepage, manufacturing, sustainability, tech, about, footer, contact).
- * 9. Zero E2E/test artifacts across catalog tables.
- * 10. Authentic CMS Fixtures (1889 timeline, 80% solar metrics, manufacturing capabilities) verified.
- * 11. Authoritative company contact channels (team@wear-run.com, Sialkot HQ) verified.
+ * 5. Exact 17 B2B Products populated with technical specifications, MOQs, and media gallery links.
+ * 6. Exact 6 Technical Fabrics and 5 Certified Fibers populated with swatch image links.
+ * 7. Exact 10 Backed Compliance Certifications verified with badge images and document paths.
+ * 8. Exact 4 Authentic B2B Blog Articles populated with featured image references.
+ * 9. Media Assets Library populated with >= 90 production assets.
+ * 10. Zero duplicate rows in singleton CMS tables (homepage, manufacturing, sustainability, tech, about, footer, contact).
+ * 11. Zero E2E/test artifacts across catalog tables.
+ * 12. Authentic CMS Fixtures (1889 timeline, 80% solar metrics, manufacturing capabilities) verified.
+ * 13. Authoritative company contact channels (team@wear-run.com, Sialkot HQ) verified.
  */
 
 import "dotenv/config";
@@ -33,6 +35,7 @@ import {
   homepageHero,
   inquiries,
   manufacturingHero,
+  mediaAssets,
   newsletterSubscribers,
   products,
   sustainabilityHero,
@@ -57,14 +60,12 @@ async function verifyProductionDb() {
     const [subCount] = await db.select({ val: count() }).from(newsletterSubscribers);
     const [auditCount] = await db.select({ val: count() }).from(auditLogs);
     const [animCount] = await db.select({ val: count() }).from(animationErrors);
-    const [blogCount] = await db.select({ val: count() }).from(blogPosts);
     const [compCount] = await db.select({ val: count() }).from(fabricCompositions);
 
     if (inquiryCount.val > 0) errors.push(`Expected 0 inquiries, found ${inquiryCount.val}`);
     if (subCount.val > 0) errors.push(`Expected 0 newsletter subscribers, found ${subCount.val}`);
     if (auditCount.val > 0) errors.push(`Expected 0 audit logs, found ${auditCount.val}`);
     if (animCount.val > 0) errors.push(`Expected 0 animation errors, found ${animCount.val}`);
-    if (blogCount.val > 0) errors.push(`Expected 0 test blog posts, found ${blogCount.val}`);
     if (compCount.val > 0)
       errors.push(`Expected 0 stale fabric compositions, found ${compCount.val}`);
 
@@ -83,7 +84,15 @@ async function verifyProductionDb() {
       console.log(`  ✅ Super Admin: ${adminEmail} (Active, Role: Admin)`);
     }
 
-    // 3. Exact 5 Core Categories & Zero Duplicates
+    // 3. Media Assets Library
+    const [mediaCount] = await db.select({ val: count() }).from(mediaAssets);
+    if (mediaCount.val < 90) {
+      errors.push(`Expected >= 90 media assets in central library, found ${mediaCount.val}`);
+    } else {
+      console.log(`  ✅ Media Assets Library: ${mediaCount.val} records active in library`);
+    }
+
+    // 4. Exact 5 Core Categories & Zero Duplicates
     const categoryRows = await db.select().from(categories);
     const expectedSlugs = [
       "team-wear",
@@ -101,25 +110,50 @@ async function verifyProductionDb() {
     if (categoryRows.length !== 5) {
       errors.push(`Expected exactly 5 categories, found ${categoryRows.length}`);
     } else {
-      console.log(`  ✅ Core Categories: Exactly 5 active (${expectedSlugs.join(", ")})`);
+      const missingImg = categoryRows.filter((c) => !c.primaryImageId || !c.imageUrl);
+      if (missingImg.length > 0) {
+        errors.push(
+          `Categories missing image linkages: ${missingImg.map((c) => c.slug).join(", ")}`,
+        );
+      } else {
+        console.log(
+          `  ✅ Core Categories: Exactly 5 active & image-linked (${expectedSlugs.join(", ")})`,
+        );
+      }
     }
 
-    // 4. Exact 11 B2B Products & Zero Duplicates
+    // 5. Exact 17 B2B Products & Zero Duplicates
     const productRows = await db.select().from(products);
-    if (productRows.length !== 11) {
-      errors.push(`Expected exactly 11 active products, found ${productRows.length}`);
+    if (productRows.length !== 17) {
+      errors.push(`Expected exactly 17 active products, found ${productRows.length}`);
     } else {
-      console.log(`  ✅ B2B Products: Exactly 11 verified catalog items`);
+      const missingProdImg = productRows.filter((p) => !p.primaryImageId || !p.urlPath);
+      if (missingProdImg.length > 0) {
+        errors.push(
+          `Products missing image linkages or urlPath: ${missingProdImg.map((p) => p.slug).join(", ")}`,
+        );
+      } else {
+        console.log(
+          `  ✅ B2B Products: Exactly 17 verified catalog items (all media & URL linked)`,
+        );
+      }
     }
 
-    // 5. Exact 6 Fabrics & 5 Fibers
+    // 6. Exact 6 Fabrics & 5 Fibers
     const fabricRows = await db.select().from(fabrics);
     const fiberRows = await db.select().from(fibers);
 
     if (fabricRows.length !== 6) {
       errors.push(`Expected exactly 6 technical fabrics, found ${fabricRows.length}`);
     } else {
-      console.log(`  ✅ Technical Fabrics: Exactly 6 active fabrics`);
+      const missingFabricImg = fabricRows.filter((f) => !f.visualSwatchId);
+      if (missingFabricImg.length > 0) {
+        errors.push(
+          `Fabrics missing visual swatch linkages: ${missingFabricImg.map((f) => f.name).join(", ")}`,
+        );
+      } else {
+        console.log(`  ✅ Technical Fabrics: Exactly 6 active fabrics (all swatch linked)`);
+      }
     }
 
     if (fiberRows.length !== 5) {
@@ -128,15 +162,41 @@ async function verifyProductionDb() {
       console.log(`  ✅ Certified Fibers: Exactly 5 active fibers`);
     }
 
-    // 6. Exact 10 Backed Certifications
+    // 7. Exact 10 Backed Certifications
     const certRows = await db.select().from(certificates);
     if (certRows.length !== 10) {
       errors.push(`Expected exactly 10 certificates, found ${certRows.length}`);
     } else {
-      console.log(`  ✅ Ecosystem Certifications: Exactly 10 backed certificates`);
+      const missingCertImg = certRows.filter((c) => !c.imageId || !c.imageUrl);
+      if (missingCertImg.length > 0) {
+        errors.push(
+          `Certificates missing image linkages: ${missingCertImg.map((c) => c.name).join(", ")}`,
+        );
+      } else {
+        console.log(
+          `  ✅ Ecosystem Certifications: Exactly 10 backed certificates (all badge linked)`,
+        );
+      }
     }
 
-    // 7. Duplicate Detection across all catalog tables
+    // 8. Exact 4 Authentic B2B Blog Articles
+    const blogRows = await db.select().from(blogPosts);
+    if (blogRows.length !== 4) {
+      errors.push(`Expected exactly 4 B2B blog articles, found ${blogRows.length}`);
+    } else {
+      const missingBlogImg = blogRows.filter((b) => !b.featuredImageId);
+      if (missingBlogImg.length > 0) {
+        errors.push(
+          `Blog posts missing featured image linkages: ${missingBlogImg.map((b) => b.slug).join(", ")}`,
+        );
+      } else {
+        console.log(
+          `  ✅ Blog Articles: Exactly 4 authentic B2B articles (all featured image linked)`,
+        );
+      }
+    }
+
+    // 9. Duplicate Detection across all catalog tables
     const dupCheck = await db.execute(sql`
       SELECT 'categories' AS tbl, name, COUNT(*) AS cnt FROM categories GROUP BY name HAVING COUNT(*) > 1
       UNION ALL SELECT 'categories_slug', slug, COUNT(*) FROM categories GROUP BY slug HAVING COUNT(*) > 1
@@ -145,21 +205,23 @@ async function verifyProductionDb() {
       UNION ALL SELECT 'fabrics', name, COUNT(*) FROM fabrics GROUP BY name HAVING COUNT(*) > 1
       UNION ALL SELECT 'fibers', name, COUNT(*) FROM fibers GROUP BY name HAVING COUNT(*) > 1
       UNION ALL SELECT 'certificates', name, COUNT(*) FROM certificates GROUP BY name HAVING COUNT(*) > 1
+      UNION ALL SELECT 'blog_posts', slug, COUNT(*) FROM blog_posts GROUP BY slug HAVING COUNT(*) > 1
     `);
 
     if (dupCheck.rows.length > 0) {
       errors.push(`Duplicate entries found in catalog: ${JSON.stringify(dupCheck.rows)}`);
     } else {
-      console.log(`  ✅ Duplicate Detection: Zero duplicate names/slugs across catalog`);
+      console.log(`  ✅ Duplicate Detection: Zero duplicate names/slugs across catalog & blog`);
     }
 
-    // 8. Test & E2E Artifact Scanning
+    // 10. Test & E2E Artifact Scanning
     const artifactCheck = await db.execute(sql`
       SELECT 'products' AS tbl, name FROM products WHERE name LIKE 'E2E-%' OR name LIKE 'Test %' OR name LIKE 'Automated Test%' OR name LIKE 'Product % (Parent)' OR name LIKE 'Product % (Child)'
       UNION ALL SELECT 'categories', name FROM categories WHERE name LIKE 'E2E-%' OR name LIKE 'TEST-%' OR name LIKE 'Test %' OR name LIKE 'Automated %'
       UNION ALL SELECT 'fabrics', name FROM fabrics WHERE name LIKE 'E2E-%' OR name LIKE 'Test %' OR name LIKE 'Manual Test%'
       UNION ALL SELECT 'fibers', name FROM fibers WHERE name LIKE 'E2E-%' OR name LIKE 'Test %'
       UNION ALL SELECT 'certificates', name FROM certificates WHERE name LIKE 'E2E-%' OR name LIKE 'TEST-%' OR name LIKE 'QA Test%' OR name LIKE 'Test Cert%'
+      UNION ALL SELECT 'blog_posts', title FROM blog_posts WHERE title LIKE 'E2E-%' OR title LIKE 'Test %'
     `);
 
     if (artifactCheck.rows.length > 0) {
@@ -168,7 +230,7 @@ async function verifyProductionDb() {
       console.log(`  ✅ Test Artifact Scanner: Zero E2E/test artifacts in database`);
     }
 
-    // 9. Singleton CMS Table Bounds (Exact 1 row each)
+    // 11. Singleton CMS Table Bounds (Exact 1 row each)
     const [hpCount] = await db.select({ val: count() }).from(homepageHero);
     const [hpFeatCount] = await db.select({ val: count() }).from(homepageFeaturedProductsSettings);
     const [mfgCount] = await db.select({ val: count() }).from(manufacturingHero);
@@ -194,7 +256,7 @@ async function verifyProductionDb() {
       console.log(`  ✅ Singleton CMS Tables: Exactly 1 canonical row each (0 duplicates)`);
     }
 
-    // 10. 1889 Heritage Timeline
+    // 12. 1889 Heritage Timeline
     const timelineRows = await db.select().from(aboutTimelineEntries);
     const has1889 = timelineRows.some((t) => t.year.includes("1889"));
     if (!has1889) {
@@ -205,7 +267,7 @@ async function verifyProductionDb() {
       );
     }
 
-    // 11. Manufacturing & Sustainability Metrics
+    // 13. Manufacturing & Sustainability Metrics
     const sustMetrics = await db.select().from(sustainabilityMetrics);
     const hasSolar = sustMetrics.some((m) => m.name.toLowerCase().includes("solar"));
 
@@ -215,7 +277,7 @@ async function verifyProductionDb() {
       console.log(`  ✅ Facility & Sustainability CMS: 193,000+ sqm & 80% solar verified`);
     }
 
-    // 12. Official Contacts & Footer
+    // 14. Official Contacts & Footer
     const [footer] = await db.select().from(footerConfiguration);
     if (footer?.companyEmail !== "team@wear-run.com") {
       errors.push(`Footer companyEmail must be team@wear-run.com, found ${footer?.companyEmail}`);

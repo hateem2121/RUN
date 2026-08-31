@@ -182,6 +182,7 @@ router.get("/performance-monitoring", async (_req, res) => {
 // DELIBERATE ARCHITECTURE CHOICE: Process cards are significantly heavier than other homepage components.
 // They are split into this standalone endpoint intentionally for lazy loading and to prevent hydration waterfalls,
 // not due to redundancy with the main /homepage-batch endpoint.
+// DEPRECATED: This endpoint is unused. Process cards are now included in the main batch. Safe to remove.
 router.get("/homepage-process-cards", async (req, res) => {
   const startTime = performance.now();
   // Apply same admin-only bypass guard as /homepage-batch — unauthenticated refresh=1 is a DoS vector
