@@ -31,7 +31,7 @@ export const Slogans: React.FC<SlogansProps> = ({ data }) => {
 
   return (
     <section
-      className="w-full overflow-hidden border-y border-foreground/10 bg-background py-6 focus-visible:ring-1 focus-visible:ring-primary"
+      className="w-full overflow-hidden border-y border-foreground/10 bg-background py-6 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       role="region"
       tabIndex={0}
       aria-label="Brand Philosophy Slogans"
@@ -45,25 +45,31 @@ export const Slogans: React.FC<SlogansProps> = ({ data }) => {
         {/* Repeat 4x for seamless marquee */}
         {[1, 2, 3, 4].map((loop) => (
           <div key={loop} className="flex" aria-hidden={loop > 1}>
-            {sortedSlogans.map((slogan) => (
-              <span
-                key={`${loop}-${slogan.id}`}
-                className={cn(
-                  "mx-8 font-bold text-xl tracking-widest uppercase md:mx-16 md:text-2xl",
-                  !slogan.color && "text-foreground/80",
-                )}
-                // CMS-driven color override — inline style required as color is dynamic from database
-                style={slogan.color ? { color: slogan.color } : undefined}
-              >
-                {slogan.text}
+            {sortedSlogans.flatMap((slogan) => {
+              const phrases = slogan.text.includes("|")
+                ? slogan.text.split(/\s*\|\s*/).filter(Boolean)
+                : [slogan.text];
+
+              return phrases.map((phrase, phraseIdx) => (
                 <span
-                  className="text-primary dark:text-brand-lime mx-4 inline-block text-sm"
-                  aria-hidden="true"
+                  key={`${loop}-${slogan.id}-${phraseIdx}`}
+                  className={cn(
+                    "mx-8 font-bold text-xl tracking-widest uppercase md:mx-16 md:text-2xl",
+                    !slogan.color && "text-foreground/80",
+                  )}
+                  // CMS-driven color override — inline style required as color is dynamic from database
+                  style={slogan.color ? { color: slogan.color } : undefined}
                 >
-                  ●
+                  {phrase}
+                  <span
+                    className="text-primary dark:text-brand-lime mx-4 inline-block text-sm"
+                    aria-hidden="true"
+                  >
+                    ●
+                  </span>
                 </span>
-              </span>
-            ))}
+              ));
+            })}
           </div>
         ))}
       </div>

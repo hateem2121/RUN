@@ -64,7 +64,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
         <div className="mb-16 flex items-end justify-between border-b border-foreground/10 pb-8">
           <h2
             id="featured-products-heading"
-            className="text-9xl leading-[0.9] font-bold uppercase md:text-6xl"
+            className="text-4xl sm:text-5xl md:text-6xl leading-[0.9] font-bold uppercase"
           >
             {settings?.title || "Archive"} <br /> 24/25
           </h2>
@@ -105,7 +105,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
               return (
                 <li
                   key={prod.id}
-                  className={`product-card group relative ${index === 1 ? "sm:mt-24" : ""}`}
+                  className={`product-card group relative ${index === 1 ? "sm:max-lg:mt-24" : ""}`}
                   onMouseEnter={() => !isMobile && setCursor("view", productImg)}
                   onMouseLeave={() => resetCursor()}
                 >
@@ -141,9 +141,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ products, se
                     onClick={() => resetCursor()}
                     className="absolute inset-0 z-elevated rounded-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
                     aria-label={`View product details: ${prod.name}`}
-                  >
-                    <span className="sr-only">View product {prod.name}</span>
-                  </Link>
+                  />
                 </li>
               );
             })}

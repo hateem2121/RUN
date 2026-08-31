@@ -68,8 +68,12 @@ export const Hero: React.FC<HeroProps> = ({ heroData: propsHeroData }) => {
 
       if (titles.length > 0 && !hasAnimatedIntro.current) {
         hasAnimatedIntro.current = true;
+        const subAndCta = gsap.utils.toArray<HTMLElement>(
+          scope.querySelectorAll(".hero-subtitle, .hero-cta"),
+        );
         if (prefersReducedMotion) {
           gsap.set(titles, { y: 0, opacity: 1, scale: 1 });
+          if (subAndCta.length > 0) gsap.set(subAndCta, { y: 0, opacity: 1 });
         } else {
           gsap.fromTo(
             titles,
@@ -89,6 +93,13 @@ export const Hero: React.FC<HeroProps> = ({ heroData: propsHeroData }) => {
               force3D: true,
             },
           );
+          if (subAndCta.length > 0) {
+            gsap.fromTo(
+              subAndCta,
+              { y: 24, opacity: 0 },
+              { y: 0, opacity: 1, duration: 1.0, stagger: 0.12, ease: "power2.out", delay: 0.5 },
+            );
+          }
         }
       }
 
@@ -115,16 +126,15 @@ export const Hero: React.FC<HeroProps> = ({ heroData: propsHeroData }) => {
           });
         };
 
-        if (window.innerWidth > 768) {
+        if (isInView && window.innerWidth > 768) {
           window.addEventListener("mousemove", handleMouseMove, { passive: true });
+          return () => {
+            window.removeEventListener("mousemove", handleMouseMove);
+          };
         }
-
-        return () => {
-          window.removeEventListener("mousemove", handleMouseMove);
-        };
       }
 
-      return () => {};
+      return undefined;
     },
     { dependencies: [isInView, prefersReducedMotion], scope: textContainerRef },
   );
@@ -146,8 +156,8 @@ export const Hero: React.FC<HeroProps> = ({ heroData: propsHeroData }) => {
       </div>
 
       {/* Hero Content */}
-      <div className="z-elevated pointer-events-none absolute inset-0 flex items-center justify-center pt-28 md:pt-32 pb-12">
-        <div className="flex flex-col items-center justify-center px-4 text-center mb-12 md:mb-0">
+      <div className="z-elevated pointer-events-none absolute inset-0 flex items-center justify-center pt-20 md:pt-24 pb-8">
+        <div className="flex flex-col items-center justify-center px-4 text-center mb-8 md:mb-0">
           <h1
             ref={textContainerRef}
             className="flex flex-col items-center justify-center perspective-1000"
@@ -155,7 +165,7 @@ export const Hero: React.FC<HeroProps> = ({ heroData: propsHeroData }) => {
             {heroLines.map((line: string, i: number) => (
               <span
                 key={i}
-                className="hero-line block my-0 md:-my-2 max-w-full overflow-visible py-2 text-foreground font-bold tracking-tighter text-display-xl uppercase font-neue-stance break-words text-center"
+                className="hero-line block my-0 md:-my-1 max-w-full overflow-visible py-1 text-foreground font-bold tracking-tighter text-display-xl uppercase font-neue-stance break-words text-center"
               >
                 {line}
               </span>

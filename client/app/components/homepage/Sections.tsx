@@ -93,6 +93,45 @@ export const Sections: React.FC<SectionsProps> = ({ data }) => {
                     </p>
                   )}
 
+                  {/* Render Structured Metrics if present in CMS JSON */}
+                  {section.data &&
+                    typeof section.data === "object" &&
+                    "metrics" in section.data &&
+                    typeof section.data.metrics === "object" &&
+                    section.data.metrics !== null && (
+                      <div className="mt-8 grid grid-cols-2 gap-4 border-t border-border/40 pt-6 sm:grid-cols-3">
+                        {Object.entries(section.data.metrics as Record<string, string>).map(
+                          ([key, val]) => (
+                            <div key={key} className="flex flex-col">
+                              <span className="font-mono font-bold text-xl tracking-tight text-foreground md:text-2xl">
+                                {val}
+                              </span>
+                              <span className="text-xs uppercase tracking-wider text-muted-foreground">
+                                {key}
+                              </span>
+                            </div>
+                          ),
+                        )}
+                      </div>
+                    )}
+
+                  {/* Render Feature Badges if present in CMS JSON */}
+                  {section.data &&
+                    typeof section.data === "object" &&
+                    "features" in section.data &&
+                    Array.isArray(section.data.features) && (
+                      <div className="mt-6 flex flex-wrap gap-2">
+                        {(section.data.features as string[]).map((feature, i) => (
+                          <span
+                            key={i}
+                            className="rounded-md bg-accent/10 px-2.5 py-1 text-xs font-medium text-foreground"
+                          >
+                            ✓ {feature}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
                   {/* Section Type Badge */}
                   <div className="mt-6">
                     <span className="inline-block rounded-full border border-foreground/10 px-3 py-1 font-mono text-xs tracking-widest uppercase text-muted-foreground">

@@ -3,9 +3,7 @@ import type React from "react";
 import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
-import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
-import { type CursorVariant, useCursorStore } from "@/stores/useCursorStore";
 
 interface ValuesCardProps {
   title: string;
@@ -13,9 +11,6 @@ interface ValuesCardProps {
   icon: React.ElementType;
   colSpan?: string | undefined;
   withRipple?: boolean | undefined;
-  isMobile: boolean;
-  setCursor: (variant: CursorVariant, image?: string | null) => void;
-  resetCursor: () => void;
   image: string;
 }
 
@@ -76,9 +71,6 @@ const ValuesCard: React.FC<ValuesCardProps> = memo(
 );
 
 export const Values: React.FC = () => {
-  const { setCursor, resetCursor } = useCursorStore();
-  const isMobile = useIsMobile();
-
   return (
     <section
       className="w-full bg-background-alt px-4 py-32 md:px-8"
@@ -98,9 +90,6 @@ export const Values: React.FC = () => {
             subtitle="135 Years of textile engineering mastery."
             icon={ShieldCheck}
             colSpan="md:col-span-2"
-            isMobile={!!isMobile}
-            setCursor={setCursor}
-            resetCursor={resetCursor}
             image="/images/homepage/values-1.webp"
           />
           <ValuesCard
@@ -108,18 +97,12 @@ export const Values: React.FC = () => {
             subtitle="40% Water reduction in dyeing processes."
             icon={Leaf}
             withRipple={true}
-            isMobile={!!isMobile}
-            setCursor={setCursor}
-            resetCursor={resetCursor}
             image="/images/homepage/values-2.webp"
           />
           <ValuesCard
             title="Global Reach"
             subtitle="Distribution centers in 12 countries."
             icon={Globe}
-            isMobile={!!isMobile}
-            setCursor={setCursor}
-            resetCursor={resetCursor}
             image="/images/homepage/values-3.webp"
           />
           <ValuesCard
@@ -127,28 +110,39 @@ export const Values: React.FC = () => {
             subtitle="Concept to sample in 72 hours."
             icon={Zap}
             colSpan="md:col-span-2"
-            isMobile={!!isMobile}
-            setCursor={setCursor}
-            resetCursor={resetCursor}
             image="/images/homepage/values-4.webp"
           />
         </div>
 
         {/* Scrolling Cert Ticker with WCAG Pause */}
         <section
-          className="mt-24 w-full overflow-hidden border-foreground border-y py-6 motion-reduce:overflow-x-auto"
+          className="mt-24 w-full overflow-hidden border-foreground border-y py-6 motion-reduce:overflow-x-auto focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           aria-label="Quality and Environmental Certifications"
           tabIndex={0}
           role="region"
         >
           <div className="flex animate-marquee whitespace-nowrap hover:[animation-play-state:paused] focus-within:[animation-play-state:paused] motion-reduce:animate-none">
-            {Array(8)
-              .fill("GOTS CERTIFIED • OEKO-TEX STANDARD 100 • FAIR TRADE • ISO 9001 • ")
-              .map((text, i) => (
-                <span key={i} className="mx-4 font-mono text-xl text-foreground font-medium">
-                  {text}
-                </span>
-              ))}
+            {[1, 2, 3, 4].map((loop) => (
+              <div key={loop} className="flex" aria-hidden={loop > 1}>
+                {[
+                  "GOTS CERTIFIED",
+                  "OEKO-TEX STANDARD 100",
+                  "FAIR TRADE",
+                  "ISO 9001",
+                  "SEDEX SMETA",
+                ].map((cert, i) => (
+                  <span
+                    key={`${loop}-${i}`}
+                    className="mx-6 flex items-center gap-4 font-mono text-lg text-foreground font-medium md:text-xl"
+                  >
+                    <span>{cert}</span>
+                    <span className="text-primary dark:text-brand-lime text-xs" aria-hidden="true">
+                      ●
+                    </span>
+                  </span>
+                ))}
+              </div>
+            ))}
           </div>
         </section>
       </div>

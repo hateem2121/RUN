@@ -161,8 +161,8 @@ describe("Homepage Forensic Remediation Master Verification", () => {
         </BrowserRouter>,
       );
 
-      expect(screen.getByText("01")).toBeInTheDocument();
-      expect(screen.getByText("02")).toBeInTheDocument();
+      expect(screen.getAllByText("01").length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText("02").length).toBeGreaterThanOrEqual(1);
 
       const images = screen.getAllByRole("img");
       expect(images.length).toBeGreaterThanOrEqual(2);

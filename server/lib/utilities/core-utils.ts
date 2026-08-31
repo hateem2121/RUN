@@ -254,11 +254,11 @@ export function shouldBypassCache(req: Request<any, any, any, any>): boolean {
   const referer = req.headers.referer || "";
   const isFromAdmin = referer.includes("/admin");
 
-  // PC-401: Unauthenticated refresh=1 is a Do DoS vector. Strictly gate by isAdmin.
+  // Strictly gate by isAdmin to prevent unauthenticated cache-bypass DoS attacks
   const explicitRefresh =
     isAdmin && (req.query.refresh === "1" || req.headers["cache-control"] === "no-cache");
 
-  return isFromAdmin || explicitRefresh;
+  return (isAdmin && isFromAdmin) || explicitRefresh;
 }
 
 // ============================================================================

@@ -37,7 +37,7 @@ const CategoryMarqueeItem: React.FC<{
     <li
       className={cn(
         "group relative px-8 py-4 transition-all duration-500 ease-out md:px-16",
-        isBlurred ? "opacity-60" : "opacity-100",
+        isBlurred ? "opacity-70" : "opacity-100",
         isHovered && "scale-105",
       )}
     >
@@ -45,7 +45,7 @@ const CategoryMarqueeItem: React.FC<{
         to={targetUrl}
         tabIndex={isHidden ? -1 : undefined}
         onClick={() => resetCursor()}
-        className="block focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/50 rounded-xl"
+        className="block focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-xl"
         onMouseEnter={() => onMouseEnter(uniqueIndex, catImage)}
         onMouseLeave={onMouseLeave}
         onFocus={() => onMouseEnter(uniqueIndex, catImage)}
@@ -54,8 +54,13 @@ const CategoryMarqueeItem: React.FC<{
       >
         <span
           className={cn(
-            "stroke-text block text-display-xl font-bold tracking-tighter uppercase transition-all duration-300",
-            "group-hover:[-webkit-text-stroke:2px_var(--color-primary)] group-hover:text-primary/10 group-focus:[-webkit-text-stroke:2px_var(--color-primary)] group-focus:text-primary/10",
+            "stroke-text block text-display-xl font-bold tracking-tighter uppercase transition-all duration-300 font-neue-stance",
+            "group-hover:[-webkit-text-stroke:2px_var(--color-primary)] dark:group-hover:[-webkit-text-stroke:2px_var(--color-brand-lime)]",
+            "group-hover:text-foreground/15 dark:group-hover:text-foreground/25",
+            "group-hover:drop-shadow-[0_0_25px_rgba(99,102,241,0.35)] dark:group-hover:drop-shadow-[0_0_25px_rgba(179,230,0,0.4)]",
+            "group-focus:[-webkit-text-stroke:2px_var(--color-primary)] dark:group-focus:[-webkit-text-stroke:2px_var(--color-brand-lime)]",
+            "group-focus:text-foreground/15 dark:group-focus:text-foreground/25",
+            "group-focus:drop-shadow-[0_0_25px_rgba(99,102,241,0.35)] dark:group-focus:drop-shadow-[0_0_25px_rgba(179,230,0,0.4)]",
           )}
         >
           {catName}{" "}

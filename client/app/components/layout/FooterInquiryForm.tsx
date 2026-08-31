@@ -250,7 +250,7 @@ export function FooterInquiryForm() {
                 <button
                   type="button"
                   onClick={() => setAttachedFile(null)}
-                  className="text-xs text-destructive hover:underline"
+                  className="text-xs text-destructive hover:underline p-2 min-h-[36px] inline-flex items-center rounded focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-destructive"
                 >
                   REMOVE
                 </button>
@@ -261,7 +261,7 @@ export function FooterInquiryForm() {
                 className="flex w-full cursor-pointer items-center justify-between font-mono text-xs text-muted-foreground hover:text-foreground"
               >
                 <span>DROP .PDF, .AI, .DXF TECH-PACK (MAX 25MB)</span>
-                <span className="rounded bg-neutral-800 px-2 py-1 text-[10px] text-white">
+                <span className="rounded bg-neutral-800 px-3 py-1.5 text-xs text-white min-h-[28px] inline-flex items-center">
                   BROWSE
                 </span>
               </label>

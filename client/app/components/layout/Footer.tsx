@@ -18,11 +18,11 @@ import { FooterInquiryForm } from "./FooterInquiryForm";
  * - Blueprint grid background & Parallax Logotype
  */
 const footerLinkVariants = cva(
-  "text-muted-foreground hover:text-primary origin-left transition-all duration-300 hover:scale-105 focus-visible:text-primary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+  "text-muted-foreground hover:text-primary origin-left transition-all duration-300 hover:scale-105 focus-visible:text-primary focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 inline-flex items-center min-h-[36px] py-1.5 rounded-sm",
   {
     variants: {
       size: { default: "text-lg", sm: "text-sm", base: "text-base" },
-      display: { block: "block", inline: "inline-block" },
+      display: { block: "flex", inline: "inline-flex" },
     },
     defaultVariants: { size: "default", display: "block" },
   },
@@ -64,40 +64,42 @@ const TimezoneClocks: React.FC = () => {
   return (
     <>
       {/* Sialkot Manufacturing HQ Timezone Card */}
-      <div className="mb-4 rounded-xl border border-neutral-800 bg-neutral-900/50 p-3.5 backdrop-blur-sm">
-        <div className="flex items-center justify-between text-xs text-neutral-400 font-mono">
-          <span>SIALKOT, PK (PKT)</span>
-          <span className="flex items-center gap-1 text-brand-lime font-bold">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand-lime animate-pulse" />
+      <div className="mb-4 rounded-xl border border-border bg-surface/80 dark:bg-neutral-900/50 p-3.5 backdrop-blur-sm shadow-xs">
+        <div className="flex items-center justify-between text-xs text-muted-foreground font-mono">
+          <span className="font-semibold text-foreground">SIALKOT, PK (PKT)</span>
+          <span className="flex items-center gap-1 text-primary dark:text-brand-lime font-bold">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary dark:bg-brand-lime animate-pulse" />
             SHIFT ACTIVE
           </span>
         </div>
         <div
           suppressHydrationWarning
-          className="mt-1 font-mono text-xl font-bold tracking-tight text-white"
+          className="mt-1 font-mono text-xl font-bold tracking-tight text-foreground"
         >
           {sialkotTime || "12:00:00"}{" "}
-          <span className="text-xs text-neutral-400 font-normal">UTC+5</span>
+          <span className="text-xs text-muted-foreground font-normal">UTC+5</span>
         </div>
-        <p className="mt-1 text-[10px] text-neutral-400 font-mono">
+        <p className="mt-1 text-[10px] text-muted-foreground font-mono">
           Sambrial Rd Manufacturing Zone, Sialkot
         </p>
       </div>
 
       {/* Zurich Strategic Office Timezone Card */}
-      <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-3.5 backdrop-blur-sm">
-        <div className="flex items-center justify-between text-xs text-neutral-400 font-mono">
-          <span>ZURICH, CH (CET)</span>
-          <span className="text-xs text-blue-300 font-mono">OFFICE OPEN</span>
+      <div className="rounded-xl border border-border bg-surface/80 dark:bg-neutral-900/50 p-3.5 backdrop-blur-sm shadow-xs">
+        <div className="flex items-center justify-between text-xs text-muted-foreground font-mono">
+          <span className="font-semibold text-foreground">ZURICH, CH (CET)</span>
+          <span className="text-xs text-primary dark:text-blue-300 font-mono font-medium">
+            OFFICE OPEN
+          </span>
         </div>
         <div
           suppressHydrationWarning
-          className="mt-1 font-mono text-xl font-bold tracking-tight text-white"
+          className="mt-1 font-mono text-xl font-bold tracking-tight text-foreground"
         >
           {zurichTime || "08:00:00"}{" "}
-          <span className="text-xs text-neutral-400 font-normal">UTC+1</span>
+          <span className="text-xs text-muted-foreground font-normal">UTC+1</span>
         </div>
-        <p className="mt-1 text-[10px] text-neutral-400 font-mono">
+        <p className="mt-1 text-[10px] text-muted-foreground font-mono">
           Bahnhofstrasse Strategic Office, Zurich
         </p>
       </div>
@@ -108,6 +110,7 @@ const TimezoneClocks: React.FC = () => {
 export const Footer: React.FC = () => {
   const rootData = useRouteLoaderData<{ cspNonce?: string }>("root");
   const nonce = rootData?.cspNonce || undefined;
+  const lastTriggerRef = useRef<HTMLButtonElement | null>(null);
 
   const [selectedCert, setSelectedCert] = useState<{
     id: number;
@@ -115,6 +118,13 @@ export const Footer: React.FC = () => {
     issuingOrganization: string | null;
     imageUrl?: string;
   } | null>(null);
+
+  const closeModal = () => {
+    setSelectedCert(null);
+    if (lastTriggerRef.current) {
+      lastTriggerRef.current.focus();
+    }
+  };
 
   // Navigation Columns Fetching
   const { data: footerConfig, isLoading } = useQuery<
@@ -167,7 +177,7 @@ export const Footer: React.FC = () => {
   return (
     <footer
       ref={footerRef}
-      className="bg-background text-foreground relative w-full isolate overflow-hidden px-4 pt-32 pb-0 md:px-8 min-h-[600px] flex flex-col justify-between"
+      className="bg-background text-foreground relative w-full overflow-hidden px-4 pt-32 pb-0 md:px-8 min-h-[600px] flex flex-col justify-between"
     >
       {/* SEO ENHANCEMENT: Render JSON-LD Structured Data */}
       {footerConfig?.structuredData && (
@@ -199,7 +209,7 @@ export const Footer: React.FC = () => {
 
             <TimezoneClocks />
           </div>
-          <div className="mt-8">
+          <div className="mt-8 flex flex-col space-y-1">
             <h2 className="text-muted-foreground mb-3 font-mono text-xs tracking-widest uppercase">
               [ DIRECT DISPATCH LINE ]
             </h2>
@@ -337,7 +347,10 @@ export const Footer: React.FC = () => {
                 <button
                   type="button"
                   key={`${cert.id}-${idx}`}
-                  onClick={() => setSelectedCert(cert)}
+                  onClick={(e) => {
+                    lastTriggerRef.current = e.currentTarget;
+                    setSelectedCert(cert);
+                  }}
                   className="group relative flex items-center gap-4 transition-all hover:scale-105 hover:opacity-100 opacity-70 text-left focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary rounded-lg p-1"
                 >
                   <div className="flex flex-col">
@@ -368,10 +381,13 @@ export const Footer: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-label="Certification Verification"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeModal();
+          }}
           className="fixed inset-0 z-modal flex items-center justify-center bg-black/80 p-4 backdrop-blur-md animate-in fade-in duration-200"
           onKeyDown={(e) => {
             if (e.key === "Escape") {
-              setSelectedCert(null);
+              closeModal();
             }
             if (e.key === "Tab") {
               const focusableElements = e.currentTarget.querySelectorAll<HTMLElement>(
@@ -414,7 +430,7 @@ export const Footer: React.FC = () => {
               </div>
               <button
                 type="button"
-                onClick={() => setSelectedCert(null)}
+                onClick={closeModal}
                 className="rounded-lg p-1 text-neutral-400 hover:bg-neutral-800 hover:text-white"
                 aria-label="Close modal"
               >

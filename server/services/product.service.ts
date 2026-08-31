@@ -8,8 +8,10 @@ import type {
 } from "@run-remix/shared";
 import { insertProductSchema } from "@run-remix/shared";
 import { err, ok, type Result, ResultAsync } from "neverthrow";
+import { CacheOperations } from "../lib/cache/cache-strategies.js";
 import { retryDbOperation } from "../lib/db/db-retry.js";
 import { AppError, DatabaseError, NotFoundError } from "../lib/errors.js";
+import { logger } from "../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../lib/resilience/circuit-breaker.js";
 import { sanitizeHtml } from "../lib/sanitize-html.js";
 import { productRepository } from "./repositories/index.js";
@@ -266,6 +268,15 @@ class ProductService {
         );
         // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
         if (product.isErr()) return err(product.error as any);
+
+        // Invalidate product & homepage caches on create
+        await CacheOperations.invalidateProducts().catch((e) =>
+          logger.error("[ProductService] invalidateProducts failed on create", e),
+        );
+        await CacheOperations.invalidateHomepage().catch((e) =>
+          logger.error("[ProductService] invalidateHomepage failed on create", e),
+        );
+
         return ok(product.value);
       })().catch((error) => {
         if (error instanceof AppError) return err(error);
@@ -303,6 +314,14 @@ class ProductService {
           return err(new NotFoundError(`Product with ID ${id}`));
         }
 
+        // Invalidate product & homepage caches on update
+        await CacheOperations.invalidateProducts().catch((e) =>
+          logger.error("[ProductService] invalidateProducts failed on update", e),
+        );
+        await CacheOperations.invalidateHomepage().catch((e) =>
+          logger.error("[ProductService] invalidateHomepage failed on update", e),
+        );
+
         return ok(product);
       })().catch((error) => {
         if (error instanceof AppError) return err(error);
@@ -326,6 +345,14 @@ class ProductService {
         if (!success) {
           return err(new NotFoundError(`Product with ID ${id}`));
         }
+
+        // Invalidate product & homepage caches on delete
+        await CacheOperations.invalidateProducts().catch((e) =>
+          logger.error("[ProductService] invalidateProducts failed on delete", e),
+        );
+        await CacheOperations.invalidateHomepage().catch((e) =>
+          logger.error("[ProductService] invalidateHomepage failed on delete", e),
+        );
 
         return ok(true);
       })().catch((error) => {

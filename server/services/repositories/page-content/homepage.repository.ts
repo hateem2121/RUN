@@ -33,6 +33,46 @@ const unifiedCache = UnifiedCache.getInstance();
 // Cache TTL for homepage content - marketing content changes infrequently
 const HOMEPAGE_CACHE_TTL = 3600; // 1 hour (in seconds)
 
+const HOMEPAGE_HERO_COLUMNS = {
+  id: homepageHero.id,
+  title: homepageHero.title,
+  subtitle: homepageHero.subtitle,
+  ctaText: homepageHero.ctaText,
+  ctaLink: homepageHero.ctaLink,
+  backgroundImageId: homepageHero.backgroundImageId,
+  isActive: homepageHero.isActive,
+  sortOrder: homepageHero.sortOrder,
+  createdAt: homepageHero.createdAt,
+  updatedAt: homepageHero.updatedAt,
+} as const;
+
+const HOMEPAGE_SLOGAN_COLUMNS = {
+  id: homepageSlogans.id,
+  text: homepageSlogans.text,
+  position: homepageSlogans.position,
+  fontSize: homepageSlogans.fontSize,
+  color: homepageSlogans.color,
+  animationType: homepageSlogans.animationType,
+  isActive: homepageSlogans.isActive,
+  sortOrder: homepageSlogans.sortOrder,
+  createdAt: homepageSlogans.createdAt,
+} as const;
+
+const HOMEPAGE_SECTION_COLUMNS = {
+  id: homepageSections.id,
+  name: homepageSections.name,
+  title: homepageSections.title,
+  heroTitle: homepageSections.heroTitle,
+  content: homepageSections.content,
+  sectionType: homepageSections.sectionType,
+  data: homepageSections.data,
+  mediaIds: homepageSections.mediaIds,
+  isActive: homepageSections.isActive,
+  sortOrder: homepageSections.sortOrder,
+  createdAt: homepageSections.createdAt,
+  updatedAt: homepageSections.updatedAt,
+} as const;
+
 class HomepageRepository {
   async getHomepageHero(): Promise<HomepageHero | undefined> {
     if (StorageSingleton.hasInstance()) {
@@ -49,9 +89,8 @@ class HomepageRepository {
     }
 
     const startTime = performance.now();
-    // TODO: Replace SELECT * with explicit columns to reduce egress
     const [hero] = await db
-      .select()
+      .select(HOMEPAGE_HERO_COLUMNS)
       .from(homepageHero)
       .where(eq(homepageHero.isActive, true))
       .orderBy(asc(homepageHero.id))
@@ -124,9 +163,8 @@ class HomepageRepository {
     const cached = await unifiedCache.get<HomepageSlogan[]>(cacheKey, "data");
     if (cached) return cached;
 
-    // TODO: Replace SELECT * with explicit columns to reduce egress
     const slogans = await db
-      .select()
+      .select(HOMEPAGE_SLOGAN_COLUMNS)
       .from(homepageSlogans)
       .where(eq(homepageSlogans.isActive, true))
       .orderBy(asc(homepageSlogans.sortOrder));
@@ -323,8 +361,7 @@ class HomepageRepository {
     const cached = await unifiedCache.get<HomepageSection[]>(cacheKey, "data");
     if (cached) return cached;
 
-    // TODO: Replace SELECT * with explicit columns to reduce egress
-    let query = db.select().from(homepageSections).$dynamic();
+    let query = db.select(HOMEPAGE_SECTION_COLUMNS).from(homepageSections).$dynamic();
     if (!includeInactive) {
       query = query.where(eq(homepageSections.isActive, true));
     }

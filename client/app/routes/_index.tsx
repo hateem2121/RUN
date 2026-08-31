@@ -90,10 +90,14 @@ export default function Component({ loaderData }: { loaderData: LoaderData }) {
       }
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      gsap.ticker.wake();
+    };
   }, []);
 
   // Stable refs for skewable sections to avoid ref callback churn
+  const mainRef = useRef<HTMLElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -142,11 +146,12 @@ export default function Component({ loaderData }: { loaderData: LoaderData }) {
         if (contentRef.current) gsap.set(contentRef.current, { skewY: 0, clearProps: "transform" });
       };
     },
-    { dependencies: [isMobile, prefersReducedMotion], scope: heroRef },
+    { dependencies: [isMobile, prefersReducedMotion], scope: mainRef },
   );
 
   return (
     <main
+      ref={mainRef}
       id="main-content"
       tabIndex={-1}
       className="w-full bg-background-alt focus-visible:outline-hidden overflow-x-clip"
@@ -197,20 +202,16 @@ export default function Component({ loaderData }: { loaderData: LoaderData }) {
       </div>
 
       {/* CMS Narrative Sections */}
-      {homepageData?.sections?.result && homepageData.sections.result.length > 0 && (
-        <Suspense
-          fallback={<div className="min-h-screen md:min-h-[600px] bg-background animate-pulse" />}
-        >
-          <Sections data={homepageData.sections.result} />
-        </Suspense>
-      )}
+      <Suspense
+        fallback={<div className="min-h-screen md:min-h-[600px] bg-background animate-pulse" />}
+      >
+        <Sections data={homepageData?.sections?.result} />
+      </Suspense>
 
       {/* Process Section: Viewport pinning needs static context */}
-      {homepageData?.processCards?.result && homepageData.processCards.result.length > 0 && (
-        <Suspense fallback={<div className="min-h-screen bg-background animate-pulse" />}>
-          <Process data={homepageData.processCards.result} />
-        </Suspense>
-      )}
+      <Suspense fallback={<div className="min-h-screen bg-background animate-pulse" />}>
+        <Process data={homepageData?.processCards?.result} />
+      </Suspense>
     </main>
   );
 }

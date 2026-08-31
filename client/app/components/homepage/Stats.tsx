@@ -18,7 +18,7 @@ const ScrambleNumber: React.FC<{ value: string }> = ({ value }) => {
         return;
       }
 
-      el.textContent = "000";
+      el.textContent = value.replace(/[^0-9]/g, "0");
       const scrambleProxy = { progress: 0 };
       const totalIterations = value.length;
 
@@ -38,6 +38,8 @@ const ScrambleNumber: React.FC<{ value: string }> = ({ value }) => {
             .split("")
             .map((char, index) => {
               if (index < iterations) return char;
+              // Preserve non-alphanumeric symbols (+, %, etc.) during scramble
+              if (!/[a-zA-Z0-9]/.test(char)) return char;
               return chars[Math.floor(Math.random() * chars.length)];
             })
             .join("");
@@ -55,7 +57,7 @@ const ScrambleNumber: React.FC<{ value: string }> = ({ value }) => {
     <span className="relative inline-block">
       <span className="sr-only">{value}</span>
       <span aria-hidden="true" ref={elementRef} className="tabular-nums">
-        {prefersReducedMotion ? value : "000"}
+        {prefersReducedMotion ? value : value.replace(/[^0-9]/g, "0")}
       </span>
     </span>
   );
@@ -159,7 +161,7 @@ export const Stats: React.FC = () => {
         <div className="relative z-elevated flex flex-col justify-center pt-12 md:pt-0">
           <h2
             id="stats-heading"
-            className="mb-4 font-bold text-8xl uppercase leading-tight md:mb-8 md:text-5xl"
+            className="mb-4 font-bold text-3xl sm:text-4xl md:text-5xl uppercase leading-tight md:mb-8"
           >
             The Evolution of <br />
             <span className="text-primary dark:text-manufacturing-accent">
@@ -183,7 +185,7 @@ export const Stats: React.FC = () => {
             key={stat.label || index}
             className="stat-item flex h-[40vh] flex-col justify-center border-border border-b bg-surface/10 p-6 backdrop-blur-sm last:border-b-0 md:h-loading-content md:p-16"
           >
-            <div className="font-bold text-9xl leading-none tracking-tighter md:text-9xl font-mono">
+            <div className="font-bold text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-none tracking-tighter font-mono">
               <ScrambleNumber value={stat.value} />
             </div>
             <div className="my-4 h-px w-full origin-left scale-x-100 transform bg-foreground/20 transition-transform duration-700" />

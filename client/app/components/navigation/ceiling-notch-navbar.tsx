@@ -67,6 +67,7 @@ export const CeilingNotchNavbar = memo(function CeilingNotchNavbar() {
   const mobileMenuId = useId();
   const categoryMenuId = useId();
   const menuRef = useRef<HTMLDivElement>(null);
+  const categoryContainerRef = useRef<HTMLDivElement>(null);
 
   const handleMenuKeyDown = (e: React.KeyboardEvent) => {
     if (e.key !== "Tab") return;
@@ -88,6 +89,21 @@ export const CeilingNotchNavbar = memo(function CeilingNotchNavbar() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Close desktop category menu on outside clicks
+  useEffect(() => {
+    if (!categoryMenuOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        categoryContainerRef.current &&
+        !categoryContainerRef.current.contains(e.target as Node)
+      ) {
+        setCategoryMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [categoryMenuOpen]);
 
   // Directional scroll compression (smart header)
   useEffect(() => {
@@ -116,6 +132,18 @@ export const CeilingNotchNavbar = memo(function CeilingNotchNavbar() {
       setCategoryMenuOpen(false);
     }
   }, [currentPath]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
 
   // Close menus on Escape key press
   useEffect(() => {
@@ -190,7 +218,7 @@ export const CeilingNotchNavbar = memo(function CeilingNotchNavbar() {
         {/* Center: Desktop Navigation Links */}
         <div className="hidden items-center gap-6 text-sm font-medium lg:flex">
           {/* Categories Mega Dropdown Trigger */}
-          <div className="relative">
+          <div ref={categoryContainerRef} className="relative">
             <button
               type="button"
               onClick={() => setCategoryMenuOpen((prev) => !prev)}

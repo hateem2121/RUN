@@ -37,6 +37,7 @@ import {
   homepageFeaturedProductsSettings,
   homepageHero,
   homepageProcessCards,
+  homepageSections,
   homepageSlogans,
   inquiries,
   legalPolicies,
@@ -145,6 +146,7 @@ async function seedProductionMaster() {
     await db.delete(aboutTeamMessages);
     await db.delete(homepageSlogans);
     await db.delete(homepageProcessCards);
+    await db.delete(homepageSections);
     console.log("  ✓ Purged all CMS child components");
 
     // Phase 0e: Catalog tables (child → parent order)
@@ -2172,6 +2174,39 @@ With audited Sedex registration (Ref: ZC5000065244) and latest SMETA audit compl
       title: "Featured B2B Manufacturing Collections",
       isActive: true,
     });
+
+    await db.insert(homepageSections).values([
+      {
+        name: "manufacturing",
+        title: "Precision Manufacturing",
+        heroTitle: "End-to-End Vertical Infrastructure",
+        content:
+          "Our state-of-the-art facility integrates advanced circular knitting, precision CNC laser cutting, and automated sewing systems to deliver consistent high-performance athletic wear at scale.",
+        sectionType: "manufacturing",
+        isActive: true,
+        sortOrder: 1,
+      },
+      {
+        name: "technology",
+        title: "Technological Edge",
+        heroTitle: "Virtual Prototyping & 3D Engineering",
+        content:
+          "Using virtual prototyping and 3D fit visualization tools, we accelerate the R&D process from concept to approved design, drastically reducing sample lead times and fabric waste.",
+        sectionType: "technology",
+        isActive: true,
+        sortOrder: 2,
+      },
+      {
+        name: "sustainability",
+        title: "Circular Sustainability",
+        heroTitle: "Eco-Forward Manufacturing & Zero-Discharge",
+        content:
+          "We offer certified GOTS organic cotton, GRS recycled polyester, and biodegradable synthetics. Our facility is zero-discharge certified, reusing 95% of water in our closed-loop dyehouse.",
+        sectionType: "sustainability",
+        isActive: true,
+        sortOrder: 3,
+      },
+    ]);
 
     // ── 9. MANUFACTURING CMS FIXTURES ────────────────────────────────────────
     console.log("\n🏭 [CMS: Manufacturing] Populating 193,000+ sqm Facility Specifications...");

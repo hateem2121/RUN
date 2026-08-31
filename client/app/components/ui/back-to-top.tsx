@@ -49,7 +49,7 @@ export function BackToTop() {
   return (
     <div
       className={cn(
-        "fixed right-4 bottom-4 sm:right-8 sm:bottom-8 z-modal transition-all duration-500 ease-in-out",
+        "fixed right-6 bottom-24 z-dock transition-all duration-500 ease-in-out",
         isVisible
           ? "translate-y-0 scale-100 opacity-100"
           : "pointer-events-none translate-y-10 scale-90 opacity-0",

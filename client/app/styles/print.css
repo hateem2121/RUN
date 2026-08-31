@@ -33,12 +33,20 @@
   footer,
   nav,
   aside,
+  .cursor-dot,
+  .cursor-follower,
   [role="dialog"],
   [data-sonner-toaster],
   .no-print,
   .print-hidden,
   button:not(.print-include) {
     display: none !important;
+  }
+
+  /* Force solid typography on print */
+  .stroke-text {
+    -webkit-text-stroke: 0px !important;
+    color: #000000 !important;
   }
 
   /* Structural document formatting */

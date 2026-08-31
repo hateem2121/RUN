@@ -38,7 +38,19 @@ export const serverReady: Promise<void> = (async () => {
     const clientBuildPath = path.resolve(monorepoRoot, "client/build/client");
 
     // 2.5. Serve Static Assets - Bypass all middleware for performance/stability
-    app.use(express.static(clientPublicPath));
+    app.use(
+      express.static(clientPublicPath, {
+        setHeaders: (res, filePath) => {
+          if (
+            filePath.endsWith(".woff2") ||
+            filePath.endsWith(".woff") ||
+            filePath.endsWith(".ttf")
+          ) {
+            res.setHeader("Access-Control-Allow-Origin", "*");
+          }
+        },
+      }),
+    );
 
     // 3. Setup Global Middleware (now async for Passport/session init)
     await setupMiddleware(app);

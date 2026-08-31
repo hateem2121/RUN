@@ -6,14 +6,7 @@ import type {
   ProductItem,
 } from "@run-remix/shared";
 
-/** @public */ export const CursorVariant = {
-  DEFAULT: "DEFAULT",
-  TEXT: "TEXT",
-  VIEW: "VIEW",
-  BUTTON: "BUTTON",
-} as const;
-
-export type CursorVariant = (typeof CursorVariant)[keyof typeof CursorVariant];
+export type { CursorVariant } from "@/stores/useCursorStore";
 
 /** @public */ export interface NavItem {
   label: string;

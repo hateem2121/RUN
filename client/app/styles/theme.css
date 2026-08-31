@@ -345,13 +345,6 @@
   --tracking-premium: 0.08em;
   --tracking-premium-lg: 0.12em;
 
-  /* Display Typography Scale (responsive via clamp) */
-  --font-size-display-xs: clamp(1.5rem, 4vw, 2rem);
-  --font-size-display-sm: clamp(2rem, 6vw, 3rem);
-  --font-size-display-md: clamp(3rem, 8vw, 5rem);
-  --font-size-display-lg: clamp(4rem, 10vw, 7rem);
-  --font-size-display-xl: clamp(5rem, 14vw, 10rem);
-
   /* Semantic Radius Tokens & Scale */
   --radius-xs: 0.125rem;
   --radius-sm: 0.25rem;
@@ -398,7 +391,7 @@
   --color-map-popup-border: var(--color-border);
   --color-map-popup-text: var(--color-foreground);
 
-  /* Z-Index Layers (v4 convention: --z-*) */
+  /* Z-Index Layers (Tailwind v4 standard: --z-index-*) */
   --z-behind: -1;
   --z-base: 0;
   --z-default: 1;
@@ -419,6 +412,27 @@
   --z-toast: 1500;
   --z-cursor: 1600;
   --z-max: 9999;
+
+  --z-index-behind: -1;
+  --z-index-base: 0;
+  --z-index-default: 1;
+  --z-index-elevated: 10;
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1050;
+  --z-index-dock: 1100;
+  --z-index-modal-backdrop: 1200;
+  --z-index-modal: 1300;
+  --z-index-modal-nested: 1350;
+  --z-index-modal-nested-2: 1360;
+  --z-index-modal-nested-3: 1370;
+  --z-index-modal-overlay-1: 1210;
+  --z-index-modal-overlay-2: 1220;
+  --z-index-modal-overlay-3: 1230;
+  --z-index-popover: 1400;
+  --z-index-tooltip: 1450;
+  --z-index-toast: 1500;
+  --z-index-cursor: 1600;
+  --z-index-max: 9999;
 
   /* Glass Effects */
   --glass-premium: linear-gradient(135deg, var(--glass-bg-start), var(--glass-bg-end));
@@ -692,8 +706,9 @@
 }
 
 @utility stroke-text {
-  -webkit-text-stroke: 1.5px var(--color-foreground);
-  color: transparent;
+  -webkit-text-stroke-width: 1.5px;
+  -webkit-text-stroke-color: hsl(var(--foreground));
+  -webkit-text-fill-color: transparent;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -701,41 +716,6 @@
   .stroke-text {
     -webkit-text-stroke: 0px;
     color: CanvasText;
-  }
-}
-
-@media print {
-  /* Hide screen interactive UI when printing or saving B2B spec sheet as PDF */
-  header,
-  nav,
-  .cursor-dot,
-  .cursor-follower,
-  button,
-  [role="dialog"] {
-    display: none;
-  }
-
-  /* Reset backgrounds for clean black on white paper printing */
-  html,
-  body,
-  main,
-  footer {
-    background-color: #ffffff;
-    color: #000000;
-  }
-
-  /* Prevent page breaks across process cards */
-  article,
-  section,
-  .rounded-2xl,
-  .rounded-xl {
-    break-inside: avoid;
-  }
-
-  /* Force solid typography */
-  .stroke-text {
-    -webkit-text-stroke: 0px;
-    color: #000000;
   }
 }
 

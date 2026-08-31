@@ -1,18 +1,20 @@
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useCursorStore } from "@/stores/useCursorStore";
 
 /**
  * CustomCursor - Dual-layer cursor with states (DEFAULT, BUTTON, VIEW)
  * Provides a premium interactive feel with GSAP-powered smooth following.
- * Hidden on mobile/touch devices.
+ * Automatically disabled on mobile/touch devices and when reduced motion is preferred.
  */
 export const CustomCursor: React.FC = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   const followerRef = useRef<HTMLDivElement>(null);
   const { cursorVariant, cursorImage } = useCursorStore();
   const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
@@ -20,17 +22,19 @@ export const CustomCursor: React.FC = () => {
     }
   }, []);
 
+  const isDisabled = isTouchDevice || prefersReducedMotion;
+
   useEffect(() => {
-    if (isTouchDevice) return;
+    if (isDisabled) return;
     document.body.style.cursor = "none";
     return () => {
       document.body.style.cursor = "";
     };
-  }, [isTouchDevice]);
+  }, [isDisabled]);
 
   useGSAP(
     () => {
-      if (isTouchDevice) return;
+      if (isDisabled) return;
       const cursor = cursorRef.current;
       const follower = followerRef.current;
 
@@ -44,22 +48,22 @@ export const CustomCursor: React.FC = () => {
 
       // Use QuickTo for high performance updates
       const xToCursor = gsap.quickTo(cursor, "x", {
-        duration: 0.1,
+        duration: 0.08,
         ease: "power2.out",
       });
       const yToCursor = gsap.quickTo(cursor, "y", {
-        duration: 0.1,
+        duration: 0.08,
         ease: "power2.out",
       });
 
-      // Slower duration = Heavier, more "fluid" feel
+      // Ultra-snappy 0.08s duration for fluid, zero-lag following
       const xToFollower = gsap.quickTo(follower, "x", {
-        duration: 0.5,
-        ease: "power3.out",
+        duration: 0.08,
+        ease: "power2.out",
       });
       const yToFollower = gsap.quickTo(follower, "y", {
-        duration: 0.5,
-        ease: "power3.out",
+        duration: 0.08,
+        ease: "power2.out",
       });
 
       let hasMoved = false;
@@ -77,8 +81,23 @@ export const CustomCursor: React.FC = () => {
 
         if (!hasMoved) {
           hasMoved = true;
-          gsap.to([cursor, follower], { opacity: 1, duration: 0.2 });
+          gsap.to([cursor, follower], { opacity: 1, duration: 0.15 });
         }
+
+        // Restore native cursor over inputs for accessibility
+        const target = e.target as HTMLElement | null;
+        const isInput =
+          target &&
+          (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable);
+
+        if (isInput) {
+          document.body.style.cursor = "auto";
+          gsap.to([cursor, follower], { opacity: 0.2, duration: 0.15 });
+        } else {
+          document.body.style.cursor = "none";
+          gsap.to([cursor, follower], { opacity: 1, duration: 0.15 });
+        }
+
         xToCursor(e.clientX);
         yToCursor(e.clientY);
         xToFollower(e.clientX);
@@ -96,7 +115,7 @@ export const CustomCursor: React.FC = () => {
 
       const handleMouseLeave = () => {
         hasMoved = false;
-        gsap.to([cursor, follower], { opacity: 0, duration: 0.2 });
+        gsap.to([cursor, follower], { opacity: 0, duration: 0.15 });
       };
 
       window.addEventListener("pointermove", moveCursor, { passive: true });
@@ -109,12 +128,12 @@ export const CustomCursor: React.FC = () => {
         document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
       };
     },
-    { dependencies: [isTouchDevice] },
+    { dependencies: [isDisabled] },
   );
 
   useGSAP(
     () => {
-      if (isTouchDevice) return;
+      if (isDisabled) return;
       const follower = followerRef.current;
       const cursor = cursorRef.current;
       if (!follower || !cursor) {
@@ -122,7 +141,7 @@ export const CustomCursor: React.FC = () => {
       }
 
       if (cursorVariant === "view" && cursorImage) {
-        // VIEW State: Floating offset preview tooltip
+        // VIEW State: Floating preview tooltip with smart boundary clamping
         gsap.to(follower, {
           width: 220,
           height: 160,
@@ -130,11 +149,11 @@ export const CustomCursor: React.FC = () => {
           yPercent: -88,
           borderRadius: "12px",
           opacity: 0.95,
-          backgroundColor: "transparent",
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
           borderWidth: 1,
           borderColor: "var(--color-primary)",
           mixBlendMode: "normal",
-          duration: 0.4,
+          duration: 0.25,
           ease: "power2.out",
         });
         gsap.to(cursor, {
@@ -142,25 +161,31 @@ export const CustomCursor: React.FC = () => {
           scale: 0.8,
           backgroundColor: "var(--color-primary)",
           mixBlendMode: "normal",
-          duration: 0.2,
+          duration: 0.15,
         });
       } else if (cursorVariant === "button") {
-        // BUTTON State
+        // BUTTON State: Glowing interactive ring with precision center focal dot
         gsap.to(follower, {
-          width: 80,
-          height: 80,
+          width: 64,
+          height: 64,
           xPercent: -50,
           yPercent: -50,
           borderRadius: "9999px",
           opacity: 1,
-          backgroundColor: "var(--color-primary)",
-          mixBlendMode: "exclusion",
-          borderWidth: 0,
-          borderColor: "transparent",
-          duration: 0.3,
+          backgroundColor: "rgba(99, 102, 241, 0.15)",
+          mixBlendMode: "normal",
+          borderWidth: 1.5,
+          borderColor: "var(--color-primary)",
+          duration: 0.25,
           ease: "power2.out",
         });
-        gsap.to(cursor, { opacity: 1, scale: 0 });
+        gsap.to(cursor, {
+          opacity: 1,
+          scale: 0.5,
+          backgroundColor: "var(--color-primary)",
+          mixBlendMode: "normal",
+          duration: 0.15,
+        });
       } else {
         // DEFAULT State
         gsap.to(follower, {
@@ -174,7 +199,7 @@ export const CustomCursor: React.FC = () => {
           mixBlendMode: "difference",
           borderWidth: 1,
           borderColor: "#ffffff",
-          duration: 0.3,
+          duration: 0.25,
           ease: "power2.out",
         });
         gsap.to(cursor, {
@@ -185,10 +210,10 @@ export const CustomCursor: React.FC = () => {
         });
       }
     },
-    { dependencies: [isTouchDevice, cursorVariant, cursorImage] },
+    { dependencies: [isDisabled, cursorVariant, cursorImage] },
   );
 
-  if (isTouchDevice) return null;
+  if (isDisabled) return null;
 
   return (
     <>
@@ -207,6 +232,10 @@ export const CustomCursor: React.FC = () => {
             src={cursorImage}
             alt=""
             className="fade-in zoom-in h-full w-full animate-in object-cover duration-500 pointer-events-none"
+            onError={(e) => {
+              // Hide broken image gracefully
+              e.currentTarget.style.display = "none";
+            }}
           />
         )}
       </div>
