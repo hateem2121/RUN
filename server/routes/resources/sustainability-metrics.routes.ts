@@ -5,8 +5,8 @@ import type { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
 import { publicTier } from "../../middleware/rate-limit-tiers.js";
-import { authService } from "../../services/auth-service.js";
-import { sustainabilityService } from "../../services/sustainability.service.js";
+import { sustainabilityService } from "../../services/cms/sustainability.service.js";
+import { authService } from "../../services/system/auth.service.js";
 
 /**
  * SUSTAINABILITY METRICS RESOURCE ROUTER

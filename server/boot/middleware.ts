@@ -13,7 +13,7 @@ import {
   setupGlobalErrorHandlers,
 } from "../middleware/production-error-handler.js";
 import { requestSanitization } from "../middleware/sanitization.js";
-import { authService } from "../services/auth-service.js";
+import { authService } from "../services/system/auth.service.js";
 
 /**
  * Global Middleware Configuration

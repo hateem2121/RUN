@@ -1,20 +1,15 @@
 import { promisify } from "node:util";
 import { gunzip, gzip } from "node:zlib";
 import { SpanStatusCode, trace } from "@opentelemetry/api";
-import type { Redis } from "ioredis";
 import { LRUCache } from "lru-cache";
 import { logger } from "../monitoring/logger.js";
 import { type PostgresCacheProvider, postgresCache } from "./postgres-cache-provider.js";
-// PC-301 RESOLVED: Circuit breaker protection is handled at the Upstash proxy level
-// (upstash-client.ts wraps every Redis method call via Proxy + withCircuit).
-// Removed duplicate withCircuit wrapping here to prevent double circuit-breaker nesting.
-import { isRedisEnabled, redis } from "./upstash-client.js";
 
 /**
  * UNIFIED CACHE - HYBRID L1/L2
  *
  * L1: In-Memory LRU Cache (Fastest, per-instance)
- * L2: Redis Cache (Shared, cross-instance, persistence)
+ * L2: PostgreSQL / Neon Serverless (Shared, persistence)
  *
  * Pattern: Cache-Aside with Write-Through to L2
  */
@@ -97,7 +92,7 @@ const dummyCache = new DummyCacheProvider();
 export class UnifiedCache {
   private static instance: UnifiedCache | null = null;
   private memoryCache: LRUCache<string, object>;
-  private l2: Redis | PostgresCacheProvider | DummyCacheProvider;
+  private l2: PostgresCacheProvider | DummyCacheProvider;
 
   // Standard TTL presets
   public static readonly TTL_PRESETS = {
@@ -134,12 +129,9 @@ export class UnifiedCache {
       ttl: 1000 * 60 * 60, // 1 hour default TTL
     });
 
-    if (isRedisEnabled) {
-      this.l2 = redis;
-      logger.info("[Cache] ✅ Unified Hybrid Cache initialized (L1: Memory, L2: Redis)");
-    } else if (process.env.NODE_ENV === "test" || process.env.VITEST) {
+    if (process.env.NODE_ENV === "test" || process.env.VITEST) {
       this.l2 = dummyCache;
-      logger.info("[Cache] ✅ Unified Hybrid Cache initialized (L1: Memory, L2: None (Test env))");
+      logger.info("[Cache] ✅ Unified Cache initialized (L1: Memory, L2: None (Test env))");
     } else {
       this.l2 = postgresCache;
       logger.info("[Cache] ✅ Unified Hybrid Cache initialized (L1: Memory, L2: Postgres/Neon)");
@@ -389,11 +381,6 @@ export class UnifiedCache {
    * Clear keys matching a pattern
    */
   async clearPattern(pattern: string): Promise<void> {
-    const isRegex =
-      pattern.startsWith("^") ||
-      pattern.includes(".*") ||
-      pattern.includes("(") ||
-      pattern.includes("|");
     const regex = safePatternToRegex(pattern);
 
     // 1. Clear L1 Memory Cache
@@ -409,51 +396,10 @@ export class UnifiedCache {
       }
     }
 
-    // 2. Clear L2 Redis/Postgres Cache
+    // 2. Clear L2 Postgres Cache
     try {
       if ("deletePattern" in this.l2 && typeof this.l2.deletePattern === "function") {
         await this.l2.deletePattern(pattern);
-      } else {
-        // Use SCAN to find keys matching pattern in L2 for Redis
-        let redisPattern = pattern;
-        if (isRegex) {
-          // Replace ^(batch:)? with *
-          redisPattern = redisPattern.replace(/^\^\(batch:\)\?/, "*");
-          // Replace .* with *
-          redisPattern = redisPattern.replace(/\.\*/g, "*");
-          // Remove regex boundary anchors
-          redisPattern = redisPattern.replace(/\$/g, "");
-          // If pattern contains alternatives, use '*' fallback
-          if (redisPattern.includes("|")) {
-            redisPattern = "*";
-          }
-        } else {
-          redisPattern = `*${pattern}*`;
-        }
-
-        let cursor = "0";
-
-        do {
-          const [nextCursor, keys] = await this.l2.scan(
-            cursor,
-            "MATCH",
-            redisPattern,
-            "COUNT",
-            100,
-          );
-          cursor = nextCursor;
-
-          if (keys.length > 0) {
-            // Apply regex filter locally to ensure precise invalidation
-            const keysToDelete = regex
-              ? keys.filter((k: string) => regex.test(k))
-              : keys.filter((k: string) => k.includes(pattern));
-
-            if (keysToDelete.length > 0) {
-              await this.l2.del(...keysToDelete);
-            }
-          }
-        } while (cursor !== "0");
       }
     } catch (error: unknown) {
       logger.error(`[Cache] L2 clearPattern failed for ${pattern}:`, error);
@@ -520,7 +466,6 @@ export class UnifiedCache {
       hitRate: Math.round(hitRate * 100) / 100,
       totalOperations,
       calculatedSize: this.memoryCache.calculatedSize || 0,
-      redisEnabled: isRedisEnabled,
     };
   }
 
@@ -547,20 +492,6 @@ export class UnifiedCache {
     const itemUsagePercent = (stats.itemCount / 5000) * 100;
     if (itemUsagePercent > 80) {
       issues.push(`High item count: ${stats.itemCount}/5000 (${Math.round(itemUsagePercent)}%)`);
-    }
-
-    // Redis Health
-    if (isRedisEnabled) {
-      try {
-        const start = performance.now();
-        await redis.ping();
-        const latency = performance.now() - start;
-        if (latency > 500) {
-          issues.push(`High Redis latency: ${Math.round(latency)}ms`);
-        }
-      } catch (_err) {
-        issues.push("Redis connection failed");
-      }
     }
 
     const isHealthy = issues.length === 0;

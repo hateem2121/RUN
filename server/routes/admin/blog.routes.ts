@@ -3,8 +3,8 @@ import { Router } from "express";
 import { validateRequest } from "zod-express-middleware";
 import { removeUndefined, validateIdParam } from "../../lib/utilities/core-utils.js";
 import { criticalTier } from "../../middleware/rate-limit-tiers.js";
-import { authService } from "../../services/auth-service.js";
-import { blogService } from "../../services/blog.service.js";
+import { blogService } from "../../services/cms/blog.service.js";
+import { authService } from "../../services/system/auth.service.js";
 
 const router = Router();
 router.use(criticalTier);

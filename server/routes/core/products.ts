@@ -15,15 +15,8 @@ import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { shouldBypassCache, validateIdParam } from "../../lib/utilities/core-utils.js";
-import { createRateLimiter } from "../../middleware/rateLimiter.js";
-import { productService } from "../../services/product.service.js";
-import { webhookService } from "../../services/webhook-service.js";
-
-const writeRateLimiter = createRateLimiter({
-  windowMs: 15 * 60 * 1000,
-  max: 50,
-  message: "Too many write requests. Please try again later.",
-});
+import { productService } from "../../services/catalog/product.service.js";
+import { webhookService } from "../../services/system/webhook.service.js";
 
 const router = Router();
 router.use(apiTier);
@@ -334,7 +327,6 @@ import { requireRole } from "../../middleware/rbac.js";
 router.post(
   "/products",
   requireRole("admin"),
-  writeRateLimiter,
   validateRequest({
     body: insertProductSchema,
   }),

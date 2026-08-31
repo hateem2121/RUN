@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { removeUndefined, validateIdParam } from "../../lib/utilities/core-utils.js";
 import { apiTier } from "../../middleware/rate-limit-tiers.js";
-import { authService } from "../../services/auth-service.js";
-import { miscService } from "../../services/misc.service.js";
+import { miscService } from "../../services/cms/misc.service.js";
+import { authService } from "../../services/system/auth.service.js";
 
 const router = Router();
 router.use(apiTier);

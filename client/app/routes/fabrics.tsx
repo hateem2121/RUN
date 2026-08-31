@@ -22,7 +22,7 @@ import { ModelViewerErrorBoundary } from "@/components/ui/ModelViewerErrorBounda
 import { Progress } from "@/components/ui/progress";
 import { Typography } from "@/components/ui/typography";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { apiRequest, getQueryClient } from "@/lib/query-client";
 import { cn } from "@/lib/utils";
 import type { Route } from "./+types/fabrics";
 

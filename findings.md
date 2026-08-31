@@ -1,8 +1,131 @@
 # Forensic E2E Test Suite Audit & Detailed Findings Report
 
 **Run Date:** 2026-08-31  
-**Status:** ALL 13 Forensic Remediation Tasks, 59 Issues Resolved, 181 Vitest Test Suites (2,652+ tests), 19/19 Playwright E2E Tests, Knip 0 Unused Exports/Deps, Protocol 0 Tech-Integrity Gates 100% Passed  
-**Execution Environment:** Node v24.15.0 / Vite 8 Dev Server (Port 5002) / Express 5 / Playwright 1.62 / Axe-Core 4.12 / Biome 2.5 / TypeScript 6 / GSAP 3  
+**Status:** COMPREHENSIVE 360° MASTER CLEANUP COMPLETED — Reclaimed ~130+ MB Disk Overhead, Purged 600+ Stale/Generated Files, Consolidated Domain CSS into Tailwind v4 System, Pruned Public Developer Routes & Server Diagnostics, Streamlined SOP Documentation into Single Index, 0 Knip Violations, 100% Passing Across All 8 Tech Integrity Gates  
+**Execution Environment:** Node v24.15.0 / Vite 8 Dev Server (Port 5002) / Express 5 / Biome 2.5 / TypeScript 6 / Neon PostgreSQL  
+
+## 00000. Comprehensive 360° Monorepo & Website Master Cleanup (2026-08-31)
+
+**Status:** **100% EXECUTED, VERIFIED & PASSING ACROSS ALL 8 PROTOCOL 0 GATES**  
+**Lead Systems Architect:** Antigravity  
+
+### Summary of Actions Taken:
+1. **Phase 1: Build Caches & Unhoisted `node_modules` Purge (~130 MB Reclaimed):**
+   - Purged `dist/` (540 generated chunk files totaling ~37 MB).
+   - Purged `.turbo/` local build cache (~18 MB).
+   - Purged `client/build/` (~11 MB) and `shared/dist/` (~2.1 MB).
+   - Purged unhoisted nested `client/node_modules/` (~46 MB) and `server/node_modules/` (~9.9 MB).
+   - Purged `playwright-report/`, `test-results/`, `tsconfig.tsbuildinfo`, `.gemini/config/skills/impeccable/` (~2.9 MB).
+2. **Phase 2: Duplicate & Stale Test Suite Consolidation:**
+   - Purged duplicate `-v2` and stale integration tests (`admin-v2.integration.test.ts`, `auth-v2.integration.test.ts`, `auth-integration.test.ts`, `product-v2.integration.test.ts`, `slow-query.test.ts`, `tests/api.http`).
+   - Relocated client component tests to `client/tests/components/technology/`.
+   - Relocated server API tests to `server/tests/api/` and normalized imports.
+3. **Phase 3: Public Developer Routes & Server Diagnostics Removal:**
+   - Deleted client developer route files (`developer.tsx`, `developer._index.tsx`, `developer.guides.$slug.tsx`, `developer.playground.tsx`).
+   - Deleted unmounted duplicate server routes (`dev.ts`, `kv-diagnostics.ts`).
+   - Pruned `/developer*` route definitions and fuzzy matchers from `shared/route-manifest.ts`, `client/app/routes.ts`, and `server/routes/index.ts`.
+4. **Phase 4: CSS Consolidation & Dead Animation / Component Pruning:**
+   - Merged `manufacturing-utilities.css` and `sustainability-utilities.css` into `client/app/styles/theme.css`.
+   - Merged `map-styles.css` into `client/app/styles/overrides.css`.
+   - Streamlined `client/app/index.css` from 9 imports down to 5 unified core stylesheets.
+   - Pruned dead Framer Motion variants and unreferenced `enhanced-error-boundary.tsx` component.
+   - Deleted duplicate `client/public/og-image.png`.
+5. **Phase 5: Documentation Streamlining & Markdown Consolidation:**
+   - Consolidated 11 core SOP files into single comprehensive manual `docs/operations/SOP_INDEX.md`.
+   - Purged redundant `docs/github-guide/` (11 files), `docs/core/sops/`, `docs/infrastructure/CI_AUDIT_REPORT_2026.md`, `CITATION.cff`, `CITATION.md`, `ROADMAP.md`.
+   - Updated all markdown cross-references in `README.md` and `docs/wiki/_Sidebar.md`.
+6. **Phase 6: Auxiliary Scripts & Drizzle Snapshot Meta Cleanup:**
+   - Purged 15 JSON snapshot files in `server/migrations/meta/` (3.3 MB reclaimed).
+   - Purged legacy scripts in `scripts/antigravity/` and `scripts/setup/`.
+7. **Phase 7: NPM Dependency & Knip Hygiene:**
+   - Removed `locomotive-scroll` from `client/package.json` and `knip.config.ts`.
+   - Re-audited monorepo with `npm run check:knip` (0 unused files, 0 unused exports, 0 unresolved imports).
+8. **Phase 8: Protocol 0 Master Verification Gate:**
+   - `npm run typecheck`: 🟢 **PASS** (0 TypeScript errors).
+   - `npm run lint`: 🟢 **PASS** (0 Biome errors across 897 files).
+   - `npx biome format .`: 🟢 **PASS** (0 unformatted files).
+   - `npm run check:knip`: 🟢 **PASS** (0 unused files/exports/deps).
+   - `npm run check:bundle`: 🟢 **PASS** (JS 0.8 kB gzip / CSS 44.6 kB gzip).
+   - `npm test`: 🟢 **PASS** (171 test files / 2,599 tests passing).
+   - `npm run verify:clean-seed`: 🟢 **PASS** (Clean fixtures, 0 egress violations).
+   - `npm run check:audit`: 🟢 **PASS** (0 security vulnerabilities).
+   - `npm run verify:tech-integrity`: 🟢 **PASSED (All 8 gates 100% GREEN)**.
+
+---
+
+## 0000. Monorepo Structural & Organizational Reorganization (2026-08-31)
+
+**Status:** **100% EXECUTED, VERIFIED & PASSING ACROSS ALL 8 PROTOCOL 0 GATES**  
+**Lead Systems Architect:** Antigravity  
+
+### Summary of Actions Taken:
+1. **Schema SSOT & Validation Consolidation (Sprint 1):**
+   - Centralized contact & inquiry schemas into [`shared/schemas/contact.ts`](shared/schemas/contact.ts).
+   - Added `categoryReorderSchema`, `productsQuerySchema`, `productByPathSchema`, `adminProductsQuerySchema`, and manufacturing validation helpers to `@run-remix/shared`.
+   - Purged 4 duplicate validation directories (`client/app/schemas/`, `client/app/lib/schemas/`, `server/validation/`, `shared/validation/`).
+2. **Workspace-Scoped Test Hierarchy (Sprint 2):**
+   - Relocated client tests to `client/tests/` (`client/tests/unit/`, `client/tests/components/`).
+   - Relocated server tests to `server/tests/` (`server/tests/routes/`, `server/tests/services/`, `server/tests/repositories/`).
+   - Relocated shared schema tests to `shared/tests/`.
+   - Reserved root `tests/` for cross-boundary integration, SSR invariants, chaos, and API security tests.
+   - Purged duplicate `tests/e2e/` (canonical Playwright suite maintained in root `e2e/`).
+   - Modernized `vitest.config.ts` pool configuration for Vitest 4.
+3. **Server Domain Bounded Contexts (Sprint 3):**
+   - Reorganized `server/services/` into domain bounded contexts: `server/services/catalog/`, `server/services/cms/`, `server/services/media/`, `server/services/system/`.
+   - Created centralized barrel export `server/services/index.ts`.
+   - Deleted empty `server/repositories/` directory.
+4. **Monorepo Hygiene & Naming Normalization (Sprint 4):**
+   - Pruned 42 server-only dependencies from root `package.json`.
+   - Normalized client hook and lib file naming to kebab-case (`use-analytics-tracker.ts`, `use-cache-invalidation.ts`, `use-manufacturing-mutations.ts`, `use-optimized-query.ts`, `use-performance-monitor.ts`, `use-technology-feature-flags.ts`, `use-viewport-aware-positioning.ts`, `error-reporter.ts`, `query-client.ts`, `use-hydrated-store.ts`).
+   - Purged duplicate `.gemini/skills/` (1.4MB) and empty directories (`scripts/assets/`, `server/lib/jobs/queues/`, `tests/integration/server/lib/cache/`, `.superpowers/`).
+
+### Verification Gate Results:
+- `npm run typecheck`: 🟢 **0 errors** across client, server, and shared.
+- `npm run lint`: 🟢 **0 Biome errors** (915 files clean).
+- `npx biome format .`: 🟢 **0 unformatted files**.
+- `npm run check:knip`: 🟢 **0 unused files, 0 unused deps, 0 unused exports**.
+- `npm run check:bundle`: 🟢 **100% within gzip budgets**.
+- `npm test`: 🟢 **178 test files passed (2,636 tests passing)**.
+- `npm run verify:clean-seed`: 🟢 **100% clean fixtures & 0 egress violations**.
+- `npm run check:audit`: 🟢 **0 security vulnerabilities**.
+- `npm run verify:tech-integrity`: 🟢 **PASSED (All 8 gates 100% GREEN)**.
+
+---
+
+**Status:** **100% EXECUTED, VERIFIED & PASSING ACROSS ALL 8 PROTOCOL 0 GATES**  
+**Lead Systems Architect:** Antigravity  
+
+### Summary of Actions Taken:
+1. **Dependency De-Bloat:**
+   - Pruned 100 extraneous packages in `node_modules` (including `@reduxjs/toolkit`, `immer`, `lenis`, and 11 `d3-*` packages).
+   - Removed `protobufjs`, `@stryker-mutator/*`, and `recharts` SSR externals.
+   - Added `locomotive-scroll` (^5.0.1) as declared client dependency.
+2. **Redis/Upstash Elimination:**
+   - Deleted `server/lib/cache/upstash-client.ts`.
+   - Updated `unified-cache.ts`, `cache-events.ts`, and `analytics.ts` to pure in-memory LRU + Neon PostgreSQL caching.
+   - Removed `REDIS_URL` and `UPSTASH_*` from env validation schema.
+3. **Dead Seeder & Populator Route Elimination:**
+   - Deleted `data-creation.ts` (421 lines), `api-based-population.ts` (64 lines), `direct-postgres-population.ts` (65 lines), `population.service.ts` (824 lines), `transaction-utils.ts` (51 lines), and `schemas.ts` (8 lines).
+   - Cleaned `server/routes/index.ts` route mountings.
+4. **Verified Dead Client Code & Tests:**
+   - Deleted 4 verified unreferenced client files and 3 orphaned test files.
+5. **Orphaned Media Pruning:**
+   - Deleted 41 unreferenced image files in `client/public/images/` (~940 KB).
+6. **Documentation & DevOps Cleanliness:**
+   - Consolidated historical docs and completed plans into `docs/archive/`.
+   - Deleted duplicate `ops/grafana/`, obsolete `docker-compose.observability.yml`, and unused `.pre-commit-config.yaml`.
+   - Added `shared/dist/` and `skills-lock.json` to `.gitignore`.
+
+### Verification Gate Results:
+- `npm run typecheck`: 0 errors
+- `npm run lint`: 0 errors (926 files clean)
+- `npx biome format .`: 0 unformatted files
+- `npm run check:knip`: 0 unused files, 0 unused deps, 0 unused exports
+- `npm run check:bundle`: 100% within gzip budget
+- `npm test`: 178 test files passed (2,636 tests passing)
+- `npm run verify:clean-seed`: 100% clean fixtures & 0 egress violations
+- `npm run check:audit`: 0 security vulnerabilities
+- `npm run verify:tech-integrity`: **PASSED (Exit code 0)**
 
 ## 00. Homepage Master Forensic Audit & Full Multi-Workstream Remediation (2026-08-31)
 

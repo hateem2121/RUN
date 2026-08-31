@@ -3,6 +3,12 @@
  * Implements React 19 standards, Native CSS Scroll Snap, and Optimistic UI.
  */
 
+import {
+  type MediaAsset,
+  type ProductDetailResponse as ProductDetail,
+  ProductDetailResponseSchema as ProductDetailSchema,
+  type ProductSummary,
+} from "@shared/index";
 import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { AlertCircle, Check, Heart, Ruler, Share2, ShoppingBag } from "lucide-react";
 import { useEffect, useOptimistic, useRef, useState, useTransition } from "react";
@@ -12,14 +18,11 @@ import { LazyUnifiedModelViewer } from "@/components/ui/LazyUnifiedModelViewer";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Typography } from "@/components/ui/typography";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { apiRequest, getQueryClient } from "@/lib/query-client";
 import { cn } from "@/lib/utils";
-import {
-  type MediaAsset,
-  type ProductSummary as Product,
-  type ProductDetail,
-  ProductDetailSchema,
-} from "@/schemas/product";
+
+type Product = ProductSummary;
+
 import { useQuoteStore } from "@/stores/useQuoteStore";
 import type { Route } from "./+types/categories.$";
 
@@ -54,7 +57,7 @@ export async function loader({ params }: Route.LoaderArgs) {
       .map((m: { id?: unknown }) => m.id)
       .filter((id): id is number => typeof id === "number");
     if (mediaIds.length > 0) {
-      const { prefetchMediaBatch } = await import("@/lib/queryClient");
+      const { prefetchMediaBatch } = await import("@/lib/query-client");
       await prefetchMediaBatch(mediaIds);
     }
   }

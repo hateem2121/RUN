@@ -36,7 +36,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { apiRequest, getQueryClient } from "@/lib/query-client";
 import { CertificateAnalytics } from "./CertificateAnalytics";
 import { CertificateForm } from "./CertificateForm";
 import { CertificateInsights } from "./CertificateInsights";

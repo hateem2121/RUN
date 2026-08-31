@@ -5,21 +5,6 @@ import "vitest-axe/extend-expect";
 
 expect.extend(axeMatchers);
 
-// Mock Replit database (Vitest 4.0 syntax)
-vi.mock("@replit/database", () => {
-  const Database = vi.fn(() => ({
-    get: vi.fn(),
-    set: vi.fn(),
-    delete: vi.fn(),
-    list: vi.fn(),
-  }));
-
-  return {
-    Database,
-    default: { Database }, // Vitest 4.0 requires explicit default export
-  };
-});
-
 // Mock IntersectionObserver for 3D model tests
 class MockIntersectionObserver {
   observe = vi.fn();

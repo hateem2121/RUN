@@ -400,34 +400,15 @@ class AlertManager {
     }
 
     try {
-      // Import database metrics if available
-      const { dbMetricsTracker } = require("./database-metrics-tracker.js");
-      const metrics = dbMetricsTracker?.getMetrics();
+      const metrics = queryPerformanceMonitor.getMetrics();
 
       if (!metrics) {
         return null;
       }
 
-      // Check for connection errors
-      if (this.thresholds.dbConnection.alertOnError && metrics.connectionErrors > 0) {
-        return {
-          id: `alert_${Date.now()}_db_connection`,
-          type: "db_connection",
-          severity: "critical",
-          message: `Database connection errors detected: ${metrics.connectionErrors} failures`,
-          timestamp: new Date().toISOString(),
-          details: {
-            connectionErrors: metrics.connectionErrors,
-            totalQueries: metrics.totalQueries,
-            avgResponseTime: metrics.avgResponseTime,
-            lastError: metrics.lastError,
-          },
-        };
-      }
-
       // Check for timeouts
       if (this.thresholds.dbConnection.alertOnTimeout && metrics.timeouts > 0) {
-        const timeoutRate = (metrics.timeouts / metrics.totalQueries) * 100;
+        const timeoutRate = metrics.timeoutRate;
 
         if (timeoutRate > 5) {
           // Alert if >5% timeout rate
@@ -439,16 +420,15 @@ class AlertManager {
             timestamp: new Date().toISOString(),
             details: {
               timeouts: metrics.timeouts,
-              totalQueries: metrics.totalQueries,
+              totalQueries: metrics.queryCount,
               timeoutRate: timeoutRate.toFixed(1),
               avgResponseTime: metrics.avgResponseTime,
             },
           };
         }
       }
-    } catch (_error) {
-      // Silently ignore if database metrics tracker doesn't exist
-      // This is expected in development or if DB monitoring isn't set up
+    } catch (error) {
+      logger.error("[AlertManager] Error checking database connection:", error);
     }
 
     return null;

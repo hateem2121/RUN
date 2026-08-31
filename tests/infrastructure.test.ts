@@ -75,12 +75,6 @@ vi.mock("../server/db.ts", () => ({
   },
 }));
 
-// Mock Rate Limiter
-vi.mock("../server/lib/resilience/rate-limiter.js", () => ({
-  adminLimiter: { middleware: () => (_req, _res, next) => next() },
-  diagnosticLimiter: { middleware: () => (_req, _res, next) => next() },
-}));
-
 // Mock dependencies
 vi.mock("@google-cloud/tasks", () => {
   const CloudTasksClient = vi.fn();

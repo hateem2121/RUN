@@ -12,8 +12,8 @@ import { insertAboutTeamMessageSchema } from "@run-remix/shared";
 import { Router } from "express";
 import { ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
-import { aboutService } from "../../services/about.service.js";
-import { authService } from "../../services/auth-service.js";
+import { aboutService } from "../../services/cms/about.service.js";
+import { authService } from "../../services/system/auth.service.js";
 
 const router = Router();
 router.use(publicTier);

@@ -1,7 +1,7 @@
 import { Loader2, Map as MapIcon, Satellite } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MapErrorBoundary } from "./components/MapErrorBoundary";
-import type { MapLocation } from "./hooks/useMapMarkers";
+import type { MapLocation } from "./types";
 
 interface SimpleMapContainerProps {
   locations: MapLocation[];

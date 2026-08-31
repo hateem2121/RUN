@@ -8,7 +8,7 @@ import type {
   SustainabilityMetric,
 } from "@shared/index";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/query-client";
 
 export function useAdminSustainabilityMutations() {
   const queryClient = useQueryClient();

@@ -1,7 +1,7 @@
 import type { InsertProduct, Product } from "@shared/index";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/query-client";
 
 interface UseProductMutationsProps {
   onSuccess: () => void;

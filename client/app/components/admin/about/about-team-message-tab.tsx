@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createMediaQueryKey } from "@/lib/media-query-keys";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { apiRequest, getQueryClient } from "@/lib/query-client";
 
 export function AboutTeamMessageTab() {
   const [isPickerOpen, setIsPickerOpen] = useState(false);

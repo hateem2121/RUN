@@ -30,7 +30,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { apiRequest, getQueryClient } from "@/lib/query-client";
 
 export function FooterManagement() {
   const [activeTab, setActiveTab] = useState("general");

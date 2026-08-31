@@ -1,10 +1,8 @@
 import { Router } from "express";
-import { Result } from "neverthrow";
 import { z } from "zod";
-import { isRedisEnabled, redis } from "../../lib/cache/upstash-client.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { apiTier } from "../../middleware/rate-limit-tiers.js";
-import { authService } from "../../services/auth-service.js";
+import { authService } from "../../services/system/auth.service.js";
 
 const router = Router();
 router.use(apiTier);
@@ -15,6 +13,20 @@ const WebVitalSchema = z.object({
   delta: z.number(),
   id: z.string(),
 });
+
+interface StoredVital {
+  name: string;
+  value: number;
+  delta: number;
+  id: string;
+  timestamp: number;
+  userAgent?: string | undefined;
+  ip?: string | undefined;
+}
+
+// In-memory ring buffer per metric for fast local diagnostics
+const vitalsStore = new Map<string, StoredVital[]>();
+const MAX_VITALS_PER_METRIC = 100;
 
 /** Core Web Vital metric names tracked by the client */
 const VITAL_METRIC_NAMES = ["LCP", "CLS", "INP", "FCP", "TTFB"] as const;
@@ -39,28 +51,19 @@ router.post("/vitals", (req, res) => {
       ip: ip,
     });
 
-    if (isRedisEnabled) {
-      // PC-602: Persist to Redis
-      const listKey = `vitals:${metric.name}`;
-      const payload = JSON.stringify({
-        ...metric,
-        timestamp: Date.now(),
-        userAgent,
-        ip,
-      });
+    const payload: StoredVital = {
+      ...metric,
+      timestamp: Date.now(),
+      userAgent,
+      ip,
+    };
 
-      const timeout = new Promise<void>((_, reject) =>
-        setTimeout(() => reject(new Error("Redis write timeout")), 300),
-      );
-
-      await Promise.race([
-        (async () => {
-          await redis.lpush(listKey, payload);
-          await redis.ltrim(listKey, 0, 999);
-        })(),
-        timeout,
-      ]);
+    const existing = vitalsStore.get(metric.name) || [];
+    existing.unshift(payload);
+    if (existing.length > MAX_VITALS_PER_METRIC) {
+      existing.length = MAX_VITALS_PER_METRIC;
     }
+    vitalsStore.set(metric.name, existing);
   })().catch((err) => {
     logger.error("[Analytics] Failed to process vitals in background:", err);
   });
@@ -68,45 +71,15 @@ router.post("/vitals", (req, res) => {
 
 /**
  * GET /api/analytics/vitals
- * OB-703: Retrieves stored Web Vitals from Redis (admin-only).
+ * OB-703: Retrieves stored Web Vitals (admin-only).
  * Returns the last 100 entries per metric as JSON.
  */
 router.get("/vitals", authService.requireAdmin, async (_req, res) => {
-  if (!isRedisEnabled) {
-    res.json({
-      status: "ok",
-      metrics: { LCP: [], CLS: [], INP: [], FCP: [], TTFB: [] },
-      retrievedAt: new Date().toISOString(),
-      fallback: true,
-    });
-    return;
+  const results: Record<string, StoredVital[]> = {};
+
+  for (const metric of VITAL_METRIC_NAMES) {
+    results[metric] = vitalsStore.get(metric) || [];
   }
-
-  const results: Record<string, unknown[]> = {};
-
-  const promises = VITAL_METRIC_NAMES.map(async (metric) => {
-    const listKey = `vitals:${metric}`;
-    const timeout = new Promise<string[]>((resolve) => setTimeout(() => resolve([]), 300));
-
-    const rawEntries = await Promise.race([redis.lrange(listKey, 0, 99).catch(() => []), timeout]);
-
-    const safeParse = Result.fromThrowable(
-      (val: string) => JSON.parse(val),
-      () => new Error("parse failed"),
-    );
-
-    results[metric] = (rawEntries as unknown as (string | unknown)[]).map((entry) => {
-      if (typeof entry === "string") {
-        return safeParse(entry).match(
-          (parsed) => parsed,
-          () => entry,
-        );
-      }
-      return entry;
-    });
-  });
-
-  await Promise.all(promises);
 
   res.json({
     status: "ok",

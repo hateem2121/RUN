@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import { ResultAsync } from "neverthrow";
 import { logger } from "../lib/monitoring/logger.js";
 import { adminService as defaultAdminService } from "../services/admin/admin.service.js";
-import { AuthErrors, authService } from "../services/auth-service.js";
+import { AuthErrors, authService } from "../services/system/auth.service.js";
 import type { SessionUser } from "../types/session.js";
 
 // Boot-time assertion: RBAC bypass must never ship to production.

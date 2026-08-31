@@ -38,7 +38,7 @@ const adminCache = new LRUCache<string, AdminCacheEntry>({
 export const adminCacheManager = {
   /**
    * Get admin status from cache
-   * @param userId - Replit user ID
+   * @param userId - User ID
    * @returns boolean if cached, null if cache miss
    */
   get(userId: string): boolean | null {
@@ -53,7 +53,7 @@ export const adminCacheManager = {
 
   /**
    * Set admin status in cache
-   * @param userId - Replit user ID
+   * @param userId - User ID
    * @param isAdmin - Admin status
    */
   set(userId: string, isAdmin: boolean): void {
@@ -77,7 +77,7 @@ export const adminCacheManager = {
   /**
    * Clear specific user from cache
    * Use after individual permission change
-   * @param userId - Replit user ID to clear
+   * @param userId - User ID to clear
    */
   clearUser(userId: string): void {
     const hadEntry = adminCache.delete(userId);

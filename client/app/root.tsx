@@ -19,7 +19,7 @@ import { CeilingNotchNavbar } from "@/components/navigation/ceiling-notch-navbar
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { BackToTop } from "@/components/ui/back-to-top";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
-import { getQueryClient, queryKeys } from "@/lib/queryClient";
+import { getQueryClient, queryKeys } from "@/lib/query-client";
 import "@/index.css";
 import { useEffect } from "react";
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";

@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { invalidateMediaQueries } from "@/lib/media-query-keys";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { apiRequest, getQueryClient } from "@/lib/query-client";
 import { useMediaLibrary } from "./MediaLibraryContextEnhanced";
 
 // PHASE 1: Progressive Loading Integration

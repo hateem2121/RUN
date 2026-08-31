@@ -34,7 +34,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { apiRequest, getQueryClient } from "@/lib/query-client";
 
 interface ContactConfig {
   id?: number | undefined;
@@ -123,9 +123,13 @@ export function ContactPageSettings() {
       const sanitizedData = {
         ...data,
         socialLinks: Object.fromEntries(
-          Object.entries(data.socialLinks || {}).filter(([_, url]) => url && url.trim() !== ""),
+          Object.entries(data.socialLinks || {}).filter(([_, url]: [string, string]) =>
+            Boolean(url && typeof url === "string" && url.trim() !== ""),
+          ),
         ),
-        tradingHours: (data.tradingHours || []).filter((hour) => hour.label && hour.value),
+        tradingHours: (data.tradingHours || []).filter((hour: { label?: string; value?: string }) =>
+          Boolean(hour.label && hour.value),
+        ),
       };
 
       if (config?.id) {

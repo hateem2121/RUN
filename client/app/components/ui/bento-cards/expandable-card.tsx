@@ -3,10 +3,9 @@ import gsap from "gsap";
 import { X } from "lucide-react";
 import { memo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { cn } from "@/lib/utils";
-// import { LoadingState } from "./enhanced-loading-states";
 import { AnimatedCardWrapper } from "./enhanced-animations";
-import { EnhancedBentoCardErrorBoundary } from "./enhanced-error-boundary";
 
 interface ExpandableCardProps {
   title: string;
@@ -110,7 +109,7 @@ export const ExpandableCard = memo(function ExpandableCard({
   }, [isExpanded]);
 
   return (
-    <EnhancedBentoCardErrorBoundary showTechnicalDetails={false}>
+    <ErrorBoundary>
       <AnimatedCardWrapper className="h-full w-full">
         {/* Collapsed Card */}
         <button
@@ -259,6 +258,6 @@ export const ExpandableCard = memo(function ExpandableCard({
             document.body,
           )}
       </AnimatedCardWrapper>
-    </EnhancedBentoCardErrorBoundary>
+    </ErrorBoundary>
   );
 });

@@ -3,8 +3,8 @@ import { CacheKeys } from "../../lib/cache/cache-strategies.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { publicTier } from "../../middleware/rate-limit-tiers.js";
-import { aboutService } from "../../services/about.service.js";
-import { technologyService } from "../../services/technology.service.js";
+import { aboutService } from "../../services/cms/about.service.js";
+import { technologyService } from "../../services/cms/technology.service.js";
 
 /**
  * PAGE CONTENT RESOURCE ROUTER

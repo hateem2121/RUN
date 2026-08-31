@@ -6,13 +6,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider";
-import type { Accessory, Certificate, Fabric, SizeChart } from "@/schemas/product";
+
+export interface FilterItem {
+  id: number;
+  name: string;
+  isActive?: boolean | null | undefined;
+}
 
 interface ProductFiltersProps {
-  fabrics: Fabric[];
-  certificates: Certificate[];
-  sizeCharts: SizeChart[];
-  accessories: Accessory[];
+  fabrics: FilterItem[];
+  certificates: FilterItem[];
+  sizeCharts: FilterItem[];
+  accessories: FilterItem[];
   selectedFilters: {
     fabrics: number[];
     certificates: number[];

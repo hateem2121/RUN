@@ -11,7 +11,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 // Auth mock must be declared before the route imports that capture requireAdmin.
 // vi.mock is hoisted by Vitest, so authService is mocked before any imports run.
-vi.mock("../../../server/services/auth-service.js", () => ({
+vi.mock("../../../server/services/system/auth.service.js", () => ({
   authService: {
     requireAdmin: (_req: unknown, _res: unknown, next: () => void) => next(),
     isAuthenticated: (_req: unknown, _res: unknown, next: () => void) => next(),

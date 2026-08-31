@@ -1,9 +1,9 @@
 import type { MediaAsset } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { useCacheInvalidationListener } from "@/hooks/useCacheInvalidation";
+import { useCacheInvalidationListener } from "@/hooks/use-cache-invalidation";
 import { createMediaQueryKey } from "@/lib/media-query-keys";
-import { batchFetchMediaContent } from "@/lib/queryClient";
+import { batchFetchMediaContent } from "@/lib/query-client";
 import { useMediaLibrary } from "../MediaLibraryContextEnhanced";
 
 interface MediaGridQueryResult {

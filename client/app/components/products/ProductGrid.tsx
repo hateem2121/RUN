@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import type { TransformedProduct } from "@/lib/product-transformers";
 import { transformProducts } from "@/lib/product-transformers";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/query-client";
 import { cn } from "@/lib/utils";
 import { ProductCard } from "./ProductCard";
 import { QuickViewModal } from "./QuickViewModal";

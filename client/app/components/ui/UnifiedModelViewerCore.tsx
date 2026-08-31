@@ -14,7 +14,7 @@ import {
   type ModelViewerConfig,
 } from "@/lib/model-viewer-config";
 import { ensureModelViewerLoaded } from "@/lib/model-viewer-loader";
-import { batchFetchMediaContent } from "@/lib/queryClient";
+import { batchFetchMediaContent } from "@/lib/query-client";
 import { cn } from "@/lib/utils";
 import { reportCustomMetric } from "@/lib/web-vitals";
 import type { ModelViewerElement, ModelViewerErrorEvent } from "@/types/model-viewer";
@@ -810,7 +810,7 @@ export function UnifiedModelViewer({
       >
         {/* Placeholder Image */}
         <img
-          src={asset.thumbnailUrl || "/placeholder-jacket.svg"}
+          src={asset.thumbnailUrl || "/images/placeholders/product-placeholder.webp"}
           alt="Product Preview"
           className="absolute inset-0 h-full w-full object-cover opacity-50 transition-transform duration-700 group-hover:scale-105"
         />

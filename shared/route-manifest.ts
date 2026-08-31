@@ -7,9 +7,7 @@ export const routeManifest: Record<string, string> = {
   "/sustainability": "app/routes/sustainability.tsx",
   "/manufacturing": "app/routes/manufacturing.tsx",
   "/technology": "app/routes/technology.tsx",
-  "/dashboard": "app/routes/dashboard.tsx",
   "/contact": "app/routes/contact.tsx",
-  "/analytics": "app/routes/analytics.tsx",
   "/resources": "app/routes/resources.tsx",
   "/certifications": "app/routes/certifications.tsx",
   "/accessories": "app/routes/accessories.tsx",
@@ -43,16 +41,11 @@ export const routeManifest: Record<string, string> = {
   "/admin/technology": "app/routes/admin.$module.tsx",
   "/admin/services": "app/routes/admin.$module.tsx",
   "/admin/blog": "app/routes/admin.$module.tsx",
-  "/admin/storage-optimization": "app/routes/admin.$module.tsx",
-  "/admin/test-runner": "app/routes/admin.$module.tsx",
   "/admin/inquiries": "app/routes/admin.$module.tsx",
   "/admin/footer": "app/routes/admin.$module.tsx",
   // API Routes
   "/api/media": "app/routes/api.media.tsx",
-  // Developer & Support
-  "/developer": "app/routes/developer.tsx",
-  "/developer/playground": "app/routes/developer.playground.tsx",
-  "/developer/guides": "app/routes/developer.guides.$slug.tsx",
+  // Legal & System
   "/privacy": "app/routes/privacy.tsx",
   "/terms": "app/routes/terms.tsx",
   "/admin/": "app/routes/admin._index.tsx",
@@ -68,11 +61,6 @@ export const getComponentForPath = (pathName: string): string | undefined => {
   // Exact Match
   if (Object.hasOwn(routeManifest, cleanPath)) {
     return routeManifest[cleanPath as keyof typeof routeManifest];
-  }
-
-  // Fuzzy Match (Developer Guides)
-  if (cleanPath.startsWith("/developer/guides/")) {
-    return "app/routes/developer.guides.$slug.tsx";
   }
 
   // Fuzzy Match (Categories & Products)

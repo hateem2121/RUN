@@ -8,6 +8,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
+import { z } from "zod";
 import { certificates } from "../catalog.js";
 import { pgTable } from "../common.js";
 import { mediaAssets } from "../media.js";
@@ -225,3 +226,127 @@ export const selectManufacturingQualitySchema = createSelectSchema(manufacturing
 
 export const insertManufacturingCaseStudySchema = createInsertSchema(manufacturingCaseStudies);
 export const selectManufacturingCaseStudySchema = createSelectSchema(manufacturingCaseStudies);
+
+/**
+ * Reorder validation schemas
+ */
+export const reorderProcessesSchema = z.object({
+  processes: z.array(
+    z.object({
+      id: z.number().int().positive(),
+      position: z.number().int().min(0),
+    }),
+  ),
+});
+
+export const reorderCapabilitiesSchema = z.object({
+  capabilities: z.array(
+    z.object({
+      id: z.number().int().positive(),
+      position: z.number().int().min(0),
+    }),
+  ),
+});
+
+export const reorderQualitiesSchema = z.object({
+  qualities: z.array(
+    z.object({
+      id: z.number().int().positive(),
+      position: z.number().int().min(0),
+    }),
+  ),
+});
+
+export const reorderCaseStudiesSchema = z.object({
+  caseStudies: z.array(
+    z.object({
+      id: z.number().int().positive(),
+      position: z.number().int().min(0),
+    }),
+  ),
+});
+
+export type ReorderProcessesData = z.infer<typeof reorderProcessesSchema>;
+export type ReorderCapabilitiesData = z.infer<typeof reorderCapabilitiesSchema>;
+export type ReorderQualitiesData = z.infer<typeof reorderQualitiesSchema>;
+export type ReorderCaseStudiesData = z.infer<typeof reorderCaseStudiesSchema>;
+
+/**
+ * Standard validation result type
+ */
+export type ValidationResult<T> =
+  | { success: true; data: T }
+  | { success: false; error: { message: string; details: z.ZodIssue[] } };
+
+/**
+ * Generic validation helper
+ */
+export function validateSchema<T>(schema: z.ZodSchema<T>, data: unknown): ValidationResult<T> {
+  const result = schema.safeParse(data);
+  if (result.success) {
+    return { success: true, data: result.data };
+  }
+  return {
+    success: false,
+    error: {
+      message: "Validation failed",
+      details: result.error.issues,
+    },
+  };
+}
+
+export function validateManufacturingProcess(data: unknown) {
+  return validateSchema(insertManufacturingProcessSchema, data);
+}
+
+export function validateManufacturingProcessPartial(data: unknown) {
+  return validateSchema(insertManufacturingProcessSchema.partial(), data);
+}
+
+export function validateManufacturingCapability(data: unknown) {
+  return validateSchema(insertManufacturingCapabilitySchema, data);
+}
+
+export function validateManufacturingCapabilityPartial(data: unknown) {
+  return validateSchema(insertManufacturingCapabilitySchema.partial(), data);
+}
+
+export function validateManufacturingQuality(data: unknown) {
+  return validateSchema(insertManufacturingQualitySchema, data);
+}
+
+export function validateManufacturingQualityPartial(data: unknown) {
+  return validateSchema(insertManufacturingQualitySchema.partial(), data);
+}
+
+export function validateManufacturingHero(data: unknown) {
+  return validateSchema(insertManufacturingHeroSchema, data);
+}
+
+export function validateManufacturingHeroPartial(data: unknown) {
+  return validateSchema(insertManufacturingHeroSchema.partial(), data);
+}
+
+export function validateManufacturingCaseStudy(data: unknown) {
+  return validateSchema(insertManufacturingCaseStudySchema, data);
+}
+
+export function validateManufacturingCaseStudyPartial(data: unknown) {
+  return validateSchema(insertManufacturingCaseStudySchema.partial(), data);
+}
+
+export function validateReorderProcesses(data: unknown) {
+  return validateSchema(reorderProcessesSchema, data);
+}
+
+export function validateReorderCapabilities(data: unknown) {
+  return validateSchema(reorderCapabilitiesSchema, data);
+}
+
+export function validateReorderQualities(data: unknown) {
+  return validateSchema(reorderQualitiesSchema, data);
+}
+
+export function validateReorderCaseStudies(data: unknown) {
+  return validateSchema(reorderCaseStudiesSchema, data);
+}

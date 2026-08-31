@@ -3,8 +3,8 @@ import { type QuoteSubmissionData as InquiryFormData, QuoteSubmissionSchema } fr
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { apiRequest } from "../lib/queryClient";
-import { useHydratedStore } from "../lib/useHydratedStore";
+import { useHydratedStore } from "../hooks/use-hydrated-store";
+import { apiRequest } from "../lib/query-client";
 import { type QuoteItem, type QuoteStore, useQuoteStore } from "../stores/useQuoteStore";
 
 export type { InquiryFormData };

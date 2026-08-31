@@ -1,8 +1,7 @@
-import type { Category } from "@shared/index";
+import { type Category, categoriesResponseSchema } from "@shared/index";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { categoriesResponseSchema } from "@/lib/schemas/categories";
 import { validatedApiRequest } from "@/lib/validated-api";
 
 // Reusing the query key from the simpler hook if consistent, or defining new ones

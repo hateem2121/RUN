@@ -190,3 +190,19 @@ export type InsertCategory = z.infer<typeof insertCategorySchema>;
 
 // Client response schema — array of selected categories for use in API response validation
 export const categoriesResponseSchema = z.array(selectCategorySchema);
+
+/**
+ * Validation schema for category reordering.
+ * Used by admin dashboard for drag-and-drop category management.
+ */
+export const categoryReorderSchema = z.object({
+  categories: z.array(
+    z.object({
+      id: z.number(),
+      sortOrder: z.number(),
+      parentId: z.number().nullish(),
+    }),
+  ),
+});
+
+export type CategoryReorderData = z.infer<typeof categoryReorderSchema>;

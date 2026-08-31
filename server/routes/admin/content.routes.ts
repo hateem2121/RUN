@@ -12,7 +12,7 @@ import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { criticalTier } from "../../middleware/rate-limit-tiers.js";
 import { getAuditContext } from "../../middleware/request-context.js";
 import { adminService } from "../../services/admin/index.js";
-import { authService } from "../../services/auth-service.js";
+import { authService } from "../../services/system/auth.service.js";
 
 const router = Router();
 router.use(criticalTier);
@@ -288,7 +288,7 @@ router.delete("/about/timeline/:id", authService.requireAdmin, async (req, res) 
 // =============================================================================
 // HOMEPAGE MANAGEMENT
 // =============================================================================
-import { homepageService } from "../../services/homepage.service.js";
+import { homepageService } from "../../services/cms/homepage.service.js";
 
 router.get("/homepage/hero", authService.requireAdmin, async (_req, res) => {
   const result = await homepageService.getHero();
@@ -318,7 +318,7 @@ router.get("/homepage/slogans", authService.requireAdmin, async (_req, res) => {
 // =============================================================================
 // SUSTAINABILITY MANAGEMENT
 // =============================================================================
-import { sustainabilityService } from "../../services/sustainability.service.js";
+import { sustainabilityService } from "../../services/cms/sustainability.service.js";
 
 router.get("/sustainability/hero", authService.requireAdmin, async (_req, res) => {
   const result = await sustainabilityService.getHero();
@@ -347,7 +347,7 @@ router.get("/sustainability/initiatives", authService.requireAdmin, async (_req,
 // =============================================================================
 // TECHNOLOGY MANAGEMENT
 // =============================================================================
-import { technologyService } from "../../services/technology.service.js";
+import { technologyService } from "../../services/cms/technology.service.js";
 
 router.get("/technology/hero", authService.requireAdmin, async (_req, res) => {
   const result = await technologyService.getHero();

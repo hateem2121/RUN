@@ -83,7 +83,7 @@ describe("Product Integration Tests", () => {
       next();
     });
 
-    const { authService } = await import("../../../server/services/auth-service.js");
+    const { authService } = await import("../../../server/services/system/auth.service.js");
     vi.spyOn(authService, "setup").mockResolvedValue(undefined);
 
     await setupMiddleware(app);

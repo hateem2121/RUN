@@ -2,15 +2,14 @@ import { type Response, Router } from "express";
 import passport from "passport";
 import { logger } from "../lib/monitoring/logger.js";
 import { criticalTier } from "../middleware/rate-limit-tiers.js";
-import { authRateLimiter } from "../middleware/rateLimiter.js";
-import { authService } from "../services/auth-service.js";
+import { authService } from "../services/system/auth.service.js";
 import type { SessionUser } from "../types/session.js";
 
 const router = Router();
 router.use(criticalTier);
 
 // Login route - starts OAuth flow or forwards to mock-login in test/E2E
-router.get("/login", authRateLimiter, (req, res, next) => {
+router.get("/login", (req, res, next) => {
   const isMockEnabled =
     process.env.ENABLE_MOCK_ADMIN === "true" ||
     process.env.NODE_ENV === "test" ||

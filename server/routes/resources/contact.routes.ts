@@ -9,9 +9,9 @@ import { CacheKeys, CacheOperations } from "../../lib/cache/cache-strategies.js"
 import { unifiedCache } from "../../lib/cache/unified-cache.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { criticalTier, publicTier } from "../../middleware/rate-limit-tiers.js";
-import { authService } from "../../services/auth-service.js";
-import { contactService } from "../../services/contact.service.js";
-import { inquiryService } from "../../services/inquiry-service.js";
+import { authService } from "../../services/system/auth.service.js";
+import { contactService } from "../../services/system/contact.service.js";
+import { inquiryService } from "../../services/system/inquiry.service.js";
 
 const router = express.Router();
 router.use(publicTier);

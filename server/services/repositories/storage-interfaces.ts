@@ -7,7 +7,6 @@ import type {
   AboutTeamMessage,
   AboutTimelineEntry,
   Accessory,
-  AnimationError,
   AuditLog,
   BlogCategory,
   BlogPost,
@@ -32,7 +31,6 @@ import type {
   InsertAboutTeamMessage,
   InsertAboutTimelineEntry,
   InsertAccessory,
-  InsertAnimationError,
   InsertBlogCategory,
   InsertBlogPost,
   InsertCategory,
@@ -63,8 +61,6 @@ import type {
   InsertProduct,
   InsertService,
   InsertSizeChart,
-  InsertStorageAnalysisResult,
-  InsertStorageChangeLog,
   InsertSustainabilityGoal,
   InsertSustainabilityHero,
   InsertSustainabilityInitiative,
@@ -95,8 +91,6 @@ import type {
   ProductSummary,
   Service,
   SizeChart,
-  StorageAnalysisResult,
-  StorageChangeLog,
   SustainabilityGoal,
   SustainabilityHero,
   SustainabilityInitiative,
@@ -652,16 +646,6 @@ interface IWebhookRepository {
 
 // System, Metrics & Audit
 interface ISystemRepository {
-  getAnimationErrors(): Promise<AnimationError[]>;
-  getAnimationError(id: number): Promise<AnimationError | undefined>;
-  createAnimationError(error: InsertAnimationError): Promise<AnimationError>;
-  updateAnimationError(
-    id: number,
-    error: Partial<InsertAnimationError>,
-  ): Promise<AnimationError | undefined>;
-  deleteAnimationError(id: number): Promise<boolean>;
-  getUnresolvedAnimationErrors(): Promise<AnimationError[]>;
-  markAnimationErrorResolved(id: number): Promise<boolean>;
   getPerformanceMetrics(): Promise<PerformanceMetric[]>;
   getPerformanceMetric(id: number): Promise<PerformanceMetric | undefined>;
   createPerformanceMetric(metric: InsertPerformanceMetric): Promise<PerformanceMetric>;
@@ -669,12 +653,6 @@ interface ISystemRepository {
   getPerformanceMetricsByType(metricType: string): Promise<PerformanceMetric[]>;
   getPerformanceMetricsByComponent(componentName: string): Promise<PerformanceMetric[]>;
   getRecentPerformanceMetrics(hours: number): Promise<PerformanceMetric[]>;
-  getStorageAnalysisResults(): Promise<StorageAnalysisResult[]>;
-  addStorageAnalysisResult(result: InsertStorageAnalysisResult): Promise<StorageAnalysisResult>;
-  deleteStorageAnalysisResult(id: number): Promise<boolean>;
-  getStorageChangeLogs(): Promise<StorageChangeLog[]>;
-  addStorageChangeLog(changeLog: InsertStorageChangeLog): Promise<StorageChangeLog>;
-  deleteStorageChangeLog(id: number): Promise<boolean>;
   getAuditLogsForRecord(tableName: string, recordId: string): Promise<AuditLog[]>;
   getRecentAuditLogs(limit?: number): Promise<AuditLog[]>;
   createAuditLog(log: import("@run-remix/shared").InsertAuditLog): Promise<AuditLog>;

@@ -1,7 +1,7 @@
 import { StrictMode, startTransition } from "react";
 import { hydrateRoot } from "react-dom/client";
 import { HydratedRouter } from "react-router/dom";
-import { initErrorReporter } from "@/lib/errorReporter.js";
+import { initErrorReporter } from "@/lib/error-reporter.js";
 
 // PC-603 RESOLVED: Web Vitals registration is handled exclusively in root.tsx
 // via reportWebVitals() from @/lib/web-vitals (called in Layout useEffect).

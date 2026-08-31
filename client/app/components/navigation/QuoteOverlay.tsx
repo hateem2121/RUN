@@ -1,5 +1,5 @@
 import { InquiryDrawer } from "@/components/inquiry/InquiryDrawer";
-import { useHydratedStore } from "@/lib/useHydratedStore";
+import { useHydratedStore } from "@/hooks/use-hydrated-store";
 import { type QuoteItem, useQuoteStore } from "@/stores/useQuoteStore";
 
 export function QuoteOverlay() {

@@ -3,7 +3,7 @@ import type { Express } from "express";
 import { validateRequest } from "zod-express-middleware";
 import { logger } from "../../lib/monitoring/logger.js";
 import { criticalTier } from "../../middleware/rate-limit-tiers.js";
-import { newsletterService } from "../../services/newsletter.service.js";
+import { newsletterService } from "../../services/system/newsletter.service.js";
 
 export function registerNewsletterRoutes(app: Express): void {
   app.post(

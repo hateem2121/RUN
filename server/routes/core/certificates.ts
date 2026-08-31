@@ -13,8 +13,8 @@ import { CacheOperations } from "../../lib/cache/cache-strategies.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
-import { authService } from "../../services/auth-service.js";
 import { miscRepository } from "../../services/repositories/index.js";
+import { authService } from "../../services/system/auth.service.js";
 
 const router = Router();
 router.use(apiTier);

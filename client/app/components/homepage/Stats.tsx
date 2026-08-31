@@ -139,14 +139,14 @@ export const Stats: React.FC = () => {
           <picture>
             <source srcSet="/images/homepage/stats-bg.webp" type="image/webp" />
             <img
-              src="/images/homepage/stats-bg.png"
+              src="/images/homepage/stats-bg.webp"
               alt=""
-              crossOrigin="anonymous"
+              aria-hidden="true"
               loading="lazy"
               decoding="async"
               width={1920}
               height={1080}
-              className="h-full w-full object-cover opacity-50 contrast-125"
+              className="h-full w-full object-cover object-center brightness-110 contrast-105"
             />
           </picture>
           <div className="absolute inset-0 bg-linear-to-r from-background via-background/80 to-transparent" />

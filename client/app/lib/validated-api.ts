@@ -1,6 +1,6 @@
+import { createSuccessEnvelopeSchema } from "@shared/index";
 import type { z } from "zod";
 import { apiRequest } from "./api";
-import { createSuccessEnvelopeSchema } from "./schemas/response-envelopes";
 
 class ResponseValidationError extends Error {
   public validationError: z.ZodError;

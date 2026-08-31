@@ -1,9 +1,8 @@
 import { ArrowRight, Repeat2 } from "lucide-react";
 import { memo, useState } from "react";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { cn } from "@/lib/utils";
-// import { LoadingState } from "./enhanced-loading-states";
 import { AnimatedCardWrapper } from "./enhanced-animations";
-import { EnhancedBentoCardErrorBoundary } from "./enhanced-error-boundary";
 
 interface FlipCardProps {
   title?: string | undefined;
@@ -34,7 +33,7 @@ export const FlipCard = memo(function FlipCard({
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
-    <EnhancedBentoCardErrorBoundary showTechnicalDetails={false}>
+    <ErrorBoundary>
       <AnimatedCardWrapper className="h-full w-full">
         <div className="relative flex h-full w-full items-center justify-center contain-layout">
           <section
@@ -183,6 +182,6 @@ export const FlipCard = memo(function FlipCard({
           </section>
         </div>
       </AnimatedCardWrapper>
-    </EnhancedBentoCardErrorBoundary>
+    </ErrorBoundary>
   );
 });

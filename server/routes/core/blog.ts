@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { ValidationError } from "../../lib/errors.js";
 import { apiTier } from "../../middleware/rate-limit-tiers.js";
-import { blogService } from "../../services/blog.service.js";
+import { blogService } from "../../services/cms/blog.service.js";
 
 const router = Router();
 router.use(apiTier);

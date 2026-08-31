@@ -4,6 +4,11 @@ import { removeUndefined } from "../../lib/utilities/core-utils.js";
 // Aggregates metrics from cache, database, and performance monitoring systems
 
 import os from "node:os";
+import {
+  CacheInvalidationQuerySchema,
+  MetricsAlertsQuerySchema,
+  MetricsErrorsQuerySchema,
+} from "@run-remix/shared";
 import type { Express } from "express";
 import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
@@ -17,13 +22,8 @@ import { errorAggregator } from "../../lib/monitoring/error-aggregator.js";
 import { httpMetricsTracker } from "../../lib/monitoring/http-metrics.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { apiTier } from "../../middleware/rate-limit-tiers.js";
-import { authService } from "../../services/auth-service.js";
-import { systemService } from "../../services/system.service.js";
-import {
-  CacheInvalidationQuerySchema,
-  MetricsAlertsQuerySchema,
-  MetricsErrorsQuerySchema,
-} from "./schemas.js";
+import { authService } from "../../services/system/auth.service.js";
+import { systemService } from "../../services/system/system.service.js";
 
 // Validation schema for alert threshold updates
 const alertThresholdsUpdateSchema = z

@@ -59,7 +59,7 @@ const productionConfig: ProductionConfig = {
   database: {
     maxConnections: 20,
     queryTimeout: 30000, // 30 seconds
-    enableReadReplicas: false, // Replit doesn't support read replicas
+    enableReadReplicas: false,
   },
 
   cache: {
@@ -161,11 +161,7 @@ const developmentConfig: ProductionConfig = {
 
 // Environment Detection and Config Selection
 export function getConfig(): ProductionConfig {
-  const nodeEnv = process.env.NODE_ENV;
-  const replitEnv = process.env.REPLIT_ENVIRONMENT;
-
-  // Determine environment priority: NODE_ENV > REPLIT_ENVIRONMENT > development
-  const environment = nodeEnv || replitEnv || "development";
+  const environment = process.env.NODE_ENV || "development";
 
   switch (environment) {
     case "production":

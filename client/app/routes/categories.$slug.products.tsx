@@ -18,7 +18,7 @@ import { Typography } from "@/components/ui/typography";
 import { useOptimizedMedia } from "@/hooks/use-optimized-media";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/query-client";
 import type { Route } from "./+types/categories.$slug.products";
 
 export async function loader({ request, params }: Route.LoaderArgs) {

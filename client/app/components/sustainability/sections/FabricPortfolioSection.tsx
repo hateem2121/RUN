@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Leaf, RotateCw } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/query-client";
 import { cn } from "@/lib/utils";
 
 interface FabricPortfolioSectionProps {

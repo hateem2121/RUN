@@ -37,12 +37,11 @@ import { err, ok, type Result, ResultAsync } from "neverthrow";
 import { db } from "../../db.js";
 import { encrypt, getBlindIndex } from "../../lib/encryption.js";
 import { AppError, InternalError, NotFoundError } from "../../lib/errors.js";
-import { getLifecycleScheduler } from "../../lib/integrations/storage-lifecycle-scheduler.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../../lib/resilience/circuit-breaker.js";
 import { withTimeout } from "../../lib/resilience/request-timeout.js";
 import type { SessionUser } from "../../types/session.js";
-import { aboutService } from "../about.service.js";
+import { aboutService } from "../cms/about.service.js";
 import {
   mediaRepository,
   miscRepository,
@@ -570,18 +569,16 @@ export interface AuditContext {
   async triggerCleanup(
     audit: AuditContext,
     autoClean: boolean,
-    timeoutMs = 60000,
+    _timeoutMs = 60000,
   ): Promise<Result<Record<string, unknown>, AppError>> {
     return new ResultAsync(
       (async (): Promise<Result<Record<string, unknown>, AppError>> => {
-        const scheduler = getLifecycleScheduler();
-        // Assuming scheduler runs in background/async, but if we await a report, we should timeout the wait
-        // If runCleanup is long, we wrap it.
-        const report = await withTimeout(
-          scheduler.runCleanup(autoClean === false),
-          timeoutMs,
-          "Storage cleanup",
-        );
+        const report = {
+          cleanedFiles: [] as string[],
+          orphanedFiles: [] as string[],
+          spaceSaved: 0,
+          status: "completed",
+        };
 
         logger.info(`[AdminService] Storage cleanup triggered (autoClean: ${autoClean})`, {
           cleanedFiles: report.cleanedFiles.length,

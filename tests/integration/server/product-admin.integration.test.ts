@@ -9,7 +9,7 @@ import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { setupErrorHandling, setupMiddleware } from "../../../server/boot/middleware.js";
 import productRouter from "../../../server/routes/core/products.js";
-import { authService } from "../../../server/services/auth-service.js";
+import { authService } from "../../../server/services/system/auth.service.js";
 
 // Mock Storage singleton using factory for correct hoisting
 vi.mock("../../../server/lib/storage-singleton.js", () => {

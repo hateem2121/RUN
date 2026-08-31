@@ -197,9 +197,8 @@ Here are all the friendly guides to help you explore and contribute to RUN Remix
 | [🧱 **How to Contribute**](./CONTRIBUTING.md) | Step-by-step guide to building a new Lego brick and submitting your first Pull Request. |
 | [🛡️ **Security Policy**](./SECURITY.md) | How our safety watchdogs protect customer data and how to report bugs safely. |
 | [💬 **Support & Clubhouse**](./SUPPORT.md) | Where to ask questions, chat with the maintainers, or inquire about B2B apparel. |
-| [🎓 **Cite This Project**](./CITATION.md) | How to give credit to RUN Remix in school projects, papers, or 3D research. |
 | [🧭 **The Illustrated Wiki**](./docs/wiki/Home.md) | A complete 6-chapter visual storybook exploring every corner of the factory. |
-| [🔭 **GitHub UI & Operations Guide**](./docs/github-guide/README.md) | A complete 10-chapter visual guide explaining Packages, Actions, Artifacts, Projects, Releases, Deployments & Pulse. |
+| [🛠️ **Operations SOP Index**](./docs/operations/SOP_INDEX.md) | Standard operating procedures for development, migrations, and deployments. |
 
 ---
 

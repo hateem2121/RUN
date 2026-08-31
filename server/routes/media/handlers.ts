@@ -3,7 +3,7 @@ import type { Request, Response } from "express";
 import { z } from "zod";
 import { BadRequestError } from "../../lib/errors.js";
 import { safeSerialize, shouldBypassCache } from "../../lib/utilities/core-utils.js";
-import { mediaService } from "../../services/media.service.js";
+import { mediaService } from "../../services/media/media.service.js";
 import type { MediaListQuerySchema } from "./schemas.js";
 import { createPaginatedResponse, createSuccessResponse } from "./utils.js";
 

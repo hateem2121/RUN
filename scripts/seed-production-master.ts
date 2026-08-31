@@ -22,7 +22,6 @@ import {
   aboutSections,
   aboutTeamMessages,
   aboutTimelineEntries,
-  animationErrors,
   auditLogs,
   blogCategories,
   blogPosts,
@@ -118,8 +117,7 @@ async function seedProductionMaster() {
     await db.delete(inquiries);
     await db.delete(newsletterSubscribers);
     await db.delete(auditLogs);
-    await db.delete(animationErrors);
-    console.log("  ✓ Purged inquiries, newsletter subscribers, audit logs, animation errors");
+    console.log("  ✓ Purged inquiries, newsletter subscribers, audit logs");
 
     // Phase 0b: Junction tables
     await db.delete(fabricCompositions);

@@ -26,7 +26,7 @@ vi.mock("../../server/services/repositories/index.js", () => ({
 }));
 
 // Mock Auth
-vi.mock("../../server/services/auth-service.js", () => ({
+vi.mock("../../server/services/system/auth.service.js", () => ({
   authService: {
     requireAdmin: (_req: unknown, _res: unknown, next: () => void) => next(),
     isAuthenticated: (_req: unknown, _res: unknown, next: () => void) => next(),

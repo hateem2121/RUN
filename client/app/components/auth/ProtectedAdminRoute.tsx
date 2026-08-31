@@ -3,7 +3,7 @@
  *
  * Wraps admin pages to enforce authentication and authorization.
  * User must be:
- * 1. Authenticated (logged in with Replit Auth)
+ * 1. Authenticated (logged in with Google OAuth / Session)
  * 2. Admin (isAdmin=true in database)
  *
  * SECURITY: This is UI-level protection only

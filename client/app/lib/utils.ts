@@ -82,3 +82,34 @@ export function sanitizeContent(content: string | undefined | null): string {
   }
   return sanitized as T;
 }
+
+/**
+ * Generic utility to safely parse an array of items with a Zod schema.
+ * Filters out any items that fail validation, ensuring the UI only receives valid data.
+ * Logs validation errors to console.warn in development.
+ */
+export function safeParseArray<T>(
+  schema: {
+    safeParse: (val: unknown) => { success: true; data: T } | { success: false; error: unknown };
+  },
+  data: unknown[],
+): T[] {
+  if (!Array.isArray(data)) {
+    if (import.meta.env.DEV) {
+      console.warn("safeParseArray: Input is not an array", data);
+    }
+    return [];
+  }
+
+  return data.reduce<T[]>((acc, item) => {
+    const result = schema.safeParse(item);
+    if (result.success) {
+      acc.push(result.data);
+    } else {
+      if (import.meta.env.DEV) {
+        console.warn("Schema validation failed for item:", item, result.error);
+      }
+    }
+    return acc;
+  }, []);
+}

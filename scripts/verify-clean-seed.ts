@@ -14,11 +14,11 @@ const filesToGuard = [
   "server/db/seed-premium-content.sql",
   "server/routes/utilities/direct-postgres-population.ts",
   "server/routes/utilities/api-based-population.ts",
-  "server/services/homepage.service.ts",
-  "server/services/about.service.ts",
-  "server/services/manufacturing.service.ts",
-  "server/services/sustainability.service.ts",
-  "server/services/technology.service.ts",
+  "server/services/cms/homepage.service.ts",
+  "server/services/cms/about.service.ts",
+  "server/services/cms/manufacturing.service.ts",
+  "server/services/cms/sustainability.service.ts",
+  "server/services/cms/technology.service.ts",
 ];
 
 const FORBIDDEN_PATTERNS = [

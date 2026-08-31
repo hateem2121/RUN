@@ -15,7 +15,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { headingVariants, Typography } from "@/components/ui/typography";
 import { gsap } from "@/lib/gsap";
-import { batchFetchMediaContent } from "@/lib/queryClient";
+import { batchFetchMediaContent } from "@/lib/query-client";
 import { cn } from "@/lib/utils";
 
 export async function loader({ request }: Route.LoaderArgs) {

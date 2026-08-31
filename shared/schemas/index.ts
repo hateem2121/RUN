@@ -10,6 +10,7 @@ export * from "./catalog.js";
 export * from "./categories.js";
 export * from "./client-response.js";
 export * from "./common.js";
+export * from "./contact.js";
 export * from "./content/about.js";
 export * from "./content/common.js";
 // Export content domains

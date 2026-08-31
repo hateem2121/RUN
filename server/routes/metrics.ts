@@ -12,7 +12,7 @@ import { errorAggregator } from "../lib/monitoring/error-aggregator.js";
 import { httpMetricsTracker } from "../lib/monitoring/http-metrics.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { apiTier } from "../middleware/rate-limit-tiers.js";
-import { metricsService } from "../services/metrics.service.js";
+import { metricsService } from "../services/system/metrics.service.js";
 
 const router = Router();
 router.use(apiTier);

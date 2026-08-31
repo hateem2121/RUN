@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/query-client";
 import { FabricCard } from "./FabricCard";
 import { FabricFilters } from "./FabricFilters";
 import { FabricForm } from "./FabricForm";

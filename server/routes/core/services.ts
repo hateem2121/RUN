@@ -2,8 +2,8 @@ import { insertServiceSchema, serviceReorderSchema } from "@run-remix/shared";
 import { Router } from "express";
 import { removeUndefined, validateIdParam } from "../../lib/utilities/core-utils.js";
 import { apiTier } from "../../middleware/rate-limit-tiers.js";
-import { authService } from "../../services/auth-service.js";
-import { servicesService } from "../../services/services.service.js";
+import { servicesService } from "../../services/cms/services.service.js";
+import { authService } from "../../services/system/auth.service.js";
 
 const router = Router();
 router.use(apiTier);

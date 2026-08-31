@@ -3,7 +3,7 @@ import { Router } from "express";
 import { env } from "../lib/env.js";
 import { logger } from "../lib/monitoring/logger.js";
 import { criticalTier } from "../middleware/rate-limit-tiers.js";
-import { systemService } from "../services/system.service.js";
+import { systemService } from "../services/system/system.service.js";
 
 const router = Router();
 

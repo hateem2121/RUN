@@ -4,7 +4,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import * as React from "react";
 import { useNestedModalFocus } from "@/hooks/use-nested-modal-focus";
-import { useModalPositioning } from "@/hooks/useViewportAwarePositioning";
+import { useModalPositioning } from "@/hooks/use-viewport-aware-positioning";
 import { cn } from "@/lib/utils";
 
 // Re-export the basic components

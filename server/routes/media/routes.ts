@@ -4,8 +4,7 @@ import { validateRequest } from "zod-express-middleware";
 import { jsonResponse, registry } from "../../lib/api/openapi-generator.js";
 import { env } from "../../lib/env.js";
 import { uploadTier } from "../../middleware/rate-limit-tiers.js";
-import { createRateLimiter } from "../../middleware/rateLimiter.js";
-import { authService } from "../../services/auth-service.js";
+import { authService } from "../../services/system/auth.service.js";
 import {
   batchGetContent,
   batchOperations,
@@ -45,7 +44,6 @@ import {
   uploadSingleFile,
 } from "./handlers.js";
 import { regularUpload, uploadOptimized, validateMagicNumbers } from "./middleware.js";
-import { getRateLimiterHealth, getRateLimiterStats } from "./rate-limiter-handlers.js";
 import {
   MediaChunkSchema,
   MediaFinalizeSchema,
@@ -169,21 +167,6 @@ registry.registerPath({
 });
 
 // Rate limiter for bulk media queries - Phase 1, Block 1D
-// DEVELOPMENT-FRIENDLY: High limits + localhost bypass to prevent false positives
-// Admin media library makes many legitimate requests during upload/refresh
-const bulkMediaLimiter = createRateLimiter({
-  windowMs: 10 * 60 * 1000, // 10 minutes
-  max: env.NODE_ENV === "production" ? 500 : 10000, // 10,000 in dev, 500 in prod
-  message: "Too many media requests, please try again later",
-  keyPrefix: "media",
-  // Skip rate limiting for localhost connections (development)
-  skip: (req: express.Request) => {
-    const ip = req.ip || req.connection?.remoteAddress || "";
-    const isLocalhost = ip === "::1" || ip === "127.0.0.1" || ip?.includes("localhost");
-    return isLocalhost && env.NODE_ENV !== "production";
-  },
-});
-
 // Performance & monitoring
 router.get("/performance-dashboard", authService.requireAdmin, getPerformanceDashboard);
 router.get("/upload-metrics", authService.requireAdmin, getUploadMetrics);
@@ -192,40 +175,9 @@ router.get("/system-status", authService.requireAdmin, getSystemStatus);
 router.get("/health-scan", authService.requireAdmin, getHealthScan);
 router.get("/cache/stats", authService.requireAdmin, getCacheStats);
 
-// Rate Limiter Monitoring (Development only)
-router.get("/media/rate-limiter/stats", (_req, res) => {
-  if (env.NODE_ENV === "production") {
-    return res.status(404).json({ error: "Not found" });
-  }
-
-  // Export internal stats from the bulkMediaLimiter
-  const limiterInfo = {
-    config: {
-      windowMs: 10 * 60 * 1000,
-      max: 10000,
-      keyPrefix: "media",
-    },
-    description: "Bulk media query rate limiter",
-    localhostBypass: true,
-  };
-
-  return res.json({
-    success: true,
-    data: {
-      bulkMediaLimiter: limiterInfo,
-      timestamp: new Date().toISOString(),
-    },
-  });
-});
-
-// FORENSIC INVESTIGATION - Phase 6: Rate limiter monitoring endpoints
-router.get("/rate-limiter/stats", authService.requireAdmin, getRateLimiterStats);
-router.get("/rate-limiter/health", authService.requireAdmin, getRateLimiterHealth);
-
 // Core CRUD (non-parametric routes first)
 router.get(
   "/",
-  bulkMediaLimiter,
   validateRequest({ query: MediaListQuerySchema }) as unknown as RequestHandler,
   getMediaAssets as unknown as RequestHandler,
 );

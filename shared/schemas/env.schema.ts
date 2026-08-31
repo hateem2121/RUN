@@ -108,10 +108,7 @@ export const envSchema = z.object({
   OTEL_EXPORTER_OTLP_ENDPOINT: z.string().url().optional().default("http://localhost:4318"),
   OTEL_SERVICE_NAME: z.string().optional().default("run-remix"),
 
-  // --- CACHING & QUEUES ---
-  REDIS_URL: z.string().optional(),
-  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
-  UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+  // --- CACHING & PERFORMANCE ---
   ENABLE_CACHE_WARMING: z
     .string()
     .default("true")

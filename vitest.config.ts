@@ -44,8 +44,9 @@ export default defineConfig({
         statements: 65,
       },
     },
-    // PERFORMANCE: Limit concurrency to avoid checking out valid memory
+    // PERFORMANCE: Limit concurrency to avoid resource exhaustion
     maxConcurrency: 4,
+    pool: "threads",
   },
   resolve: {
     alias: {

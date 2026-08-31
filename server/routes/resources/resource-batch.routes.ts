@@ -2,8 +2,8 @@ import { type Request, Router } from "express";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { publicTier } from "../../middleware/rate-limit-tiers.js";
-import { accessoryService } from "../../services/accessory.service.js";
-import { miscService } from "../../services/misc.service.js";
+import { accessoryService } from "../../services/catalog/accessory.service.js";
+import { miscService } from "../../services/cms/misc.service.js";
 
 const router = Router();
 router.use(publicTier);

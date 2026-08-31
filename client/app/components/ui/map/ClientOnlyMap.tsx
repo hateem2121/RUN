@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { lazy, Suspense, useEffect, useState } from "react";
-import type { MapLocation } from "./hooks/useMapMarkers";
+import type { MapLocation } from "./types";
 
 // Completely lazy-load the simple map container to prevent any SSR evaluation
 const LazySimpleMapContainer = lazy(() =>

@@ -12,7 +12,7 @@ import { adminCacheManager } from "../../../server/lib/cache/admin-cache.js";
 import { getStorage } from "../../../server/lib/storage-singleton.js";
 import adminRouter from "../../../server/routes/admin/admin.js";
 import authRouter from "../../../server/routes/auth.js";
-import { authService } from "../../../server/services/auth-service.js";
+import { authService } from "../../../server/services/system/auth.service.js";
 
 // Mock external dependencies
 vi.mock("../../../server/lib/storage-singleton.js", () => {

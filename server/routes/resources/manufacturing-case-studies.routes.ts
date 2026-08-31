@@ -1,14 +1,14 @@
-import { Router } from "express";
-import { ValidationError } from "../../lib/errors.js";
-import { removeUndefined, shouldBypassCache } from "../../lib/utilities/core-utils.js";
-import { publicTier } from "../../middleware/rate-limit-tiers.js";
-import { authService } from "../../services/auth-service.js";
-import { manufacturingService } from "../../services/manufacturing.service.js";
 import {
   validateManufacturingCaseStudy,
   validateManufacturingCaseStudyPartial,
   validateReorderCaseStudies,
-} from "../../validation/manufacturing.js";
+} from "@run-remix/shared";
+import { Router } from "express";
+import { ValidationError } from "../../lib/errors.js";
+import { removeUndefined, shouldBypassCache } from "../../lib/utilities/core-utils.js";
+import { publicTier } from "../../middleware/rate-limit-tiers.js";
+import { manufacturingService } from "../../services/cms/manufacturing.service.js";
+import { authService } from "../../services/system/auth.service.js";
 
 /**
  * MANUFACTURING CASE STUDIES RESOURCE ROUTER

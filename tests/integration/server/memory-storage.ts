@@ -14,7 +14,6 @@ import type {
   AboutTeamMessage,
   AboutTimelineEntry,
   Accessory,
-  AnimationError,
   AuditLog,
   BlogCategory,
   BlogPost,
@@ -39,7 +38,6 @@ import type {
   InsertAboutTeamMessage,
   InsertAboutTimelineEntry,
   InsertAccessory,
-  InsertAnimationError,
   InsertAuditLog,
   InsertBlogCategory,
   InsertBlogPost,
@@ -71,8 +69,6 @@ import type {
   InsertProduct,
   InsertService,
   InsertSizeChart,
-  InsertStorageAnalysisResult,
-  InsertStorageChangeLog,
   InsertSustainabilityFeatures,
   InsertSustainabilityGoal,
   InsertSustainabilityHero,
@@ -102,8 +98,6 @@ import type {
   Product,
   Service,
   SizeChart,
-  StorageAnalysisResult,
-  StorageChangeLog,
   SustainabilityCallToAction,
   SustainabilityFeatures,
   SustainabilityGoal,
@@ -172,10 +166,7 @@ export class MemoryStorage implements IStorage {
   private technologyRoadmap = new Map<number, TechnologyRoadmap>();
   private technologyGradientSettings = new Map<number, TechnologyGradientSettings>();
   private technologyCta = new Map<number, TechnologyCta>();
-  private animationErrors = new Map<number, AnimationError>();
   private performanceMetrics = new Map<number, PerformanceMetric>();
-  private storageAnalysisResults = new Map<number, StorageAnalysisResult>();
-  private storageChangeLogs = new Map<number, StorageChangeLog>();
   private servicesMap = new Map<number, Service>();
   private legalPoliciesMap = new Map<number, LegalPolicy>();
 
@@ -2173,44 +2164,6 @@ export class MemoryStorage implements IStorage {
   }
 
   // System Repository
-  async getAnimationErrors(): Promise<AnimationError[]> {
-    return Array.from(this.animationErrors.values());
-  }
-  async getAnimationError(id: number): Promise<AnimationError | undefined> {
-    return this.animationErrors.get(id);
-  }
-  async createAnimationError(error: InsertAnimationError): Promise<AnimationError> {
-    const id = this.nextIds.animationError++;
-    const newError = { ...error, id, createdAt: new Date() } as AnimationError;
-    this.animationErrors.set(id, newError);
-    return newError;
-  }
-  async updateAnimationError(
-    id: number,
-    error: Partial<InsertAnimationError>,
-  ): Promise<AnimationError | undefined> {
-    const existing = this.animationErrors.get(id);
-    if (!existing) return undefined;
-    const updated = { ...existing, ...error } as AnimationError;
-    this.animationErrors.set(id, updated);
-    return updated;
-  }
-  async deleteAnimationError(id: number): Promise<boolean> {
-    return this.animationErrors.delete(id);
-  }
-  async getUnresolvedAnimationErrors(): Promise<AnimationError[]> {
-    return Array.from(this.animationErrors.values()).filter((e) => !e.resolved);
-  }
-  async markAnimationErrorResolved(id: number): Promise<boolean> {
-    const error = this.animationErrors.get(id);
-    if (!error) return false;
-    this.animationErrors.set(id, {
-      ...error,
-      resolved: true,
-      resolvedAt: new Date(),
-    } as AnimationError);
-    return true;
-  }
   async getPerformanceMetrics(): Promise<PerformanceMetric[]> {
     return Array.from(this.performanceMetrics.values());
   }
@@ -2240,36 +2193,6 @@ export class MemoryStorage implements IStorage {
       if (!m.timestamp) return false;
       return new Date(m.timestamp) >= cutoff;
     });
-  }
-  async getStorageAnalysisResults(): Promise<StorageAnalysisResult[]> {
-    return Array.from(this.storageAnalysisResults.values());
-  }
-  async addStorageAnalysisResult(
-    result: InsertStorageAnalysisResult,
-  ): Promise<StorageAnalysisResult> {
-    const id = this.nextIds.storageAnalysisResult++;
-    const newResult = {
-      ...result,
-      id,
-      timestamp: new Date().toISOString(),
-    } as StorageAnalysisResult;
-    this.storageAnalysisResults.set(id, newResult);
-    return newResult;
-  }
-  async deleteStorageAnalysisResult(id: number): Promise<boolean> {
-    return this.storageAnalysisResults.delete(id);
-  }
-  async getStorageChangeLogs(): Promise<StorageChangeLog[]> {
-    return Array.from(this.storageChangeLogs.values());
-  }
-  async addStorageChangeLog(changeLog: InsertStorageChangeLog): Promise<StorageChangeLog> {
-    const id = this.nextIds.storageChangeLog++;
-    const newLog = { ...changeLog, id, timestamp: new Date().toISOString() } as StorageChangeLog;
-    this.storageChangeLogs.set(id, newLog);
-    return newLog;
-  }
-  async deleteStorageChangeLog(id: number): Promise<boolean> {
-    return this.storageChangeLogs.delete(id);
   }
   async getAuditLogsForRecord(tableName: string, recordId: string): Promise<AuditLog[]> {
     return Array.from(this.auditLogs.values()).filter(

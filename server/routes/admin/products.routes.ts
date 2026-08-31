@@ -11,7 +11,7 @@ import { removeUndefined, validateIdParam } from "../../lib/utilities/core-utils
 import { criticalTier } from "../../middleware/rate-limit-tiers.js";
 import { getAuditContext } from "../../middleware/request-context.js";
 import { adminService } from "../../services/admin/index.js";
-import { authService } from "../../services/auth-service.js";
+import { authService } from "../../services/system/auth.service.js";
 
 const router = Router();
 router.use(criticalTier);

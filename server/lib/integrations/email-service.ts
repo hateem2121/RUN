@@ -135,9 +135,8 @@ class EmailService {
   }
 
   private generateAdminEmailTemplate(inquiry: InquiryEmailJobData): string {
-    const dashboardUrl = process.env.REPLIT_DEV_DOMAIN
-      ? `https://${process.env.REPLIT_DEV_DOMAIN}/admin/inquiries/${inquiry.id}`
-      : `http://localhost:${env.PORT}/admin/inquiries/${inquiry.id}`;
+    const baseUrl = process.env.APP_URL || `http://localhost:${env.PORT}`;
+    const dashboardUrl = `${baseUrl}/admin/inquiries/${inquiry.id}`;
 
     return `
 <!DOCTYPE html>

@@ -104,6 +104,8 @@ FULL_SYSTEM_CONTEXT.json
 # E2E visual regression snapshots (regenerable)
 tests/e2e/**/*.png
 e2e/__snapshots__/
+e2e/*-snapshots/
+e2e/artifacts/
 .gstack/
 .claude/skills/gstack/
 
@@ -129,3 +131,5 @@ check.log
 .agents/
 graphify-out/
 .superpowers/
+shared/dist/
+skills-lock.json

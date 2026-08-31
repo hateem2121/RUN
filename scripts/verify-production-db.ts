@@ -21,7 +21,6 @@ import "dotenv/config";
 import {
   aboutHero,
   aboutTimelineEntries,
-  animationErrors,
   auditLogs,
   blogPosts,
   categories,
@@ -59,13 +58,11 @@ async function verifyProductionDb() {
     const [inquiryCount] = await db.select({ val: count() }).from(inquiries);
     const [subCount] = await db.select({ val: count() }).from(newsletterSubscribers);
     const [auditCount] = await db.select({ val: count() }).from(auditLogs);
-    const [animCount] = await db.select({ val: count() }).from(animationErrors);
     const [compCount] = await db.select({ val: count() }).from(fabricCompositions);
 
     if (inquiryCount.val > 0) errors.push(`Expected 0 inquiries, found ${inquiryCount.val}`);
     if (subCount.val > 0) errors.push(`Expected 0 newsletter subscribers, found ${subCount.val}`);
     if (auditCount.val > 0) errors.push(`Expected 0 audit logs, found ${auditCount.val}`);
-    if (animCount.val > 0) errors.push(`Expected 0 animation errors, found ${animCount.val}`);
     if (compCount.val > 0)
       errors.push(`Expected 0 stale fabric compositions, found ${compCount.val}`);
 

@@ -5,7 +5,6 @@ import { postgresCache } from "../lib/cache/postgres-cache-provider.js";
 import { unifiedCache } from "../lib/cache/unified-cache.js";
 import { dbKeepAlive } from "../lib/db/keep-alive.js";
 import { adminNotifier } from "../lib/integrations/admin-notifier.js";
-import { getLifecycleScheduler } from "../lib/integrations/storage-lifecycle-scheduler.js";
 import { logger } from "../lib/monitoring/logger.js";
 
 const config = getConfig();
@@ -35,19 +34,7 @@ export async function startServices() {
   // 2. Workflow Automation
   workflowAutomation.start();
 
-  // 3. Storage Lifecycle
-  try {
-    getLifecycleScheduler({
-      enabled: false,
-      interval: 60 * 60 * 1000,
-      dryRun: false,
-    });
-    // lifecycleScheduler.start();
-  } catch (e) {
-    logger.warn("Failed to start storage lifecycle scheduler", e);
-  }
-
-  // 4. Admin Notifier
+  // 3. Admin Notifier
   try {
     await adminNotifier.start();
   } catch (e) {

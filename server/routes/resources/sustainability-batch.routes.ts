@@ -3,7 +3,7 @@ import { CacheKeys } from "../../lib/cache/cache-strategies.js";
 import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { publicTier } from "../../middleware/rate-limit-tiers.js";
-import { sustainabilityService } from "../../services/sustainability.service.js";
+import { sustainabilityService } from "../../services/cms/sustainability.service.js";
 
 /**
  * SUSTAINABILITY BATCH RESOURCE ROUTER

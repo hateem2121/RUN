@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { toast } from "sonner";
-import { getQueryClient } from "@/lib/queryClient";
+import { getQueryClient } from "@/lib/query-client";
 import { MediaLibraryProvider, useMediaLibrary } from "./MediaLibraryContextEnhanced";
 
 const MediaGrid = React.lazy(() => import("./MediaGrid").then((m) => ({ default: m.MediaGrid })));

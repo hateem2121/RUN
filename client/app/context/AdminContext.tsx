@@ -1,6 +1,6 @@
 import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { getQueryClient } from "@/lib/queryClient";
+import { getQueryClient } from "@/lib/query-client";
 
 interface AdminContextState {
   currentModule: string;

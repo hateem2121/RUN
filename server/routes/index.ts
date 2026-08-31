@@ -12,7 +12,6 @@ import { createServer, type Server } from "node:http";
 import compression from "compression";
 import { type Express, type Request, type Response, Router } from "express";
 import { logger } from "../lib/monitoring/logger.js";
-import { diagnosticLimiter } from "../lib/resilience/rate-limiter.js";
 import { apiTier, criticalTier, publicTier, uploadTier } from "../middleware/rate-limit-tiers.js";
 import v1AdminRouter from "./admin/admin.js";
 import authRouter from "./auth.js";
@@ -23,13 +22,8 @@ import docsRouter from "./docs.js";
 import v1MediaRouter from "./media/index.js";
 import resourcesRouter from "./resources/index.js";
 import analyticsRouter from "./utilities/analytics.js";
-// Utilities / Populators
-import { registerAPIBasedPopulationRoutes } from "./utilities/api-based-population.js";
-import { registerDataCreationRoutes } from "./utilities/data-creation.js";
-import { registerDirectPostgresPopulationRoutes } from "./utilities/direct-postgres-population.js";
 import footerConfigRouter from "./utilities/footer-config.js";
 import inquiryAdminRouter from "./utilities/inquiry-admin.js";
-import { registerKVDiagnosticsRoutes } from "./utilities/kv-diagnostics.js";
 import logsRouter from "./utilities/logs.js";
 import { registerMetricsRoutes } from "./utilities/metrics.js";
 import { registerNewsletterRoutes } from "./utilities/newsletter.js";
@@ -37,16 +31,6 @@ import workerRouter from "./worker.js";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
-
-  // Auth is initialized in boot/middleware.ts
-
-  // ============================================================================
-  // DEV TOOLS (Development only)
-  // ============================================================================
-  if (env.NODE_ENV !== "production") {
-    const { default: devRouter } = await import("./dev.js");
-    app.use("/api/dev", devRouter);
-  }
 
   app.use(
     compression({
@@ -130,16 +114,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Metrics (Production-safe, read-only)
   registerMetricsRoutes(app);
-
-  // DEV-ONLY: KV Diagnostics & Data Population (NEVER in production)
-  if (env.NODE_ENV !== "production") {
-    app.use("/api/kv-direct", diagnosticLimiter.middleware());
-    app.use("/api/kv-diagnostics", diagnosticLimiter.middleware());
-    registerKVDiagnosticsRoutes(app);
-    registerDataCreationRoutes(app);
-    registerDirectPostgresPopulationRoutes(app);
-    registerAPIBasedPopulationRoutes(app);
-  }
 
   registerNewsletterRoutes(app);
 

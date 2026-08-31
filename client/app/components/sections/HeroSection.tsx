@@ -8,7 +8,7 @@ interface HeroSectionProps {
   mediaType?: "image" | "video";
 }
 
-const IMAGES = ["/images/homepage/hero-1.png", "/images/homepage/hero-2.png"];
+const IMAGES = ["/images/homepage/hero-1.webp", "/images/homepage/hero-2.webp"];
 
 export function HeroSection({ heroData, mediaUrl, mediaType = "image" }: HeroSectionProps) {
   return (

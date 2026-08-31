@@ -15,8 +15,8 @@ import { logger } from "../lib/monitoring/logger.js";
 import { appStorageService } from "../lib/storage/app-service.js";
 import { verifyCloudTaskToken } from "../lib/verify-cloud-task-token.js";
 import { apiTier } from "../middleware/rate-limit-tiers.js";
-import { workerTaskDuration } from "../services/job-metrics.service.js";
-import { mediaService } from "../services/media.service.js";
+import { mediaService } from "../services/media/media.service.js";
+import { workerTaskDuration } from "../services/system/job-metrics.service.js";
 import { generateOrganizedStoragePath, getVideoMetadata } from "./media/utils.js";
 
 const router = express.Router();

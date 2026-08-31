@@ -23,7 +23,7 @@ import { pgTable } from "./common.js";
  * @related `server/types/session.ts` - `SessionUser` interface mirrors this schema for request context.
  */
 export const users = pgTable("users", {
-  id: varchar({ length: 255 }).primaryKey(), // Replit user ID (stable, unique)
+  id: varchar({ length: 255 }).primaryKey(), // User ID (stable, unique)
   email: varchar({ length: 255 }).unique(), // Encrypted in DB (AES-256-GCM)
   emailIndex: varchar({ length: 255 }).unique(), // Blind Index for searching (HMAC-SHA256)
   firstName: varchar({ length: 255 }), // Encrypted

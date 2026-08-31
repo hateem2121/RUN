@@ -28,8 +28,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useManufacturingMutations } from "@/hooks/useManufacturingMutations";
-import { useOptimizedQuery } from "@/hooks/useOptimizedQuery";
+import { useManufacturingMutations } from "@/hooks/use-manufacturing-mutations";
+import { useOptimizedQuery } from "@/hooks/use-optimized-query";
 import { cn } from "@/lib/utils";
 
 interface CaseStudyManagementProps {

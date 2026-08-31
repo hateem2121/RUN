@@ -19,7 +19,7 @@ import { ResourceSkeleton } from "@/components/resources/ResourceSkeleton";
 // import { Badge } from "@/components/ui/badge";
 import { Typography } from "@/components/ui/typography";
 import { useDebounce } from "@/hooks/use-debounce";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { apiRequest, getQueryClient } from "@/lib/query-client";
 import type { Route } from "./+types/accessories";
 
 // Define the response type locally if not exported (matching useResourceBatch)

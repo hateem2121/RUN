@@ -3,8 +3,8 @@ import { type Request, type Response, Router } from "express";
 import { env } from "../../lib/env.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { apiTier } from "../../middleware/rate-limit-tiers.js";
-import { jobMetricsService } from "../../services/job-metrics.service.js";
-import { systemService } from "../../services/system.service.js";
+import { jobMetricsService } from "../../services/system/job-metrics.service.js";
+import { systemService } from "../../services/system/system.service.js";
 
 const router = Router();
 router.use(apiTier);

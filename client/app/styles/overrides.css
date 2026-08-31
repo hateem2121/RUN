@@ -191,3 +191,48 @@ html.dark body [data-sonner-toast][data-type="error"] [data-title] {
 html.dark body [data-sonner-toast][data-type="error"] [data-description] {
   color: #fca5a5;
 }
+
+/* =========================================
+   Map Animations & Markers
+   ========================================= */
+.facility-marker,
+.client-marker {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.facility-marker:hover,
+.client-marker:hover {
+  z-index: var(--z-popover);
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+}
+
+.facility-marker svg,
+.client-marker svg {
+  height: 2rem;
+  width: 2rem;
+  border-radius: 9999px;
+  stroke-width: 2;
+  padding: 0.25rem;
+  fill: var(--color-primary-foreground);
+  stroke: var(--color-primary);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    color-mix(in oklch, var(--color-primary), black 20%)
+  );
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-primary), transparent 70%);
+}
+
+.facility-marker svg {
+  stroke: var(--color-success);
+  background: linear-gradient(
+    135deg,
+    var(--color-success),
+    color-mix(in oklch, var(--color-success), black 20%)
+  );
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--color-success), transparent 70%);
+}
+
+.leaflet-marker-shadow-sm {
+  transition: all 0.3s ease-in-out;
+}

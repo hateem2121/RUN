@@ -90,17 +90,11 @@ const TechnologyManagement = lazy(() =>
     default: m.TechnologyManagement,
   })),
 );
-const StorageOptimization = lazy(() =>
-  import("@/components/admin/storage-optimization/StorageOptimizationDashboard").then((m) => ({
-    default: m.StorageOptimizationDashboard,
-  })),
-);
 const ContactManagement = lazy(() =>
   import("@/components/admin/contact-management/ContactPageSettings").then((m) => ({
     default: m.ContactPageSettings,
   })),
 );
-const MediaTestRunner = () => <PlaceholderModule moduleName="Media Test Runner" />;
 const InquiryManagement = lazy(() =>
   import("@/components/admin/inquiry-management").then((m) => ({
     default: m.InquiryManagement,
@@ -196,8 +190,6 @@ export default function AdminModuleRoute() {
         return <SustainabilityManagement />;
       case "technology":
         return <TechnologyManagement />;
-      case "storage-optimization":
-        return <StorageOptimization />;
       case "contact":
         return <ContactManagement />;
       case "footer":
@@ -206,8 +198,6 @@ export default function AdminModuleRoute() {
         return <InquiryManagement />;
       case "blog":
         return <BlogManagement />;
-      case "test-runner":
-        return <MediaTestRunner />;
       default:
         return <PlaceholderModule moduleName={module ?? "Unknown Module"} />;
     }

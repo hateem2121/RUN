@@ -154,7 +154,7 @@ export default defineConfig((env) => {
         "shallowequal",
         "isomorphic-dompurify",
       ],
-      noExternal: ["@run-remix/shared", "react-helmet-async", "recharts", "recharts-scale"],
+      noExternal: ["@run-remix/shared", "react-helmet-async"],
       resolve: {
         conditions: ["module", "node"],
         externalConditions: ["node"],

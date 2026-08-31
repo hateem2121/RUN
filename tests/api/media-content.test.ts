@@ -1,10 +1,10 @@
 import { err, ok } from "neverthrow";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getMediaContent, getThumbnail } from "../../server/routes/media/handlers";
-import { mediaService } from "../../server/services/media.service";
+import { mediaService } from "../../server/services/media/media.service";
 
 // We need to mock mediaService
-vi.mock("../../server/services/media.service", () => ({
+vi.mock("../../server/services/media/media.service", () => ({
   mediaService: {
     getSignedUrl: vi.fn(),
     getThumbnailUrl: vi.fn(),

@@ -1,7 +1,6 @@
 import { SpanStatusCode, trace } from "@opentelemetry/api";
 import { LRUCache } from "lru-cache";
 import { logger } from "../monitoring/logger.js";
-import { isRedisEnabled, redis } from "./upstash-client.js";
 
 // AES-256-GCM Authentication Tag length in bytes
 
@@ -48,16 +47,9 @@ export async function emitCacheInvalidation(
       // Log emission
       logger.info(`[CacheEvents] Emitting invalidation event: ${pattern} (${reason})`);
 
-      if (isRedisEnabled) {
-        const key = `cache:invalidation:latest:${pattern}`;
-        // Store latest event with TTL
-        await redis.set(key, JSON.stringify(event), "EX", EVENT_TTL_SECONDS);
-        span.setAttribute("cache.distributed", true);
-      } else {
-        // Local fallback
-        localEventStore.set(pattern, event);
-        span.setAttribute("cache.distributed", false);
-      }
+      // Local fallback
+      localEventStore.set(pattern, event);
+      span.setAttribute("cache.distributed", false);
 
       span.setStatus({ code: SpanStatusCode.OK });
     } catch (error) {
@@ -76,18 +68,12 @@ export async function emitCacheInvalidation(
  */
 export async function getLatestInvalidationTime(pattern: string): Promise<number> {
   try {
-    if (isRedisEnabled) {
-      const key = `cache:invalidation:latest:${pattern}`;
-      const data = (await redis.get(key)) as CacheInvalidationEvent | null;
-      return data ? data.timestamp : 0;
-    } else {
-      // Local fallback
-      const event = localEventStore.get(pattern);
-      if (event && event.expiresAt > Date.now()) {
-        return event.timestamp;
-      }
-      return 0;
+    // Local fallback
+    const event = localEventStore.get(pattern);
+    if (event && event.expiresAt > Date.now()) {
+      return event.timestamp;
     }
+    return 0;
   } catch (error) {
     logger.error("[CacheEvents] Failed to get latest invalidation time:", error);
     return 0;

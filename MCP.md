@@ -5,9 +5,9 @@
 **Last updated:** August 2026
 **Owner:** M. Hateem Jamshaid — RUN APPAREL (PVT) LTD, Sialkot, Pakistan
 
-> **Hierarchy:** `gemini.md` (SSOT) → `CLAUDE.md` → `MCP.md`
+> **Hierarchy:** `GEMINI.md` (SSOT) → `AGENTS.md` → `MCP.md`
 > This file is a supplementary layer. All architectural rules, forbidden
-> patterns, and stack constraints in `gemini.md` take absolute precedence.
+> patterns, and stack constraints in `GEMINI.md` take absolute precedence.
 > This file governs MCP server routing, invocation rules, and priority order only.
 
 ---

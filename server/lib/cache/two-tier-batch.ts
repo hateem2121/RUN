@@ -8,7 +8,7 @@
  *
  * ARCHITECTURE:
  * - L1 (In-Memory LRU): via UnifiedCache
- * - L2 (Replit KV Store): via UnifiedCache
+ * - L2 (Distributed / Database KV Store): via UnifiedCache
  * - SWR: Fresh/Stale/Expire windows per endpoint
  *
  * SUCCESS CRITERIA:

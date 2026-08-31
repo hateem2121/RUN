@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { propertiesToObject } from "@/lib/fiber-utils";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { apiRequest, getQueryClient } from "@/lib/query-client";
 import { FiberDetails } from "./FiberDetails";
 import { FiberForm } from "./FiberForm";
 import { FiberList } from "./FiberList";

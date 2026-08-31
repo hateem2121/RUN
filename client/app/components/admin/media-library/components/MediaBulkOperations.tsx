@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { invalidateMediaQueries } from "@/lib/media-query-keys";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { apiRequest, getQueryClient } from "@/lib/query-client";
 import { useMediaLibrary } from "../MediaLibraryContextEnhanced";
 
 export const MediaBulkOperations = React.memo(() => {

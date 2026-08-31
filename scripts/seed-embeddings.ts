@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { sql } from "drizzle-orm";
 import { closeDatabaseConnection, db } from "../server/db.js";
-import { generateEmbedding } from "../server/services/embedding.service.js";
+import { generateEmbedding } from "../server/services/system/embedding.service.js";
 
 async function seedEmbeddings() {
   console.log("=== SEEDING PGVECTOR 384D EMBEDDINGS ===");

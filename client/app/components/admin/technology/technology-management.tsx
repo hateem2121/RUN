@@ -7,7 +7,7 @@ import { TechnologyInnovationManagement } from "@/components/admin/technology/Te
 import { TechnologyResearchManagement } from "@/components/admin/technology/TechnologyResearchManagement";
 import { TechnologyRoadmapManagement } from "@/components/admin/technology/TechnologyRoadmapManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useTechnologyFeatureFlags } from "@/hooks/useTechnologyFeatureFlags";
+import { useTechnologyFeatureFlags } from "@/hooks/use-technology-feature-flags";
 import { cn } from "@/lib/utils";
 
 /**

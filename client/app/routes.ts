@@ -10,10 +10,8 @@ export default [
     route("collections", "routes/collections.tsx"),
     route("about", "routes/about.tsx"),
     route("accessories", "routes/accessories.tsx"),
-    route("analytics", "routes/analytics.tsx"),
     route("certifications", "routes/certifications.tsx"),
     route("contact", "routes/contact.tsx"),
-    route("dashboard", "routes/dashboard.tsx"),
     route("fabrics", "routes/fabrics.tsx"),
     route("fibers", "routes/fibers.tsx"),
     route("manufacturing", "routes/manufacturing.tsx"),
@@ -25,13 +23,6 @@ export default [
     route("sustainability", "routes/sustainability.tsx"),
     route("technology", "routes/technology.tsx"),
     route("terms", "routes/terms.tsx"),
-
-    // Developer Portal
-    route("developer", "routes/developer.tsx", [
-      index("routes/developer._index.tsx"),
-      route("playground", "routes/developer.playground.tsx"),
-      route("guides/:slug", "routes/developer.guides.$slug.tsx"),
-    ]),
 
     // Categories (Public)
     route("categories", "routes/categories._index.tsx"),

@@ -3,8 +3,8 @@ import express from "express";
 import { ValidationError } from "../../lib/errors.js";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { criticalTier } from "../../middleware/rate-limit-tiers.js";
-import { authService } from "../../services/auth-service.js";
-import { inquiryService } from "../../services/inquiry-service.js";
+import { authService } from "../../services/system/auth.service.js";
+import { inquiryService } from "../../services/system/inquiry.service.js";
 
 const router = express.Router();
 router.use(criticalTier);

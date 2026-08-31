@@ -1,7 +1,7 @@
 import type React from "react";
 import { useEffect } from "react";
 import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
-import { reportClientError } from "@/lib/errorReporter";
+import { reportClientError } from "@/lib/error-reporter";
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   useEffect(() => {

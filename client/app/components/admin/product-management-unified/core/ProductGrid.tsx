@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getOptimizedQueryOptions } from "@/lib/queryClient";
+import { getOptimizedQueryOptions } from "@/lib/query-client";
 import { ProductAdvancedFilters } from "../advanced/ProductAdvancedFilters";
 import { ProductBulkOperations } from "../advanced/ProductBulkOperations";
 import { ProductCard } from "./ProductCard";

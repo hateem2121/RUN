@@ -1,7 +1,7 @@
 import { SemanticSearchQuerySchema } from "@run-remix/shared";
 import { type Request, type Response, Router } from "express";
 import { apiTier } from "../../middleware/rate-limit-tiers.js";
-import { executeSemanticSearch } from "../../services/semantic-search.service.js";
+import { executeSemanticSearch } from "../../services/system/semantic-search.service.js";
 
 const router = Router();
 router.use(apiTier);

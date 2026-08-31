@@ -1,3 +1,12 @@
+import {
+  AccessoryResponseSchema as AccessorySchema,
+  CategoryResponseSchema as CategorySchema,
+  CertificateResponseSchema as CertificateSchema,
+  FabricResponseSchema as FabricSchema,
+  type ProductSummary,
+  ProductSummaryResponseSchema as ProductSummarySchema,
+  SizeChartResponseSchema as SizeChartSchema,
+} from "@shared/index";
 import { Grid2X2, Grid3X3, LayoutGrid, Loader2, Search } from "lucide-react";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLoaderData, useSearchParams } from "react-router";
@@ -23,18 +32,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Typography } from "@/components/ui/typography";
-import { useAnalyticsTracker } from "@/hooks/useAnalyticsTracker";
-import { usePerformanceMonitor } from "@/hooks/usePerformanceMonitor";
-import {
-  AccessorySchema,
-  CategorySchema,
-  CertificateSchema,
-  FabricSchema,
-  type ProductSummary,
-  ProductSummarySchema,
-  SizeChartSchema,
-  safeParseArray,
-} from "@/schemas/product";
+import { useAnalyticsTracker } from "@/hooks/use-analytics-tracker";
+import { usePerformanceMonitor } from "@/hooks/use-performance-monitor";
+import { safeParseArray } from "@/lib/utils";
 import type { Route } from "./+types/products";
 
 export function meta({ loaderData, location }: Route.MetaArgs) {

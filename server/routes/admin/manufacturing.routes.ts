@@ -15,8 +15,8 @@ import { z } from "zod";
 import { validateRequest } from "zod-express-middleware";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { criticalTier } from "../../middleware/rate-limit-tiers.js";
-import { authService } from "../../services/auth-service.js";
-import { manufacturingService } from "../../services/manufacturing.service.js";
+import { manufacturingService } from "../../services/cms/manufacturing.service.js";
+import { authService } from "../../services/system/auth.service.js";
 
 const router = Router();
 router.use(criticalTier);

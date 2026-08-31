@@ -65,7 +65,7 @@ export function useOptimizedMedia(
       }
 
       // Use batch system directly - it's already optimized and working
-      const { getMediaSrc } = await import("@/lib/queryClient");
+      const { getMediaSrc } = await import("@/lib/query-client");
       const batchedUrl = await getMediaSrc(mediaId);
 
       const endTime = performance.now();
@@ -163,7 +163,7 @@ function generateSrcSet(variants: MediaVariant[]): string {
   useEffect(() => {
     const preloadImages = async () => {
       // PHASE 4 FIX: Use batch media system directly instead of non-existent CDN endpoint
-      const { getMediaSrc } = await import("@/lib/queryClient");
+      const { getMediaSrc } = await import("@/lib/query-client");
 
       for (const mediaId of Array.from(mediaIds)) {
         if (preloadedIds.has(mediaId)) {

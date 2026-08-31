@@ -11,7 +11,7 @@ import {
   validateMagicNumbers,
 } from "../../lib/multer-optimized.js";
 import { UPLOAD_CONFIG } from "../../lib/utilities/upload-config.js";
-import { UploadRateLimiter } from "../../middleware/rateLimiter.js";
+import { uploadTier } from "../../middleware/rate-limit-tiers.js";
 
 // ============================================================================
 // UPLOAD MIDDLEWARE
@@ -36,8 +36,7 @@ export const regularUpload = multer({
 // RATE LIMITING
 // ============================================================================
 
-// UploadRateLimiter instance for rate limiting uploads
-/** @public */ export const uploadRateLimiter = new UploadRateLimiter(100); // Max 100 requests per window
+/** @public */ export const uploadRateLimiter = uploadTier;
 
 // ============================================================================
 // UPLOAD OPTIMIZATION CONSTANTS

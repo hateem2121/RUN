@@ -3,15 +3,8 @@ import { Router } from "express";
 import { validateIdParam } from "../../lib/utilities/core-utils.js";
 import { normalizeSlug } from "../../lib/utilities/slug-utils.js";
 import { apiTier } from "../../middleware/rate-limit-tiers.js";
-import { createRateLimiter } from "../../middleware/rateLimiter.js";
-import { authService } from "../../services/auth-service.js";
-import { categoryService } from "../../services/category.service.js";
-
-const writeRateLimiter = createRateLimiter({
-  windowMs: 15 * 60 * 1000,
-  max: 50,
-  message: "Too many write requests. Please try again later.",
-});
+import { categoryService } from "../../services/catalog/category.service.js";
+import { authService } from "../../services/system/auth.service.js";
 
 const router = Router();
 router.use(apiTier);
@@ -78,7 +71,7 @@ router.get("/categories/:id", async (req, res) => {
 });
 
 // POST /api/categories
-router.post("/categories", authService.requireAdmin, writeRateLimiter, async (req, res) => {
+router.post("/categories", authService.requireAdmin, async (req, res) => {
   const result = await categoryService.createCategory(req.body);
   return result.match(
     (category) => res.status(201).json(category),

@@ -3,9 +3,6 @@
 @import "./styles/fonts.css";
 @import "./styles/overrides.css";
 @import "./styles/animations.css";
-@import "./styles/manufacturing-utilities.css";
-@import "./components/ui/map/map-styles.css";
-@import "./styles/sustainability-utilities.css";
 @import "./styles/print.css";
 
 html {

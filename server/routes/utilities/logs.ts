@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { z } from "zod";
 import { logger } from "../../lib/monitoring/logger.js";
-import { writeRateLimiter } from "../../middleware/rateLimiter.js";
+import { apiTier } from "../../middleware/rate-limit-tiers.js";
 
 const router = Router();
+router.use(apiTier);
 
 const ClientErrorSchema = z.object({
   message: z.string(),
@@ -22,7 +23,7 @@ const ClientErrorSchema = z.object({
  * POST /api/logs/error
  * Receives caught client-side errors from entry.client.tsx and GlobalErrorBoundary.tsx
  */
-router.post("/error", writeRateLimiter, (req, res) => {
+router.post("/error", (req, res) => {
   // Respond immediately to the client
   res.status(202).json({ success: true, message: "Error logged successfully" });
 

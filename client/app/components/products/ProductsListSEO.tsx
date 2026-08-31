@@ -1,8 +1,10 @@
 import { useEffect } from "react";
-import type { Category } from "@/schemas/product";
 
 interface ProductsListSEOProps {
-  category?: Category | undefined;
+  category?:
+    | { name: string; description?: string | null | undefined; slug?: string | undefined }
+    | null
+    | undefined;
   searchTerm?: string | undefined;
   totalProducts: number;
 }

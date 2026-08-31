@@ -27,9 +27,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useCacheInvalidationListener } from "@/hooks/useCacheInvalidation";
+import { useCacheInvalidationListener } from "@/hooks/use-cache-invalidation";
 import { MediaQueryKeys } from "@/lib/media-query-keys";
-import { apiRequest, getQueryClient } from "@/lib/queryClient";
+import { apiRequest, getQueryClient } from "@/lib/query-client";
 
 const getCategoryIcon = (category: string) => {
   const icons: Record<string, LucideIcon> = {

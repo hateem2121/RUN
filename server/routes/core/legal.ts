@@ -3,8 +3,8 @@ import { Router } from "express";
 import { ValidationError } from "../../lib/errors.js";
 import { removeUndefined } from "../../lib/utilities/core-utils.js";
 import { apiTier } from "../../middleware/rate-limit-tiers.js";
-import { authService } from "../../services/auth-service.js";
-import { legalService } from "../../services/legal.service.js";
+import { legalService } from "../../services/cms/legal.service.js";
+import { authService } from "../../services/system/auth.service.js";
 
 const router = Router();
 router.use(apiTier);
