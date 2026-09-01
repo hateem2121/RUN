@@ -135,11 +135,11 @@ export const inquiries = pgTable(
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
 
     // Contact information
-    name: varchar({ length: 255 }).notNull(), // Encrypted (AES-256-GCM)
+    name: text().notNull(), // Encrypted (AES-256-GCM)
     email: varchar({ length: 500 }).notNull(), // Encrypted
     emailIndex: varchar({ length: 255 }), // Blind Index (HMAC-SHA256)
-    company: varchar({ length: 255 }), // Encrypted
-    phone: varchar({ length: 255 }), // Encrypted
+    company: text(), // Encrypted
+    phone: text(), // Encrypted
     country: varchar({ length: 100 }),
 
     // Form data

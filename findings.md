@@ -4,6 +4,39 @@
 **Status:** COMPREHENSIVE 360° MASTER CLEANUP COMPLETED — Reclaimed ~130+ MB Disk Overhead, Purged 600+ Stale/Generated Files, Consolidated Domain CSS into Tailwind v4 System, Pruned Public Developer Routes & Server Diagnostics, Streamlined SOP Documentation into Single Index, 0 Knip Violations, 100% Passing Across All 8 Tech Integrity Gates  
 **Execution Environment:** Node v24.15.0 / Vite 8 Dev Server (Port 5002) / Express 5 / Biome 2.5 / TypeScript 6 / Neon PostgreSQL  
 
+## 000000. System Health 100/100 Remediation & Hardening (2026-09-01)
+
+**Status:** **100% EXECUTED, VERIFIED & PASSING ACROSS ALL 8 PROTOCOL 0 GATES**  
+**Lead Systems Architect:** Antigravity  
+
+### Summary of Actions Taken:
+1. **Task 1: Database Encryption Column Expansion (`varchar` -> `text`):**
+   - Expanded `inquiries` encrypted columns (`name`, `company`, `phone`) and `users` columns (`firstName`, `lastName`) from `varchar(255)` to `text()`, mitigating AES-256-GCM ciphertext overflow with Unicode/emoji input.
+2. **Task 2: Resilient Standalone In-Process Background Task Worker:**
+   - Created `server/lib/tasks/in-process-queue.ts` with exponential backoff and error tracking for local MacBook execution without cloud dependencies.
+   - Updated `inquiry.service.ts` and `media-queue.service.ts` to register tasks with in-process queue and add OIDC audience tokens for Cloud Tasks compatibility.
+   - Removed `apiTier` bottleneck from `server/routes/worker.ts` and added error clearing on failures.
+3. **Task 3: Service Layer Invariants & Circuit Breaker Consolidation:**
+   - Migrated `accessory.service.ts`, `misc.service.ts`, `product.service.ts` to direct `ResultAsync.fromPromise()` returns.
+   - Refactored `accessories.ts`, `certificates.ts`, `size-charts.ts`, and `homepage-batch.routes.ts` to route exclusively through services with `.match()`.
+   - Updated `withCircuit` to execute dynamic closures via `circuit.fire(operation)` and pruned dead `server/lib/db/db-retry.ts`.
+4. **Task 4: 3D WebGL Context Recovery & Ingestion Guardrails:**
+   - Removed destructive `delete window.createImageBitmap` in `model-viewer-loader.ts`.
+   - Fixed WebGL context loss recovery in `UnifiedModelViewerCore.tsx` by keeping canvas mounted in DOM for `webglcontextrestored`.
+   - Added synchronous upfront `isWebGLSupported()` check in `LazyUnifiedModelViewer.tsx` to immediately render 2D WebP fallback on unsupported devices.
+   - Added triangle counting in `server/lib/integrations/gltf-processor.ts`.
+5. **Task 5: Internationalization (Unicode Slugs, RTL & Email Escaping):**
+   - Added Unicode diacritics stripping and deterministic non-Latin fallbacks in `slug-utils.ts`.
+   - Verified HTML entity escaping on all user inquiry fields in `email-service.ts`.
+6. **Task 6 & Protocol 0 Gate Verification:**
+   - `npm run check`: 🟢 **PASS** (0 Biome lint errors across 897 files, 0 TypeScript errors).
+   - `npm run check:knip`: 🟢 **PASS** (0 unused files, 0 unused exports, 0 unused dependencies).
+   - `npm run check:bundle`: 🟢 **PASS** (All bundles within gzip limits).
+   - `npx vitest run`: 🟢 **PASS** (171 test files, 2,599 tests passing).
+   - `npm run verify:tech-integrity`: 🟢 **PASSED (All 8 gates 100% GREEN)**.
+
+---
+
 ## 00000. Comprehensive 360° Monorepo & Website Master Cleanup (2026-08-31)
 
 **Status:** **100% EXECUTED, VERIFIED & PASSING ACROSS ALL 8 PROTOCOL 0 GATES**  

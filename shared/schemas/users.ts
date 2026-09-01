@@ -26,8 +26,8 @@ export const users = pgTable("users", {
   id: varchar({ length: 255 }).primaryKey(), // User ID (stable, unique)
   email: varchar({ length: 255 }).unique(), // Encrypted in DB (AES-256-GCM)
   emailIndex: varchar({ length: 255 }).unique(), // Blind Index for searching (HMAC-SHA256)
-  firstName: varchar({ length: 255 }), // Encrypted
-  lastName: varchar({ length: 255 }), // Encrypted
+  firstName: text(), // Encrypted
+  lastName: text(), // Encrypted
   profileImageUrl: text(), // Encrypted
 
   // ROLE-BASED ACCESS CONTROL

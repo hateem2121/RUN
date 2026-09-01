@@ -1,5 +1,5 @@
 import request from "supertest";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("../../../services/repositories/accessory-repository.js", () => ({
   accessoryRepository: {
@@ -34,20 +34,26 @@ app.use((_error: any, _req: any, res: any, _next: any) => {
 });
 
 describe("Core Accessories Routes", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
   describe("GET /api/accessories", () => {
     it("should return a list of accessories without count", async () => {
       const mockAccessories = [{ id: 1, name: "Test Accessory" }];
-      vi.mocked(accessoryRepository.getAccessories).mockResolvedValue(mockAccessories as any);
+      vi.mocked(accessoryRepository.getAccessoriesWithCount).mockResolvedValue({
+        accessories: mockAccessories as any,
+        total: 1,
+      });
 
       const response = await request(app).get("/api/accessories?limit=10&offset=0");
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(mockAccessories);
-      expect(accessoryRepository.getAccessories).toHaveBeenCalledWith(10, 0, {});
+      expect(accessoryRepository.getAccessoriesWithCount).toHaveBeenCalledWith(10, 0, {});
     });
 
     it("should return a list of accessories with count", async () => {
-      const mockResponse = { data: [{ id: 1, name: "Test Accessory" }], total: 1 };
+      const mockResponse = { accessories: [{ id: 1, name: "Test Accessory" }], total: 1 };
       vi.mocked(accessoryRepository.getAccessoriesWithCount).mockResolvedValue(mockResponse as any);
 
       const response = await request(app).get("/api/accessories?withCount=true");

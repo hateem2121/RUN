@@ -25,6 +25,7 @@ interface GLTFValidationResult {
   externalReferences: string[];
   textureCount: number;
   bufferCount: number;
+  triangleCount?: number | undefined;
   error?: string | undefined;
 }
 
@@ -119,10 +120,32 @@ class GLTFProcessor {
         }
       }
 
+      // Calculate total triangle count across all meshes
+      let triangleCount = 0;
+      if (typeof root.listMeshes === "function") {
+        const meshes = root.listMeshes() || [];
+        for (const mesh of meshes) {
+          if (mesh && typeof mesh.listPrimitives === "function") {
+            const prims = mesh.listPrimitives() || [];
+            for (const prim of prims) {
+              const indices = typeof prim.getIndices === "function" ? prim.getIndices() : null;
+              if (indices && typeof indices.getCount === "function") {
+                triangleCount += Math.floor(indices.getCount() / 3);
+              } else if (typeof prim.getAttribute === "function") {
+                const position = prim.getAttribute("POSITION");
+                if (position && typeof position.getCount === "function") {
+                  triangleCount += Math.floor(position.getCount() / 3);
+                }
+              }
+            }
+          }
+        }
+      }
+
       const hasEmbeddedTextures = textures.length > 0 && !hasExternalReferences;
 
       logger.debug(
-        `[GLTF] Validation complete: ${textures.length} textures, ${externalReferences.length} external refs`,
+        `[GLTF] Validation complete: ${textures.length} textures, ${externalReferences.length} external refs, ${triangleCount} triangles`,
       );
 
       return {
@@ -132,6 +155,7 @@ class GLTFProcessor {
         externalReferences,
         textureCount: textures.length,
         bufferCount: buffers.length,
+        triangleCount,
       };
     } catch (error) {
       // Categorize and provide specific error details

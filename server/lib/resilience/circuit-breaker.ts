@@ -159,12 +159,15 @@ export async function withCircuit<T>(
 
     const circuit = createCircuit(
       name,
-      operation as unknown as (...args: unknown[]) => Promise<unknown>,
+      ((fn: unknown) =>
+        typeof fn === "function" ? (fn as () => Promise<unknown>)() : Promise.resolve(fn)) as (
+        ...args: unknown[]
+      ) => Promise<unknown>,
       options,
       fallback as unknown as (...args: unknown[]) => Promise<unknown>,
     );
     try {
-      const result = await circuit.fire();
+      const result = await circuit.fire(operation);
       span.setStatus({ code: SpanStatusCode.OK });
       return result as T;
     } catch (error) {

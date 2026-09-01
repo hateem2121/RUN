@@ -1,33 +1,24 @@
-import { trace } from "@opentelemetry/api";
-import type {
-  InsertProduct,
-  Product,
-  ProductDetail,
-  ProductDetailWithContext,
-  ProductSummary,
+import {
+  type InsertProduct,
+  insertProductSchema,
+  type Product,
+  type ProductDetail,
+  type ProductDetailWithContext,
+  type ProductSummary,
 } from "@run-remix/shared";
-import { insertProductSchema } from "@run-remix/shared";
-import { err, ok, type Result, ResultAsync } from "neverthrow";
+import { ResultAsync } from "neverthrow";
 import { CacheOperations } from "../../lib/cache/cache-strategies.js";
-import { retryDbOperation } from "../../lib/db/db-retry.js";
 import { AppError, DatabaseError, NotFoundError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../../lib/resilience/circuit-breaker.js";
 import { sanitizeHtml } from "../../lib/sanitize-html.js";
 import { productRepository } from "../repositories/index.js";
 
-/**
- * PRODUCT SERVICE
- * Handles business logic for product catalog operations.
- * Enforces Thin Controller pattern and Result-based error handling.
- */
-const tracer = trace.getTracer("run-remix-services");
-
 class ProductService {
   /**
    * Lists products with pagination and filtering.
    */
-  async listProducts(params: {
+  listProducts(params: {
     category?: string | undefined;
     active?: string | undefined;
     featured?: string | undefined;
@@ -35,20 +26,18 @@ class ProductService {
     search?: string | undefined;
     page?: number | undefined;
     limit?: number | undefined;
-  }): Promise<
-    Result<
-      {
-        data: ProductSummary[];
-        pagination: {
-          page: number;
-          limit: number;
-          total: number;
-          pages: number;
-          hasMore: boolean;
-        };
-      },
-      AppError
-    >
+  }): ResultAsync<
+    {
+      data: ProductSummary[];
+      pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        pages: number;
+        hasMore: boolean;
+      };
+    },
+    AppError
   > {
     const page = Math.max(1, params.page || 1);
     const limit = Math.min(params.limit || 20, 100);
@@ -69,32 +58,23 @@ class ProductService {
 
           products = await withCircuit(
             "search-products",
-            () =>
-              retryDbOperation(() =>
-                productRepository.searchProducts(params.search!, filters, limit, offset),
-              ),
+            () => productRepository.searchProducts(params.search!, filters, limit, offset),
             DB_CIRCUIT_OPTIONS,
           );
           totalCount = await withCircuit(
             "search-products-count",
-            () =>
-              retryDbOperation(() =>
-                productRepository.searchProductsCount(params.search!, filters),
-              ),
+            () => productRepository.searchProductsCount(params.search!, filters),
             DB_CIRCUIT_OPTIONS,
           );
         } else if (params.tag) {
           products = await withCircuit(
             "get-products-by-tag",
-            () =>
-              retryDbOperation(() =>
-                productRepository.getProductsByTag(params.tag!, limit, offset),
-              ),
+            () => productRepository.getProductsByTag(params.tag!, limit, offset),
             DB_CIRCUIT_OPTIONS,
           );
           totalCount = await withCircuit(
             "get-products-by-tag-count",
-            () => retryDbOperation(() => productRepository.getProductsByTagCount(params.tag!)),
+            () => productRepository.getProductsByTagCount(params.tag!),
             DB_CIRCUIT_OPTIONS,
           );
         } else if (params.category) {
@@ -109,34 +89,30 @@ class ProductService {
           if (!Number.isNaN(categoryId)) {
             products = await withCircuit(
               "get-products-by-category",
-              () =>
-                retryDbOperation(() =>
-                  productRepository.getProductsByCategory(categoryId, limit, offset),
-                ),
+              () => productRepository.getProductsByCategory(categoryId, limit, offset),
               DB_CIRCUIT_OPTIONS,
             );
             totalCount = await withCircuit(
               "get-products-by-category-count",
-              () =>
-                retryDbOperation(() => productRepository.getProductsByCategoryCount(categoryId)),
+              () => productRepository.getProductsByCategoryCount(categoryId),
               DB_CIRCUIT_OPTIONS,
             );
           }
         } else if (params.featured === "true") {
           products = await withCircuit(
             "get-featured-products",
-            () => retryDbOperation(() => productRepository.getFeaturedProducts(limit, offset)),
+            () => productRepository.getFeaturedProducts(limit, offset),
             DB_CIRCUIT_OPTIONS,
           );
           totalCount = await withCircuit(
             "get-featured-products-count",
-            () => retryDbOperation(() => productRepository.getFeaturedProductsCount()),
+            () => productRepository.getFeaturedProductsCount(),
             DB_CIRCUIT_OPTIONS,
           );
         } else {
           const result = await withCircuit(
             "get-products-summary",
-            () => retryDbOperation(() => productRepository.getProductsSummary(limit, offset)),
+            () => productRepository.getProductsSummary(limit, offset),
             DB_CIRCUIT_OPTIONS,
           );
           products = result.products;
@@ -166,108 +142,98 @@ class ProductService {
   /**
    * Fetches a single product by ID.
    */
-  async getProductById(id: number): Promise<Result<ProductDetail, AppError>> {
-    return tracer.startActiveSpan(`ProductService.getProductById`, async (span) => {
-      return new ResultAsync(
-        (async (): Promise<Result<ProductDetail, AppError>> => {
-          const product = await withCircuit(
-            `get-product-${id}`,
-            () => retryDbOperation(() => productRepository.getProduct(id)),
-            DB_CIRCUIT_OPTIONS,
-          );
+  getProductById(id: number): ResultAsync<ProductDetail, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
+        const product = await withCircuit(
+          `get-product-${id}`,
+          () => productRepository.getProduct(id),
+          DB_CIRCUIT_OPTIONS,
+        );
 
-          if (!product) {
-            span.recordException(new Error(`Product with ID ${id} not found`));
-            span.end();
-            return err(new NotFoundError(`Product with ID ${id}`));
-          }
+        if (!product) {
+          throw new NotFoundError(`Product with ID ${id}`);
+        }
 
-          span.end();
-          return ok(product);
-        })().catch((error) => {
-          if (error instanceof AppError) return err(error);
-          span.recordException(error as Error);
-          span.end();
-          return err(new DatabaseError(`Failed to fetch product ${id}`, { cause: error }));
-        }),
-      );
-    });
+        return product;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError(`Failed to fetch product ${id}`, { cause: error });
+      },
+    );
   }
 
   /**
    * Resolves a product by its URL path.
    */
-  async getProductByPath(path: string): Promise<Result<ProductDetailWithContext, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<ProductDetailWithContext, AppError>> => {
+  getProductByPath(path: string): ResultAsync<ProductDetailWithContext, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const productContext = await withCircuit(
           `get-product-by-path-${path}`,
-          () => retryDbOperation(() => productRepository.getProductByPath(path)),
+          () => productRepository.getProductByPath(path),
           DB_CIRCUIT_OPTIONS,
         );
 
         if (!productContext) {
-          return err(new NotFoundError(`Product at path ${path}`));
+          throw new NotFoundError(`Product at path ${path}`);
         }
 
-        return ok(productContext);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        return err(new DatabaseError(`Failed to fetch product by path: ${path}`, { cause: error }));
-      }),
+        return productContext;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError(`Failed to fetch product by path: ${path}`, { cause: error });
+      },
     );
   }
 
   /**
    * Fetches 3D model metadata for a product.
    */
-  async get3DModelMetadata(id: number): Promise<Result<Record<string, unknown>, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Record<string, unknown>, AppError>> => {
+  get3DModelMetadata(id: number): ResultAsync<Record<string, unknown>, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const metadata = await withCircuit(
           `get-product-3d-model-${id}`,
-          () => retryDbOperation(() => productRepository.get3DModelMetadata(id)),
+          () => productRepository.get3DModelMetadata(id),
           DB_CIRCUIT_OPTIONS,
         );
 
         if (!metadata) {
-          return err(new NotFoundError(`3D model for product ${id}`));
+          throw new NotFoundError(`3D model for product ${id}`);
         }
 
-        return ok(metadata);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        return err(
-          new DatabaseError(`Failed to fetch 3D model metadata for product ${id}`, {
-            cause: error,
-          }),
-        );
-      }),
+        return metadata;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError(`Failed to fetch 3D model metadata for product ${id}`, {
+          cause: error,
+        });
+      },
     );
   }
 
   /**
    * Creates a new product.
    */
-  async createProduct(data: InsertProduct): Promise<Result<Product, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Product, AppError>> => {
+  createProduct(data: InsertProduct): ResultAsync<Product, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
+        const parsed = insertProductSchema.parse(data);
+        if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+
         const product = await withCircuit(
           "create-product",
-          () =>
-            retryDbOperation(() =>
-              productRepository.createProduct(
-                (() => {
-                  const parsed = insertProductSchema.parse(data);
-                  if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
-                  return parsed as typeof data;
-                })(),
-              ),
-            ),
+          () => productRepository.createProduct(parsed as typeof data),
           DB_CIRCUIT_OPTIONS,
         );
-        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
-        if (product.isErr()) return err(product.error as any);
+
+        if (product && typeof product === "object" && "isErr" in product && product.isErr()) {
+          throw product.error;
+        }
 
         // Invalidate product & homepage caches on create
         await CacheOperations.invalidateProducts().catch((e) =>
@@ -277,41 +243,32 @@ class ProductService {
           logger.error("[ProductService] invalidateHomepage failed on create", e),
         );
 
-        return ok(product.value);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        return err(new DatabaseError("Failed to create product", { cause: error }));
-      }),
+        return typeof product === "object" && "value" in product ? product.value : product;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError("Failed to create product", { cause: error });
+      },
     );
   }
 
   /**
    * Updates an existing product.
    */
-  async updateProduct(
-    id: number,
-    data: Partial<InsertProduct>,
-  ): Promise<Result<Product, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Product, AppError>> => {
+  updateProduct(id: number, data: Partial<InsertProduct>): ResultAsync<Product, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
+        const parsed = insertProductSchema.partial().parse(data);
+        if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
+
         const product = await withCircuit(
           `update-product-${id}`,
-          () =>
-            retryDbOperation(() =>
-              productRepository.updateProduct(
-                id,
-                (() => {
-                  const parsed = insertProductSchema.partial().parse(data);
-                  if (parsed.description) parsed.description = sanitizeHtml(parsed.description);
-                  return parsed as typeof data;
-                })(),
-              ),
-            ),
+          () => productRepository.updateProduct(id, parsed as typeof data),
           DB_CIRCUIT_OPTIONS,
         );
 
         if (!product) {
-          return err(new NotFoundError(`Product with ID ${id}`));
+          throw new NotFoundError(`Product with ID ${id}`);
         }
 
         // Invalidate product & homepage caches on update
@@ -322,28 +279,29 @@ class ProductService {
           logger.error("[ProductService] invalidateHomepage failed on update", e),
         );
 
-        return ok(product);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        return err(new DatabaseError(`Failed to update product ${id}`, { cause: error }));
-      }),
+        return product;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError(`Failed to update product ${id}`, { cause: error });
+      },
     );
   }
 
   /**
    * Deletes a product.
    */
-  async deleteProduct(id: number): Promise<Result<boolean, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<boolean, AppError>> => {
+  deleteProduct(id: number): ResultAsync<boolean, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const success = await withCircuit(
           `delete-product-${id}`,
-          () => retryDbOperation(() => productRepository.deleteProduct(id)),
+          () => productRepository.deleteProduct(id),
           DB_CIRCUIT_OPTIONS,
         );
 
         if (!success) {
-          return err(new NotFoundError(`Product with ID ${id}`));
+          throw new NotFoundError(`Product with ID ${id}`);
         }
 
         // Invalidate product & homepage caches on delete
@@ -354,11 +312,12 @@ class ProductService {
           logger.error("[ProductService] invalidateHomepage failed on delete", e),
         );
 
-        return ok(true);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        return err(new DatabaseError(`Failed to delete product ${id}`, { cause: error }));
-      }),
+        return true;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError(`Failed to delete product ${id}`, { cause: error });
+      },
     );
   }
 }

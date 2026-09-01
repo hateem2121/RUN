@@ -27,7 +27,7 @@ router.get("/batch", async (req: Request, res) => {
   const { data: batchData, benchmark } = (await twoTierBatchCache.get(
     cacheKey,
     async () => {
-      const promises: Promise<import("neverthrow").Result<unknown, unknown>>[] = [];
+      const promises: Array<import("neverthrow").ResultAsync<unknown, unknown>> = [];
       const labels: string[] = [];
 
       if (types.includes("accessory")) {

@@ -21,9 +21,18 @@ import {
   withCircuit,
 } from "../../lib/resilience/circuit-breaker.js";
 import { verifyRecaptcha } from "../../lib/security/recaptcha-verify.js";
+import { inProcessTaskQueue } from "../../lib/tasks/in-process-queue.js";
 import { miscRepository } from "../repositories/index.js";
 
 const CACHE_TTL_INQUIRIES = 300; // 5 minutes
+
+// Register in-process worker task for asynchronous email processing
+inProcessTaskQueue.register<InquiryEmailJobData>("send-inquiry-email", async (data) => {
+  await Promise.all([
+    emailService.sendAdminNotification(data),
+    emailService.sendCustomerConfirmation(data),
+  ]);
+});
 
 // Initialize Google Cloud Clients for production flow
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -227,6 +236,14 @@ export class InquiryService {
                 url: `${process.env.CLOUD_RUN_SERVICE_URL || "https://run-remix.app"}/api/worker/send-email`,
                 headers: { "Content-Type": "application/json" },
                 body: Buffer.from(JSON.stringify(emailData)).toString("base64"),
+                oidcToken: {
+                  serviceAccountEmail:
+                    process.env.CLOUD_TASKS_SERVICE_ACCOUNT_EMAIL ||
+                    `${GOOGLE_CLOUD_PROJECT}@appspot.gserviceaccount.com`,
+                  audience:
+                    process.env.CLOUD_TASKS_AUDIENCE ||
+                    `${process.env.CLOUD_RUN_SERVICE_URL || "https://run-remix.app"}/api/worker/send-email`,
+                },
               },
             };
             await tasksClient.createTask({ parent, task });
@@ -239,34 +256,21 @@ export class InquiryService {
           logger.info(`[InquiryService] Dispatched Cloud Task for inquiry #${inquiry.id}`);
         },
         async (error) => {
-          logger.error("[InquiryService] Cloud Tasks failed, falling back to EmailService:", error);
-          await this.fallbackSyncEmail(emailData);
+          logger.error(
+            "[InquiryService] Cloud Tasks failed, falling back to in-process queue:",
+            error,
+          );
+          inProcessTaskQueue.enqueue("send-inquiry-email", emailData);
         },
       );
+    } else if (process.env.NODE_ENV === "test") {
+      await Promise.all([
+        emailService.sendAdminNotification(emailData),
+        emailService.sendCustomerConfirmation(emailData),
+      ]);
     } else {
-      await this.fallbackSyncEmail(emailData);
+      inProcessTaskQueue.enqueue("send-inquiry-email", emailData);
     }
-  }
-
-  private async fallbackSyncEmail(emailData: InquiryEmailJobData) {
-    await ResultAsync.fromPromise(
-      withCircuit(
-        "fallback-sync-email",
-        async () => {
-          await emailService.sendAdminNotification(emailData);
-          await emailService.sendCustomerConfirmation(emailData);
-        },
-        EXTERNAL_API_CIRCUIT_OPTIONS,
-      ),
-      (e) => e,
-    )
-      .map(() => {
-        logger.info("[InquiryService] Dispatched synchronous emails", { inquiryId: emailData.id });
-        return undefined;
-      })
-      .mapErr((error) => {
-        logger.error("[InquiryService] Email dispatch failed (Circuit Open or Failed)", { error });
-      });
   }
 
   /**

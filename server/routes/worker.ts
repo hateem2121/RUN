@@ -14,13 +14,11 @@ import { getGLTFProcessor, isGLTFFile } from "../lib/integrations/gltf-processor
 import { logger } from "../lib/monitoring/logger.js";
 import { appStorageService } from "../lib/storage/app-service.js";
 import { verifyCloudTaskToken } from "../lib/verify-cloud-task-token.js";
-import { apiTier } from "../middleware/rate-limit-tiers.js";
 import { mediaService } from "../services/media/media.service.js";
 import { workerTaskDuration } from "../services/system/job-metrics.service.js";
 import { generateOrganizedStoragePath, getVideoMetadata } from "./media/utils.js";
 
 const router = express.Router();
-router.use(apiTier);
 
 const verifyWorkerAuth = async (
   req: express.Request,
@@ -288,7 +286,7 @@ router.post(
           durationMs: Math.round(duration),
         });
       },
-      (error) => {
+      async (error) => {
         const duration = (performance.now() - startTime) / 1000;
         workerTaskDuration.observe({ operation: payload.operation, status: "error" }, duration);
 
@@ -300,6 +298,28 @@ router.post(
           },
           error,
         );
+
+        // Clear isProcessing on failure to avoid permanently locked assets
+        const numericId = Number.parseInt(payload.mediaId, 10);
+        if (!Number.isNaN(numericId)) {
+          try {
+            const currentAssetResult = await mediaService.getAssetById(numericId);
+            if (currentAssetResult.isOk()) {
+              const currentMeta =
+                (currentAssetResult.value.metadata as Record<string, unknown>) || {};
+              await mediaService.updateAsset(numericId, {
+                metadata: {
+                  ...currentMeta,
+                  isProcessing: false,
+                  processingError: error instanceof Error ? error.message : String(error),
+                  failedAt: new Date().toISOString(),
+                },
+              });
+            }
+          } catch {
+            // Ignore secondary failure during error state recording
+          }
+        }
 
         // Return 500 to trigger retry
         return res.status(500).json({

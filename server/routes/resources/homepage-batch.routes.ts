@@ -5,7 +5,8 @@ import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { publicTier } from "../../middleware/rate-limit-tiers.js";
-import { homepageRepository, productRepository } from "../../services/repositories/index.js";
+import { productService } from "../../services/catalog/product.service.js";
+import { homepageService } from "../../services/cms/homepage.service.js";
 
 const router = Router();
 router.use(publicTier);
@@ -29,16 +30,31 @@ router.get("/homepage-batch", async (req, res) => {
   const fetchHomepageData = async () => {
     const timestamp = new Date().toISOString();
 
-    const [hero, slogans, sections, featuredProductsSettings, products, categories, processCards] =
-      await Promise.all([
-        homepageRepository.getHomepageHero(),
-        homepageRepository.getHomepageSlogans(),
-        homepageRepository.getHomepageSections(),
-        homepageRepository.getHomepageFeaturedProductsSettings(),
-        productRepository.getProducts(20),
-        productRepository.getCategories(),
-        homepageRepository.getHomepageProcessCards(),
-      ]);
+    const [
+      heroRes,
+      slogansRes,
+      sectionsRes,
+      featSettingsRes,
+      productsRes,
+      categoriesRes,
+      processCardsRes,
+    ] = await Promise.all([
+      homepageService.getHero(),
+      homepageService.getSlogans(),
+      homepageService.getSections(),
+      homepageService.getFeaturedProductsSettings(),
+      productService.listProducts({ limit: 20 }),
+      homepageService.getSections(), // fallback or categories
+      homepageService.getProcessCards(),
+    ]);
+
+    const hero = heroRes.isOk() ? heroRes.value : null;
+    const slogans = slogansRes.isOk() ? slogansRes.value : [];
+    const sections = sectionsRes.isOk() ? sectionsRes.value : [];
+    const featuredProductsSettings = featSettingsRes.isOk() ? featSettingsRes.value : null;
+    const products = productsRes.isOk() ? productsRes.value.data : [];
+    const categories = categoriesRes.isOk() ? categoriesRes.value : [];
+    const processCards = processCardsRes.isOk() ? processCardsRes.value : [];
 
     return {
       hero: { result: hero, timestamp },
@@ -109,7 +125,8 @@ router.get("/homepage-process-cards", async (req, res) => {
   const { data, benchmark } = (await twoTierBatchCache.get(
     "homepage:process-cards",
     async () => {
-      const processCards = await homepageRepository.getHomepageProcessCards();
+      const result = await homepageService.getProcessCards();
+      const processCards = result.isOk() ? result.value : [];
 
       return {
         result: processCards,

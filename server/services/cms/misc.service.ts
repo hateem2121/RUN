@@ -5,9 +5,10 @@ import type {
   InsertCertificate,
   InsertFabric,
   InsertFiber,
+  InsertSizeChart,
   SizeChart,
 } from "@run-remix/shared";
-import { err, ok, type Result, ResultAsync } from "neverthrow";
+import { ResultAsync } from "neverthrow";
 import { AppError, InternalError, NotFoundError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../../lib/resilience/circuit-breaker.js";
@@ -15,276 +16,318 @@ import { miscRepository } from "../repositories/index.js";
 
 /**
  * Service for managing miscellaneous taxonomy data (Fibers, Fabrics, Certificates, Size Charts)
- * Enforces Result-based patterns and circuit breaker protection.
+ * Enforces ResultAsync direct returns and circuit breaker protection.
  */
 class MiscService {
   // FIBERS
-  async getFibers(): Promise<Result<Fiber[], AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Fiber[], AppError>> => {
-        const fibers = await withCircuit(
-          "get-fibers",
-          () => miscRepository.getFibers(),
-          DB_CIRCUIT_OPTIONS,
-        );
-        return ok(fibers);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+  getFibers(): ResultAsync<Fiber[], AppError> {
+    return ResultAsync.fromPromise(
+      withCircuit("get-fibers", () => miscRepository.getFibers(), DB_CIRCUIT_OPTIONS),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[MiscService] Failed to fetch fibers", error as Error);
-        return err(new InternalError("Failed to fetch fibers", { error }));
-      }),
+        return new InternalError("Failed to fetch fibers", { error });
+      },
     );
   }
 
-  async getFiber(id: number): Promise<Result<Fiber, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Fiber, AppError>> => {
+  getFiber(id: number): ResultAsync<Fiber, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const fiber = await withCircuit(
           `get-fiber-${id}`,
           () => miscRepository.getFiber(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!fiber) return err(new NotFoundError(`Fiber with ID ${id}`));
-        return ok(fiber);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+        if (!fiber) throw new NotFoundError(`Fiber with ID ${id}`);
+        return fiber;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[MiscService] Failed to fetch fiber", { id }, error as Error);
-        return err(new InternalError(`Failed to fetch fiber ${id}`, { error }));
-      }),
+        return new InternalError(`Failed to fetch fiber ${id}`, { error });
+      },
     );
   }
 
-  async createFiber(data: InsertFiber): Promise<Result<Fiber, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Fiber, AppError>> => {
-        const created = await withCircuit(
-          "create-fiber",
-          () => miscRepository.createFiber(data),
-          DB_CIRCUIT_OPTIONS,
-        );
-        return ok(created);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+  createFiber(data: InsertFiber): ResultAsync<Fiber, AppError> {
+    return ResultAsync.fromPromise(
+      withCircuit("create-fiber", () => miscRepository.createFiber(data), DB_CIRCUIT_OPTIONS),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[MiscService] Failed to create fiber", error as Error);
-        return err(new InternalError("Failed to create fiber", { error }));
-      }),
+        return new InternalError("Failed to create fiber", { error });
+      },
     );
   }
 
-  async updateFiber(id: number, data: Partial<InsertFiber>): Promise<Result<Fiber, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Fiber, AppError>> => {
+  updateFiber(id: number, data: Partial<InsertFiber>): ResultAsync<Fiber, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const updated = await withCircuit(
           `update-fiber-${id}`,
           () => miscRepository.updateFiber(id, data),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!updated) return err(new NotFoundError(`Fiber with ID ${id}`));
-        return ok(updated);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+        if (!updated) throw new NotFoundError(`Fiber with ID ${id}`);
+        return updated;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[MiscService] Failed to update fiber", { id }, error as Error);
-        return err(new InternalError(`Failed to update fiber ${id}`, { error }));
-      }),
+        return new InternalError(`Failed to update fiber ${id}`, { error });
+      },
     );
   }
 
-  async deleteFiber(id: number): Promise<Result<boolean, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<boolean, AppError>> => {
+  deleteFiber(id: number): ResultAsync<boolean, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const success = await withCircuit(
           `delete-fiber-${id}`,
           () => miscRepository.deleteFiber(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!success) return err(new NotFoundError(`Fiber with ID ${id}`));
-        return ok(success);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+        if (!success) throw new NotFoundError(`Fiber with ID ${id}`);
+        return success;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[MiscService] Failed to delete fiber", { id }, error as Error);
-        return err(new InternalError(`Failed to delete fiber ${id}`, { error }));
-      }),
+        return new InternalError(`Failed to delete fiber ${id}`, { error });
+      },
     );
   }
 
   // FABRICS
-  async getFabrics(): Promise<Result<Fabric[], AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Fabric[], AppError>> => {
-        const fabrics = await withCircuit(
-          "get-fabrics",
-          () => miscRepository.getFabrics(),
-          DB_CIRCUIT_OPTIONS,
-        );
-        return ok(fabrics);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+  getFabrics(): ResultAsync<Fabric[], AppError> {
+    return ResultAsync.fromPromise(
+      withCircuit("get-fabrics", () => miscRepository.getFabrics(), DB_CIRCUIT_OPTIONS),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[MiscService] Failed to fetch fabrics", error as Error);
-        return err(new InternalError("Failed to fetch fabrics", { error }));
-      }),
+        return new InternalError("Failed to fetch fabrics", { error });
+      },
     );
   }
 
-  async getFabric(id: number): Promise<Result<Fabric, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Fabric, AppError>> => {
+  getFabric(id: number): ResultAsync<Fabric, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const fabric = await withCircuit(
           `get-fabric-${id}`,
           () => miscRepository.getFabric(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!fabric) return err(new NotFoundError(`Fabric with ID ${id}`));
-        return ok(fabric);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+        if (!fabric) throw new NotFoundError(`Fabric with ID ${id}`);
+        return fabric;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[MiscService] Failed to fetch fabric", { id }, error as Error);
-        return err(new InternalError(`Failed to fetch fabric ${id}`, { error }));
-      }),
+        return new InternalError(`Failed to fetch fabric ${id}`, { error });
+      },
     );
   }
 
-  async createFabric(data: InsertFabric): Promise<Result<Fabric, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Fabric, AppError>> => {
-        const created = await withCircuit(
-          "create-fabric",
-          () => miscRepository.createFabric(data),
-          DB_CIRCUIT_OPTIONS,
-        );
-        return ok(created);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+  createFabric(data: InsertFabric): ResultAsync<Fabric, AppError> {
+    return ResultAsync.fromPromise(
+      withCircuit("create-fabric", () => miscRepository.createFabric(data), DB_CIRCUIT_OPTIONS),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[MiscService] Failed to create fabric", error as Error);
-        return err(new InternalError("Failed to create fabric", { error }));
-      }),
+        return new InternalError("Failed to create fabric", { error });
+      },
     );
   }
 
-  async updateFabric(id: number, data: Partial<InsertFabric>): Promise<Result<Fabric, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Fabric, AppError>> => {
+  updateFabric(id: number, data: Partial<InsertFabric>): ResultAsync<Fabric, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const updated = await withCircuit(
           `update-fabric-${id}`,
           () => miscRepository.updateFabric(id, data),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!updated) return err(new NotFoundError(`Fabric with ID ${id}`));
-        return ok(updated);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+        if (!updated) throw new NotFoundError(`Fabric with ID ${id}`);
+        return updated;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[MiscService] Failed to update fabric", { id }, error as Error);
-        return err(new InternalError(`Failed to update fabric ${id}`, { error }));
-      }),
+        return new InternalError(`Failed to update fabric ${id}`, { error });
+      },
     );
   }
 
-  async deleteFabric(id: number): Promise<Result<boolean, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<boolean, AppError>> => {
+  deleteFabric(id: number): ResultAsync<boolean, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const success = await withCircuit(
           `delete-fabric-${id}`,
           () => miscRepository.deleteFabric(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!success) return err(new NotFoundError(`Fabric with ID ${id}`));
-        return ok(success);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+        if (!success) throw new NotFoundError(`Fabric with ID ${id}`);
+        return success;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[MiscService] Failed to delete fabric", { id }, error as Error);
-        return err(new InternalError(`Failed to delete fabric ${id}`, { error }));
-      }),
+        return new InternalError(`Failed to delete fabric ${id}`, { error });
+      },
     );
   }
 
   // CERTIFICATES
-  async getCertificates(): Promise<Result<Certificate[], AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Certificate[], AppError>> => {
-        const certificates = await withCircuit(
-          "get-certificates",
-          () => miscRepository.getCertificates(),
-          DB_CIRCUIT_OPTIONS,
-        );
-        return ok(certificates);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+  getCertificates(): ResultAsync<Certificate[], AppError> {
+    return ResultAsync.fromPromise(
+      withCircuit("get-certificates", () => miscRepository.getCertificates(), DB_CIRCUIT_OPTIONS),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[MiscService] Failed to fetch certificates", error as Error);
-        return err(new InternalError("Failed to fetch certificates", { error }));
-      }),
+        return new InternalError("Failed to fetch certificates", { error });
+      },
     );
   }
 
-  async createCertificate(data: InsertCertificate): Promise<Result<Certificate, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Certificate, AppError>> => {
-        const created = await withCircuit(
-          "create-certificate",
-          () => miscRepository.createCertificate(data),
+  getCertificate(id: number): ResultAsync<Certificate, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
+        const cert = await withCircuit(
+          `get-certificate-${id}`,
+          () => miscRepository.getCertificate(id),
           DB_CIRCUIT_OPTIONS,
         );
-        return ok(created);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        logger.error("[MiscService] Failed to create certificate", error as Error);
-        return err(new InternalError("Failed to create certificate", { error }));
-      }),
+        if (!cert) throw new NotFoundError(`Certificate with ID ${id}`);
+        return cert;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[MiscService] Failed to fetch certificate", { id }, error as Error);
+        return new InternalError(`Failed to fetch certificate ${id}`, { error });
+      },
     );
   }
 
-  async updateCertificate(
+  createCertificate(data: InsertCertificate): ResultAsync<Certificate, AppError> {
+    return ResultAsync.fromPromise(
+      withCircuit(
+        "create-certificate",
+        () => miscRepository.createCertificate(data),
+        DB_CIRCUIT_OPTIONS,
+      ),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[MiscService] Failed to create certificate", error as Error);
+        return new InternalError("Failed to create certificate", { error });
+      },
+    );
+  }
+
+  updateCertificate(
     id: number,
     data: Partial<InsertCertificate>,
-  ): Promise<Result<Certificate, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Certificate, AppError>> => {
+  ): ResultAsync<Certificate, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const updated = await withCircuit(
           `update-certificate-${id}`,
           () => miscRepository.updateCertificate(id, data),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!updated) return err(new NotFoundError(`Certificate with ID ${id}`));
-        return ok(updated);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+        if (!updated) throw new NotFoundError(`Certificate with ID ${id}`);
+        return updated;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[MiscService] Failed to update certificate", { id }, error as Error);
-        return err(new InternalError(`Failed to update certificate ${id}`, { error }));
-      }),
+        return new InternalError(`Failed to update certificate ${id}`, { error });
+      },
     );
   }
 
-  async deleteCertificate(id: number): Promise<Result<boolean, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<boolean, AppError>> => {
+  deleteCertificate(id: number): ResultAsync<boolean, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const success = await withCircuit(
           `delete-certificate-${id}`,
           () => miscRepository.deleteCertificate(id),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!success) return err(new NotFoundError(`Certificate with ID ${id}`));
-        return ok(success);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+        if (!success) throw new NotFoundError(`Certificate with ID ${id}`);
+        return success;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[MiscService] Failed to delete certificate", { id }, error as Error);
-        return err(new InternalError(`Failed to delete certificate ${id}`, { error }));
-      }),
+        return new InternalError(`Failed to delete certificate ${id}`, { error });
+      },
     );
   }
 
   // SIZE CHARTS
-  async getSizeCharts(): Promise<Result<SizeChart[], AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<SizeChart[], AppError>> => {
-        const charts = await withCircuit(
-          "get-size-charts",
-          () => miscRepository.getSizeCharts(),
+  getSizeCharts(): ResultAsync<SizeChart[], AppError> {
+    return ResultAsync.fromPromise(
+      withCircuit("get-size-charts", () => miscRepository.getSizeCharts(), DB_CIRCUIT_OPTIONS),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[MiscService] Failed to fetch size charts", error as Error);
+        return new InternalError("Failed to fetch size charts", { error });
+      },
+    );
+  }
+
+  createSizeChart(data: InsertSizeChart): ResultAsync<SizeChart, AppError> {
+    return ResultAsync.fromPromise(
+      withCircuit(
+        "create-size-chart",
+        () => miscRepository.createSizeChart(data),
+        DB_CIRCUIT_OPTIONS,
+      ),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[MiscService] Failed to create size chart", error as Error);
+        return new InternalError("Failed to create size chart", { error });
+      },
+    );
+  }
+
+  updateSizeChart(id: number, data: Partial<InsertSizeChart>): ResultAsync<SizeChart, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
+        const updated = await withCircuit(
+          `update-size-chart-${id}`,
+          () => miscRepository.updateSizeChart(id, data),
           DB_CIRCUIT_OPTIONS,
         );
-        return ok(charts);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        logger.error("[MiscService] Failed to fetch size charts", error as Error);
-        return err(new InternalError("Failed to fetch size charts", { error }));
-      }),
+        if (!updated) throw new NotFoundError(`Size chart with ID ${id}`);
+        return updated;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[MiscService] Failed to update size chart", { id }, error as Error);
+        return new InternalError(`Failed to update size chart ${id}`, { error });
+      },
+    );
+  }
+
+  deleteSizeChart(id: number): ResultAsync<boolean, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
+        const success = await withCircuit(
+          `delete-size-chart-${id}`,
+          () => miscRepository.deleteSizeChart(id),
+          DB_CIRCUIT_OPTIONS,
+        );
+        if (!success) throw new NotFoundError(`Size chart with ID ${id}`);
+        return success;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.error("[MiscService] Failed to delete size chart", { id }, error as Error);
+        return new InternalError(`Failed to delete size chart ${id}`, { error });
+      },
     );
   }
 }

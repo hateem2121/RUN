@@ -89,6 +89,7 @@ export async function queueMediaProcessing(
         body: Buffer.from(JSON.stringify(payload)).toString("base64"),
         oidcToken: {
           serviceAccountEmail: `${PROJECT_ID}@appspot.gserviceaccount.com`,
+          audience: process.env.CLOUD_TASKS_AUDIENCE || `${SERVICE_URL}/api/worker/process-media`,
         },
       },
     };

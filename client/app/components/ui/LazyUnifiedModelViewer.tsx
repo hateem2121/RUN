@@ -23,6 +23,19 @@ function ModelViewerSkeleton({ className }: { className?: string }) {
   );
 }
 
+function isWebGLSupported(): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    const canvas = document.createElement("canvas");
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext("webgl2") || canvas.getContext("webgl"))
+    );
+  } catch {
+    return false;
+  }
+}
+
 // Lazy wrapper that preserves the same API
 export function LazyUnifiedModelViewer(
   props: ComponentProps<typeof UnifiedModelViewer> & {
@@ -31,6 +44,20 @@ export function LazyUnifiedModelViewer(
   },
 ) {
   const { fallbackImage, fallbackVideo, ...rest } = props;
+
+  // Upfront synchronous WebGL detection: gracefully fallback to 2D image on unsupported devices
+  if (typeof window !== "undefined" && !isWebGLSupported()) {
+    const imgSrc =
+      props.asset?.thumbnailUrl || fallbackImage || "/images/placeholders/product-placeholder.webp";
+    return (
+      <div
+        className={`relative aspect-square h-full w-full overflow-hidden rounded-lg bg-surface-subtle dark:bg-muted ${props.className || ""}`}
+      >
+        <img src={imgSrc} alt="Product Preview" className="h-full w-full object-cover" />
+      </div>
+    );
+  }
+
   return (
     <ModelViewerErrorBoundary
       asset={props.asset}

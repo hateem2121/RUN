@@ -16,15 +16,6 @@ export async function ensureModelViewerLoaded(): Promise<void> {
   loadingPromise = new Promise((resolve, reject) => {
     const run = async () => {
       try {
-        // CRITICAL FIX: Disable ImageBitmap to avoid Replit DevTools fetch interception
-        // Forces @google/model-viewer to use HTMLImageElement for embedded textures
-        if (typeof window !== "undefined" && typeof window.createImageBitmap === "function") {
-          try {
-            const win = window as unknown as Record<string, unknown>;
-            delete win.createImageBitmap;
-          } catch (_error) {}
-        }
-
         // PHASE 2.1: Configure Lit for production mode before importing @google/model-viewer
         // This disables development warnings and optimizes performance
         if (typeof globalThis !== "undefined") {
