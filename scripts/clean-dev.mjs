@@ -33,20 +33,26 @@ function isPortInUse(port) {
 function killProcessOnPort(port) {
   try {
     if (process.platform === "win32") {
-      const output = execSync(`netstat -ano | findstr :${port}`, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+      const output = execSync(`netstat -ano | findstr :${port}`, {
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"],
+      });
       const lines = output.trim().split("\n");
       for (const line of lines) {
         const parts = line.trim().split(/\s+/);
         const pid = parts[parts.length - 1];
-        if (pid && !isNaN(Number(pid)) && Number(pid) > 0) {
+        if (pid && !Number.isNaN(Number(pid)) && Number(pid) > 0) {
           execSync(`taskkill /F /PID ${pid}`, { stdio: "ignore" });
         }
       }
     } else {
-      const output = execSync(`lsof -ti :${port}`, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+      const output = execSync(`lsof -ti :${port}`, {
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"],
+      });
       const pids = output.trim().split("\n").filter(Boolean);
       for (const pid of pids) {
-        if (pid && !isNaN(Number(pid)) && Number(pid) !== process.pid) {
+        if (pid && !Number.isNaN(Number(pid)) && Number(pid) !== process.pid) {
           try {
             process.kill(Number(pid), "SIGTERM");
           } catch {

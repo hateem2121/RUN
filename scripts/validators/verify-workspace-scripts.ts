@@ -7,8 +7,8 @@
  * valid cross-package script references, and consistent engine declarations.
  */
 
-import { readFileSync, existsSync } from "node:fs";
-import { resolve, dirname } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -56,8 +56,10 @@ export function verifyWorkspaceManifests(): { valid: boolean; errors: string[] }
   // 2. Check engine compatibility across all manifests
   for (const [name, pkg] of manifestsMap.entries()) {
     if (name === "scripts") continue;
-    if (!pkg.engines?.node || !pkg.engines.node.includes(">=24")) {
-      errors.push(`Package '${name}' missing or invalid engines.node declaration (expected '>=24.0.0', got '${pkg.engines?.node}')`);
+    if (!pkg.engines?.node?.includes(">=24")) {
+      errors.push(
+        `Package '${name}' missing or invalid engines.node declaration (expected '>=24.0.0', got '${pkg.engines?.node}')`,
+      );
     }
   }
 
@@ -96,8 +98,10 @@ export function verifyWorkspaceManifests(): { valid: boolean; errors: string[] }
         const targetWs = match[1];
         const targetCmd = match[2];
         const targetPkg = manifestsMap.get(targetWs);
-        if (targetPkg && (!targetPkg.scripts || !targetPkg.scripts[targetCmd])) {
-          errors.push(`Root script '${scriptName}' references missing script '${targetCmd}' in workspace '${targetWs}'.`);
+        if (targetPkg && !targetPkg.scripts?.[targetCmd]) {
+          errors.push(
+            `Root script '${scriptName}' references missing script '${targetCmd}' in workspace '${targetWs}'.`,
+          );
         }
       }
     }
@@ -109,7 +113,7 @@ export function verifyWorkspaceManifests(): { valid: boolean; errors: string[] }
   };
 }
 
-if (process.argv[1] && process.argv[1].endsWith("verify-workspace-scripts.ts")) {
+if (process.argv[1]?.endsWith("verify-workspace-scripts.ts")) {
   const result = verifyWorkspaceManifests();
   if (!result.valid) {
     console.error("❌ Workspace Script Integrity Validation Failed:");
