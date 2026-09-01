@@ -64,8 +64,12 @@
     "zustand": "^5.0.9"
   },
   "scripts": {
+    "clean": "node ../scripts/clean-dev.mjs",
+    "kill:all": "node ../scripts/clean-dev.mjs",
+    "predev": "node ../scripts/clean-dev.mjs",
     "dev": "vite --force",
     "typegen": "react-router typegen",
+    "typecheck": "react-router typegen && tsc --noEmit",
     "build": "react-router typegen && tsc -b && react-router build",
     "build:analyze": "react-router typegen && VITE_ANALYZE=true tsc -b && react-router build",
     "preview": "vite preview",

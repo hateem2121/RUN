@@ -66,7 +66,9 @@
     "ci:checks": "npm run check:md && npm run verify:clean-seed && npm run verify:tech-integrity && npm run verify:docs-structure",
     "verify:build": "npm run build && npm run check:bundle",
     "verify-port": "node scripts/verify-port-5002.js",
-    "kill:all": "pkill -f 'RUN-Remix' || echo 'No processes found'",
+    "clean": "node scripts/clean-dev.mjs",
+    "kill:all": "node scripts/clean-dev.mjs",
+    "verify:workspaces": "tsx scripts/validators/verify-workspace-scripts.ts",
     "lhci": "lhci autorun",
     "verify:connect": "npm run verify-port && tsx scripts/verify-neon.ts && tsx scripts/verify-email.ts",
     "prepare": "husky"

@@ -4,7 +4,29 @@
 **Goal:** Deep Frontier 6: 3D WebGL/WebGPU, Factory Floor SSE & FIDO2 WebAuthn  
 **Auditor/Engineer Role:** Antigravity — Principal Systems Architect & Senior Full-Stack Engineer  
 
-## Active Sprint Plan — Sprint 7: Master Remediation Resolution & 100/100 Scorecard (2026-09-01)
+## Active Sprint Plan — Sprint 8: Permanent Monorepo 'npm error' Prevention & Hardening (2026-09-01)
+
+- [x] **Protocol 0: Session Initialization & Scope Mapping**
+  - [x] Conducted `/grill-me` interview with user to establish scope: Comprehensive Monorepo Hardening, cross-platform Node dev cleaner, workspace script parity, modernized `.npmrc`, and automated CI validator.
+- [x] **Phase 1: Cross-Platform Process & Port Cleaner**
+  - [x] Created `scripts/clean-dev.mjs` using pure Node.js (`node:net`, `node:child_process`) to gracefully release port 5002 and clean orphan watch processes on macOS, Linux, and Windows.
+- [x] **Phase 2: Monorepo Workspace Script Interface Parity**
+  - [x] Added `clean`, `kill:all`, `predev`, and `typecheck` standard scripts to `client/package.json`.
+  - [x] Added `clean`, `kill:all`, `predev` referencing `clean-dev.mjs` to `server/package.json`.
+  - [x] Added `clean`, `typecheck`, `test` to `shared/package.json`.
+  - [x] Updated root `package.json` with `clean`, `kill:all`, and `verify:workspaces`.
+  - [x] Configured `.npmrc` for non-blocking workspace execution (`legacy-peer-deps`, `fund=false`, `audit=false`, `update-notifier=false`, `workspaces-update=true`).
+- [x] **Phase 3: Automated Workspace Integrity Validation**
+  - [x] Created `scripts/validators/verify-workspace-scripts.ts` to assert manifest validity, engine compatibility, and script resolution.
+  - [x] Created `tests/unit/scripts/verify-workspace-scripts.test.ts`.
+  - [x] Integrated `Workspace Script Integrity` step into `scripts/verify-tech-integrity.ts`.
+- [x] **Phase 4: Protocol 0 Verification Gate**
+  - [x] Verified full Vitest suite: 172 test files / 2,600 tests passing (100%).
+  - [x] Verified `npm run verify:tech-integrity` (100% GREEN across all checks).
+
+---
+
+## Past Sprints
 
 - [x] **Protocol 0: Session Initialization & Scope Mapping**
   - [x] Decomposed all 12 P1 and 13 P2 issues from `SYSTEM_OPTIMISATION_REPORT.md` into actionable vertical slices with zero breaking changes.

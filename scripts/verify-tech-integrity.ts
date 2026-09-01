@@ -93,6 +93,12 @@ const steps = [
     args: ["scripts/validators/verify-query-egress.ts"],
     critical: true,
   },
+  {
+    name: "Workspace Script Integrity",
+    command: "npm",
+    args: ["run", "verify:workspaces"],
+    critical: true,
+  },
 ];
 
 function checkDocsFreshness(): Result<boolean, Error> {
