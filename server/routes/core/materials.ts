@@ -12,9 +12,7 @@ router.get("/fibers", async (_req, res) => {
   const result = await miscService.getFibers();
   return result.match(
     (fibers) => {
-      res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-      res.setHeader("Pragma", "no-cache");
-      res.setHeader("Expires", "0");
+      res.setHeader("Cache-Control", "public, max-age=300, stale-while-revalidate=3600");
       return res.json(fibers);
     },
     (error) => res.status(error.statusCode || 500).json({ message: error.message }),

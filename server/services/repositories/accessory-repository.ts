@@ -20,7 +20,7 @@ import { logger } from "../../lib/monitoring/logger.js";
 import { StorageSingleton } from "../../lib/storage-singleton.js";
 
 const unifiedCache = UnifiedCache.getInstance();
-const ACCESSORY_CACHE_TTL = 86400 * 1000; // 24 hours (accessories change infrequently)
+const ACCESSORY_CACHE_TTL = 86400; // 24 hours (in seconds)
 
 /**
  * Normalize filter object for consistent cache keys

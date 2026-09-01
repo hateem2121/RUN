@@ -14,9 +14,7 @@ router.use(apiTier);
 
 // GET /api/accessories - List accessories with pagination and filters
 router.get("/accessories", async (req, res) => {
-  res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-  res.set("Pragma", "no-cache");
-  res.set("Expires", "0");
+  res.set("Cache-Control", "public, max-age=300, stale-while-revalidate=3600");
 
   const limit = parseInt(req.query.limit as string, 10) || 100;
   const offset = parseInt(req.query.offset as string, 10) || 0;

@@ -17,7 +17,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import type { ManufacturingCaseStudy, MediaAsset } from "@shared/index";
 import { Edit, GripVertical, Plus, Trash2, Trophy } from "lucide-react";
-import { useActionState, useOptimistic, useState } from "react";
+import { startTransition, useActionState, useOptimistic, useState } from "react";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { MediaPickerModal } from "@/components/admin/shared/MediaPickerModal";
 import { Badge } from "@/components/ui/badge";
@@ -261,7 +261,9 @@ export function CaseStudyManagement({ mediaAssets = [] }: CaseStudyManagementPro
       const newIndex = optimisticCaseStudies.findIndex((p) => p.id === over.id);
       const newCaseStudies = arrayMove(optimisticCaseStudies, oldIndex, newIndex);
 
-      setOptimisticCaseStudies({ type: "reorder", payload: newCaseStudies });
+      startTransition(() => {
+        setOptimisticCaseStudies({ type: "reorder", payload: newCaseStudies });
+      });
 
       const updates = newCaseStudies.map((item, index) => ({
         id: item.id,

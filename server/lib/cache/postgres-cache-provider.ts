@@ -1,5 +1,5 @@
 import { cacheEntries } from "@run-remix/shared";
-import { eq, lte, sql } from "drizzle-orm";
+import { eq, inArray, lte, sql } from "drizzle-orm";
 import { db } from "../../db.js";
 import { logger } from "../monitoring/logger.js";
 
@@ -69,8 +69,12 @@ export class PostgresCacheProvider {
    */
   async del(...keys: string[]): Promise<void> {
     try {
-      for (const key of keys) {
-        await db.delete(cacheEntries).where(eq(cacheEntries.key, key));
+      const validKeys = keys.filter(Boolean);
+      if (validKeys.length === 0) return;
+      if (validKeys.length === 1 && validKeys[0]) {
+        await db.delete(cacheEntries).where(eq(cacheEntries.key, validKeys[0]));
+      } else {
+        await db.delete(cacheEntries).where(inArray(cacheEntries.key, validKeys));
       }
     } catch (err) {
       logger.error(`[PostgresCache] Delete failed:`, err);

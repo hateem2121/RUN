@@ -503,10 +503,9 @@ export class MediaRepository {
       };
     }, "getMediaAssetsWithCount");
 
-    // Cache for 10 min (NEON auto-suspends after 5 min idle)
-    // Keep TTL above suspend threshold to avoid cold starts
-    const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
-    await unifiedCache.set(cacheKey, result, CACHE_TTL_MS);
+    // Cache for 10 min (600 seconds)
+    const CACHE_TTL = 600;
+    await unifiedCache.set(cacheKey, result, CACHE_TTL);
 
     logger.debug(
       `[MediaRepo] getMediaAssetsWithCount(${limit}, ${offset}) returned ${result.assets.length} assets, total: ${result.total}`,

@@ -1,5 +1,5 @@
 import { sessions } from "@run-remix/shared";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { type SessionData, Store } from "express-session";
 import { ResultAsync } from "neverthrow";
 import { db } from "../../db.js";
@@ -117,5 +117,15 @@ export class DrizzleSessionStore extends Store {
       },
     );
     return result;
+  }
+
+  /**
+   * Prunes expired sessions from the database
+   */
+  public pruneExpired(): ResultAsync<number, Error> {
+    return ResultAsync.fromPromise(
+      db.delete(sessions).where(sql`${sessions.expire} < NOW()`),
+      (error) => error as Error,
+    ).map((res) => (res as { rowCount?: number })?.rowCount ?? 0);
   }
 }

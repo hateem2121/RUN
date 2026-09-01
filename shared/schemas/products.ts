@@ -195,6 +195,7 @@ export const products = pgTable(
     index("products_primary_image_id_idx").on(table.primaryImageId),
     index("products_primary_video_id_idx").on(table.primaryVideoId),
     index("products_model_file_id_idx").on(table.modelFileId),
+    index("products_size_chart_id_idx").on(table.sizeChartId),
 
     // CONSOLIDATED OPTIMIZATIONS (DS-007): Moving manual SQL indexes into Drizzle schema
     // GIN indexes for JSONB array containment queries (@> operator)

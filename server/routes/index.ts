@@ -36,6 +36,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     compression({
       threshold: 1024,
       filter: (req: Request, res: Response) => {
+        if (
+          req.headers["x-no-compression"] ||
+          res.get("Content-Type")?.includes("text/event-stream")
+        ) {
+          return false;
+        }
         if (res.get("Content-Type")?.includes("application/json")) {
           return true;
         }

@@ -39,7 +39,7 @@ class SustainabilityRepository {
 
     const [hero] = await db.select().from(sustainabilityHero).limit(1);
     if (hero) {
-      await unifiedCache.set(cacheKey, hero, HOMEPAGE_CACHE_TTL / 1000);
+      await unifiedCache.set(cacheKey, hero, HOMEPAGE_CACHE_TTL);
     }
     return hero ?? undefined;
   }
@@ -196,7 +196,7 @@ class SustainabilityRepository {
       .where(eq(sustainabilityMetrics.isActive, true))
       .orderBy(asc(sustainabilityMetrics.sortOrder));
 
-    await unifiedCache.set(cacheKey, metrics, HOMEPAGE_CACHE_TTL / 1000);
+    await unifiedCache.set(cacheKey, metrics, HOMEPAGE_CACHE_TTL);
     return metrics;
   }
 
@@ -438,7 +438,7 @@ class SustainabilityRepository {
 
     const [data] = await db.select().from(unifiedSustainability).limit(1);
     if (data) {
-      await unifiedCache.set(cacheKey, data, HOMEPAGE_CACHE_TTL / 1000);
+      await unifiedCache.set(cacheKey, data, HOMEPAGE_CACHE_TTL);
     }
     return data ?? undefined;
   }

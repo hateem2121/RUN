@@ -5,6 +5,7 @@ import { twoTierBatchCache } from "../../lib/cache/two-tier-batch.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { shouldBypassCache } from "../../lib/utilities/core-utils.js";
 import { publicTier } from "../../middleware/rate-limit-tiers.js";
+import { categoryService } from "../../services/catalog/category.service.js";
 import { productService } from "../../services/catalog/product.service.js";
 import { homepageService } from "../../services/cms/homepage.service.js";
 
@@ -44,7 +45,7 @@ router.get("/homepage-batch", async (req, res) => {
       homepageService.getSections(),
       homepageService.getFeaturedProductsSettings(),
       productService.listProducts({ limit: 20 }),
-      homepageService.getSections(), // fallback or categories
+      categoryService.getCategories(),
       homepageService.getProcessCards(),
     ]);
 
@@ -53,7 +54,11 @@ router.get("/homepage-batch", async (req, res) => {
     const sections = sectionsRes.isOk() ? sectionsRes.value : [];
     const featuredProductsSettings = featSettingsRes.isOk() ? featSettingsRes.value : null;
     const products = productsRes.isOk() ? productsRes.value.data : [];
-    const categories = categoriesRes.isOk() ? categoriesRes.value : [];
+    const categories = categoriesRes.isOk()
+      ? Array.isArray(categoriesRes.value)
+        ? categoriesRes.value
+        : categoriesRes.value.data
+      : [];
     const processCards = processCardsRes.isOk() ? processCardsRes.value : [];
 
     return {

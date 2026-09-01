@@ -23,8 +23,8 @@ class SmartLogger {
     this.isDevelopment = isDevelopment;
     this.logLevel = logging.level || (isDevelopment ? "debug" : "warn");
 
-    // Pino configuration
-    this.logger = pino({
+    // Pino configuration options
+    const pinoOptions = {
       level: this.logLevel,
       redact: {
         paths: [
@@ -99,7 +99,19 @@ class SmartLogger {
       base: {
         service: "run-apparel-api",
       },
-    });
+    };
+
+    // Use asynchronous non-blocking SonicBoom destination in standalone production mode
+    if (
+      process.env.NODE_ENV === "production" &&
+      process.env.VITEST !== "true" &&
+      process.env.PLAYWRIGHT_TEST !== "true"
+    ) {
+      const destination = pino.destination({ sync: false, minLength: 4096 });
+      this.logger = pino(pinoOptions, destination);
+    } else {
+      this.logger = pino(pinoOptions);
+    }
   }
 
   public static getInstance(): SmartLogger {

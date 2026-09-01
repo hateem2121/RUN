@@ -25,6 +25,21 @@ const shouldSkipRateLimiting = (_req: Request): boolean => {
 };
 
 /**
+ * Normalizes client IP addresses:
+ * - IPv4: Uses the standard IP as-is
+ * - IPv6: Masks to the /64 subnet prefix to prevent subnet rotation attacks (RFC 4291)
+ */
+export function getNormalizedClientIp(req: Request): string {
+  const ip = req.ip || req.socket.remoteAddress || "127.0.0.1";
+  if (ip.includes(":")) {
+    // IPv6 address: extract first 4 hextets (/64 subnet)
+    const parts = ip.split(":");
+    return `${parts.slice(0, 4).join(":")}::/64`;
+  }
+  return ip;
+}
+
+/**
  * TIER 1: PUBLIC CONTENT (Lax)
  * Designed for public read-only pages and resource discovery.
  * 200 requests per 10 minutes.
@@ -32,6 +47,7 @@ const shouldSkipRateLimiting = (_req: Request): boolean => {
 export const publicTier = rateLimit({
   windowMs: 10 * 60 * 1000,
   limit: 200,
+  keyGenerator: getNormalizedClientIp,
   standardHeaders: "draft-8",
   legacyHeaders: false,
   message: { error: "Too many content requests. Please slow down." },
@@ -47,6 +63,7 @@ export const publicTier = rateLimit({
 export const apiTier = rateLimit({
   windowMs: 60 * 1000,
   limit: 60,
+  keyGenerator: getNormalizedClientIp,
   standardHeaders: "draft-8",
   legacyHeaders: false,
   message: { error: "Standard API rate limit exceeded." },
@@ -62,6 +79,7 @@ export const apiTier = rateLimit({
 export const criticalTier = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 10,
+  keyGenerator: getNormalizedClientIp,
   standardHeaders: "draft-8",
   legacyHeaders: false,
   message: { error: "Sensitive operation limit exceeded. Please try again later for security." },
@@ -77,6 +95,7 @@ export const criticalTier = rateLimit({
 export const uploadTier = rateLimit({
   windowMs: 10 * 60 * 1000,
   limit: 20,
+  keyGenerator: getNormalizedClientIp,
   standardHeaders: "draft-8",
   legacyHeaders: false,
   message: { error: "Upload quota exceeded. Please wait before uploading more assets." },

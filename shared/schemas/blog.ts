@@ -57,6 +57,7 @@ export const blogPosts = pgTable(
     index("blog_posts_author_id_idx").on(table.authorId),
     index("blog_posts_status_idx").on(table.status),
     index("blog_posts_deleted_at_idx").on(table.deletedAt),
+    index("blog_posts_published_idx").on(table.status, table.deletedAt, table.publishedAt),
   ],
 );
 

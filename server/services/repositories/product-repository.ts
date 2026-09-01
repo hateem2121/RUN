@@ -42,9 +42,9 @@ export type { ProductDetail, ProductSummary };
 
 import type { ProductDetailWithContext } from "./storage-interfaces.js";
 
-// CHUNK 34: Cache TTL optimized by data volatility - products change moderately
-const PRODUCT_CACHE_TTL = 60 * 60 * 1000; // 60 minutes - Extended for better cache hit rates (900s)
-const CATEGORY_CACHE_TTL = 4 * 60 * 60 * 1000; // 4 hours - categories change infrequently (~1x per day max)
+// Cache TTL in seconds (UnifiedCache.set expects seconds)
+const PRODUCT_CACHE_TTL = 3600; // 60 minutes (3600 seconds)
+const CATEGORY_CACHE_TTL = 14400; // 4 hours (14400 seconds)
 
 // Column selection for product summary (listings, cards)
 // Matches ProductSummary type from schema.ts
@@ -461,10 +461,21 @@ export class ProductRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getProduct(id);
     }
+    const cacheKey = CacheKeys.products.item(id);
+    const cached = await unifiedCache.get<ProductDetail>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
     const [product] = await db
       .select(PRODUCT_DETAIL_COLUMNS)
       .from(products)
       .where(and(eq(products.id, id), isNull(products.deletedAt)));
+
+    if (product) {
+      await unifiedCache.set(cacheKey, product, PRODUCT_CACHE_TTL);
+    }
+
     return product;
   }
 
@@ -826,7 +837,7 @@ export class ProductRepository {
     if (result !== null) {
       try {
         logger.info(
-          `[ProductRepo] Setting cache for product path: ${urlPath} (TTL: ${PRODUCT_CACHE_TTL}ms)`,
+          `[ProductRepo] Setting cache for product path: ${urlPath} (TTL: ${PRODUCT_CACHE_TTL}s)`,
         );
         await unifiedCache.set(cacheKey, result, PRODUCT_CACHE_TTL);
         logger.info(`[ProductRepo] ✅ Cache SET successful for product path: ${urlPath}`);
@@ -835,10 +846,10 @@ export class ProductRepository {
       }
     } else {
       // NEGATIVE CACHING: Cache 404 results for 10 minutes to prevent bot probes from hitting DB
-      const NEGATIVE_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+      const NEGATIVE_CACHE_TTL = 600; // 10 minutes (600 seconds)
       try {
         logger.info(
-          `[ProductRepo] Setting negative cache for 404 path: ${urlPath} (TTL: ${NEGATIVE_CACHE_TTL}ms)`,
+          `[ProductRepo] Setting negative cache for 404 path: ${urlPath} (TTL: ${NEGATIVE_CACHE_TTL}s)`,
         );
         await unifiedCache.set(
           cacheKey,

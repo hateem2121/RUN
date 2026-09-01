@@ -38,7 +38,7 @@ export const Slogans: React.FC<SlogansProps> = ({ data }) => {
     >
       <div
         className={cn(
-          "flex animate-marquee whitespace-nowrap",
+          "flex animate-marquee whitespace-nowrap transform-gpu will-change-transform",
           "hover:[animation-play-state:paused] focus-within:[animation-play-state:paused] motion-reduce:[animation-play-state:paused] motion-reduce:animate-none",
         )}
       >

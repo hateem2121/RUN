@@ -161,7 +161,7 @@ export async function ssrCacheMiddleware(
     // max-age: browser cache time
     // stale-while-revalidate: serve stale while fetching fresh
     res.setHeader("Cache-Control", "public, max-age=60, s-maxage=300, stale-while-revalidate=600");
-    res.setHeader("Vary", "Accept-Encoding, Cookie");
+    res.setHeader("Vary", "Accept-Encoding");
 
     // PC-102: Serve from server-side HTML cache if available (L1/L2 aware)
     const cacheKey = getCacheKey(req);

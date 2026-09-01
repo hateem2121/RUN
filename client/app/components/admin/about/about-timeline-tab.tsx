@@ -19,7 +19,7 @@ import { ABOUT_API } from "@shared/api-constants";
 import type { AboutTimelineEntry, MediaAsset } from "@shared/index";
 import { useQuery } from "@tanstack/react-query";
 import { Edit, GripVertical, Image, Plus, Trash2 } from "lucide-react";
-import { useActionState, useOptimistic, useState } from "react";
+import { startTransition, useActionState, useOptimistic, useState } from "react";
 import { toast } from "sonner";
 import { DeleteConfirmationDialog } from "@/components/admin/shared/DeleteConfirmationDialog";
 import { StandardMediaSelectionDialog } from "@/components/admin/shared/StandardMediaSelectionDialog";
@@ -151,7 +151,9 @@ export function AboutTimelineTab() {
       const newIndex = optimisticEntries.findIndex((e) => e.id === over.id);
 
       const newEntries = arrayMove(optimisticEntries, oldIndex, newIndex);
-      setOptimisticEntries({ type: "reorder", newEntries });
+      startTransition(() => {
+        setOptimisticEntries({ type: "reorder", newEntries });
+      });
 
       try {
         const reorderData = newEntries.map((entry, index) => ({
@@ -169,7 +171,9 @@ export function AboutTimelineTab() {
         getQueryClient().invalidateQueries({ queryKey: [ABOUT_API.BATCH] });
       } catch (_error) {
         toast.error("Failed to update timeline order");
-        setOptimisticEntries({ type: "reorder", newEntries: entries });
+        startTransition(() => {
+          setOptimisticEntries({ type: "reorder", newEntries: entries });
+        });
       }
     }
   }
@@ -215,7 +219,9 @@ export function AboutTimelineTab() {
   );
 
   const handleDelete = async (id: number) => {
-    setOptimisticEntries({ type: "delete", id });
+    startTransition(() => {
+      setOptimisticEntries({ type: "delete", id });
+    });
     try {
       await apiRequest(`${ABOUT_API.TIMELINE}/${id}`, {
         method: "DELETE",

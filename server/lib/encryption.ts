@@ -8,6 +8,9 @@ const IV_LENGTH = 16;
 const PBKDF2_SALT = Buffer.from("run-remix-encryption-salt-v1");
 const PBKDF2_ITERATIONS = 100000;
 
+let cachedRawKey: string | null = null;
+let cachedKey: Buffer | null = null;
+
 /**
  * Derives a 32-byte key from the environment variable using PBKDF2.
  * This provides stronger key derivation than simple SHA-256 hashing.
@@ -18,9 +21,15 @@ function getDerivedKey(): Buffer {
     throw new Error("ENCRYPTION_KEY is not defined");
   }
 
+  if (cachedKey && cachedRawKey === rawKey) {
+    return cachedKey;
+  }
+
   // Use PBKDF2 with 100,000 iterations for stronger key derivation
   // The ENCRYPTION_KEY itself should be high-entropy (32+ random bytes)
-  return pbkdf2Sync(rawKey, PBKDF2_SALT, PBKDF2_ITERATIONS, 32, "sha256");
+  cachedRawKey = rawKey;
+  cachedKey = pbkdf2Sync(rawKey, PBKDF2_SALT, PBKDF2_ITERATIONS, 32, "sha256");
+  return cachedKey;
 }
 
 /**

@@ -79,6 +79,7 @@ export function ContactForm({ contactConfig, isMobile }: ContactFormProps) {
 
             <form
               action={formAction}
+              method="POST"
               onSubmit={handleAgentSubmit}
               className="space-y-5"
               data-testid="form-contact"

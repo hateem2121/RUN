@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import cookieParser from "cookie-parser";
-import express, { type Express, type Request, type RequestHandler } from "express";
+import express, { type Express, type Request, type RequestHandler, type Response } from "express";
 import helmet from "helmet";
 import { env } from "../lib/env.js";
 import { httpMetricsTracker } from "../lib/monitoring/http-metrics.js";
@@ -23,40 +23,42 @@ export async function setupMiddleware(app: Express) {
   app.use(correlationIdMiddleware);
   app.use(httpMetricsTracker.middleware());
 
-  // 1. Core Security Headers (Helmet) with dynamic CSP Nonce
-  app.use((req, res, next) => {
-    const nonce = crypto.randomBytes(16).toString("base64url");
-    res.locals.cspNonce = nonce;
-
-    helmet({
-      contentSecurityPolicy: {
-        directives: {
-          ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-          "script-src": [
-            "'self'",
-            `'nonce-${nonce}'`,
-            "'wasm-unsafe-eval'",
-            ...(process.env.NODE_ENV !== "production" ? ["'unsafe-eval'"] : []),
-            "*.google.com",
-            "*.gstatic.com",
-          ],
-          "frame-src": ["'self'", "*.google.com"],
-          "connect-src": ["'self'", "*.google.com", "*.gstatic.com", "vitals.vercel-insights.com"],
-          "img-src": ["'self'", "data:", "*.google.com", "*.gstatic.com", "https://*"],
-          "worker-src": ["'self'", "blob:"],
-          "font-src": [
-            "'self'",
-            "https:",
-            "data:",
-            `http://localhost:${env.PORT}`,
-            `http://127.0.0.1:${env.PORT}`,
-          ],
-        },
-      },
-      crossOriginEmbedderPolicy: false, // Required for some 3D/Media elements
-      crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow loading media from GCS storage buckets
-    })(req, res, next);
+  // 1. Generate dynamic CSP Nonce per request
+  app.use((_req, res, next) => {
+    res.locals.cspNonce = crypto.randomBytes(16).toString("base64url");
+    next();
   });
+
+  // 1b. Core Security Headers (Helmet compiled once at startup with dynamic CSP Nonce resolver)
+  const helmetMiddleware = helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        "script-src": [
+          "'self'",
+          (_req, res) => `'nonce-${(res as Response).locals.cspNonce}'`,
+          "'wasm-unsafe-eval'",
+          ...(process.env.NODE_ENV !== "production" ? ["'unsafe-eval'"] : []),
+          "*.google.com",
+          "*.gstatic.com",
+        ],
+        "frame-src": ["'self'", "*.google.com"],
+        "connect-src": ["'self'", "*.google.com", "*.gstatic.com", "vitals.vercel-insights.com"],
+        "img-src": ["'self'", "data:", "*.google.com", "*.gstatic.com", "https://*"],
+        "worker-src": ["'self'", "blob:"],
+        "font-src": [
+          "'self'",
+          "https:",
+          "data:",
+          `http://localhost:${env.PORT}`,
+          `http://127.0.0.1:${env.PORT}`,
+        ],
+      },
+    },
+    crossOriginEmbedderPolicy: false, // Required for some 3D/Media elements
+    crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow loading media from GCS storage buckets
+  });
+  app.use(helmetMiddleware);
 
   // 2. Cookie Parser (Required for CSRF and sessions)
   app.use(cookieParser());
@@ -67,11 +69,11 @@ export async function setupMiddleware(app: Express) {
   // 4. Basic Security & Identity
   app.use(createCorsMiddleware());
 
-  // 5. CSRF Protection (Double-Submit Cookie pattern)
-  app.use(csrfProtection);
-
-  // 6. Request Body Parsers - RESTRICTED TO /api
+  // 5. Request Body Parsers - RESTRICTED TO /api (Must run before CSRF validation)
   configureBodyParsers(app);
+
+  // 6. CSRF Protection (Double-Submit Cookie pattern)
+  app.use(csrfProtection);
 
   // 7. Sanitization (Must be after body parsers)
   app.use(requestSanitization);

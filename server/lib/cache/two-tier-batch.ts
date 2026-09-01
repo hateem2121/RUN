@@ -202,7 +202,7 @@ class TwoTierBatchCache {
     benchmark.dbTime = dbTime;
     this.recordDbTime(dbTime);
 
-    await cache.set(batchKey, freshData, 30 * 60 * 1000, "static"); // 30min default TTL
+    await cache.set(batchKey, freshData, 1800, "static"); // 30min default TTL (1800 seconds)
 
     return { data: freshData, benchmark };
   }

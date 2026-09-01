@@ -375,7 +375,7 @@ describe("ProductRepository", () => {
         expect(mockUnifiedCache.set).toHaveBeenCalledWith(
           "product:by-path:missing-path",
           expect.objectContaining({ __notFound: true }),
-          10 * 60 * 1000,
+          600,
         );
       });
 
@@ -396,11 +396,7 @@ describe("ProductRepository", () => {
         const res = await repository.getProductByPath("found-path");
         expect(res).not.toBeNull();
         expect(res?.product.id).toBe(1);
-        expect(mockUnifiedCache.set).toHaveBeenCalledWith(
-          "product:by-path:found-path",
-          res,
-          60 * 60 * 1000,
-        );
+        expect(mockUnifiedCache.set).toHaveBeenCalledWith("product:by-path:found-path", res, 3600);
       });
 
       it("getProductByPath handles negative cache hit", async () => {

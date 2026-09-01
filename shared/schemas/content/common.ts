@@ -64,7 +64,10 @@ export const navigationItems = pgTable(
     // Soft delete support
     deletedAt: timestamp({ mode: "date", precision: 3 }),
   },
-  (table) => [index("navigation_items_media_icon_id_idx").on(table.mediaIconId)],
+  (table) => [
+    index("navigation_items_media_icon_id_idx").on(table.mediaIconId),
+    index("navigation_items_active_sort_idx").on(table.isActive, table.sortOrder),
+  ],
 );
 
 // Contact Page Configuration

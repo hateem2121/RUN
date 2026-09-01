@@ -16,9 +16,7 @@ router.use(apiTier);
 
 // GET /api/certificates - List all certificates
 router.get("/certificates", async (_req, res) => {
-  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
+  res.setHeader("Cache-Control", "public, max-age=300, stale-while-revalidate=3600");
 
   const result = await miscService.getCertificates();
   return result.match(
@@ -112,9 +110,7 @@ router.delete("/certificates/:id", authService.requireAdmin, async (req, res) =>
 
 // GET /api/sustainability-certificates - Get sustainability certificates
 router.get("/sustainability-certificates", async (_req, res) => {
-  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
+  res.setHeader("Cache-Control", "public, max-age=300, stale-while-revalidate=3600");
 
   const result = await miscService.getCertificates();
   return result.match(

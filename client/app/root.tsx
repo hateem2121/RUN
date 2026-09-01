@@ -19,7 +19,7 @@ import { CeilingNotchNavbar } from "@/components/navigation/ceiling-notch-navbar
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { BackToTop } from "@/components/ui/back-to-top";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
-import { getQueryClient, queryKeys } from "@/lib/query-client";
+import { getQueryClient } from "@/lib/query-client";
 import "@/index.css";
 import { useEffect } from "react";
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
@@ -59,6 +59,13 @@ export const links: LinksFunction = () => [
   {
     rel: "preload",
     href: "/fonts/NeueStance-Bold.woff2",
+    as: "font",
+    type: "font/woff2",
+    crossOrigin: "anonymous",
+  },
+  {
+    rel: "preload",
+    href: "/fonts/NeueStance-Regular.woff2",
     as: "font",
     type: "font/woff2",
     crossOrigin: "anonymous",
@@ -106,13 +113,6 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
         queryFn: () => fetch(`${baseUrl}${API_ROUTES.MEDIA.ROOT}`).then((res) => res.json()),
       });
     }
-
-    // Prefetch homepage batch data (Critical for Hero LCP)
-    await queryClient.prefetchQuery({
-      queryKey: queryKeys.homepage.batch(),
-      queryFn: () =>
-        fetch(`${baseUrl}${API_ROUTES.CONTENT.HOMEPAGE_BATCH}`).then((res) => res.json()),
-    });
   } catch (error) {
     console.error("[RootLoader] Error prefetching data:", error);
   }

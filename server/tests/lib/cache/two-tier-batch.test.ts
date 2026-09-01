@@ -159,7 +159,7 @@ describe("TwoTierBatchCache", () => {
     expect(unifiedCache.set).toHaveBeenCalledWith(
       "batch:legacy-key-miss",
       "new-legacy-data",
-      1800000,
+      1800,
       "static",
     );
     expect(result.data).toBe("new-legacy-data");

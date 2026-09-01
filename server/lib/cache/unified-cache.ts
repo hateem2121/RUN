@@ -121,9 +121,14 @@ export class UnifiedCache {
     // Tuned for Cloud Run memory limits (usually 512MB - 2GB)
     this.memoryCache = new LRUCache({
       max: 5000, // Max 5000 items
-      maxSize: 50 * 1024 * 1024, // PC-801: Reduced to 50MB for better system stability
-      sizeCalculation: (value: object, key: string) => {
-        // Rough size estimation
+      maxSize: 50 * 1024 * 1024, // PC-801: 50MB for better system stability
+      sizeCalculation: (value: unknown, key: string) => {
+        if (typeof value === "string") {
+          return value.length + key.length;
+        }
+        if (Buffer.isBuffer(value)) {
+          return value.length + key.length;
+        }
         return JSON.stringify(value).length + key.length;
       },
       ttl: 1000 * 60 * 60, // 1 hour default TTL

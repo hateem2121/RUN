@@ -144,6 +144,8 @@ export const accessories = pgTable(
     index("accessories_sku_idx").on(table.sku),
     index("accessories_is_active_idx").on(table.isActive),
     index("accessories_image_id_idx").on(table.imageId),
+    index("accessories_active_created_idx").on(table.deletedAt, table.isActive, table.createdAt),
+    index("accessories_category_idx").on(table.category, table.isActive, table.deletedAt),
 
     // CONSOLIDATED OPTIMIZATIONS (DS-007): Trigram indexes for multi-field search
     index("accessories_name_trgm_idx").using("gin", sql`${table.name} gin_trgm_ops`),

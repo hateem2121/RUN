@@ -15,6 +15,8 @@ router.use(publicTier);
  */
 router.get("/batch", async (req: Request, res) => {
   const startTime = performance.now();
+  res.setHeader("Cache-Control", "public, max-age=300, stale-while-revalidate=3600");
+
   const typesQuery = (req.query.types as string) || "";
   const types = typesQuery.split(",").map((t) => t.trim().toLowerCase());
 
@@ -90,9 +92,7 @@ router.get("/batch", async (req: Request, res) => {
 
   res.setHeader("X-Cache-Hit", benchmark.hit);
   res.setHeader("X-Response-Time", (performance.now() - startTime).toFixed(2));
-  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
+  res.setHeader("Cache-Control", "public, max-age=300, stale-while-revalidate=3600");
 
   return res.json(batchData);
 });

@@ -12,9 +12,7 @@ router.get("/fabrics", async (_req, res) => {
   const result = await miscService.getFabrics();
   return result.match(
     (fabrics) => {
-      res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-      res.setHeader("Pragma", "no-cache");
-      res.setHeader("Expires", "0");
+      res.setHeader("Cache-Control", "public, max-age=300, stale-while-revalidate=3600");
       return res.json(fabrics);
     },
     (error) =>

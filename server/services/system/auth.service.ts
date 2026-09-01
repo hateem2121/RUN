@@ -75,6 +75,24 @@ export class AuthService {
     const sessionStore = new DrizzleSessionStore();
     logger.info("[Auth] DrizzleSessionStore initialized");
 
+    // Periodic session pruning every 30 minutes in server runtime
+    if (process.env.VITEST !== "true") {
+      const pruneInterval = setInterval(
+        () => {
+          sessionStore.pruneExpired().match(
+            (deletedCount) => {
+              if (deletedCount > 0) {
+                logger.info(`[Auth] Pruned ${deletedCount} expired sessions`);
+              }
+            },
+            (err) => logger.warn("[Auth] Failed to prune expired sessions:", err),
+          );
+        },
+        30 * 60 * 1000,
+      );
+      pruneInterval.unref(); // Allow Node process to terminate cleanly
+    }
+
     const currentSecret = getSecret("SESSION_SECRET") || process.env.SESSION_SECRET;
 
     if (!currentSecret) {

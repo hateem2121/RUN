@@ -21,17 +21,21 @@ import type { ProductDetail } from "./products.js";
  *
  * @description Stores endpoints subscribed to specific system events.
  */
-export const webhookSubscriptions = pgTable("webhook_subscriptions", {
-  id: serial("id").primaryKey(),
-  url: text("url").notNull(),
-  secret: varchar("secret", { length: 255 }).notNull(),
-  events: jsonb("events").$type<string[]>().notNull(),
-  isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-});
+export const webhookSubscriptions = pgTable(
+  "webhook_subscriptions",
+  {
+    id: serial("id").primaryKey(),
+    url: text("url").notNull(),
+    secret: varchar("secret", { length: 255 }).notNull(),
+    events: jsonb("events").$type<string[]>().notNull(),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [index("webhook_subscriptions_active_idx").on(table.isActive)],
+);
 
 /**
  * Webhook Deliveries Table

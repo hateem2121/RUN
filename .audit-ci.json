@@ -28,7 +28,9 @@
     "GHSA-mh99-v99m-4gvg",
     "GHSA-qwww-vcr4-c8h2",
     "GHSA-r28c-9q8g-f849",
-    "GHSA-v2hh-gcrm-f6hx"
+    "GHSA-v2hh-gcrm-f6hx",
+    "GHSA-73wf-gq98-2v4g",
+    "GHSA-c83g-rgw3-j3cx"
   ],
   "retry-count": 3
 }

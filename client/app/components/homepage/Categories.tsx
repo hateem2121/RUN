@@ -169,12 +169,12 @@ export const Categories: React.FC<CategoriesProps> = ({ data }) => {
         {/* Outer Skew Wrapper */}
         <div
           ref={skewWrapperRef}
-          className="marquee-skew-wrapper w-full overflow-hidden will-change-transform"
+          className="marquee-skew-wrapper w-full overflow-hidden transform-gpu will-change-transform"
         >
           {/* Inner TranslateX Marquee Track */}
           <div
             className={cn(
-              "marquee-container animate-marquee flex whitespace-nowrap hover:[animation-play-state:paused] focus-within:[animation-play-state:paused] motion-reduce:[animation-play-state:paused] motion-reduce:animate-none",
+              "marquee-container animate-marquee flex whitespace-nowrap transform-gpu will-change-transform hover:[animation-play-state:paused] focus-within:[animation-play-state:paused] motion-reduce:[animation-play-state:paused] motion-reduce:animate-none",
               !isIntersecting && "[animation-play-state:paused]",
             )}
           >

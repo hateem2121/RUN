@@ -55,53 +55,54 @@ const TTL = UnifiedCache.TTL_PRESETS;
 // Cache strategy factory functions to avoid readonly type issues
 const CacheStrategies = {
   // Critical data that changes rarely (navigation, footer, hero images)
-  // PHASE 2: Using 12-hour TTL for maximum cache hit rate on static content
+  // PHASE 2: Using 24-hour TTL for maximum cache hit rate on static content
   STATIC: (): CacheOptions => ({
-    ttl: TTL.STATIC, // 12 hours - long TTL for rarely changing data
+    ttl: TTL.STATIC, // 24 hours (in seconds: 86400)
     category: "static",
     priority: "high",
     tags: ["static"],
   }),
 
   // User-facing content (homepage, categories, size charts)
-  // PHASE 2: Increased from 30min → 60min for better cache hit rate
+  // 60 minutes TTL in seconds
   CONTENT: (): CacheOptions => ({
-    ttl: 60 * 60 * 1000, // 60 minutes - occasionally updating content
+    ttl: 3600, // 60 minutes (3600 seconds)
     category: "data",
     priority: "critical",
     tags: ["content"],
   }),
 
   // Media assets and files
-  // PHASE 2: Keep 1 hour for media (good balance between freshness and cache hits)
+  // 1 hour TTL in seconds
   MEDIA: (): CacheOptions => ({
-    ttl: 60 * 60 * 1000, // 1 hour (keep existing)
+    ttl: 3600, // 1 hour (3600 seconds)
     category: "media",
     priority: "high",
     tags: ["media"],
   }),
 
   // Computed/processed data (expensive operations like product aggregations)
-  // PHASE 2: Keep 60min for expensive computed operations
+  // 60 minutes TTL in seconds
   COMPUTED: (): CacheOptions => ({
-    ttl: 60 * 60 * 1000, // 60 minutes (keep existing)
+    ttl: 3600, // 60 minutes (3600 seconds)
     category: "data",
     priority: "normal",
     tags: ["computed"],
   }),
 
   // User-specific data (user sessions, personalized content)
-  // PHASE 2: Increased from 5min → 10min for better cache hit rate on user data
+  // 10 minutes TTL in seconds
   USER_DATA: (): CacheOptions => ({
-    ttl: 10 * 60 * 1000, // 10 minutes - near real-time user data
+    ttl: 600, // 10 minutes (600 seconds)
     category: "data",
     priority: "normal",
     tags: ["user"],
   }),
 
   // Temporary/short-lived data (flash messages, temporary tokens)
+  // 1 minute TTL in seconds
   TEMPORARY: (): CacheOptions => ({
-    ttl: 60 * 1000, // 1 minute (keep existing)
+    ttl: 60, // 1 minute (60 seconds)
     category: "data",
     priority: "low",
     tags: ["temporary"],
@@ -206,13 +207,13 @@ export const CacheOperations = {
       // Cache longer for expensive operations
       const strategy =
         duration > 1000
-          ? { ...CacheStrategies.COMPUTED(), ttl: 60 * 60 * 1000 }
+          ? { ...CacheStrategies.COMPUTED(), ttl: 3600 }
           : // 1 hour for slow operations
             CacheStrategies.COMPUTED();
 
       await getCache().set(cacheKey, data, strategy.ttl, strategy.category);
       logger.debug(
-        `[Cache] Computed ${operation} in ${duration.toFixed(1)}ms, cached for ${(strategy.ttl || 0) / 1000}s`,
+        `[Cache] Computed ${operation} in ${duration.toFixed(1)}ms, cached for ${strategy.ttl || 0}s`,
       );
     }
 

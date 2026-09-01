@@ -27,8 +27,14 @@ export default function handleRequest(
     const loadCtx = _loadContext as { get?: (k: unknown) => string; cspNonce?: string } | undefined;
     const nonceVal = nonceContext ? loadCtx?.get?.(nonceContext) : loadCtx?.cspNonce;
 
+    let timer: NodeJS.Timeout | null = null;
+
     const options: Parameters<typeof renderToPipeableStream>[1] = {
       [readyOption]() {
+        if (timer) {
+          clearTimeout(timer);
+          timer = null;
+        }
         shellRendered = true;
         const body = new PassThrough();
         const stream = createReadableStreamFromReadable(body);
@@ -45,6 +51,10 @@ export default function handleRequest(
         pipe(body);
       },
       onShellError(error: unknown) {
+        if (timer) {
+          clearTimeout(timer);
+          timer = null;
+        }
         reject(error);
       },
       onError(error: unknown) {
@@ -71,6 +81,6 @@ export default function handleRequest(
       options,
     );
 
-    setTimeout(abort, streamTimeout + 1000);
+    timer = setTimeout(abort, streamTimeout + 1000);
   });
 }

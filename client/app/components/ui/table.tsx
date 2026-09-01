@@ -9,9 +9,13 @@ const Table = ({
 }: React.HTMLAttributes<HTMLTableElement> & {
   ref?: React.Ref<HTMLTableElement>;
 }) => (
-  <div className="relative w-full overflow-auto">
+  <section
+    tabIndex={0}
+    aria-label="Scrollable table"
+    className="relative w-full overflow-auto focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-manufacturing-accent"
+  >
     <table ref={ref} className={cn("w-full caption-bottom text-sm", className)} {...props} />
-  </div>
+  </section>
 );
 Table.displayName = "Table";
 

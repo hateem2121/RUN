@@ -46,7 +46,7 @@ const unifiedCache = UnifiedCache.getInstance();
 
 // CHUNK 2: Fibers cache key
 const FIBERS_CACHE_KEY = "fibers:all";
-const FIBERS_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+const FIBERS_CACHE_TTL = 1800; // 30 minutes (in seconds)
 
 export class MiscRepository {
   // =============================================================================
