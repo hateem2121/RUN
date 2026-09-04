@@ -30,7 +30,8 @@
     "GHSA-r28c-9q8g-f849",
     "GHSA-v2hh-gcrm-f6hx",
     "GHSA-73wf-gq98-2v4g",
-    "GHSA-c83g-rgw3-j3cx"
+    "GHSA-c83g-rgw3-j3cx",
+    "GHSA-cp6q-959q-f8rh"
   ],
   "retry-count": 3
 }
