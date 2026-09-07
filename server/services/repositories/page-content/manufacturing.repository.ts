@@ -102,7 +102,11 @@ class ManufacturingRepository {
       query = query.where(eq(manufacturingCapabilities.isActive, true));
     }
 
-    return query.orderBy(asc(manufacturingCapabilities.sortOrder));
+    return query.orderBy(asc(manufacturingCapabilities.sortOrder)).limit(50);
+  }
+
+  async getCapabilities(includeInactive = false): Promise<ManufacturingCapability[]> {
+    return this.getManufacturingCapabilities(includeInactive);
   }
 
   async getManufacturingCapability(id: number): Promise<ManufacturingCapability | undefined> {
@@ -194,7 +198,11 @@ class ManufacturingRepository {
       query = query.where(eq(manufacturingProcesses.isActive, true));
     }
 
-    return query.orderBy(asc(manufacturingProcesses.sortOrder));
+    return query.orderBy(asc(manufacturingProcesses.sortOrder)).limit(50);
+  }
+
+  async getProcesses(includeInactive = false): Promise<ManufacturingProcess[]> {
+    return this.getManufacturingProcesses(includeInactive);
   }
 
   async createManufacturingProcess(
@@ -293,7 +301,11 @@ class ManufacturingRepository {
       query = query.where(eq(manufacturingQualities.isActive, true));
     }
 
-    return query.orderBy(asc(manufacturingQualities.sortOrder));
+    return query.orderBy(asc(manufacturingQualities.sortOrder)).limit(50);
+  }
+
+  async getQualities(includeInactive = false): Promise<ManufacturingQuality[]> {
+    return this.getManufacturingQualities(includeInactive);
   }
 
   async createManufacturingQuality(
@@ -396,7 +408,11 @@ class ManufacturingRepository {
       query = query.where(eq(manufacturingCaseStudies.isActive, true));
     }
 
-    return query.orderBy(asc(manufacturingCaseStudies.sortOrder));
+    return query.orderBy(asc(manufacturingCaseStudies.sortOrder)).limit(50);
+  }
+
+  async getCaseStudies(includeInactive = false): Promise<ManufacturingCaseStudy[]> {
+    return this.getManufacturingCaseStudies(includeInactive);
   }
 
   async createManufacturingCaseStudy(

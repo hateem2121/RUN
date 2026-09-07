@@ -8,7 +8,7 @@ import { neon, neonConfig, Pool, type PoolClient } from "@neondatabase/serverles
 import { trace } from "@opentelemetry/api";
 import * as schema from "@run-remix/shared";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
-import { drizzle as drizzleHttp } from "drizzle-orm/neon-http";
+import { drizzle as drizzleHttp, type NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { drizzle, type NeonDatabase, type NeonQueryResultHKT } from "drizzle-orm/neon-serverless";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import { err, ok, type Result } from "neverthrow";
@@ -162,9 +162,10 @@ export const httpDb = shouldUseHttpDb
   ? drizzleHttp(neon(database.url), { schema, casing: "snake_case" })
   : db; // Fallback to main db in test/mock mode
 
-// Type alias for database client - supports both direct db access and transactions
+// Type alias for database client - supports direct db, stateless http db, and transactions
 export type DbClient =
   | NeonDatabase<typeof schema>
+  | NeonHttpDatabase<typeof schema>
   | PgTransaction<NeonQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>;
 
 export type Database = typeof db;

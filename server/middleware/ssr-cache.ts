@@ -44,18 +44,53 @@ const PRIVATE_PATHS = ["/admin", "/api", "/auth"];
 const HTML_CACHE_TTL = 60; // 60 seconds
 
 /**
+ * Whitelist allowed query parameters for public cacheable pages (CACHE-02).
+ * Prevents arbitrary cache-busting params from flooding L1/L2 cache and polluting cache_entries.
+ */
+export const ALLOWED_CACHE_QUERY_PARAMS = [
+  "page",
+  "category",
+  "sort",
+  "search",
+  "limit",
+  "tag",
+  "q",
+  "filter",
+] as const;
+
+const ALLOWED_QUERY_SET = new Set<string>(ALLOWED_CACHE_QUERY_PARAMS);
+
+/**
  * PC-101: Generates a Vary-aware cache key.
  * Includes user role to prevent cross-user data leakage.
+ * CACHE-02: Builds query string ONLY using whitelisted parameters, sorted alphabetically.
  */
-function getCacheKey(req: Request): string {
+export function getCacheKey(req: Request): string {
   const user = (req as Request & { user?: { role?: string } }).user;
   const role = user?.role || "anon";
 
-  // Include query parameters for key stability if filters are used
-  const queryString =
-    Object.keys(req.query).length > 0
-      ? `?${new URLSearchParams(req.query as Record<string, string>).toString()}`
-      : "";
+  const params = new URLSearchParams();
+  if (req.query && typeof req.query === "object") {
+    const sortedKeys = Object.keys(req.query)
+      .filter((key) => ALLOWED_QUERY_SET.has(key))
+      .sort();
+
+    for (const key of sortedKeys) {
+      const val = req.query[key];
+      if (val === undefined || val === null) continue;
+      if (Array.isArray(val)) {
+        for (const item of val) {
+          if (item !== undefined && item !== null) {
+            params.append(key, String(item));
+          }
+        }
+      } else {
+        params.set(key, String(val));
+      }
+    }
+  }
+
+  const queryString = params.toString() ? `?${params.toString()}` : "";
 
   return `ssr:${role}:${req.path}${queryString}`;
 }
@@ -63,7 +98,7 @@ function getCacheKey(req: Request): string {
 /**
  * Determines if a path is publicly cacheable
  */
-function isPublicCacheablePath(path: string): boolean {
+export function isPublicCacheablePath(path: string): boolean {
   // Never cache private paths
   if (PRIVATE_PATHS.some((prefix) => path.startsWith(prefix))) {
     return false;

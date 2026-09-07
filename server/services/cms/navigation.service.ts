@@ -34,30 +34,18 @@ export const NavigationService = {
   /**
    * Get all navigation items with two-tier caching strategy (PC-403)
    */
-  getItems: async (
-    bypassCache = false,
-  ): Promise<
-    Result<
-      {
-        data: NavigationItem[];
-        metadata: { cacheHit: string; responseTime: number; ttl: number };
-      },
-      AppError
-    >
-  > => {
+  getItems(bypassCache = false): ResultAsync<
+    {
+      data: NavigationItem[];
+      metadata: { cacheHit: string; responseTime: number; ttl: number };
+    },
+    AppError
+  > {
     const startTime = performance.now();
     const cacheKey = CacheKeys.navigation.items();
 
-    return new ResultAsync(
-      (async (): Promise<
-        Result<
-          {
-            data: NavigationItem[];
-            metadata: { cacheHit: string; responseTime: number; ttl: number };
-          },
-          AppError
-        >
-      > => {
+    return ResultAsync.fromPromise(
+      (async () => {
         const { data, benchmark } = (await twoTierBatchCache.get(
           cacheKey,
           async () => {
@@ -83,31 +71,29 @@ export const NavigationService = {
         )) || { data: [], benchmark: { hit: "MISS" } };
 
         if (!data) {
-          return ok({
+          return {
             data: [],
             metadata: {
               cacheHit: "MISS",
               responseTime: performance.now() - startTime,
               ttl: 0,
             },
-          });
+          };
         }
 
-        return ok({
+        return {
           data: data as NavigationItem[],
           metadata: {
             cacheHit: benchmark.hit,
             responseTime: performance.now() - startTime,
             ttl: CACHE_TTL_NAVIGATION,
           },
-        });
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        if (error instanceof AppError) {
-          return err(error);
-        }
-        return err(new InternalError("Failed to fetch navigation items", { error }));
-      }),
+        };
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new InternalError("Failed to fetch navigation items", { error });
+      },
     );
   },
 

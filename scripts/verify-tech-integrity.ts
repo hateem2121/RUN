@@ -25,7 +25,16 @@ const argv = yargs(hideBin(process.argv))
   })
   .parseSync();
 
-const steps = [
+interface IntegrityStep {
+  name: string;
+  command: string;
+  args: string[];
+  critical: boolean;
+  env?: Record<string, string>;
+  timeoutMs?: number;
+}
+
+const steps: IntegrityStep[] = [
   {
     name: "Type Check",
     command: "npm",
@@ -116,32 +125,59 @@ function checkDocsFreshness(): Result<boolean, Error> {
   )();
 }
 
-// Add Audit separately as it might be flaky
+// Add Audit separately with a 15,000ms timeout guard (CI-01)
+// Stalled network calls to npm registry won't block integrity verification indefinitely
 if (!argv.ci) {
   steps.push({
     name: "Security Audit",
     command: "npm",
     args: ["run", "check:audit"],
     critical: false,
+    timeoutMs: 15000,
   });
 }
 
-function runCommand(step: {
-  name: string;
-  command: string;
-  args: string[];
-  critical: boolean;
-  env?: Record<string, string>;
-}): ResultAsync<boolean, Error> {
+function runCommand(step: IntegrityStep): ResultAsync<boolean, Error> {
   return ResultAsync.fromPromise(
     new Promise<boolean>((resolve, _reject) => {
+      let timer: NodeJS.Timeout | undefined;
+      let timedOut = false;
+
       const child = spawn(step.command, step.args, {
         stdio: "inherit",
         shell: true,
         env: { ...process.env, ...step.env },
       });
 
+      if (step.timeoutMs && step.timeoutMs > 0) {
+        timer = setTimeout(() => {
+          timedOut = true;
+          logger.warn(`⚠️ Step ${step.name} timed out after ${step.timeoutMs}ms.`);
+          try {
+            child.kill("SIGTERM");
+          } catch {
+            // Child already terminated
+          }
+          const forceKillTimer = setTimeout(() => {
+            try {
+              child.kill("SIGKILL");
+            } catch {
+              // Ignore
+            }
+          }, 1000);
+          forceKillTimer.unref();
+
+          if (step.critical || argv.ci) {
+            resolve(false);
+          } else {
+            resolve(true);
+          }
+        }, step.timeoutMs);
+      }
+
       child.on("close", (code) => {
+        if (timer) clearTimeout(timer);
+        if (timedOut) return;
         if (code === 0) {
           resolve(true);
         } else {
@@ -154,6 +190,8 @@ function runCommand(step: {
       });
 
       child.on("error", (_err) => {
+        if (timer) clearTimeout(timer);
+        if (timedOut) return;
         resolve(false);
       });
     }),

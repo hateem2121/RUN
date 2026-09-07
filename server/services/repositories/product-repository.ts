@@ -4,26 +4,22 @@
  */
 
 import type {
+  Accessory,
   Category,
+  Certificate,
+  Fabric,
   InsertCategory,
   InsertProduct,
   MediaAsset,
   Product,
   ProductDetail,
   ProductSummary,
+  SizeChart,
 } from "@run-remix/shared";
-import {
-  accessories,
-  categories,
-  certificates,
-  fabrics,
-  mediaAssets,
-  productRelations,
-  products,
-  sizeCharts,
-} from "@run-remix/shared";
-import { and, asc, desc, eq, inArray, isNull, lt, ne, sql } from "drizzle-orm"; // added lt
+import { categories, mediaAssets, productRelations, products } from "@run-remix/shared";
+import { and, asc, desc, eq, isNull, lt, ne, sql } from "drizzle-orm";
 import { err, ok, type Result } from "neverthrow";
+import * as dbModule from "../../db.js";
 import { type DbClient, db } from "../../db.js";
 import { CacheKeys, InvalidationPatterns } from "../../lib/cache/cache-keys.js";
 import type { RepositoryCacheOptions } from "../../lib/cache/cache-strategies.js";
@@ -34,6 +30,16 @@ import { logger } from "../../lib/monitoring/logger.js";
 import { StorageSingleton } from "../../lib/storage-singleton.js";
 import { MiscRepository } from "./misc-repository.js";
 
+// Use stateless HTTP database driver for read-only catalog queries in serverless (falls back to db in tests)
+let readDb: DbClient = db;
+try {
+  const maybeHttpDb = (dbModule as Record<string, unknown>).httpDb;
+  if (maybeHttpDb) {
+    readDb = maybeHttpDb as DbClient;
+  }
+} catch {
+  readDb = db;
+}
 const unifiedCache = UnifiedCache.getInstance();
 const miscRepo = new MiscRepository();
 
@@ -131,6 +137,223 @@ const PRODUCT_DETAIL_COLUMNS = {
   deletedAt: products.deletedAt,
 } as const;
 
+function mapDbRowToCamel<T = Record<string, unknown>>(
+  row: Record<string, unknown> | null | undefined,
+): T | null {
+  if (!row || typeof row !== "object") return null;
+  const res: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(row)) {
+    const camelKey = key.replace(/_([a-z])/g, (_, l) => l.toUpperCase());
+    if (
+      typeof value === "string" &&
+      (camelKey === "createdAt" ||
+        camelKey === "updatedAt" ||
+        camelKey === "deletedAt" ||
+        camelKey === "publishedAt")
+    ) {
+      res[camelKey] = new Date(value);
+    } else {
+      res[camelKey] = value;
+    }
+  }
+  return res as T;
+}
+
+export interface ProductByPathQueryResult {
+  product: ProductDetail;
+  fabric: Fabric | null;
+  sizeChart: SizeChart | null;
+  category: Category | null;
+  subcategory: Category | null;
+  media: MediaAsset[];
+  certificates: Certificate[];
+  accessories: Accessory[];
+  categoryProducts: ProductSummary[];
+  relatedProducts: ProductSummary[];
+}
+
+interface RawProductCteRow {
+  product: Record<string, unknown> | null;
+  fabric: Record<string, unknown> | null;
+  size_chart: Record<string, unknown> | null;
+  category: Record<string, unknown> | null;
+  subcategory: Record<string, unknown> | null;
+  media: Record<string, unknown>[] | null;
+  certificates: Record<string, unknown>[] | null;
+  accessories: Record<string, unknown>[] | null;
+  category_products: Record<string, unknown>[] | null;
+  related_products: Record<string, unknown>[] | null;
+}
+
+export async function executeProductByPathSingleQuery(
+  urlPath: string,
+  dbClient: DbClient = readDb,
+): Promise<ProductByPathQueryResult | null> {
+  if (!dbClient || typeof dbClient.execute !== "function") {
+    return null;
+  }
+
+  const alternatePath = urlPath.startsWith("/") ? urlPath.slice(1) : `/${urlPath}`;
+
+  const query = sql`
+    WITH target_product AS (
+      SELECT
+        p.*,
+        to_jsonb(f.*) AS fabric_data,
+        to_jsonb(sc.*) AS size_chart_data
+      FROM products p
+      LEFT JOIN fabrics f ON p.fabric_id = f.id AND f.deleted_at IS NULL
+      LEFT JOIN size_charts sc ON p.size_chart_id = sc.id AND sc.deleted_at IS NULL
+      WHERE (p.url_path = ${urlPath} OR p.url_path = ${alternatePath})
+        AND p.is_active = true
+        AND p.deleted_at IS NULL
+      LIMIT 1
+    ),
+    category_data AS (
+      SELECT
+        to_jsonb(c.*) AS category_json,
+        to_jsonb(pc.*) AS subcategory_json
+      FROM target_product tp
+      LEFT JOIN categories c ON tp.category_id = c.id
+      LEFT JOIN categories pc ON c.parent_id = pc.id
+    ),
+    media_data AS (
+      SELECT COALESCE(
+        jsonb_agg(to_jsonb(m.*) ORDER BY CASE
+          WHEN m.id = tp.primary_image_id THEN 0
+          WHEN m.id = tp.primary_video_id THEN 2
+          ELSE 1
+        END) FILTER (WHERE m.id IS NOT NULL),
+        '[]'::jsonb
+      ) AS media_json
+      FROM target_product tp
+      LEFT JOIN media_assets m ON (
+        m.id = tp.primary_image_id
+        OR (tp.image_ids IS NOT NULL AND tp.image_ids @> to_jsonb(m.id))
+        OR m.id = tp.primary_video_id
+      )
+    ),
+    certificates_data AS (
+      SELECT COALESCE(
+        jsonb_agg(to_jsonb(cert.*)) FILTER (WHERE cert.id IS NOT NULL),
+        '[]'::jsonb
+      ) AS certificates_json
+      FROM target_product tp
+      LEFT JOIN certificates cert ON (
+        tp.certificate_ids IS NOT NULL
+        AND tp.certificate_ids @> to_jsonb(cert.id)
+        AND cert.deleted_at IS NULL
+      )
+    ),
+    accessories_data AS (
+      SELECT COALESCE(
+        jsonb_agg(to_jsonb(acc.*)) FILTER (WHERE acc.id IS NOT NULL),
+        '[]'::jsonb
+      ) AS accessories_json
+      FROM target_product tp
+      LEFT JOIN accessories acc ON (
+        tp.accessory_ids IS NOT NULL
+        AND tp.accessory_ids @> to_jsonb(acc.id)
+        AND acc.deleted_at IS NULL
+      )
+    ),
+    category_products_data AS (
+      SELECT COALESCE(
+        jsonb_agg(to_jsonb(cp_sub.*)) FILTER (WHERE cp_sub.id IS NOT NULL),
+        '[]'::jsonb
+      ) AS category_products_json
+      FROM (
+        SELECT cp.id, cp.name, cp.slug, cp.sku, cp.description, cp.short_description,
+               cp.primary_image_id, cp.price, cp.compare_at_price, cp.currency,
+               cp.is_active, cp.is_featured, cp.rating, cp.review_count,
+               cp.tags, cp.badge, cp.created_at, cp.url_path, cp.category_id
+        FROM target_product tp
+        JOIN products cp ON cp.category_id = tp.category_id
+          AND cp.is_active = true
+          AND cp.deleted_at IS NULL
+        ORDER BY cp.created_at DESC
+        LIMIT 12
+      ) cp_sub
+    ),
+    related_products_data AS (
+      SELECT COALESCE(
+        jsonb_agg(to_jsonb(rp_sub.*)) FILTER (WHERE rp_sub.id IS NOT NULL),
+        '[]'::jsonb
+      ) AS related_products_json
+      FROM (
+        SELECT p.id, p.name, p.slug, p.sku, p.description, p.short_description,
+               p.primary_image_id, p.price, p.compare_at_price, p.currency,
+               p.is_active, p.is_featured, p.rating, p.review_count,
+               p.tags, p.badge, p.created_at, p.url_path, p.category_id
+        FROM target_product tp
+        JOIN product_relations pr ON pr.product_id = tp.id
+        JOIN products p ON pr.related_product_id = p.id
+          AND p.is_active = true
+          AND p.deleted_at IS NULL
+        ORDER BY pr.sort_order ASC, p.created_at DESC
+        LIMIT 10
+      ) rp_sub
+    )
+    SELECT
+      to_jsonb(tp.*) AS product,
+      tp.fabric_data AS fabric,
+      tp.size_chart_data AS size_chart,
+      cd.category_json AS category,
+      cd.subcategory_json AS subcategory,
+      md.media_json AS media,
+      certs.certificates_json AS certificates,
+      ad.accessories_json AS accessories,
+      cpd.category_products_json AS category_products,
+      rpd.related_products_json AS related_products
+    FROM target_product tp
+    CROSS JOIN category_data cd
+    CROSS JOIN media_data md
+    CROSS JOIN certificates_data certs
+    CROSS JOIN accessories_data ad
+    CROSS JOIN category_products_data cpd
+    CROSS JOIN related_products_data rpd
+  `;
+
+  const rawResult = await dbClient.execute(query);
+  const rows = (
+    Array.isArray(rawResult) ? rawResult : ((rawResult as { rows?: unknown[] })?.rows ?? [])
+  ) as RawProductCteRow[];
+
+  const row = rows[0];
+  if (!row?.product) {
+    return null;
+  }
+
+  const product = mapDbRowToCamel<ProductDetail>(row.product)!;
+  const fabric = mapDbRowToCamel<Fabric>(row.fabric);
+  const sizeChart = mapDbRowToCamel<SizeChart>(row.size_chart);
+  const category = mapDbRowToCamel<Category>(row.category);
+  const subcategory = mapDbRowToCamel<Category>(row.subcategory);
+
+  const media = (row.media || []).map((m) => mapDbRowToCamel<MediaAsset>(m)!);
+  const certificates = (row.certificates || []).map((c) => mapDbRowToCamel<Certificate>(c)!);
+  const accessories = (row.accessories || []).map((a) => mapDbRowToCamel<Accessory>(a)!);
+  const categoryProducts = (row.category_products || []).map(
+    (p) => mapDbRowToCamel<ProductSummary>(p)!,
+  );
+  const relatedProducts = (row.related_products || []).map(
+    (p) => mapDbRowToCamel<ProductSummary>(p)!,
+  );
+
+  return {
+    product,
+    fabric,
+    sizeChart,
+    category,
+    subcategory,
+    media,
+    certificates,
+    accessories,
+    categoryProducts,
+    relatedProducts,
+  };
+}
+
 export class ProductRepository {
   // =============================================================================
   // PRODUCT METHODS
@@ -153,7 +376,7 @@ export class ProductRepository {
     }
 
     return await dbCircuitBreaker.execute(async () => {
-      return await db
+      return await readDb
         .select(PRODUCT_SUMMARY_COLUMNS)
         .from(products)
         .where(and(...conditions))
@@ -176,7 +399,7 @@ export class ProductRepository {
     }
 
     const result = await dbCircuitBreaker.execute(async () => {
-      const rows = await db
+      const rows = await readDb
         .select({
           product: PRODUCT_SUMMARY_COLUMNS,
           imageVariants: mediaAssets.imageVariants,
@@ -255,7 +478,7 @@ export class ProductRepository {
     // PHASE 2A: Time DB query execution (includes circuit breaker overhead)
     const result = await perfTracker.timePhase("dbQuery", async () => {
       return await dbCircuitBreaker.execute(async () => {
-        const summaryProducts = await db
+        const summaryProducts = await readDb
           .select(PRODUCT_SUMMARY_COLUMNS)
           .from(products)
           .where(and(eq(products.isActive, true), isNull(products.deletedAt)))
@@ -296,7 +519,7 @@ export class ProductRepository {
     }
 
     const result = await dbCircuitBreaker.execute(async () => {
-      const rows = await db
+      const rows = await readDb
         .select({
           product: PRODUCT_SUMMARY_COLUMNS,
           imageVariants: mediaAssets.imageVariants,
@@ -338,7 +561,7 @@ export class ProductRepository {
       return cached;
     }
 
-    const result = await db
+    const result = await readDb
       .select({ count: sql<number>`count(*)::int` })
       .from(products)
       .where(and(eq(products.isActive, true), isNull(products.deletedAt)));
@@ -376,7 +599,7 @@ export class ProductRepository {
       return cached;
     }
 
-    const result = await db
+    const result = await readDb
       .select({ count: sql<number>`count(*)::int` })
       .from(products)
       .where(
@@ -402,7 +625,7 @@ export class ProductRepository {
       return cached;
     }
 
-    const result = await db
+    const result = await readDb
       .select({ count: sql<number>`count(*)::int` })
       .from(products)
       .where(
@@ -435,7 +658,7 @@ export class ProductRepository {
       return cached;
     }
 
-    const result = await db
+    const result = await readDb
       .select({ count: sql<number>`count(*)::int` })
       .from(products)
       .where(
@@ -457,6 +680,25 @@ export class ProductRepository {
     return count;
   }
 
+  private async getRelationIdsForProduct(productId: number): Promise<number[]> {
+    try {
+      const relations = await readDb
+        .select({ relatedProductId: productRelations.relatedProductId })
+        .from(productRelations)
+        .where(eq(productRelations.productId, productId))
+        .orderBy(asc(productRelations.sortOrder));
+
+      if (Array.isArray(relations)) {
+        return relations
+          .map((r) => r?.relatedProductId)
+          .filter((id): id is number => typeof id === "number" && id > 0);
+      }
+      return [];
+    } catch {
+      return [];
+    }
+  }
+
   async getProduct(id: number): Promise<ProductDetail | undefined> {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getProduct(id);
@@ -467,13 +709,17 @@ export class ProductRepository {
       return cached;
     }
 
-    const [product] = await db
+    const [product] = await readDb
       .select(PRODUCT_DETAIL_COLUMNS)
       .from(products)
       .where(and(eq(products.id, id), isNull(products.deletedAt)));
 
     if (product) {
-      await unifiedCache.set(cacheKey, product, PRODUCT_CACHE_TTL);
+      const relationIds = await this.getRelationIdsForProduct(product.id);
+      const finalProduct: ProductDetail =
+        relationIds.length > 0 ? { ...product, relatedProductIds: relationIds } : product;
+      await unifiedCache.set(cacheKey, finalProduct, PRODUCT_CACHE_TTL);
+      return finalProduct;
     }
 
     return product;
@@ -487,7 +733,7 @@ export class ProductRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getProductsByCategory(categoryId, limit, offset);
     }
-    return await db
+    return await readDb
       .select(PRODUCT_SUMMARY_COLUMNS)
       .from(products)
       .where(
@@ -520,14 +766,24 @@ export class ProductRepository {
       return StorageSingleton.getInstance().getProductBySlug(slug);
     }
     const [product] = await this.getProductBySlugQuery.execute({ slug });
+    if (product) {
+      const relationIds = await this.getRelationIdsForProduct(product.id);
+      return relationIds.length > 0 ? { ...product, relatedProductIds: relationIds } : product;
+    }
     return product;
   }
 
-  async getProductByPath(urlPath: string): Promise<ProductDetailWithContext | null> {
+  async getProductByPath(
+    urlPath: string,
+    productSlug?: string,
+  ): Promise<ProductDetailWithContext | null> {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getProductByPath(urlPath);
     }
-    const cacheKey = `product:by-path:${urlPath}`;
+    const resolvedPath = productSlug
+      ? `/${urlPath.replace(/^\/+/, "").replace(/\/+$/, "")}/${productSlug.replace(/^\/+/, "")}`
+      : urlPath;
+    const cacheKey = `product:by-path:${resolvedPath}`;
     const perfTracker = queryPerformanceMonitor.startQuery("getProductByPath");
 
     const cached = await unifiedCache.get<ProductDetailWithContext | { __notFound: true }>(
@@ -536,229 +792,45 @@ export class ProductRepository {
     if (cached) {
       // Check if this is a cached 404 (negative cache)
       if ("__notFound" in cached && cached.__notFound === true) {
-        logger.info(`[ProductRepo] ✅ Cache HIT (404) for product path: ${urlPath}`);
+        logger.info(`[ProductRepo] ✅ Cache HIT (404) for product path: ${resolvedPath}`);
         perfTracker.setCacheHit(true).complete();
         return null;
       }
-      logger.info(`[ProductRepo] ✅ Cache HIT for product path: ${urlPath}`);
+      logger.info(`[ProductRepo] ✅ Cache HIT for product path: ${resolvedPath}`);
       perfTracker.setCacheHit(true).complete();
       return cached as ProductDetailWithContext;
     }
-    logger.info(`[ProductRepo] ❌ Cache MISS for product path: ${urlPath} - querying database`);
+    logger.info(
+      `[ProductRepo] ❌ Cache MISS for product path: ${resolvedPath} - querying database`,
+    );
 
     const result = await dbCircuitBreaker.execute(async () => {
-      // CHUNK 2 INSTRUMENTATION: Track query timings for performance analysis
-      const queryTimings: Record<string, number> = {};
       const queryStart = performance.now();
+      const singleQueryResult = await executeProductByPathSingleQuery(resolvedPath, readDb);
+      const dbDuration = Math.round(performance.now() - queryStart);
 
-      // CHUNK 2: Fetch main product with fabric and sizeChart via LEFT JOINs
-      // Optimization: Consolidate 3 queries into 1 (product + fabric + sizeChart)
-      const mainQueryStart = performance.now();
-      const productResult = await db
-        .select({
-          ...PRODUCT_DETAIL_COLUMNS,
-          fabric: fabrics,
-          sizeChart: sizeCharts,
-        })
-        .from(products)
-        .leftJoin(fabrics, and(eq(products.fabricId, fabrics.id), isNull(fabrics.deletedAt)))
-        .leftJoin(
-          sizeCharts,
-          and(eq(products.sizeChartId, sizeCharts.id), isNull(sizeCharts.deletedAt)),
-        )
-        .where(
-          and(
-            eq(products.urlPath, urlPath),
-            eq(products.isActive, true),
-            isNull(products.deletedAt),
-          ),
-        )
-        .limit(1);
-
-      const product = productResult[0];
-      const fabric = product?.fabric || null;
-      const sizeChart = product?.sizeChart || null;
-
-      queryTimings["1_main_product"] = Math.round(performance.now() - mainQueryStart);
-
-      if (!product) {
-        logger.info(`[ProductRepo] [CHUNK 2] Query timings (404): ${JSON.stringify(queryTimings)}`);
+      if (!singleQueryResult) {
+        logger.info(
+          `[ProductRepo] [DB-02 CTE] Query timings (404): ${dbDuration}ms for path ${resolvedPath}`,
+        );
         return null;
       }
 
-      // CHUNK 2: Batch fetch remaining relations in parallel (6 queries, down from 8)
-      // fabric and sizeChart now fetched via LEFT JOINs in main query
-      const batchQueryStart = performance.now();
-      const batchTimings: Record<string, number> = {};
-      const [
-        categoryWithParent,
-        mediaResult,
-        certificatesResult,
-        accessoriesResult,
-        fibersData,
-        allCategoryProductsResult,
-        relatedProductsResult,
-      ] = await Promise.all([
-        // CHUNK 2 FIX: Fetch category + parent together (eliminate N+1)
-        (async () => {
-          const start = performance.now();
-          if (!product.categoryId) {
-            batchTimings.category_with_parent = 0;
-            return { category: null, subcategory: null };
-          }
+      const {
+        product,
+        fabric,
+        sizeChart,
+        category,
+        subcategory,
+        media,
+        certificates: certificatesData,
+        accessories: accessoriesData,
+        categoryProducts: allCategoryProductsResult,
+        relatedProducts: manuallyRelatedProducts,
+      } = singleQueryResult;
 
-          // Fetch category with parent using Drizzle eager loading
-          const category = await db.query.categories.findFirst({
-            where: eq(categories.id, product.categoryId),
-            with: {
-              parentCategory: true,
-            },
-          });
+      const fibersData = await miscRepo.getFibers();
 
-          batchTimings.category_with_parent = Math.round(performance.now() - start);
-          return {
-            category: category || null,
-            subcategory: category?.parentCategory || null,
-          };
-        })(),
-
-        // PHASE 4: Fetch media assets - images and video, but EXCLUDE 3D model for lazy loading
-        (async () => {
-          const start = performance.now();
-          const mediaIds = [...(product.imageIds || [])];
-          if (product.primaryImageId) {
-            mediaIds.unshift(product.primaryImageId);
-          }
-          if (product.primaryVideoId) {
-            mediaIds.push(product.primaryVideoId);
-          }
-          const result =
-            mediaIds.length > 0
-              ? await db.select().from(mediaAssets).where(inArray(mediaAssets.id, mediaIds))
-              : [];
-          batchTimings.media = Math.round(performance.now() - start);
-          return result;
-        })(),
-
-        // Fetch certificates
-        (async () => {
-          const start = performance.now();
-          const result =
-            product.certificateIds && product.certificateIds.length > 0
-              ? await db
-                  .select()
-                  .from(certificates)
-                  .where(
-                    and(
-                      inArray(certificates.id, product.certificateIds),
-                      isNull(certificates.deletedAt),
-                    ),
-                  )
-              : [];
-          batchTimings.certificates = Math.round(performance.now() - start);
-          return result;
-        })(),
-
-        // Fetch accessories
-        (async () => {
-          const start = performance.now();
-          const result =
-            product.accessoryIds && product.accessoryIds.length > 0
-              ? await db
-                  .select()
-                  .from(accessories)
-                  .where(
-                    and(
-                      inArray(accessories.id, product.accessoryIds),
-                      isNull(accessories.deletedAt),
-                    ),
-                  )
-              : [];
-          batchTimings.accessories = Math.round(performance.now() - start);
-          return result;
-        })(),
-
-        // CHUNK 2 OPTIMIZATION: Use cached fibers (reference data, rarely changes)
-        (async () => {
-          const start = performance.now();
-          const result = await miscRepo.getFibers();
-          batchTimings.fibers_cached = Math.round(performance.now() - start);
-          return result;
-        })(),
-
-        // PHASE 1 TASK 7: Deduplicated query - fetch 12 products once (used for both related + category)
-        // This eliminates duplicate categoryProducts + relatedProducts queries (2→1 query)
-        (async () => {
-          const start = performance.now();
-          const result = product.categoryId
-            ? await db
-                .select(PRODUCT_SUMMARY_COLUMNS)
-                .from(products)
-                .where(
-                  and(
-                    eq(products.categoryId, product.categoryId),
-                    eq(products.isActive, true),
-                    isNull(products.deletedAt),
-                  ),
-                )
-                .orderBy(desc(products.createdAt))
-                .limit(12)
-            : [];
-          batchTimings.categoryProducts = Math.round(performance.now() - start);
-          // Note: relatedProducts timing removed (derived from categoryProducts post-query)
-          return result;
-        })(),
-
-        // PHASE 3: Fetch related products from normalized table
-        (async () => {
-          const start = performance.now();
-          const result = await db
-            .select({
-              ...PRODUCT_SUMMARY_COLUMNS,
-              relationId: productRelations.id,
-              sortOrder: productRelations.sortOrder,
-            })
-            .from(productRelations)
-            .innerJoin(
-              products,
-              and(
-                eq(productRelations.relatedProductId, products.id),
-                eq(products.isActive, true),
-                isNull(products.deletedAt),
-              ),
-            )
-            .where(eq(productRelations.productId, product.id))
-            .orderBy(asc(productRelations.sortOrder), desc(products.createdAt))
-            .limit(10); // Limit to reasonable number
-
-          batchTimings.relatedProducts = Math.round(performance.now() - start);
-          // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
-          return result.map(({ relationId, sortOrder, ...p }: any) => p);
-        })(),
-      ]);
-      queryTimings["2_parallel_batch"] = Math.round(performance.now() - batchQueryStart);
-      queryTimings.total_db_time = Math.round(performance.now() - queryStart);
-
-      // CHUNK 2 INSTRUMENTATION: Log detailed query timings
-      logger.info(
-        `[ProductRepo] [CHUNK 2] Query timings for ${urlPath}: ${JSON.stringify(queryTimings)}`,
-      );
-      logger.info(
-        `[ProductRepo] [CHUNK 2] Query breakdown: main=${queryTimings["1_main_product"]}ms, batch=${queryTimings["2_parallel_batch"]}ms, total=${queryTimings.total_db_time}ms`,
-      );
-      logger.info(`[ProductRepo] [CHUNK 2] Batch breakdown: ${JSON.stringify(batchTimings)}`);
-
-      // Extract batch query results
-      const category = categoryWithParent.category;
-      const subcategory = categoryWithParent.subcategory;
-      // fabric and sizeChart now extracted from main query (lines 493-494)
-
-      // Extract media results
-      const media = mediaResult;
-      const certificatesData = certificatesResult || [];
-      const accessoriesData = accessoriesResult || [];
-
-      // Build category tree and breadcrumb
       const categoryTree: Category[] = [];
       if (category) {
         categoryTree.push(category);
@@ -773,20 +845,7 @@ export class ProductRepository {
         url: `/categories/${cat.slug || cat.name.toLowerCase().replace(/\s+/g, "-")}`,
       }));
 
-      // PHASE 1 TASK 7: Derive relatedProducts + categoryProducts from single query result
-      // Filter out current product for relatedProducts (first 5)
-      // Filter out current product for relatedProducts (first 5)
-      // PHASE 3: Use explicit related products if available, fallback to category logic if empty?
-      // For now, implementing logic: If manual relations exist, use them. Else empty (or could fallback)
-      // The requirement "Migrate... to normalized table" implies we want to use the table.
-      // But currently we don't have data, so let's use the fetched related items.
-      const manuallyRelatedProducts = relatedProductsResult;
-
-      // Fallback: If no manual relations, use category products (excluding current)
-      const productsExcludingCurrent = allCategoryProductsResult.filter(
-        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
-        (p: any) => p.id !== product.id,
-      );
+      const productsExcludingCurrent = allCategoryProductsResult.filter((p) => p.id !== product.id);
 
       const relatedProducts =
         manuallyRelatedProducts.length > 0
@@ -795,10 +854,7 @@ export class ProductRepository {
 
       const categoryProducts = allCategoryProductsResult.slice(0, 10);
 
-      // Navigation: Find current product in batch (might be -1 if product not in top 12)
-      // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
-      const currentIndex = allCategoryProductsResult.findIndex((p: any) => p.id === product.id);
-      // Guard: Only set navigation if current product found in batch
+      const currentIndex = allCategoryProductsResult.findIndex((p) => p.id === product.id);
       const previousProduct =
         currentIndex > 0 ? allCategoryProductsResult[currentIndex - 1] || null : null;
       const nextProduct =
@@ -806,10 +862,14 @@ export class ProductRepository {
           ? allCategoryProductsResult[currentIndex + 1] || null
           : null;
 
+      logger.info(
+        `[ProductRepo] [DB-02 CTE] Consolidated query timings for ${resolvedPath}: total=${dbDuration}ms`,
+      );
+
       return {
         product: {
           ...product,
-          canonicalUrl: product.urlPath,
+          canonicalUrl: product.urlPath || resolvedPath,
         },
         context: {
           category,
@@ -823,7 +883,7 @@ export class ProductRepository {
           fibers: fibersData,
         },
         media,
-        relatedProducts, // Derived from allCategoryProductsResult (no separate query)
+        relatedProducts,
         categoryProducts,
         navigation: {
           previousProduct,
@@ -837,28 +897,30 @@ export class ProductRepository {
     if (result !== null) {
       try {
         logger.info(
-          `[ProductRepo] Setting cache for product path: ${urlPath} (TTL: ${PRODUCT_CACHE_TTL}s)`,
+          `[ProductRepo] Setting cache for product path: ${resolvedPath} (TTL: ${PRODUCT_CACHE_TTL}s)`,
         );
         await unifiedCache.set(cacheKey, result, PRODUCT_CACHE_TTL);
-        logger.info(`[ProductRepo] ✅ Cache SET successful for product path: ${urlPath}`);
+        logger.info(`[ProductRepo] ✅ Cache SET successful for product path: ${resolvedPath}`);
       } catch (cacheError) {
-        logger.warn(`[ProductRepository] Failed to cache product ${urlPath}:`, cacheError);
+        logger.warn(`[ProductRepository] Failed to cache product ${resolvedPath}:`, cacheError);
       }
     } else {
-      // NEGATIVE CACHING: Cache 404 results for 10 minutes to prevent bot probes from hitting DB
       const NEGATIVE_CACHE_TTL = 600; // 10 minutes (600 seconds)
       try {
         logger.info(
-          `[ProductRepo] Setting negative cache for 404 path: ${urlPath} (TTL: ${NEGATIVE_CACHE_TTL}s)`,
+          `[ProductRepo] Setting negative cache for 404 path: ${resolvedPath} (TTL: ${NEGATIVE_CACHE_TTL}s)`,
         );
         await unifiedCache.set(
           cacheKey,
           { __notFound: true, timestamp: Date.now() },
           NEGATIVE_CACHE_TTL,
         );
-        logger.info(`[ProductRepo] ✅ Negative cache SET successful for 404 path: ${urlPath}`);
+        logger.info(`[ProductRepo] ✅ Negative cache SET successful for 404 path: ${resolvedPath}`);
       } catch (cacheError) {
-        logger.warn(`[ProductRepository] Failed to set negative cache for ${urlPath}:`, cacheError);
+        logger.warn(
+          `[ProductRepository] Failed to set negative cache for ${resolvedPath}:`,
+          cacheError,
+        );
       }
     }
 
@@ -873,7 +935,7 @@ export class ProductRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getProductsByTag(tag, limit, offset);
     }
-    return await db
+    return await readDb
       .select(PRODUCT_SUMMARY_COLUMNS)
       .from(products)
       .where(
@@ -892,7 +954,7 @@ export class ProductRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getRelatedProducts(productId);
     }
-    const sourceProduct = await db
+    const sourceProduct = await readDb
       .select({ categoryId: products.categoryId })
       .from(products)
       .where(eq(products.id, productId))
@@ -904,7 +966,7 @@ export class ProductRepository {
     }
 
     // PHASE 3: Attempt to fetch from proper relations table first
-    const relations = await db
+    const relations = await readDb
       .select({
         ...PRODUCT_SUMMARY_COLUMNS,
         relationId: productRelations.id,
@@ -929,7 +991,7 @@ export class ProductRepository {
     }
 
     // Fallback to category-based logic
-    return await db
+    return await readDb
       .select(PRODUCT_SUMMARY_COLUMNS)
       .from(products)
       .where(
@@ -955,7 +1017,7 @@ export class ProductRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getFeaturedProducts(limit, offset);
     }
-    const rows = await db
+    const rows = await readDb
       .select({
         ...PRODUCT_SUMMARY_COLUMNS,
         categoryName: categories.name,
@@ -988,7 +1050,7 @@ export class ProductRepository {
     if (cached !== null && cached !== undefined) {
       return cached;
     }
-    const result = await db
+    const result = await readDb
       .select({ count: sql<number>`count(*)::int` })
       .from(products)
       .where(
@@ -1013,7 +1075,7 @@ export class ProductRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().searchProducts(query, filters, limit, offset);
     }
-    return await db
+    return await readDb
       .select({
         ...PRODUCT_SUMMARY_COLUMNS,
         rank: sql<number>`ts_rank(search_vector, websearch_to_tsquery('english', ${query}))`.as(
@@ -1168,7 +1230,7 @@ export class ProductRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getProductsIncludingDeleted(limit, offset);
     }
-    return await db
+    return await readDb
       .select()
       .from(products)
       .orderBy(desc(products.createdAt))
@@ -1246,7 +1308,7 @@ export class ProductRepository {
     }
 
     // CHUNK 10: JOIN with media_assets to get media URL
-    let query = db
+    let query = readDb
       .select({
         id: categories.id,
         name: categories.name,
@@ -1303,7 +1365,7 @@ export class ProductRepository {
       return StorageSingleton.getInstance().getCategory(id);
     }
     // CHUNK 10: JOIN with media_assets to get media URL
-    const [category] = (await db
+    const [category] = (await readDb
       .select({
         id: categories.id,
         name: categories.name,
@@ -1353,7 +1415,7 @@ export class ProductRepository {
       logger.debug("[Cache] Failed to get category by slug from cache:", error);
     }
 
-    const [category] = (await db
+    const [category] = (await readDb
       .select({
         id: categories.id,
         name: categories.name,
@@ -1408,7 +1470,7 @@ export class ProductRepository {
       return cached;
     }
 
-    const result = await db
+    const result = await readDb
       .select({ count: sql<number>`count(*)::int` })
       .from(categories)
       .where(isNull(categories.deletedAt));
@@ -1513,7 +1575,7 @@ export class ProductRepository {
     }
 
     const result = await dbCircuitBreaker.execute(async () => {
-      return await db
+      return await readDb
         .select()
         .from(categories)
         .where(sql`${categories.deletedAt} IS NOT NULL`)
@@ -1539,7 +1601,7 @@ export class ProductRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getCategoriesIncludingDeleted(limit, offset);
     }
-    return (await db
+    return (await readDb
       .select()
       .from(categories)
       .orderBy(asc(categories.sortOrder), asc(categories.name))
@@ -1622,7 +1684,7 @@ export class ProductRepository {
 
     const result = await dbCircuitBreaker.execute(async () => {
       // Fetch product to get modelFileId
-      const [product] = await db
+      const [product] = await readDb
         .select({ modelFileId: products.modelFileId })
         .from(products)
         .where(
@@ -1634,7 +1696,7 @@ export class ProductRepository {
       }
 
       // Fetch the 3D model asset metadata
-      const [modelAsset] = await db
+      const [modelAsset] = await readDb
         .select()
         .from(mediaAssets)
         .where(eq(mediaAssets.id, product.modelFileId));

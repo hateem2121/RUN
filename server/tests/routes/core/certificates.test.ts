@@ -21,6 +21,7 @@ vi.mock("../../../services/system/auth.service.js", () => ({
 }));
 
 import express from "express";
+import { resetCircuit } from "../../../lib/resilience/circuit-breaker.js";
 import certificatesRouter from "../../../routes/core/certificates.js";
 import { miscRepository } from "../../../services/repositories/index.js";
 
@@ -32,6 +33,11 @@ app.use((_error: any, _req: any, res: any, _next: any) => {
 });
 
 describe("Core Certificates Routes", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    resetCircuit("get-certificates");
+  });
+
   describe("GET /api/certificates", () => {
     it("should return a list of certificates", async () => {
       const mockCerts = [{ id: 1, name: "Test Cert" }];

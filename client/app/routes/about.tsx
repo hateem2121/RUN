@@ -286,7 +286,11 @@ function AboutPageContent({ batchData }: AboutPageContentProps) {
     "";
 
   return (
-    <div id="main-content" className="min-h-screen bg-background">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="min-h-screen bg-background focus:outline-hidden"
+    >
       <HeroSection
         heroData={heroData || {}}
         mediaUrl={heroBackgroundUrl}
@@ -470,7 +474,7 @@ function AboutPageContent({ batchData }: AboutPageContentProps) {
       )}
 
       {/* Footer removed here, now handled by _public.tsx layout wrapper */}
-    </div>
+    </main>
   );
 }
 

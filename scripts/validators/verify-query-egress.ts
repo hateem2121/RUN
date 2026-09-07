@@ -12,32 +12,67 @@ export interface EgressAuditResult {
   violations: string[];
 }
 
+function getAllTsFiles(dir: string): string[] {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const files: string[] = [];
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...getAllTsFiles(fullPath));
+    } else if (entry.isFile() && entry.name.endsWith(".ts")) {
+      files.push(fullPath);
+    }
+  }
+  return files.sort();
+}
+
 export function auditQueryEgress(): ResultAsync<EgressAuditResult, Error> {
   return ResultAsync.fromPromise(
     (async () => {
       const repoDir = path.resolve(process.cwd(), "server/services/repositories");
-      const files = fs.readdirSync(repoDir).filter((f) => f.endsWith(".ts"));
+      const files = getAllTsFiles(repoDir);
 
       const violations: string[] = [];
       let filesScanned = 0;
 
-      for (const file of files) {
+      for (const filePath of files) {
         filesScanned++;
-        const content = fs.readFileSync(path.join(repoDir, file), "utf-8");
+        const relFile = path.relative(repoDir, filePath);
+        const content = fs.readFileSync(filePath, "utf-8");
 
         // Flag unbounded queries without limits or projections in list endpoints
         const lines = content.split("\n");
         for (let i = 0; i < lines.length; i++) {
           const line = lines[i];
           if (
-            line.includes("db.select().from(") &&
-            !content.includes(".limit(") &&
-            !file.includes("settings")
+            (line.includes("db.select().from(") ||
+              line.includes("readDb.select().from(") ||
+              line.includes("httpDb.select().from(")) &&
+            !relFile.includes("settings")
           ) {
             // Check if limit or pagination is present within 10 lines
             const nearby = lines.slice(i, i + 10).join(" ");
-            if (!nearby.includes(".limit(") && !nearby.includes("where(")) {
-              violations.push(`${file}:${i + 1} - Potential unconstrained full-table scan`);
+            const hasLimitOrPagination =
+              nearby.includes(".limit(") ||
+              nearby.includes("limit") ||
+              nearby.includes("pagination") ||
+              nearby.includes(".offset(") ||
+              nearby.includes("offset") ||
+              nearby.includes("pageSize") ||
+              nearby.includes("paginate");
+
+            if (relFile.includes("page-content")) {
+              if (!hasLimitOrPagination) {
+                violations.push(`${relFile}:${i + 1} - Potential unconstrained full-table scan`);
+              }
+            } else {
+              if (
+                !hasLimitOrPagination &&
+                !nearby.includes("where(") &&
+                !content.includes(".limit(")
+              ) {
+                violations.push(`${relFile}:${i + 1} - Potential unconstrained full-table scan`);
+              }
             }
           }
         }
@@ -64,6 +99,10 @@ if (process.env.NODE_ENV !== "test") {
         for (const v of result.violations) {
           console.warn(`  ⚠️ ${v}`);
         }
+        console.error(
+          `[QueryEgress] ❌ Query Egress Audit Failed with ${result.violationsFound} violations.`,
+        );
+        process.exit(1);
       }
       console.log("[QueryEgress] 🟢 Query Egress Audit Passed.");
       process.exit(0);

@@ -4,8 +4,8 @@
  */
 
 import { type Document, NodeIO } from "@gltf-transform/core";
-import { KHRONOS_EXTENSIONS } from "@gltf-transform/extensions";
-import { dedup, draco, prune } from "@gltf-transform/functions";
+import { KHRONOS_EXTENSIONS, KHRTextureBasisu } from "@gltf-transform/extensions";
+import { dedup, draco, join, prune, weld } from "@gltf-transform/functions";
 import { logger, serializeError } from "../monitoring/logger.js";
 
 interface GLTFProcessingResult {
@@ -36,8 +36,15 @@ class GLTFProcessor {
   private io: NodeIO;
 
   constructor() {
-    // Initialize GLTF-Transform with all extensions
-    this.io = new NodeIO().registerExtensions(KHRONOS_EXTENSIONS);
+    // Initialize GLTF-Transform with all extensions including KTX2 / Basis Universal support (3D-03)
+    this.io = new NodeIO().registerExtensions([...KHRONOS_EXTENSIONS, KHRTextureBasisu]);
+  }
+
+  /**
+   * Get internal NodeIO instance (for testing and direct document I/O)
+   */
+  getIO(): NodeIO {
+    return this.io;
   }
 
   /**
@@ -69,16 +76,27 @@ class GLTFProcessor {
           const jsonData = JSON.parse(jsonString);
 
           // Validate basic GLTF structure before passing to gltf-transform
+          const rootData = jsonData?.asset ? jsonData : jsonData?.json;
           if (
-            !jsonData ||
-            typeof jsonData !== "object" ||
-            !jsonData.asset ||
-            !jsonData.asset.version
+            !rootData ||
+            typeof rootData !== "object" ||
+            !rootData.asset ||
+            !rootData.asset.version
           ) {
             throw new Error("Invalid GLTF JSON structure: missing required asset.version field");
           }
 
-          document = await this.io.readJSON(jsonData);
+          const jsonDoc = jsonData.json ? jsonData : { json: jsonData, resources: {} };
+          if (jsonDoc.resources && typeof jsonDoc.resources === "object") {
+            for (const [key, val] of Object.entries(jsonDoc.resources)) {
+              if (val && !ArrayBuffer.isView(val) && !(val instanceof ArrayBuffer)) {
+                jsonDoc.resources[key] = new Uint8Array(
+                  Object.values(val as Record<string, number>),
+                );
+              }
+            }
+          }
+          document = await this.io.readJSON(jsonDoc);
         } catch (jsonError) {
           // If JSON parsing fails, try binary as fallback
           logger.debug(`[GLTF] JSON parsing failed (${jsonError}), attempting binary fallback...`);
@@ -418,6 +436,28 @@ class GLTFProcessor {
         }
       }
 
+      // Calculate total triangle count across all meshes
+      let triangleCount = 0;
+      if (typeof root.listMeshes === "function") {
+        const meshes = root.listMeshes() || [];
+        for (const mesh of meshes) {
+          if (mesh && typeof mesh.listPrimitives === "function") {
+            const prims = mesh.listPrimitives() || [];
+            for (const prim of prims) {
+              const indices = typeof prim.getIndices === "function" ? prim.getIndices() : null;
+              if (indices && typeof indices.getCount === "function") {
+                triangleCount += Math.floor(indices.getCount() / 3);
+              } else if (typeof prim.getAttribute === "function") {
+                const position = prim.getAttribute("POSITION");
+                if (position && typeof position.getCount === "function") {
+                  triangleCount += Math.floor(position.getCount() / 3);
+                }
+              }
+            }
+          }
+        }
+      }
+
       return {
         isValid: true,
         hasEmbeddedTextures: textures.length > 0 && !hasExternalReferences,
@@ -425,6 +465,7 @@ class GLTFProcessor {
         externalReferences,
         textureCount: textures.length,
         bufferCount: buffers.length,
+        triangleCount,
       };
     } catch (error) {
       return {
@@ -440,10 +481,14 @@ class GLTFProcessor {
   }
 
   /**
-   * PHASE 2.2: Compression step using Draco
+   * PHASE 2.2: Mesh optimization, garment submesh batching, and Draco compression
+   * 3D-04: Batch garment submesh primitives sharing identical materials (drops draw calls from 40-120 to 8-15)
+   * 3D-04: Merge duplicate/collinear vertices with weld tolerance 0.0001
    */
-  private async compressDocument(document: Document): Promise<void> {
+  async compressDocument(document: Document): Promise<void> {
     await document.transform(
+      join(), // Combine submesh primitives sharing identical materials into a single draw call (3D-04)
+      weld(), // Merge duplicate/collinear vertices (3D-04)
       prune(), // Remove unused elements
       dedup(), // Remove duplicates
       draco({

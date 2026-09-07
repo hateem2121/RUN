@@ -39,10 +39,11 @@ router.post("/certificates", authService.requireAdmin, async (req, res) => {
 
   return result.match(
     async (certificate) => {
-      // Invalidate certificates and sustainability caches
+      // Invalidate certificates, sustainability, and footer caches
       await Promise.all([
         CacheOperations.invalidateCertificates(),
         CacheOperations.invalidateSustainability(),
+        CacheOperations.invalidateFooter(),
       ])
         .then(() => logger.info("[Certificates] ✅ Cache invalidated after certificate creation"))
         .catch((err) => logger.error("[Certificates] ❌ Cache invalidation failed:", err));
@@ -74,6 +75,7 @@ router.put("/certificates/:id", authService.requireAdmin, async (req, res) => {
       await Promise.all([
         CacheOperations.invalidateCertificates(),
         CacheOperations.invalidateSustainability(),
+        CacheOperations.invalidateFooter(),
       ])
         .then(() => logger.info("[Certificates] ✅ Cache invalidated after certificate update"))
         .catch((err) => logger.error("[Certificates] ❌ Cache invalidation failed:", err));
@@ -98,6 +100,7 @@ router.delete("/certificates/:id", authService.requireAdmin, async (req, res) =>
       await Promise.all([
         CacheOperations.invalidateCertificates(),
         CacheOperations.invalidateSustainability(),
+        CacheOperations.invalidateFooter(),
       ])
         .then(() => logger.info("[Certificates] ✅ Cache invalidated after certificate deletion"))
         .catch((err) => logger.error("[Certificates] ❌ Cache invalidation failed:", err));

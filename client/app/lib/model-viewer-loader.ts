@@ -1,8 +1,17 @@
 // Model Viewer Loader - Ensures proper registration without conflicts
 // This replaces the CDN loading with proper local package initialization
 
+import { gltfCache } from "./gltf-cache";
+
 let isModelViewerLoaded = false;
 let loadingPromise: Promise<void> | null = null;
+
+/**
+ * Loads a 3D model through the IndexedDB cache layer, returning a cached object URL.
+ */
+export async function loadCachedModelUrl(url: string): Promise<string> {
+  return gltfCache.fetchWithCache(url);
+}
 
 export async function ensureModelViewerLoaded(): Promise<void> {
   if (isModelViewerLoaded) {

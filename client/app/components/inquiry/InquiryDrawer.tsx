@@ -83,42 +83,44 @@ export const InquiryDrawer = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
               </div>
 
               {/* Inquiry Form */}
-              {items.length > 0 && (
-                <div className="border-border border-t bg-muted/20 p-6">
-                  <h3 className="font-neue-stance mb-6 font-bold text-sm text-foreground uppercase tracking-widest">
-                    Contact Details
-                  </h3>
+              <div className="border-border border-t bg-muted/20 p-6">
+                <h3 className="font-neue-stance mb-6 font-bold text-sm text-foreground uppercase tracking-widest">
+                  {items.length > 0 ? "Contact Details" : "Bespoke Manufacturing Inquiry"}
+                </h3>
 
-                  {error && (
-                    <div className="mb-6 flex items-start gap-3 rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-red-500 shadow-sm animate-in fade-in slide-in-from-top-2">
-                      <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
-                      <div className="text-xs tracking-wide">
-                        <p className="font-bold uppercase mb-1">Submission Error</p>
-                        <p className="opacity-90">{error}</p>
-                      </div>
+                {error && (
+                  <div className="mb-6 flex items-start gap-3 rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-red-500 shadow-sm animate-in fade-in slide-in-from-top-2">
+                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+                    <div className="text-xs tracking-wide">
+                      <p className="font-bold uppercase mb-1">Submission Error</p>
+                      <p className="opacity-90">{error}</p>
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  <InquiryForm form={form} onFormSubmit={onFormSubmit} />
-                </div>
-              )}
+                <InquiryForm form={form} onFormSubmit={onFormSubmit} />
+              </div>
             </div>
           )}
 
           {/* Footer Actions */}
-          {!success && items.length > 0 && (
+          {!success && (
             <div className="border-border border-t bg-background/80 p-6 backdrop-blur-xl">
               <button
                 type="submit"
                 form="inquiry-form"
                 disabled={mutation.isPending}
                 className={cn(
-                  "flex w-full items-center justify-center gap-3 rounded-full bg-foreground px-6 py-5 font-bold text-background transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50",
+                  "flex w-full items-center justify-center gap-3 rounded-full bg-foreground px-6 py-5 font-bold text-background transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer",
                   "hover:bg-foreground/90 hover:shadow-xl hover:shadow-foreground/10",
                 )}
               >
                 <span className="text-xs uppercase tracking-widest">
-                  {mutation.isPending ? "Processing..." : "Submit Quote Request"}
+                  {mutation.isPending
+                    ? "Processing..."
+                    : items.length > 0
+                      ? "Submit Quote Request"
+                      : "Submit Manufacturing Inquiry"}
                 </span>
                 {!mutation.isPending && <Send className="h-4 w-4" />}
               </button>

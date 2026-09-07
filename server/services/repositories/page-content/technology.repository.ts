@@ -259,7 +259,11 @@ class TechnologyRepository {
       query = query.where(eq(technologyInnovations.isActive, true));
     }
 
-    return query.orderBy(asc(technologyInnovations.sortOrder));
+    return query.orderBy(asc(technologyInnovations.sortOrder)).limit(50);
+  }
+
+  async getInnovations(includeInactive = false): Promise<TechnologyInnovation[]> {
+    return this.getTechnologyInnovations(includeInactive);
   }
 
   async getTechnologyInnovation(id: number): Promise<TechnologyInnovation | undefined> {
@@ -359,7 +363,11 @@ class TechnologyRepository {
       query = query.where(eq(technologyResearch.isActive, true));
     }
 
-    return query.orderBy(asc(technologyResearch.sortOrder));
+    return query.orderBy(asc(technologyResearch.sortOrder)).limit(50);
+  }
+
+  async getResearch(includeInactive = false): Promise<TechnologyResearch[]> {
+    return this.getTechnologyResearch(includeInactive);
   }
 
   async getTechnologyResearchItem(id: number): Promise<TechnologyResearch | undefined> {
@@ -459,7 +467,11 @@ class TechnologyRepository {
       query = query.where(eq(technologyRoadmap.isActive, true));
     }
 
-    return query.orderBy(asc(technologyRoadmap.sortOrder));
+    return query.orderBy(asc(technologyRoadmap.sortOrder)).limit(50);
+  }
+
+  async getRoadmap(includeInactive = false): Promise<TechnologyRoadmap[]> {
+    return this.getTechnologyRoadmap(includeInactive);
   }
 
   async getTechnologyRoadmapItem(id: number): Promise<TechnologyRoadmap | undefined> {

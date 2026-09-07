@@ -86,7 +86,11 @@ class SustainabilityRepository {
       query = query.where(eq(sustainabilityGoals.isActive, true));
     }
 
-    return query.orderBy(asc(sustainabilityGoals.sortOrder));
+    return query.orderBy(asc(sustainabilityGoals.sortOrder)).limit(50);
+  }
+
+  async getGoals(includeInactive = false): Promise<SustainabilityGoal[]> {
+    return this.getSustainabilityGoals(includeInactive);
   }
 
   async getSustainabilityGoal(id: number): Promise<SustainabilityGoal | undefined> {
@@ -330,7 +334,11 @@ class SustainabilityRepository {
       query = query.where(eq(sustainabilityInitiatives.isActive, true));
     }
 
-    return query.orderBy(asc(sustainabilityInitiatives.sortOrder));
+    return query.orderBy(asc(sustainabilityInitiatives.sortOrder)).limit(50);
+  }
+
+  async getInitiatives(includeInactive = false): Promise<SustainabilityInitiative[]> {
+    return this.getSustainabilityInitiatives(includeInactive);
   }
 
   async getSustainabilityInitiative(id: number): Promise<SustainabilityInitiative | undefined> {

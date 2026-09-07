@@ -155,7 +155,7 @@ describe("AboutRepository", () => {
 
   describe("Map Locations", () => {
     it("should fetch map locations", async () => {
-      vi.mocked(db.orderBy).mockResolvedValueOnce([{ id: 1, name: "Location 1" }] as any);
+      vi.mocked(db.limit).mockResolvedValueOnce([{ id: 1, name: "Location 1" }] as any);
       const result = await aboutRepository.getAboutMapLocations(true);
       expect(result).toHaveLength(1);
     });
@@ -196,13 +196,13 @@ describe("AboutRepository", () => {
 
   describe("Sections", () => {
     it("should fetch sections", async () => {
-      vi.mocked(db.orderBy).mockResolvedValueOnce([{ id: 1, title: "Section 1" }] as any);
+      vi.mocked(db.limit).mockResolvedValueOnce([{ id: 1, title: "Section 1" }] as any);
       const result = await aboutRepository.getAboutSections(true);
       expect(result).toHaveLength(1);
     });
 
     it("should fetch section by id", async () => {
-      vi.mocked(db.where).mockResolvedValueOnce([{ id: 1, title: "Section 1" }] as any);
+      vi.mocked(db.limit).mockResolvedValueOnce([{ id: 1, title: "Section 1" }] as any);
       const result = await aboutRepository.getAboutSection(1);
       expect(result).toBeDefined();
     });
@@ -237,13 +237,13 @@ describe("AboutRepository", () => {
 
   describe("Statistics", () => {
     it("should fetch statistics", async () => {
-      vi.mocked(db.orderBy).mockResolvedValueOnce([{ id: 1, label: "Stat 1" }] as any);
+      vi.mocked(db.limit).mockResolvedValueOnce([{ id: 1, label: "Stat 1" }] as any);
       const result = await aboutRepository.getAboutStatistics(true);
       expect(result).toHaveLength(1);
     });
 
     it("should fetch statistic by id", async () => {
-      vi.mocked(db.where).mockResolvedValueOnce([{ id: 1, label: "Stat 1" }] as any);
+      vi.mocked(db.limit).mockResolvedValueOnce([{ id: 1, label: "Stat 1" }] as any);
       const result = await aboutRepository.getAboutStatistic(1);
       expect(result).toBeDefined();
     });

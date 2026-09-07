@@ -1,4 +1,5 @@
 import type { Server } from "node:http";
+import { sseHub } from "../services/realtime/sse-hub.js";
 import { logger } from "./monitoring/logger.js";
 
 type ShutdownHook = () => Promise<void> | void;
@@ -23,10 +24,11 @@ export function registerShutdownHook(hook: ShutdownHook): void {
 
 /**
  * Perform graceful shutdown:
- * 1. Stop accepting new connections
- * 2. Wait for in-flight requests to complete (up to timeout)
- * 3. Run all registered shutdown hooks
- * 4. Exit process
+ * 1. Drain active SSE client connections with randomized backoff jitter
+ * 2. Stop accepting new connections
+ * 3. Wait for in-flight requests to complete (up to timeout)
+ * 4. Run all registered shutdown hooks
+ * 5. Exit process
  */
 async function performShutdown(signal: string): Promise<void> {
   if (isShuttingDown) {
@@ -37,7 +39,21 @@ async function performShutdown(signal: string): Promise<void> {
 
   logger.info(`[Shutdown] ${signal} received, starting graceful shutdown...`);
 
-  // Close HTTP server first to stop accepting new connections
+  // SSE-02: Drain all active SSE connections before closing HTTP server
+  try {
+    const sseCount = sseHub.getActiveCount();
+    if (sseCount > 0) {
+      logger.info(`[Shutdown] Draining ${sseCount} active SSE client(s) with randomized jitter...`);
+    }
+    await sseHub.drainAll();
+    if (sseCount > 0) {
+      logger.info("[Shutdown] All SSE clients drained successfully");
+    }
+  } catch (error) {
+    logger.error("[Shutdown] Error draining SSE clients:", error);
+  }
+
+  // Close HTTP server to stop accepting new connections
   if (httpServer) {
     await new Promise<void>((resolve) => {
       httpServer!.close(() => {

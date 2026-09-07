@@ -15,7 +15,11 @@ export function meta() {
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center focus:outline-hidden"
+    >
       <Typography.H1 className="text-9xl font-bold text-primary">404</Typography.H1>
       <Typography.H2>Page Not Found</Typography.H2>
       <Typography.P className="text-muted-foreground max-w-md">
@@ -24,19 +28,23 @@ export default function NotFound() {
       <Button asChild>
         <Link to="/">Return Home</Link>
       </Button>
-    </div>
+    </main>
   );
 }
 
 export function ErrorBoundary() {
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center focus:outline-hidden"
+    >
       <Typography.H1 className="text-9xl font-bold text-primary">Error</Typography.H1>
       <Typography.H2>Something went wrong</Typography.H2>
       <Button asChild>
         <Link to="/">Return Home</Link>
       </Button>
-    </div>
+    </main>
   );
 }
 

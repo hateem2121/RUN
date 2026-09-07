@@ -31,7 +31,7 @@ class ServicesRepository {
     if (!includeInactive) {
       query = query.where(eq(services.isActive, true));
     }
-    const result = await query.orderBy(asc(services.sortOrder));
+    const result = await query.orderBy(asc(services.sortOrder)).limit(50);
     const duration = performance.now() - startTime;
 
     try {

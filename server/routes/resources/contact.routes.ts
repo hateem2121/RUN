@@ -58,7 +58,11 @@ router.post(
       });
     }
 
-    const result = await inquiryService.processContactSubmission(parsed.data, req.ip || "unknown");
+    const result = await inquiryService.processContactSubmission(
+      parsed.data,
+      req.ip || "unknown",
+      req.headers,
+    );
 
     if (result.isErr()) {
       // Validation and security errors return 422 in this domain

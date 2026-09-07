@@ -30,16 +30,21 @@ export * from "./media/media-content.service.js";
 export * from "./media/media-query.service.js";
 export * from "./media/media-upload.service.js";
 
+// Realtime Services
+export * from "./realtime/sse-hub.js";
+
 // System Domain Services
 export * from "./system/auth.service.js";
 export * from "./system/contact.service.js";
 export * from "./system/embedding.service.js";
+export * from "./system/geo-routing.service.js";
 export * from "./system/inquiry.service.js";
 export * from "./system/job-metrics.service.js";
 export * from "./system/metrics.service.js";
 export * from "./system/newsletter.service.js";
 export * from "./system/semantic-search.service.js";
 export * from "./system/system.service.js";
+export * from "./system/webauthn.service.js";
 export * from "./system/webhook.service.js";
 
 // Background Task Services

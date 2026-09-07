@@ -23,6 +23,7 @@ import {
 import { verifyRecaptcha } from "../../lib/security/recaptcha-verify.js";
 import { inProcessTaskQueue } from "../../lib/tasks/in-process-queue.js";
 import { miscRepository } from "../repositories/index.js";
+import { geoRoutingService } from "./geo-routing.service.js";
 
 const CACHE_TTL_INQUIRIES = 300; // 5 minutes
 
@@ -50,6 +51,7 @@ export class InquiryService {
   async processContactSubmission(
     validatedData: Record<string, unknown>,
     clientIp: string,
+    reqHeaders?: Record<string, string | string[] | undefined>,
   ): Promise<Result<Inquiry, AppError>> {
     // 1. Honeypot Validation
     if (typeof validatedData.honeypot === "string" && validatedData.honeypot.trim().length > 0) {
@@ -68,7 +70,10 @@ export class InquiryService {
       return err(new ValidationError(recaptchaResult.error || "Security check failed (RC)"));
     }
 
-    // 3. Map to Insert Schema
+    // 3. Resolve Regional Factory Dispatch (GEO-01)
+    const dispatch = geoRoutingService.resolveRouting(reqHeaders, clientIp);
+
+    // 4. Map to Insert Schema
     const insertData: InsertInquiry = {
       name: validatedData.name as string,
       email: validatedData.email as string,
@@ -79,6 +84,10 @@ export class InquiryService {
       preferredPlatform: (validatedData.preferredPlatform as string) || null,
       source: "contact-page",
       status: "new",
+      tags: [dispatch.routingHub],
+      assignedTo:
+        dispatch.routingHub === "SIALKOT_HQ" ? "Sialkot Production Desk" : "Zurich Global Sales",
+      adminNotes: `Routed to ${dispatch.routingHub} via ${dispatch.matchedHeader}=${dispatch.countryCode}`,
       submittedAt: new Date(),
     };
 
@@ -94,14 +103,26 @@ export class InquiryService {
   ): Promise<Result<Inquiry, AppError>> {
     // biome-ignore lint/suspicious/noExplicitAny: Dynamic contact structure
     const contact = (validatedData.contact as Record<string, any>) || {};
+    let resolvedMessage =
+      (contact.message as string) ||
+      (contact.projectDescription as string) ||
+      "B2B Production Inquiry";
+
+    if (contact.techPackUrl && !resolvedMessage.includes(contact.techPackUrl)) {
+      resolvedMessage += `\n\n[Attached Tech-Pack: ${contact.techPackFileName || "Attachment"} (${contact.techPackFileSize || "N/A"})]\nDownload Link: ${contact.techPackUrl}`;
+    }
+
     const insertData: InsertInquiry = {
-      name: contact.name,
+      name: contact.name || contact.company || contact.email?.split("@")[0] || "Valued Buyer",
       email: contact.email,
-      company: contact.company,
-      phone: contact.phone,
-      country: contact.country,
-      message: contact.message,
-      source: validatedData.source as string,
+      company: contact.company || null,
+      phone: contact.phone || null,
+      country: contact.country || null,
+      message: resolvedMessage,
+      adminNotes: contact.techPackUrl
+        ? `Tech-pack attachment: ${contact.techPackFileName || "Attachment"} (${contact.techPackUrl})`
+        : null,
+      source: (validatedData.source as string) || "contact_page",
       items:
         // biome-ignore lint/suspicious/noExplicitAny: Dynamic items array
         ((validatedData.items as any[]) || [])?.map((item) => ({

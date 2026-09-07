@@ -632,6 +632,7 @@ export const queryKeys = {
   accessories: () => ["/api/accessories"] as const,
   fibers: () => ["/api/fibers"] as const,
   navigation: () => ["/api/navigation-items"] as const,
+  footer: () => ["/api/footer"] as const,
 
   // Products - bounded parameters
   products: {

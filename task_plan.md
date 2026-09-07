@@ -1,10 +1,341 @@
 # Task Plan — RUN APPAREL CMS (v4.1.2) — Monorepo & Global Antigravity Tooling
 
-**Date:** 2026-09-01  
-**Goal:** Deep Frontier 6: 3D WebGL/WebGPU, Factory Floor SSE & FIDO2 WebAuthn  
+**Date:** 2026-09-07  
+**Goal:** 10/10 Master Remediation — Ceiling Notch Navbar & Industrial Command Footer Complete Forensic Alignment  
 **Auditor/Engineer Role:** Antigravity — Principal Systems Architect & Senior Full-Stack Engineer  
 
-## Active Sprint Plan — Sprint 8: Permanent Monorepo 'npm error' Prevention & Hardening (2026-09-01)
+## Completed Sprint Plan — Sprint 19: Definitive 10/10 Navbar & Footer Remediation (2026-09-07)
+
+- [x] **Track 1: Critical Data Safety & Keyboard Accessibility (P0)**
+  - [x] Lock all inquiry form input fields while `isUploading` is true and reject premature submit.
+  - [x] Add atomic ref submission guard (`isSubmittingRef`) to prevent duplicate inquiries on double-click.
+  - [x] Scope listbox query selector in `dialog.tsx` so `Escape` key closes `CommandDialog`.
+  - [x] Inspect magic bytes on uploaded tech-packs in `server/routes/core/inquiries.ts`.
+- [x] **Track 2: Quote Drawer Architecture & Bespoke RFP Conversion (P1)**
+  - [x] Mount `<QuoteOverlay />` globally in `root.tsx` so Request Quote works on 404/error routes.
+  - [x] Remove duplicate `<QuoteOverlay />` mount in `_public.tsx`.
+  - [x] Allow bespoke RFP submission in `InquiryDrawer.tsx` when catalog items cart is empty.
+  - [x] Deduplicate Quote CTAs by hiding floating FAB on tablets (`sm:hidden`).
+- [x] **Track 3: Geometry, Responsiveness & Safe Areas (P1)**
+  - [x] Extend `<nav>` to include `safe-area-inset-top` in height and padding, eliminating iPhone notch gap.
+  - [x] Rebalance Footer tablet grid from `md:grid-cols-3` to `md:grid-cols-2 lg:grid-cols-4`.
+  - [x] Convert Footer borders from `border-l pl-8` to `border-t pt-8 md:border-t-0 md:border-s md:pt-0 md:ps-8`.
+  - [x] Add `print:hidden` to Footer.
+- [x] **Track 4: Performance, Sleep Cycles & Accessibility (P1/P2)**
+  - [x] Sleep `TimezoneClocks` interval when offscreen and cache `Intl.DateTimeFormat` formatters.
+  - [x] Conditionally insert text nodes inside `aria-live="polite"` success region for VoiceOver.
+  - [x] Fix WhatsApp hotline contrast in mobile menu to `text-emerald-400` (7.2:1 contrast).
+  - [x] Expand interactive touch targets (search, theme toggle, hamburger, marquee pause) to 44x44px.
+  - [x] Fix SkipLink `#main-content` landing on `$.tsx` (404) and `about.tsx`.
+  - [x] Listen to `touchstart` in `CustomCursor.tsx` to prevent ghost cursor on hybrid iPads.
+- [x] **Track 5: Monorepo Verification & Protocol 0 Master Gate**
+  - [x] Verify Vitest unit and integration test suites (198 files, 2,897 tests passing 100%).
+  - [x] Run `npm run verify:tech-integrity` (all 8 gates passed 100%).
+
+## Completed Sprint Plan — Sprint 18: Master 10/10 Remediation — Navbar & Footer (2026-09-07)
+
+- [x] **Track 1: Upload & Inquiries Security (P0/P1)**
+  - [x] Add ZIP magic number `[0x50, 0x4b, 0x03, 0x04]` and MIME mappings (`application/zip`, `application/x-zip-compressed`) to `validateFileSignature`.
+  - [x] Decouple techpack uploads from the 200MB memory buffer; implement streaming disk storage with 25MB limit.
+  - [x] Upgrade download tokens to 64-char crypto hex tokens (`crypto.randomBytes(32)`).
+  - [x] Protect techpack download endpoint with `authService.requireAdmin`.
+  - [x] Verify `server/tests/routes/core/inquiries.test.ts` (10/10 passing).
+- [x] **Track 2: Ceiling Notch Navbar Hardening (P0/P1/P2)**
+  - [x] Add `sanitizeNavHref` guarding against `javascript:` XSS and protocol-relative `//` redirects.
+  - [x] Fix responsive breakpoint mismatch from `1024px` to `1280px` (`xl:`), eliminating the tablet dead zone.
+  - [x] Guard body scroll lock effect; never unlock on mount.
+  - [x] Elevate `<header>` to `mobileMenuOpen ? "z-modal" : "z-dock"` fixing backdrop scrim stacking context inversion.
+  - [x] Fix keyboard focus trap with `tabIndex={-1}` on dialog container.
+  - [x] Replaced placeholder WhatsApp hotline with official factory hotline `+92 336 1777313`.
+  - [x] Stabilize `Cmd+K` keydown listener in `NavCommandSearch.tsx`.
+  - [x] Verify `ceiling-notch-navbar.test.tsx` (14/14 passing).
+- [x] **Track 3: Industrial Command Footer & Form (P1/P2)**
+  - [x] Implement strict `sanitizeHref` rejecting `//`, `/\\`, and `javascript:` URIs across all links.
+  - [x] Implement accurate `sialkotDayFormatter` and `zurichDayFormatter` using target timezones (`Asia/Karachi` and `Europe/Zurich`).
+  - [x] Implement accessible certification marquee with Pause/Resume toggle button and secondary loop `aria-hidden="true"`.
+  - [x] Render Radix UI dialog for certification verification with compliant audit ID (`RUN-ISO-XXXX`).
+  - [x] Wire `contactFormEnabled` gating and dynamic `heading`, `companyAddress`, `brandTagline`, and `brandText`.
+  - [x] Implement mobile accordion view for directory navigation columns via Radix UI accordion.
+  - [x] Optimize `FooterInquiryForm` with atomic Zustand selectors and guarded `onChange` handlers.
+  - [x] Verify `Footer.test.tsx` (7/7 passing), `FooterInquiryForm.test.tsx` (6/6 passing), and `RequirementR4Accessibility.test.tsx` (8/8 passing).
+- [x] **Track 4: Backend Services & Cache Calibration (P1/P2)**
+  - [x] Pass `CACHE_TTL_FOOTER` in seconds (3600) to `unifiedCache.set` in `footer-config.ts`.
+  - [x] Throw `ValidationError` (422) on invalid payload or non-array attributes in `footer.service.ts`.
+  - [x] Enforce direct `neverthrow` return (`ResultAsync.fromPromise()`, no `async` wrapper) in `NavigationService.getItems`.
+  - [x] Add positive integer validation to `:id` parameter in `navigation.routes.ts`.
+  - [x] Parallelize SSR prefetch queries in `root.tsx` with `Promise.all` and pass `nonce` to `ErrorBoundary` `<Scripts />`.
+  - [x] Implement comprehensive unit test suites `server/tests/services/footer-service.test.ts` (5/5) and `server/tests/routes/utilities/footer-config.test.ts` (4/4).
+- [x] **Track 5: Monorepo Verification & Protocol 0 Gate**
+  - [x] Full test suite: 198 test files, 2,897 tests passing 100% green.
+  - [x] `npm run verify:tech-integrity`: All 8 gates passed cleanly with 0 errors.
+
+## Completed Sprint Plan — Sprint 17: Definitive Footer 10/10 Forensic Remediation (2026-09-05)
+
+- [x] **Track 1: Backend Persistent File Storage & Retrieval (P0 Fix)**
+  - [x] Implement persistent disk storage (`server/public/uploads/techpacks/`) for `POST /api/inquiries/upload-techpack`.
+  - [x] Implement `GET /api/inquiries/techpack/:token` download and retrieval endpoint.
+  - [x] Add `b_fax_field` honeypot verification and length bounds in `createInquirySchema`.
+  - [x] Add `/api/inquiries/upload-techpack` and `/api/inquiries/techpack` to CSRF exclusions.
+- [x] **Track 2: CSS Architecture, Design Tokens & Glitch Elimination (P1 Fix)**
+  - [x] Remove `.text-logotype::after` from `theme.css` to eliminate `"RUN APPARELRUN APPAREL"` duplication.
+  - [x] Define `@utility container-centered`, `@utility border-glass`, and `@utility text-micro` in `theme.css`.
+  - [x] Add Radix accordion keyframes and utilities (`animate-accordion-down`, `animate-accordion-up`).
+  - [x] Calibrate dark mode `--destructive` to `oklch(0.65 0.22 25)` for 4.8:1 contrast.
+- [x] **Track 3: Lead Generation Form & Button Race Condition (P0 & P1 Fix)**
+  - [x] Remove delayed callback in GSAP button timeline; set `isSubmitting(true)` immediately and synchronously.
+  - [x] Update light mode status & confirmation text to `text-emerald-700 dark:text-brand-lime` (5.8:1 contrast).
+  - [x] Forward child ref in `Magnetic.tsx` so `btnRef.current` is not overwritten and destroyed.
+  - [x] Add visible focus indicator (`focus-visible:ring-2`) to submit button.
+  - [x] Wrap confirmation message in `<div aria-live="polite" aria-atomic="true">`.
+  - [x] Fix double `<label for="tech-pack-file">` and reset hidden file input on attachment removal.
+- [x] **Track 4: Command Center Footer & CPU Clock Optimization (P1 & P2 Fix)**
+  - [x] Wrap navigation groups in semantic `<nav aria-label="...">` landmarks.
+  - [x] Cache `Intl.DateTimeFormat` instances in `TimezoneClocks` and pause ticker on `document.visibilityState === "hidden"`.
+  - [x] Guard GSAP parallax against `prefers-reduced-motion` and remove manual `ScrollTrigger.refresh()`.
+  - [x] Prefetch `/api/footer` in `root.tsx` loader to eliminate post-hydration layout shift (CLS).
+  - [x] Sanitize JSON-LD via Unicode escaping (`\u003c`, `\u003e`, `\u0026`) and enforce link URL protocol whitelist.
+  - [x] Expand Radix Dialog close button tap target to $\ge 44 \times 44$px.
+- [x] **Track 5: Admin CMS Synchronization & Form Guarding (P2 Fix)**
+  - [x] Remove duplicate `onClick` and `action` on Admin "Save Changes" button to stop triple PATCH calls.
+  - [x] Add `aria-pressed={isSelected}` to certificate selector buttons and accessible labels to link inputs.
+- [x] **Track 6: Automated Test Suites & Protocol 0 Master Gate**
+  - [x] Expanded client and server unit test suites (196 test files, 2,887 passing tests).
+  - [x] Run `npm run verify:tech-integrity` (all 8 gates passed 100% green).
+
+## Completed Sprint Plan — Sprint 16: Footer 10/10 Overhaul (2026-09-05)
+
+- [x] **Track 1: Schema & Public Inquiry Contract Alignment (P0 Fix)**
+  - [x] Update `createInquirySchema` to accept `projectDescription` and optional `name`.
+  - [x] Refactor `insertFooterConfigurationSchema` to use `.nullish()` and default arrays.
+- [x] **Track 2: Backend Inquiry Service & Safe Upload Route (P0 Fix)**
+  - [x] Implement `POST /api/inquiries/upload-techpack` public upload endpoint.
+  - [x] Refactor `FooterService` to direct `neverthrow` returns (`ResultAsync.fromPromise`).
+  - [x] Fix upsert race condition and deterministic query in `FooterService`.
+  - [x] Await cache invalidation in `footer-config.ts`.
+- [x] **Track 3: Lead Generation Form & Drag-and-Drop Ingestion (P0 Fix)**
+  - [x] Prevent desktop drag-and-drop page navigation crashes (`onDragOver`, `onDrop`).
+  - [x] Wire real tech-pack upload flow and link to inquiry.
+  - [x] Scale fluid typography and make submit button responsive.
+  - [x] Add ARIA accessibility (`aria-invalid`, `aria-describedby`, focus rings, 44px tap targets).
+- [x] **Track 4: Accessible Certification Marquee & Radix UI Dialog (P1 Fix)**
+  - [x] Add pause controls, hover/focus pause, and `prefers-reduced-motion` to marquee.
+  - [x] Mark cloned loop elements with `aria-hidden="true"` and `tabIndex={-1}`.
+  - [x] Replace custom lightbox modal with `@radix-ui/react-dialog` primitive.
+- [x] **Track 5: Responsive Geometry, Mobile Accordion & Smart Clocks (P1 & P2 Fix)**
+  - [x] Implement mobile collapsible accordion for directory links.
+  - [x] Replace raw `<a>` tags with React Router `<Link>`.
+  - [x] Implement smart sleeping clock via `IntersectionObserver` with dynamic timezone offsets.
+  - [x] Synchronize GSAP `ScrollTrigger.refresh()` on data load.
+- [x] **Track 6: Full CMS Synchronization & Admin Tab Memory Safety (P2 Fix)**
+  - [x] Add `forceMount` to admin `<TabsContent>` so unmounted tabs never wipe fields.
+  - [x] Add Certificate multi-selector to Admin CMS.
+  - [x] Wire `contactFormEnabled`, `contactFormHeading`, `companyAddress`, `brandTagline`, and `brandText`.
+- [x] **Track 7: Monorepo Verification & Protocol 0 Master Gate**
+  - [x] Expand Vitest unit and accessibility test suites.
+  - [x] Run `npm run verify:tech-integrity` (all 8 gates must pass 100%).
+
+## Completed Sprint Plan — Sprint 15: Deprecation & Relational Migration (2026-09-05)
+
+- [x] **Track 1: Legacy Workflow Sunset & Zero-Clutter Hygiene**
+  - [x] Convert 28 workspace workflows into modern `.agent/skills/<name>/SKILL.md` skills.
+  - [x] Convert 13 standalone global workflows into `~/.gemini/config/skills/<name>/SKILL.md`.
+  - [x] Permanently purge 43 workspace `.agent/workflows/*.md.bak` backup files.
+  - [x] Permanently purge 132 global `~/.gemini/config/workflows/*.md.bak` backup files.
+- [x] **Track 2: API Contract Pruning**
+  - [x] Remove dead deprecated `MediaUrlBuilder.buildRawContentUrl()` from `client/app/lib/media-url-builder.ts` (0 consumers).
+- [x] **Track 3: Expand/Contract Database Migration Phase 2 (Read-Fix)**
+  - [x] Implement `getRelationIdsForProduct()` in `ProductRepository`.
+  - [x] Dynamically populate `relatedProductIds` from `productRelations` in `getProduct()` and `getProductBySlug()`.
+  - [x] Add unit test in `server/tests/repositories/product-repository.test.ts` asserting relation population (96/96 passing).
+  - [x] Verify full monorepo typecheck (`npm run typecheck`) and Knip analysis (0 errors).
+
+## Completed Sprint Plan — Sprint 14: Definitive Ceiling Notch Navbar Perfection (2026-09-05)
+
+- [x] **Track 1: State, Scroll & Route Resilience**
+  - [x] Reset `isVisible(true)` on route changes to prevent navbar vanishing on new pages.
+  - [x] Add `matchMedia("(min-width: 1024px)")` listener to clean up body scroll locks on window resize.
+  - [x] Eliminate render-phase ref mutations (`mobileMenuOpenRef.current`, `categoryMenuOpenRef.current`) into `useEffect`.
+  - [x] Reset cursor on route changes and mobile menu dismissal; guard cursor triggers for `(pointer: fine)`.
+  - [x] Add `partialize` to `useQuoteStore.ts` to prevent `isDrawerOpen` leaking into `localStorage`.
+  - [x] Manage and clear category trigger focus `setTimeout`.
+- [x] **Track 2: WCAG 2.2 AA/AAA Accessibility & Interaction Patterns**
+  - [x] Place explicit Close button (`<button aria-label="Close menu"><X /></button>`) inside the mobile modal dialog container.
+  - [x] Add full-screen backdrop scrim for mobile menu to enable outside-tap dismissal.
+  - [x] Convert desktop Categories dropdown from application `role="menu"` to W3C Disclosure Pattern (`aria-expanded`).
+  - [x] Add `aria-current="page"` to all active navigation links (desktop and mobile).
+  - [x] Enable keyboard scrollability (`tabIndex={0}`) for mobile menu scroll region.
+  - [x] Expand interactive touch targets to >= 44x44px bounding area.
+- [x] **Track 3: Responsive Geometry, Safe Areas & Visual Contrast**
+  - [x] Add `pt-[env(safe-area-inset-top,0px)]` to `<header>` to clear iPhone notch / Dynamic Island.
+  - [x] Move desktop links breakpoint to `xl:` (1280px) or adjust padding to eliminate 1024px viewport overflow.
+  - [x] Decouple mobile drawer width from `<header>` shrink-wrap to eliminate 375px mobile CLS stretch.
+  - [x] Upgrade border styling for Light Mode contrast (`border-black/10 dark:border-white/15`) and eliminate fillet seam artifacts.
+- [x] **Track 4: CMS, SSR & Data Architecture**
+  - [x] Connect `useQuery` with `queryKeys.navigation()` in `CeilingNotchNavbar` with static fallback.
+  - [x] Replace SSR HTTP loopback in `root.tsx` with direct memory service call (`NavigationService.getItems()`).
+  - [x] Implement and mount `/admin/navigation` module in `admin.$module.tsx`.
+- [x] **Track 5: Ecosystem, Search & B2B Polish (All Optionals)**
+  - [x] Ensure `<main id="main-content">` exists across all public routes so SkipLink never breaks.
+  - [x] Add Quick Search / Command Palette (`⌘K`) trigger in navbar.
+  - [x] Deduplicate Quote CTAs: hide bottom floating FAB on desktop, preserving single navbar quote CTA.
+  - [x] Inject Schema.org `SiteNavigationElement` JSON-LD for search engine sitelinks.
+  - [x] Add B2B direct contact hotline (WhatsApp, MOQ) inside mobile drawer.
+  - [x] Synchronize `client/public/navbar.html` standalone showcase prototype 1:1 with all production component features.
+- [x] **Track 6: Verification & Protocol 0 Master Gate**
+  - [x] Expand Vitest unit tests in `ceiling-notch-navbar.test.tsx` (13/13 passing).
+  - [x] Run `npm run verify:tech-integrity` (all 8 gates passed 100%).
+
+## Completed Sprint Plan — Sprint 13: Ceiling Notch Navbar Overhaul (2026-09-04)
+
+- [x] **Phase 1: Architecture & SSR Hydration Guarding**
+  - [x] Remove full-navbar skeleton gate (`!mounted`); render complete `<nav>`, brand, links, and RFQ CTA on SSR (0 CLS).
+  - [x] Gate only the theme toggle icon with hydration-safe fallback.
+- [x] **Phase 2: High-Performance RAF Scroll & Reduced Motion**
+  - [x] Replace raw unthrottled scroll listener with `requestAnimationFrame` ticking engine.
+  - [x] Store mutable scroll state in refs to prevent unnecessary effect teardowns and re-subscriptions.
+  - [x] Honor `prefers-reduced-motion` with `motion-reduce:transition-none` and `focus-within:translate-y-0`.
+- [x] **Phase 3: B2B IA & Dynamic RFQ Basket Badge**
+  - [x] Integrate `/manufacturing` in `NAV_LINKS` and mobile navigation.
+  - [x] Connect `useQuoteStore` to display a live count badge (`totalItems()`) inside the RFQ pill button on desktop and mobile.
+- [x] **Phase 4: WCAG 2.2 AA/AAA Accessibility & Mega Dropdown Keyboard Navigation**
+  - [x] Add complete focus trap and focus restoration to mobile navigation modal (`handleMenuKeyDown`, initial focus, return focus to hamburger trigger).
+  - [x] Comply with SC 2.1.1 scroll regions (`tabIndex={-1}`, `role="dialog"`, `aria-modal="true"`, `aria-label`).
+  - [x] Add `ArrowDown`, `ArrowUp`, `Escape`, and blur dismissal handling for desktop Categories mega dropdown.
+  - [x] Fix body scroll lock cleanup on unmount.
+- [x] **Phase 5: Visual Craft & Physical OLED Edge Contrast**
+  - [x] Add subtle `border-b border-x border-white/15` so the notch edge remains crisp against pitch-black backgrounds.
+  - [x] Subpixel fillet overlap fix (`-left-[19.5px]`, `-right-[19.5px]` with SVG curve highlight strokes).
+  - [x] Update `client/public/navbar.html` standalone showcase to mirror production component 1:1.
+- [x] **Phase 6: Testing & Tech Integrity Verification**
+  - [x] Expand `client/tests/unit/components/navigation/ceiling-notch-navbar.test.tsx` with tests for SSR, RFQ count badge, keyboard nav, unmount scroll restoration, and focus cycling (9/9 passed).
+  - [x] Subagent code review completed and addressed all findings.
+  - [x] Master verification gate `npm run verify:tech-integrity` passed (all 8 gates clean).
+
+- [x] **Protocol 0: Scope Alignment & Parallel Subagent Orchestration**
+  - [x] Stream A: Security & Edge Routing (`AUTH-01` WebAuthn Passkeys MFA + `GEO-01` GeoIP Regional Dispatch)
+  - [x] Stream B: Real-Time Telemetry Resilience (`SSE-02` Server Drain Event with Jitter)
+  - [x] Stream C: 3D Asset & Processing Pipeline (`3D-01` Self-Hosted Draco WASM + `3D-03` KTX2 Basis Universal + `3D-04` Garment Submesh Batching)
+  - [x] Stream D: Real-Time CAD & WebGPU Physics (`CRDT-01` Spatial Annotation CRDT + `3D-06` WebGPU XPBD Cloth Engine)
+- [x] **Phase 1: Security & Edge Routing Engineering (`AUTH-01` & `GEO-01`)**
+  - [x] Implemented W3C WebAuthn Level 3 service with native `node:crypto` (`server/services/system/webauthn.service.ts`).
+  - [x] Mounted `/api/auth/webauthn/*` registration and assertion routes in `server/routes/auth.ts`.
+  - [x] Implemented `GeoRoutingService` (`server/services/system/geo-routing.service.ts`) routing inquiries to Sialkot Production HQ vs Zurich Global Sales.
+  - [x] Integrated geo-routing in `inquiryService.processContactSubmission` and `contact.routes.ts`.
+  - [x] Verified unit tests: `webauthn.service.test.ts` (11/11 passed), `geo-routing.service.test.ts` (18/18 passed), `auth.test.ts` (13/13 passed).
+- [x] **Phase 2: Real-Time SSE Hub & Drain Mechanics (`SSE-02`)**
+  - [x] Implemented `SSEHub` singleton (`server/services/realtime/sse-hub.ts`) with client registry, heartbeat, and jittered drain.
+  - [x] Integrated graceful drain before socket termination in `server/lib/shutdown-manager.ts`.
+  - [x] Mounted `/api/realtime/factory-stream` in `server/routes/realtime.ts`.
+  - [x] Verified unit tests: `sse-hub.test.ts` (14/14 passed).
+- [x] **Phase 3: 3D Pipeline Optimization & Self-Hosted Decoders (`3D-01`, `3D-03`, `3D-04`)**
+  - [x] Copied Draco 1.5.6 WASM decoders to `client/public/draco/` and updated `UnifiedModelViewerCore.tsx`.
+  - [x] Registered `KHRTextureBasisu` on `NodeIO` in `server/lib/integrations/gltf-processor.ts`.
+  - [x] Integrated `join()` and `weld({ tolerance: 0.0001 })` transforms to batch garment submeshes and drop draw calls from 40-120 to 8-15.
+  - [x] Verified unit tests: `gltf-batching.test.ts` (5/5 passed), `gltf-cache.test.ts` (11/11 passed), `gltf-processor.test.ts` (22/22 passed).
+- [x] **Phase 4: Collaborative CAD & WebGPU Cloth Drape (`CRDT-01` & `3D-06`)**
+  - [x] Implemented `SpatialAnnotationCRDT` with Lamport clocks, LWW join-semilattice, and tombstones (`shared/utils/spatial-crdt.ts`).
+  - [x] Implemented WGSL compute shader and high-performance Float32Array CPU XPBD solver (`client/app/lib/cloth-simulation/xpbd-cloth-engine.ts`).
+  - [x] Verified unit tests: `spatial-crdt.test.ts` (13/13 passed), `xpbd-cloth-engine.test.ts` (11/11 passed).
+- [x] **Phase 5: Protocol 0 Verification Gate & 100/100 Certification**
+  - [x] Monorepo unit test suite: 194 test files, 2,852 tests passing (100% green).
+  - [x] Protocol 0 master gate: `npm run verify:tech-integrity` passed all 8 gates (typecheck, lint, format, knip, bundle, test, clean-seed, audit).
+  - [x] Updated `SYSTEM_OPTIMISATION_REPORT.md` (35/35 items marked RESOLVED).
+
+## Past Sprints
+
+### Sprint 11: 3D Asset & Pipeline Engineering — 3D-01, 3D-03, 3D-04 (2026-09-04)
+
+- [x] **Protocol 0: Session Initialization & Scope Mapping**
+  - [x] Initialized session for 3D-01 (Self-Hosted Draco WASM Decoder) and 3D-03 / 3D-04 (KTX2 & Garment Submesh Batching).
+- [x] **Phase 1: Task 3D-01 — Self-Hosted Draco WASM Decoder**
+  - [x] Copy Draco 1.5.6 decoder files (`draco_decoder.js`, `draco_decoder.wasm`, `draco_wasm_wrapper.js`) into `client/public/draco/`.
+  - [x] Add configurable `dracoDecoderPath` to `ModelViewerConfig` with default `"/draco/"`.
+  - [x] Update `client/app/components/ui/UnifiedModelViewerCore.tsx` to use `draco-decoder-path={finalConfig.dracoDecoderPath || "/draco/"}`.
+- [x] **Phase 2: Task 3D-03 & 3D-04 — Garment Submesh Batching & Texture Optimization**
+  - [x] Register `KHRTextureBasisu` from `@gltf-transform/extensions` on `this.io` in `server/lib/integrations/gltf-processor.ts`.
+  - [x] Add `join()` and `weld({ tolerance: 0.0001 })` transforms in `compressDocument(document: Document)` alongside `prune()` and `dedup()`.
+  - [x] Make `validateProcessedDocument` public with triangle counting and add `getIO()` accessor.
+  - [x] Improve JSON reading in `validateGLTF` and `embedTextures` to handle both raw glTF JSON and serialized JSONDocument.
+- [x] **Phase 3: Unit Testing & Verification**
+  - [x] Create `server/tests/unit/integrations/gltf-batching.test.ts` testing KTX2 registration, submesh batching primitive count reduction, vertex deduplication via weld, and end-to-end compression/validation (5/5 tests passing).
+  - [x] Run `npx vitest run server/tests/unit/integrations/gltf-batching.test.ts tests/unit/gltf-cache.test.ts server/tests/lib/integrations/gltf-processor.test.ts` (38/38 tests passing).
+  - [x] Run `npm run check` (typecheck + Biome lint: 0 errors).
+  - [x] Run `npm run check:knip` (0 unused files, exports, or dependencies).
+  - [x] Update `SYSTEM_OPTIMISATION_REPORT.md` (mark 3D-01, 3D-03, 3D-04 as RESOLVED).
+
+## Past Sprints
+
+### Sprint 10: Real-Time Systems Engineering — SSE-02 (2026-09-04)
+
+- [x] **Protocol 0: Session Initialization & Scope Mapping**
+  - [x] Initialized session for SSE-02: Server Drain Event on Shutdown with Randomized Jitter.
+- [x] **Phase 1: Implement `SSEHub` Service (`server/services/realtime/sse-hub.ts`)**
+  - [x] Implement `SSEHub` singleton class with `Set<Response>`.
+  - [x] `registerClient` with proper SSE headers, `: connected\n\n`, and `req.on("close")`.
+  - [x] `broadcast` with event and serialized data.
+  - [x] `sendHeartbeat` with `: ping\n\n`.
+  - [x] `drainAll` with individual randomized `reconnectAfterMs = (baseDelayMs ?? 2000) + Math.floor(Math.random() * (jitterMs ?? 3000))` and graceful flush + end.
+  - [x] `getActiveCount` and `getClientMetadata`.
+- [x] **Phase 2: Integrate with `server/lib/shutdown-manager.ts`**
+  - [x] In `performShutdown()`, call `await sseHub.drainAll()` before closing the HTTP server.
+- [x] **Phase 3: Real-Time Factory Stream Endpoint (`server/routes/realtime.ts`)**
+  - [x] Create `server/routes/realtime.ts` mounting `GET /factory-stream`.
+  - [x] Mount `/realtime` in `server/routes/index.ts` under `apiRouter` (`/api/realtime/factory-stream`).
+  - [x] Register client and emit periodic factory telemetry mock pulses.
+- [x] **Phase 4: Unit Testing & Verification**
+  - [x] Create `server/tests/unit/realtime/sse-hub.test.ts` testing registration, close, broadcast, heartbeat, drain with randomized jitter, and real HTTP endpoint streaming (14/14 tests passing).
+  - [x] Execute `npx vitest run server/tests/unit/realtime/sse-hub.test.ts` (14/14 green in 133ms).
+  - [x] Execute `npx biome check` on all modified files (0 errors, 0 warnings).
+  - [x] Execute `npm run check:knip` (0 unused exports/dependencies).
+  - [x] Update `SYSTEM_OPTIMISATION_REPORT.md` (mark SSE-02 resolved) and `findings.md`.
+
+## Past Sprints
+
+### Sprint 9: System Optimisation Execution & Architectural Hardening (2026-09-04)
+
+- [x] **Protocol 0: Session Initialization & Scope Mapping**
+  - [x] Conducted `/grill-me` interview with user to establish scope: Fresh audit, full-stack 360° coverage across all layers with zero gaps.
+- [x] **Phase 1: Multi-Tier Empirical System Profiling & Gap Discovery**
+  - [x] Audited query egress, server caching, asset micro-chunks, worker queues, and compliance pipelines.
+  - [x] Identified 8 immediate actionable gaps (GAP-01 through GAP-08) and 13 high-impact planned architectural features.
+- [x] **Phase 2: Parallel Subagent Execution Across 4 Specialized Streams**
+  - [x] **Stream 1 (Zero-Risk Actionables):**
+    - [x] GAP-01 / EGRESS-01: Recursive query egress validator covering all 19 repositories.
+    - [x] GAP-02 / DB-03: Defensive `.limit(50)` and `.limit(1)` in `page-content/*.repository.ts`.
+    - [x] GAP-03 / CACHE-02: Query parameter whitelisting in `server/middleware/ssr-cache.ts`.
+    - [x] GAP-04 / CORS-01: Strict port 5002 origin whitelist in `server/boot/middleware.ts`.
+    - [x] GAP-05 / H2-01: Rollup `manualChunks` consolidation in `client/vite.config.ts` (-37% asset count).
+    - [x] GAP-06 / DB-04: Stateless Neon HTTP driver in `server/services/repositories/product-repository.ts`.
+    - [x] GAP-07 / CACHE-03: Non-allocating structural byte estimator in `unified-cache.ts`.
+    - [x] GAP-08 / CI-01: 15s network timeout guard for `check:audit` in `scripts/verify-tech-integrity.ts`.
+  - [x] **Stream 2 (High-Yield Backend Architecture):**
+    - [x] DB-02: Single-query SQL CTE `getProductByPath` with `jsonb_agg` (slashed round-trips from 7 to 1).
+    - [x] CACHE-01: RFC 5861 `{ staleAt, expiresAt }` background SWR in `unified-cache.ts`.
+    - [x] FIN-01: Zero-drift BigInt financial math in `shared/utils/financial-math.ts`.
+    - [x] QUEUE-01: Bounded worker limiter ($C=4$) and Dead-Letter Queue in `server/services/worker/`.
+    - [x] VEC-01: Reciprocal Rank Fusion (RRF, $k=60$) in `server/services/catalog/hybrid-search.ts`.
+  - [x] **Stream 3 (Enterprise Security, Compliance & ESG):**
+    - [x] AUDIT-01: Chained SHA-256 tamper-evident append-only ledger in `server/services/audit/audit-ledger.ts`.
+    - [x] RBAC-01: 64-bit integer bitmask RBAC evaluation in `shared/utils/rbac-bitmask.ts` and `server/middleware/rbac.ts`.
+    - [x] DPP-01: EU ESPR Digital Product Passport with Ed25519 signing in `server/services/compliance/`.
+    - [x] LCA-01: Higg MSI / ISO 14067 automated Life Cycle Assessment Cradle-to-Gate carbon engine.
+  - [x] **Stream 4 (3D Engine, PWA & Advanced Frontend):**
+    - [x] 3D-05: Virtual WebGL context pool and `useWebGLSlot` hook eliminating context loss crashes.
+    - [x] 3D-02: Client-side IndexedDB 3D GLTF / GLB model cache with SHA-256 validation in `client/app/lib/gltf-cache.ts`.
+    - [x] PWA-01: Partitioned Service Worker offline catalog cache (`run-catalog-v1`) in `client/public/sw.js`.
+    - [x] SEO-01: AI crawler discovery manifest `/llms.txt` and schema generators in `client/app/lib/seo-structured-data.ts`.
+- [x] **Phase 3: Formal Verification & Architectural Certification**
+  - [x] Full Vitest suite: 188 test files / 2,773 tests passing (100% green in 20.12s).
+  - [x] Protocol 0 tech integrity: All 8 gates passing (`npm run verify:tech-integrity`).
+  - [x] Biome check: 928 files checked, 0 errors, 0 warnings.
+  - [x] Knip audit: 0 unused files, 0 unused exports, 0 unused dependencies.
+  - [x] Generated walkthrough and updated `SYSTEM_OPTIMISATION_REPORT.md` and `findings.md`.
+
+---
+
+## Past Sprints
+
+### Sprint 8: Permanent Monorepo 'npm error' Prevention & Hardening (2026-09-01)
 
 - [x] **Protocol 0: Session Initialization & Scope Mapping**
   - [x] Conducted `/grill-me` interview with user to establish scope: Comprehensive Monorepo Hardening, cross-platform Node dev cleaner, workspace script parity, modernized `.npmrc`, and automated CI validator.

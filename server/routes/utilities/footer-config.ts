@@ -29,7 +29,7 @@ router.get("/footer", async (_req, res) => {
   const result = await footerService.getFooterConfig();
   return result.match(
     async (response) => {
-      await unifiedCache.set(cacheKey, response, CACHE_TTL_FOOTER * 1000);
+      await unifiedCache.set(cacheKey, response, CACHE_TTL_FOOTER);
       return res.json(response);
     },
     (error) => res.status(error.statusCode || 500).json({ error: error.message }),
@@ -48,7 +48,7 @@ router.get("/admin/footer", authService.requireAdmin, async (_req, res) => {
   const result = await footerService.getFooterConfig();
   return result.match(
     async (response) => {
-      await unifiedCache.set(cacheKey, response, CACHE_TTL_FOOTER * 1000);
+      await unifiedCache.set(cacheKey, response, CACHE_TTL_FOOTER);
       return res.json(response);
     },
     (error) => res.status(error.statusCode || 500).json({ error: error.message }),
@@ -60,13 +60,13 @@ router.patch("/admin/footer", authService.requireAdmin, async (req, res) => {
 
   return result.match(
     async (updated) => {
-      // Invalidate Cache
-      unifiedCache
-        .delete(CacheKeys.footer.config())
-        .then(() => logger.info(`[Footer] Cache invalidated for ${CacheKeys.footer.config()}`))
-        .catch((cacheError) =>
-          logger.warn("[Footer] Cache invalidation failed (non-fatal):", cacheError),
-        );
+      // Invalidate Cache synchronously before responding
+      try {
+        await unifiedCache.delete(CacheKeys.footer.config());
+        logger.info(`[Footer] Cache invalidated for ${CacheKeys.footer.config()}`);
+      } catch (cacheError) {
+        logger.warn("[Footer] Cache invalidation failed (non-fatal):", cacheError);
+      }
 
       logger.info("[Footer] Footer configuration updated successfully", {
         id: updated?.id,

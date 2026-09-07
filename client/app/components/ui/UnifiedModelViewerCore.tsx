@@ -928,7 +928,7 @@ export function UnifiedModelViewer({
               exposure={isMobile ? Math.min(finalConfig.exposure || 1, 0.8) : finalConfig.exposure}
               shadow-intensity={isMobile ? 0.5 : finalConfig.shadowIntensity}
               interaction-policy={finalConfig.interactionPolicy}
-              draco-decoder-path="https://www.gstatic.com/draco/versioned/decoders/1.5.6/"
+              draco-decoder-path={finalConfig.dracoDecoderPath || "/draco/"}
               className="w-full h-full aspect-square"
               style={{
                 width: "100%",

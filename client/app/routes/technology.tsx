@@ -420,7 +420,7 @@ function TechnologyInner({ batchData }: { batchData: TechnologyBatchResponse | n
         </div>
       </header>
 
-      <main>
+      <main id="main-content" tabIndex={-1} className="outline-hidden">
         {/* Cyan Scrolling Marquee Strip */}
         <MarqueeStrip
           text="INNOVATION • 3D DESIGN • SMART TEXTILES • R&D • BIOMECHANICS • COMPUTATIONAL ANALYSIS"

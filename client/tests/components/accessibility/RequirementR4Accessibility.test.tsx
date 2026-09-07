@@ -42,9 +42,18 @@ vi.mock("@/lib/gsap", () => ({
 }));
 
 // Mock react-router
-vi.mock("react-router", () => ({
-  useRouteLoaderData: () => ({ cspNonce: "test-nonce" }),
-}));
+vi.mock("react-router", async (importOriginal) => {
+  const actual = (await importOriginal()) as Record<string, unknown>;
+  return {
+    ...actual,
+    useRouteLoaderData: () => ({ cspNonce: "test-nonce" }),
+    Link: ({ to, children, ...props }: any) => (
+      <a href={to} {...props}>
+        {children}
+      </a>
+    ),
+  };
+});
 
 // Mock React Query
 let mockFooterConfig: any = null;

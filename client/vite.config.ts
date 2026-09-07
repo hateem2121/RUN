@@ -141,6 +141,37 @@ export default defineConfig((env) => {
           drop_debugger: true,
         },
       },
+      rollupOptions: isSsrBuild
+        ? {}
+        : {
+            output: {
+              manualChunks(id: string): string | undefined {
+                if (id.includes("@google/model-viewer")) {
+                  return undefined;
+                }
+                if (id.includes("node_modules/lucide-react")) {
+                  return "vendor-icons";
+                }
+                if (id.includes("node_modules/@radix-ui")) {
+                  return "vendor-radix";
+                }
+                if (id.includes("node_modules/gsap") || id.includes("@gsap/react")) {
+                  return "vendor-gsap";
+                }
+                if (
+                  id.includes("node_modules/date-fns") ||
+                  id.includes("node_modules/clsx") ||
+                  id.includes("node_modules/tailwind-merge")
+                ) {
+                  return "vendor-utils";
+                }
+                if (id.includes("node_modules/zod")) {
+                  return "vendor-zod";
+                }
+                return undefined;
+              },
+            },
+          },
     },
     ssr: {
       // P0: Externalize backend dependencies and CJS-only packages

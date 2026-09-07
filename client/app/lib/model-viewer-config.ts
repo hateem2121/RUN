@@ -20,6 +20,7 @@ export interface ModelViewerConfig {
   // Performance settings
   environmentImage?: string;
   skyboxImage?: string;
+  dracoDecoderPath?: string;
 
   // Animation settings
   autoPlay?: boolean;
@@ -55,6 +56,7 @@ const DEFAULT_MODEL_VIEWER_CONFIG: ModelViewerConfig = {
   backgroundColorHex: "#000000",
   exposure: 1,
   shadowIntensity: 1,
+  dracoDecoderPath: "/draco/",
 
   // Performance-first interaction policy for embedded texture compatibility
   interactionPolicy: "always-allow",

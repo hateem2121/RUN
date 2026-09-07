@@ -17,6 +17,7 @@ const MAGIC_NUMBERS = {
   PDF: [0x25, 0x50, 0x44, 0x46], // "%PDF"
   GIF87a: [0x47, 0x49, 0x46, 0x38, 0x37, 0x61], // "GIF87a"
   GIF89a: [0x47, 0x49, 0x46, 0x38, 0x39, 0x61], // "GIF89a"
+  ZIP: [0x50, 0x4b, 0x03, 0x04], // "PK\x03\x04"
 } as const;
 
 function matchesMagicNumber(buffer: Buffer, signature: readonly number[]): boolean {
@@ -41,6 +42,8 @@ function validateFileSignature(
     "image/gif": [MAGIC_NUMBERS.GIF87a, MAGIC_NUMBERS.GIF89a],
     "model/gltf-binary": [MAGIC_NUMBERS.GLB],
     "application/pdf": [MAGIC_NUMBERS.PDF],
+    "application/zip": [MAGIC_NUMBERS.ZIP],
+    "application/x-zip-compressed": [MAGIC_NUMBERS.ZIP],
   };
 
   // Handle application/octet-stream by checking file extension and signature
@@ -59,6 +62,7 @@ function validateFileSignature(
       gif: [MAGIC_NUMBERS.GIF87a, MAGIC_NUMBERS.GIF89a],
       glb: [MAGIC_NUMBERS.GLB],
       pdf: [MAGIC_NUMBERS.PDF],
+      zip: [MAGIC_NUMBERS.ZIP],
     };
 
     const expectedSigs = ext ? extToSignature[ext] : undefined;

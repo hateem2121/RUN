@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Cache Aside with PostgreSQL Fallback",
+    "quality_profile": "showcase",
+    "viewBox": [1120, 520],
+    "views": [
+      {
+        "id": "cache-hit-path",
+        "label": "Fast cache path",
+        "focus": ["browser", "api", "redis"],
+        "note": "Sub-millisecond read path served directly from in-memory cache."
+      },
+      {
+        "id": "db-fallback-path",
+        "label": "Durable fallback path",
+        "focus": ["api", "postgres", "redis"],
+        "note": "Cache-miss query to durable storage with cache key repopulation."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "browser",
+      "type": "frontend",
+      "label": "Web Browser",
+      "sublabel": "Client application",
+      "pos": [60, 200],
+      "size": [150, 68]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "API Service",
+      "sublabel": "Application server",
+      "pos": [360, 200],
+      "size": [150, 68]
+    },
+    {
+      "id": "redis",
+      "type": "database",
+      "label": "Redis",
+      "sublabel": "In-memory cache",
+      "brand": "redis",
+      "tag": "Hit: <1ms",
+      "pos": [680, 100],
+      "size": [170, 68]
+    },
+    {
+      "id": "postgres",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "Durable database",
+      "brand": "postgresql",
+      "tag": "Miss: Fallback",
+      "pos": [680, 300],
+      "size": [170, 68]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Data & Service Tier",
+      "wraps": ["api", "redis", "postgres"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "browser-to-api",
+      "from": "browser",
+      "to": "api",
+      "label": "HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-to-redis",
+      "from": "api",
+      "to": "redis",
+      "label": "1. Cache lookup",
+      "variant": "default"
+    },
+    {
+      "id": "api-to-postgres",
+      "from": "api",
+      "to": "postgres",
+      "label": "2. Fallback query",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Cache Aside Pattern",
+      "items": [
+        "API queries Redis cache first; hit responds in under 1ms",
+        "Protects relational database from high read throughput"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Durable Fallback",
+      "items": [
+        "Cache miss queries PostgreSQL as authoritative source of truth",
+        "API warm-populates Redis cache key before returning"
+      ]
+    }
+  ]
+}

@@ -25,6 +25,8 @@ export default defineConfig({
       "**/.stryker-tmp/**",
       ".claude/**",
       ".github/runner/**",
+      ".agent/**",
+      ".gemini/**",
       "e2e/**",
       "tests/e2e/**",
     ],

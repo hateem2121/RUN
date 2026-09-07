@@ -101,6 +101,9 @@ router.patch("/admin/navigation-items/reorder", authService.requireAdmin, async 
 // Update navigation item
 router.patch("/admin/navigation-items/:id", authService.requireAdmin, async (req, res) => {
   const id = Number.parseInt(req.params.id as string, 10);
+  if (Number.isNaN(id) || id <= 0) {
+    throw new ValidationError("Invalid navigation item ID: must be a positive integer");
+  }
   const validatedData = insertNavigationItemSchema.partial().safeParse(req.body);
 
   if (!validatedData.success) {
@@ -121,6 +124,9 @@ router.patch("/admin/navigation-items/:id", authService.requireAdmin, async (req
 // Delete navigation item
 router.delete("/admin/navigation-items/:id", authService.requireAdmin, async (req, res) => {
   const id = Number.parseInt(req.params.id as string, 10);
+  if (Number.isNaN(id) || id <= 0) {
+    throw new ValidationError("Invalid navigation item ID: must be a positive integer");
+  }
   const result = await NavigationService.deleteItem(id);
 
   return result.match(

@@ -329,6 +329,9 @@ export const CacheOperations = {
     await getCache()
       .invalidate("^batch:resource-batch:.*")
       .catch(() => {});
+    await getCache()
+      .delete(CacheKeys.footer.config())
+      .catch(() => {});
     await invalidateHtmlCache("/certifications").catch(() => {});
   },
 
@@ -386,6 +389,13 @@ export const CacheOperations = {
     await invalidateHtmlCache("/privacy");
     await invalidateHtmlCache("/terms");
     logger.info("[Cache] Invalidated all legal page cache entries");
+  },
+
+  invalidateFooter: async () => {
+    await getCache()
+      .delete(CacheKeys.footer.config())
+      .catch(() => {});
+    logger.info("[Cache] Invalidated footer configuration cache entry");
   },
 
   // Cache warming for critical application data

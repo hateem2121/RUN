@@ -62,17 +62,6 @@ export class MediaUrlBuilder {
   }
 
   /**
-   * @deprecated PHASE 2.2: Raw endpoint no longer needed with unified strategy
-   * All model files now use the content endpoint since they have embedded textures.
-   * Kept for backward compatibility only.
-   */
-  static buildRawContentUrl(id: number | undefined | null): string | null {
-    if (import.meta.env.DEV) {
-    }
-    return MediaUrlBuilder.buildContentUrl(id);
-  }
-
-  /**
    * Extract asset ID from any supported proxy URL format
    * Supports legacy and new consolidated formats
    */

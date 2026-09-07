@@ -260,7 +260,11 @@ export default function Component() {
 
   return (
     <HydrationBoundary state={loaderData?.dehydratedState}>
-      <div className="min-h-screen bg-linear-to-b from-muted/30 to-background">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="min-h-screen bg-linear-to-b from-muted/30 to-background outline-hidden"
+      >
         {/* Hero Section */}
         <section className="px-4 pt-28 md:pt-32 pb-12">
           <div className="mx-auto max-w-7xl">
@@ -598,7 +602,7 @@ export default function Component() {
             )}
           </div>
         </section>
-      </div>
+      </main>
     </HydrationBoundary>
   );
 }

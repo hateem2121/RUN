@@ -596,7 +596,7 @@ function SustainabilityInner({
         <div className="absolute bottom-0 left-0 w-full h-[2px] animated-gradient-border" />
       </header>
 
-      <main>
+      <main id="main-content" tabIndex={-1} className="outline-hidden">
         {/* ─── Marquee Strip ─── */}
         <section
           className="relative w-full overflow-hidden bg-sustainability-primary/10 py-4 backdrop-blur-sm border-b border-sustainability-primary/20"

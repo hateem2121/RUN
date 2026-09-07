@@ -64,6 +64,7 @@ app.use((req: any, _res, next) => {
   // Also pass headers for json testing
   next();
 });
+app.use(express.json());
 app.use("/", authRouter);
 
 describe("Auth Routes", () => {
@@ -161,6 +162,76 @@ describe("Auth Routes", () => {
 
       const response = await request(app).get("/test-user-404/user");
       expect(response.status).toBe(404);
+    });
+  });
+
+  describe("WebAuthn Routes (/webauthn/*)", () => {
+    it("POST /webauthn/register/options should return 401 when unauthenticated", async () => {
+      const response = await request(app).post("/webauthn/register/options").send();
+      expect(response.status).toBe(401);
+    });
+
+    it("POST /webauthn/register/options should generate registration options for authenticated user", async () => {
+      const authApp = express();
+      authApp.use(express.json());
+      authApp.use((req: any, _res, next) => {
+        req.session = {
+          save: vi.fn((cb) => cb(null)),
+        };
+        req.user = { id: "user_test", email: "test@example.com" };
+        req.isAuthenticated = () => true;
+        next();
+      });
+      authApp.use("/", authRouter);
+
+      const response = await request(authApp).post("/webauthn/register/options").send();
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty("challenge");
+      expect(response.body.rp.name).toBe("RUN APPAREL");
+    });
+
+    it("POST /webauthn/register/verify should return 400 when no pending challenge exists", async () => {
+      const authApp = express();
+      authApp.use(express.json());
+      authApp.use((req: any, _res, next) => {
+        req.session = {
+          save: vi.fn((cb) => cb(null)),
+        };
+        req.user = { id: "user_test", email: "test@example.com" };
+        req.isAuthenticated = () => true;
+        next();
+      });
+      authApp.use("/", authRouter);
+
+      const response = await request(authApp).post("/webauthn/register/verify").send({
+        id: "test-id",
+        rawId: "test-id",
+        clientDataJSON: "invalid",
+        attestationObject: "invalid",
+      });
+
+      expect(response.status).toBe(400);
+      expect(response.body.verified).toBe(false);
+    });
+
+    it("POST /webauthn/auth/options should generate authentication options", async () => {
+      const response = await request(app)
+        .post("/webauthn/auth/options")
+        .send({ userId: "mock-admin-id" });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty("challenge");
+      expect(response.body).toHaveProperty("allowCredentials");
+    });
+
+    it("POST /webauthn/auth/verify should return 400 when no challenge or credential found", async () => {
+      const response = await request(app).post("/webauthn/auth/verify").send({
+        id: "non-existent-cred",
+      });
+
+      expect(response.status).toBe(400);
+      expect(response.body.verified).toBe(false);
     });
   });
 });

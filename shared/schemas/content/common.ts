@@ -337,11 +337,11 @@ export type InsertNavigationGlassmorphismSettings =
 export const insertInquirySchema = createInsertSchema(inquiries);
 
 export const insertFooterConfigurationSchema = createInsertSchema(footerConfiguration, {
-  navigationColumns: (schema) => schema.nullable(),
-  socialLinks: (schema) => schema.nullable(),
-  legalLinks: (schema) => schema.nullable(),
-  certificateIds: (schema) => schema.nullable(),
-  structuredData: (schema) => schema.nullable(),
+  navigationColumns: (schema) => schema.nullish().transform((val) => val ?? []),
+  socialLinks: (schema) => schema.nullish().transform((val) => val ?? []),
+  legalLinks: (schema) => schema.nullish().transform((val) => val ?? []),
+  certificateIds: (schema) => schema.nullish().transform((val) => val ?? []),
+  structuredData: (schema) => schema.nullish().transform((val) => val ?? {}),
   isActive: (schema) => schema.default(true),
 });
 

@@ -360,12 +360,13 @@ function useViewportAwarePositioning() {
       return false;
     }
 
+    const hasCssSupports = typeof CSS !== "undefined" && typeof CSS.supports === "function";
     return {
       visualViewport: "visualViewport" in window,
       intersectionObserver: "IntersectionObserver" in window,
       resizeObserver: "ResizeObserver" in window,
-      cssCustomProperties: CSS.supports("(--custom: value)"),
-      transform3d: CSS.supports("transform", "translate3d(0,0,0)"),
+      cssCustomProperties: hasCssSupports ? CSS.supports("(--custom: value)") : true,
+      transform3d: hasCssSupports ? CSS.supports("transform", "translate3d(0,0,0)") : true,
     };
   }, []);
 

@@ -100,6 +100,7 @@ export const useQuoteStore = create<QuoteStore>()(
     {
       name: "quote-storage",
       storage: createJSONStorage(() => safeStorage),
+      partialize: (state) => ({ items: state.items }),
     },
   ),
 );

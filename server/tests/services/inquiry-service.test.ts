@@ -43,6 +43,10 @@ vi.mock("../../services/lib/jobs/queues/email-queue.js", () => ({
   emailQueue: null, // Force fallback to EmailService for simple testing
 }));
 
+vi.mock("../../lib/security/recaptcha-verify.js", () => ({
+  verifyRecaptcha: vi.fn().mockResolvedValue({ success: true }),
+}));
+
 describe("InquiryService", () => {
   let service: InquiryService;
 
@@ -120,6 +124,76 @@ describe("InquiryService", () => {
       expect(val).toEqual(mockUpdated);
       expect(unifiedCache.delete).toHaveBeenCalledWith("inquiries:stats");
       expect(unifiedCache.delete).toHaveBeenCalledWith("inquiries:detail:1");
+    });
+  });
+
+  describe("processContactSubmission (GEO-01 Factory Dispatch)", () => {
+    it("should route Asian/manufacturing region (PK) to Sialkot Production Desk", async () => {
+      const mockInquiry = {
+        id: 10,
+        name: "Ali Khan",
+        email: "ali@wear-run.com",
+        message: "Technical inquiry for tech-fleece line",
+        tags: ["SIALKOT_HQ"],
+        assignedTo: "Sialkot Production Desk",
+        adminNotes: "Routed to SIALKOT_HQ via cf-ipcountry=PK",
+        submittedAt: new Date(),
+      };
+      vi.mocked(miscRepository.createInquiry).mockResolvedValue(mockInquiry as any);
+
+      const result = await service.processContactSubmission(
+        {
+          name: "Ali Khan",
+          email: "ali@wear-run.com",
+          message: "Technical inquiry for tech-fleece line",
+          recaptchaToken: "valid-token",
+        },
+        "111.119.50.1",
+        { "cf-ipcountry": "PK" },
+      );
+
+      expect(result.isOk()).toBe(true);
+      expect(miscRepository.createInquiry).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tags: ["SIALKOT_HQ"],
+          assignedTo: "Sialkot Production Desk",
+          adminNotes: "Routed to SIALKOT_HQ via cf-ipcountry=PK",
+        }),
+      );
+    });
+
+    it("should route European/corporate sales region (CH) to Zurich Global Sales", async () => {
+      const mockInquiry = {
+        id: 11,
+        name: "Beat Meier",
+        email: "beat@zurich-sport.ch",
+        message: "Wholesale inquiry for running apparel",
+        tags: ["ZURICH_SALES"],
+        assignedTo: "Zurich Global Sales",
+        adminNotes: "Routed to ZURICH_SALES via cf-ipcountry=CH",
+        submittedAt: new Date(),
+      };
+      vi.mocked(miscRepository.createInquiry).mockResolvedValue(mockInquiry as any);
+
+      const result = await service.processContactSubmission(
+        {
+          name: "Beat Meier",
+          email: "beat@zurich-sport.ch",
+          message: "Wholesale inquiry for running apparel",
+          recaptchaToken: "valid-token",
+        },
+        "178.192.1.1",
+        { "cf-ipcountry": "CH" },
+      );
+
+      expect(result.isOk()).toBe(true);
+      expect(miscRepository.createInquiry).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tags: ["ZURICH_SALES"],
+          assignedTo: "Zurich Global Sales",
+          adminNotes: "Routed to ZURICH_SALES via cf-ipcountry=CH",
+        }),
+      );
     });
   });
 });

@@ -220,7 +220,7 @@ class AboutRepository {
     if (!includeInactive) {
       query = query.where(eq(aboutMapLocations.isActive, true));
     }
-    const results = await query.orderBy(asc(aboutMapLocations.sortOrder));
+    const results = await query.orderBy(asc(aboutMapLocations.sortOrder)).limit(50);
 
     if (results.length > 0) {
       await unifiedCache.set(cacheKey, results, (30 * 60 * 1000) / 1000, "data");
@@ -332,7 +332,7 @@ class AboutRepository {
     if (!includeInactive) {
       query = query.where(eq(aboutSections.isActive, true));
     }
-    const results = await query.orderBy(asc(aboutSections.sortOrder));
+    const results = await query.orderBy(asc(aboutSections.sortOrder)).limit(50);
 
     if (results.length > 0) {
       await unifiedCache.set(cacheKey, results, (30 * 60 * 1000) / 1000, "data");
@@ -344,7 +344,11 @@ class AboutRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getAboutSection(id);
     }
-    const [section] = await db.select().from(aboutSections).where(eq(aboutSections.id, id));
+    const [section] = await db
+      .select()
+      .from(aboutSections)
+      .where(eq(aboutSections.id, id))
+      .limit(1);
     return section;
   }
 
@@ -441,7 +445,7 @@ class AboutRepository {
     if (!includeInactive) {
       query = query.where(eq(aboutStatistics.isActive, true));
     }
-    const results = await query.orderBy(asc(aboutStatistics.sortOrder));
+    const results = await query.orderBy(asc(aboutStatistics.sortOrder)).limit(50);
 
     if (results.length > 0) {
       await unifiedCache.set(cacheKey, results, (30 * 60 * 1000) / 1000, "data");
@@ -453,7 +457,11 @@ class AboutRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getAboutStatistic(id);
     }
-    const [statistic] = await db.select().from(aboutStatistics).where(eq(aboutStatistics.id, id));
+    const [statistic] = await db
+      .select()
+      .from(aboutStatistics)
+      .where(eq(aboutStatistics.id, id))
+      .limit(1);
     return statistic;
   }
 
@@ -536,12 +544,51 @@ class AboutRepository {
     await emitCacheInvalidation("about:statistics", "update");
   }
 
-  async getAboutTeamMessage(
-    includeInactive: boolean = false,
-  ): Promise<AboutTeamMessage | undefined> {
+  async getAboutTeamMessages(includeInactive: boolean = false): Promise<AboutTeamMessage[]> {
+    if (StorageSingleton.hasInstance()) {
+      const storage = StorageSingleton.getInstance() as unknown as Record<string, unknown>;
+      if (typeof storage.getAboutTeamMessages === "function") {
+        return (
+          storage.getAboutTeamMessages as (includeInactive?: boolean) => Promise<AboutTeamMessage[]>
+        )(includeInactive);
+      }
+    }
     let query = db.select().from(aboutTeamMessages).$dynamic();
 
     if (!includeInactive) {
+      query = query.where(eq(aboutTeamMessages.isActive, true));
+    }
+
+    return query.orderBy(asc(aboutTeamMessages.sortOrder)).limit(50);
+  }
+
+  async getAboutTeamMessage(
+    idOrIncludeInactive: number | boolean = false,
+  ): Promise<AboutTeamMessage | undefined> {
+    if (typeof idOrIncludeInactive === "number") {
+      if (StorageSingleton.hasInstance()) {
+        const storage = StorageSingleton.getInstance() as unknown as Record<string, unknown>;
+        if (typeof storage.getAboutTeamMessageById === "function") {
+          return (
+            storage.getAboutTeamMessageById as (id: number) => Promise<AboutTeamMessage | undefined>
+          )(idOrIncludeInactive);
+        }
+      }
+      const [message] = await db
+        .select()
+        .from(aboutTeamMessages)
+        .where(eq(aboutTeamMessages.id, idOrIncludeInactive))
+        .limit(1);
+      return message;
+    }
+
+    if (StorageSingleton.hasInstance()) {
+      return StorageSingleton.getInstance().getAboutTeamMessage(idOrIncludeInactive);
+    }
+
+    let query = db.select().from(aboutTeamMessages).$dynamic();
+
+    if (!idOrIncludeInactive) {
       query = query.where(eq(aboutTeamMessages.isActive, true));
     }
 

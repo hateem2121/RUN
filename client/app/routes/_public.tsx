@@ -1,6 +1,5 @@
 import { Outlet } from "react-router";
 import { Footer } from "@/components/layout/Footer";
-import { QuoteOverlay } from "@/components/navigation/QuoteOverlay";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 
 export default function Component() {
@@ -9,7 +8,6 @@ export default function Component() {
       <CustomCursor />
       <Outlet />
       <Footer />
-      <QuoteOverlay />
     </>
   );
 }

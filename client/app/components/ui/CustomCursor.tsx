@@ -12,15 +12,24 @@ import { useCursorStore } from "@/stores/useCursorStore";
 export const CustomCursor: React.FC = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   const followerRef = useRef<HTMLDivElement>(null);
-  const { cursorVariant, cursorImage } = useCursorStore();
+  const { cursorVariant, cursorImage, resetCursor } = useCursorStore();
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(pointer: coarse)").matches) {
       setIsTouchDevice(true);
     }
-  }, []);
+    const handleTouchStart = () => {
+      setIsTouchDevice(true);
+      resetCursor();
+    };
+    window.addEventListener("touchstart", handleTouchStart, { passive: true, once: true });
+    return () => {
+      window.removeEventListener("touchstart", handleTouchStart);
+    };
+  }, [resetCursor]);
 
   const isDisabled = isTouchDevice || prefersReducedMotion;
 

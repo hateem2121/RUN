@@ -30,7 +30,7 @@ class LegalRepository {
     if (!includeInactive) {
       query = query.where(eq(legalPolicies.isActive, true));
     }
-    const result = await query;
+    const result = await query.limit(50);
 
     try {
       await unifiedCache.set(cacheKey, result, LEGAL_CACHE_TTL, "data");

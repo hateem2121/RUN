@@ -6,4 +6,7 @@ export * from "./types/about.js";
 export * from "./types/homepage.js";
 export * from "./types/products.js";
 export * from "./types/sustainability.js";
+export * from "./utils/financial-math.js";
+export * from "./utils/rbac-bitmask.js";
+export * from "./utils/spatial-crdt.js";
 export * from "./viewmodels/index.js";

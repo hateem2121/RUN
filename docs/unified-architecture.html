@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RUN APPAREL — Unified Architecture</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @keyframes flow-pulse {
+      0% { stroke-dashoffset: 24; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .flow-active {
+      animation: flow-pulse 0.7s linear infinite;
+    }
+    .node-active {
+      filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));
+    }
+    .node-miss {
+      filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.7));
+    }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body class="bg-transparent text-[var(--foreground)] antialiased p-2 sm:p-3 select-none">
+  <div class="bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-xl p-3 sm:p-4 shadow-sm flex flex-col gap-2.5 max-w-5xl mx-auto">
+    
+    <!-- Header & Navigation -->
+    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border)] pb-2.5">
+      <div class="flex items-center gap-2">
+        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+        <h1 class="text-sm font-semibold tracking-tight text-[var(--foreground)]">RUN APPAREL <span class="text-[var(--muted-foreground)] font-normal">| Production Architecture</span></h1>
+      </div>
+      
+      <!-- Tabs -->
+      <div class="flex items-center gap-1 bg-[var(--background)] p-1 rounded-lg border border-[var(--border)] text-xs">
+        <button id="tab-btn-runtime" onclick="switchTab('runtime')" class="px-2.5 py-1 rounded font-medium transition-all bg-[var(--card)] text-[var(--foreground)] shadow-xs">System Runtime</button>
+        <button id="tab-btn-cache" onclick="switchTab('cache')" class="px-2.5 py-1 rounded font-medium transition-all text-[var(--muted-foreground)] hover:text-[var(--foreground)]">Cache & Fallback</button>
+        <button id="tab-btn-matrix" onclick="switchTab('matrix')" class="px-2.5 py-1 rounded font-medium transition-all text-[var(--muted-foreground)] hover:text-[var(--foreground)]">Component Matrix</button>
+      </div>
+    </div>
+
+    <!-- TAB 1: System Runtime Architecture -->
+    <div id="view-runtime" class="flex flex-col gap-2">
+      <div class="relative w-full bg-[var(--background)] border border-[var(--border)] rounded-lg p-2 overflow-hidden flex items-center justify-center">
+        <svg viewBox="0 0 1200 430" class="w-full h-auto max-h-[260px]" style="font-family: inherit;">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="currentColor" opacity="0.8" />
+            </marker>
+            <marker id="arrow-emerald" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981" />
+            </marker>
+            <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#f59e0b" />
+            </marker>
+          </defs>
+
+          <!-- Boundaries -->
+          <!-- Cloud Run Container Region -->
+          <rect x="365" y="45" width="550" height="235" rx="10" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-opacity="0.15" stroke-dasharray="5 5" />
+          <text x="380" y="66" font-size="11" font-weight="600" fill="currentColor" fill-opacity="0.5" letter-spacing="0.5">GOOGLE CLOUD RUN CONTAINER (NODE.JS 24 / PORT 5002)</text>
+
+          <!-- Edge & Public Tier -->
+          <rect x="25" y="170" width="310" height="110" rx="10" fill="currentColor" fill-opacity="0.02" stroke="currentColor" stroke-opacity="0.12" stroke-dasharray="4 4" />
+          <text x="38" y="190" font-size="10" font-weight="600" fill="currentColor" fill-opacity="0.45" letter-spacing="0.5">PUBLIC INGRESS TIER</text>
+
+          <!-- CONNECTIONS -->
+          <!-- Client -> GCLB -->
+          <path d="M 160 225 L 205 225" stroke="currentColor" stroke-width="2" stroke-opacity="0.7" marker-end="url(#arrow)" />
+          <text x="182" y="217" font-size="10" text-anchor="middle" fill="currentColor" fill-opacity="0.6">HTTPS</text>
+
+          <!-- GCLB -> Express SSR -->
+          <path d="M 325 225 L 385 225" stroke="currentColor" stroke-width="2" stroke-opacity="0.7" marker-end="url(#arrow)" />
+          <text x="355" y="217" font-size="10" text-anchor="middle" fill="currentColor" fill-opacity="0.6">proxy</text>
+
+          <!-- SSR -> Cache (up) -->
+          <path d="M 450 195 L 450 145" stroke="currentColor" stroke-width="1.8" stroke-opacity="0.6" marker-end="url(#arrow)" />
+          <text x="462" y="172" font-size="10" fill="currentColor" fill-opacity="0.6">cache</text>
+
+          <!-- SSR -> API Gateway -->
+          <path d="M 515 225 L 575 225" stroke="currentColor" stroke-width="2" stroke-opacity="0.7" marker-end="url(#arrow)" />
+          <text x="545" y="217" font-size="10" text-anchor="middle" fill="currentColor" fill-opacity="0.6">route</text>
+
+          <!-- API Gateway -> Service Layer -->
+          <path d="M 695 225 L 755 225" stroke="currentColor" stroke-width="2" stroke-opacity="0.7" marker-end="url(#arrow)" />
+          <text x="725" y="217" font-size="10" text-anchor="middle" fill="currentColor" fill-opacity="0.6">typed</text>
+
+          <!-- Service Layer -> Neon DB -->
+          <path d="M 875 225 L 945 225" stroke="currentColor" stroke-width="2.2" stroke="#10b981" marker-end="url(#arrow-emerald)" />
+          <text x="910" y="217" font-size="10" text-anchor="middle" fill="#10b981" font-weight="600">Drizzle SQL</text>
+
+          <!-- API Gateway -> Cloud Tasks (down) -->
+          <path d="M 635 255 L 635 320" stroke="currentColor" stroke-width="1.8" stroke-dasharray="4 4" stroke-opacity="0.6" marker-end="url(#arrow)" />
+          <text x="645" y="290" font-size="10" fill="currentColor" fill-opacity="0.6">enqueue</text>
+
+          <!-- Cloud Tasks -> Worker Webhook -->
+          <path d="M 695 350 L 755 350" stroke="currentColor" stroke-width="1.8" stroke-dasharray="4 4" stroke-opacity="0.6" marker-end="url(#arrow)" />
+          <text x="725" y="342" font-size="10" text-anchor="middle" fill="currentColor" fill-opacity="0.6">webhook</text>
+
+          <!-- Worker Webhook -> External APIs -->
+          <path d="M 875 350 L 945 350" stroke="currentColor" stroke-width="1.8" stroke-dasharray="4 4" stroke-opacity="0.6" marker-end="url(#arrow)" />
+          <text x="910" y="342" font-size="10" text-anchor="middle" fill="currentColor" fill-opacity="0.6">dispatch</text>
+
+          <!-- NODES (Grouped for click interactivity) -->
+          <!-- 1. Client -->
+          <g onclick="inspectNode('client')" class="cursor-pointer transition-transform hover:opacity-90">
+            <rect x="35" y="195" width="125" height="60" rx="8" fill="var(--card)" stroke="var(--border)" stroke-width="1.5" />
+            <text x="97" y="222" font-size="12" font-weight="600" text-anchor="middle" fill="var(--foreground)">React 19 Client</text>
+            <text x="97" y="240" font-size="9" text-anchor="middle" fill="var(--muted-foreground)">Vite 8 SPA / Tailwind</text>
+          </g>
+
+          <!-- 2. GCLB -->
+          <g onclick="inspectNode('gclb')" class="cursor-pointer transition-transform hover:opacity-90">
+            <rect x="205" y="195" width="120" height="60" rx="8" fill="var(--card)" stroke="var(--border)" stroke-width="1.5" />
+            <text x="265" y="222" font-size="12" font-weight="600" text-anchor="middle" fill="var(--foreground)">Cloud Load Bal.</text>
+            <text x="265" y="240" font-size="9" text-anchor="middle" fill="var(--muted-foreground)">TLS :443 / Ingress</text>
+          </g>
+
+          <!-- 3. Express SSR -->
+          <g onclick="inspectNode('express')" class="cursor-pointer transition-transform hover:opacity-90">
+            <rect x="385" y="195" width="130" height="60" rx="8" fill="var(--card)" stroke="var(--border)" stroke-width="1.8" />
+            <text x="450" y="222" font-size="12" font-weight="600" text-anchor="middle" fill="var(--foreground)">Express 5 SSR</text>
+            <text x="450" y="240" font-size="9" text-anchor="middle" fill="var(--muted-foreground)">Node 24 / Port 5002</text>
+          </g>
+
+          <!-- 4. Unified Cache -->
+          <g onclick="inspectNode('cache')" class="cursor-pointer transition-transform hover:opacity-90">
+            <rect x="385" y="85" width="130" height="60" rx="8" fill="var(--card)" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3 3" />
+            <text x="450" y="112" font-size="12" font-weight="600" text-anchor="middle" fill="#10b981">Unified Cache</text>
+            <text x="450" y="130" font-size="9" text-anchor="middle" fill="var(--muted-foreground)">In-Memory SSR (&lt;1ms)</text>
+          </g>
+
+          <!-- 5. API Gateway -->
+          <g onclick="inspectNode('api')" class="cursor-pointer transition-transform hover:opacity-90">
+            <rect x="575" y="195" width="120" height="60" rx="8" fill="var(--card)" stroke="var(--border)" stroke-width="1.5" />
+            <text x="635" y="222" font-size="12" font-weight="600" text-anchor="middle" fill="var(--foreground)">API Gateway</text>
+            <text x="635" y="240" font-size="9" text-anchor="middle" fill="var(--muted-foreground)">Zod v4 Schemas</text>
+          </g>
+
+          <!-- 6. Service Layer -->
+          <g onclick="inspectNode('service')" class="cursor-pointer transition-transform hover:opacity-90">
+            <rect x="755" y="195" width="120" height="60" rx="8" fill="var(--card)" stroke="var(--border)" stroke-width="1.5" />
+            <text x="815" y="222" font-size="12" font-weight="600" text-anchor="middle" fill="var(--foreground)">Domain Services</text>
+            <text x="815" y="240" font-size="9" text-anchor="middle" fill="var(--muted-foreground)">neverthrow / Circuit</text>
+          </g>
+
+          <!-- 7. Neon DB -->
+          <g onclick="inspectNode('neon')" class="cursor-pointer transition-transform hover:opacity-90">
+            <rect x="945" y="195" width="140" height="60" rx="8" fill="var(--card)" stroke="#3b82f6" stroke-width="2" />
+            <text x="1015" y="222" font-size="12" font-weight="700" text-anchor="middle" fill="#3b82f6">Neon PostgreSQL</text>
+            <text x="1015" y="240" font-size="9" text-anchor="middle" fill="var(--muted-foreground)">Postgres 17 (Pool)</text>
+          </g>
+
+          <!-- 8. Cloud Tasks -->
+          <g onclick="inspectNode('tasks')" class="cursor-pointer transition-transform hover:opacity-90">
+            <rect x="575" y="320" width="120" height="60" rx="8" fill="var(--card)" stroke="var(--border)" stroke-width="1.5" />
+            <text x="635" y="347" font-size="12" font-weight="600" text-anchor="middle" fill="var(--foreground)">Cloud Tasks</text>
+            <text x="635" y="365" font-size="9" text-anchor="middle" fill="var(--muted-foreground)">GCP Async Queue</text>
+          </g>
+
+          <!-- 9. Worker Webhooks -->
+          <g onclick="inspectNode('worker')" class="cursor-pointer transition-transform hover:opacity-90">
+            <rect x="755" y="320" width="120" height="60" rx="8" fill="var(--card)" stroke="var(--border)" stroke-width="1.5" />
+            <text x="815" y="347" font-size="12" font-weight="600" text-anchor="middle" fill="var(--foreground)">Worker Webhook</text>
+            <text x="815" y="365" font-size="9" text-anchor="middle" fill="var(--muted-foreground)">3D GLTF / OIDC</text>
+          </g>
+
+          <!-- 10. External APIs -->
+          <g onclick="inspectNode('external')" class="cursor-pointer transition-transform hover:opacity-90">
+            <rect x="945" y="320" width="140" height="60" rx="8" fill="var(--card)" stroke="var(--border)" stroke-width="1.5" />
+            <text x="1015" y="347" font-size="12" font-weight="600" text-anchor="middle" fill="var(--foreground)">External Cloud APIs</text>
+            <text x="1015" y="365" font-size="9" text-anchor="middle" fill="var(--muted-foreground)">Resend / Object Storage</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- TAB 2: Cache Aside & Fallback Flow -->
+    <div id="view-cache" class="hidden flex flex-col gap-2">
+      <div class="flex items-center justify-between px-1">
+        <span class="text-xs text-[var(--muted-foreground)]">Interactive Pattern Simulation:</span>
+        <div class="flex gap-1.5">
+          <button onclick="simulateFlow('hit')" class="px-2.5 py-1 text-xs rounded font-medium bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border border-emerald-500/30 transition-all flex items-center gap-1">
+            <span>⚡ Simulate Cache Hit</span> <span class="text-[10px] opacity-75">(&lt;1ms)</span>
+          </button>
+          <button onclick="simulateFlow('miss')" class="px-2.5 py-1 text-xs rounded font-medium bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 border border-amber-500/30 transition-all flex items-center gap-1">
+            <span>🔄 Simulate Cache Miss</span> <span class="text-[10px] opacity-75">(Postgres Fallback)</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="relative w-full bg-[var(--background)] border border-[var(--border)] rounded-lg p-2 overflow-hidden flex items-center justify-center">
+        <svg viewBox="0 0 880 320" class="w-full h-auto max-h-[250px]" style="font-family: inherit;">
+          <!-- SVG Paths for Cache Simulation -->
+          <path id="path-c-req" d="M 180 160 L 300 160" stroke="currentColor" stroke-width="2.5" stroke-opacity="0.3" marker-end="url(#arrow)" />
+          <path id="path-c-lookup" d="M 440 130 L 530 80" stroke="currentColor" stroke-width="2.5" stroke-opacity="0.3" marker-end="url(#arrow)" />
+          <path id="path-c-fallback" d="M 440 190 L 530 240" stroke="currentColor" stroke-width="2.5" stroke-opacity="0.3" marker-end="url(#arrow)" />
+          <path id="path-c-warm" d="M 600 210 L 600 120" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4" stroke-opacity="0.25" marker-end="url(#arrow)" />
+
+          <!-- Path Labels -->
+          <text x="240" y="150" font-size="10" text-anchor="middle" fill="var(--muted-foreground)">HTTPS Request</text>
+          <text id="label-lookup" x="480" y="95" font-size="10" text-anchor="middle" fill="var(--muted-foreground)">1. Cache Lookup</text>
+          <text id="label-fallback" x="485" y="235" font-size="10" text-anchor="middle" fill="var(--muted-foreground)">2. SQL Fallback</text>
+          <text id="label-warm" x="660" y="165" font-size="9" fill="var(--muted-foreground)">3. Warm Cache</text>
+
+          <!-- Nodes -->
+          <!-- Client -->
+          <g id="node-browser" class="transition-all duration-300">
+            <rect x="40" y="130" width="140" height="60" rx="8" fill="var(--card)" stroke="var(--border)" stroke-width="1.8" />
+            <text x="110" y="157" font-size="12" font-weight="600" text-anchor="middle" fill="var(--foreground)">Web Browser</text>
+            <text x="110" y="174" font-size="9" text-anchor="middle" fill="var(--muted-foreground)">Client Application</text>
+          </g>
+
+          <!-- API Service -->
+          <g id="node-api" class="transition-all duration-300">
+            <rect x="300" y="130" width="140" height="60" rx="8" fill="var(--card)" stroke="var(--border)" stroke-width="1.8" />
+            <text x="370" y="157" font-size="12" font-weight="600" text-anchor="middle" fill="var(--foreground)">API Service</text>
+            <text x="370" y="174" font-size="9" text-anchor="middle" fill="var(--muted-foreground)">Controller / Route</text>
+          </g>
+
+          <!-- Redis Cache -->
+          <g id="node-redis" class="transition-all duration-300">
+            <rect x="530" y="50" width="150" height="64" rx="8" fill="var(--card)" stroke="#ef4444" stroke-width="1.8" />
+            <text x="605" y="77" font-size="12" font-weight="700" text-anchor="middle" fill="#ef4444">Redis Cache</text>
+            <text x="605" y="95" font-size="9" text-anchor="middle" fill="var(--muted-foreground)">In-Memory (&lt;1ms)</text>
+          </g>
+
+          <!-- PostgreSQL -->
+          <g id="node-postgres" class="transition-all duration-300">
+            <rect x="530" y="210" width="150" height="64" rx="8" fill="var(--card)" stroke="#3b82f6" stroke-width="1.8" />
+            <text x="605" y="237" font-size="12" font-weight="700" text-anchor="middle" fill="#3b82f6">PostgreSQL</text>
+            <text x="605" y="255" font-size="9" text-anchor="middle" fill="var(--muted-foreground)">Authoritative DB</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- TAB 3: Component Matrix -->
+    <div id="view-matrix" class="hidden flex flex-col gap-2 max-h-[260px] overflow-y-auto pr-1">
+      <table class="w-full text-xs text-left border-collapse">
+        <thead>
+          <tr class="border-b border-[var(--border)] text-[var(--muted-foreground)]">
+            <th class="py-1.5 px-2 font-medium">Component</th>
+            <th class="py-1.5 px-2 font-medium">Layer</th>
+            <th class="py-1.5 px-2 font-medium">Protocol / Port</th>
+            <th class="py-1.5 px-2 font-medium">Key Architectural Invariant</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[var(--border)] font-mono text-[11px]">
+          <tr>
+            <td class="py-1.5 px-2 font-semibold text-[var(--foreground)]">React 19 Client</td>
+            <td class="py-1.5 px-2">Frontend</td>
+            <td class="py-1.5 px-2 text-emerald-500">HTTPS / DOM</td>
+            <td class="py-1.5 px-2 text-[var(--muted-foreground)]">Raw ref props, Tailwind v4 @theme, Locomotive Scroll 5.0.1</td>
+          </tr>
+          <tr>
+            <td class="py-1.5 px-2 font-semibold text-[var(--foreground)]">Express 5 SSR</td>
+            <td class="py-1.5 px-2">Backend</td>
+            <td class="py-1.5 px-2 text-emerald-500">Port 5002</td>
+            <td class="py-1.5 px-2 text-[var(--muted-foreground)]">Hardcoded dev/prod 5002; boots Vite 8 SSR programmatic instance</td>
+          </tr>
+          <tr>
+            <td class="py-1.5 px-2 font-semibold text-[var(--foreground)]">API Gateway</td>
+            <td class="py-1.5 px-2">Backend</td>
+            <td class="py-1.5 px-2 text-emerald-500">REST / Zod</td>
+            <td class="py-1.5 px-2 text-[var(--muted-foreground)]">Thin controllers validate via Zod .nullish() from @run-remix/shared</td>
+          </tr>
+          <tr>
+            <td class="py-1.5 px-2 font-semibold text-[var(--foreground)]">Domain Services</td>
+            <td class="py-1.5 px-2">Service</td>
+            <td class="py-1.5 px-2 text-emerald-500">neverthrow</td>
+            <td class="py-1.5 px-2 text-[var(--muted-foreground)]">ResultAsync.fromPromise() returns; Opossum circuit breaker wrapping</td>
+          </tr>
+          <tr>
+            <td class="py-1.5 px-2 font-semibold text-[var(--foreground)]">Neon PostgreSQL</td>
+            <td class="py-1.5 px-2">Database</td>
+            <td class="py-1.5 px-2 text-blue-500">WebSocket / 5432</td>
+            <td class="py-1.5 px-2 text-[var(--muted-foreground)]">PostgreSQL 17, Drizzle ORM 0.45.2, scale-to-zero serverless pool</td>
+          </tr>
+          <tr>
+            <td class="py-1.5 px-2 font-semibold text-[var(--foreground)]">Google Cloud Tasks</td>
+            <td class="py-1.5 px-2">Messagebus</td>
+            <td class="py-1.5 px-2 text-amber-500">OIDC / HTTP</td>
+            <td class="py-1.5 px-2 text-[var(--muted-foreground)]">Zero raw background threads; dispatches to /api/worker webhooks</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Interactive Inspector Footnote -->
+    <div id="inspector-card" class="bg-[var(--background)] border border-[var(--border)] rounded-lg px-3 py-2 text-xs flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-emerald-500 font-semibold" id="inspect-name">⚡ Active Component:</span>
+        <span class="text-[var(--foreground)]" id="inspect-desc">Click any node on the canvas to inspect its runtime contract.</span>
+      </div>
+      <span class="text-[10px] text-[var(--muted-foreground)] font-mono" id="inspect-badge">SSOT: GEMINI.md</span>
+    </div>
+
+  </div>
+
+  <script>
+    const nodeDetails = {
+      client: { name: "React 19 Client SPA", desc: "Hydrated via Vite 8 SSR; uses pure @theme tokens in theme.css, GSAP 3 animations, and raw ref prop.", badge: "Frontend Layer" },
+      gclb: { name: "Google Cloud Load Balancer", desc: "Edge reverse-proxy terminating TLS :443, compressing assets, and forwarding proxy trust headers.", badge: "Network Ingress" },
+      express: { name: "Express 5 SSR Engine", desc: "Node 24 runtime strictly bounded to hardcoded Port 5002; manages Vite SSR streaming and session storage.", badge: "SSR Runtime" },
+      cache: { name: "Unified In-Memory Cache", desc: "Intercepts static pages and frequently accessed SSR routes to eliminate DB compute on repeated hits.", badge: "Cache Layer" },
+      api: { name: "Modular API Gateway", desc: "Thin Express controllers validating every payload with Zod v4 schemas canonical in @run-remix/shared.", badge: "Controller Layer" },
+      service: { name: "Domain Service Layer", desc: "Pure neverthrow ResultAsync methods with zero raw throws; external calls wrapped in Opossum circuit breakers.", badge: "Business Logic" },
+      neon: { name: "Neon Serverless PostgreSQL 17", desc: "Connected via @neondatabase/serverless WebSocket pool with Drizzle ORM and scale-to-zero compute.", badge: "Primary Database" },
+      tasks: { name: "Google Cloud Tasks", desc: "Asynchronous task queue dispatching webhooks for heavy jobs without adding user response latency.", badge: "Async Messagebus" },
+      worker: { name: "Worker Webhooks (/api/worker)", desc: "OIDC-authenticated endpoints running GLTF Draco compression, responsive Sharp image scaling, and email.", badge: "Worker Pipeline" },
+      external: { name: "External Cloud APIs", desc: "Protected third-party cloud connections (Resend B2B email API, Google Cloud Object Storage).", badge: "External APIs" }
+    };
+
+    function inspectNode(key) {
+      const data = nodeDetails[key];
+      if (!data) return;
+      document.getElementById('inspect-name').textContent = data.name;
+      document.getElementById('inspect-desc').textContent = data.desc;
+      document.getElementById('inspect-badge').textContent = data.badge;
+    }
+
+    function switchTab(tab) {
+      ['runtime', 'cache', 'matrix'].forEach(t => {
+        const view = document.getElementById(`view-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (t === tab) {
+          view.classList.remove('hidden');
+          btn.classList.add('bg-[var(--card)]', 'text-[var(--foreground)]', 'shadow-xs');
+          btn.classList.remove('text-[var(--muted-foreground)]');
+        } else {
+          view.classList.add('hidden');
+          btn.classList.remove('bg-[var(--card)]', 'text-[var(--foreground)]', 'shadow-xs');
+          btn.classList.add('text-[var(--muted-foreground)]');
+        }
+      });
+    }
+
+    let simTimeout;
+    function resetSimulation() {
+      clearTimeout(simTimeout);
+      ['path-c-req', 'path-c-lookup', 'path-c-fallback', 'path-c-warm'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove('flow-active');
+          el.setAttribute('stroke', 'currentColor');
+          el.setAttribute('stroke-opacity', '0.3');
+        }
+      });
+      ['node-browser', 'node-api', 'node-redis', 'node-postgres'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('node-active', 'node-miss');
+      });
+      document.getElementById('label-lookup').setAttribute('fill', 'var(--muted-foreground)');
+      document.getElementById('label-fallback').setAttribute('fill', 'var(--muted-foreground)');
+      document.getElementById('label-warm').setAttribute('fill', 'var(--muted-foreground)');
+    }
+
+    function simulateFlow(type) {
+      resetSimulation();
+      const pReq = document.getElementById('path-c-req');
+      const pLookup = document.getElementById('path-c-lookup');
+      const pFallback = document.getElementById('path-c-fallback');
+      const pWarm = document.getElementById('path-c-warm');
+      const nBrowser = document.getElementById('node-browser');
+      const nApi = document.getElementById('node-api');
+      const nRedis = document.getElementById('node-redis');
+      const nPostgres = document.getElementById('node-postgres');
+
+      // Step 1: Request arrives at API
+      pReq.setAttribute('stroke', '#10b981');
+      pReq.setAttribute('stroke-opacity', '1');
+      pReq.classList.add('flow-active');
+      nBrowser.classList.add('node-active');
+      nApi.classList.add('node-active');
+      document.getElementById('inspect-name').textContent = "Step 1: Request Received";
+      document.getElementById('inspect-desc').textContent = "Browser sends authenticated query; API prepares cache key lookup.";
+
+      simTimeout = setTimeout(() => {
+        // Step 2: Cache lookup
+        pLookup.setAttribute('stroke', type === 'hit' ? '#10b981' : '#f59e0b');
+        pLookup.setAttribute('stroke-opacity', '1');
+        pLookup.classList.add('flow-active');
+        document.getElementById('label-lookup').setAttribute('fill', type === 'hit' ? '#10b981' : '#f59e0b');
+
+        if (type === 'hit') {
+          nRedis.classList.add('node-active');
+          document.getElementById('inspect-name').textContent = "⚡ Cache HIT (<1ms)";
+          document.getElementById('inspect-desc').textContent = "Redis returns cached JSON instantly. DB untouched; sub-millisecond response delivered.";
+        } else {
+          nRedis.classList.add('node-miss');
+          document.getElementById('inspect-name').textContent = "⚠️ Cache MISS -> Fallback";
+          document.getElementById('inspect-desc').textContent = "Key absent in Redis. API initiates resilient fallback query to PostgreSQL.";
+
+          simTimeout = setTimeout(() => {
+            // Step 3: PostgreSQL query
+            pFallback.setAttribute('stroke', '#3b82f6');
+            pFallback.setAttribute('stroke-opacity', '1');
+            pFallback.classList.add('flow-active');
+            nPostgres.classList.add('node-active');
+            document.getElementById('label-fallback').setAttribute('fill', '#3b82f6');
+            document.getElementById('inspect-name').textContent = "Step 3: PostgreSQL Query Executed";
+            document.getElementById('inspect-desc').textContent = "Neon serverless pool executes Drizzle query against PostgreSQL 17 primary.";
+
+            simTimeout = setTimeout(() => {
+              // Step 4: Warm Redis
+              pWarm.setAttribute('stroke', '#10b981');
+              pWarm.setAttribute('stroke-opacity', '1');
+              pWarm.classList.add('flow-active');
+              document.getElementById('label-warm').setAttribute('fill', '#10b981');
+              document.getElementById('inspect-name').textContent = "Step 4: Cache Warm-Up & Return";
+              document.getElementById('inspect-desc').textContent = "API backfills Redis key with TTL and streams response back to the client.";
+            }, 650);
+          }, 650);
+        }
+      }, 450);
+    }
+  </script>
+</body>
+</html>

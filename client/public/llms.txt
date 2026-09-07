@@ -1,0 +1,29 @@
+# RUN APPAREL — 100% B2B Sustainable Sportswear Manufacturing
+
+> RUN APPAREL (PVT) LTD is an ethical OEM/ODM sportswear and activewear manufacturer located in Sialkot, Pakistan.
+
+## Overview
+
+RUN APPAREL (PVT) LTD specializes in high-performance digital apparel manufacturing, sustainable material engineering, and agile white-label production for international sportswear brands, fitness clubs, and athletic teams.
+
+## Core Pillars
+
+- Sustainable Materials: GRS-certified recycled polyester, GOTS-certified organic cotton, and closed-loop bio-based fibers.
+- Precision Automated Manufacturing: CAD pattern engineering, automated laser cutting, flatlock and seamless stitching.
+- Low Minimum Order Quantity (MOQ): Flexible production starting at 50 pieces per style.
+- Rapid Sampling: 7-day turnaround for physical prototypes and digital 3D tech packs.
+
+## Public Endpoints and Catalog Sections
+
+- [Product Catalog](https://wear-run.com/products): Comprehensive B2B sportswear collection covering activewear, compression gear, and technical performance outerwear.
+- [Manufacturing Infrastructure](https://wear-run.com/manufacturing): Sialkot production facility overview, automated cut-and-sew lines, sublimation printing, and quality control lab.
+- [Sustainability and LCA](https://wear-run.com/sustainability): Zero-landfill initiatives, closed-loop water treatment, and verifiable environmental impact metrics.
+- [Technology and Innovation](https://wear-run.com/technology): 3D digital sampling, interactive tech pack visualization, and fabric performance benchmarks.
+- [Inquiry and RFQ](https://wear-run.com/contact): Direct quotation requests, custom specifications submission, and sample development ordering.
+
+## Technical Specifications and Credentials
+
+- Headquarters and Facility: Sialkot, Punjab, Pakistan (Latitude 32.4945, Longitude 74.5229).
+- Certifications: Global Recycled Standard (GRS), Global Organic Textile Standard (GOTS), OEKO-TEX Standard 100, ISO 9001:2015.
+- Capabilities: OEM (Original Equipment Manufacturer), ODM (Original Design Manufacturer), White-Label, Private Label.
+- Production Lead Time: 7 days for physical prototypes; 3 to 4 weeks for bulk manufacturing orders.

@@ -1,3 +1,4 @@
+import { combinePermissions, getRolePermissions, hasPermission } from "@run-remix/shared";
 import type { NextFunction, Request, Response } from "express";
 import { ResultAsync } from "neverthrow";
 import { logger } from "../lib/monitoring/logger.js";
@@ -89,6 +90,55 @@ export function requireRole(...allowedRoles: string[]) {
       return res.status(AuthErrors.ADMIN_REQUIRED.status).json({
         error: AuthErrors.ADMIN_REQUIRED,
         message: "Insufficient permissions",
+      });
+    }
+
+    return next();
+  };
+}
+
+/**
+ * RBAC-01: 64-bit Bitmask Permission Middleware
+ * Enforces permission requirements using single-cycle BigInt bitwise checks.
+ *
+ * @param requiredPerms One or more 64-bit permission bitmasks
+ */
+export function requirePermission(...requiredPerms: bigint[]) {
+  const combinedRequired = combinePermissions(...requiredPerms);
+
+  return (req: Request, res: Response, next: NextFunction) => {
+    // 0. Test-only bypass — only honored outside production
+    if (process.env.BYPASS_RBAC_FOR_TESTING === "true" && process.env.NODE_ENV !== "production") {
+      logger.warn("[RBAC] ⚠️ Permission check bypassed via BYPASS_RBAC_FOR_TESTING flag.");
+      return next();
+    }
+
+    // 1. Authentication check
+    if (!req.isAuthenticated?.() || !req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const user = req.user as SessionUser & {
+      permissionBitmask?: bigint;
+      role?: string;
+    };
+
+    // 2. Resolve user's permission bitmask
+    let userBitmask = user.permissionBitmask;
+    if (userBitmask === undefined) {
+      if (user.isAdmin) {
+        userBitmask = getRolePermissions("admin");
+      } else {
+        const role = user.role || (user.claims as { role?: string })?.role || "viewer";
+        userBitmask = getRolePermissions(role);
+      }
+    }
+
+    // 3. Single-cycle bitmask check: (userBitmask & required) === required
+    if (!hasPermission(userBitmask, combinedRequired)) {
+      return res.status(403).json({
+        error: "FORBIDDEN",
+        message: "Insufficient permissions for this resource",
       });
     }
 

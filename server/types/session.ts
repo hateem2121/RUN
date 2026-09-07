@@ -19,8 +19,19 @@ declare global {
 
 declare module "express-session" {
   interface SessionData {
-    passport?: { user: SessionUser };
-    uaHash?: string;
-    lastRotated?: number;
+    passport?: { user: SessionUser } | undefined;
+    uaHash?: string | undefined;
+    lastRotated?: number | undefined;
+    currentWebAuthnChallenge?: string | undefined;
+    webauthnUserId?: string | undefined;
+    mfaVerified?: boolean | undefined;
+    webauthnCredentials?:
+      | Array<{
+          id: string;
+          publicKey: string;
+          counter: number;
+          transports?: string[] | undefined;
+        }>
+      | undefined;
   }
 }

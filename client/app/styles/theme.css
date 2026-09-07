@@ -64,7 +64,7 @@
     --muted-foreground: oklch(0.65 0.02 240);
     --accent: oklch(0.25 0.02 240);
     --accent-foreground: oklch(0.98 0.01 240);
-    --destructive: oklch(0.4 0.15 25);
+    --destructive: oklch(0.65 0.22 25);
     --destructive-foreground: oklch(0.98 0.01 240);
     --border: oklch(0.25 0.02 240);
     --input: oklch(0.25 0.02 240);
@@ -742,6 +742,47 @@
     );
 }
 
+@utility container-centered {
+  max-width: var(--container-2xl, 1600px);
+  margin-inline: auto;
+  width: 100%;
+}
+
+@utility border-glass {
+  border-color: color-mix(in srgb, var(--color-foreground) 10%, transparent);
+}
+
+@utility text-micro {
+  font-size: 0.625rem;
+  line-height: 0.75rem;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@utility animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+@utility animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
+}
+
 /* ===========================================
    Manufacturing Page Utilities
    =========================================== */
@@ -832,10 +873,7 @@
   opacity: 0.05;
 }
 @utility text-logotype {
-  font-size: 15.5vw;
-}
-.text-logotype::after {
-  content: attr(data-content);
+  font-size: clamp(3.5rem, 15.5vw, 16rem);
 }
 
 /* ===========================================

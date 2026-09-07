@@ -133,3 +133,7 @@ graphify-out/
 .superpowers/
 shared/dist/
 skills-lock.json
+
+# Uploaded assets
+uploads/
+server/public/uploads/

@@ -23,25 +23,28 @@ vi.mock("../../../db.js", () => {
     execute: vi.fn().mockResolvedValue([]),
   };
   chain.then = (resolve: any) => resolve([]);
-  return {
-    db: {
-      select: vi.fn().mockReturnValue(chain),
-      insert: vi.fn().mockReturnValue(chain),
-      update: vi.fn().mockReturnValue(chain),
-      delete: vi.fn().mockReturnValue(chain),
-      query: {
-        categories: {
-          findFirst: vi.fn().mockResolvedValue(null),
-        },
+  const mockDb = {
+    select: vi.fn().mockReturnValue(chain),
+    insert: vi.fn().mockReturnValue(chain),
+    update: vi.fn().mockReturnValue(chain),
+    delete: vi.fn().mockReturnValue(chain),
+    execute: vi.fn().mockResolvedValue([]),
+    query: {
+      categories: {
+        findFirst: vi.fn().mockResolvedValue(null),
       },
-      transaction: vi.fn((cb: any) =>
-        cb({
-          update: vi.fn().mockReturnValue({
-            set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue({}) }),
-          }),
-        }),
-      ),
     },
+    transaction: vi.fn((cb: any) =>
+      cb({
+        update: vi.fn().mockReturnValue({
+          set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue({}) }),
+        }),
+      }),
+    ),
+  };
+  return {
+    db: mockDb,
+    httpDb: mockDb,
   };
 });
 
@@ -368,8 +371,8 @@ describe("ProductRepository", () => {
 
       it("getProductByPath handles cache miss and 404 caching", async () => {
         mockUnifiedCache.get.mockResolvedValueOnce(null);
-        // db query returns empty -> not found
-        vi.mocked(db.select).mockReturnValueOnce(createMockDbChain([]));
+        // CTE query returns empty -> not found
+        vi.mocked(db.execute).mockResolvedValueOnce([]);
         const res = await repository.getProductByPath("missing-path");
         expect(res).toBeNull();
         expect(mockUnifiedCache.set).toHaveBeenCalledWith(
@@ -382,16 +385,23 @@ describe("ProductRepository", () => {
       it("getProductByPath handles positive cache miss", async () => {
         mockUnifiedCache.get.mockResolvedValueOnce(null);
 
-        const mockProduct = { id: 1, categoryId: 2, urlPath: "found-path" };
+        const mockProduct = { id: 1, category_id: 2, url_path: "found-path" };
 
-        // Mock multiple parallel queries returning empty except the main product query
-        vi.mocked(db.select)
-          .mockReturnValueOnce(createMockDbChain([mockProduct])) // product
-          .mockReturnValueOnce(createMockDbChain([])) // media
-          .mockReturnValueOnce(createMockDbChain([])) // certificates
-          .mockReturnValueOnce(createMockDbChain([])) // accessories
-          .mockReturnValueOnce(createMockDbChain([])) // categoryProducts
-          .mockReturnValueOnce(createMockDbChain([])); // relatedProducts
+        // Mock CTE single query execution returning the consolidated row
+        vi.mocked(db.execute).mockResolvedValueOnce([
+          {
+            product: mockProduct,
+            fabric: null,
+            size_chart: null,
+            category: null,
+            subcategory: null,
+            media: [],
+            certificates: [],
+            accessories: [],
+            category_products: [],
+            related_products: [],
+          },
+        ]);
 
         const res = await repository.getProductByPath("found-path");
         expect(res).not.toBeNull();

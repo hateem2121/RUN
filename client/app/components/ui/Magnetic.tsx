@@ -32,27 +32,37 @@ export const Magnetic: React.FC<MagneticProps> = ({ children, strength = 0.35 })
         ease: "elastic.out(1, 0.3)",
       });
 
-      const handleMouseMove = (e: MouseEvent) => {
-        const { clientX, clientY } = e;
-        const { height, width, left, top } = magnet.getBoundingClientRect();
+      let rect: DOMRect | null = null;
 
+      const handleMouseEnter = () => {
+        rect = magnet.getBoundingClientRect();
+      };
+
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!rect) {
+          rect = magnet.getBoundingClientRect();
+        }
+        const { clientX, clientY } = e;
         // Calculate distance from center
-        const x = clientX - (left + width / 2);
-        const y = clientY - (top + height / 2);
+        const x = clientX - (rect.left + rect.width / 2);
+        const y = clientY - (rect.top + rect.height / 2);
 
         xTo(x * strength);
         yTo(y * strength);
       };
 
       const handleMouseLeave = () => {
+        rect = null;
         xTo(0);
         yTo(0);
       };
 
+      magnet.addEventListener("mouseenter", handleMouseEnter);
       magnet.addEventListener("mousemove", handleMouseMove);
       magnet.addEventListener("mouseleave", handleMouseLeave);
 
       return () => {
+        magnet.removeEventListener("mouseenter", handleMouseEnter);
         magnet.removeEventListener("mousemove", handleMouseMove);
         magnet.removeEventListener("mouseleave", handleMouseLeave);
       };
@@ -60,8 +70,17 @@ export const Magnetic: React.FC<MagneticProps> = ({ children, strength = 0.35 })
     { dependencies: [strength] },
   );
 
-  // Clone the child to attach the ref directly to it
+  // Clone the child to attach both magnetRef and the child's own ref
   return React.cloneElement(children as React.ReactElement<{ ref?: React.Ref<HTMLElement> }>, {
-    ref: magnetRef,
+    ref: (node: HTMLElement | null) => {
+      (magnetRef as React.MutableRefObject<HTMLElement | null>).current = node;
+      // biome-ignore lint/suspicious/noExplicitAny: Child ref propagation for React 19
+      const childRef = (children.props as any)?.ref ?? (children as any).ref;
+      if (typeof childRef === "function") {
+        childRef(node);
+      } else if (childRef && typeof childRef === "object" && "current" in childRef) {
+        childRef.current = node;
+      }
+    },
   });
 };

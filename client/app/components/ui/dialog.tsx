@@ -313,8 +313,10 @@ const DialogContent = ({
         aria-describedby={description ? descriptionId : undefined}
         onKeyDown={handleKeyDown}
         onEscapeKeyDown={(event) => {
-          // Prevent dialog close on Escape if a dropdown listbox is currently open
-          if (document.querySelector('[role="listbox"]') !== null) {
+          // Prevent dialog close on Escape only if an external dropdown/select listbox is currently open outside this dialog
+          const openListbox = document.querySelector('[role="listbox"][data-state="open"]');
+          const currentTarget = event.currentTarget as HTMLElement | null;
+          if (openListbox && currentTarget && !currentTarget.contains(openListbox)) {
             event.preventDefault();
           } else {
             props.onEscapeKeyDown?.(event);
@@ -375,11 +377,11 @@ const DialogContent = ({
               </div>
             )}
 
-            {/* Enhanced close button with better accessibility */}
+            {/* Enhanced close button with better accessibility (WCAG 2.2 touch target >= 44x44px) */}
             <DialogPrimitive.Close
               className={cn(
-                "absolute top-4 right-4 rounded-sm opacity-70 ring-offset-background",
-                "transition-all duration-200 hover:scale-110 hover:opacity-100",
+                "absolute top-3 right-3 min-h-11 min-w-11 inline-flex items-center justify-center rounded-sm opacity-70 ring-offset-background",
+                "transition-all duration-200 hover:scale-105 hover:opacity-100",
                 "focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2",
                 "disabled:pointer-events-none",
                 "data-[state=open]:bg-accent data-[state=open]:text-muted-foreground",

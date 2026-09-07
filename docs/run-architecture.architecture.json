@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "RUN APPAREL — Production Runtime Architecture",
+    "quality_profile": "showcase",
+    "viewBox": [1200, 480],
+    "views": [
+      {
+        "id": "primary-request-path",
+        "label": "Primary request path",
+        "focus": ["client", "gclb", "express_ssr", "api_gateway", "service_layer", "neon_db"],
+        "note": "Follow incoming customer traffic through edge ingress, SSR streaming, and durable PostgreSQL."
+      },
+      {
+        "id": "ssr-and-cache",
+        "label": "SSR and caching",
+        "focus": ["express_ssr", "unified_cache"],
+        "note": "Inspect server-side HTML rendering with sub-millisecond in-memory route caching."
+      },
+      {
+        "id": "async-workers",
+        "label": "Async worker pipeline",
+        "focus": ["api_gateway", "cloud_tasks", "worker_webhook", "external_services"],
+        "note": "Trace asynchronous task dispatch for 3D GLTF compression and inquiry notifications."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "client",
+      "type": "frontend",
+      "label": "React 19 Client",
+      "sublabel": "Vite 8 SPA",
+      "tag": "Tailwind v4",
+      "pos": [40, 210],
+      "size": [130, 64]
+    },
+    {
+      "id": "gclb",
+      "type": "cloud",
+      "label": "Cloud Load Balancer",
+      "sublabel": "Edge Ingress",
+      "tag": "HTTPS :443",
+      "pos": [220, 210],
+      "size": [130, 64]
+    },
+    {
+      "id": "express_ssr",
+      "type": "backend",
+      "label": "Express 5 SSR",
+      "sublabel": "Node 24 / Vite SSR",
+      "tag": "Port 5002",
+      "pos": [400, 210],
+      "size": [140, 64]
+    },
+    {
+      "id": "unified_cache",
+      "type": "database",
+      "label": "Unified Cache",
+      "sublabel": "In-memory store",
+      "tag": "Fast Hit",
+      "pos": [400, 80],
+      "size": [140, 64]
+    },
+    {
+      "id": "api_gateway",
+      "type": "backend",
+      "label": "API Gateway",
+      "sublabel": "Thin Controllers",
+      "tag": "Zod Validation",
+      "pos": [600, 210],
+      "size": [140, 64]
+    },
+    {
+      "id": "service_layer",
+      "type": "backend",
+      "label": "Domain Services",
+      "sublabel": "neverthrow Result",
+      "tag": "Circuit Breaker",
+      "pos": [800, 210],
+      "size": [140, 64]
+    },
+    {
+      "id": "neon_db",
+      "type": "database",
+      "label": "Neon PostgreSQL",
+      "sublabel": "Drizzle ORM Pool",
+      "brand": "postgresql",
+      "tag": "ACID Primary",
+      "pos": [1010, 210],
+      "size": [140, 64]
+    },
+    {
+      "id": "cloud_tasks",
+      "type": "messagebus",
+      "label": "Cloud Tasks",
+      "sublabel": "GCP Task Queue",
+      "tag": "Async Enqueue",
+      "pos": [600, 360],
+      "size": [140, 64]
+    },
+    {
+      "id": "worker_webhook",
+      "type": "backend",
+      "label": "Worker Webhooks",
+      "sublabel": "GLTF / Media / Mail",
+      "tag": "OIDC Verified",
+      "pos": [800, 360],
+      "size": [140, 64]
+    },
+    {
+      "id": "external_services",
+      "type": "external",
+      "label": "External APIs",
+      "sublabel": "Resend / Storage",
+      "tag": "B2B Services",
+      "pos": [1010, 360],
+      "size": [140, 64]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "security-group",
+      "label": "Public Ingress Tier (TLS / Edge)",
+      "wraps": ["client", "gclb"]
+    },
+    {
+      "kind": "region",
+      "label": "Google Cloud Run — Application Container (Node.js 24 / Port 5002)",
+      "wraps": ["express_ssr", "unified_cache", "api_gateway", "service_layer"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "client-to-gclb",
+      "from": "client",
+      "to": "gclb",
+      "label": "HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "gclb-to-ssr",
+      "from": "gclb",
+      "to": "express_ssr",
+      "label": "proxy",
+      "variant": "emphasis"
+    },
+    {
+      "id": "ssr-to-cache",
+      "from": "express_ssr",
+      "to": "unified_cache",
+      "label": "cache",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "ssr-to-api",
+      "from": "express_ssr",
+      "to": "api_gateway",
+      "label": "route",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-to-service",
+      "from": "api_gateway",
+      "to": "service_layer",
+      "label": "typed",
+      "variant": "emphasis"
+    },
+    {
+      "id": "service-to-db",
+      "from": "service_layer",
+      "to": "neon_db",
+      "label": "SQL",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-to-tasks",
+      "from": "api_gateway",
+      "to": "cloud_tasks",
+      "label": "enqueue",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "tasks-to-worker",
+      "from": "cloud_tasks",
+      "to": "worker_webhook",
+      "label": "webhook",
+      "variant": "dashed"
+    },
+    {
+      "id": "worker-to-external",
+      "from": "worker_webhook",
+      "to": "external_services",
+      "label": "dispatch",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Ingress & Full-Stack SSR",
+      "items": [
+        "Cloud Load Balancer terminates TLS :443 and fronts client traffic",
+        "Express 5 boots Vite 8 SSR streaming React 19 HTML on hardcoded port 5002",
+        "In-memory Unified Cache serves pre-rendered pages with sub-millisecond latency"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Strict Type Safety & Invariants",
+      "items": [
+        "Thin controllers validate requests with Zod schemas strictly from @run-remix/shared",
+        "Service layer methods return ResultAsync directly with zero uncaught exceptions",
+        "Opossum circuit breakers isolate external APIs and Postgres connections"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Data Tier & Background Workers",
+      "items": [
+        "Neon Serverless PostgreSQL 17 manages durable state via WebSocket connection pooling",
+        "Google Cloud Tasks dispatches background jobs (GLTF Draco compression, image variants, email)",
+        "Worker endpoints authenticate webhook invocations via Google OIDC tokens"
+      ]
+    }
+  ]
+}

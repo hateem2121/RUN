@@ -73,8 +73,8 @@ describe("ProductRepository", () => {
     // 1. Mock the DB before importing the repository
     // We use vi.mock here because it's hoisted, but we use the absolute path to be sure
     const _dbPath = path.resolve(__dirname, "../../../../db.ts");
-    vi.mock("../../db.js", () => ({ db: mockDbInstance }));
-    vi.mock("../../db", () => ({ db: mockDbInstance }));
+    vi.mock("../../db.js", () => ({ db: mockDbInstance, httpDb: mockDbInstance }));
+    vi.mock("../../db", () => ({ db: mockDbInstance, httpDb: mockDbInstance }));
 
     // 2. Mock other dependencies
     vi.mock("../../lib/db/db-circuit-breaker", () => ({
@@ -336,6 +336,22 @@ describe("ProductRepository", () => {
       const result = await repository.getProduct(1);
 
       expect(result).toEqual(mockProduct);
+    });
+
+    it("populates relatedProductIds from productRelations when relations exist", async () => {
+      const mockProduct = { id: 1, name: "Test Product", sku: "SKU-001" };
+      let callCount = 0;
+      selectChain.then.mockImplementation((res) => {
+        callCount++;
+        if (callCount === 1) {
+          return res([mockProduct]);
+        }
+        return res([{ relatedProductId: 101 }, { relatedProductId: 102 }]);
+      });
+
+      const result = await repository.getProduct(1);
+
+      expect(result?.relatedProductIds).toEqual([101, 102]);
     });
 
     it("returns undefined if product not found", async () => {
@@ -644,17 +660,31 @@ describe("ProductRepository", () => {
         id: 1,
         name: "Test Product",
         slug: "test-product",
-        categorySlug: "activewear",
+        category_id: 2,
       };
-      selectChain.then.mockImplementation((res) => res([mockProduct]));
+      mockDbInstance.execute.mockResolvedValueOnce([
+        {
+          product: mockProduct,
+          fabric: null,
+          size_chart: null,
+          category: null,
+          subcategory: null,
+          media: [],
+          certificates: [],
+          accessories: [],
+          category_products: [],
+          related_products: [],
+        },
+      ]);
 
       const result = await repository.getProductByPath("activewear", "test-product");
 
-      expect(result).toBeDefined();
+      expect(result).not.toBeNull();
+      expect(result?.product.id).toBe(1);
     });
 
     it("returns null when product not found by path", async () => {
-      selectChain.then.mockImplementation((res) => res([]));
+      mockDbInstance.execute.mockResolvedValueOnce([]);
 
       const result = await repository.getProductByPath("nonexistent", "unknown");
 

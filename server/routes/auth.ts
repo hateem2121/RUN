@@ -3,6 +3,7 @@ import passport from "passport";
 import { logger } from "../lib/monitoring/logger.js";
 import { criticalTier } from "../middleware/rate-limit-tiers.js";
 import { authService } from "../services/system/auth.service.js";
+import { type WebAuthnCredential, webauthnService } from "../services/system/webauthn.service.js";
 import type { SessionUser } from "../types/session.js";
 
 const router = Router();
@@ -192,5 +193,199 @@ router.get(
     });
   },
 );
+
+// ============================================================================
+// WEBAUTHN FIDO2 PASSKEYS ROUTES (AUTH-01)
+// ============================================================================
+const webauthnRouter = Router();
+
+// POST /api/auth/webauthn/register/options (requires authenticated session)
+webauthnRouter.post("/register/options", authService.isAuthenticated, (req, res): void => {
+  const user = req.user as SessionUser;
+  if (!user) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+
+  const userId = user.claims?.sub ?? user.id;
+  const username = user.email || userId;
+  const displayName =
+    [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email || "User";
+
+  const options = webauthnService.generateRegistrationOptions(userId, username, displayName);
+
+  req.session.currentWebAuthnChallenge = options.challenge;
+  req.session.webauthnUserId = userId;
+
+  req.session.save((err) => {
+    if (err) {
+      logger.error("[WebAuthn] Failed to save challenge in session:", err);
+      res.status(500).json({ error: "Failed to persist challenge" });
+      return;
+    }
+    res.json(options);
+  });
+});
+
+// POST /api/auth/webauthn/register/verify (saves credential to session/user)
+webauthnRouter.post(
+  "/register/verify",
+  authService.isAuthenticated,
+  async (req, res): Promise<void> => {
+    const user = req.user as SessionUser;
+    if (!user) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
+    const challenge = req.session.currentWebAuthnChallenge;
+    if (!challenge) {
+      res.status(400).json({ verified: false, error: "No pending registration challenge" });
+      return;
+    }
+
+    const responsePayload = (req.body.response || req.body) as {
+      id: string;
+      rawId?: string;
+      clientDataJSON: string;
+      attestationObject: string;
+    };
+
+    if (
+      !responsePayload.id ||
+      !responsePayload.clientDataJSON ||
+      !responsePayload.attestationObject
+    ) {
+      res.status(400).json({ verified: false, error: "Invalid registration payload" });
+      return;
+    }
+
+    const verification = await webauthnService.verifyRegistrationResponse({
+      challenge,
+      response: {
+        id: responsePayload.id,
+        rawId: responsePayload.rawId || responsePayload.id,
+        clientDataJSON: responsePayload.clientDataJSON,
+        attestationObject: responsePayload.attestationObject,
+      },
+    });
+
+    if (!verification.verified || !verification.credential) {
+      res.status(400).json({ verified: false, error: "Registration verification failed" });
+      return;
+    }
+
+    const userId = user.claims?.sub ?? user.id;
+
+    // Save credential to session and service
+    if (!req.session.webauthnCredentials) {
+      req.session.webauthnCredentials = [];
+    }
+    req.session.webauthnCredentials.push(verification.credential);
+    req.session.currentWebAuthnChallenge = undefined;
+
+    webauthnService.saveUserCredential(userId, verification.credential);
+
+    req.session.save((err) => {
+      if (err) {
+        logger.error("[WebAuthn] Failed to save credential in session:", err);
+        res.status(500).json({ error: "Failed to save session" });
+        return;
+      }
+      res.json({ verified: true, credential: verification.credential });
+    });
+  },
+);
+
+// POST /api/auth/webauthn/auth/options
+webauthnRouter.post("/auth/options", (req, res): void => {
+  const userId =
+    (req.body?.userId as string | undefined) ?? (req.user as SessionUser | undefined)?.id;
+  const credentials = userId
+    ? webauthnService.getUserCredentials(userId)
+    : req.session.webauthnCredentials;
+
+  const options = webauthnService.generateAuthenticationOptions(credentials);
+  req.session.currentWebAuthnChallenge = options.challenge;
+
+  req.session.save((err) => {
+    if (err) {
+      logger.error("[WebAuthn] Failed to save authentication challenge:", err);
+      res.status(500).json({ error: "Failed to persist challenge" });
+      return;
+    }
+    res.json(options);
+  });
+});
+
+// POST /api/auth/webauthn/auth/verify (verifies passkey assertion, upgrades session with mfaVerified: true)
+webauthnRouter.post("/auth/verify", async (req, res): Promise<void> => {
+  const challenge = req.session.currentWebAuthnChallenge;
+  if (!challenge) {
+    res.status(400).json({ verified: false, error: "No pending authentication challenge" });
+    return;
+  }
+
+  const responsePayload = (req.body.response || req.body) as {
+    id: string;
+    rawId?: string;
+    clientDataJSON: string;
+    authenticatorData: string;
+    signature: string;
+    userHandle?: string | undefined;
+  };
+
+  const credentialId = responsePayload.id || responsePayload.rawId;
+  if (!credentialId) {
+    res.status(400).json({ verified: false, error: "Missing credential ID" });
+    return;
+  }
+
+  // Locate matching credential
+  const credential =
+    (req.body.credential as WebAuthnCredential | undefined) ??
+    req.session.webauthnCredentials?.find((c) => c.id === credentialId) ??
+    webauthnService.getCredentialById(credentialId);
+
+  if (!credential) {
+    res.status(400).json({ verified: false, error: "Credential not found" });
+    return;
+  }
+
+  const verification = await webauthnService.verifyAuthenticationResponse({
+    challenge,
+    credential,
+    response: {
+      id: responsePayload.id,
+      rawId: responsePayload.rawId || responsePayload.id,
+      clientDataJSON: responsePayload.clientDataJSON,
+      authenticatorData: responsePayload.authenticatorData,
+      signature: responsePayload.signature,
+      userHandle: responsePayload.userHandle,
+    },
+  });
+
+  if (!verification.verified) {
+    res.status(400).json({ verified: false, error: "Authentication verification failed" });
+    return;
+  }
+
+  // Upgrade session with mfaVerified: true
+  req.session.mfaVerified = true;
+  req.session.currentWebAuthnChallenge = undefined;
+  credential.counter = verification.newCounter;
+  webauthnService.updateCredentialCounter(credential.id, verification.newCounter);
+
+  req.session.save((err) => {
+    if (err) {
+      logger.error("[WebAuthn] Failed to save MFA session:", err);
+      res.status(500).json({ error: "Failed to update session" });
+      return;
+    }
+    res.json({ verified: true, mfaVerified: true });
+  });
+});
+
+router.use("/webauthn", webauthnRouter);
 
 export default router;

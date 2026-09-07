@@ -85,25 +85,54 @@ export type QuoteSubmissionData = z.infer<typeof QuoteSubmissionSchema>;
 
 /**
  * Validation schema for public inquiry submissions.
+ * Supports standard contact forms, catalog quotes, and quick footer lead captures.
  */
 export const createInquirySchema = z.object({
-  contact: z.object({
-    name: z.string().min(1, "Name is required"),
-    email: z.string().email("Invalid email address"),
-    company: z.string().optional(),
-    phone: z.string().optional(),
-    country: z.string().optional(),
-    message: z.string().min(1, "Message is required"),
-  }),
+  b_fax_field: z.string().nullish(),
+  contact: z
+    .object({
+      name: z.string().max(200).nullish(),
+      email: z.string().email("Invalid email address").max(254),
+      company: z.string().max(200).nullish(),
+      phone: z.string().max(50).nullish(),
+      country: z.string().max(100).nullish(),
+      message: z.string().max(10000).nullish(),
+      projectDescription: z.string().max(10000).nullish(),
+      techPackAssetId: z.number().nullish(),
+      techPackUrl: z.string().nullish(),
+      techPackFileName: z.string().max(255).nullish(),
+      techPackFileSize: z.string().max(50).nullish(),
+      b_fax_field: z.string().nullish(),
+    })
+    .transform((c) => {
+      const resolvedName =
+        c.name?.trim() || c.company?.trim() || c.email.split("@")[0] || "Valued Buyer";
+      const resolvedMessage =
+        c.message?.trim() || c.projectDescription?.trim() || "B2B Production Inquiry";
+      return {
+        name: resolvedName,
+        email: c.email,
+        company: c.company ?? null,
+        phone: c.phone ?? null,
+        country: c.country ?? null,
+        message: resolvedMessage,
+        techPackAssetId: c.techPackAssetId ?? null,
+        techPackUrl: c.techPackUrl ?? null,
+        techPackFileName: c.techPackFileName ?? null,
+        techPackFileSize: c.techPackFileSize ?? null,
+        b_fax_field: c.b_fax_field ?? null,
+      };
+    }),
   items: z
     .array(
       z.object({
         productId: z.number(),
         quantity: z.number().min(1),
-        notes: z.string().optional(),
+        notes: z.string().nullish(),
       }),
     )
-    .optional(),
+    .nullish()
+    .transform((val) => val ?? []),
   source: z.string().default("contact_page"),
 });
 

@@ -16,10 +16,11 @@ import {
 } from "react-router";
 import { Toaster } from "sonner";
 import { CeilingNotchNavbar } from "@/components/navigation/ceiling-notch-navbar";
+import { QuoteOverlay } from "@/components/navigation/QuoteOverlay";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { BackToTop } from "@/components/ui/back-to-top";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
-import { getQueryClient } from "@/lib/query-client";
+import { getQueryClient, queryKeys } from "@/lib/query-client";
 import "@/index.css";
 import { useEffect } from "react";
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
@@ -100,19 +101,42 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   const baseUrl = `${url.protocol}//${url.host}`;
 
   try {
-    // Prefetch navigation items
-    await queryClient.prefetchQuery({
-      queryKey: [API_ROUTES.CONTENT.NAVIGATION],
-      queryFn: () => fetch(`${baseUrl}${API_ROUTES.CONTENT.NAVIGATION}`).then((res) => res.json()),
-    });
+    const prefetchPromises = [
+      // Prefetch navigation items using canonical queryKey
+      queryClient.prefetchQuery({
+        queryKey: queryKeys.navigation(),
+        queryFn: async () => {
+          const res = await fetch(`${baseUrl}${API_ROUTES.CONTENT.NAVIGATION}`);
+          if (!res.ok) throw new Error("Failed to prefetch navigation");
+          return res.json();
+        },
+      }),
+      // Prefetch footer configuration to eliminate post-hydration layout shift (CLS)
+      queryClient.prefetchQuery({
+        queryKey: queryKeys.footer(),
+        queryFn: async () => {
+          const res = await fetch(`${baseUrl}${API_ROUTES.CONTENT.FOOTER}`);
+          if (!res.ok) throw new Error("Failed to prefetch footer");
+          return res.json();
+        },
+      }),
+    ];
 
     // Prefetch media items - Scoped to admin to reduce initial load
     if (url.pathname.startsWith("/admin")) {
-      await queryClient.prefetchQuery({
-        queryKey: MediaQueryKeys.list,
-        queryFn: () => fetch(`${baseUrl}${API_ROUTES.MEDIA.ROOT}`).then((res) => res.json()),
-      });
+      prefetchPromises.push(
+        queryClient.prefetchQuery({
+          queryKey: MediaQueryKeys.list,
+          queryFn: async () => {
+            const res = await fetch(`${baseUrl}${API_ROUTES.MEDIA.ROOT}`);
+            if (!res.ok) throw new Error("Failed to prefetch media");
+            return res.json();
+          },
+        }),
+      );
     }
+
+    await Promise.all(prefetchPromises);
   } catch (error) {
     console.error("[RootLoader] Error prefetching data:", error);
   }
@@ -196,6 +220,35 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* Pass empty string to Links to bypass React 19 hydration mismatch on Chrome */}
         {/* Chrome hides the nonce on <link> tags, returning "", which crashes hydration if VDOM is different */}
         <Links nonce="" />
+        {/* Schema.org SiteNavigationElement for Search Engine Sitelinks */}
+        <script
+          type="application/ld+json"
+          nonce={nonce}
+          suppressHydrationWarning
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: Static navigation schema
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SiteNavigationElement",
+              name: [
+                "Products",
+                "Fabrics",
+                "Manufacturing",
+                "Sustainability",
+                "Technology",
+                "About",
+              ],
+              url: [
+                "https://runapparel.com/products",
+                "https://runapparel.com/fabrics",
+                "https://runapparel.com/manufacturing",
+                "https://runapparel.com/sustainability",
+                "https://runapparel.com/technology",
+                "https://runapparel.com/about",
+              ],
+            }),
+          }}
+        />
       </head>
 
       <body
@@ -209,6 +262,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <ScrollProvider>
                   <SkipLink targetId="main-content" />
                   <CeilingNotchNavbar />
+                  <QuoteOverlay />
                   {children}
                   {mounted && (
                     <Toaster position="bottom-right" richColors expand={true} theme="system" />
@@ -251,6 +305,8 @@ import { ApiError } from "@/lib/api";
 
 export function ErrorBoundary() {
   const error = useRouteError();
+  const rootData = useRouteLoaderData<{ cspNonce?: string }>("root");
+  const nonce = rootData?.cspNonce || undefined;
   let message = "Oops!";
   let details = "An unexpected error occurred.";
   let stack: string | undefined;
@@ -304,7 +360,7 @@ export function ErrorBoundary() {
             Return to Safety
           </a>
         </main>
-        <Scripts />
+        <Scripts nonce={nonce} />
       </body>
     </html>
   );

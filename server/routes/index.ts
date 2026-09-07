@@ -20,6 +20,7 @@ import v1CoreRouter from "./core/index.js";
 import debugRouter from "./debug.js";
 import docsRouter from "./docs.js";
 import v1MediaRouter from "./media/index.js";
+import realtimeRouter from "./realtime.js";
 import resourcesRouter from "./resources/index.js";
 import analyticsRouter from "./utilities/analytics.js";
 import footerConfigRouter from "./utilities/footer-config.js";
@@ -93,9 +94,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.use("/admin", criticalTier, v1AdminRouter);
   apiRouter.use("/media", uploadTier, v1MediaRouter);
 
-  // 4. Utilities
+  // 4. Utilities & Realtime
   apiRouter.use("/analytics", apiTier, analyticsRouter);
   apiRouter.use("/logs", apiTier, logsRouter);
+  apiRouter.use("/realtime", publicTier, realtimeRouter);
 
   // ARCH-001 FIX: Single canonical API mount
   app.use("/api", apiRouter);

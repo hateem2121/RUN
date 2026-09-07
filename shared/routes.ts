@@ -24,6 +24,7 @@ export const API_ROUTES = {
     RESOURCES_BATCH: "/api/resources/batch",
     FABRICS: "/api/resources/fabrics",
     LEGAL_POLICIES: "/api/legal-policies",
+    FOOTER: "/api/footer",
   },
 } as const;
 

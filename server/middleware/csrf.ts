@@ -26,6 +26,9 @@ const EXCLUDED_ROUTES = [
   "/api/auth/mock-login", // E2E/Internal testing auth
   "/api/debug", // Debug routes (gated separately by token & localhost)
   "/api/contact", // Public contact form submission (protected by honeypot, recaptcha & criticalTier rate limiting)
+  "/api/inquiries", // Public inquiry / lead generation (protected by honeypot, rate limiting, and Zod validation)
+  "/api/inquiries/upload-techpack", // Public tech-pack upload (protected by rate limiting, magic bytes, and 25MB limit)
+  "/api/inquiries/techpack", // Public tech-pack download/retrieval
 ];
 
 /**

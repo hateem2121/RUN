@@ -102,15 +102,15 @@ export async function setupMiddleware(app: Express) {
 /**
  * Helper: CORS Configuration
  */
-function createCorsMiddleware(): RequestHandler {
+export function createCorsMiddleware(): RequestHandler {
   return (req, res, next) => {
     const origin = req.headers.origin;
 
-    // Define allowed origins based on environment
+    // Define allowed origins based on environment (CORS-01: Hardcoded port 5002 invariant)
     const allowedOrigins =
       process.env.NODE_ENV === "production"
         ? (process.env.STRICT_ALLOWED_ORIGINS || "https://wear-run.com").split(",")
-        : ["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:3000"];
+        : ["http://localhost:5002", "http://127.0.0.1:5002"];
 
     // Only allow requests from explicitly permitted origins
     if (origin && allowedOrigins.includes(origin)) {

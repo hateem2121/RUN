@@ -89,6 +89,22 @@ class DummyCacheProvider {
 }
 const dummyCache = new DummyCacheProvider();
 
+/**
+ * CACHE-03: Approximate cache entry size to prevent V8 heap churn from JSON.stringify.
+ */
+export function calculateCacheEntrySize(value: unknown, key: string): number {
+  if (typeof value === "string") {
+    return value.length + key.length;
+  }
+  if (Buffer.isBuffer(value)) {
+    return value.length + key.length;
+  }
+  if (typeof value === "object" && value !== null) {
+    return Object.keys(value as object).length * 64 + key.length + 128;
+  }
+  return key.length + 128;
+}
+
 export class UnifiedCache {
   private static instance: UnifiedCache | null = null;
   private memoryCache: LRUCache<string, object>;
@@ -106,6 +122,9 @@ export class UnifiedCache {
   // In-flight deduplication — prevents cache stampedes under concurrent load
   private inFlight: Map<string, Promise<unknown>> = new Map();
 
+  // RFC 5861 SWR metadata tracking (CACHE-01)
+  private swrMetadata: Map<string, { staleAt: number; expiresAt: number }> = new Map();
+
   // Stats for monitoring
   private stats = {
     hits: 0,
@@ -122,15 +141,7 @@ export class UnifiedCache {
     this.memoryCache = new LRUCache({
       max: 5000, // Max 5000 items
       maxSize: 50 * 1024 * 1024, // PC-801: 50MB for better system stability
-      sizeCalculation: (value: unknown, key: string) => {
-        if (typeof value === "string") {
-          return value.length + key.length;
-        }
-        if (Buffer.isBuffer(value)) {
-          return value.length + key.length;
-        }
-        return JSON.stringify(value).length + key.length;
-      },
+      sizeCalculation: (value: unknown, key: string) => calculateCacheEntrySize(value, key),
       ttl: 1000 * 60 * 60, // 1 hour default TTL
     });
 
@@ -313,6 +324,11 @@ export class UnifiedCache {
         }
       }
     }
+    for (const key of this.swrMetadata.keys()) {
+      if (regex ? regex.test(key) : key.includes(pattern)) {
+        this.swrMetadata.delete(key);
+      }
+    }
     if (deletedCount > 0) {
       logger.debug(`[UnifiedCache] Invalidated ${deletedCount} L1 keys for pattern ${pattern}`);
     }
@@ -337,6 +353,7 @@ export class UnifiedCache {
    */
   async delete(key: string, _namespace?: string): Promise<void> {
     this.memoryCache.delete(key);
+    this.swrMetadata.delete(key);
 
     this.l2.del(key).catch((err: unknown) => {
       logger.error(`[Cache] L2 Delete failed for ${key}:`, err);
@@ -365,6 +382,7 @@ export class UnifiedCache {
    */
   async clear(): Promise<void> {
     this.memoryCache.clear();
+    this.swrMetadata.clear();
 
     try {
       await this.l2.flushdb();
@@ -388,7 +406,7 @@ export class UnifiedCache {
   async clearPattern(pattern: string): Promise<void> {
     const regex = safePatternToRegex(pattern);
 
-    // 1. Clear L1 Memory Cache
+    // 1. Clear L1 Memory Cache & SWR metadata
     for (const key of this.memoryCache.keys()) {
       if (regex) {
         if (regex.test(key)) {
@@ -398,6 +416,11 @@ export class UnifiedCache {
         if (key.includes(pattern)) {
           this.memoryCache.delete(key);
         }
+      }
+    }
+    for (const key of this.swrMetadata.keys()) {
+      if (regex ? regex.test(key) : key.includes(pattern)) {
+        this.swrMetadata.delete(key);
       }
     }
 
@@ -511,11 +534,11 @@ export class UnifiedCache {
   }
 
   /**
-   * SWR (Stale-While-Revalidate) Get
-   */
-  /**
-   * SWR (Stale-While-Revalidate) Get
-   * Returns stale data immediately if available, then updates in background.
+   * SWR (Stale-While-Revalidate) Get (RFC 5861 - CACHE-01)
+   * Evaluates deterministic staleAt and expiresAt windows:
+   * - now <= staleAt: fresh hit (source: "memory")
+   * - staleAt < now <= expiresAt: stale hit (source: "swr_hit") with non-blocking background refresh
+   * - now > expiresAt or cache miss: synchronous refresh (source: "loader")
    */
   async getSWR<T>(
     key: string,
@@ -532,60 +555,74 @@ export class UnifiedCache {
     };
   }> {
     const start = performance.now();
-    const cached = await this.get<T>(key); // Note: get() updates L1 stats
+    const cached = await this.get<T>(key);
+    const meta = this.swrMetadata.get(key);
+    const now = Date.now();
 
-    // If we have a cached value
-    if (cached) {
-      // P2 OPTIMIZATION: Probabilistic Early Expiration (Stampede Protection)
-      // Check if we are in the "stale-while-revalidate" window
-      // For now, we assume simple SWR: if it's in cache (L1/L2), we return it.
-      // But we should check if it's "soft expired" if we stored timestamps.
-      // Current implementation storage doesn't keep metadata easily available in L1.
-      // We will perform a BACKGROUND revalidation if specific SWR flag is set
-      // or simply rely on TTL.
+    // If entry exists in cache
+    if (cached !== null && cached !== undefined) {
+      if (meta) {
+        // 1. Fresh hit: now <= staleAt
+        if (now <= meta.staleAt) {
+          return {
+            data: cached,
+            source: "memory",
+            timings: {
+              totalTime: performance.now() - start,
+              cacheTime: performance.now() - start,
+            },
+          };
+        }
 
-      // True SWR would require storing { val, expiry, softExpiry }
-      // For this 100/100 upgrade, we will trigger a background update
-      // with 10% probability to prevent stampede near expiry, or if config forces it.
-
-      const shouldRevalidate = Math.random() < 0.1; // 10% chance to revalidate on hit
-
-      if (shouldRevalidate) {
-        // Background Revalidation
-        fetchFn().then(async (fresh) => {
-          try {
-            await this.set(key, fresh, config.ttl);
-            // logger.debug(`[Cache] Background revalidation success for ${key}`);
-          } catch (e) {
-            logger.error(`[Cache] Background revalidation failed for ${key}`, e);
+        // 2. Stale hit: now > staleAt && now <= expiresAt (RFC 5861 SWR window)
+        if (now <= meta.expiresAt) {
+          // Trigger non-blocking background revalidation if not already in-flight for this key
+          if (!this.inFlight.has(key)) {
+            const backgroundPromise = fetchFn()
+              .then(async (fresh) => {
+                await this.setSWR(key, fresh, config);
+                return fresh;
+              })
+              .catch((err) => {
+                logger.error(`[Cache] Background SWR revalidation failed for ${key}:`, err);
+                return cached;
+              })
+              .finally(() => {
+                this.inFlight.delete(key);
+              });
+            this.inFlight.set(key, backgroundPromise);
           }
-        });
+
+          return {
+            data: cached,
+            source: "swr_hit",
+            timings: {
+              totalTime: performance.now() - start,
+              cacheTime: performance.now() - start,
+            },
+          };
+        }
+
+        // 3. Expired: now > meta.expiresAt -> Fall through to synchronous fetch
+      } else {
+        // Cached value without SWR metadata (e.g. set via plain set())
         return {
           data: cached,
-          source: "swr_hit",
+          source: "memory",
           timings: {
             totalTime: performance.now() - start,
             cacheTime: performance.now() - start,
           },
         };
       }
-
-      return {
-        data: cached,
-        source: "memory",
-        timings: {
-          totalTime: performance.now() - start,
-          cacheTime: performance.now() - start,
-        },
-      };
     }
 
-    // Cache Miss — deduplicate concurrent fetches for the same key
+    // Cache Miss or Expired — fetch synchronously via inFlight dedup and update cache
     let inflight = this.inFlight.get(key) as Promise<T> | undefined;
     if (!inflight) {
       inflight = fetchFn()
         .then(async (fresh) => {
-          await this.set(key, fresh, config.ttl || 3600);
+          await this.setSWR(key, fresh, config);
           return fresh;
         })
         .finally(() => {
@@ -606,15 +643,33 @@ export class UnifiedCache {
   }
 
   /**
-   * SWR Set (Wrapper for set)
+   * SWR Set (RFC 5861 - CACHE-01)
+   * Calculates staleAt and expiresAt timestamps and caches the entry with total TTL.
    */
   async setSWR<T>(
     key: string,
     value: T,
-    config: { ttl?: number },
+    config: SWRConfig,
     _namespace: string = "default",
   ): Promise<void> {
-    await this.set(key, value, config.ttl || 3600);
+    const ttl = config.ttl || 3600;
+    const staleWhileRevalidate = config.staleWhileRevalidate ?? ttl;
+    const totalTtlSeconds = ttl + staleWhileRevalidate;
+
+    const now = Date.now();
+    this.swrMetadata.set(key, {
+      staleAt: now + ttl * 1000,
+      expiresAt: now + totalTtlSeconds * 1000,
+    });
+
+    await this.set(key, value, totalTtlSeconds);
+  }
+
+  /**
+   * Inspect SWR metadata for testing and diagnostics
+   */
+  getSWRMetadata(key: string): { staleAt: number; expiresAt: number } | undefined {
+    return this.swrMetadata.get(key);
   }
 
   /**

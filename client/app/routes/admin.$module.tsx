@@ -100,6 +100,11 @@ const InquiryManagement = lazy(() =>
     default: m.InquiryManagement,
   })),
 );
+const NavigationManagement = lazy(() =>
+  import("@/components/admin/navigation/NavigationManagement").then((m) => ({
+    default: m.NavigationManagement,
+  })),
+);
 const InventoryManagement = ({ moduleName }: { moduleName: string }) => (
   <PlaceholderModule moduleName={moduleName} />
 );
@@ -196,6 +201,8 @@ export default function AdminModuleRoute() {
         return <FooterManagement />;
       case "inquiries":
         return <InquiryManagement />;
+      case "navigation":
+        return <NavigationManagement />;
       case "blog":
         return <BlogManagement />;
       default:

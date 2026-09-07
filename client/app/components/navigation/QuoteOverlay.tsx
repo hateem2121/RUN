@@ -22,11 +22,16 @@ export function QuoteOverlay() {
 
   return (
     <>
-      {/* Floating Action Button */}
+      {/* Floating Action Button for Mobile/Tablet (Desktop uses the ceiling navbar pill) */}
       <button
         type="button"
         onClick={openDrawer}
-        className="group center-flex fixed right-6 bottom-6 z-dock rounded-full bg-primary p-4 text-primary-foreground shadow-2xl transition-transform hover:scale-105 hover:bg-primary/90 active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        aria-label={
+          count > 0
+            ? `Open inquiry quote drawer, ${count} item${count === 1 ? "" : "s"}`
+            : "Open inquiry quote drawer"
+        }
+        className="group center-flex fixed right-6 bottom-6 z-dock rounded-full bg-primary p-4 text-primary-foreground shadow-2xl transition-transform hover:scale-105 hover:bg-primary/90 active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:hidden"
       >
         <div className="relative">
           <svg

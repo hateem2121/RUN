@@ -6,49 +6,34 @@ import {
   mediaAssets,
 } from "@run-remix/shared";
 import { eq, inArray } from "drizzle-orm";
-import { err, ok, type Result, ResultAsync } from "neverthrow";
+import { ResultAsync } from "neverthrow";
 import { db } from "../../db.js";
-import { AppError, InternalError } from "../../lib/errors.js";
+import { AppError, InternalError, ValidationError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../../lib/resilience/circuit-breaker.js";
+
+export type FooterConfigWithCerts = FooterConfiguration & {
+  certifications: Array<{
+    id: number;
+    name: string;
+    imageUrl: string;
+    type: string | null;
+    issuingOrganization: string | null;
+  }>;
+};
 
 class FooterService {
   /**
    * Retrieves the footer configuration with populated certificates and media.
+   * Returns ResultAsync directly per Monorepo Rule 9.
    */
-  async getFooterConfig(): Promise<
-    Result<
-      FooterConfiguration & {
-        certifications: Array<{
-          id: number;
-          name: string;
-          imageUrl: string;
-          type: string | null;
-          issuingOrganization: string | null;
-        }>;
-      },
-      AppError
-    >
-  > {
-    return new ResultAsync(
-      (async (): Promise<
-        Result<
-          FooterConfiguration & {
-            certifications: Array<{
-              id: number;
-              name: string;
-              imageUrl: string;
-              type: string | null;
-              issuingOrganization: string | null;
-            }>;
-          },
-          AppError
-        >
-      > => {
-        // Query DB for footer config
+  getFooterConfig(): ResultAsync<FooterConfigWithCerts, AppError> {
+    return ResultAsync.fromPromise(
+      (async (): Promise<FooterConfigWithCerts> => {
+        // Query DB for footer config with deterministic ordering
         const [config] = await withCircuit(
           "get-footer-config",
-          () => db.select().from(footerConfiguration).limit(1),
+          () => db.select().from(footerConfiguration).orderBy(footerConfiguration.id).limit(1),
           DB_CIRCUIT_OPTIONS,
         );
 
@@ -149,79 +134,105 @@ class FooterService {
           );
         }
 
-        return ok({
+        return {
           ...baseResponse,
           certifications,
-        } as FooterConfiguration & { certifications: typeof certifications });
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+        } as FooterConfigWithCerts;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[FooterService] Failed to fetch footer config", undefined, error as Error);
-        return err(new InternalError("Failed to fetch footer configuration", { error }));
-      }),
+        return new InternalError("Failed to fetch footer configuration", { error });
+      },
     );
   }
 
   /**
    * Updates the footer configuration.
+   * Returns ResultAsync directly per Monorepo Rule 9.
    */
-  async updateFooterConfig(data: unknown): Promise<Result<FooterConfiguration, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<FooterConfiguration, AppError>> => {
+  updateFooterConfig(data: unknown): ResultAsync<FooterConfiguration, AppError> {
+    return ResultAsync.fromPromise(
+      (async (): Promise<FooterConfiguration> => {
         // 1. Validate payload
         const updateSchema = insertFooterConfigurationSchema.partial();
-        const validatedData = updateSchema.parse(data);
+        const parseResult = updateSchema.safeParse(data);
+        if (!parseResult.success) {
+          throw new ValidationError("Invalid footer configuration payload", {
+            issues: parseResult.error.issues,
+          });
+        }
+        const validatedData = parseResult.data;
 
         // 2. Transform/Normalize data for frontend compatibility
         const normalizedData: Record<string, unknown> = { ...validatedData };
 
-        if (validatedData.navigationColumns) {
+        if (
+          validatedData.navigationColumns !== undefined &&
+          validatedData.navigationColumns !== null
+        ) {
+          if (!Array.isArray(validatedData.navigationColumns)) {
+            throw new ValidationError("navigationColumns must be an array");
+          }
           normalizedData.navigationColumns = (
             validatedData.navigationColumns as Array<{
-              title: string;
-              links: Array<{ label: string; href: string; url?: string; external?: boolean }>;
+              title?: string;
+              links?: Array<{ label?: string; href?: string; url?: string; external?: boolean }>;
             }>
           ).map((col) => ({
-            title: col.title,
+            title: col?.title || "",
             links:
-              col.links?.map((link) => ({
-                label: link.label,
-                href: link.href || link.url || "",
-                external: link.external,
+              col?.links?.map((link) => ({
+                label: link?.label || "",
+                href: link?.href || link?.url || "",
+                external: Boolean(link?.external),
               })) || [],
           }));
         }
 
-        if (validatedData.socialLinks) {
+        if (validatedData.socialLinks !== undefined && validatedData.socialLinks !== null) {
+          if (!Array.isArray(validatedData.socialLinks)) {
+            throw new ValidationError("socialLinks must be an array");
+          }
           normalizedData.socialLinks = (
             validatedData.socialLinks as Array<{
               name?: string;
               platform?: string;
-              icon: string;
+              icon?: string;
               href?: string;
               url?: string;
-              hoverColor: string;
+              hoverColor?: string;
             }>
           ).map((social) => ({
-            name: social.name || social.platform || "",
-            icon: social.icon,
-            href: social.href || social.url || "",
-            hoverColor: social.hoverColor,
+            name: social?.name || social?.platform || "",
+            icon: social?.icon || "",
+            href: social?.href || social?.url || "",
+            hoverColor: social?.hoverColor || "",
           }));
         }
 
-        if (validatedData.legalLinks) {
+        if (validatedData.legalLinks !== undefined && validatedData.legalLinks !== null) {
+          if (!Array.isArray(validatedData.legalLinks)) {
+            throw new ValidationError("legalLinks must be an array");
+          }
           normalizedData.legalLinks = (
-            validatedData.legalLinks as Array<{ label: string; href?: string; url?: string }>
+            validatedData.legalLinks as Array<{ label?: string; href?: string; url?: string }>
           ).map((link) => ({
-            label: link.label,
-            href: link.href || link.url || "",
+            label: link?.label || "",
+            href: link?.href || link?.url || "",
           }));
         }
 
-        // 3. Perform Upsert
+        if (validatedData.certificateIds !== undefined && validatedData.certificateIds !== null) {
+          if (!Array.isArray(validatedData.certificateIds)) {
+            throw new ValidationError("certificateIds must be an array");
+          }
+        }
+
+        // 3. Perform Upsert with deterministic ordering
         const [existing] = await withCircuit(
           "get-existing-footer-config",
-          () => db.select().from(footerConfiguration).limit(1),
+          () => db.select().from(footerConfiguration).orderBy(footerConfiguration.id).limit(1),
           DB_CIRCUIT_OPTIONS,
         );
 
@@ -252,15 +263,16 @@ class FooterService {
         }
 
         if (!updated) {
-          return err(new InternalError("Failed to update footer configuration"));
+          throw new InternalError("Failed to update footer configuration");
         }
 
-        return ok(updated);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+        return updated;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[FooterService] Failed to update footer config", undefined, error as Error);
-        return err(new InternalError("Failed to update footer configuration", { error }));
-      }),
+        return new InternalError("Failed to update footer configuration", { error });
+      },
     );
   }
 }
