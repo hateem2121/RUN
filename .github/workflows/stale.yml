@@ -14,8 +14,8 @@ permissions:
 
 jobs:
   stale:
-    name: "Triage Stale Items"
-    runs-on: self-hosted
+    name: Manage Stale Issues and PRs
+    runs-on: ubuntu-latest
     # Permissions needed to label and close stale issues and pull requests
     permissions:
       issues: write

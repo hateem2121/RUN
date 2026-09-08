@@ -17,7 +17,7 @@ permissions:
 jobs:
   update_release_draft:
     name: Draft Release Notes
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     # Permissions needed to create release drafts and inspect pull requests
     permissions:
       contents: write

@@ -20,7 +20,7 @@ permissions:
 jobs:
   analysis:
     name: Scorecard analysis
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     # Permissions required to upload SARIF results, publish badges, and analyze actions
     permissions:
       security-events: write
