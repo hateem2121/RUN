@@ -220,4 +220,39 @@ describe("ProductImageCarousel", () => {
     const img = screen.getByAltText("Performance Hoodie");
     expect(img.getAttribute("src")).toBe("/cdn/optimized-456.webp");
   });
+
+  it("does not start ghost load timers or mutate state when primaryVideo is active at index 0", () => {
+    vi.useFakeTimers();
+    const setTimeoutSpy = vi.spyOn(globalThis, "setTimeout");
+
+    const { container } = render(
+      <ProductImageCarousel
+        images={[{ id: 501, type: "image", url: "/product-501.webp" }]}
+        primaryVideo={{ id: 900, type: "video", url: "/teaser.mp4" }}
+        productName="Apex Active Video"
+      />,
+    );
+
+    // Video is actively displayed, no image or loader skeleton rendered
+    const video = screen.getByLabelText("Apex Active Video product video");
+    expect(video).toBeInTheDocument();
+    expect(container.querySelector("img")).toBeNull();
+    expect(container.querySelector(".animate-pulse")).toBeNull();
+
+    // Verify no 3500ms safety timeout was scheduled
+    const safetyTimers = setTimeoutSpy.mock.calls.filter((call) => call[1] === 3500);
+    expect(safetyTimers).toHaveLength(0);
+
+    // Fast-forward past 3.5s
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    // Video remains active, no placeholder image or failed image injected
+    expect(screen.getByLabelText("Apex Active Video product video")).toBeInTheDocument();
+    expect(container.querySelector("img")).toBeNull();
+    expect(container.querySelector(".animate-pulse")).toBeNull();
+
+    setTimeoutSpy.mockRestore();
+  });
 });

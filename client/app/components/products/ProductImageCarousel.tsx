@@ -51,9 +51,11 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   const imageIndex = hasVideo ? currentImageIndex - 1 : currentImageIndex;
   const currentImage = images[imageIndex];
   const imageKey =
-    currentImage?.id !== undefined && currentImage.id !== 0
-      ? String(currentImage.id)
-      : currentImage?.url || `img-${imageIndex}`;
+    !showVideo && currentImage
+      ? currentImage.id !== undefined && currentImage.id !== 0
+        ? String(currentImage.id)
+        : currentImage.url || `img-${imageIndex}`
+      : null;
 
   const getMediaUrl = (item?: MediaItem | null) => {
     if (!item) return "/images/placeholders/product-placeholder.webp";
@@ -194,7 +196,8 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
           </div>
         </div>
       ) : (
-        currentImage && (
+        currentImage &&
+        imageKey && (
           <div className="relative h-full w-full">
             {!loadedImages.has(imageKey) && !failedImages.has(imageKey) && (
               <div className="absolute inset-0 flex h-full w-full animate-pulse items-center justify-center bg-muted">
