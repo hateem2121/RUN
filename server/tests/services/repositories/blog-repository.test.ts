@@ -55,6 +55,24 @@ describe("BlogRepository", () => {
       expect(mockStorageInstance.getBlogPosts).toHaveBeenCalledWith(10, 0, { status: "published" });
     });
 
+    it("getPublishedPosts delegates to StorageSingleton.getPublishedPosts if available", async () => {
+      mockStorageInstance.getPublishedPosts = vi
+        .fn()
+        .mockResolvedValue({ posts: [{ id: 1 }], total: 1 });
+      const res = await repository.getPublishedPosts(10, 0, { categoryId: 2 });
+      expect(mockStorageInstance.getPublishedPosts).toHaveBeenCalledWith(10, 0, { categoryId: 2 });
+      expect(res).toEqual({ posts: [{ id: 1 }], total: 1 });
+    });
+
+    it("getPublishedPosts delegates to StorageSingleton.getBlogPosts with status published when getPublishedPosts is absent", async () => {
+      mockStorageInstance.getBlogPosts.mockResolvedValue({ posts: [], total: 0 });
+      await repository.getPublishedPosts(15, 30, { categoryId: 3 });
+      expect(mockStorageInstance.getBlogPosts).toHaveBeenCalledWith(15, 30, {
+        categoryId: 3,
+        status: "published",
+      });
+    });
+
     it("getBlogPost delegates to StorageSingleton", async () => {
       mockStorageInstance.getBlogPost.mockResolvedValue({ id: 1 });
       await repository.getBlogPost(1);
@@ -142,7 +160,7 @@ describe("BlogRepository", () => {
       return chain;
     };
 
-    it("getBlogPosts uses db queries", async () => {
+    it("getBlogPosts uses db queries and omits content column from projection", async () => {
       // getBlogPosts runs two queries with Promise.all
       const mockQueryChain = createMockDbChain([]);
       const mockCountChain = createMockDbChain([{ count: 2 }]);
@@ -164,6 +182,44 @@ describe("BlogRepository", () => {
 
       expect(res.total).toBe(2);
       expect(db.select).toHaveBeenCalledTimes(2);
+
+      // Verify list projection omits the heavy content column
+      const selectCalls = vi.mocked(db.select).mock.calls;
+      const projectedColumns = selectCalls[0]?.[0];
+      expect(projectedColumns).toBeDefined();
+      expect(projectedColumns).not.toHaveProperty("content");
+      expect(projectedColumns).toHaveProperty("id");
+      expect(projectedColumns).toHaveProperty("title");
+    });
+
+    it("getPublishedPosts merges status: published, pagination parameters, and omits content column", async () => {
+      const mockQueryChain = createMockDbChain([]);
+      const mockCountChain = createMockDbChain([{ count: 5 }]);
+
+      vi.mocked(db.select).mockImplementation((opts?: any) => {
+        if (opts?.count) {
+          return mockCountChain;
+        }
+        return mockQueryChain;
+      });
+
+      const res = await repository.getPublishedPosts(20, 40, {
+        categoryId: 5,
+        authorId: "auth-123",
+        search: "performance",
+      });
+
+      expect(res.total).toBe(5);
+      expect(mockQueryChain.limit).toHaveBeenCalledWith(20);
+      expect(mockQueryChain.offset).toHaveBeenCalledWith(40);
+
+      // Verify projection omits content
+      const selectCalls = vi.mocked(db.select).mock.calls;
+      const projectedColumns = selectCalls[0]?.[0];
+      expect(projectedColumns).toBeDefined();
+      expect(projectedColumns).not.toHaveProperty("content");
+      expect(projectedColumns).toHaveProperty("id");
+      expect(projectedColumns).toHaveProperty("title");
     });
 
     it("getBlogPost uses db", async () => {

@@ -310,6 +310,24 @@ describe("ProductRepository", () => {
         expect(res).toEqual([{ id: 1 }]);
       });
 
+      it("getProductsIncludingDeleted selects columns excluding embedding", async () => {
+        const mockChain = createMockDbChain([{ id: 10, name: "Archived Product" }]);
+        vi.mocked(db.select).mockReturnValue(mockChain);
+
+        const res = await repository.getProductsIncludingDeleted(25, 5);
+        expect(res).toEqual([{ id: 10, name: "Archived Product" }]);
+        expect(mockChain.limit).toHaveBeenCalledWith(25);
+        expect(mockChain.offset).toHaveBeenCalledWith(5);
+
+        // Verify select was called with projection omitting embedding vector
+        const selectCalls = vi.mocked(db.select).mock.calls;
+        const selectArgs = selectCalls.at(-1)?.[0];
+        expect(selectArgs).toBeDefined();
+        expect(selectArgs).not.toHaveProperty("embedding");
+        expect(selectArgs).toHaveProperty("id");
+        expect(selectArgs).toHaveProperty("name");
+      });
+
       it("getProducts handles cache hit and miss", async () => {
         mockUnifiedCache.get.mockResolvedValueOnce([{ id: 1 }]);
         let res = await repository.getProducts();
