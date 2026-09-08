@@ -54,8 +54,11 @@ class AppStorageService {
         });
 
         // Race between operation and timeout
+        const normalizedOperation = operationName.includes(":")
+          ? operationName.split(":")[0]
+          : operationName;
         const result = await Promise.race([
-          withCircuit(`gcs-${operationName}`, operation, EXTERNAL_API_CIRCUIT_OPTIONS),
+          withCircuit(`gcs-${normalizedOperation}`, operation, EXTERNAL_API_CIRCUIT_OPTIONS),
           timeoutPromise,
         ]);
 
@@ -121,7 +124,7 @@ class AppStorageService {
         logger.error(`❌ Failed to get metadata for ${key}:`, serializeError(error));
         return { size: 0 };
       }
-    }, `getMetadata:${key}`);
+    }, "metadata");
   }
 
   /**
@@ -151,7 +154,7 @@ class AppStorageService {
         logger.error(`❌ Upload failed for ${key}:`, serializeError(error));
         throw new Error(`Failed to upload asset: ${(error as Error).message}`);
       }
-    }, `upload:${key}`);
+    }, "upload");
   }
 
   /**
@@ -163,7 +166,7 @@ class AppStorageService {
       const file = bucket.file(key);
       const [content] = await file.download();
       return content;
-    }, `download:${key}`);
+    }, "download");
   }
 
   /**
@@ -186,29 +189,26 @@ class AppStorageService {
         logger.error(`❌ Delete failed for ${key}:`, serializeError(error));
         return false;
       }
-    }, `delete:${key}`);
+    }, "delete");
   }
 
   /**
    * List assets in GCS
    */
   async listAssets(prefix?: string): Promise<string[]> {
-    return this.withTimeoutAndRetry(
-      async () => {
-        try {
-          const bucket = this.storage.bucket(this.bucketName);
-          const [files] = await bucket.getFiles(prefix ? { prefix } : undefined);
+    return this.withTimeoutAndRetry(async () => {
+      try {
+        const bucket = this.storage.bucket(this.bucketName);
+        const [files] = await bucket.getFiles(prefix ? { prefix } : undefined);
 
-          const keys = files.map((file) => file.name);
-          logger.info(`✅ Listed ${keys.length} assets with prefix: ${prefix || "none"}`);
-          return keys;
-        } catch (error) {
-          logger.error(`❌ List failed for prefix ${prefix}:`, serializeError(error));
-          throw new Error(`Failed to list assets: ${(error as Error).message}`);
-        }
-      },
-      `listAssets:${prefix || "none"}`,
-    );
+        const keys = files.map((file) => file.name);
+        logger.info(`✅ Listed ${keys.length} assets with prefix: ${prefix || "none"}`);
+        return keys;
+      } catch (error) {
+        logger.error(`❌ List failed for prefix ${prefix}:`, serializeError(error));
+        throw new Error(`Failed to list assets: ${(error as Error).message}`);
+      }
+    }, "list");
   }
 
   /**
@@ -217,24 +217,21 @@ class AppStorageService {
   async listAssetsWithMetadata(
     prefix?: string,
   ): Promise<Array<{ name: string; size: number; updated?: string | undefined }>> {
-    return this.withTimeoutAndRetry(
-      async () => {
-        try {
-          const bucket = this.storage.bucket(this.bucketName);
-          const [files] = await bucket.getFiles(prefix ? { prefix } : undefined);
+    return this.withTimeoutAndRetry(async () => {
+      try {
+        const bucket = this.storage.bucket(this.bucketName);
+        const [files] = await bucket.getFiles(prefix ? { prefix } : undefined);
 
-          return files.map((file) => ({
-            name: file.name,
-            size: file.metadata.size ? parseInt(String(file.metadata.size), 10) : 0,
-            updated: file.metadata.updated,
-          }));
-        } catch (error) {
-          logger.error(`❌ List with metadata failed for prefix ${prefix}:`, serializeError(error));
-          return [];
-        }
-      },
-      `listAssetsWithMetadata:${prefix || "none"}`,
-    );
+        return files.map((file) => ({
+          name: file.name,
+          size: file.metadata.size ? parseInt(String(file.metadata.size), 10) : 0,
+          updated: file.metadata.updated,
+        }));
+      } catch (error) {
+        logger.error(`❌ List with metadata failed for prefix ${prefix}:`, serializeError(error));
+        return [];
+      }
+    }, "listWithMetadata");
   }
 
   /**
@@ -266,7 +263,7 @@ class AppStorageService {
       } catch (_error) {
         return false;
       }
-    }, `assetExists:${key}`);
+    }, "metadata");
   }
 
   /**
@@ -370,7 +367,7 @@ class AppStorageService {
           throw error;
         }
       },
-      `signedUrl:${key}`,
+      "download",
       5000,
     );
   }

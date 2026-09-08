@@ -1,5 +1,5 @@
 import type { ImageVariants } from "@run-remix/shared";
-import { err, ok, type Result, ResultAsync } from "neverthrow";
+import { ResultAsync } from "neverthrow";
 import { AppError, InternalError, NotFoundError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../../lib/resilience/circuit-breaker.js";
@@ -15,33 +15,33 @@ class MediaContentService {
    * Generates a signed URL for a media asset's primary content or specific variant.
    * Automatically handles responsive variants and fallbacks.
    */
-  async getSignedUrl(
+  getSignedUrl(
     id: number,
     ttl = 300,
     variant?: keyof ImageVariants,
-  ): Promise<Result<string, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<string, AppError>> => {
+  ): ResultAsync<string, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const asset = await withCircuit(
-          `get-media-content-${id}`,
+          "media-content-asset",
           () => mediaRepository.getMediaAsset(id),
           DB_CIRCUIT_OPTIONS,
         );
 
         if (!asset) {
-          return err(new NotFoundError(`Media asset ${id} not found`));
+          throw new NotFoundError(`Media asset ${id} not found`);
         }
 
         // Direct return for local static URLs (starts with /)
         if (asset.url?.startsWith("/")) {
           if (variant && asset.imageVariants?.[variant]?.startsWith("/")) {
-            return ok(asset.imageVariants[variant]!);
+            return asset.imageVariants[variant]!;
           }
-          return ok(asset.url);
+          return asset.url;
         }
 
         if (!asset.storagePath) {
-          return err(new NotFoundError(`Media asset ${id} not found`));
+          throw new NotFoundError(`Media asset ${id} not found`);
         }
 
         let pathToServe = asset.storagePath;
@@ -49,7 +49,7 @@ class MediaContentService {
         // Local static path handling
         if (pathToServe.startsWith("/") || pathToServe.startsWith("images/")) {
           const localUrl = pathToServe.startsWith("/") ? pathToServe : `/${pathToServe}`;
-          return ok(localUrl);
+          return localUrl;
         }
 
         // PHASE 2 REMEDIATION (PC-402): Support specific image variants
@@ -73,19 +73,20 @@ class MediaContentService {
         // Ensure the asset actually exists in storage to prevent GCS 404 XML responses (which trigger CORB in browsers)
         const exists = await appStorageService.assetExists(pathToServe);
         if (!exists) {
-          return err(new NotFoundError(`Media source not found in storage: ${pathToServe}`));
+          throw new NotFoundError(`Media source not found in storage: ${pathToServe}`);
         }
 
-        return ok(signedUrl);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+        return signedUrl;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error(
           "[MediaContentService] Failed to generate signed URL",
           { id, variant },
           error as Error,
         );
-        return err(new InternalError("Failed to generate signed URL", { error }));
-      }),
+        return new InternalError("Failed to generate signed URL", { error });
+      },
     );
   }
 
@@ -93,31 +94,31 @@ class MediaContentService {
    * Generates a signed URL for a media asset's thumbnail.
    * Implements fallback logic to original content if thumbnail is missing.
    */
-  async getThumbnailUrl(id: number, ttl = 300): Promise<Result<string, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<string, AppError>> => {
+  getThumbnailUrl(id: number, ttl = 300): ResultAsync<string, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const asset = await withCircuit(
-          `get-media-thumbnail-${id}`,
+          "media-content-thumbnail",
           () => mediaRepository.getMediaAsset(id),
           DB_CIRCUIT_OPTIONS,
         );
 
         if (!asset) {
-          return err(new NotFoundError(`Media asset ${id} not found`));
+          throw new NotFoundError(`Media asset ${id} not found`);
         }
 
         // Direct return for local static URLs
         if (asset.thumbnailUrl?.startsWith("/")) {
-          return ok(asset.thumbnailUrl);
+          return asset.thumbnailUrl;
         }
         if (asset.url?.startsWith("/")) {
-          return ok(asset.url);
+          return asset.url;
         }
         if (asset.storagePath?.startsWith("/") || asset.storagePath?.startsWith("images/")) {
           const localUrl = asset.storagePath.startsWith("/")
             ? asset.storagePath
             : `/${asset.storagePath}`;
-          return ok(localUrl);
+          return localUrl;
         }
 
         let pathToServe: string | null = null;
@@ -137,79 +138,87 @@ class MediaContentService {
         }
 
         if (!pathToServe) {
-          return err(new NotFoundError("Media source not found"));
+          throw new NotFoundError("Media source not found");
         }
 
         const signedUrl = await appStorageService.generateSignedUrl(pathToServe, ttl);
-        return ok(signedUrl);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+        return signedUrl;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error(
           "[MediaContentService] Failed to generate thumbnail URL",
           { id },
           error as Error,
         );
-        return err(new InternalError("Failed to generate thumbnail URL", { error }));
-      }),
+        return new InternalError("Failed to generate thumbnail URL", { error });
+      },
     );
   }
 
   /**
    * Retrieves media geometry (e.g. for 3D models or image analysis)
    */
-  async getMediaGeometry(id: number): Promise<Result<Record<string, unknown>, AppError>> {
-    return ok({ id, geometry: "Geometry extraction not implemented in service layer yet" });
+  getMediaGeometry(id: number): ResultAsync<Record<string, unknown>, AppError> {
+    return ResultAsync.fromPromise(
+      Promise.resolve({ id, geometry: "Geometry extraction not implemented in service layer yet" }),
+      (error) =>
+        error instanceof AppError
+          ? error
+          : new InternalError("Failed to get media geometry", { error }),
+    );
   }
 
   /**
    * Retrieves raw media content
    */
-  async getMediaRaw(id: number): Promise<Result<string, AppError>> {
+  getMediaRaw(id: number): ResultAsync<string, AppError> {
     return this.getSignedUrl(id);
   }
 
   /**
    * Proxies media content via signed URL
    */
-  async getMediaProxy(id: number): Promise<Result<string, AppError>> {
+  getMediaProxy(id: number): ResultAsync<string, AppError> {
     return this.getSignedUrl(id);
   }
 
   /**
    * Proxies thumbnail content via signed URL
    */
-  async getThumbnailProxy(id: number): Promise<Result<string, AppError>> {
+  getThumbnailProxy(id: number): ResultAsync<string, AppError> {
     return this.getThumbnailUrl(id);
   }
 
   /**
    * Verifies connectivity to object storage
    */
-  async testObjectStorageConnectivity(): Promise<Result<boolean, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<boolean, AppError>> => {
+  testObjectStorageConnectivity(): ResultAsync<boolean, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const bucket = appStorageService.getBucketName();
-        return ok(!!bucket);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        return err(new InternalError("Storage connectivity test failed", { error }));
-      }),
+        return !!bucket;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new InternalError("Storage connectivity test failed", { error });
+      },
     );
   }
 
   /**
    * Returns system performance dashboard data
    */
-  async getPerformanceDashboard(): Promise<Result<Record<string, unknown>, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<Record<string, unknown>, AppError>> => {
+  getPerformanceDashboard(): ResultAsync<Record<string, unknown>, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const stats = await withCircuit(
           "get-storage-stats",
           () => mediaRepository.getStorageStats(),
           DB_CIRCUIT_OPTIONS,
         );
 
-        return ok({
+        return {
           status: "operational",
           systemStatus: "operational",
           performance: "excellent",
@@ -218,34 +227,47 @@ class MediaContentService {
           totalStorageBytes: stats.totalSize,
           storageConnected: !!appStorageService.getBucketName(),
           timestamp: new Date().toISOString(),
-        });
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+        };
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[MediaContentService] Failed to fetch dashboard stats", error as Error);
-        return err(new InternalError("Failed to fetch dashboard stats", { error }));
-      }),
+        return new InternalError("Failed to fetch dashboard stats", { error });
+      },
     );
   }
 
   /**
    * Returns detailed performance metrics
    */
-  async getPerformanceMetrics(): Promise<Result<Record<string, unknown>, AppError>> {
-    return ok({
-      uptime: process.uptime(),
-      memory: process.memoryUsage(),
-      timestamp: new Date().toISOString(),
-    });
+  getPerformanceMetrics(): ResultAsync<Record<string, unknown>, AppError> {
+    return ResultAsync.fromPromise(
+      Promise.resolve({
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        timestamp: new Date().toISOString(),
+      }),
+      (error) =>
+        error instanceof AppError
+          ? error
+          : new InternalError("Failed to get performance metrics", { error }),
+    );
   }
 
   /**
    * Returns overall system status
    */
-  async getSystemStatus(): Promise<Result<Record<string, unknown>, AppError>> {
-    return ok({
-      status: "healthy",
-      timestamp: new Date().toISOString(),
-    });
+  getSystemStatus(): ResultAsync<Record<string, unknown>, AppError> {
+    return ResultAsync.fromPromise(
+      Promise.resolve({
+        status: "healthy",
+        timestamp: new Date().toISOString(),
+      }),
+      (error) =>
+        error instanceof AppError
+          ? error
+          : new InternalError("Failed to get system status", { error }),
+    );
   }
 }
 
