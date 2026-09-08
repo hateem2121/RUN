@@ -43,8 +43,23 @@ export async function setupMiddleware(app: Express) {
           "*.gstatic.com",
         ],
         "frame-src": ["'self'", "*.google.com"],
-        "connect-src": ["'self'", "*.google.com", "*.gstatic.com", "vitals.vercel-insights.com"],
-        "img-src": ["'self'", "data:", "*.google.com", "*.gstatic.com", "https://*"],
+        "connect-src": [
+          "'self'",
+          `http://localhost:${env.PORT}`,
+          `http://127.0.0.1:${env.PORT}`,
+          "*.google.com",
+          "*.gstatic.com",
+          "vitals.vercel-insights.com",
+        ],
+        "img-src": [
+          "'self'",
+          "data:",
+          `http://localhost:${env.PORT}`,
+          `http://127.0.0.1:${env.PORT}`,
+          "*.google.com",
+          "*.gstatic.com",
+          "https://*",
+        ],
         "worker-src": ["'self'", "blob:"],
         "font-src": [
           "'self'",
@@ -53,8 +68,10 @@ export async function setupMiddleware(app: Express) {
           `http://localhost:${env.PORT}`,
           `http://127.0.0.1:${env.PORT}`,
         ],
+        ...(process.env.NODE_ENV !== "production" ? { "upgrade-insecure-requests": null } : {}),
       },
     },
+    ...(process.env.NODE_ENV !== "production" ? { hsts: false } : {}),
     crossOriginEmbedderPolicy: false, // Required for some 3D/Media elements
     crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow loading media from GCS storage buckets
   });
