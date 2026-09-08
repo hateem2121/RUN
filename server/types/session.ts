@@ -19,7 +19,7 @@ declare global {
 
 declare module "express-session" {
   interface SessionData {
-    passport?: { user: SessionUser } | undefined;
+    passport?: { user: { id: string; isMock?: boolean } | SessionUser } | undefined;
     uaHash?: string | undefined;
     lastRotated?: number | undefined;
     currentWebAuthnChallenge?: string | undefined;

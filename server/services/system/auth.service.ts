@@ -48,6 +48,7 @@ export const AuthErrors = {
 
 export class AuthService {
   private static instance: AuthService;
+  private mockUserSeeded = false;
 
   private constructor() {}
 
@@ -59,9 +60,19 @@ export class AuthService {
   }
 
   /**
+   * Reset the in-memory mock user seeded flag (for testing)
+   */
+  public resetMockUserSeeded(): void {
+    this.mockUserSeeded = false;
+  }
+
+  /**
    * TESTING ONLY: Reset the singleton instance
    */
   public static __resetInstance(): void {
+    if (AuthService.instance) {
+      AuthService.instance.mockUserSeeded = false;
+    }
     AuthService.instance = undefined as unknown as AuthService;
   }
 
@@ -168,11 +179,46 @@ export class AuthService {
       process.exit(1);
     }
 
-    passport.serializeUser((user: Express.User, cb: (err: unknown, id?: Express.User) => void) =>
-      cb(null, user),
-    );
-    passport.deserializeUser((user: SessionUser, cb: (err: unknown, user?: SessionUser) => void) =>
-      cb(null, user),
+    passport.serializeUser((user: Express.User, cb: (err: unknown, id?: unknown) => void) => {
+      const sessionUser = user as SessionUser;
+      cb(null, { id: sessionUser.id, isMock: Boolean(sessionUser.claims?.isMock) });
+    });
+    passport.deserializeUser(
+      async (
+        serialized: { id: string; isMock?: boolean } | SessionUser,
+        cb: (err: unknown, user?: SessionUser) => void,
+      ) => {
+        if (!serialized || typeof serialized !== "object") {
+          return cb(null, undefined);
+        }
+        if ("email" in serialized && !("isMock" in serialized)) {
+          return cb(null, serialized as SessionUser);
+        }
+        if (serialized.isMock) {
+          return cb(null, {
+            id: serialized.id,
+            email: "admin@runapparel.com",
+            emailIndex: "admin@runapparel.com",
+            firstName: "Mock",
+            lastName: "Admin",
+            isAdmin: true,
+            claims: { email: "admin@runapparel.com", sub: serialized.id, isMock: true },
+          } as SessionUser);
+        }
+        try {
+          const result = await this.getUserInfo(serialized.id);
+          if (result.isOk()) {
+            cb(null, {
+              ...result.value,
+              claims: { email: result.value.email, sub: result.value.id },
+            } as SessionUser);
+          } else {
+            cb(result.error);
+          }
+        } catch (err) {
+          cb(err);
+        }
+      },
     );
 
     if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
@@ -613,35 +659,37 @@ export class AuthService {
    * Seed mock user for development
    */
   public async seedMockUser(user: Partial<SessionUser>): Promise<Result<void, AppError>> {
-    const { isDatabasePoolHealthy } = await import("../../db.js");
-    const { userRepository } = await import("../repositories/index.js");
+    if (this.mockUserSeeded) {
+      return ok(undefined);
+    }
+    this.mockUserSeeded = true;
 
-    const skipDb = process.env.MOCK_DB === "true" || !(await isDatabasePoolHealthy());
+    const skipDb = process.env.MOCK_DB === "true";
     if (skipDb) return ok(undefined);
 
-    return new ResultAsync(
-      (async (): Promise<Result<void, AppError>> => {
-        await withCircuit(
-          "seed-mock-user",
-          () =>
-            userRepository.upsertUser({
-              id: user.id as string,
-              email: user.email as string,
-              emailIndex: user.emailIndex as string,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              profileImageUrl: user.profileImageUrl,
-              isAdmin: user.isAdmin,
-            }),
-          DB_CIRCUIT_OPTIONS,
-        );
-        return ok(undefined);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        logger.warn("[AuthService] Failed to seed mock user", error);
-        return err(new InternalError("Failed to seed mock user", { cause: error }));
-      }),
-    );
+    const { userRepository } = await import("../repositories/index.js");
+
+    try {
+      await withCircuit(
+        "seed-mock-user",
+        () =>
+          userRepository.upsertUser({
+            id: user.id as string,
+            email: user.email as string,
+            emailIndex: user.emailIndex as string,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            profileImageUrl: user.profileImageUrl,
+            isAdmin: user.isAdmin,
+          }),
+        DB_CIRCUIT_OPTIONS,
+      );
+      return ok(undefined);
+    } catch (error) {
+      if (error instanceof AppError) return err(error);
+      logger.warn("[AuthService] Failed to seed mock user", error);
+      return err(new InternalError("Failed to seed mock user", { cause: error }));
+    }
   }
 
   /**
