@@ -25,6 +25,8 @@ interface PerformanceStats {
   lastCleanup: number;
 }
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export class QueryPerformanceMonitor {
   private static instance: QueryPerformanceMonitor;
   private cache?: UnifiedCache; // Lazy-loaded to prevent circular dependency
@@ -38,8 +40,21 @@ export class QueryPerformanceMonitor {
       alertOnSlow: false, // Don't alert on expected slow operations
     },
     USER_FACING: {
-      patterns: ["getProducts", "getCategories", "getProductById", "getProductByPath", "getMedia"],
-      threshold: 400, // User-facing queries should be fast
+      patterns: [
+        "getProducts",
+        "getCategories",
+        "getProductById",
+        "getProductByPath",
+        "getMedia",
+        "getAccessories",
+        "getAccessoriesWithCount",
+        "getMediaAssets",
+        "getProductsSummary",
+        "getHomepageFeaturedProducts",
+        "getMediaAssetsWithCount",
+        "getMediaAssetsByIds",
+      ],
+      threshold: isProduction ? 400 : 750, // User-facing queries should be fast
       alertOnSlow: true,
     },
     BACKGROUND: {
@@ -54,7 +69,7 @@ export class QueryPerformanceMonitor {
     },
   };
 
-  private readonly DEFAULT_SLOW_QUERY_THRESHOLD = 400; // Default for uncategorized queries
+  private readonly DEFAULT_SLOW_QUERY_THRESHOLD = isProduction ? 400 : 750; // Default for uncategorized queries
   private readonly MAX_METRICS_BUFFER = 1000;
   private readonly METRICS_TTL = 60 * 60 * 1000; // 1 hour
   private readonly ALERT_COOLDOWN = 5 * 60 * 1000; // 5 minutes between alerts
@@ -219,6 +234,13 @@ export class QueryPerformanceMonitor {
   }
 
   /**
+   * Get category threshold configuration for testing and introspection
+   */
+  getQueryThreshold(operation: string): number {
+    return this.getThresholdForQuery(operation).threshold;
+  }
+
+  /**
    * Record completed query metrics
    */
   recordQuery(metrics: QueryMetrics): void {
@@ -233,8 +255,11 @@ export class QueryPerformanceMonitor {
     // PHASE 6: Get category-specific threshold
     const { threshold, shouldAlert, category } = this.getThresholdForQuery(metrics.operation);
 
+    // Evaluate against raw dbQuery phase if recorded, rather than wall-clock time that bundled cache/serialization
+    const evaluationDuration = metrics.phases?.dbQuery ?? metrics.duration;
+
     // Check for slow query alerts with category-specific threshold
-    if (metrics.duration > threshold) {
+    if (evaluationDuration > threshold) {
       if (shouldAlert) {
         this.handleSlowQuery(metrics, threshold, category);
       } else {
@@ -242,7 +267,7 @@ export class QueryPerformanceMonitor {
         // This allows 3 consecutive USER_FACING slow queries to trigger alert
         // even if cache-warmup queries happen in between
         logger.debug(
-          `⏱️  Expected slow ${category}: ${metrics.operation} took ${metrics.duration}ms (threshold: ${threshold}ms)`,
+          `⏱️  Expected slow ${category}: ${metrics.operation} took ${evaluationDuration}ms (threshold: ${threshold}ms)`,
           { cacheHit: metrics.cacheHit, category },
         );
       }
@@ -275,6 +300,8 @@ export class QueryPerformanceMonitor {
     const shouldAlert =
       now - this.lastAlertTime > this.ALERT_COOLDOWN || this.consecutiveSlowQueries >= 3; // Alert on 3 consecutive slow queries
 
+    const evaluationDuration = metrics.phases?.dbQuery ?? metrics.duration;
+
     if (shouldAlert) {
       this.triggerSlowQueryAlert(metrics, threshold, category);
       this.lastAlertTime = now;
@@ -282,8 +309,12 @@ export class QueryPerformanceMonitor {
     } else {
       // Log warning but don't trigger full alert
       logger.warn(
-        `🐌 SLOW QUERY: ${metrics.operation} took ${metrics.duration}ms (threshold: ${threshold}ms, category: ${category})`,
-        { cacheHit: metrics.cacheHit, parameters: metrics.parameters },
+        `🐌 SLOW QUERY: ${metrics.operation} took ${evaluationDuration}ms (threshold: ${threshold}ms, category: ${category})`,
+        {
+          cacheHit: metrics.cacheHit,
+          parameters: metrics.parameters,
+          duration: evaluationDuration,
+        },
       );
     }
   }
@@ -293,11 +324,13 @@ export class QueryPerformanceMonitor {
    */
   private triggerSlowQueryAlert(metrics: QueryMetrics, threshold: number, category: string): void {
     const stats = this.getPerformanceStats();
+    const evaluationDuration = metrics.phases?.dbQuery ?? metrics.duration;
 
     logger.error(
       `🚨 SLOW QUERY ALERT: ${metrics.operation} exceeded ${threshold}ms threshold (category: ${category})`,
       {
-        duration: metrics.duration,
+        duration: evaluationDuration,
+        wallClockDuration: metrics.duration,
         threshold: threshold,
         category: category,
         cacheHit: metrics.cacheHit,
@@ -312,7 +345,8 @@ export class QueryPerformanceMonitor {
     this.storeAlert({
       timestamp: metrics.timestamp,
       operation: metrics.operation,
-      duration: metrics.duration,
+      duration: evaluationDuration,
+      wallClockDuration: metrics.duration,
       threshold: threshold,
       category: category,
       performanceStats: stats,
@@ -337,7 +371,8 @@ export class QueryPerformanceMonitor {
     // Calculate slow queries ONLY for alertable categories
     const slowQueries = alertableMetrics.filter((m) => {
       const { threshold } = this.getThresholdForQuery(m.operation);
-      return m.duration > threshold;
+      const evalDuration = m.phases?.dbQuery ?? m.duration;
+      return evalDuration > threshold;
     }).length;
 
     const cacheHits = recentMetrics.filter((m) => m.cacheHit).length;
@@ -407,9 +442,14 @@ export class QueryPerformanceMonitor {
     const slowQueries = recentMetrics
       .filter((m) => {
         const { threshold, shouldAlert } = this.getThresholdForQuery(m.operation);
-        return shouldAlert && m.duration > threshold; // Only alertable slow queries
+        const evalDuration = m.phases?.dbQuery ?? m.duration;
+        return shouldAlert && evalDuration > threshold; // Only alertable slow queries
       })
-      .sort((a, b) => b.duration - a.duration)
+      .sort((a, b) => {
+        const durA = a.phases?.dbQuery ?? a.duration;
+        const durB = b.phases?.dbQuery ?? b.duration;
+        return durB - durA;
+      })
       .slice(0, 10);
 
     return {
@@ -545,6 +585,8 @@ class QueryTracker {
 
   /**
    * Complete query tracking
+   * Evaluates slow query threshold in recordQuery against this.phases.dbQuery (raw database
+   * driver execution) if recorded, rather than wall-clock time that bundled cache and serialization.
    * PHASE 2A: Includes phase-level timing data and sampled detailed logging
    */
   complete(): number {

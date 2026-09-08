@@ -87,7 +87,7 @@ if (isTestMode && !enableRealDb) {
         : connectionString,
     max: poolConfig.maxConnections,
     idleTimeoutMillis: 60000, // Increased from 10s to 60s to prevent constant reconnect overhead
-    connectionTimeoutMillis: 5000,
+    connectionTimeoutMillis: 10000,
     allowExitOnIdle: true, // Allow process to exit if only idle pool connections remain
   });
 

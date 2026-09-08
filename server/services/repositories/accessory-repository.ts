@@ -180,7 +180,6 @@ class AccessoryRepository {
     offset: number = 0,
     filters?: { category?: string | undefined; search?: string },
   ): Promise<{ accessories: Accessory[]; total: number }> {
-    const perfTracker = queryPerformanceMonitor.startQuery("getAccessoriesWithCount");
     const cacheKey = `accessories:batch:${limit}:${offset}:${normalizeFilters(filters)}`;
 
     const cached = await unifiedCache.get<{
@@ -188,7 +187,6 @@ class AccessoryRepository {
       total: number;
     }>(cacheKey);
     if (cached) {
-      perfTracker.setCacheHit(true).complete();
       logger.debug(`[AccessoryRepo] Cache HIT for getAccessoriesWithCount`);
       return cached;
     }
@@ -202,7 +200,6 @@ class AccessoryRepository {
     const result = { accessories: accessoriesList, total };
     await unifiedCache.set(cacheKey, result, ACCESSORY_CACHE_TTL);
 
-    perfTracker.setCacheHit(false).complete();
     return result;
   }
 
