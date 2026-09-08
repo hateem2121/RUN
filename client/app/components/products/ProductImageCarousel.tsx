@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MediaUrlBuilder } from "@/lib/media-url-builder";
 import { cn } from "@/lib/utils";
 
@@ -27,12 +27,14 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
-  const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
   const [isNavigating, setIsNavigating] = useState(false);
 
   const navTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const loadTimeoutsRef = useRef<Map<number, NodeJS.Timeout>>(new Map());
+  const loadTimeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
+  const loadedImagesRef = useRef<Set<string>>(new Set());
+  const failedImagesRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     return () => {
@@ -47,6 +49,11 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   const totalItems = (hasVideo ? 1 : 0) + images.length;
   const showVideo = hasVideo && currentImageIndex === 0;
   const imageIndex = hasVideo ? currentImageIndex - 1 : currentImageIndex;
+  const currentImage = images[imageIndex];
+  const imageKey =
+    currentImage?.id !== undefined && currentImage.id !== 0
+      ? String(currentImage.id)
+      : currentImage?.url || `img-${imageIndex}`;
 
   const getMediaUrl = (item?: MediaItem | null) => {
     if (!item) return "/images/placeholders/product-placeholder.webp";
@@ -102,42 +109,52 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
     setNavTimeout();
   };
 
-  const handleImageLoad = (imageId: number) => {
-    setLoadedImages((prev) => new Set([...prev, imageId]));
-    const timeout = loadTimeoutsRef.current.get(imageId);
+  const handleImageLoad = (key: string) => {
+    loadedImagesRef.current.add(key);
+    setLoadedImages((prev) => new Set([...prev, key]));
+    const timeout = loadTimeoutsRef.current.get(key);
     if (timeout) {
       clearTimeout(timeout);
-      loadTimeoutsRef.current.delete(imageId);
+      loadTimeoutsRef.current.delete(key);
     }
   };
 
-  const handleImageError = (imageId: number) => {
-    console.warn(`[ImageCarousel] Failed to load image ${imageId} for ${productName}`);
-    setFailedImages((prev) => new Set([...prev, imageId]));
-    const timeout = loadTimeoutsRef.current.get(imageId);
+  const handleImageError = (key: string) => {
+    console.warn(`[ImageCarousel] Failed to load image ${key} for ${productName}`);
+    failedImagesRef.current.add(key);
+    setFailedImages((prev) => new Set([...prev, key]));
+    const timeout = loadTimeoutsRef.current.get(key);
     if (timeout) {
       clearTimeout(timeout);
-      loadTimeoutsRef.current.delete(imageId);
+      loadTimeoutsRef.current.delete(key);
     }
   };
 
-  const handleImageLoadStart = (imageId: number) => {
-    const existing = loadTimeoutsRef.current.get(imageId);
+  const handleImageLoadStart = useCallback((key: string) => {
+    const existing = loadTimeoutsRef.current.get(key);
     if (existing) clearTimeout(existing);
 
-    // Safety timeout: If image doesn't load in 10s, consider it failed to prevent infinite spinner
+    // Safety timeout: If image doesn't load in 3.5s, consider it failed to prevent infinite spinner
     const timeoutId = setTimeout(() => {
-      setLoadedImages((prev) => {
-        if (!prev.has(imageId)) {
-          setFailedImages((f) => new Set([...f, imageId]));
-        }
-        return prev;
-      });
-      loadTimeoutsRef.current.delete(imageId);
-    }, 10000);
+      if (!loadedImagesRef.current.has(key)) {
+        failedImagesRef.current.add(key);
+        setFailedImages((f) => new Set([...f, key]));
+      }
+      loadTimeoutsRef.current.delete(key);
+    }, 3500);
 
-    loadTimeoutsRef.current.set(imageId, timeoutId);
-  };
+    loadTimeoutsRef.current.set(key, timeoutId);
+  }, []);
+
+  useEffect(() => {
+    if (
+      imageKey &&
+      !loadedImagesRef.current.has(imageKey) &&
+      !failedImagesRef.current.has(imageKey)
+    ) {
+      handleImageLoadStart(imageKey);
+    }
+  }, [imageKey, handleImageLoadStart]);
 
   if (totalItems === 0) {
     return (
@@ -177,35 +194,34 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
           </div>
         </div>
       ) : (
-        images[imageIndex] && (
+        currentImage && (
           <div className="relative h-full w-full">
-            {!loadedImages.has(images[imageIndex]?.id) &&
-              !failedImages.has(images[imageIndex]?.id) && (
-                <div className="absolute inset-0 flex h-full w-full animate-pulse items-center justify-center bg-muted">
-                  <LoaderState />
-                </div>
-              )}
+            {!loadedImages.has(imageKey) && !failedImages.has(imageKey) && (
+              <div className="absolute inset-0 flex h-full w-full animate-pulse items-center justify-center bg-muted">
+                <LoaderState />
+              </div>
+            )}
             <img
               src={
-                failedImages.has(images[imageIndex]?.id || 0)
+                failedImages.has(imageKey)
                   ? "/images/placeholders/product-placeholder.webp"
-                  : getMediaUrl(images[imageIndex])
+                  : getMediaUrl(currentImage)
               }
               alt={productName}
               className={cn(
                 "h-full w-full object-cover transition-all duration-300",
-                loadedImages.has(images[imageIndex]?.id || 0)
+                loadedImages.has(imageKey)
                   ? "opacity-100 group-hover:scale-105"
-                  : failedImages.has(images[imageIndex]?.id || 0)
+                  : failedImages.has(imageKey)
                     ? "opacity-80"
                     : "opacity-0",
               )}
-              onLoad={() => handleImageLoad(images[imageIndex]?.id || 0)}
+              onLoad={() => handleImageLoad(imageKey)}
               onError={(e) => {
-                handleImageError(images[imageIndex]?.id || 0);
+                handleImageError(imageKey);
                 e.currentTarget.src = "/images/placeholders/product-placeholder.webp";
               }}
-              onLoadStart={() => handleImageLoadStart(images[imageIndex]?.id || 0)}
+              onLoadStart={() => handleImageLoadStart(imageKey)}
             />
           </div>
         )

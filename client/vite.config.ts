@@ -20,7 +20,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Tigger restart
 export default defineConfig((env) => {
   const { command: _command, isSsrBuild } = env;
-  console.warn("[VITE-CONFIG-ARGS]", JSON.stringify(env));
   return {
     plugins: [
       reactRouter(),

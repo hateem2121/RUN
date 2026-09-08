@@ -26,21 +26,14 @@ export async function ensureModelViewerLoaded(): Promise<void> {
     const run = async () => {
       try {
         // PHASE 2.1: Configure Lit for production mode before importing @google/model-viewer
-        // This disables development warnings and optimizes performance
+        // This disables development warnings and optimizes performance without mutating process.env
         if (typeof globalThis !== "undefined") {
           const global = globalThis as Record<string, unknown>;
 
           // Set production mode flags for Lit
           global.litIsInSSR = false;
           global.litElementVersions = [];
-
-          // Override process.env['NODE_ENV'] for Lit if needed
-          if (typeof process === "undefined") {
-            global.process = { env: { NODE_ENV: "production" } };
-          } else if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-            // Force production mode for Lit even in development environment
-            process.env.NODE_ENV = "production";
-          }
+          global.litDisableDevelopmentMode = true;
         }
 
         // Import the local @google/model-viewer package
