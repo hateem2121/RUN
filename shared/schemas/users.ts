@@ -1,4 +1,4 @@
-import { boolean, integer, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, index, integer, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { pgTable } from "./common.js";
 
 // =============================================================================
@@ -22,29 +22,33 @@ import { pgTable } from "./common.js";
  *
  * @related `server/types/session.ts` - `SessionUser` interface mirrors this schema for request context.
  */
-export const users = pgTable("users", {
-  id: varchar({ length: 255 }).primaryKey(), // User ID (stable, unique)
-  email: varchar({ length: 255 }).unique(), // Encrypted in DB (AES-256-GCM)
-  emailIndex: varchar({ length: 255 }).unique(), // Blind Index for searching (HMAC-SHA256)
-  firstName: text(), // Encrypted
-  lastName: text(), // Encrypted
-  profileImageUrl: text(), // Encrypted
+export const users = pgTable(
+  "users",
+  {
+    id: varchar({ length: 255 }).primaryKey(), // User ID (stable, unique)
+    email: varchar({ length: 255 }).unique(), // Encrypted in DB (AES-256-GCM)
+    emailIndex: varchar({ length: 255 }).unique(), // Blind Index for searching (HMAC-SHA256)
+    firstName: text(), // Encrypted
+    lastName: text(), // Encrypted
+    profileImageUrl: text(), // Encrypted
 
-  // ROLE-BASED ACCESS CONTROL
-  // Admin status NOT auto-updated on login - must be set via SQL
-  isAdmin: boolean().default(false).notNull(),
+    // ROLE-BASED ACCESS CONTROL
+    // Admin status NOT auto-updated on login - must be set via SQL
+    isAdmin: boolean().default(false).notNull(),
 
-  // SECURITY: Account Lockout
-  failedLoginAttempts: integer().default(0).notNull(),
-  lockoutUntil: timestamp({ mode: "date", precision: 3 }),
+    // SECURITY: Account Lockout
+    failedLoginAttempts: integer().default(0).notNull(),
+    lockoutUntil: timestamp({ mode: "date", precision: 3 }),
 
-  // Timestamps for audit trail
-  createdAt: timestamp({ mode: "date", precision: 3 }).defaultNow().notNull(),
-  updatedAt: timestamp({ mode: "date", precision: 3 })
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
-});
+    // Timestamps for audit trail
+    createdAt: timestamp({ mode: "date", precision: 3 }).defaultNow().notNull(),
+    updatedAt: timestamp({ mode: "date", precision: 3 })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [index("users_is_admin_idx").on(table.isAdmin)],
+);
 
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";

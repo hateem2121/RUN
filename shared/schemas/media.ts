@@ -125,6 +125,7 @@ export const mediaAssets = pgTable(
     index("media_id_active_idx").on(table.id, table.isActive, table.deletedAt),
     index("media_original_name_idx").on(table.originalName),
     index("media_uploaded_at_idx").on(table.uploadedAt.desc()),
+    index("media_tags_gin_idx").using("gin", sql`${table.tags} jsonb_path_ops`),
   ],
 );
 

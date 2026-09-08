@@ -29,7 +29,7 @@ import { StorageSingleton } from "../../lib/storage-singleton.js";
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getRecentAuditLogs(limit);
     }
-    const logs = await db.select().from(auditLogs).orderBy(desc(auditLogs.createdAt)).limit(limit);
+    const logs = await db.select().from(auditLogs).orderBy(desc(auditLogs.timestamp)).limit(limit);
     // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     return logs.map((log: any) => this.decryptAuditLog(log));
   }

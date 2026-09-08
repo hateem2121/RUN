@@ -61,6 +61,7 @@ export const certificates = pgTable(
     index("certificates_is_active_idx").on(table.isActive),
     index("certificates_image_id_idx").on(table.imageId),
     index("certificates_document_id_idx").on(table.documentId),
+    index("certificates_deleted_at_type_idx").on(table.deletedAt, table.type),
   ],
 );
 
@@ -103,6 +104,7 @@ export const sizeCharts = pgTable(
     index("size_charts_deleted_at_idx").on(table.deletedAt),
     index("size_charts_active_query_idx").on(table.isActive, table.deletedAt),
     index("size_charts_image_id_idx").on(table.imageId),
+    index("size_charts_category_gender_idx").on(table.category, table.gender),
   ],
 );
 
