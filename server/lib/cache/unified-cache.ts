@@ -28,7 +28,7 @@ const COMPRESSION_THRESHOLD = 1024;
 const tracer = trace.getTracer("unified-cache", "1.0.0");
 
 function escapeRegex(str: string): string {
-  return str.replace(/[.+?^${}()|[\]\\]/g, "\\$&");
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function safePatternToRegex(pattern: string): RegExp | null {
@@ -59,7 +59,7 @@ function safePatternToRegex(pattern: string): RegExp | null {
   return null;
 }
 
-class DummyCacheProvider {
+export class DummyCacheProvider {
   async get(_key: string) {
     return null;
   }
@@ -87,7 +87,7 @@ class DummyCacheProvider {
     return ["0", []] as [string, string[]];
   }
 }
-const dummyCache = new DummyCacheProvider();
+export const dummyCache = new DummyCacheProvider();
 
 /**
  * CACHE-03: Approximate cache entry size to prevent V8 heap churn from JSON.stringify.
@@ -145,9 +145,14 @@ export class UnifiedCache {
       ttl: 1000 * 60 * 60, // 1 hour default TTL
     });
 
-    if (process.env.NODE_ENV === "test" || process.env.VITEST) {
+    const isProduction = process.env.NODE_ENV === "production";
+    const forceL2 = process.env.FORCE_L2_CACHE === "true";
+
+    if (!isProduction && !forceL2) {
       this.l2 = dummyCache;
-      logger.info("[Cache] ✅ Unified Cache initialized (L1: Memory, L2: None (Test env))");
+      logger.info(
+        "[Cache] ✅ Unified Cache initialized (L1: Memory, L2: None (Development/Test Mode))",
+      );
     } else {
       this.l2 = postgresCache;
       logger.info("[Cache] ✅ Unified Hybrid Cache initialized (L1: Memory, L2: Postgres/Neon)");
@@ -159,6 +164,27 @@ export class UnifiedCache {
       UnifiedCache.instance = new UnifiedCache();
     }
     return UnifiedCache.instance;
+  }
+
+  /**
+   * Reset the singleton instance for testing purposes
+   */
+  public static _resetInstanceForTesting(): void {
+    UnifiedCache.instance = null;
+  }
+
+  /**
+   * Check if L2 persistence cache is active (e.g., in production or FORCE_L2_CACHE=true)
+   */
+  public isL2Enabled(): boolean {
+    return !(this.l2 instanceof DummyCacheProvider);
+  }
+
+  /**
+   * Get current L2 provider instance for diagnostics and testing
+   */
+  public getL2Provider(): PostgresCacheProvider | DummyCacheProvider {
+    return this.l2;
   }
 
   /**
