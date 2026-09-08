@@ -17,7 +17,7 @@ import type {
   SizeChart,
 } from "@run-remix/shared";
 import { categories, mediaAssets, productRelations, products } from "@run-remix/shared";
-import { and, asc, desc, eq, isNull, lt, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, getTableColumns, isNull, lt, ne, sql } from "drizzle-orm";
 import { err, ok, type Result } from "neverthrow";
 import * as dbModule from "../../db.js";
 import { type DbClient, db } from "../../db.js";
@@ -1230,12 +1230,13 @@ export class ProductRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getProductsIncludingDeleted(limit, offset);
     }
-    return await readDb
-      .select()
+    const { embedding: _embedding, ...columns } = getTableColumns(products);
+    return (await readDb
+      .select(columns)
       .from(products)
       .orderBy(desc(products.createdAt))
       .limit(limit)
-      .offset(offset);
+      .offset(offset)) as unknown as Product[];
   }
 
   async restoreProduct(id: number, tx?: DbClient): Promise<boolean> {

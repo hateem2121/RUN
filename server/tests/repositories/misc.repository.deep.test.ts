@@ -30,18 +30,33 @@ const dbMock = vi.hoisted(() => {
   const oMock = vi.fn();
   oMock.mockResolvedValue([]);
 
-  const wMock = vi.fn(() => ({ orderBy: oMock, prepare: vi.fn() }));
-  wMock.mockReturnValue(Object.assign(Promise.resolve([]), { orderBy: oMock, prepare: vi.fn() }));
+  const wrapWithLimit = (fn: any) => {
+    return (...args: any[]) => {
+      const res = fn(...args);
+      if (res && typeof res.then === "function" && !res.limit) {
+        res.limit = vi.fn().mockImplementation(() => res);
+      }
+      return res;
+    };
+  };
+  const oMockWrapped = wrapWithLimit(oMock);
 
-  const jMock = vi.fn(() => ({ where: wMock, orderBy: oMock }));
-  jMock.mockReturnValue(Object.assign(Promise.resolve([]), { where: wMock, orderBy: oMock }));
-
-  const fMock = vi.fn(() => ({ where: wMock, leftJoin: jMock, orderBy: oMock }));
-  fMock.mockReturnValue(
-    Object.assign(Promise.resolve([]), { where: wMock, leftJoin: jMock, orderBy: oMock }),
+  const wMock = vi.fn(() => ({ orderBy: oMockWrapped, prepare: vi.fn() }));
+  wMock.mockReturnValue(
+    Object.assign(Promise.resolve([]), { orderBy: oMockWrapped, prepare: vi.fn() }),
   );
 
-  const sMock = vi.fn(() => ({ from: fMock, execute: oMock }));
+  const jMock = vi.fn(() => ({ where: wMock, orderBy: oMockWrapped }));
+  jMock.mockReturnValue(
+    Object.assign(Promise.resolve([]), { where: wMock, orderBy: oMockWrapped }),
+  );
+
+  const fMock = vi.fn(() => ({ where: wMock, leftJoin: jMock, orderBy: oMockWrapped }));
+  fMock.mockReturnValue(
+    Object.assign(Promise.resolve([]), { where: wMock, leftJoin: jMock, orderBy: oMockWrapped }),
+  );
+
+  const sMock = vi.fn(() => ({ from: fMock, execute: oMockWrapped }));
 
   return {
     query: {

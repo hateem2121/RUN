@@ -676,6 +676,15 @@ export interface IBlogRepository {
       includeDeleted?: boolean;
     },
   ): Promise<{ posts: BlogPost[]; total: number }>;
+  getPublishedPosts?(
+    limit?: number,
+    offset?: number,
+    filters?: {
+      categoryId?: number;
+      authorId?: string;
+      search?: string;
+    },
+  ): Promise<{ posts: BlogPost[]; total: number }>;
   getBlogPost(id: number): Promise<BlogPost | undefined>;
   getBlogPostBySlug(slug: string): Promise<BlogPost | undefined>;
   createBlogPost(post: InsertBlogPost): Promise<BlogPost>;

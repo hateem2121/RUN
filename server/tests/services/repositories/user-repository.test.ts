@@ -286,10 +286,12 @@ describe("UserRepository", () => {
     });
 
     it("should return and decrypt admin users from db", async () => {
-      mockSelectWhere.mockResolvedValue([mockRawUser, mockRawUser]);
+      const mockLimit = vi.fn().mockResolvedValue([mockRawUser, mockRawUser]);
+      mockSelectWhere.mockReturnValue({ limit: mockLimit });
       const result = await repository.getAdminUsers();
       expect(db.select).toHaveBeenCalled();
       expect(mockSelectWhere).toHaveBeenCalled();
+      expect(mockLimit).toHaveBeenCalledWith(100);
       expect(result).toHaveLength(2);
       expect(result[0]).toEqual(mockDecryptedUser);
       expect(result[1]).toEqual(mockDecryptedUser);

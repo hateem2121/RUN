@@ -1,9 +1,17 @@
 import type { BlogCategory, BlogPost, InsertBlogCategory, InsertBlogPost } from "@run-remix/shared";
 import { blogCategories, blogPosts } from "@run-remix/shared";
-import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { and, desc, eq, getTableColumns, ilike, or, sql } from "drizzle-orm";
 import { db } from "../../db.js";
 import { StorageSingleton } from "../../lib/storage-singleton.js";
 import type { IBlogRepository } from "./storage-interfaces.js";
+
+export type BlogPostFilters = {
+  status?: string;
+  categoryId?: number;
+  authorId?: string;
+  search?: string;
+  includeDeleted?: boolean;
+};
 
 export class BlogRepository implements IBlogRepository {
   async getBlogPosts(
@@ -47,8 +55,9 @@ export class BlogRepository implements IBlogRepository {
       );
     }
 
+    const { content: _content, ...columns } = getTableColumns(blogPosts);
     const query = db
-      .select()
+      .select(columns)
       .from(blogPosts)
       .where(and(...conditions))
       .limit(limit)
@@ -63,9 +72,29 @@ export class BlogRepository implements IBlogRepository {
     const [posts, [totalResult]] = await Promise.all([query, totalQuery]);
 
     return {
-      posts: posts as BlogPost[],
+      posts: posts as unknown as BlogPost[],
       total: Number(totalResult?.count || 0),
     };
+  }
+
+  async getPublishedPosts(
+    limit: number = 10,
+    offset: number = 0,
+    filters?: BlogPostFilters,
+  ): Promise<{ posts: BlogPost[]; total: number }> {
+    if (StorageSingleton.hasInstance()) {
+      const storage = StorageSingleton.getInstance() as unknown as Record<string, unknown>;
+      if (typeof storage.getPublishedPosts === "function") {
+        return (
+          storage.getPublishedPosts as (
+            l: number,
+            o: number,
+            f?: BlogPostFilters,
+          ) => Promise<{ posts: BlogPost[]; total: number }>
+        )(limit, offset, filters);
+      }
+    }
+    return this.getBlogPosts(limit, offset, { ...filters, status: "published" });
   }
 
   async getBlogPost(id: number): Promise<BlogPost | undefined> {

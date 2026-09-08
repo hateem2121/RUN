@@ -227,7 +227,9 @@ describe("MediaRepository", () => {
         vi.mocked(db.select).mockReturnValue({
           from: vi.fn().mockReturnValue({
             where: vi.fn().mockReturnValue({
-              orderBy: vi.fn().mockResolvedValue([mockFolder]),
+              orderBy: vi.fn().mockReturnValue({
+                limit: vi.fn().mockResolvedValue([mockFolder]),
+              }),
             }),
           }),
         } as unknown as ReturnType<typeof db.select>);

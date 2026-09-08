@@ -708,7 +708,8 @@ export class MediaRepository {
       .select()
       .from(folders)
       .where(isNull(folders.deletedAt))
-      .orderBy(asc(folders.name));
+      .orderBy(asc(folders.name))
+      .limit(100);
   }
 
   async getFolder(id: number): Promise<Folder | undefined> {

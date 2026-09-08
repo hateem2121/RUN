@@ -74,7 +74,8 @@ export class MiscRepository {
       .select()
       .from(fibers)
       .where(isNull(fibers.deletedAt))
-      .orderBy(asc(fibers.name));
+      .orderBy(asc(fibers.name))
+      .limit(100);
 
     await ResultAsync.fromPromise(
       unifiedCache.set(FIBERS_CACHE_KEY, result, FIBERS_CACHE_TTL, "data"),
@@ -178,7 +179,7 @@ export class MiscRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getFibersIncludingDeleted();
     }
-    return await db.select().from(fibers).orderBy(desc(fibers.createdAt));
+    return await db.select().from(fibers).orderBy(desc(fibers.createdAt)).limit(100);
   }
 
   async restoreFiber(id: number): Promise<boolean> {
@@ -675,7 +676,8 @@ export class MiscRepository {
       .from(certificates)
       .leftJoin(mediaAssets, eq(certificates.imageId, mediaAssets.id))
       .where(and(eq(certificates.isActive, true), isNull(certificates.deletedAt)))
-      .orderBy(asc(certificates.name));
+      .orderBy(asc(certificates.name))
+      .limit(100);
 
     // Map result to hydrate imageUrl from mediaUrl relation
     // This fixes broken images on frontend which relies on imageUrl property
@@ -815,7 +817,7 @@ export class MiscRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getCertificatesIncludingDeleted();
     }
-    return await db.select().from(certificates).orderBy(desc(certificates.createdAt));
+    return await db.select().from(certificates).orderBy(desc(certificates.createdAt)).limit(100);
   }
 
   async restoreCertificate(id: number): Promise<boolean> {
@@ -861,7 +863,8 @@ export class MiscRepository {
       .select()
       .from(sizeCharts)
       .where(and(eq(sizeCharts.isActive, true), isNull(sizeCharts.deletedAt)))
-      .orderBy(asc(sizeCharts.name));
+      .orderBy(asc(sizeCharts.name))
+      .limit(100);
 
     await ResultAsync.fromPromise(
       unifiedCache.set(cacheKey, result, 24 * 60 * 60 * 1000, "data"), // 24 hours - size charts are static data
@@ -968,7 +971,7 @@ export class MiscRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getSizeChartsIncludingDeleted();
     }
-    return await db.select().from(sizeCharts).orderBy(desc(sizeCharts.createdAt));
+    return await db.select().from(sizeCharts).orderBy(desc(sizeCharts.createdAt)).limit(100);
   }
 
   async restoreSizeChart(id: number): Promise<boolean> {

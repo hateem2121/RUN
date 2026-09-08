@@ -127,7 +127,7 @@ export class UserRepository {
     if (StorageSingleton.hasInstance()) {
       return StorageSingleton.getInstance().getAdminUsers();
     }
-    const adminUsers = await db.select().from(users).where(eq(users.isAdmin, true));
+    const adminUsers = await db.select().from(users).where(eq(users.isAdmin, true)).limit(100);
     // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
     return adminUsers.map((user: any) => this.decryptUser(user));
   }

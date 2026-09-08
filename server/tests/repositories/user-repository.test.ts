@@ -144,7 +144,9 @@ describe("UserRepository", () => {
         { ...mockUser, id: "admin-2", isAdmin: true },
       ];
       vi.mocked(db.select().from).mockReturnValue({
-        where: vi.fn().mockResolvedValue(adminUsers),
+        where: vi.fn().mockReturnValue({
+          limit: vi.fn().mockResolvedValue(adminUsers),
+        }),
       } as unknown as ReturnType<ReturnType<typeof db.select>["from"]>);
 
       const result = await userRepository.getAdminUsers();
