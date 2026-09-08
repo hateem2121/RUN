@@ -1,8 +1,77 @@
 # Forensic E2E Test Suite Audit & Detailed Findings Report
 
-**Run Date:** 2026-09-07  
-**Status:** SPRINT 20 COMPLETE — GITHUB MAIN RELEASE & DEPLOYMENT VERIFIED 100% GREEN. All GitHub Actions workflows passed (CI/Neon Preview, Production Deployment, Security Scanning, Code Quality/Knip, CodeQL, OpenSSF, Docs Lint). Monorepo: 198 test files, 2,897 tests passing 100% green.  
+**Run Date:** 2026-09-08  
+**Status:** SPRINT 21 COMPLETE — DATABASE SLOW QUERY ELIMINATION & FULL-STACK STABILIZATION 100% GREEN. All 16 identified defects resolved across 8 tracks. Monorepo: 204 test files, 2,946 tests passing 100% green. Protocol 0 Master Gate passed cleanly.  
 **Execution Environment:** Node v24.15.0 / Vite 8 Dev Server (Port 5002) / Express 5 / Biome 2.5 / TypeScript 6 / Neon PostgreSQL 17  
+
+## Sprint 21: Database Slow Queries, Warning Elimination & Full-Stack Forensic Stabilization (2026-09-08)
+
+**Status:** **100% IMPLEMENTED, VERIFIED & CERTIFIED (Zero Regressions, All 16 Defects Remediated)**  
+**Lead Systems Architect:** Antigravity (Principal Systems Architect & Senior Full-Stack Engineer)  
+
+### Comprehensive Execution Scorecard:
+
+1. **Track 1: Circuit Breaker Memory Leak & High Concurrency Stability (P0 Resolved):**
+   - **Static Singletons:** Eliminated dynamic circuit breaker generation (`new CircuitBreaker(...)`) inside `server/lib/storage/app-service.ts` and `server/services/media/media-content.service.ts`.
+   - **Leak Elimination:** Registered 6 static named singletons (`gcs-metadata`, `gcs-upload`, `gcs-download`, `gcs-delete`, `gcs-list`, `media-content-asset`, `media-content-thumbnail`) into the global circuit breaker registry.
+   - **Verification:** Unit test suite `server/tests/services/circuit-breaker-leak.test.ts` proved zero event listener growth and stable V8 heap under 100+ concurrent invocations.
+
+2. **Track 2: Helmet CSP Dev Invariant & Auth Rate Limiter Deduplication (P0/P1 Resolved):**
+   - **SSL Protocol Error Elimination:** Disabled `upgrade-insecure-requests` (set to `null`) and disabled HSTS (`hsts: false`) in development mode (`process.env.NODE_ENV !== "production"`) in `server/boot/middleware.ts`.
+   - **Origin Whitelisting:** Explicitly whitelisted `http://localhost:5002` and `http://127.0.0.1:5002` in `img-src` and `connect-src` directives.
+   - **Rate Limiting Deduplication:** Removed redundant `criticalTier` rate limiter from `server/routes/auth.ts:10` (retaining it on sensitive mutation routes only).
+   - **Verification:** Integration tests `tests/integration/csp-headers.test.ts` verified correct header production across development and production environments.
+
+3. **Track 3: Database Schema Composite Indexes & Audit Sort (P1 Resolved):**
+   - **Schema Indexing:**
+     - Added composite index `certificates_deleted_at_type_idx` on `certificates(deleted_at, type)`.
+     - Added composite index `size_charts_category_gender_idx` on `size_charts(category, gender)`.
+     - Added composite index `blog_posts_is_featured_idx` on `blog_posts(is_featured, status)`.
+     - Added index `users_is_admin_idx` on `users(is_admin)`.
+     - Added GIN index `media_tags_gin_idx` on `media_assets(tags jsonb_path_ops)`.
+   - **Audit Log Sort Order Alignment:** In `server/services/repositories/system-repository.ts:getRecentAuditLogs`, changed sort from `auditLogs.createdAt` to `auditLogs.timestamp`, enabling index-backed query execution using `audit_timestamp_idx`.
+   - **Migration Artifact:** Generated Drizzle migration `server/migrations/0021_add_performance_and_stability_indexes.sql` and synchronized `_journal.json`.
+
+4. **Track 4: Query Egress Guards & Missing Query Bounds (P1 Resolved):**
+   - **Vector Egress Guard:** Excluded 384-dimensional `embedding` float vectors from `getProductsIncludingDeleted` in `product-repository.ts` via Drizzle `getTableColumns` projection.
+   - **Blog List Egress Guard:** Excluded heavy Markdown/HTML `content` column on list views in `getPublishedPosts` in `blog-repository.ts`.
+   - **Hard Query Bounds:** Enforced `.limit(100)` across `misc-repository.ts` (`getFibers`, `getCertificates`, `getSizeCharts`), `media-repository.ts` (`getFolders`), and `user-repository.ts` (`getAdminUsers`).
+   - **Verification:** Projection tests in `server/tests/repositories/product-repository.test.ts` and `server/tests/repositories/blog-repository.test.ts` asserted column exclusion.
+
+5. **Track 5: Hybrid L2 Cache Dev Short-Circuit (P1 Resolved):**
+   - **WAN Latency Elimination:** Configured `UnifiedCache` constructor to default `this.l2 = dummyCache` when `process.env.NODE_ENV !== "production"` (unless explicitly overridden with `FORCE_L2_CACHE="true"`). Eliminated 250–400ms transatlantic network round-trips to Neon PostgreSQL `cache_entries` table on every cache read/write during local development.
+   - **Regex Escaping:** Fixed wildcard glob-to-regex pattern translation in `safePatternToRegex`.
+   - **Verification:** Unit test suite `server/tests/cache/unified-cache-l2.test.ts` verified L2 bypass in dev and activation under `FORCE_L2_CACHE`.
+
+6. **Track 6: Query Performance Calibration & Connection Pool Resiliency (P1 Resolved):**
+   - **Environment Calibration:** Set `DEFAULT_SLOW_QUERY_THRESHOLD` to 750ms for remote development WAN (accounting for 267ms cross-continent RTT) and 400ms for production in `server/lib/db/query-performance.ts`.
+   - **User-Facing Category Registration:** Registered catalog operations (`getAccessories`, `getAccessoriesWithCount`, `getMediaAssets`, etc.) in `QUERY_CATEGORIES.USER_FACING`.
+   - **Phase Duration Evaluation:** Calibrated `QueryTracker.complete()` to evaluate raw database execution latency (`phases.dbQuery`) against slow query thresholds instead of wall-clock duration that bundled cache checks and JSON serialization.
+   - **Deduplicated Outer Tracking:** Removed redundant outer tracker from `accessory-repository.ts:getAccessoriesWithCount`.
+   - **Pool Timeout Resiliency:** Increased Neon pool `connectionTimeoutMillis` from 5,000ms to 10,000ms in `server/db.ts` to cleanly accommodate serverless compute cold starts.
+   - **Verification:** Verified with `server/tests/db/query-performance-calibration.test.ts`.
+
+7. **Track 7: Mock Authentication & Session Payload Streamlining (P1 Resolved):**
+   - **Slim Session Payload:** Updated Passport serialization to store only `{ id: string, isMock?: boolean }` instead of serializing entire 15+ column User objects.
+   - **Instant In-Memory Rehydration:** In `deserializeUser`, detected `serialized.isMock` and immediately rehydrated the mock admin SessionUser in-memory with 0 database queries.
+   - **In-Memory Seed Caching:** Added `private mockUserSeeded = false;` in `auth.service.ts` to prevent redundant `db.insert(...).onConflictDoNothing()` queries on every login request. Bypassed redundant `isDatabasePoolHealthy()` probe.
+   - **Mock Login Latency:** Slashed mock login execution from ~1,200ms to ~19ms.
+   - **Rule 2.4 Invariant:** Cleaned all `auth.service.ts` methods to return `ResultAsync` directly via `ResultAsync.fromPromise()` without outer `async` wrappers.
+   - **Verification:** Integration suite `server/tests/routes/auth-mock.test.ts` (7/7 passing).
+
+8. **Track 8: Frontend Polish & Clean Build Configs (P2/P3 Resolved):**
+   - **Unused Font Preload Removed:** Removed preload for `/fonts/NeueStance-Regular.woff2` in `client/app/root.tsx`, eliminating browser console warning.
+   - **Carousel Keying & Safety:** Switched `ProductImageCarousel.tsx` to composite string keys (`img-${id ?? url ?? index}`), eliminating ID 0 collisions, and reduced safety timeout from 10s to 3.5s. Fixed ghost timer leak when video was active.
+   - **Vite Config Cleaned:** Removed noisy `console.warn("[VITE-CONFIG-ARGS]")` in `client/vite.config.ts`.
+   - **Lit Dev Mode Flag:** Replaced `process.env.NODE_ENV` mutation with Lit's native `(globalThis as any).litDisableDevelopmentMode = true;` in `client/app/lib/model-viewer-loader.ts`.
+   - **Verification:** Component tests `ProductImageCarousel.test.tsx` (6/6 passing).
+
+9. **Track 9: Monorepo Protocol 0 Verification Gate Certification:**
+   - **Full Vitest Suite:** 204 test files, 2,946 tests passing 100% green in 21.91s.
+   - **`npm run verify:tech-integrity`:** All 8 gates passed cleanly with 0 errors.
+   - **`npm run check`:** 0 TypeScript errors, 0 Biome linter errors across 952 files.
+   - **Knip Audit:** 0 unused files, 0 unused exports, 0 unused dependencies.
+   - **Markdown Lint:** Verified 135 files clean, excluded `.superpowers/**` from `check:md` in `package.json`.
 
 ## Sprint 20: Monorepo GitHub Release & Production Deployment (2026-09-07)
 

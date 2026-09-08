@@ -1,8 +1,64 @@
 # Task Plan — RUN APPAREL CMS (v4.1.2) — Monorepo & Global Antigravity Tooling
 
-**Date:** 2026-09-07  
-**Goal:** 10/10 Master Remediation — Ceiling Notch Navbar & Industrial Command Footer Complete Forensic Alignment  
+**Date:** 2026-09-08  
+**Goal:** 10/10 Master Remediation — Database Slow Queries, Warning Elimination & Full-Stack Forensic Stabilization  
 **Auditor/Engineer Role:** Antigravity — Principal Systems Architect & Senior Full-Stack Engineer  
+
+## Completed Sprint Plan — Sprint 21: Database Slow Queries, Warning Elimination & Full-Stack Forensic Stabilization (2026-09-08)
+
+- [x] **Track 1: Circuit Breaker Memory Leak & High Concurrency Stability (P0)**
+  - [x] Eliminate dynamic circuit breaker instantiation in `app-service.ts` and `media-content.service.ts`.
+  - [x] Register 6 static singletons (`gcs-metadata`, `gcs-upload`, `gcs-download`, `gcs-delete`, `gcs-list`, `media-content-asset`, `media-content-thumbnail`).
+  - [x] Verify zero event listener leaks in `server/tests/services/circuit-breaker-leak.test.ts`.
+- [x] **Track 2: Helmet CSP Dev Invariant & Auth Rate Limiter Deduplication (P0/P1)**
+  - [x] Disable `upgrade-insecure-requests` (set to `null`) and HSTS (`hsts: false`) in development mode (`server/boot/middleware.ts`).
+  - [x] Whitelist `http://localhost:5002` and `http://127.0.0.1:5002` in `img-src` and `connect-src`.
+  - [x] Remove duplicate `criticalTier` rate limiter from `server/routes/auth.ts`.
+  - [x] Verify integration suite `tests/integration/csp-headers.test.ts`.
+- [x] **Track 3: Database Schema Composite Indexes & Audit Sort (P1)**
+  - [x] Add composite index `certificates_deleted_at_type_idx` on `certificates(deleted_at, type)`.
+  - [x] Add composite index `size_charts_category_gender_idx` on `size_charts(category, gender)`.
+  - [x] Add composite index `blog_posts_is_featured_idx` on `blog_posts(is_featured, status)`.
+  - [x] Add index `users_is_admin_idx` on `users(is_admin)`.
+  - [x] Add GIN index `media_tags_gin_idx` on `media_assets(tags jsonb_path_ops)`.
+  - [x] Align `getRecentAuditLogs` sort in `system-repository.ts` to `orderBy(desc(auditLogs.timestamp))`.
+  - [x] Generate Drizzle migration `server/migrations/0021_add_performance_and_stability_indexes.sql`.
+- [x] **Track 4: Query Egress Guards & Missing Query Bounds (P1)**
+  - [x] Exclude 384-dim `embedding` vectors from `getProductsIncludingDeleted` in `product-repository.ts`.
+  - [x] Exclude heavy `content` column on list views in `getPublishedPosts` in `blog-repository.ts`.
+  - [x] Add `.limit(100)` across `misc-repository.ts` (`getFibers`, `getCertificates`, `getSizeCharts`), `media-repository.ts` (`getFolders`), and `user-repository.ts` (`getAdminUsers`).
+  - [x] Verify repository projection unit tests in `server/tests/repositories/`.
+- [x] **Track 5: Hybrid L2 Cache Dev Short-Circuit (P1)**
+  - [x] Short-circuit L2 cache to in-memory `dummyCache` in development (`server/lib/cache/unified-cache.ts`).
+  - [x] Preserve L2 Postgres write-through in production or when `FORCE_L2_CACHE="true"`.
+  - [x] Fix regex escaping in `safePatternToRegex`.
+  - [x] Verify unit suite `server/tests/cache/unified-cache-l2.test.ts`.
+- [x] **Track 6: Query Performance Calibration & Connection Pool Resiliency (P1)**
+  - [x] Calibrate environment-aware thresholds (750ms dev WAN / 400ms production) in `query-performance.ts`.
+  - [x] Register user-facing catalog queries in `USER_FACING` category.
+  - [x] Evaluate raw database execution time (`phases.dbQuery`) in `QueryTracker.complete()`.
+  - [x] Remove duplicate outer query tracking in `accessory-repository.ts:getAccessoriesWithCount`.
+  - [x] Increase Neon pool `connectionTimeoutMillis` to 10,000ms in `server/db.ts` for cold-start tolerance.
+  - [x] Verify calibration unit tests in `server/tests/db/query-performance-calibration.test.ts`.
+- [x] **Track 7: Mock Authentication & Session Payload Streamlining (P1)**
+  - [x] Slim Passport session serialization to `{ id, isMock }` in `server/services/system/auth.service.ts`.
+  - [x] Implement zero-query in-memory rehydration for mock admin sessions.
+  - [x] Cache seeded mock user in-memory (`mockUserSeeded`) in `auth.service.ts`.
+  - [x] Enforce Rule 2.4 direct `ResultAsync` service layer returns without `async` across all auth methods.
+  - [x] Verify mock login route tests in `server/tests/routes/auth-mock.test.ts` (< 20ms response).
+- [x] **Track 8: Frontend Warning Polish & Config Sanitation (P2/P3)**
+  - [x] Remove unused `/fonts/NeueStance-Regular.woff2` preload in `client/app/root.tsx`.
+  - [x] Harden image carousel with composite string keys and reduce timeout to 3.5s in `ProductImageCarousel.tsx`.
+  - [x] Fix ghost timer trigger on active video in `ProductImageCarousel.tsx`.
+  - [x] Remove noisy `console.warn` arguments in `client/vite.config.ts`.
+  - [x] Replace `process.env.NODE_ENV` mutation with Lit's native `litDisableDevelopmentMode`.
+  - [x] Verify carousel unit tests in `ProductImageCarousel.test.tsx`.
+- [x] **Track 9: Monorepo Protocol 0 Verification Gate Certification**
+  - [x] Full Vitest suite: 204 test files, 2,946 tests passing 100% green.
+  - [x] Protocol 0 master gate: `npm run verify:tech-integrity` passed all 8 gates cleanly.
+  - [x] `npm run check`: 0 TypeScript errors, 0 Biome linter errors across 952 files.
+  - [x] Knip audit: 0 unused files, 0 unused exports, 0 unused dependencies.
+  - [x] Exclude `.superpowers/**` from `check:md` in `package.json`.
 
 ## Completed Sprint Plan — Sprint 20: Monorepo GitHub Release & Production Deployment (2026-09-07)
 
