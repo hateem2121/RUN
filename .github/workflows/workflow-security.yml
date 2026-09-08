@@ -19,7 +19,7 @@ permissions:
 jobs:
   zizmor:
     name: Zizmor Static Analysis
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     # Permissions needed for security scanning and uploading results to GitHub Advanced Security
     permissions:
       security-events: write

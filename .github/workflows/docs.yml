@@ -20,7 +20,7 @@ permissions:
 jobs:
   markdownlint:
     name: Markdown Lint
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -38,6 +38,7 @@ jobs:
             !.agents/**
             !.impeccable/**
             !.code-review-graph/**
+            !.superpowers/**
             !graphify-out/**
             !docs/audit/**
             !docs/superpowers/**

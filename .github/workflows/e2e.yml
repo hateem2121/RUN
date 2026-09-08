@@ -14,7 +14,7 @@ permissions:
 jobs:
   verify-proofs:
     name: 🕵️ Forensic Proof Suite (P0/P1/P2)
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: 📥 Checkout

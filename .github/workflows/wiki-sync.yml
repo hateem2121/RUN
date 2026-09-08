@@ -15,7 +15,7 @@ permissions:
 jobs:
   sync-wiki:
     name: Sync Wiki Pages
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions:
       contents: write
     steps:

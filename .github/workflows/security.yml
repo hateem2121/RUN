@@ -19,7 +19,7 @@ permissions:
 jobs:
   dependency-audit:
     name: Dependency Audit
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
@@ -58,7 +58,7 @@ jobs:
 
   gitleaks:
     name: Secret Scanning
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
@@ -72,5 +72,12 @@ jobs:
 
       - name: Install & Run Gitleaks
         run: |
-          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.24.0/gitleaks_8.24.0_linux_x64.tar.gz | tar -xz
+          OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+          ARCH=$(uname -m)
+          if [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
+            ARCH="arm64"
+          else
+            ARCH="x64"
+          fi
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v8.24.0/gitleaks_8.24.0_${OS}_${ARCH}.tar.gz" | tar -xz
           ./gitleaks detect --verbose --redact
