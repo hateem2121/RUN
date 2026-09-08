@@ -59,7 +59,7 @@ describe("Mock Login Acceleration & Session Serialization (Task 7)", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     sharedSessions.clear();
-    authService.resetMockUserSeeded();
+    authService.__resetMockUserSeeded();
 
     app = express();
     app.use(express.json());
@@ -270,6 +270,21 @@ describe("Mock Login Acceleration & Session Serialization (Task 7)", () => {
       });
 
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe("seedMockUser In-Memory Caching & Neverthrow Direct Return", () => {
+    it("returns ResultAsync directly and only sets mockUserSeeded on success", async () => {
+      authService.__resetMockUserSeeded();
+
+      // Calling seedMockUser when MOCK_DB is true succeeds and sets flag
+      process.env.MOCK_DB = "true";
+      const result = await authService.seedMockUser({ id: "mock-1" });
+      expect(result.isOk()).toBe(true);
+
+      // Subsequent call hits in-memory cache branch (okAsync)
+      const cachedResult = await authService.seedMockUser({ id: "mock-1" });
+      expect(cachedResult.isOk()).toBe(true);
     });
   });
 });

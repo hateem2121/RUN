@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import type { User } from "@run-remix/shared";
 import type { Express, RequestHandler } from "express";
 import session from "express-session";
-import { err, ok, type Result, ResultAsync } from "neverthrow";
+import { err, ok, okAsync, type Result, ResultAsync } from "neverthrow";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { adminCacheManager } from "../../lib/cache/admin-cache.js";
@@ -62,7 +62,7 @@ export class AuthService {
   /**
    * Reset the in-memory mock user seeded flag (for testing)
    */
-  public resetMockUserSeeded(): void {
+  public __resetMockUserSeeded(): void {
     this.mockUserSeeded = false;
   }
 
@@ -658,38 +658,44 @@ export class AuthService {
   /**
    * Seed mock user for development
    */
-  public async seedMockUser(user: Partial<SessionUser>): Promise<Result<void, AppError>> {
+  public seedMockUser(user: Partial<SessionUser>): ResultAsync<void, AppError> {
     if (this.mockUserSeeded) {
-      return ok(undefined);
+      return okAsync(undefined);
     }
-    this.mockUserSeeded = true;
 
     const skipDb = process.env.MOCK_DB === "true";
-    if (skipDb) return ok(undefined);
-
-    const { userRepository } = await import("../repositories/index.js");
-
-    try {
-      await withCircuit(
-        "seed-mock-user",
-        () =>
-          userRepository.upsertUser({
-            id: user.id as string,
-            email: user.email as string,
-            emailIndex: user.emailIndex as string,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            profileImageUrl: user.profileImageUrl,
-            isAdmin: user.isAdmin,
-          }),
-        DB_CIRCUIT_OPTIONS,
-      );
-      return ok(undefined);
-    } catch (error) {
-      if (error instanceof AppError) return err(error);
-      logger.warn("[AuthService] Failed to seed mock user", error);
-      return err(new InternalError("Failed to seed mock user", { cause: error }));
+    if (skipDb) {
+      this.mockUserSeeded = true;
+      return okAsync(undefined);
     }
+
+    return ResultAsync.fromPromise(
+      (async () => {
+        const { userRepository } = await import("../repositories/index.js");
+        await withCircuit(
+          "seed-mock-user",
+          () =>
+            userRepository.upsertUser({
+              id: user.id as string,
+              email: user.email as string,
+              emailIndex: user.emailIndex as string,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              profileImageUrl: user.profileImageUrl,
+              isAdmin: user.isAdmin,
+            }),
+          DB_CIRCUIT_OPTIONS,
+        );
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        logger.warn("[AuthService] Failed to seed mock user", error);
+        return new InternalError("Failed to seed mock user", { cause: error });
+      },
+    ).map(() => {
+      this.mockUserSeeded = true;
+      return undefined;
+    });
   }
 
   /**
