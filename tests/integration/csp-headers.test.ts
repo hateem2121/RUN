@@ -10,7 +10,11 @@ describe("CSP Headers & Security Configuration (Integration)", () => {
   const originalEnv = process.env.NODE_ENV;
 
   afterEach(() => {
-    process.env.NODE_ENV = originalEnv;
+    if (originalEnv === undefined) {
+      delete process.env.NODE_ENV;
+    } else {
+      process.env.NODE_ENV = originalEnv;
+    }
   });
 
   it("should NOT contain upgrade-insecure-requests directive in development", async () => {

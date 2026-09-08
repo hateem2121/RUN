@@ -134,6 +134,27 @@
       "when": 1788200000000,
       "tag": "0018_drop_ghost_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1788201000000,
+      "tag": "0019_reinstate_session_expire_index",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1788202000000,
+      "tag": "0020_add_size_chart_index",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1788203000000,
+      "tag": "0021_add_performance_and_stability_indexes",
+      "breakpoints": true
     }
   ]
 }

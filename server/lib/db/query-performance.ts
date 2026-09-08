@@ -241,6 +241,13 @@ export class QueryPerformanceMonitor {
   }
 
   /**
+   * Extract evaluation duration for a query (dbQuery phase if recorded, otherwise wall-clock duration)
+   */
+  private getEvaluationDuration(metrics: QueryMetrics): number {
+    return metrics.phases?.dbQuery ?? metrics.duration;
+  }
+
+  /**
    * Record completed query metrics
    */
   recordQuery(metrics: QueryMetrics): void {
@@ -256,7 +263,7 @@ export class QueryPerformanceMonitor {
     const { threshold, shouldAlert, category } = this.getThresholdForQuery(metrics.operation);
 
     // Evaluate against raw dbQuery phase if recorded, rather than wall-clock time that bundled cache/serialization
-    const evaluationDuration = metrics.phases?.dbQuery ?? metrics.duration;
+    const evaluationDuration = this.getEvaluationDuration(metrics);
 
     // Check for slow query alerts with category-specific threshold
     if (evaluationDuration > threshold) {
@@ -300,7 +307,7 @@ export class QueryPerformanceMonitor {
     const shouldAlert =
       now - this.lastAlertTime > this.ALERT_COOLDOWN || this.consecutiveSlowQueries >= 3; // Alert on 3 consecutive slow queries
 
-    const evaluationDuration = metrics.phases?.dbQuery ?? metrics.duration;
+    const evaluationDuration = this.getEvaluationDuration(metrics);
 
     if (shouldAlert) {
       this.triggerSlowQueryAlert(metrics, threshold, category);
@@ -324,7 +331,7 @@ export class QueryPerformanceMonitor {
    */
   private triggerSlowQueryAlert(metrics: QueryMetrics, threshold: number, category: string): void {
     const stats = this.getPerformanceStats();
-    const evaluationDuration = metrics.phases?.dbQuery ?? metrics.duration;
+    const evaluationDuration = this.getEvaluationDuration(metrics);
 
     logger.error(
       `🚨 SLOW QUERY ALERT: ${metrics.operation} exceeded ${threshold}ms threshold (category: ${category})`,
@@ -371,7 +378,7 @@ export class QueryPerformanceMonitor {
     // Calculate slow queries ONLY for alertable categories
     const slowQueries = alertableMetrics.filter((m) => {
       const { threshold } = this.getThresholdForQuery(m.operation);
-      const evalDuration = m.phases?.dbQuery ?? m.duration;
+      const evalDuration = this.getEvaluationDuration(m);
       return evalDuration > threshold;
     }).length;
 
@@ -442,12 +449,12 @@ export class QueryPerformanceMonitor {
     const slowQueries = recentMetrics
       .filter((m) => {
         const { threshold, shouldAlert } = this.getThresholdForQuery(m.operation);
-        const evalDuration = m.phases?.dbQuery ?? m.duration;
+        const evalDuration = this.getEvaluationDuration(m);
         return shouldAlert && evalDuration > threshold; // Only alertable slow queries
       })
       .sort((a, b) => {
-        const durA = a.phases?.dbQuery ?? a.duration;
-        const durB = b.phases?.dbQuery ?? b.duration;
+        const durA = this.getEvaluationDuration(a);
+        const durB = this.getEvaluationDuration(b);
         return durB - durA;
       })
       .slice(0, 10);

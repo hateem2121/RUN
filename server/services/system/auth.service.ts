@@ -2,10 +2,11 @@ import { createHash } from "node:crypto";
 import type { User } from "@run-remix/shared";
 import type { Express, RequestHandler } from "express";
 import session from "express-session";
-import { err, ok, okAsync, type Result, ResultAsync } from "neverthrow";
+import { errAsync, ok, okAsync, type Result, ResultAsync } from "neverthrow";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { adminCacheManager } from "../../lib/cache/admin-cache.js";
+import { DrizzleSessionStore } from "../../lib/db/session-store.js";
 import { AppError, DatabaseError, InternalError, NotFoundError } from "../../lib/errors.js";
 import { logger } from "../../lib/monitoring/logger.js";
 import { DB_CIRCUIT_OPTIONS, withCircuit } from "../../lib/resilience/circuit-breaker.js";
@@ -79,9 +80,8 @@ export class AuthService {
   /**
    * Internal session setup
    */
-  private async getSessionMiddleware(): Promise<Result<RequestHandler, Error>> {
+  private getSessionMiddleware(): Result<RequestHandler, AppError> {
     const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-    const { DrizzleSessionStore } = await import("../../lib/db/session-store.js");
 
     const sessionStore = new DrizzleSessionStore();
     logger.info("[Auth] DrizzleSessionStore initialized");
@@ -154,7 +154,7 @@ export class AuthService {
    * Configure Passport and Session
    */
   public async setup(app: Express): Promise<void> {
-    const sessionResult = await this.getSessionMiddleware();
+    const sessionResult = this.getSessionMiddleware();
     if (sessionResult.isErr()) {
       return Promise.reject(sessionResult.error);
     }
@@ -270,41 +270,46 @@ export class AuthService {
   /**
    * Upsert user in database
    */
-  private async upsertUser(profile: passport.Profile): Promise<Result<User, AppError>> {
+  private upsertUser(profile: passport.Profile): ResultAsync<User, AppError> {
     const email = profile.emails?.[0]?.value;
     if (!email) {
-      return err(new InternalError("No email provided by Google"));
+      return errAsync(new InternalError("No email provided by Google"));
     }
 
-    return new ResultAsync(
-      (async (): Promise<Result<User, AppError>> => {
-        const user = await withCircuit(
-          "upsert-user",
-          () =>
-            userRepository.upsertUser({
-              id: profile.id,
-              email: email,
-              firstName: profile.name?.givenName || "",
-              lastName: profile.name?.familyName || "",
-              profileImageUrl: profile.photos?.[0]?.value,
-            }),
-          DB_CIRCUIT_OPTIONS,
+    return ResultAsync.fromPromise(
+      withCircuit(
+        "upsert-user",
+        () =>
+          userRepository.upsertUser({
+            id: profile.id,
+            email: email,
+            firstName: profile.name?.givenName || "",
+            lastName: profile.name?.familyName || "",
+            profileImageUrl: profile.photos?.[0]?.value,
+          }),
+        DB_CIRCUIT_OPTIONS,
+      ),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError("Failed to upsert user", { cause: error });
+      },
+    ).andThen((userResult) => {
+      if (userResult.isErr()) {
+        const error = userResult.error;
+        return errAsync(
+          error instanceof AppError
+            ? error
+            : new DatabaseError("Failed to upsert user", { cause: error }),
         );
+      }
 
-        // biome-ignore lint/suspicious/noExplicitAny: bypass complex rhf type inference conflict
-        if (user.isErr()) return err(user.error as any);
+      const user = userResult.value;
+      if (process.env.INITIAL_ADMIN_EMAIL === email && !user.isAdmin) {
+        logger.info("[AuthService] Promoting initial admin", { email });
+      }
 
-        // Bootstrapping: Auto-promote initial admin
-        if (process.env.INITIAL_ADMIN_EMAIL === email && !user.value.isAdmin) {
-          logger.info("[AuthService] Promoting initial admin", { email });
-        }
-
-        return ok(user.value);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        return err(new DatabaseError("Failed to upsert user", { cause: error }));
-      }),
-    );
+      return okAsync(user);
+    });
   }
 
   /**
@@ -425,41 +430,42 @@ export class AuthService {
   /**
    * VERIFY ADMIN ACCESS
    */
-  public async verifyAdminAccess(user: SessionUser): Promise<Result<boolean, AppError>> {
+  public verifyAdminAccess(user: SessionUser): ResultAsync<boolean, AppError> {
     const userId = user?.claims?.sub;
     if (!userId) {
-      return ok(false);
+      return okAsync(false);
     }
     const cachedAdminStatus = adminCacheManager.get(userId);
 
     if (cachedAdminStatus !== null) {
-      return ok(cachedAdminStatus);
+      return okAsync(cachedAdminStatus);
     }
 
     if (this.isMockAccessAllowed(user)) {
       logger.warn("[AuthService] ⚠️ MOCK ADMIN ACCESS GRANTED", { userId });
-      return ok(true);
+      return okAsync(true);
     }
 
-    return new ResultAsync(
-      (async (): Promise<Result<boolean, AppError>> => {
+    return ResultAsync.fromPromise(
+      (async () => {
         const dbUser = await withCircuit(
           "get-user-admin-check",
           () => userRepository.getUser(userId),
           DB_CIRCUIT_OPTIONS,
         );
         if (!dbUser) {
-          return ok(false);
+          return false;
         }
 
         const isAdmin = dbUser.isAdmin ?? false;
         adminCacheManager.set(userId, isAdmin);
-        return ok(isAdmin);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
+        return isAdmin;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
         logger.error("[AuthService] Error checking admin status", { error, userId });
-        return err(new DatabaseError("Error checking admin status", { cause: error }));
-      }),
+        return new DatabaseError("Error checking admin status", { cause: error });
+      },
     );
   }
 
@@ -500,39 +506,40 @@ export class AuthService {
   /**
    * SECURITY: Account Lockout Logic
    */
-  public async isAccountLocked(email: string): Promise<Result<boolean, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<boolean, AppError>> => {
+  public isAccountLocked(email: string): ResultAsync<boolean, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const user = await withCircuit(
           "get-user-lockout-check",
           () => userRepository.getUserByEmail(email),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!user?.lockoutUntil) return ok(false);
+        if (!user?.lockoutUntil) return false;
 
         if (user.lockoutUntil > new Date()) {
-          return ok(true);
+          return true;
         }
 
         // Lock expired, reset attempts
         await this.recordSuccessfulLogin(email);
-        return ok(false);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        return err(new DatabaseError("Failed to check lockout status", { cause: error }));
-      }),
+        return false;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError("Failed to check lockout status", { cause: error });
+      },
     );
   }
 
-  public async recordFailedLogin(email: string): Promise<Result<void, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<void, AppError>> => {
+  public recordFailedLogin(email: string): ResultAsync<void, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const user = await withCircuit(
           "get-user-failed-login",
           () => userRepository.getUserByEmail(email),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!user) return ok(undefined);
+        if (!user) return undefined;
 
         const attempts = (user.failedLoginAttempts || 0) + 1;
         const updates: Partial<User> = {
@@ -554,23 +561,24 @@ export class AuthService {
           () => userRepository.updateUser(user.id, updates),
           DB_CIRCUIT_OPTIONS,
         );
-        return ok(undefined);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        return err(new DatabaseError("Failed to record failed login", { cause: error }));
-      }),
+        return undefined;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError("Failed to record failed login", { cause: error });
+      },
     );
   }
 
-  public async recordSuccessfulLogin(email: string): Promise<Result<void, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<void, AppError>> => {
+  public recordSuccessfulLogin(email: string): ResultAsync<void, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const user = await withCircuit(
           "get-user-successful-login",
           () => userRepository.getUserByEmail(email),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!user) return ok(undefined);
+        if (!user) return undefined;
 
         await withCircuit(
           "update-user-successful-login",
@@ -582,27 +590,29 @@ export class AuthService {
             }),
           DB_CIRCUIT_OPTIONS,
         );
-        return ok(undefined);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        return err(new DatabaseError("Failed to record successful login", { cause: error }));
-      }),
+        return undefined;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError("Failed to record successful login", { cause: error });
+      },
     );
   }
 
-  public async getFailedAttempts(email: string): Promise<Result<number, AppError>> {
-    return new ResultAsync(
-      (async (): Promise<Result<number, AppError>> => {
+  public getFailedAttempts(email: string): ResultAsync<number, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const user = await withCircuit(
           "get-user-failed-attempts",
           () => userRepository.getUserByEmail(email),
           DB_CIRCUIT_OPTIONS,
         );
-        return ok(user?.failedLoginAttempts ?? 0);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        return err(new DatabaseError("Failed to get failed attempts", { cause: error }));
-      }),
+        return user?.failedLoginAttempts ?? 0;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new DatabaseError("Failed to get failed attempts", { cause: error });
+      },
     );
   }
 
@@ -625,13 +635,13 @@ export class AuthService {
    * DEV ONLY: Perform mock login for administrative testing
    * RESTRICTED to development environment.
    */
-  public async devLogin(): Promise<Result<SessionUser, AppError>> {
+  public devLogin(): ResultAsync<SessionUser, AppError> {
     if (process.env.NODE_ENV === "production") {
-      return err(new InternalError("Dev login not allowed in production"));
+      return errAsync(new InternalError("Dev login not allowed in production"));
     }
 
-    return new ResultAsync(
-      (async (): Promise<Result<SessionUser, AppError>> => {
+    return ResultAsync.fromPromise(
+      (async () => {
         const adminUser = await withCircuit(
           "dev-login-fetch",
           () => userRepository.getUserByEmail("team@wear-run.com"),
@@ -639,7 +649,7 @@ export class AuthService {
         );
 
         if (!adminUser) {
-          return err(new NotFoundError("Admin user team@wear-run.com"));
+          throw new NotFoundError("Admin user team@wear-run.com");
         }
 
         const sessionUser: SessionUser = {
@@ -647,12 +657,20 @@ export class AuthService {
           claims: { sub: adminUser.id, email: adminUser.email, isMock: true },
         };
 
-        return ok(sessionUser);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        return err(new InternalError("Failed to perform dev login", { error }));
-      }),
+        return sessionUser;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new InternalError("Failed to perform dev login", { error });
+      },
     );
+  }
+
+  /**
+   * Alias for devLogin to maintain compatibility with handleDevLogin
+   */
+  public handleDevLogin(): ResultAsync<SessionUser, AppError> {
+    return this.devLogin();
   }
 
   /**
@@ -670,23 +688,20 @@ export class AuthService {
     }
 
     return ResultAsync.fromPromise(
-      (async () => {
-        const { userRepository } = await import("../repositories/index.js");
-        await withCircuit(
-          "seed-mock-user",
-          () =>
-            userRepository.upsertUser({
-              id: user.id as string,
-              email: user.email as string,
-              emailIndex: user.emailIndex as string,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              profileImageUrl: user.profileImageUrl,
-              isAdmin: user.isAdmin,
-            }),
-          DB_CIRCUIT_OPTIONS,
-        );
-      })(),
+      withCircuit(
+        "seed-mock-user",
+        () =>
+          userRepository.upsertUser({
+            id: user.id as string,
+            email: user.email as string,
+            emailIndex: user.emailIndex as string,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            profileImageUrl: user.profileImageUrl,
+            isAdmin: user.isAdmin,
+          }),
+        DB_CIRCUIT_OPTIONS,
+      ),
       (error) => {
         if (error instanceof AppError) return error;
         logger.warn("[AuthService] Failed to seed mock user", error);
@@ -701,21 +716,21 @@ export class AuthService {
   /**
    * Get user info wrapper for route handlers
    */
-  public async getUserInfo(userId: string): Promise<Result<User, AppError>> {
-    const { userRepository } = await import("../repositories/index.js");
-    return new ResultAsync(
-      (async (): Promise<Result<User, AppError>> => {
+  public getUserInfo(userId: string): ResultAsync<User, AppError> {
+    return ResultAsync.fromPromise(
+      (async () => {
         const dbUser = await withCircuit(
           "get-user-info",
           () => userRepository.getUser(userId),
           DB_CIRCUIT_OPTIONS,
         );
-        if (!dbUser) return err(new NotFoundError("User not found"));
-        return ok(dbUser);
-      })().catch((error) => {
-        if (error instanceof AppError) return err(error);
-        return err(new InternalError("Failed to get user info", { cause: error }));
-      }),
+        if (!dbUser) throw new NotFoundError("User not found");
+        return dbUser;
+      })(),
+      (error) => {
+        if (error instanceof AppError) return error;
+        return new InternalError("Failed to get user info", { cause: error });
+      },
     );
   }
 }
