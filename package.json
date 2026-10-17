@@ -121,7 +121,7 @@
     "@opentelemetry/semantic-conventions": "^1.38.0",
     "@react-router/express": "^8.3.0",
     "@react-router/node": "^8.3.0",
-    "compression": "^1.8.1",
+    "compression": "^1.8.2",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.2",
