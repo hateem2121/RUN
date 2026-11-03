@@ -147,7 +147,7 @@
     "sharp": "0.35.3",
     "ws": "^8.18.0",
     "yargs": "^18.0.0",
-    "zod": "^4.4.3",
+    "zod": "^4.6.6",
     "zod-express-middleware": "^1.4.0"
   },
   "overrides": {
